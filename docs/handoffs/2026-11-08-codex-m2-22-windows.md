@@ -25,3 +25,5 @@ No local Windows runner or PowerShell is installed; Windows export/release uploa
 ## Next
 
 M2-23 seeded-disruption UI and Python cross-reference validation; then the M2-11 human playtest gate. Stop new work at five open Codex PRs per the triggering request.
+
+Follow-up fix pass: integrated main 2c57c1c through M2-21’s keep-both merge, resolving BACKLOG.md from the upstream file plus only M2-22’s Status. Preserved all M3 rows, main’s status line, merged M2 statuses and every CI smoke entry. Combined-tree validation: 193 Sim + 97 Harness tests, solution/game builds, scenario/provenance/conflict checks and actionlint. Windows execution remains pending the first merged main dispatch.
