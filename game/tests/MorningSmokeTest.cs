@@ -40,7 +40,7 @@ public partial class MorningSmokeTest : Node
             var arrangement = shell.Session.View.Arrangements.First();
             shell.NavigateBoardItem(new BoardItem("test", 10, BoardCategory.Delivery, BoardSeverity.Info, BoardLinkKind.Arrangement, arrangement.Id, "", []));
             var rows = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents").GetChildren().OfType<Button>();
-            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 5 && rows.Single(b => b.GetMeta("arrangement").AsString() == arrangement.Id).ButtonPressed, "Arrangement link opens and selects its real ledger row.");
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 5 && rows.Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == arrangement.Id).ButtonPressed, "Arrangement link opens and selects its real ledger row.");
             shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshot");
             if (shot >= 0)
