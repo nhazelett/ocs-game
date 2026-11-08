@@ -33,6 +33,10 @@ public sealed class SessionView
     public IReadOnlyCollection<string> LostConfidenceSites => _s.LostConfidenceSites;
     /// <summary>A site unit's habit of going around contracting, 0 to 1000 permille.</summary>
     public int UnitHabit(string siteId) => _s.Habit(siteId);
+    /// <summary>Performance issues (M2-18): contracted vendors that under-delivered, and the cure-notice state of each.</summary>
+    public IReadOnlyList<PerformanceIssueState> PerformanceIssues => _s.PerformanceIssues;
+    /// <summary>What was done about an issue: cure notice and its outcome, terminated, re-sourced, or no decision.</summary>
+    public string PerformanceDecision(PerformanceIssueState issue) => _s.IssueDecision(issue);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;

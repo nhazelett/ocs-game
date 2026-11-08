@@ -56,6 +56,7 @@ Day 15
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
   FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
+  INBOX     Performance issue pi1: Coastal Provisions under-delivered on waterBridge on days 15 and 16. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 17
   END       waterBridge ended.
 Day 20
@@ -123,6 +124,9 @@ GAPS AND WHY (each traced back through its causes)
   Day 24: Lodging at Spoke B degraded to 76%: power at 76%.
       <- day 24: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 16): waterBridge at spokeCSite.water, failed days 15, 16. Decision: no decision.
+
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-23, lowest 0%, 14 day(s) down: AVOIDABLE
       [avoidable] gens (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
@@ -141,4 +145,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.749)
 
-State hash 61fe81d9b6a2676a3f082ac823269f0b873dc1e0909dc931644a068826a0c1c7
+State hash 039d47c7af793a88c68331bc5680cc27dfc82a0927816901415343ee47b17245

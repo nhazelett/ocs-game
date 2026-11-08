@@ -30,6 +30,7 @@ public sealed partial class Session
         }
         Lifecycle(d);
         var today = RollArrangements(d);
+        PerformanceChecks(d, today);
         ResolveCapabilities(d, today);
         Settle(d, today);
         Score(d);
@@ -476,6 +477,10 @@ public sealed partial class Session
                 ["compliance.outOfScopeDenied"] = _outOfScopeDenied,
                 ["compliance.commanderConfidenceHits"] = _confidenceHits,
                 ["compliance.commitmentsUnresolved"] = _commitments.Count(c => c.Unresolved),
+                ["performance.issues"] = _issues.Count,
+                ["performance.cureNotices"] = _issues.Count(i => i.CureNoticeDay is not null),
+                ["performance.cured"] = _issues.Count(i => i.Outcome == CureOutcome.Cured),
+                ["performance.defaults"] = _issues.Count(i => i.Outcome == CureOutcome.Default),
                 ["info.surveys"] = _surveys,
                 ["shop.hoursWorked"] = _hoursWorkedMilli / 1000,
                 ["work.paymentErrors"] = _paymentErrors,

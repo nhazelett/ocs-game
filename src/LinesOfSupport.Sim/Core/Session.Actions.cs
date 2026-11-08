@@ -28,6 +28,7 @@ public sealed partial class Session
             TerminateAction t => ApplyTerminate(t),
             ResolveCommitmentAction r => ApplyResolve(r),
             EstablishBpaAction e => ApplyEstablishBpa(e),
+            CureNoticeAction c => ApplyCureNotice(c),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -49,6 +50,7 @@ public sealed partial class Session
         TerminateAction t => $"terminate {t.Arrangement}",
         ResolveCommitmentAction r => $"{r.Choice} {r.Commitment}",
         EstablishBpaAction e => $"establish BPA {e.Id}",
+        CureNoticeAction c => $"cure notice {c.Issue}",
         _ => a.GetType().Name,
     };
 
@@ -434,6 +436,9 @@ public sealed partial class Session
                 _ratifications++;
                 if (!CompleteRatification((string)w.Payload!, day, w.CauseId))
                     AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {(string)w.Payload!} completed.", [w.CauseId]);
+                break;
+            case WorkKind.CureNotice:
+                CompleteCureNotice((string)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.EstablishVehicle:
                 CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);

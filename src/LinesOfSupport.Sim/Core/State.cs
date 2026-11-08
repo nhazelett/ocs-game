@@ -29,7 +29,7 @@ public sealed class Arrangement
     /// <c>cost.unobligatedIncurredCents</c>, which is the sum of this over all arrangements (Q11).</summary>
     public long UnobligatedIncurredCents => IsCoordination ? 0 : Math.Max(0, IncurredCents - ObligatedCents);
     public string? FundingLineId { get; set; }
-    public int ReliabilityPermille { get; init; }
+    public int ReliabilityPermille { get; set; }
     public bool Unauthorized { get; init; }
     public bool IsCoordination => Instrument == "coordination";
     public ArrangementStatus Status { get; set; } = ArrangementStatus.Pending;
@@ -72,7 +72,7 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice }
 
 public sealed class WorkItem
 {
@@ -113,6 +113,28 @@ public sealed class CardState
 }
 
 /// <summary>What the player knows about an island. Surveys raise the tier; the true facts are in the scenario.</summary>
+public enum CureOutcome { None, Cured, Default }
+
+/// <summary>
+/// A contracted arrangement that under-delivered on enough days to put a decision in the inbox (M2-18): issue a
+/// cure notice, re-source (buy a replacement while it keeps running) or terminate. Only the cure notice is its own
+/// action; re-source and terminate are ordinary awards and terminations, read back for the debrief.
+/// </summary>
+public sealed class PerformanceIssueState
+{
+    public required string Id { get; init; }
+    public required string ArrangementId { get; init; }
+    public required string SiteId { get; init; }
+    public required string CapabilityId { get; init; }
+    public string? VendorId { get; init; }
+    public int OpenedDay { get; init; }
+    public List<int> FailureDays { get; init; } = [];
+    public int? CureNoticeDay { get; set; }
+    public int? CureEndsDay { get; set; }
+    public CureOutcome Outcome { get; set; }
+    public string CauseId { get; init; } = "";
+}
+
 public enum CommitmentKind { Handshake, OutOfScope }
 
 /// <summary>Where the player's decision on an unauthorized commitment stands (SPEC 4.5).</summary>

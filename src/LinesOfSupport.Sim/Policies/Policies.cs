@@ -88,6 +88,9 @@ public sealed class TextbookPolicy : IPolicy
         var actions = new List<PlayerAction>();
         // Unauthorized commitments: ratify a handshake at once (the vendor delivered in good faith and the need is
         // real); deny payment for out-of-scope work under an active contract.
+        // A contracted vendor that under-delivers gets a cure notice the morning the issue arrives.
+        foreach (var i in v.PerformanceIssues.Where(i => i.CureNoticeDay is null && i.Outcome == CureOutcome.None))
+            if (_done.Add($"cure:{i.Id}")) actions.Add(new CureNoticeAction { Issue = i.Id });
         foreach (var c in v.Commitments.Where(c => c.Unresolved))
             actions.Add(new ResolveCommitmentAction
             {
