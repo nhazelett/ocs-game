@@ -31,6 +31,7 @@ public sealed partial class Session
     private readonly List<IslandKnowledge> _knowledge = [];
     private readonly List<CauseRecord> _records = [];
     private readonly List<PlayerAction> _applied = [];
+    private readonly List<bool> _appliedRejected = [];
     private readonly Dictionary<string, int> _linkClosedThrough = new(StringComparer.Ordinal);
     private readonly Dictionary<string, (int Start, bool Fired)> _eventSchedule = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _eventRecordIds = new(StringComparer.Ordinal);
@@ -148,6 +149,8 @@ public sealed partial class Session
     public IReadOnlyList<CardState> Cards => _cards;
     public IReadOnlyList<IslandKnowledge> Knowledge => _knowledge;
     public IReadOnlyList<PlayerAction> AppliedActions => _applied;
+    /// <summary>Parallel to AppliedActions: true where that action was rejected (M3-02 counterfactual choices).</summary>
+    public IReadOnlyList<bool> AppliedRejected => _appliedRejected;
     public long CashCents => _cash;
     public int SystemOnlineDay => _systemOnlineDay;
     public int? GpcAvailableDay => _gpcAvailableDay;
@@ -321,4 +324,10 @@ public sealed partial class Session
         Scenario = Scenario.Id, RulesVersion = Rules.RulesVersion, Seed = Seed,
         PrepChoices = [.. PrepChoices], Actions = [.. _applied],
     };
+
+    /// <summary>
+    /// A save of the game as it stands: the input log plus <see cref="InputLog.SavedDay"/> (today, or null once
+    /// finished). Load it with <see cref="Replay.Resume"/>. The game autosaves this each morning and on demand (M3-01).
+    /// </summary>
+    public InputLog ToSave() => ToInputLog() with { SavedDay = Finished ? null : Day };
 }
