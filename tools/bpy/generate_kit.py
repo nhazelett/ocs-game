@@ -1,9 +1,11 @@
-"""Generate the M0 five-piece kit. Run with Blender 4.4+ --background --factory-startup.
+"""Generate the M0 kit. Run with Blender 4.4+ --background --factory-startup.
 
 Example: blender --background --factory-startup --python tools/bpy/generate_kit.py -- --scale 1
 Blender execution is unverified on the M0-10 authoring machine; see tools/README.md.
 """
 import argparse
+import json
+import math
 from datetime import date
 from pathlib import Path
 import sys
@@ -100,6 +102,33 @@ def light_truck():
 
 BUILDERS = {"tent": tent, "chu": chu, "generator": generator,
             "fuel-bladder": fuel_bladder, "light-truck": light_truck}
+
+
+def recipe(name, parts):
+    """Shared M0-14 recipe uses meters, X right/Y up/Z back (Godot coordinates)."""
+    result = []
+    for index, part in enumerate(parts):
+        x, y, z = part["at"]
+        position = (x, -z, y)  # Blender is Z-up; glTF export converts back to Y-up.
+        label = f"{name}-{index}"
+        if part["shape"] == "box":
+            sx, sy, sz = part["size"]
+            obj = box(label, (sx, sz, sy), position, part["color"])
+        elif part["shape"] == "cylinder":
+            obj = cylinder(label, part["radius"], part["length"], position, part["color"])
+            if part.get("axis", "y") == "x":
+                obj.rotation_euler.y = math.pi / 2
+            elif part.get("axis", "y") == "z":
+                obj.rotation_euler.x = math.pi / 2
+        else:
+            raise ValueError(f"Unknown recipe primitive: {part['shape']}")
+        result.append(obj)
+    return result
+
+
+RECIPES = json.loads(Path(__file__).with_name("kit_parts.json").read_text(encoding="utf-8"))
+for _name, _parts in RECIPES.items():
+    BUILDERS[_name] = lambda name=_name, parts=_parts: recipe(name, parts)
 
 
 def provenance(paths, added):

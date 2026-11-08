@@ -84,6 +84,8 @@ jobs:
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"
           grep -Fq 'KIT_SMOKE_PASS: five pieces, 5 glTF files loaded' "$RUNNER_TEMP/godot-kit.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --extended-kit --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-extended-kit.log"
+          grep -Fq 'KIT_SMOKE_PASS: 22 pieces, 22 glTF files loaded' "$RUNNER_TEMP/godot-extended-kit.log"
 
   export-windows:
     name: export-windows
