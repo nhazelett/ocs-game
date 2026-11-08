@@ -33,3 +33,6 @@ Option 2. Namespace `LinesOfSupport.Sim`:
 
 ## Author
 Fable
+
+## Addendum, 2026-11-08 (M2-12): establishBpa
+Action `establishBpa { id, vendor, capability, scopeLines, callLimitCents?, orderingPeriodDays? }` (additive). Costs `bpaEstablish` shop days at today's manual or system speed; on completion the BPA joins `SessionView.Vehicles` (scenario vehicles plus established ones) and takes `bpaCall` awards with the existing checks and decline odds. Call limit defaults to the simplified acquisition threshold and may not exceed it; ordering period defaults to the rest of the scenario. `SessionView.PreviewEstablish(action)` returns hard stops, shop hours and the first day calls could be placed.

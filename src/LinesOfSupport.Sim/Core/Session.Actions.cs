@@ -27,6 +27,7 @@ public sealed partial class Session
             DefinitizeAction d => ApplyDefinitize(d),
             TerminateAction t => ApplyTerminate(t),
             ResolveCommitmentAction r => ApplyResolve(r),
+            EstablishBpaAction e => ApplyEstablishBpa(e),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -47,6 +48,7 @@ public sealed partial class Session
         DefinitizeAction d => $"definitize {d.Arrangement}",
         TerminateAction t => $"terminate {t.Arrangement}",
         ResolveCommitmentAction r => $"{r.Choice} {r.Commitment}",
+        EstablishBpaAction e => $"establish BPA {e.Id}",
         _ => a.GetType().Name,
     };
 
@@ -193,7 +195,7 @@ public sealed partial class Session
                 if (month + total > _gpcMonthly) stops.Add($"card spend this month would be {Money(month + total)} against a limit of {Money(_gpcMonthly)}");
                 break;
             case "bpaCall":
-                var veh = Scenario.Vehicles.FirstOrDefault(v => v.Id == a.Vehicle);
+                var veh = _vehicles.FirstOrDefault(v => v.Id == a.Vehicle);
                 if (veh is null) { stops.Add("a BPA call needs a BPA vehicle"); break; }
                 if (veh.Kind != "bpa") stops.Add($"{veh.Id} is not a BPA");
                 if (!veh.VisibleOnDay1) stops.Add($"{veh.Id} is not known to this shop");
@@ -432,6 +434,9 @@ public sealed partial class Session
                 _ratifications++;
                 if (!CompleteRatification((string)w.Payload!, day, w.CauseId))
                     AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {(string)w.Payload!} completed.", [w.CauseId]);
+                break;
+            case WorkKind.EstablishVehicle:
+                CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.Denial:
                 AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);
