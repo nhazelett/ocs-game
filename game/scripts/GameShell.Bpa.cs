@@ -65,7 +65,7 @@ public partial class GameShell
         foreach (var group in offers.GroupBy(o => o.Vendor.Id))
         {
             var vendor = group.First().Vendor;
-            var row = DeskUi.Button($"{vendor.Name} · {vendor.IslandName}\n{string.Join(", ", group.Select(o => o.Label))}" + (vendor.Standing is null ? "" : $"\nStanding: {vendor.Standing}") + "\nEstablish BPA…", () =>
+            var row = DeskUi.Button($"{vendor.Name} · {vendor.IslandName}\n{string.Join("\n", group.Select(o => $"{o.Label}: {o.Vendor.CapacityFreeToday}/{o.Vendor.CapacityPerDay} free · lead {o.Vendor.LeadTimeDays} days · {DeskUi.Money(o.Vendor.UnitPriceCents)}/unit/day"))}" + (vendor.Standing is null ? "" : $"\nStanding: {vendor.Standing}") + "\nEstablish BPA…", () =>
             {
                 bpaVendor = vendor.Id; bpaCapability = null; bpaScope.Clear(); RefreshBpaDesk(session.View);
             });
