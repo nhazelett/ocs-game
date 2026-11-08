@@ -88,7 +88,35 @@ jobs:
   export-windows:
     name: export-windows
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
+    needs: [test, scenarios, provenance, godot-shell]
+    runs-on: windows-latest
+    timeout-minutes: 20
     steps:
-      - name: Placeholder Godot export
-        run: echo "Godot export to be configured by Codex at M0"
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Download Godot 4.6.1 .NET and matching export templates
+        shell: pwsh
+        run: |
+          $release = 'https://github.com/godotengine/godot-builds/releases/download/4.6.1-stable'
+          curl.exe --fail --location --retry 3 "$release/Godot_v4.6.1-stable_mono_win64.zip" --output "$env:RUNNER_TEMP/godot.zip"
+          if ($LASTEXITCODE -ne 0) { throw 'Godot download failed.' }
+          Expand-Archive "$env:RUNNER_TEMP/godot.zip" "$env:RUNNER_TEMP/godot"
+          $godot = Get-ChildItem "$env:RUNNER_TEMP/godot" -Recurse -Filter '*_console.exe' | Select-Object -First 1
+          "GODOT_BIN=$($godot.FullName)" >> $env:GITHUB_ENV
+          curl.exe --fail --location --retry 3 "$release/Godot_v4.6.1-stable_mono_export_templates.tpz" --output "$env:RUNNER_TEMP/templates.zip"
+          if ($LASTEXITCODE -ne 0) { throw 'Template download failed.' }
+          Expand-Archive "$env:RUNNER_TEMP/templates.zip" "$env:RUNNER_TEMP/templates"
+          $target = New-Item -ItemType Directory -Force "$env:APPDATA/Godot/export_templates/4.6.1.stable.mono"
+          Copy-Item "$env:RUNNER_TEMP/templates/templates/*" $target.FullName -Recurse
+      - name: Export, verify packaged scenarios and zip
+        shell: pwsh
+        run: ./tools/export/windows.ps1 -Godot $env:GODOT_BIN -OutputDirectory "$env:RUNNER_TEMP/windows-package"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LinesOfSupport-${{ github.ref_name }}-windows-x86_64
+          path: ${{ runner.temp }}/windows-package.zip
+          if-no-files-found: error

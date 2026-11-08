@@ -1,4 +1,4 @@
-Status against plan: M0 nearly done. Codex M0-11 merged (PR 15). Fable merges Codex PRs that stay in lane with green CI (Nick, 8 Nov 2026). Next: Codex M0-13, M0-14 merges, then M0-15, M1-03, M1-01, M1-05; Fable M0-07, M1-04.
+Status against plan: M0 nearly done. Codex M0-11 (PR 15) and M0-13 (PR 16) merged. Fable merges Codex PRs that stay in lane with green CI (Nick, 8 Nov 2026). Next: Codex M0-14 merge, then M0-15, M1-03, M1-01, M1-05; Fable M0-07, M1-04.
 
 
 Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
@@ -19,7 +19,7 @@ Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell
 | M0-10 | First bpy kit experiment: one site (tent, CHU, generator, fuel bladder, truck) flat-shaded to glTF, rendered in Godot | Screenshot in handoff note; tools and steps that worked recorded in tools/README.md | Codex | tools/, assets/, game/tests/, .github/, backlog/, own handoff | Done (PR 11 merged; Blender unverified, primitive fallback disclosed) |
 | M0-11 | Provenance check covers glTF and audio; PROVENANCE.md template filled for the kit | CI provenance job fails on an untracked asset | Codex | assets/, .github/ | Done (PR 15 merged) |
 | M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (read by Codex; M0-08 handoff references it) |
-| M0-13 | Windows export in CI on v* tags | Godot .NET/templates export game to zip artifact; steps documented | Codex | game/, .github/, backlog/, own handoff | Queued; not started |
+| M0-13 | Windows export in CI on v* tags | Godot .NET/templates export game to zip artifact; steps documented | Codex | game/, .github/, backlog/, own handoff | Done (PR 16 merged) |
 | M0-14 | Extend the generated kit | Terrain, routes, buildings, vehicles and support pieces share palette/script and provenance | Codex | tools/, assets/, game/, backlog/, own handoff | Queued; not started |
 | M0-15 | Batch metric spread table and --json | Per-policy min/median/max of exposed metrics; honest day-count/not-simulated fallback until Sim metrics exist | Codex | src/LinesOfSupport.Harness*, backlog/, own handoff | Queued; not started |
 | M1-01 | Harness runs the real Sim | `run` uses `Replay.Run(bundle, seed, PolicyCatalog.Create(policy))` or `Replay.Run(bundle, InputLog.Load(log))` and prints `SessionReport.ToText`; `batch` reports min/median/max of mission.output and each passCriteria metric per policy; delete PlaceholderRun. ADR-0005. | Codex | src/LinesOfSupport.Harness | Not started |
