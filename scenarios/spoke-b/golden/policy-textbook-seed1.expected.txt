@@ -105,6 +105,7 @@ Day 24
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
   SHORT     Lodging at Spoke B degraded to 54%: power at 54%.
   OBLIGATE  t-req0014-enduring has incurred $104,544 against $101,826 obligated: funding line om1 has $0 left. The vendor stops work in 3 days if this stands.
+  FUNDING   No funding line has money usable from day 25: nothing new can be awarded, definitized or ratified until one does. No further funding is scheduled.
 Day 25
   ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 144 meals/day for 5 days (Meal service); $6,480 paid on the spot.
   DONE      SF 44 cash purchase t-resize-spokeCSite-food-25 awarded to Coastal Provisions; performance starts day 29, ends day 33. Obligated $6,480.
@@ -212,4 +213,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.91)
 
-State hash f314cd5da1c5a16fe58909f0783584e64f25d88f2465c29dcd27d7a21961b7f1
+State hash c138434c6b7c7178f122091b463c2e705c3cd3720f4c7ac130a0076a29230f56

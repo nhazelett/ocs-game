@@ -161,6 +161,7 @@ public static class SessionReport
         RecordKind.Shortfall => "SHORT",
         RecordKind.Restored => "OK",
         RecordKind.VendorFailure => "FAIL",
+        RecordKind.CorReport => "COR",
         RecordKind.ExecutionConfusion => "CONFUSED",
         RecordKind.PaymentError => "PAYERR",
         RecordKind.Event => "EVENT",
@@ -174,6 +175,7 @@ public static class SessionReport
         RecordKind.Cash => "CASH",
         RecordKind.Withdrawal => "WITHDRAWN",
         RecordKind.Obligation => "OBLIGATE",
+        RecordKind.VendorCapacity => "CAPACITY",
         _ => k.ToString().ToUpperInvariant(),
     };
 }

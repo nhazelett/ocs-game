@@ -219,6 +219,6 @@ public static class Counterfactual
     {
         SurveyAction => "survey", SetLineAction => "setLine", AwardAction => "award", CoordinateAction => "coordinate",
         DefinitizeAction => "definitize", TerminateAction => "terminate", ResolveCommitmentAction => "resolveCommitment",
-        EstablishBpaAction => "establishBpa", CureNoticeAction => "cureNotice", _ => a.GetType().Name,
+        EstablishBpaAction => "establishBpa", EstablishIdiqAction => "establishIdiq", CureNoticeAction => "cureNotice", DesignateCorAction => "designateCor", _ => a.GetType().Name,
     };
 }

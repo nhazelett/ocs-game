@@ -25,23 +25,13 @@ public sealed partial class Session
         {
             if (!t.Failed) continue;
             var a = _arrangements.First(x => x.Id == id);
-            if (!Curable(a)) continue;
-            var open = _issues.LastOrDefault(i => i.ArrangementId == a.Id);
-            if (open is not null && (open.Outcome == CureOutcome.None || (open.CureEndsDay is { } end && d <= end + Perf.CureDays))) continue;
+            if (!Curable(a) || !Observed(a)) continue; // reported failures open the issue instead (CorReporting, M3-04)
+            if (IssueBlocks(a, d)) continue;
             var days = _records.Where(r => r.Kind == RecordKind.VendorFailure && r.Subject == a.Id && r.Day > d - Perf.WindowDays && r.Day <= d)
                                .Select(r => r.Day).Distinct().OrderBy(x => x).ToList();
             if (days.Count < Perf.UnderDeliveryDays) continue;
-            var issueId = $"pi{_issues.Count + 1}";
-            var vendor = VendorData(a.VendorId)?.Name ?? "The vendor";
             var failures = _records.Where(r => r.Kind == RecordKind.VendorFailure && r.Subject == a.Id && days.Contains(r.Day)).Select(r => r.Id).ToList();
-            var rec = AddRecord(d, RecordKind.Inbox, issueId,
-                $"Performance issue {issueId}: {vendor} under-delivered on {a.Id} on days {string.Join(" and ", days)}. Decision: issue a cure notice ({Perf.CureNoticeShopHours} shop hours, then a {Perf.CureDays}-day cure period), re-source while it keeps running, or terminate.",
-                [.. failures, a.CauseId]);
-            _issues.Add(new PerformanceIssueState
-            {
-                Id = issueId, ArrangementId = a.Id, SiteId = a.SiteId, CapabilityId = a.CapabilityId, VendorId = a.VendorId,
-                OpenedDay = d, FailureDays = days, CauseId = rec,
-            });
+            OpenIssue(d, a, days, failures, "");
         }
 
         foreach (var i in _issues.Where(i => i.CureEndsDay == d && i.Outcome == CureOutcome.None))
@@ -70,6 +60,25 @@ public sealed partial class Session
                     $"{vendor} did not cure {i.Id} and is in default. Performance keeps slipping; the contracting officer may terminate {a.Id} for default.", [i.CauseId]);
             }
         }
+    }
+
+    /// <summary>True when an issue on the arrangement is still open, or closed so recently that a new one would repeat it.</summary>
+    private bool IssueBlocks(Arrangement a, int d)
+        => _issues.LastOrDefault(i => i.ArrangementId == a.Id) is { } open
+           && (open.Outcome == CureOutcome.None || (open.CureEndsDay is { } end && d <= end + Perf.CureDays));
+
+    private void OpenIssue(int d, Arrangement a, List<int> days, List<string> causes, string seenBy)
+    {
+        var issueId = $"pi{_issues.Count + 1}";
+        var vendor = VendorData(a.VendorId)?.Name ?? "The vendor";
+        var rec = AddRecord(d, RecordKind.Inbox, issueId,
+            $"Performance issue {issueId}: {vendor} under-delivered on {a.Id} on days {string.Join(" and ", days)}{seenBy}. Decision: issue a cure notice ({Perf.CureNoticeShopHours} shop hours, then a {Perf.CureDays}-day cure period), re-source while it keeps running, or terminate.",
+            [.. causes, a.CauseId]);
+        _issues.Add(new PerformanceIssueState
+        {
+            Id = issueId, ArrangementId = a.Id, SiteId = a.SiteId, CapabilityId = a.CapabilityId, VendorId = a.VendorId,
+            OpenedDay = d, FailureDays = days, CauseId = rec,
+        });
     }
 
     private ActionResult ApplyCureNotice(CureNoticeAction c)

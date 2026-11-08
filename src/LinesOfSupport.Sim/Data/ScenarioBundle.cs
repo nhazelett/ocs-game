@@ -175,8 +175,18 @@ public sealed class ScenarioBundle
             }
         }
         foreach (var veh in s.Vehicles) Need(vendors.Contains(veh.Vendor), $"vehicle {veh.Id} vendor not found");
+        foreach (var f in s.FundingLines)
+        {
+            foreach (var c in f.Capabilities) Need(caps.Contains(c), $"funding line {f.Id} capability {c} not in rules");
+            Need(f.AvailableDay <= f.ExpiresDay, $"funding line {f.Id} expires before it is released");
+        }
+        var cors = s.Cors.Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
+        Need(cors.Count == s.Cors.Count, "COR ids must be unique");
+        foreach (var c in s.Cors) Need(Rules.Cor.Qualities.ContainsKey(c.Quality), $"COR {c.Id} quality {c.Quality} not in rules cor.qualities");
+        Need(Rules.Cor.Qualities.ContainsKey(Rules.Cor.ReliefQuality), $"rules cor.reliefQuality {Rules.Cor.ReliefQuality} not in cor.qualities");
         foreach (var a in s.InheritedArrangements)
         {
+            if (a.Cor is not null) Need(cors.Contains(a.Cor), $"arrangement {a.Id} COR {a.Cor} not found");
             Need(Rules.Instruments.ContainsKey(a.Instrument), $"arrangement {a.Id} instrument {a.Instrument} not in rules");
             Need(vendors.Contains(a.Vendor), $"arrangement {a.Id} vendor not found");
             Need(sites.Contains(a.Site), $"arrangement {a.Id} site not found");
@@ -196,6 +206,12 @@ public sealed class ScenarioBundle
                 }
                 if (f.Kind == "link.closed")
                     Need(s.TransportLinks.Any(l => l.Id == f.Target), $"event {e.Id}: link.closed link {f.Target} not found");
+                if (f.Kind == "cor.rotates") Need(cors.Contains(f.Target ?? ""), $"event {e.Id}: cor.rotates COR {f.Target} not found");
+                if (f.Kind == "funding.late")
+                {
+                    Need(s.FundingLines.Any(l => l.Id == f.Target), $"event {e.Id}: funding.late funding line {f.Target} not found");
+                    Need(f.Days is > 0 || f.DaysRange is { Max: > 0 }, $"event {e.Id}: funding.late needs a positive days or daysRange");
+                }
             }
         }
         foreach (var c in Rules.PrepChoices)

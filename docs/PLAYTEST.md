@@ -4,10 +4,9 @@ For Nick, and for anyone Nick hands the build to. SPEC 11 M2 is done when four t
 
 ## Get the build
 
-1. A Windows build is produced only by the `export-windows` CI job. Today it runs when a version tag is pushed (`v...`); M2-22 adds a "Run workflow" button.
-   - Tag route: on GitHub, Releases, "Draft a new release", choose a new tag such as `v0.2.0-preview.1` on `main`, publish. The job runs on that tag.
-   - Button route (after M2-22): Actions, CI, "Run workflow" on `main`.
-2. When the job finishes (about 4 minutes; first run, v0.2.0-preview.1, was green), open the run, download the artifact `LinesOfSupport-<tag>-windows-x86_64`, unzip it on your computer, and run `LinesOfSupport.exe`. No install, no setup.
+1. On GitHub, open **Actions → CI → Run workflow**, choose **main**, and run it. After the checks pass, `export-windows` creates the build. Other branches do not export through this button.
+   - Tag route: Releases → Draft a new release, choose a new `v...` tag on `main`, and publish. The tag also runs CI; its verified zip is attached to that release. A tag pushed without a release gets a release when the zip is ready.
+2. When the run finishes, download its artifact `LinesOfSupport-<short-commit>-windows-x86_64` (button route) or `LinesOfSupport-<tag>-windows-x86_64` (tag route). Tag builds also have a directly downloadable zip under **Releases → Assets**. Unzip until `LinesOfSupport.exe` and its sibling `scenarios` folder are together, then run the exe. No install or setup; development `_stub` is excluded. Export follows all four CI checks and can take several minutes.
 3. If Windows SmartScreen warns about an unknown publisher, "More info", "Run anyway". The build is not code-signed yet.
 
 ## The four checks

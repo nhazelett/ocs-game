@@ -32,6 +32,8 @@ def cross_checks(sc, rules):
     islands, sites, vendors, vehicles = ids("islands"), ids("sites"), ids("vendors"), ids("vehicles")
     caps = {c["id"] for c in rules["model"]["capabilities"]}
     instruments = set(rules["instruments"].keys())
+    cap_data = {c["id"]: c for c in rules["model"]["capabilities"]}
+    links = ids("transportLinks")
     if sc["rulesVersion"] != rules["rulesVersion"]:
         errs.append(f"rulesVersion {sc['rulesVersion']} does not match rules file {rules['rulesVersion']}")
     for l in sc["transportLinks"]:
@@ -49,6 +51,11 @@ def cross_checks(sc, rules):
         if v["island"] not in islands: errs.append(f"vendor {v['id']}: island {v['island']} not found")
         for o in v["offers"]:
             if o["capability"] not in caps: errs.append(f"vendor {v['id']}: capability {o['capability']} not in rules")
+            source = o.get("sourceIsland")
+            if source is not None:
+                if source not in islands: errs.append(f"vendor {v['id']} {o['capability']}: sourceIsland {source} not found")
+                if cap_data.get(o["capability"], {}).get("delivery") != "consumable":
+                    errs.append(f"vendor {v['id']} {o['capability']}: sourceIsland applies only to consumables")
     for v in sc["vehicles"]:
         if v["vendor"] not in vendors: errs.append(f"vehicle {v['id']}: vendor {v['vendor']} not found")
         for isl in v.get("placeOfPerformance", []):
@@ -62,6 +69,20 @@ def cross_checks(sc, rules):
     for e in sc["events"]:
         if e["window"]["latestDay"] < e["window"]["earliestDay"]: errs.append(f"event {e['id']}: window ends before it starts")
         if e["window"]["earliestDay"] > sc["days"]: errs.append(f"event {e['id']}: window starts after the scenario ends")
+        for effect in e.get("effects", []):
+            kind = effect["kind"]
+            duration = effect.get("daysRange")
+            if duration is not None and duration["min"] > duration["max"]:
+                errs.append(f"event {e['id']}: {kind} daysRange max is below min")
+            if effect.get("forecastDays") is not None and kind != "link.closed":
+                errs.append(f"event {e['id']}: forecastDays applies only to link.closed")
+            if kind == "link.closed" and effect.get("target") not in links:
+                errs.append(f"event {e['id']}: link.closed link {effect.get('target')} not found")
+            if kind == "site.populationJump":
+                if effect.get("target") not in sites:
+                    errs.append(f"event {e['id']}: site.populationJump site {effect.get('target')} not found")
+                if (effect.get("fraction") or 0) <= 0:
+                    errs.append(f"event {e['id']}: site.populationJump needs a positive fraction")
         for f in e.get("followOns", []):
             if f not in event_ids: errs.append(f"event {e['id']}: follow-on {f} not found")
     all_ids = islands | sites | vendors | vehicles | event_ids | ids("requirementCards")

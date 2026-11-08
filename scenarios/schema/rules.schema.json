@@ -647,6 +647,53 @@
           "type": "string"
         }
       }
+    },
+    "cor": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "COR report lag and fidelity by quality (DFARS 201.602-2; backlog M3-04). Permille values are 0 to 1000.",
+      "required": [
+        "qualities",
+        "noCorLagDays",
+        "reliefQuality"
+      ],
+      "properties": {
+        "qualities": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "lagDays",
+              "reportPermille"
+            ],
+            "properties": {
+              "lagDays": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reportPermille": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              }
+            }
+          }
+        },
+        "noCorLagDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "With no COR, a failure is reported only when it shows as a mission effect, by the unit, this many days later."
+        },
+        "reliefQuality": {
+          "type": "string",
+          "description": "Quality of the untrained relief when a COR rotates home; a key of qualities."
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

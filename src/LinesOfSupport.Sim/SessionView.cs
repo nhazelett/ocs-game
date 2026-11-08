@@ -24,7 +24,7 @@ public sealed class SessionView
     public IReadOnlyList<WorkItem> Work => _s.Work;
     public IReadOnlyList<FundingLineState> Funding => _s.Funding;
     public IReadOnlyList<CauseRecord> Records => _s.Records;
-    /// <summary>Vehicles the shop has: the scenario's plus any BPAs established this game.</summary>
+    /// <summary>Vehicles the shop has: the scenario's plus any BPAs and IDIQs established this game.</summary>
     public IReadOnlyList<VehicleData> Vehicles => _s.Vehicles;
     /// <summary>Unauthorized commitments (SPEC 4.5): handshakes and out-of-scope work, with the decision on each.</summary>
     public IReadOnlyList<CommitmentState> Commitments => _s.Commitments;
@@ -37,6 +37,20 @@ public sealed class SessionView
     public IReadOnlyList<PerformanceIssueState> PerformanceIssues => _s.PerformanceIssues;
     /// <summary>What was done about an issue: cure notice and its outcome, terminated, re-sourced, or no decision.</summary>
     public string PerformanceDecision(PerformanceIssueState issue) => _s.IssueDecision(issue);
+    /// <summary>True when the scenario has a COR roster: failures on contracts this office awarded reach it only through
+    /// COR or unit reports (M3-04).</summary>
+    public bool CorModeled => _s.CorModeled;
+    /// <summary>The COR roster with each COR's current quality; a rotated COR is the relief (M3-04).</summary>
+    public IReadOnlyList<CorState> Cors => _s.Cors;
+    /// <summary>"fair: reports 2 days late, about 80% of problems".</summary>
+    public string CorSummary(CorState cor) => _s.CorSummary(cor);
+    /// <summary>Lag and report odds for a COR's current quality (rules cor.qualities).</summary>
+    public CorQualityData CorQuality(CorState cor) => _s.CorQuality(cor);
+    /// <summary>False for a VendorFailure record the office has not been told about (it waits for a COR or unit report,
+    /// which is a CorReport record). The morning board already leaves those out; record lists shown to the player
+    /// should too. Every other record is known when written.</summary>
+    public bool Known(CauseRecord record)
+        => record.Kind != RecordKind.VendorFailure || _s.Arrangements.FirstOrDefault(a => a.Id == record.Subject) is not { } a || _s.Observed(a);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;
@@ -87,4 +101,11 @@ public sealed class SessionView
     /// <summary>What establishing a BPA would take: hard stops, shop hours, and in EarliestStartMin/Max the first day calls
     /// could be placed (ignoring the queue ahead). Changes nothing.</summary>
     public ActionPreview PreviewEstablish(EstablishBpaAction bpa) => _s.BuildEstablishPreview(bpa);
+
+    /// <summary>What establishing an IDIQ would take (M3-06): hard stops, shop hours, the minimum guarantee it obligates
+    /// (in TotalCents) and in EarliestStartMin/Max the first day orders could be placed. Changes nothing.</summary>
+    public ActionPreview PreviewEstablish(EstablishIdiqAction idiq) => _s.BuildEstablishIdiqPreview(idiq);
+
+    /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
+    public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
 }

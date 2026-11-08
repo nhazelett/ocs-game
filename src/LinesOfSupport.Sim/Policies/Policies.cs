@@ -95,7 +95,7 @@ public sealed class TextbookPolicy : IPolicy
             actions.Add(new ResolveCommitmentAction
             {
                 Commitment = c.Id, Choice = c.Kind == CommitmentKind.Handshake ? "ratify" : "deny",
-                FundingLine = v.Funding.Where(f => f.UsableOn(v.Day) && f.RemainingCents > 0).Select(f => f.Id).FirstOrDefault(),
+                FundingLine = v.Funding.Where(f => f.UsableOn(v.Day) && f.RemainingCents > 0 && f.Pays(c.CapabilityId)).Select(f => f.Id).FirstOrDefault(),
             });
         if (v.Day == 1)
             foreach (var island in v.Scenario.Sites.Select(s => s.Island).Distinct())
@@ -128,7 +128,7 @@ public sealed class TextbookPolicy : IPolicy
                     var total = sized * turnkey.Offer.UnitPriceCents * card.DurationDays;
                     total += (long)(total * turnkey.Offer.MobilizationFraction);
                     var instrument = total > v.Rules.Thresholds.SimplifiedAcquisitionCents || card.RequestedStartDay - v.Day < 20 ? "uca" : "purchaseOrder";
-                    var line = Helpers.Funding(v, instrument == "uca" ? 1 : total);
+                    var line = Helpers.Funding(v, instrument == "uca" ? 1 : total, card.CapabilityId);
                     if (line is not null && Helpers.HasCapacity(v, turnkey.Vendor, card.CapabilityId, sized))
                         actions.Add(new AwardAction
                         {
@@ -179,7 +179,7 @@ public sealed class TextbookPolicy : IPolicy
             // 5. Definitize the moment the proposal is in.
             if (enduring?.Uca is { ProposalReceived: true, Definitized: false, DefinitizationInWork: false } && _done.Add($"def:{enduringId}"))
             {
-                var line = Helpers.Funding(v, enduring.Uca.QuotedTotalCents - enduring.ObligatedCents);
+                var line = Helpers.Funding(v, enduring.Uca.QuotedTotalCents - enduring.ObligatedCents, enduring.CapabilityId);
                 if (line is not null) actions.Add(new DefinitizeAction { Arrangement = enduringId, FundingLine = line.Id });
             }
         }
@@ -205,7 +205,7 @@ public sealed class TextbookPolicy : IPolicy
             var days = siteEnd - start + 1;
             var qty = Math.Max(a.QuantityMilli / 1000, v.PeakDemandUnits(a.SiteId, a.CapabilityId, start, siteEnd));
             var total = qty * offer.UnitPriceCents * days;   // incumbent: no second mobilization
-            var line = Helpers.Funding(v, total);
+            var line = Helpers.Funding(v, total, a.CapabilityId);
             if (line is null) continue;   // try again tomorrow; new money may arrive
             var instrument = total <= v.Rules.Thresholds.SimplifiedAcquisitionCents ? "purchaseOrder" : "uca";
             _done.Add(key);
@@ -255,12 +255,34 @@ public sealed class TextbookPolicy : IPolicy
             var need = Math.Max(1, v.PeakDemandUnits(cs.SiteId, cs.CapabilityId, v.Day, v.LastDay));
             actions.Add(new CoordinateAction { Id = $"t-coord-{cs.SiteId}-{cs.CapabilityId}-{v.Day}", Site = cs.SiteId, Capability = cs.CapabilityId, Quantity = need, FromSite = hub.Id });
         }
+
+        // 9. CORs (M3-04): every contract with written terms gets the best COR on the roster; when a COR rotates home
+        //    and the relief is worse than someone else on the roster, re-designate.
+        if (v.CorModeled)
+        {
+            var best = Helpers.BestCor(v);
+            for (var i = 0; i < actions.Count; i++)
+                if (actions[i] is AwardAction { Cor: null } aw && v.Rules.Instruments.TryGetValue(aw.Instrument, out var inst) && inst.WrittenTerms)
+                    actions[i] = aw with { Cor = best.Id };
+            foreach (var a in v.Arrangements.Where(a => a.CorId is not null && a.CreatedDay > 0
+                                                        && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended))
+            {
+                var cur = v.Cors.First(c => c.Id == a.CorId);
+                if (cur.Id != best.Id && Helpers.CorRank(v, best) < Helpers.CorRank(v, cur) && _done.Add($"cor:{a.Id}:{best.Id}"))
+                    actions.Add(new DesignateCorAction { Arrangement = a.Id, Cor = best.Id });
+            }
+        }
         return actions;
     }
 }
 
 internal static class Helpers
 {
+    /// <summary>Lower is better: report lag first, then the share of problems reported (M3-04).</summary>
+    public static int CorRank(SessionView v, CorState c) { var q = v.CorQuality(c); return q.LagDays * 1000 + (1000 - q.ReportPermille); }
+
+    public static CorState BestCor(SessionView v) => v.Cors.OrderBy(c => CorRank(v, c)).ThenBy(c => c.Id, StringComparer.Ordinal).First();
+
     public static bool CardCovered(SessionView v, string cardId)
         => v.Arrangements.Any(a => a.CardId == cardId && a.Status is not ArrangementStatus.Declined) || v.Work.Any(w => w.CompletedDay is null && w.Label.Contains(cardId, StringComparison.Ordinal));
 
@@ -274,8 +296,10 @@ internal static class Helpers
         return committed + qty <= (long)offer.CapacityPerDay;
     }
 
-    public static FundingLineState? Funding(SessionView v, long cents)
-        => v.Funding.Where(f => f.UsableOn(v.Day) && f.RemainingCents >= cents).OrderBy(f => f.ExpiresDay).FirstOrDefault();
+    /// <summary>The usable line with the money that expires first and is certified for the capability (M3-03).</summary>
+    public static FundingLineState? Funding(SessionView v, long cents, string? capability = null)
+        => v.Funding.Where(f => f.UsableOn(v.Day) && f.RemainingCents >= cents && (capability is null || f.Pays(capability)))
+                    .OrderBy(f => f.ExpiresDay).FirstOrDefault();
 
     /// <summary>
     /// Fastest legal route for a buy: BPA call if a known BPA covers it, then cash or card under the micro-purchase
@@ -295,7 +319,7 @@ internal static class Helpers
             total += (long)(total * offer.MobilizationFraction);
             var bpa = v.Vehicles.FirstOrDefault(b => b.Kind == "bpa" && b.VisibleOnDay1 && b.Vendor == vendor.Id && v.Day <= b.OrderingPeriodEndDay
                                                              && lines.All(b.ScopeTags.Contains) && (b.CallLimitCents is null || total <= b.CallLimitCents));
-            var line = Funding(v, total);
+            var line = Funding(v, total, capability);
             if (bpa is not null && line is not null)
                 return new AwardAction { Instrument = "bpaCall", Vendor = vendor.Id, Vehicle = bpa.Id, Site = siteId, Capability = capability, Quantity = qty, DurationDays = days, FundingLine = line.Id };
             if (total <= v.Rules.Thresholds.MicroPurchaseCents)

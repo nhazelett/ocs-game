@@ -33,6 +33,7 @@ public sealed partial class Session
         RecordKind.PaymentError => (BoardCategory.Failure, BoardSeverity.Warning),
         RecordKind.Withdrawal => (BoardCategory.VendorNotice, BoardSeverity.Alert),
         RecordKind.Declined => (BoardCategory.VendorNotice, BoardSeverity.Warning),
+        RecordKind.VendorCapacity => (BoardCategory.Failure, BoardSeverity.Warning),
         RecordKind.UcaProposal => (BoardCategory.VendorNotice, BoardSeverity.Info),
         RecordKind.UcaResumed => (BoardCategory.VendorNotice, BoardSeverity.Info),
         RecordKind.UcaOverdue => (BoardCategory.HigherHq, BoardSeverity.Warning),
@@ -42,6 +43,8 @@ public sealed partial class Session
         RecordKind.Restored => (BoardCategory.Delivery, BoardSeverity.Info),
         RecordKind.Inbox => (BoardCategory.Request, BoardSeverity.Info),
         RecordKind.Event => (BoardCategory.Event, BoardSeverity.Warning),
+        RecordKind.Funding => (BoardCategory.Report, BoardSeverity.Warning),
+        RecordKind.CorReport => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.WorkDone or RecordKind.Knowledge or RecordKind.Definitized or RecordKind.Obligation or RecordKind.Cash
             => (BoardCategory.Report, BoardSeverity.Info),
         _ => null, // Action and Rejected are the player's own daytime acts, already seen when made.
@@ -50,6 +53,7 @@ public sealed partial class Session
     private (BoardLinkKind, string) Link(string subject)
     {
         if (subject == "cash") return (BoardLinkKind.Cash, subject);
+        if (subject == "funding" || _funding.Any(f => f.Id == subject)) return (BoardLinkKind.Funding, subject);
         if (subject.StartsWith("survey ", StringComparison.Ordinal)) return (BoardLinkKind.Island, subject[7..]);
         if (_arrangements.Any(a => a.Id == subject)) return (BoardLinkKind.Arrangement, subject);
         if (_cards.Any(c => c.Id == subject)) return (BoardLinkKind.Card, subject);
@@ -68,6 +72,9 @@ public sealed partial class Session
         {
             var r = _records[i];
             if (Classify(r.Kind) is not var (cat, sev)) continue;
+            // A failure on a contract watched through COR reports is not news until the report arrives (M3-04).
+            if (r.Kind == RecordKind.VendorFailure && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } fa && !Observed(fa)) continue;
+            if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
             var (lk, lid) = Link(r.Subject);
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy));
         }
@@ -164,6 +171,8 @@ public sealed partial class Session
             "gpc" when _gpcAvailableDay is null || Day < _gpcAvailableDay => "no government purchase card accounts yet",
             "bpaCall" when !_vehicles.Any(v => v.Kind == "bpa" && v.VisibleOnDay1 && Day <= v.OrderingPeriodEndDay)
                 => "no BPA known to this shop is open for ordering",
+            "idiqOrder" when !_vehicles.Any(v => v.Kind == "idiq" && v.VisibleOnDay1 && Day <= v.OrderingPeriodEndDay)
+                => "no IDIQ known to this shop is open for ordering",
             _ => null,
         };
     }
@@ -209,13 +218,15 @@ public sealed partial class Session
         var vehicles = _vehicles
             .Where(v => v.VisibleOnDay1 && vendors.Any(o => o.Id == v.Vendor))
             .Select(v => new VehicleOption(v.Id, v.Kind, v.Vendor, v.ScopeTags, v.CallLimitCents, v.OrderingPeriodEndDay,
-                                           v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay))
+                                           v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay,
+                                           Idiq(v.Id)?.CeilingCents, Idiq(v.Id)?.OrderedCents, Idiq(v.Id)?.GuaranteeUnorderedCents))
             .ToList();
 
         var funding = _funding.Select(f =>
         {
             var type = Scenario.FundingLines.FirstOrDefault(d => d.Id == f.Id)?.Type ?? "";
-            return new FundingOption(f.Id, type, f.RemainingCents, f.AvailableDay, f.ExpiresDay, f.UsableOn(Day));
+            return new FundingOption(f.Id, type, f.RemainingCents, f.AvailableDay, f.ExpiresDay, f.UsableOn(Day),
+                                     f.PlannedAvailableDay, f.Capabilities, f.Pays(capId));
         }).ToList();
 
         return new ActionEditorView(Day, siteId, capId, cap.Label, cap.Unit, card?.Id, selected,
@@ -270,6 +281,14 @@ public sealed partial class Session
         if (!inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays)
             gaps.Add($"No written terms on a {a.DurationDays}-day service: execution-confusion events can occur while it runs.");
         if (a.Instrument == "bpaCall") gaps.Add("A BPA is not binding: the vendor may decline the call.");
+        if (a.Instrument == "idiqOrder")
+        {
+            var free = Math.Max(0, Fixed.Milli(offer.CapacityPerDay) - CommittedMilli(vendor.Id, capId, startMin, Math.Min(end, LastDay)));
+            if (a.Quantity * 1000 > free)
+                gaps.Add($"{vendor.Name} has about {free / 1000} {Rate(cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
+            if (Idiq(a.Vehicle) is { GuaranteeUnorderedCents: > 0 } q)
+                gaps.Add($"{Money(Math.Min(chk.TotalCents, Math.Max(0, q.GuaranteeUnorderedCents - PendingOrderCents(q.VehicleId))))} of this order comes from {q.VehicleId}'s minimum guarantee, already obligated.");
+        }
         if (a.Instrument == "uca")
         {
             var before = Fixed.Permille(Rules.Uca.ObligationCapBeforeProposal) / 10;
@@ -280,6 +299,7 @@ public sealed partial class Session
             gaps.Add($"Supplied from {IslandData(vendor.Island).Name}: deliveries depend on the transport links to {IslandData(site.Island).Name}.");
         else if (StockIsland(vendor, capId) is var stock && stock != site.Island && TierOn(site.Island, Day) == "surveyed")
             gaps.Add($"{vendor.Name} stocks this from {IslandData(stock).Name} (survey): deliveries depend on the transport links to {IslandData(site.Island).Name}.");
+        if (CorGap(a, inst) is { } corGap) gaps.Add(corGap);
         if (inst.RequiresSystemOrManual && Day < _systemOnlineDay)
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 

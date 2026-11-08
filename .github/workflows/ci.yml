@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -43,6 +44,7 @@ jobs:
       - name: Validate scenario and rules files against the schemas
         run: |
           pip install --quiet jsonschema
+          python3 -m unittest discover -s tools/validate -p test_validate.py
           python3 tools/validate/validate.py
 
   provenance:
@@ -109,6 +111,14 @@ jobs:
           grep -Fq 'LEDGER_SMOKE_PASS:' "$RUNNER_TEMP/godot-ledger.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/ConfidenceSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-confidence.log"
           grep -Fq 'CONFIDENCE_SMOKE_PASS:' "$RUNNER_TEMP/godot-confidence.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/PerformanceSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-performance.log"
+          grep -Fq 'PERFORMANCE_SMOKE_PASS:' "$RUNNER_TEMP/godot-performance.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/DisruptionSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-disruption.log"
+          grep -Fq 'DISRUPTION_SMOKE_PASS:' "$RUNNER_TEMP/godot-disruption.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/SaveSmokeTest.tscn -- --save-path "$RUNNER_TEMP/save-restart/autosave.json" --write-only 2>&1 | tee "$RUNNER_TEMP/godot-save-write.log"
+          grep -Fq 'SAVE_WRITTEN:' "$RUNNER_TEMP/godot-save-write.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/SaveSmokeTest.tscn -- --save-path "$RUNNER_TEMP/save-restart/autosave.json" --resume-only 2>&1 | tee "$RUNNER_TEMP/godot-save.log"
+          grep -Fq 'SAVE_SMOKE_PASS:' "$RUNNER_TEMP/godot-save.log"
           python3 -m py_compile tools/bpy/generate_kit.py
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"
@@ -118,7 +128,9 @@ jobs:
 
   export-windows:
     name: export-windows
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    permissions:
+      contents: write
     needs: [test, scenarios, provenance, godot-shell]
     runs-on: windows-latest
     timeout-minutes: 20
@@ -146,8 +158,38 @@ jobs:
       - name: Export, verify packaged scenarios and zip
         shell: pwsh
         run: ./tools/export/windows.ps1 -Godot $env:GODOT_BIN -OutputDirectory "$env:RUNNER_TEMP/windows-package"
+      - name: Name the verified package
+        id: package
+        shell: pwsh
+        env:
+          BUILD_REF: ${{ github.ref }}
+          BUILD_REF_NAME: ${{ github.ref_name }}
+          BUILD_SHA: ${{ github.sha }}
+        run: |
+          $label = if ($env:BUILD_REF.StartsWith('refs/tags/v')) { $env:BUILD_REF_NAME } else { $env:BUILD_SHA.Substring(0, 7) }
+          $name = "LinesOfSupport-$label-windows-x86_64"
+          $archive = Join-Path $env:RUNNER_TEMP "$name.zip"
+          Move-Item -LiteralPath "$env:RUNNER_TEMP/windows-package.zip" -Destination $archive
+          "name=$name" >> $env:GITHUB_OUTPUT
+          "path=$archive" >> $env:GITHUB_OUTPUT
       - uses: actions/upload-artifact@v4
         with:
-          name: LinesOfSupport-${{ github.ref_name }}-windows-x86_64
-          path: ${{ runner.temp }}/windows-package.zip
+          name: ${{ steps.package.outputs.name }}
+          path: ${{ steps.package.outputs.path }}
           if-no-files-found: error
+      - name: Attach the verified zip to the tag release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          ARCHIVE_PATH: ${{ steps.package.outputs.path }}
+        run: |
+          gh release view $env:RELEASE_TAG --repo $env:GH_REPO
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $env:RELEASE_TAG $env:ARCHIVE_PATH --repo $env:GH_REPO --clobber
+          } else {
+            gh release create $env:RELEASE_TAG $env:ARCHIVE_PATH --repo $env:GH_REPO --verify-tag --title $env:RELEASE_TAG --generate-notes
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Release zip upload failed.' }

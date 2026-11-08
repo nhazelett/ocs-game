@@ -21,11 +21,13 @@ public partial class GameShell : Control
         GetNode<Button>("%Continue").Pressed += OnContinue;
         BuildMorningDesk();
         BuildCommitmentDesk();
+        BuildPerformanceDesk();
         BuildActionDesk();
         BuildDebriefDesk();
         BuildOtherActions();
         BuildBpaDesk();
         BuildPrepDesk();
+        BuildSaveControls();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -62,6 +64,7 @@ public partial class GameShell : Control
     private void LoadScenario(long index)
     {
         ResetDeskSelection();
+        saveError = null;
         session.Clear();
         ShowPrepChoices();
         Map.ShowScenario(null);
@@ -74,9 +77,7 @@ public partial class GameShell : Control
             GetNode<Label>("%BoardCaption").Text = data.Title + " · schematic layout, not geographic positions";
             session.LoadScenario(scenarios[(int)index].ScenarioPath);
             ShowPrepChoices();
-            var directory = Path.Combine(Path.GetDirectoryName(scenarios[(int)index].ScenarioPath)!, "golden");
-            replays = Directory.Exists(directory) ? Directory.GetFiles(directory, "approach*.json").Order(StringComparer.Ordinal).ToArray() : [];
-            foreach (var replay in replays) GetNode<OptionButton>("%ReplayPicker").AddItem(Path.GetFileNameWithoutExtension(replay).Replace('-', ' '));
+            SetReplays(FindReplays(scenarios[(int)index].ScenarioPath));
             RefreshDisplay("Choose pre-deployment preparations, then Deploy. Replay uses its own recorded preparations.");
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or
@@ -89,7 +90,7 @@ public partial class GameShell : Control
 
     private void OnNextDay()
     {
-        var advanced = session.RequestNextDay();
+        var advanced = AdvanceAndAutosave();
         RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.");
     }
 
@@ -114,7 +115,7 @@ public partial class GameShell : Control
         var view = session.View;
         var strip = view?.TopStrip();
         var board = view?.MorningBoard();
-        GetNode<Label>("%BuildStatus").Text = (view is null ? "" : session.IsReplay ? "Replay · " : "Your decisions · ") + status;
+        GetNode<Label>("%BuildStatus").Text = (view is null ? "" : session.IsReplay ? "Replay · " : "Your decisions · ") + status + (saveError is null ? "" : $"\nSave failed: {saveError}");
         GetNode<Label>("%DayCounter").Text = strip is null ? "No scenario" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Day {strip.Day} (next)";
         GetNode<Button>("%NextDay").Disabled = view is null || view.Finished;
         GetNode<Button>("%Continue").Disabled = view is null || view.Finished;
@@ -148,9 +149,11 @@ public partial class GameShell : Control
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
         RefreshMorningDesk(view, board);
         RefreshCommitments(view);
+        RefreshPerformance(view);
         RefreshActionDesk(view);
         RefreshBpaDesk(view);
         RefreshDebrief(view);
         RefreshPrepVisibility();
+        RefreshSaveControls();
     }
 }

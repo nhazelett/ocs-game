@@ -14,6 +14,7 @@ public static class HarnessApp
           run <scenario> [--seed N] [--policy do-nothing|greedy|textbook] [--log <input-log.json>]
           validate <scenario-dir>
           batch <scenario> [--seeds 200] [--policies do-nothing,greedy,textbook] [--json]
+          crash-run <scenario,scenario,...> [--games 1000] [--first-seed 0] [--json]
         <scenario> is a directory, scenario.json path, or folder name under scenarios/.
         --log replays the log's seed and actions; do not combine it with --seed or --policy.
         Exit codes: 0 success, 1 invalid data or file error, 2 invalid command/arguments.
@@ -67,6 +68,22 @@ public static class HarnessApp
                     }
                     output.Write(SessionReport.ToText(session, title));
                     break;
+                case "crash-run":
+                    RequireOptions(options, ["--games", "--first-seed", "--json"]);
+                    var games = IntegerOption(options, "--games", 1000, positive: true);
+                    var firstSeed = IntegerOption(options, "--first-seed", 0, positive: false);
+                    var scenarioNames = args[1].Split(',', StringSplitOptions.TrimEntries);
+                    if (scenarioNames.Any(string.IsNullOrWhiteSpace) || scenarioNames.Distinct(StringComparer.Ordinal).Count() != scenarioNames.Length)
+                        throw new UsageException("crash-run requires distinct, non-empty scenario names or paths separated by commas.");
+                    if ((long)scenarioNames.Length * Policies.Count > games)
+                        throw new UsageException("--games must cover every scenario/policy pair at least once.");
+                    var crashScenarios = scenarioNames.Select(ScenarioLoader.Load).ToArray();
+                    if (crashScenarios.Select(x => x.Id).Distinct(StringComparer.Ordinal).Count() != crashScenarios.Length)
+                        throw new UsageException("crash-run scenarios must have distinct scenario IDs.");
+                    var crash = CrashRunReport.Create(crashScenarios, games, firstSeed, PolicyCatalog.Create);
+                    if (options.ContainsKey("--json")) output.WriteLine(crash.ToJson());
+                    else crash.WriteText(output);
+                    return crash.Failed == 0 ? 0 : 1;
                 case "batch":
                     RequireOptions(options, ["--seeds", "--policies", "--json"]);
                     var count = IntegerOption(options, "--seeds", 200, positive: true);
