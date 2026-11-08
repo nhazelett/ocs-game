@@ -432,7 +432,7 @@ M2 is accented because it is the first time the game is judged as a game; the tw
 
 **M5, Release.** Windows installer, GitHub release, itch.io page as public beta; Steam page only when the pre-conditions in section 10 are met. Done when: a stranger downloads it, installs it offline, plays it, and the crash and feedback channel works.
 
-**Rule for every milestone:** the Harness balance run and the golden-file tests pass before a milestone is declared; a milestone is never declared on a feature list alone.
+**Rule for every milestone:** the Harness balance run and the golden-file tests pass before a milestone is declared; a milestone is never declared on a feature list alone. Each milestone closes with a review in `docs/reviews/` (format `docs/REVIEW.md`), including the objection health check.
 
 ## 12. Collaboration plan
 

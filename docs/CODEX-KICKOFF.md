@@ -20,6 +20,8 @@ You are Codex, the implementation agent on this project. You do not share a conv
 
 ## Working rules
 
+- Disagreement follows `docs/DISSENT.md`: objections rest on an artifact, each agent blocks only in its own lane (Codex: feasibility, build and test truth; Fable: design intent, scope, priority), one counter then the lane owner decides, disagree and commit. Never escalate a technical dispute to Nick.
+
 - Pull `main` before starting. Work on `codex/<topic>` branches. One pull request per backlog item, small enough to read. Use the PR template.
 - Every work session ends with a handoff note at `docs/handoffs/YYYY-MM-DD-codex-<topic>.md` following `TEMPLATE.md`. Fill the "Expected look of this build and why" line every time, even when the answer is "no visible change."
 - Update the status line at the top of `backlog/BACKLOG.md` and your items' Status column in the same PR.

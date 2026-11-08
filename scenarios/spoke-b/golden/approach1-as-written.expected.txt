@@ -1,0 +1,75 @@
+Spoke B power / approach1-as-written
+Approach 1 (SPEC 5): buy exactly what the requirement says. BPA call for six 60 kW generators, nothing else. No prep, no survey.
+Scenario spoke-b, rules 2025-10, seed 1, 30 days.
+
+TIMELINE
+Before day 1
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 1
+  ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
+Day 2
+  DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
+Day 7
+  START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
+Day 10
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 11
+  EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation; ratification work lands on the shop.
+  COMPLY    Ratification package for uc1 completed.
+Day 12
+  START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+Day 13
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+Day 15
+  SHORT     Fuel at Spoke B degraded to 88%: fuel on hand ran out.
+  SHORT     Power at Spoke B degraded to 88%: fuel at 88%.
+Day 16
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 20
+  OK        Fuel at Spoke B restored to 100%.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3
+                          123456789012345678901234567890
+Hub Power                 ..............................
+Hub Fuel                  ..............................
+Spoke B Power                   ...XXX..7XXXX77777777777
+Spoke B Fuel                    ...XXX..7XXXX...........
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 83% (sortie generation 82%, throughput 82%, endurance 100%, resilience 56%)
+  Obligated $49,680; incurred $119,907; incurred but not obligated $100,035
+  Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 0
+  Surveys 0; shop hours worked 30; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  spokeBSite.power: 7 day(s) down, 12 degraded, lowest 0%
+  spokeBSite.fuel: 7 day(s) down, 1 degraded, lowest 0%
+
+GAPS AND WHY (each traced back through its causes)
+  Day 10: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 10: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 10: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 15: Fuel at Spoke B degraded to 88%: fuel on hand ran out.
+  Day 15: Power at Spoke B degraded to 88%: fuel at 88%.
+      <- day 15: Fuel at Spoke B degraded to 88%: fuel on hand ran out.
+  Day 16: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 16: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 16: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 20: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+
+PASS CRITERIA
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 7)
+  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
+  [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
+  [not met] Mission output at least 90% (mission.output = 0.825)
+
+State hash 8c125c854ee9425728b7f1d56ab32b5928f2ad44f7dc7a189c8c99aeb4c946c5
