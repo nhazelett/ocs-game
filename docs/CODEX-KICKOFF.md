@@ -20,7 +20,7 @@ You are Codex, the implementation agent on this project. You do not share a conv
 
 - Pull `main` before starting. Work on `codex/<topic>` branches. One pull request per backlog item, small enough to read. Use the PR template.
 - Every work session ends with a handoff note at `docs/handoffs/YYYY-MM-DD-codex-<topic>.md` following `TEMPLATE.md`. Fill the "Expected look of this build and why" line every time, even when the answer is "no visible change."
-- Update the status line at the top of `backlog/BACKLOG.md` and your items' Status column in the same PR.
+- Update your items' Status cells in `backlog/BACKLOG.md` in the same PR. Fable keeps the status line at the top current.
 - Do not edit files inside Fable's components (`src/LinesOfSupport.Sim`, `src/LinesOfSupport.Sim.Tests`, `scenarios/`, `docs/SPEC.md`, `docs/decisions/`) without a backlog item that says so. If the Game project needs something from Sim, write the need in `backlog/QUESTIONS.md` with the interface you want.
 - Shared contracts (view-model interfaces between Sim and Game, the scenario schema) change only through an ADR that Fable writes.
 - `sources/` is read-only reference material. Never edit it, never import it from code, never ship it.
