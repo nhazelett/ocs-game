@@ -1,0 +1,138 @@
+Spoke B power (90 days) / policy do-nothing
+Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
+
+TIMELINE
+Before day 1
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 7
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+Day 8
+  EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation; ratification work lands on the shop.
+  COMPLY    Ratification package for uc1 completed.
+Day 9
+  START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+Day 10
+  CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 12
+  SHORT     Fuel at Spoke B down to 16%: fuel on hand ran out.
+Day 13
+  OK        Fuel at Spoke B restored to 100%.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+Day 16
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+Day 17
+  SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; surface link closed.
+Day 20
+  OK        Fuel at Spoke B restored to 100%.
+Day 34
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 35
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 37
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 38
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 40
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 41
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  OK        Fuel at Spoke B restored to 100%.
+Day 43
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 45
+  OK        Fuel at Spoke B restored to 100%.
+Day 55
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 56
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 58
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 59
+  OK        Fuel at Spoke B restored to 100%.
+Day 64
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 65
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 66
+  OK        Fuel at Spoke B restored to 100%.
+Day 67
+  CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 71
+  SHORT     Fuel at Spoke B degraded to 50%: fuel on hand ran out.
+Day 72
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 73
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  OK        Fuel at Spoke B restored to 100%.
+Day 74
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 75
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 76
+  OK        Fuel at Spoke B restored to 100%.
+Day 77
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 78
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 79
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 80
+  OK        Fuel at Spoke B restored to 100%.
+Day 82
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 83
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  OK        Fuel at Spoke B restored to 100%.
+Day 85
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 87
+  OK        Fuel at Spoke B restored to 100%.
+Day 90
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
+                          123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+Hub Power                 ..........................................................................................
+Hub Fuel                  ..........................................................................................
+Spoke B Power                   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Spoke B Fuel                    .....1....2XX....................X..XX.............X......X.....5X..X..XX..X..XX....
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 64% (sortie generation 52%, throughput 52%, endurance 100%, resilience 52%)
+  Obligated $0; incurred $431,730; incurred but not obligated $431,730
+  Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 0
+  Surveys 0; shop hours worked 16; payment errors 0; execution-confusion days 2; vendor failures 15; declined BPA calls 0
+  spokeBSite.power: 84 day(s) down, 0 degraded, lowest 0%
+  spokeBSite.fuel: 16 day(s) down, 1 degraded, lowest 0%
+
+GAPS AND WHY (each traced back through its causes)
+  Day 7: Power at Spoke B down to 0%: no arrangement supplies power.
+  Day 12: Fuel at Spoke B down to 16%: fuel on hand ran out.
+  Day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; surface link closed.
+      <- day 16: Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  Day 40: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 43: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 58: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 65: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 71: Fuel at Spoke B degraded to 50%: fuel on hand ran out.
+  Day 72: Fuel at Spoke B down to 0%: fuel on hand ran out.
+      <- day 72: uc1 missed today's delivery (no on-site storage line).
+          <- day 8: Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  Day 75: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 78: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 82: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 85: Fuel at Spoke B down to 0%: fuel on hand ran out.
+
+PASS CRITERIA
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 84)
+  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 16)
+  [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
+  [not met] Mission output at least 90% (mission.output = 0.637)
+
+State hash e835c0066bd012c068bd0857587baec07cdc797bd888c0258a2fffd6822c72af
