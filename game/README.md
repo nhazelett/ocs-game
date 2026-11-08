@@ -88,3 +88,12 @@ Preview reruns on every change and is read-only: red hard stops block Award; amb
 ## Other desk actions (M2-06)
 
 Board offers surveys for unsurveyed islands, showing their knowledge tier and pending state. Select a capability tile to coordinate a chosen quantity per day from another site; units come from its action view. Ledger rows offer Terminate, disabled while already queued. UCAs show proposal/definitization state and offer a funding picker plus Definitize once the proposal has arrived. All actions go to Sim and show ActionResult; no lag, capacity or financial consequence is computed here. OtherActionsSmokeTest compares all four commands to direct Sim actions on real fixtures.
+
+
+## Save, load and resume (M3-08)
+
+The scenario area has **Continue saved game**, **Load…** and **Save**. Deploy creates the first autosave; Next day and Continue write a new autosave each morning. Save also records decisions already made today, without advancing time. The file is `autosave.json` in Godot's user data directory (`user://`); the Save tooltip and success message show the full path. Writes use a temporary file in the same directory and replace the previous autosave only after the new file is written.
+
+Continue saved game resumes that autosave. Load opens a filesystem chooser for any saved input-log JSON and selects the matching installed scenario. Both use `Replay.Resume` with the log's seed, preparations and actions. Resuming a saved authored replay gives control to the player: unplayed future scripted actions are not saved or resumed. Finished saves reopen their completed game/debrief. Invalid JSON, unavailable scenarios and incompatible rules give a status message and preserve the open game; an autosave error leaves the game playable and reports the failed write.
+
+`SaveSmokeTest.tscn` tests the real buttons, morning-10 approach-1 state, cash and Spoke B power tile, same-day decisions, both autosave advance controls, loading another scenario's chosen file, finished games, invalid saves and failed writes. CI runs it in two separate Godot processes: `-- --save-path <file> --write-only`, then `-- --save-path <file> --resume-only`. With no arguments it performs both phases using temporary files in one process.

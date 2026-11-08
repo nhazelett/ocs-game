@@ -54,6 +54,7 @@ public partial class GameShell
         UpdatePrepCheck();
         if (StartGameButton.Disabled) return;
         session.StartScenario(ChosenPrep);
+        TryAutosave();
         RefreshDisplay("Seed 1 · preparations applied. Next day plays day 1.");
     }
 

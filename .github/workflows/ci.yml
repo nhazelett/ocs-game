@@ -115,6 +115,10 @@ jobs:
           grep -Fq 'PERFORMANCE_SMOKE_PASS:' "$RUNNER_TEMP/godot-performance.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/DisruptionSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-disruption.log"
           grep -Fq 'DISRUPTION_SMOKE_PASS:' "$RUNNER_TEMP/godot-disruption.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/SaveSmokeTest.tscn -- --save-path "$RUNNER_TEMP/save-restart/autosave.json" --write-only 2>&1 | tee "$RUNNER_TEMP/godot-save-write.log"
+          grep -Fq 'SAVE_WRITTEN:' "$RUNNER_TEMP/godot-save-write.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/SaveSmokeTest.tscn -- --save-path "$RUNNER_TEMP/save-restart/autosave.json" --resume-only 2>&1 | tee "$RUNNER_TEMP/godot-save.log"
+          grep -Fq 'SAVE_SMOKE_PASS:' "$RUNNER_TEMP/godot-save.log"
           python3 -m py_compile tools/bpy/generate_kit.py
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"

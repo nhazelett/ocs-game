@@ -141,7 +141,7 @@ public partial class GameShell
     {
         var count = 0;
         var reason = "seven-day limit";
-        while (count < 7 && session.RequestNextDay())
+        while (count < 7 && AdvanceAndAutosave())
         {
             count++;
             var board = session.View!.MorningBoard();

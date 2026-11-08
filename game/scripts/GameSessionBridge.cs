@@ -24,6 +24,17 @@ internal sealed class GameSessionBridge
         return result;
     }
     internal string? StateHash => session?.StateHash();
+    internal InputLog CreateSave() => session?.ToSave() ?? throw new InvalidOperationException("Deploy before saving.");
+
+    internal void ResumeScenario(string path, InputLog save)
+    {
+        // Validate and replay before replacing the current game: a refused save leaves it intact.
+        var loaded = ScenarioBundle.Load(path);
+        var resumed = Replay.Resume(loaded, save);
+        bundle = loaded;
+        session = resumed;
+        log = null;
+    }
     internal int CompletedDay => session is null ? 0 : (int)session.Metrics["day"];
 
     internal void Clear() { bundle = null; session = null; log = null; }
