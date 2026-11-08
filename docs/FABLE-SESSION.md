@@ -1,6 +1,6 @@
 # Fable session workflow
 
-Every Fable session follows this, whether Nick started it in chat or the two-hour schedule did. Scheduled runs start with no memory of earlier conversations: this file, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: keep moving unless truly stalled on a decision only he can make.
+Every Fable session follows this, whether Nick started it in chat or the two-hour schedule did. Scheduled runs start with no memory of earlier conversations: this file, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: keep moving unless truly stalled on a decision only he can make. Codex runs on its own two-hour schedule, about an hour offset from Fable, following `docs/CODEX-SESSION.md`, so each Fable merge pass usually finds a fresh batch of Codex PRs.
 
 ## 1. Start
 1. Pull `main`. Read the status line in `backlog/BACKLOG.md`, the latest two handoff notes in `docs/handoffs/`, and `backlog/QUESTIONS.md`.
