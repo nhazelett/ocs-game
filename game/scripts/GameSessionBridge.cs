@@ -11,6 +11,15 @@ internal sealed class GameSessionBridge
     private Session? session;
     private InputLog? log;
     internal SessionView? View => session?.View;
+    internal bool IsReplay => log is not null;
+    internal ActionResult Apply(PlayerAction action)
+    {
+        if (session is null) return ActionResult.Stop("Load a scenario before making a decision.");
+        var result = session.Apply(action);
+        // A successful player command takes control from the authored input source; the Sim state is retained.
+        if (result.Accepted) log = null;
+        return result;
+    }
     internal string? StateHash => session?.StateHash();
     internal int CompletedDay => session is null ? 0 : (int)session.Metrics["day"];
 

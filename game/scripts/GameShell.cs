@@ -20,6 +20,7 @@ public partial class GameShell : Control
         GetNode<Button>("%ReplayButton").Pressed += OnReplay;
         GetNode<Button>("%Continue").Pressed += OnContinue;
         BuildMorningDesk();
+        BuildCommitmentDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -106,7 +107,7 @@ public partial class GameShell : Control
         var view = session.View;
         var strip = view?.TopStrip();
         var board = view?.MorningBoard();
-        GetNode<Label>("%BuildStatus").Text = status;
+        GetNode<Label>("%BuildStatus").Text = (view is null ? "" : session.IsReplay ? "Replay · " : "Your decisions · ") + status;
         GetNode<Label>("%DayCounter").Text = strip is null ? "No scenario" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Day {strip.Day} (next)";
         GetNode<Button>("%NextDay").Disabled = view is null || view.Finished;
         GetNode<Button>("%Continue").Disabled = view is null || view.Finished;
@@ -138,5 +139,6 @@ public partial class GameShell : Control
         GetNode<OptionButton>("%ReplayPicker").Disabled = replays.Length == 0;
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
         RefreshMorningDesk(view, board);
+        RefreshCommitments(view);
     }
 }
