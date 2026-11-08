@@ -117,6 +117,16 @@ public sealed class SessionView
     /// <summary>The external support contract the OCS seat can request, or null when the scenario has none.</summary>
     public ExternalSupportData? ExternalSupport => _s.Scenario.Actors.ExternalSupport;
 
+    /// <summary>What an ACSA order would take (M3-06): hard stops, soft gaps, reimbursable cost and the first day of support
+    /// at the best and worst roll. Changes nothing and draws no random numbers.</summary>
+    public ActionPreview PreviewAcsa(AcsaOrderAction order) => _s.BuildAcsaPreview(order);
+
+    /// <summary>The partner force with an ACSA, or null when none is present.</summary>
+    public AcsaPartnerData? AcsaPartner => _s.Scenario.Actors.AcsaPartner is { Present: true } p ? p : null;
+
+    /// <summary>Capabilities the partner has withdrawn its ACSA support for; "*" means all.</summary>
+    public IReadOnlyCollection<string> AcsaWithdrawn => _s.AcsaWithdrawn;
+
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
 }

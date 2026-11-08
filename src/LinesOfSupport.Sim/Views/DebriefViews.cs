@@ -15,6 +15,8 @@ public enum GapFactorKind
     PopulationJump, VendorCapacity,
     /// <summary>No funding line with money could pay for the capability that day (M3-03): an expiry, a late replacement, or money spent.</summary>
     FundingLapse,
+    /// <summary>The partner withdrew an ACSA order and nothing contractual was behind it (M3-06).</summary>
+    AcsaWithdrawn,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>

@@ -14,9 +14,9 @@ public sealed partial class Session
     private PerformanceRulesData Perf => Rules.Performance;
 
     /// <summary>Contracts with written terms awarded by this office. Cash and card buys, handshakes, coordinations
-    /// and inherited host-nation support have no default clause to cure under.</summary>
+    /// and inherited host-nation support have no default clause to cure under; nor does a partner's ACSA support (M3-06).</summary>
     private bool Curable(Arrangement a)
-        => a.CreatedDay > 0 && !a.IsCoordination && !a.Unauthorized
+        => a.CreatedDay > 0 && !a.IsCoordination && !a.Unauthorized && a.Instrument != AcsaInstrument
            && Rules.Instruments.TryGetValue(a.Instrument, out var inst) && inst.WrittenTerms;
 
     private void PerformanceChecks(int d, Dictionary<string, Today> today)

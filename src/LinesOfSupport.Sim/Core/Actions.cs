@@ -19,6 +19,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(EstablishIdiqAction), "establishIdiq")]
 [JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
 [JsonDerivedType(typeof(RequestExternalSupportAction), "requestExternalSupport")]
+[JsonDerivedType(typeof(AcsaOrderAction), "acsaOrder")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -169,6 +170,26 @@ public sealed record RequestExternalSupportAction : PlayerAction
     public string FundingLine { get; init; } = "";
     /// <summary>COR the unit nominates for local administration (M3-04); null for none.</summary>
     public string? Cor { get; init; }
+}
+
+/// <summary>
+/// CCO seat: order logistic support from a partner military under an acquisition and cross-servicing agreement
+/// (SPEC 4.1, M3-06; 10 U.S.C. 2341-2350). Costs rules acsa.shopDays; the partner starts after rules acsa.startLagDays.
+/// The partner supplies the capability's core line and runs it (operator and maintenance lines included); supply lines
+/// to other capabilities are not part of an order. Reimbursement is obligated from FundingLine when the order is placed.
+/// Hard stops: no partner, no stock for the capability, quantity above the partner's daily stock less other orders on
+/// the same days, a capability the partner has withdrawn, and the usual funding checks. Id names the arrangement.
+/// </summary>
+public sealed record AcsaOrderAction : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string? Card { get; init; }
+    public string? Site { get; init; }
+    public string? Capability { get; init; }
+    public long Quantity { get; init; }
+    public int? StartDay { get; init; }
+    public int DurationDays { get; init; }
+    public string FundingLine { get; init; } = "";
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)

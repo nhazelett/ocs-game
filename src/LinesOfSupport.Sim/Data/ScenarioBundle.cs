@@ -214,6 +214,16 @@ public sealed class ScenarioBundle
                 }
             }
         }
+        if (s.Actors.AcsaPartner is { } partner)
+        {
+            if (partner.Island is { } pi) Need(islands.Contains(pi), $"acsaPartner island {pi} not found");
+            foreach (var c in partner.Stock.Keys) Need(caps.Contains(c), $"acsaPartner stock capability {c} not in rules");
+            foreach (var c in partner.UnitPriceCents.Keys) Need(partner.Stock.ContainsKey(c), $"acsaPartner price for {c} has no stock");
+            if (partner.Present) Need(Rules.Instruments.ContainsKey("acsa"), "acsaPartner needs the acsa instrument in rules");
+        }
+        foreach (var e in s.Events)
+            foreach (var f in e.Effects.Where(f => f.Kind == "acsa.withdraw"))
+                Need(f.Target is null || caps.Contains(f.Target), $"event {e.Id}: acsa.withdraw capability {f.Target} not in rules");
         if (s.Actors.ExternalSupport is { } ext)
         {
             Need(Rules.Instruments.ContainsKey("externalSupport"), "actors.externalSupport needs the externalSupport instrument in rules");

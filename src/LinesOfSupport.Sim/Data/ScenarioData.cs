@@ -215,7 +215,17 @@ public sealed record ScoData
 public sealed record FmData { public int CertificationLagDays { get; init; } }
 public sealed record CommanderData { public List<string> PriorityOrder { get; init; } = []; }
 public sealed record HostNationData { public bool AgreementExists { get; init; } public double? Reliability { get; init; } }
-public sealed record AcsaPartnerData { public bool Present { get; init; } public Dictionary<string, double> Stock { get; init; } = []; }
+/// <summary>A partner military with an ACSA (M3-06). Stock is units per day it can spare per capability, shared by all
+/// orders on the same days; price is reimbursable per unit per day.</summary>
+public sealed record AcsaPartnerData
+{
+    public bool Present { get; init; }
+    public string Name { get; init; } = "the partner force";
+    public string? Island { get; init; }
+    public Dictionary<string, double> Stock { get; init; } = [];
+    public Dictionary<string, long> UnitPriceCents { get; init; } = [];
+    public double Reliability { get; init; } = 0.97;
+}
 
 /// <summary>One capability an external support contract can provide (M3-05). Price is a scenario parameter
 /// (docs/assumptions.md): unit price per unit-day, mobilization as a fraction of the task order's base cost.</summary>

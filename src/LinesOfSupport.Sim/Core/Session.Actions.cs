@@ -32,6 +32,7 @@ public sealed partial class Session
             CureNoticeAction c => ApplyCureNotice(c),
             DesignateCorAction c => ApplyDesignateCor(c),
             RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
+            AcsaOrderAction o => ApplyAcsaOrder(o),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -58,6 +59,7 @@ public sealed partial class Session
         CureNoticeAction c => $"cure notice {c.Issue}",
         DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
         RequestExternalSupportAction r => $"external support request {r.Id}",
+        AcsaOrderAction o => $"ACSA order {o.Id}",
         _ => a.GetType().Name,
     };
 
@@ -484,6 +486,9 @@ public sealed partial class Session
             case WorkKind.EstablishVehicle:
                 if (w.Payload is EstablishIdiqAction idiqAction) CompleteEstablishIdiq(idiqAction, day, w.CauseId);
                 else CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.AcsaOrder:
+                CompleteAcsaOrder((AcsaPayload)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.ExternalSupportRequest:
                 CompleteExternalRequestWork((string)w.Payload!, day, w.CauseId);

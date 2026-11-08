@@ -29,6 +29,7 @@ public static class Events
         "site.populationJump",           // target: site id; fraction: share added; days or daysRange: notice before arrival
         "funding.late",                  // target: funding line id; days or daysRange: delay to its release (M3-03)
         "cor.rotates",                   // target: COR id; an untrained relief takes over its designations (M3-04)
+        "acsa.withdraw",                 // target: capability id, or absent for all; days or daysRange: notice (M3-06)
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -122,6 +123,9 @@ public static class Events
                 break;
             case "cor.rotates":
                 s.RotateCor(e.Target ?? throw new InvalidDataException("cor.rotates needs a COR"), day, cause);
+                break;
+            case "acsa.withdraw":
+                s.WithdrawAcsa(e.Target, day, s.EffectDays(ev, index, 0), cause);
                 break;
             case "inbox":
                 break;

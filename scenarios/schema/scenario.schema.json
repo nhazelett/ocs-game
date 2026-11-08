@@ -831,7 +831,29 @@
                 "type": "number",
                 "minimum": 0
               },
-              "description": "Capability id to units available"
+              "description": "Capability id to units per day the partner can spare, shared by every ACSA order on the same days (a daily ceiling, not a depleting pool; docs/assumptions.md)"
+            },
+            "name": {
+              "type": "string",
+              "description": "Generic partner name shown to the player (no real nation is named)"
+            },
+            "island": {
+              "$ref": "#/$defs/id",
+              "description": "Island the partner supplies from; absent means the ordering site's island"
+            },
+            "unitPriceCents": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "description": "Capability id to reimbursable price per unit per day"
+            },
+            "reliability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.97
             }
           }
         },

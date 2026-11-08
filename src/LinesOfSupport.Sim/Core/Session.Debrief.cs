@@ -85,6 +85,14 @@ public sealed partial class Session
                 yield return ($"coord|{co.Id}", new GapFactor(GapFactorKind.CoordinationWithdrawn, GapTag.Avoidable, d,
                     $"Coordination {co.Id} was withdrawn on day {w.Day} and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.", [w.Id, co.CauseId]));
             }
+            foreach (var ac in _arrangements.Where(a => a.Instrument == AcsaInstrument && a.SiteId == siteId && a.CapabilityId == capId && a.EndDay < d && a.EndDay >= lastContractEnd))
+            {
+                var w = _records.FirstOrDefault(r => r.Kind == RecordKind.Withdrawal && r.Subject == ac.Id);
+                if (w is null) continue;
+                any = true;
+                yield return ($"acsa|{ac.Id}", new GapFactor(GapFactorKind.AcsaWithdrawn, GapTag.Avoidable, d,
+                    $"ACSA order {ac.Id} was withdrawn by {PartnerName} on day {w.Day} (last day of support {ac.EndDay}) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.", [w.Id, ac.CauseId]));
+            }
             foreach (var c in _commitments.Where(c => c.Kind == CommitmentKind.Handshake && c.SiteId == siteId && c.CapabilityId == capId))
             {
                 var arr = _arrangements.First(a => a.Id == c.ArrangementId);

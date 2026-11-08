@@ -22,7 +22,7 @@ public sealed partial class Session
 
     /// <summary>Who supplies an arrangement, in words: the vendor, the external support contractor, or the other unit.</summary>
     internal string SupplierName(Arrangement a)
-        => a.Instrument == ExternalInstrument ? ExternalProvider : a.VendorId is null ? "the other unit" : VendorData(a.VendorId)!.Name;
+        => a.Instrument == ExternalInstrument ? ExternalProvider : a.Instrument == AcsaInstrument ? PartnerName : a.VendorId is null ? "the other unit" : VendorData(a.VendorId)!.Name;
 
     /// <summary>Quantity already requested from the provider for a capability (requests not refused, contracts not ended).</summary>
     private long ExternalCommittedMilli(string capId)
