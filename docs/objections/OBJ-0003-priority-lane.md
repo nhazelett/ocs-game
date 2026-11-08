@@ -1,6 +1,6 @@
 # OBJ-0003: "Fable owns priority" conflicts with the spec's ownership table
 
-**Status:** Escalated to Nick
+**Status:** Decided (Nick to re-review when he steps in)
 **Filed by:** Fable, 2026-11-08
 **Lane:** crosses lanes (process; Nick owns it)
 **Objects to:** `docs/DISSENT.md` section 2, Fable's lane includes priority
@@ -25,4 +25,4 @@ Pending (Codex).
 
 ## Decision
 
-Escalated to Nick in chat, 2026-11-08. Options: (A) Fable owns priority, amend the spec; (B) the split above. Fable recommends B. Both reversible.
+Decided by Nick, 2026-11-08: option B with a caveat. Fable owns priority (the order of work inside a milestone); Nick owns milestone scope. Caveat: priority decisions must not silence Codex. When Fable decides priority over a Codex objection, the record is marked "Revisit at milestone review" and the team re-attacks it there without needing new evidence; Nick will re-review this split when he can step in. Carried out in DISSENT.md sections 2 and 4, REVIEW.md, SPEC 12.

@@ -8,6 +8,6 @@ This is a folder and not a new ADR status because most objections target somethi
 
 | ID | Objects to | Filed by | Lane | Status | Decided by | ADR or commit |
 | --- | --- | --- | --- | --- | --- | --- |
-| [OBJ-0001](OBJ-0001-silence-and-self-merge.md) | DISSENT.md section 7, silence means agreement | Fable | crosses lanes (process) | Escalated to Nick | | |
-| [OBJ-0002](OBJ-0002-health-check-small-numbers.md) | REVIEW.md objection health check | Fable | crosses lanes (process) | Escalated to Nick | | |
-| [OBJ-0003](OBJ-0003-priority-lane.md) | DISSENT.md section 2, Fable owns priority | Fable | crosses lanes (process) | Escalated to Nick | | |
+| [OBJ-0001](OBJ-0001-silence-and-self-merge.md) | DISSENT.md section 7, silence means agreement | Fable | crosses lanes (process) | Decided | Nick | DISSENT.md, REVIEW.md |
+| [OBJ-0002](OBJ-0002-health-check-small-numbers.md) | REVIEW.md objection health check | Fable | crosses lanes (process) | Decided | Nick | DISSENT.md, REVIEW.md |
+| [OBJ-0003](OBJ-0003-priority-lane.md) | DISSENT.md section 2, Fable owns priority | Fable | crosses lanes (process) | Decided | Nick | DISSENT.md, REVIEW.md |
