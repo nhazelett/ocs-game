@@ -8,7 +8,7 @@ Expected look of this build and why: almost no visible change in the game. On sp
 - Scheduled run: no merges attempted (FOR-NICK #1).
 
 ## Changed
-- fable/M3-03, stacked on fable/M3-06 (PR 70). New `Session.Funding.cs`: funding clocks and records, the `funding.late` effect, line stops, the debrief's `FundingLapse` factor.
+- fable/M3-03 (PR 71), stacked on fable/M3-06 (PR 70). Next Fable item (M3-04) should branch from fable/M3-03. New `Session.Funding.cs`: funding clocks and records, the `funding.late` effect, line stops, the debrief's `FundingLapse` factor.
 - Data: `fundingLines[].capabilities` (purpose); `replacementArrivesDay` removed from schema and spoke-b-90 (never read). spoke-b-90: om2 planned for day 76 (was a fixed 78) and event `fyFundingLate` (window 62 to 70, delay 3 to 10 days).
 - Views: `FundingOption.PlannedAvailableDay`, `Capabilities`, `PaysForThis`; `BoardLinkKind.Funding`; `RecordKind.Funding`; `GapFactorKind.FundingLapse`. Textbook and greedy pick only lines whose purpose fits.
 - ADR-0005 and ADR-0006 addenda; assumptions.md rows (Color of money, Fiscal year end, Debrief tags: Funding lapse); SPEC 530 one clause; new Codex row M3-13.
