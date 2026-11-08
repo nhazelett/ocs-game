@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ocs-game/schema/theme.schema.json",
+  "title": "OCS: Lines of Support theme file (v0)",
+  "description": "Names, flavor and art references. Swapping a theme never changes play. No real place names, no service marks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "displayNames"],
+  "properties": {
+    "schemaVersion": { "const": 0 },
+    "id": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_-]*$" },
+    "theaterName": { "type": "string" },
+    "displayNames": {
+      "type": "object",
+      "description": "Scenario object id to display name override (islands, sites, vendors, actors)",
+      "additionalProperties": { "type": "string" }
+    },
+    "flavor": {
+      "type": "object",
+      "description": "Object id to one or two sentences of inbox or tooltip flavor",
+      "additionalProperties": { "type": "string" }
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+    },
+    "mapReference": { "type": "string", "description": "Path under assets/ for the board's terrain reference; must have a PROVENANCE row" },
+    "portraits": {
+      "type": "object",
+      "description": "Actor id to asset path; must have PROVENANCE rows",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}
