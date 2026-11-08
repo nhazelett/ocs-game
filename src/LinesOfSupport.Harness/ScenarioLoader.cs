@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace LinesOfSupport.Harness;
 
-internal sealed record LoadedScenario(string Id, int Days, int SiteCount, bool UsedSchemas);
+internal sealed record LoadedScenario(string Id, int Days, int SiteCount, bool UsedSchemas, string FilePath, string? RulesDirectory);
 
 internal static class ScenarioLoader
 {
@@ -39,7 +39,8 @@ internal static class ScenarioLoader
         {
             using var ignored = JsonDocument.Parse(File.ReadAllText(legacyRules));
         }
-        return new LoadedScenario(id.GetString()!, dayCount, sites.GetArrayLength(), schemas is not null);
+        return new LoadedScenario(id.GetString()!, dayCount, sites.GetArrayLength(), schemas is not null,
+            path, schemas is null ? null : Path.Combine(schemas.ScenariosDirectory, "rules"));
     }
 
     private static JsonDocument LoadRules(JsonElement scenario, SchemaCatalog schemas)

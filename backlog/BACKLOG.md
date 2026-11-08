@@ -1,4 +1,4 @@
-Status against plan: M0-15 open in PR 21; fix pass refreshed main and passed local checks. M1-03 complete pending review: read/acknowledged the three decided objections. Next Codex: M1-01, then M1-05; Fable: M0-07, M1-04. No PR merged by Codex; nothing added to FOR-NICK.md.
+Status against plan: M0 complete except M0-07 (Fable). M0-15 (PR 21) merged; M1-03 done (PR 24). Fable merges in-lane Codex PRs with green CI; both agents run on two-hour schedules (docs/FABLE-SESSION.md, docs/CODEX-SESSION.md). Next: Codex M1-01, M1-05; Fable M0-07, M1-04.
 
 
 Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
@@ -21,7 +21,7 @@ Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell
 | M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (read by Codex; M0-08 handoff references it) |
 | M0-13 | Windows export in CI on v* tags | Godot .NET/templates export game to zip artifact; steps documented | Codex | game/, .github/, backlog/, own handoff | Done (PR 16 merged) |
 | M0-14 | Extend the generated kit | Terrain, routes, buildings, vehicles and support pieces share palette/script and provenance | Codex | tools/, assets/, game/, backlog/, own handoff | Done (PR 18 merged) |
-| M0-15 | Batch metric spread table and --json | Per-policy min/median/max of exposed metrics; honest day-count/not-simulated fallback until Sim metrics exist | Codex | src/LinesOfSupport.Harness*, backlog/, own handoff | Queued; not started |
+| M0-15 | Batch metric spread table and --json | Per-policy min/median/max of exposed metrics; honest day-count/not-simulated fallback until Sim metrics exist | Codex | src/LinesOfSupport.Harness*, backlog/, own handoff | Implemented in PR 21 (open). Real Sim metrics, median table and --json; 158 .NET tests pass |
 | M1-01 | Harness runs the real Sim | `run` uses `Replay.Run(bundle, seed, PolicyCatalog.Create(policy))` or `Replay.Run(bundle, InputLog.Load(log))` and prints `SessionReport.ToText`; `batch` reports min/median/max of mission.output and each passCriteria metric per policy; delete PlaceholderRun. ADR-0005. | Codex | src/LinesOfSupport.Harness | Not started |
 | M1-02 | spoke-b-90: the 90-day cut of Spoke B | UCA overdue, HHQ inquiry and funding expiry visible in the golden logs | Fable | scenarios/ | Done |
 | M1-03 | Codex reads docs/DISSENT.md and the decided OBJ-0001 to OBJ-0003 | Codex handoff notes it read them; any disagreement is a new objection with an artifact | Codex | docs/objections/ | Done; acknowledgement PR awaiting review; no objection or counter |

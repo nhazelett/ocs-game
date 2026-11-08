@@ -81,14 +81,12 @@ public sealed class HarnessTests : IDisposable
     }
 
     [Fact]
-    public void BatchRunsTwoHundredSeedsForEveryRequestedPolicy()
+    public void BatchRejectsIncompleteFixturesInsteadOfReportingFakeSimulation()
     {
         var result = Run("batch", Scenario(), "--seeds", "200", "--policies", "do-nothing,greedy,textbook");
-        Assert.Equal(0, result.Code);
-        Assert.Contains("seeds: 0 through 199", result.Output);
-        foreach (var policy in new[] { "do-nothing", "greedy", "textbook" })
-            Assert.Contains($"| {policy} | 200 | 30 | 30.00 | 30 | not simulated |", result.Output);
-        Assert.Contains("no mission outcomes are simulated", result.Output);
+        Assert.Equal(1, result.Code);
+        Assert.Contains("rules", result.Error);
+        Assert.Empty(result.Output);
     }
 
     [Theory]
