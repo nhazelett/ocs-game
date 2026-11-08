@@ -13,7 +13,7 @@ Every Fable session follows this, whether Nick started it in chat or the hourly 
 1. Take the highest Fable item in `backlog/BACKLOG.md` that is not Done and not blocked. Order inside a milestone is Fable's call (DISSENT.md section 2); milestone scope is Nick's.
 2. **Claim it** before starting: push an empty branch `fable/<item-id>`. If that branch already exists on the remote and was pushed in the last three hours, another Fable session has it; take the next item.
 3. Build it to the spec and the ADRs, with tests. `dotnet test src/LinesOfSupport.sln`, `python3 tools/validate/validate.py` and `python3 tools/validate/provenance.py` pass before a PR.
-4. Open the PR (template, Objections section) and wait for CI. In a chat session with Nick, merge it when green; in a scheduled run, leave it open and stack the next item on it. Stop starting new Sim or scenario code at four unmerged Fable PRs: do review, backlog and design work instead until a check-in merges the queue.
+4. Open the PR (template, Objections section) and wait for CI. In a chat session with Nick, merge it when green; in a scheduled run, leave it open and stack the next item on it. Stop starting new Sim or scenario code at ten unmerged Fable PRs: do review, backlog and design work instead until a check-in merges the queue.
 5. **Merge pass** again (section 3), then the next item. Repeat until the backlog has nothing unblocked for Fable or the session's budget is spent.
 6. If Fable's backlog is empty, add the next items from SPEC 11's milestone plan (Fable's lane only), then continue.
 
@@ -26,7 +26,7 @@ For each open Codex PR:
   Before committing a resolution, run `git grep -nE '^(<<<<<<< |=======$|>>>>>>> )'` and stop if it finds anything; a branch can already carry markers from an earlier bad merge, and CI does not check Markdown yet (M2-16). Never chain the commit after a resolver with `;`.
 - Touches `src/LinesOfSupport.Sim*`, `scenarios/schema/`, `scenarios/rules/`, `docs/SPEC.md` or `docs/decisions/`: review it as a design change; merge if it is right, otherwise file an objection per `docs/DISSENT.md`.
 - CI red: do not merge; comment with the failing check and leave it for Codex.
-Merging only on green CI keeps Codex's queue (limit five open PRs) moving between Nick's check-ins.
+Merging only on green CI keeps Codex's queue (limit ten open PRs) moving between Nick's check-ins.
 
 ## 4. When blocked on Nick
 Only design or priority questions go to Nick (DISSENT.md section 6). Add the question to `backlog/FOR-NICK.md` in the escalation format (question, options, cost of each, which are reversible, each agent's recommendation), mark the blocked item `Blocked on Nick (FOR-NICK #n)`, and move to the next unblocked item. Never wait idle. When Nick answers in chat, record the answer there and in the item.
