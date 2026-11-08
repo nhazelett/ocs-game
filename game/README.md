@@ -23,7 +23,7 @@ Island positions are a deterministic screen layout based on authored array order
 
 The Sim's Day is the day **about to be played**. After playing day 10 the strip says **Day 11 (next)**, while Inbox and the status line say **day 10 results**. At the end it says **Day 30 complete** (or 90). Inbox renders `MorningBoard().Items` with the Sim's category/severity and text, alerts first. It treats text as literal text, never markup. Site colors use the lowest capability tile's Sim-provided status: green/full, amber/degraded, red/down, grey/not open or unknown. Labels also name the condition, so color is not the only signal.
 
-Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Sim validates the scenario/rules identity and initializes the log's seed/prep; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to seed 1/no prep. The interactive mode offers Inbox decisions; award editing and automatic policy play are not present yet. All gameplay rules remain in Sim (ADR-0005).
+Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Sim validates the scenario/rules identity and initializes the log's seed/prep; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to seed 1/no prep. The interactive mode offers Inbox decisions; award editing is available in Actions; automatic policy play is not present. All gameplay rules remain in Sim (ADR-0005).
 
 ## Morning board (M2-01)
 
@@ -78,3 +78,9 @@ A successful player action during a replay takes control of the existing session
 ## Requirements (M2-03)
 
 The Requirements tab lists only cards returned by RequirementEditor(card). Checkboxes send SetLineAction, without advancing time; the panel then reloads the Sim view. Missing-line warnings use GapIfOff verbatim. The dependency checklist shows none / in requirement / arranged and covering arrangements; peak demand and units are shown. There is no dollar entry. RequirementSmokeTest verifies edits against direct Sim hashes and checks the warning/checklist changes.
+
+## Actions (M2-04)
+
+Choose a submitted requirement or a site/capability, then instrument, vendor, known vehicle and funding line from ActionEditor. Unavailable instruments are disabled with their actual reason. Quantity, requested start and duration are numeric pickers; quotes, mobilization and totals are display-only. UCA NTE uses the engine default, never Game arithmetic.
+
+Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview scroll independently, and Award stays in the footer. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.

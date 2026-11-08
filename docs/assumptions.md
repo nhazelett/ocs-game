@@ -96,3 +96,11 @@ SPEC 4: avoidable means the information existed; discoverable means it was avail
 | Dependency | Inherits | The gap in the capability it depends on. |
 
 What the tags do not do yet: judge whether the information was worth its cost (a survey's shop hours against the gap it would have prevented). That is the counterfactual view (M3).
+
+## Establishing a BPA (M2-12)
+
+| Topic | Real | Modeled | Why | Revisit |
+| --- | --- | --- | --- | --- |
+| BPA set-up | FAR 13.303: terms, pricing, authorized callers, call limits, review; often competed among several vendors. | 2 to 3 shop days (manual factor applies before the system is online); scope is a set of the vendor's lines; call limit at or under the SAT; no pricing negotiation (offer price applies); no authorized-caller list. | The decision is which vendor and what scope, at a shop-time cost. | M3 (multiple BPAs, caller lists) |
+| BPA walk-away | A vendor may stop accepting calls with notice. | Not modeled yet; only declined calls (decay curve) and refusal after an unpaid handshake. | Kept to the decline risk for the first playable. | M3 |
+
