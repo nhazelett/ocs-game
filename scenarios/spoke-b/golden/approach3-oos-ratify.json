@@ -115,6 +115,28 @@
       "fromSite": "hubSite"
     },
     {
+      "kind": "setLine",
+      "day": 3,
+      "card": "req0014",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 3,
+      "id": "food-c",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorF",
+      "card": "req0014",
+      "lines": [
+        "service",
+        "operator"
+      ],
+      "quantity": 480,
+      "durationDays": 28,
+      "fundingLine": "om1"
+    },
+    {
       "kind": "resolveCommitment",
       "day": 16,
       "commitment": "oos1",

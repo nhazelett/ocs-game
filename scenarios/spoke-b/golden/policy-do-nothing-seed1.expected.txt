@@ -5,9 +5,18 @@ TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
   START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Lodging at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Food service at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Waste removal at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Lodging at Spoke B from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Waste removal at Spoke B from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Lodging at Spoke C from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Waste removal at Spoke C from Main Island Utilities (host nation) (hostNation), days 1 to 400.
 Day 7
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+  SHORT     Lodging at Spoke B down to 0%: power at 0%.
   SHORT     Water at Spoke C down to 0%: water on hand ran out; no arrangement supplies water.
+  SHORT     Food service at Spoke C down to 0%: water at 0%.
 Day 8
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
@@ -48,25 +57,36 @@ Day 28
 Day 29
   START     uc3 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
   SHORT     Power at Spoke B degraded to 59%: fuel at 59%.
+  SHORT     Lodging at Spoke B degraded to 59%: power at 59%.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
                           123456789012345678901234567890
 Hub Power                 ..............................
 Hub Fuel                  ..............................
+Hub Lodging               ..............................
+Hub Food service          ..............................
+Hub Waste removal         ..............................
 Spoke B Power                   XXXXXXXXXXXXXXXXXXXXXX55
 Spoke B Fuel                    .....1....2XXXXX55555555
+Spoke B Lodging                 XXXXXXXXXXXXXXXXXXXXXX55
+Spoke B Waste removal           ........................
 Spoke C Water                 ..XXXXXXXXXXXXXXXXXXXXXXXX
+Spoke C Lodging               ..........................
+Spoke C Food service          ..XXXXXXXXXXXXXXXXXXXXXXXX
+Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 66% (sortie generation 71%, throughput 71%, endurance 70%, resilience 38%)
+  Mission output 61% (sortie generation 71%, throughput 71%, endurance 51%, resilience 38%)
   Obligated $0; incurred $77,843; incurred but not obligated $77,843
   Unauthorized commitments 3; UCAs past due 0; HHQ inquiries 1
   Surveys 0; shop hours worked 24; payment errors 0; execution-confusion days 1; vendor failures 1; declined BPA calls 0
   spokeBSite.power: 22 day(s) down, 2 degraded, lowest 0%
   spokeBSite.fuel: 7 day(s) down, 8 degraded, lowest 0%
+  spokeBSite.lodging: 22 day(s) down, 2 degraded, lowest 0%
   spokeCSite.water: 24 day(s) down, 0 degraded, lowest 0%
+  spokeCSite.food: 24 day(s) down, 0 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   uc1 (day 8): handshake with Port Fuel Haulers for spokeBSite.fuel. Decision: open; vendor walked off; drew an HHQ inquiry.
@@ -76,12 +96,19 @@ UNAUTHORIZED COMMITMENTS (SPEC 4.5)
 
 GAPS AND WHY (each traced back through its causes)
   Day 7: Power at Spoke B down to 0%: no arrangement supplies power.
+  Day 7: Lodging at Spoke B down to 0%: power at 0%.
+      <- day 7: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 7: Water at Spoke C down to 0%: water on hand ran out; no arrangement supplies water.
+  Day 7: Food service at Spoke C down to 0%: water at 0%.
+      <- day 7: Water at Spoke C down to 0%: water on hand ran out; no arrangement supplies water.
   Day 12: Fuel at Spoke B down to 16%: fuel on hand ran out.
   Day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
   Day 23: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   Day 29: Power at Spoke B degraded to 59%: fuel at 59%.
       <- day 23: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
+  Day 29: Lodging at Spoke B degraded to 59%: power at 59%.
+      <- day 29: Power at Spoke B degraded to 59%: fuel at 59%.
+          <- day 23: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 12-12, lowest 16%, 1 day(s) down: DISCOVERABLE
@@ -94,14 +121,20 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. uc3 did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
-  #3 spokeCSite.water days 7-30, lowest 0%, 24 day(s) down: AVOIDABLE
+  #3 spokeBSite.lodging days 7-30, lowest 0%, 22 day(s) down: AVOIDABLE
+      [avoidable] Lodging depends on power, which was short. (see #2)
+  #4 spokeCSite.water days 7-30, lowest 0%, 24 day(s) down: AVOIDABLE
       [avoidable] Requirement req0012 (submitted day 1, needed from day 5) had nothing supplying it from day 7.
+  #5 spokeCSite.food days 7-30, lowest 0%, 24 day(s) down: AVOIDABLE
+      [avoidable] Food service depends on water, which was short. (see #4)
+      [avoidable] Nothing supplied food service at Spoke C; the site and its population were in the plan from day 1.
+      [avoidable] Requirement req0014 (submitted day 3, needed from day 12) had nothing supplying it from day 12.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 22)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
   [not met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 24)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
-  [not met] Mission output at least 90% (mission.output = 0.66)
+  [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash e566c33d63988efc774cc5704c22b4d41b9222d4ab7dada15236cb9f4147f37d
+State hash 4578796bbb6d9355e92be0455c4a7fe042a57a92e59734ca99758bd21473cf10
