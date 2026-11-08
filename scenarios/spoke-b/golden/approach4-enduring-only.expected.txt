@@ -1,5 +1,5 @@
 Spoke B power / approach4-enduring-only
-Approach 4 (SPEC 5, adapted): go straight for the enduring answer and nothing for day 7. SPEC 5 uses an external support request; that instrument arrives at M3, so this uses the turnkey UCA with no bridge. Same lesson: the enduring arrangement is not the first-week answer.
+Approach 4 (SPEC 5, adapted): go straight for the enduring answer and nothing for day 7. SPEC 5 uses an external support request; that instrument arrives at M3, so this uses the turnkey UCA with no bridge. Same lesson: the enduring arrangement is not the first-week answer. Spoke C (all approaches alike): scope completed and a UCA to the island water works on day 2, with a bottled-water purchase order as the bridge.
 Scenario spoke-b, rules 2025-10, seed 1, 30 days.
 Prep: systemAccess, cashAndPayingAgent.
 
@@ -13,17 +13,40 @@ Day 1
   ACTION    Requirement req0007: Operators switched on.
   ACTION    Requirement req0007: Maintenance and repair switched on.
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 2 day(s).
+Day 2
+  ACTION    Requirement req0012: Plant operators switched on.
+  ACTION    Requirement req0012: Maintenance switched on.
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 day(s).
+  ACTION    Written purchase order started with Coastal Bottlers: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
+Day 3
+  DONE      Written purchase order waterBridge awarded to Coastal Bottlers; performance starts day 5, ends day 16. Obligated $12,672.
 Day 5
   DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
+  START     waterBridge began: Water at Spoke C from Coastal Bottlers, 2640 gal/day.
+Day 6
+  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
 Day 7
+  DONE      Undefinitized contract action waterPlant awarded to Third Island Water Works; performance starts day 15, ends day 74. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+Day 9
+  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
 Day 10
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+Day 11
+  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
+Day 12
+  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
+  SHORT     Water at Spoke C degraded to 86%: water on hand ran out.
+Day 13
+  OK        Water at Spoke C restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+Day 15
+  START     waterPlant began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
 Day 17
+  END       waterBridge ended.
   START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
@@ -35,6 +58,7 @@ Day 21
 Day 28
   COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
 Day 29
+  UCA       Third Island Water Works submitted a qualifying proposal on waterPlant. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      Response to higher HQ on oos1 sent.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
@@ -44,15 +68,17 @@ Hub Power                 ..............................
 Hub Fuel                  ..............................
 Spoke B Power                   XXXXXXXXXX..............
 Spoke B Fuel                    ...XXXXXXX..............
+Spoke C Water                 .......7..................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 82% (sortie generation 81%, throughput 81%, endurance 100%, resilience 56%)
-  Obligated $310,200; incurred $310,200; incurred but not obligated $0
+  Mission output 83% (sortie generation 88%, throughput 88%, endurance 100%, resilience 40%)
+  Obligated $345,312; incurred $345,312; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 52; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  Surveys 0; shop hours worked 94; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
   spokeBSite.power: 10 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 7 day(s) down, 0 degraded, lowest 0%
+  spokeCSite.water: 0 day(s) down, 1 degraded, lowest 86%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 18): out-of-scope work on turnkey, $2,400. Decision: open; drew an HHQ inquiry.
@@ -60,6 +86,9 @@ UNAUTHORIZED COMMITMENTS (SPEC 4.5)
 GAPS AND WHY (each traced back through its causes)
   Day 7: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 10: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 12: Water at Spoke C degraded to 86%: water on hand ran out.
+      <- day 12: waterBridge missed today's delivery (no maintenance line, no plant operators line).
+          <- day 2: Written purchase order started with Coastal Bottlers: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-16, lowest 0%, 7 day(s) down: AVOIDABLE
@@ -67,11 +96,14 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #1 spokeBSite.power days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. turnkey did not start until day 17.
       [avoidable] Power depends on fuel, which was short. (see #0)
+  #2 spokeCSite.water days 12-12, lowest 86%, 0 day(s) down: AVOIDABLE
+      [avoidable] waterBridge failed (first on day 12) and had no plant operators or maintenance line; its failure odds were higher every day it ran.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 10)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
+  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [not met] Mission output at least 90% (mission.output = 0.822)
+  [not met] Mission output at least 90% (mission.output = 0.834)
 
-State hash 09a3c0e3dbe93a00a6a1fb9918e7d9531e3de47cdd8c5cbca83ffe0afb5e95dd
+State hash 47d478791dd910742a0f8d63edd3420f5dcb9399cef984300ae6a79d7317ae77

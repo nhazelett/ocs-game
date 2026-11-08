@@ -88,11 +88,12 @@ SPEC 4: avoidable means the information existed; discoverable means it was avail
 | Coordination withdrawn | Avoidable | A coordination was the only source and was withdrawn; a coordination is not a contract. Counted only if no contract supplied the need after the withdrawal. |
 | Handshake lost | Avoidable | A handshake was parked or left open until the vendor walked off, or refused with nothing in its place. |
 | Off-island consumable | Discoverable, or Avoidable once surveyed | Deliveries from another island wait on the surface link; before a survey of the site's island returned, the dependency was discoverable; after, it was known. Weather closures in the three days before are named as context. |
-| Demand above supply | Avoidable | Continuous supply sized below demand; population steps are in the plan from day 1. |
+| Demand above supply | Avoidable | Supply sized below demand: continuous capacity below the load, or a consumable rate (a day) below daily use; population steps are in the plan from day 1. |
 | Vendor failure | Avoidable without operator or maintenance lines, otherwise Unforeseeable | Missing lines raise daily failure odds. |
 | UCA stop work | Avoidable | Incurred costs passed the obligation cap or the money on the line; the overdue date is named when there is one. |
 | Execution confusion | Avoidable | A recurring service on a buy with no written terms. |
 | BPA call declined | Unforeseeable | A BPA is not binding; any call can be declined. |
+| Priority deferred | Avoidable | An award that would have supplied the capability (directly or through a supply line) was held back behind other sites' shop work because that site's commander lost confidence (a refused handshake), and it had not started on the gap day. |
 | Dependency | Inherits | The gap in the capability it depends on. |
 
 What the tags do not do yet: judge whether the information was worth its cost (a survey's shop hours against the gap it would have prevented). That is the counterfactual view (M3).
@@ -104,3 +105,11 @@ What the tags do not do yet: judge whether the information was worth its cost (a
 | BPA set-up | FAR 13.303: terms, pricing, authorized callers, call limits, review; often competed among several vendors. | 2 to 3 shop days (manual factor applies before the system is online); scope is a set of the vendor's lines; call limit at or under the SAT; no pricing negotiation (offer price applies); no authorized-caller list. | The decision is which vendor and what scope, at a shop-time cost. | M3 (multiple BPAs, caller lists) |
 | BPA walk-away | A vendor may stop accepting calls with notice. | Not modeled yet; only declined calls (decay curve) and refusal after an unpaid handshake. | Kept to the decline risk for the first playable. | M3 |
 
+## Commander priority when capacity is short (M2-14)
+
+| Real rule or practice | Game simplification |
+| --- | --- |
+| A commander who sees contracting walk away from a vendor his people relied on trusts the shop less, and his requirements get worked with less goodwill; the planner brings a priority list to the commander when capacity is short (SPEC 3). | Refusing a handshake (SPEC 4.5) costs that site's commander's confidence for the rest of the game. On a day the shop cannot finish all ready work, that site's work (awards, definitizations, terminations, payment rework, ratifications, denials and HHQ responses tied to it) is served after every other ready item. Among such sites, `actors.commander.priorityOrder` decides; unlisted sites go last. |
+| Shop work is sequenced by the contracting officer, inside the commander's priorities. | Otherwise the queue is the player's: first queued, first served. Work tied to no site (surveys, BPA setup) is never held back. There is no player action yet to reorder the queue or to make the priority call (M3). |
+| Confidence is rebuilt over time by delivering. | Not modeled: confidence does not recover within a game. |
+| | The first day an item gets fewer hours than the plain queue would have given it, a compliance record says so and links the refusal; the debrief tags a gap "Priority deferred" when such an award had not started on the gap day. |

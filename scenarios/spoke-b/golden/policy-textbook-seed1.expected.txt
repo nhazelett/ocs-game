@@ -9,29 +9,51 @@ Before day 1
   START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
 Day 1
   ACTION    Ordered a site survey of Second Island.
+  ACTION    Ordered a site survey of Third Island.
   ACTION    Requirement req0007: Generator fuel supply switched on.
   ACTION    Requirement req0007: Operators switched on.
   ACTION    Requirement req0007: Maintenance and repair switched on.
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
   ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke B, 1170 gal/day for 13 days (Fuel delivery); quoted $68,445.
+  ACTION    Requirement req0012: Plant operators switched on.
+  ACTION    Requirement req0012: Maintenance switched on.
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    SF 44 cash purchase to Coastal Bottlers: Water at Spoke C, 2640 gal/day for 10 days (Potable water supply); $10,560 paid on the spot.
+  DONE      SF 44 cash purchase t-req0012-bridge awarded to Coastal Bottlers; performance starts day 5, ends day 14. Obligated $10,560.
   DONE      Survey team dispatched to Second Island; findings due day 3.
+  DONE      Survey team dispatched to Third Island; findings due day 3.
 Day 2
   DONE      BPA call t-req0007-bridge awarded to Harbor Equipment Co; performance starts day 7, ends day 19. Obligated $15,369.
 Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
+  SURVEY    Survey of Third Island returned: grid power available; no fuel point; water: well; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Third Island Water Works, Coastal Bottlers.
   DONE      Written purchase order t-req0007-fuel awarded to Port Fuel Haulers; performance starts day 6, ends day 18. Obligated $68,445.
 Day 5
   DONE      Undefinitized contract action t-req0007-enduring awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action t-req0012-enduring awarded to Third Island Water Works; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
+  START     t-req0012-bridge began: Water at Spoke C from Coastal Bottlers, 2640 gal/day.
+  CONFUSED  Execution confusion on t-req0012-bridge: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 6
   START     t-req0007-fuel began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  FAIL      t-req0012-bridge missed today's delivery (no maintenance line, no plant operators line).
 Day 7
   START     t-req0007-bridge began: Power at Spoke B from Harbor Equipment Co, 514 kW/day.
+Day 8
+  FAIL      t-req0012-bridge missed today's delivery (no maintenance line, no plant operators line).
+Day 12
+  START     t-req0012-enduring began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
+Day 13
+  FAIL      t-req0012-bridge missed today's delivery (no maintenance line, no plant operators line).
 Day 14
+  ACTION    Termination of t-req0012-bridge started.
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  END       t-req0012-bridge terminated; performance ends day 14.
+  FAIL      t-req0012-bridge missed today's delivery (no maintenance line, no plant operators line).
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside t-req0007-bridge's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  END       t-req0012-bridge ended.
 Day 16
   ACTION    Payment for oos1 denied: $2,400 of work outside t-req0007-bridge's scope.
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
@@ -52,6 +74,10 @@ Day 22
   ACTION    Definitization of t-req0007-enduring started; to be funded from om1.
 Day 24
   DEFINITZD t-req0007-enduring definitized at $693,900; obligation caps lifted; fully funded from om1.
+Day 27
+  UCA       Third Island Water Works submitted a qualifying proposal on t-req0012-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+Day 28
+  ACTION    Definitization of t-req0012-enduring started; to be funded from om1.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -60,13 +86,14 @@ Hub Power                 ..............................
 Hub Fuel                  ..............................
 Spoke B Power                   ........................
 Spoke B Fuel                    ........................
+Spoke C Water                 ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 94% (sortie generation 100%, throughput 100%, endurance 100%, resilience 60%)
-  Obligated $777,714; incurred $423,054; incurred but not obligated $0
+  Mission output 92% (sortie generation 100%, throughput 100%, endurance 100%, resilience 44%)
+  Obligated $812,694; incurred $458,034; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 110; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  Surveys 2; shop hours worked 180; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 0
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on t-req0007-bridge, $2,400. Decision: denied on day 16.
@@ -74,7 +101,8 @@ UNAUTHORIZED COMMITMENTS (SPEC 4.5)
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 90% (mission.output = 0.94)
+  [met] Mission output at least 90% (mission.output = 0.916)
 
-State hash 9fc041e7cdee412ab52acc2df7ae7e0f13a02e3a35697535a1548433651024cf
+State hash 01f956ea7cc0a9c33038ca6d2d929a60666eb5d5cad870568c50211895158565

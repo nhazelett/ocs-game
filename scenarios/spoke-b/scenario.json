@@ -2,7 +2,7 @@
   "schemaVersion": 0,
   "id": "spoke-b",
   "title": "Spoke B power",
-  "summary": "First playable. The hub island is open with 600 personnel. Spoke B, an outer island, opens day 7 with 180 personnel growing to 260 on day 20. The spoke's advance team asks for six 60 kW generators and nothing else. Spoke B has no grid and no fuel point, and the only surface link is a twice-weekly barge. A 30-day cut of the 90-day situation in scenarios/SKELETONS.md: the UCA clock and the funding-expiry trap run past day 30 and show in the debrief as pending.",
+  "summary": "First playable. The hub island is open with 600 personnel. Spoke B, an outer island, opens day 7 with 180 personnel growing to 260 on day 20. The spoke's advance team asks for six 60 kW generators and nothing else. A second spoke, Spoke C on Third Island, opens day 5 with 120 personnel growing to 160 on day 15; it is on the host-nation grid and its advance team asks for bottled water. Spoke B has no grid and no fuel point, and the only surface link is a twice-weekly barge. A 30-day cut of the 90-day situation in scenarios/SKELETONS.md: the UCA clock and the funding-expiry trap run past day 30 and show in the debrief as pending.",
   "rulesVersion": "2025-10",
   "days": 30,
   "prepDays": 14,
@@ -25,6 +25,15 @@
       "fuelPoint": false,
       "waterSource": "none",
       "infoTier": "assumed"
+    },
+    {
+      "id": "spokeC",
+      "name": "Third Island",
+      "isHub": false,
+      "grid": true,
+      "fuelPoint": false,
+      "waterSource": "well",
+      "infoTier": "estimated"
     }
   ],
   "transportLinks": [
@@ -47,6 +56,18 @@
       "mode": "aircraft",
       "capacityPerTrip": 5,
       "scheduleDays": [],
+      "weatherSensitive": true
+    },
+    {
+      "id": "ferry",
+      "from": "hub",
+      "to": "spokeC",
+      "mode": "barge",
+      "capacityPerTrip": 200,
+      "scheduleDays": [
+        2,
+        5
+      ],
       "weatherSensitive": true
     }
   ],
@@ -110,6 +131,31 @@
           "critical": true
         }
       ]
+    },
+    {
+      "id": "spokeCSite",
+      "name": "Spoke C",
+      "island": "spokeC",
+      "opensDay": 5,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 5,
+          "count": 120
+        },
+        {
+          "day": 15,
+          "count": 160
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "water",
+          "bufferDays": 3,
+          "initialBufferDays": 2,
+          "critical": true
+        }
+      ]
     }
   ],
   "requirementCards": [
@@ -128,6 +174,22 @@
         "maintenance": false
       },
       "submittedBy": "Spoke B advance team",
+      "flaggedEnduring": false
+    },
+    {
+      "id": "req0012",
+      "site": "spokeCSite",
+      "capability": "water",
+      "submittedDay": 1,
+      "requestedStartDay": 5,
+      "durationDays": 60,
+      "quantityHint": "Bottled water, 1,800 gal a day",
+      "lines": {
+        "supply": true,
+        "operator": false,
+        "maintenance": false
+      },
+      "submittedBy": "Spoke C advance team",
       "flaggedEnduring": false
     }
   ],
@@ -281,6 +343,51 @@
       "acceptsCash": true,
       "vetted": true,
       "infoTier": "estimated"
+    },
+    {
+      "id": "vendorF",
+      "name": "Third Island Water Works",
+      "island": "spokeC",
+      "offers": [
+        {
+          "capability": "water",
+          "lines": [
+            "supply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 4000,
+          "leadTimeDays": 6,
+          "unitPriceCents": 25,
+          "mobilizationFraction": 0.3
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "vendorG",
+      "name": "Coastal Bottlers",
+      "island": "spokeC",
+      "offers": [
+        {
+          "capability": "water",
+          "lines": [
+            "supply"
+          ],
+          "capacityPerDay": 3000,
+          "leadTimeDays": 1,
+          "unitPriceCents": 40
+        }
+      ],
+      "reliability": 0.88,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": false,
+      "infoTier": "assumed"
     }
   ],
   "vehicles": [
@@ -358,7 +465,8 @@
     "commander": {
       "priorityOrder": [
         "hubSite",
-        "spokeBSite"
+        "spokeBSite",
+        "spokeCSite"
       ]
     }
   },
@@ -480,7 +588,8 @@
     "hubFuelsWithdraw",
     "unitHandshake",
     "bargeWeather",
-    "hubUtilities"
+    "hubUtilities",
+    "req0012"
   ],
   "variation": [
     {
@@ -512,6 +621,12 @@
       "kind": "numberRange",
       "min": 0.92,
       "max": 0.97
+    },
+    {
+      "path": "/vendors/7/reliability",
+      "kind": "numberRange",
+      "min": 0.82,
+      "max": 0.92
     }
   ],
   "passCriteria": [
@@ -526,6 +641,13 @@
       "id": "fuelUp",
       "label": "Spoke B fuel never out more than one day",
       "metric": "site.spokeBSite.fuel.downDays",
+      "comparator": "<=",
+      "value": 1
+    },
+    {
+      "id": "waterUp",
+      "label": "Spoke C water never out more than one day",
+      "metric": "site.spokeCSite.water.downDays",
       "comparator": "<=",
       "value": 1
     },
@@ -551,6 +673,8 @@
     "Spoke B can store five days of fuel; it opens with three.",
     "Missing operator or maintenance lines do not cut capacity; they raise the daily chance of equipment going down.",
     "Main Island utilities never fail in this scenario so the lesson stays at Spoke B.",
-    "Mission output counts each open site equally, so the spoke weighs as much as the hub."
+    "Mission output counts each open site equally, so the spoke weighs as much as the hub.",
+    "Third Island is on the host-nation grid, so Spoke C power is not tracked and water does not wait on it.",
+    "Spoke C's advance team asked for bottled water only; the island's well plant vendor offers supply with operators and maintenance but needs six days to mobilize."
   ]
 }
