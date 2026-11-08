@@ -1,4 +1,4 @@
-Status against plan: M0 in progress. M0-04 (PR 6), M0-08 (PR 4), and M0-08b (PR 7) merged. M0-09 Godot shell implemented and locally smoke-tested; awaiting CI/merge. Next: Fable M0-05 to M0-07; Codex M0-10 and M0-11.
+Status against plan: M0 in progress. M0-09 merged (PR 8). Queue PR 9 tightens M0-08b; M0-09b scenario-driven board implemented and locally validated, PR pending. Next: M0-10. No queue PRs will be merged; stop at three open Codex PRs.
 
 | ID | Item | Acceptance criteria | Owner (Fable / Codex / Nick) | Component boundary | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -11,7 +11,8 @@ Status against plan: M0 in progress. M0-04 (PR 6), M0-08 (PR 4), and M0-08b (PR 
 | M0-07 | View-model contracts for morning board and the two editors | Interfaces in LinesOfSupport.Sim with XML docs; no Godot types | Fable | src/LinesOfSupport.Sim | Not started |
 | M0-08 | Solution scaffold, LinesOfSupport.Harness (run, validate, batch with outcome spread), CI builds the solution | CI test job runs real builds; harness validate rejects a broken scenario | Codex | src/LinesOfSupport.sln, src/LinesOfSupport.Harness and Harness.Tests, .github/, global.json; empty Sim/Sim.Tests bootstrap and scenarios/_stub only per kickoff | Done (PR 4 merged) |
 | M0-08b | Harness resolves shared rules by version | `validate` and `run` load `scenarios/rules/rules-<rulesVersion>.json` (never a sibling rules.json); `theme.json` stays optional and sibling; `validate scenarios/_stub` passes; mirror the cross-reference checks in tools/validate/validate.py | Codex | src/LinesOfSupport.Harness and Harness.Tests, .github/, handoff/backlog; reconcile old stub README | Done (PR 7 merged) |
-| M0-09 | Godot 4.6 .NET project referencing Sim; empty board scene; desk UI panel layout shell | Project opens, builds, shows the shell | Codex | game/, .github/, handoff/backlog | Implemented; awaiting CI/merge |
+| M0-09 | Godot 4.6 .NET project referencing Sim; empty board scene; desk UI panel layout shell | Project opens, builds, shows the shell | Codex | game/, .github/, handoff/backlog | Done (PR 8 merged; reverified) |
+| M0-09b | Scenario-driven schematic board and scenario picker | Islands, mode-labeled transport links, site names/opensDay load from scenario.json; picker lists scenario folders; no textures or sim logic | Codex | game/, .github/, backlog/, own handoff | Implemented and locally validated; PR pending |
 | M0-10 | First bpy kit experiment: one site (tent, CHU, generator, fuel bladder, truck) flat-shaded to glTF, rendered in Godot | Screenshot in handoff note; tools and steps that worked recorded in tools/README.md | Codex | tools/, assets/ | Not started |
 | M0-11 | Provenance check covers glTF and audio; PROVENANCE.md template filled for the kit | CI provenance job fails on an untracked asset | Codex | assets/, .github/ | Not started |
 | M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (read by Codex; M0-08 handoff references it) |

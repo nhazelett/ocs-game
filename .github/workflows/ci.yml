@@ -80,6 +80,8 @@ jobs:
           "$GODOT_BIN" --headless --path game --editor --import --quit
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/ShellSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-smoke.log"
           grep -Fq 'SHELL_SMOKE_PASS:' "$RUNNER_TEMP/godot-smoke.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/BoardSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-board.log"
+          grep -Fq 'BOARD_SMOKE_PASS:' "$RUNNER_TEMP/godot-board.log"
 
   export-windows:
     name: export-windows
