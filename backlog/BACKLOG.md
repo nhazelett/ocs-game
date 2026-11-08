@@ -1,4 +1,4 @@
-Status against plan: M0 in progress. Spec v0.2 merged (PR 1). Title decided (PR 2). Next: Fable M0-04 to M0-07, Codex M0-08 to M0-11.
+Status against plan: M0 in progress. Spec v0.2, title and scenario skeletons merged (PRs 1 to 3). M0-08 implemented in PR 4; implementation CI passed, awaiting Nick's review and merge. Next: Fable M0-04 to M0-07; Codex M0-09 to M0-11 after M0-08 review.
 
 | ID | Item | Acceptance criteria | Owner (Fable / Codex / Nick) | Component boundary | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -9,8 +9,8 @@ Status against plan: M0 in progress. Spec v0.2 merged (PR 1). Title decided (PR 
 | M0-05 | LinesOfSupport.Sim domain model and day-advance loop (first-playable tier) with unit and property tests | dotnet test green; invariants hold across 200 seeds on a stub scenario | Fable | src/LinesOfSupport.Sim, src/LinesOfSupport.Sim.Tests | Not started |
 | M0-06 | Spoke B scenario.json plus four approach input logs as golden files | Harness reproduces the day 10, 12, 16 and 60 effects described in SPEC section 5 | Fable | scenarios/spoke-b/ | Not started |
 | M0-07 | View-model contracts for morning board and the two editors | Interfaces in LinesOfSupport.Sim with XML docs; no Godot types | Fable | src/LinesOfSupport.Sim | Not started |
-| M0-08 | Solution scaffold, LinesOfSupport.Harness (run, validate, batch with outcome spread), CI builds the solution | CI test job runs real builds; harness validate rejects a broken scenario | Codex | src/LinesOfSupport.sln, src/LinesOfSupport.Harness, .github/ | Not started |
+| M0-08 | Solution scaffold, LinesOfSupport.Harness (run, validate, batch with outcome spread), CI builds the solution | CI test job runs real builds; harness validate rejects a broken scenario | Codex | src/LinesOfSupport.sln, src/LinesOfSupport.Harness and Harness.Tests, .github/, global.json; empty Sim/Sim.Tests bootstrap and scenarios/_stub only per kickoff | Ready for review (PR 4; implementation CI passed; Nick merges) |
 | M0-09 | Godot 4.6 .NET project referencing Sim; empty board scene; desk UI panel layout shell | Project opens, builds, shows the shell | Codex | game/ | Not started |
 | M0-10 | First bpy kit experiment: one site (tent, CHU, generator, fuel bladder, truck) flat-shaded to glTF, rendered in Godot | Screenshot in handoff note; tools and steps that worked recorded in tools/README.md | Codex | tools/, assets/ | Not started |
 | M0-11 | Provenance check covers glTF and audio; PROVENANCE.md template filled for the kit | CI provenance job fails on an untracked asset | Codex | assets/, .github/ | Not started |
-| M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (awaiting Codex read) |
+| M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (read by Codex; M0-08 handoff references it) |
