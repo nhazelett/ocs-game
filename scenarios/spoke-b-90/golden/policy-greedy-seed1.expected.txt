@@ -82,13 +82,21 @@ Day 57
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 61
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 65
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $855,288 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 67
   END       g-req0007 ended.
+Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
 Day 73
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 20%).
   COMPLY    Unauthorized commitment uc3: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
 Day 74
   START     uc3 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+Day 75
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $855,288 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
 Day 78
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc3 has been open 5 days).
   FAIL      uc3 had equipment down (no maintenance and repair line, no operators line).
@@ -99,6 +107,7 @@ Day 84
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
   COMPLY    Unauthorized commitment uc4: the Spoke B unit arranged Power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on uc3 sent.
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
   START     uc4 began: Power at Spoke B from Island Power Rentals, 468 kW/day.
 Day 86
@@ -165,6 +174,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] uc2 failed (first on day 37) and had no on-site storage line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 41.
+      [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
   #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
   #3 spokeBSite.power days 15-90, lowest 0%, 75 day(s) down: AVOIDABLE
@@ -175,6 +185,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] uc3 failed (first on day 78) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc3 was left unresolved and the vendor walked off on day 83.
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 83. The last arrangement supplying it, uc3, ended on day 82. uc4 did not start until day 85.
+      [avoidable] No funding line with money could pay for power on day 83 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] uc4 failed (first on day 86) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
 
 PASS CRITERIA
@@ -183,4 +194,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.675)
 
-State hash 4cc75e0a6779a9a68424f8c8a25abe36ae790e369892dee8fb4340736fe3d46c
+State hash 7f39c98ed022f77d91ff783d560b322752fc4844f7940262d58eadfa9caee0c8

@@ -527,7 +527,7 @@ Nick (now): the four decisions in the bottom line, and a first pass at the five 
 - Deployed, outside-the-U.S. contingency thresholds are the default in every scenario; home-station thresholds appear only if a scenario explicitly sets them.
 - The CCO seat holds a warrant sufficient for the scenario; warrant limits are a scenario parameter, not a mechanic, until someone asks for them.
 - HCA approval for a UCA is modeled as a 1 to 3 day lag with no refusal path in the first playable; refusals and conditions arrive at M3.
-- Funding is O&M only; no construction funding rules, no MILCON, no color-of-money play beyond expiry and amount. This is a large simplification and it is labeled as one.
+- Funding is O&M only; no construction funding rules, no MILCON, no color-of-money play beyond expiry, amount and a purpose by capability (M3-03). This is a large simplification and it is labeled as one.
 - Pricing is a vendor quote with a seeded error band; no negotiation mini-game, no cost analysis.
 - Evaluation and award under simplified procedures is abstracted to shop-days; no source selection play.
 - Contractor management (accountability, base access, arming) is out of scope for 1.0 except as access events.

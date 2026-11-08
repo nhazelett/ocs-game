@@ -242,6 +242,7 @@ public sealed partial class Session
             else if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
             else if (a.Instrument != "uca" && line.RemainingCents < need) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left");
             else if (a.Instrument == "uca" && line.RemainingCents <= 0) stops.Add($"funding line {line.Id} is empty");
+            if (line is not null) stops.AddRange(FundingStops(line, capId, a.StartDay, a.DurationDays));
         }
         return new AwardCheck(stops, inst, card, vendor, offer, siteId, capId, lines, daily, mob, total);
     }
@@ -320,7 +321,8 @@ public sealed partial class Session
             var line = _funding.FirstOrDefault(f => f.Id == a.FundingLine);
             if (need > 0 && (line is null || !line.UsableOn(day) || line.RemainingCents < need))
             {
-                AddRecord(day, RecordKind.Rejected, a.Id, $"{inst.Label} {a.Id} could not be awarded: funding line {line?.Id ?? "(none)"} could not cover {Money(need)} on day {day}.", [causeId]);
+                var rej = AddRecord(day, RecordKind.Rejected, a.Id, $"{inst.Label} {a.Id} could not be awarded on day {day}: {FundingShortReason(line, need, day)}.", [causeId]);
+                _fundingRejections.Add((a.Id, p.SiteId, p.CapabilityId, day, rej));
                 return;
             }
             if (line is not null) line.ObligatedCents += need;
@@ -406,7 +408,8 @@ public sealed partial class Session
         if (u.Definitized) return ActionResult.Stop($"{d.Arrangement} is already definitized");
         if (u.DefinitizationInWork) return ActionResult.Stop($"definitization of {d.Arrangement} is already in work");
         if (!u.ProposalReceived) return ActionResult.Stop($"{VendorData(arr.VendorId)!.Name} has not submitted a qualifying proposal yet");
-        if (!_funding.Any(f => f.Id == d.FundingLine)) return ActionResult.Stop($"funding line {d.FundingLine} does not exist");
+        if (_funding.FirstOrDefault(f => f.Id == d.FundingLine) is not { } dl) return ActionResult.Stop($"funding line {d.FundingLine} does not exist");
+        if (!dl.Pays(arr.CapabilityId)) return ActionResult.Stop([.. FundingStops(dl, arr.CapabilityId, null, 0)]);
         u.DefinitizationInWork = true;
         var rec = AddRecord(Day, RecordKind.Action, d.Arrangement, $"Definitization of {d.Arrangement} started; to be funded from {d.FundingLine}.", []);
         AddWork(WorkKind.Definitize, $"Definitize {d.Arrangement}", Hours(_rngWork.NextInt(Rules.Uca.DefinitizationShopDays), true), Day, d, rec);

@@ -150,9 +150,9 @@ public sealed partial class Session
     private FundingLineState? RatificationLine(CommitmentState c, int day)
     {
         var named = c.FundingLineId is null ? null : _funding.FirstOrDefault(f => f.Id == c.FundingLineId);
-        if (named is not null && named.UsableOn(day) && named.RemainingCents > 0) return named;
+        if (named is not null && named.UsableOn(day) && named.RemainingCents > 0 && named.Pays(c.CapabilityId)) return named;
         var contract = _arrangements.FirstOrDefault(a => a.Id == c.ArrangementId)?.FundingLineId;
-        return _funding.Where(f => f.UsableOn(day) && f.RemainingCents > 0)
+        return _funding.Where(f => f.UsableOn(day) && f.RemainingCents > 0 && f.Pays(c.CapabilityId))
                        .OrderBy(f => f.Id == contract ? 0 : 1).ThenBy(f => f.Id, StringComparer.Ordinal).FirstOrDefault();
     }
 

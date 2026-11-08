@@ -57,11 +57,21 @@ Day 63
   SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 64
   OK        Power at Spoke B restored to 100%.
+Day 65
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $254,736 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+Day 75
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $254,736 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
 Day 77
   END       turnkey ended.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 82
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+Day 84
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -92,11 +102,13 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 82-90, lowest 0%, 9 day(s) down: AVOIDABLE
+      [avoidable] No funding line with money could pay for fuel on day 82 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
   #1 spokeBSite.power days 63-63, lowest 50%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] turnkey failed on day 63 with full operator and maintenance coverage.
   #2 spokeBSite.power days 77-90, lowest 0%, 14 day(s) down: AVOIDABLE
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, turnkey, ended on day 76.
+      [avoidable] No funding line with money could pay for power on day 77 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] Power depends on fuel, which was short. (see #0)
 
 PASS CRITERIA
@@ -105,4 +117,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.878)
 
-State hash 40ccca5f56ba983c93f90e73c1897f027bd88628de7e0441c66f84be90a8e637
+State hash 854ef68edcb250c863877720e42ed216975f50279783d0e546b688b00b677674

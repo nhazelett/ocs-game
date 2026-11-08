@@ -88,6 +88,16 @@ Day 59
   DONE      Response to higher HQ on uc5 sent.
 Day 63
   WITHDRAWN Meridian Site Services walked off uc5 after 15 days of unpaid delivery. Power at Spoke B loses that source today. It will quote this office 25% higher from now on.
+Day 65
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $900,000 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+Day 75
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $900,000 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+Day 84
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -142,6 +152,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] uc2 failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 36.
+      [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
   #2 spokeBSite.power days 7-90, lowest 0%, 78 day(s) down: AVOIDABLE
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. uc3 did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
@@ -152,6 +163,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 47. The last arrangement supplying it, uc4, ended on day 46. uc5 did not start until day 49.
       [avoidable] Handshake uc5 was left unresolved and the vendor walked off on day 63.
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 63. The last arrangement supplying it, uc5, ended on day 62.
+      [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 78)
@@ -159,4 +171,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.65)
 
-State hash f48f0f9b9f8c00c7a7443ba618783737ec4d166f8a989b187c243d92cd8d820c
+State hash f663202382dd51a3b3e2058691dd082bf972ca9e8edb84902e482149bca74310

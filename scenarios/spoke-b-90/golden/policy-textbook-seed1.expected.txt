@@ -60,6 +60,14 @@ Day 62
   OK        Power at Spoke B restored to 100%.
 Day 63
   DONE      Written purchase order t-req0007-enduring-next awarded to Meridian Site Services; performance starts day 77, ends day 90. Obligated $107,940.
+Day 65
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $14,346 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+Day 75
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $14,346 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
 Day 77
   END       t-req0007-enduring ended.
   START     t-req0007-enduring-next began: Power at Spoke B from Meridian Site Services, 514 kW/day.
@@ -68,6 +76,8 @@ Day 81
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
 Day 82
   OK        Power at Spoke B restored to 100%.
+Day 84
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -108,4 +118,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.926)
 
-State hash 1e45b5b6ad46e7b5eea2d3fa0c37f5c9e85c49fcce732b493816b46b1a19cf24
+State hash 1fb9c296c6072798cc7aefa084afdaab5d76a0a8007b3be2182519659788e612

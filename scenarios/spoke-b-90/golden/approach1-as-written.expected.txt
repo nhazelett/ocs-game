@@ -96,6 +96,7 @@ Day 63
 Day 65
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $808,200 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
@@ -103,6 +104,8 @@ Day 67
   END       gens ended.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 69
   CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -114,12 +117,16 @@ Day 73
   OK        Fuel at Spoke B restored to 100%.
 Day 75
   FAIL      uc1 missed today's delivery (no on-site storage line).
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $808,200 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
 Day 76
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 78
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 80
   OK        Fuel at Spoke B restored to 100%.
+Day 84
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 88
@@ -226,6 +233,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Power depends on fuel, which was short. (see #4)
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 67. The last arrangement supplying it, gens, ended on day 66.
       [discoverable] Power depends on fuel, which was short. (see #5)
+      [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [discoverable] Power depends on fuel, which was short. (see #6)
 
 PASS CRITERIA
@@ -234,4 +242,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.762)
 
-State hash 8d18aa666a524178c77ea589f4704b0766f1ddeb197a1cf15758fddcae5051df
+State hash 02e9b05aaa491486cbef56cade24df2afead2feede3292fa6e8184035266c900

@@ -43,6 +43,7 @@ public sealed partial class Session
         RecordKind.Restored => (BoardCategory.Delivery, BoardSeverity.Info),
         RecordKind.Inbox => (BoardCategory.Request, BoardSeverity.Info),
         RecordKind.Event => (BoardCategory.Event, BoardSeverity.Warning),
+        RecordKind.Funding => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.WorkDone or RecordKind.Knowledge or RecordKind.Definitized or RecordKind.Obligation or RecordKind.Cash
             => (BoardCategory.Report, BoardSeverity.Info),
         _ => null, // Action and Rejected are the player's own daytime acts, already seen when made.
@@ -51,6 +52,7 @@ public sealed partial class Session
     private (BoardLinkKind, string) Link(string subject)
     {
         if (subject == "cash") return (BoardLinkKind.Cash, subject);
+        if (subject == "funding" || _funding.Any(f => f.Id == subject)) return (BoardLinkKind.Funding, subject);
         if (subject.StartsWith("survey ", StringComparison.Ordinal)) return (BoardLinkKind.Island, subject[7..]);
         if (_arrangements.Any(a => a.Id == subject)) return (BoardLinkKind.Arrangement, subject);
         if (_cards.Any(c => c.Id == subject)) return (BoardLinkKind.Card, subject);
@@ -69,6 +71,7 @@ public sealed partial class Session
         {
             var r = _records[i];
             if (Classify(r.Kind) is not var (cat, sev)) continue;
+            if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
             var (lk, lid) = Link(r.Subject);
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy));
         }
@@ -219,7 +222,8 @@ public sealed partial class Session
         var funding = _funding.Select(f =>
         {
             var type = Scenario.FundingLines.FirstOrDefault(d => d.Id == f.Id)?.Type ?? "";
-            return new FundingOption(f.Id, type, f.RemainingCents, f.AvailableDay, f.ExpiresDay, f.UsableOn(Day));
+            return new FundingOption(f.Id, type, f.RemainingCents, f.AvailableDay, f.ExpiresDay, f.UsableOn(Day),
+                                     f.PlannedAvailableDay, f.Capabilities, f.Pays(capId));
         }).ToList();
 
         return new ActionEditorView(Day, siteId, capId, cap.Label, cap.Unit, card?.Id, selected,

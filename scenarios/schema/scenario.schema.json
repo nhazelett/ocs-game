@@ -634,12 +634,13 @@
             "type": "integer",
             "minimum": 1
           },
-          "replacementArrivesDay": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "For the fiscal-year-end trap: when the next line shows up, if at all"
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true,
+            "description": "Capabilities the line is certified for (its purpose); absent or empty means any. Paying another capability from it is a hard stop (M3-03)."
           }
         }
       }

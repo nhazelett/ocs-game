@@ -174,7 +174,8 @@ public sealed record FundingLineData
     public long AmountCents { get; init; }
     public int AvailableDay { get; init; }
     public int ExpiresDay { get; init; }
-    public int? ReplacementArrivesDay { get; init; }
+    /// <summary>Capabilities the line is certified for; absent or empty means any (M3-03).</summary>
+    public List<string> Capabilities { get; init; } = [];
 }
 
 public sealed record ShopData

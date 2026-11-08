@@ -96,10 +96,18 @@ public sealed class FundingLineState
     public required string Id { get; init; }
     public long AmountCents { get; init; }
     public long ObligatedCents { get; set; }
-    public int AvailableDay { get; init; }
+    /// <summary>The day the comptroller releases the line. A <c>funding.late</c> event can push it later (M3-03).</summary>
+    public int AvailableDay { get; internal set; }
+    /// <summary>The release day the scenario planned, before any delay.</summary>
+    public int PlannedAvailableDay { get; init; }
+    /// <summary>The fiscal year end: the last day the line can be obligated.</summary>
     public int ExpiresDay { get; init; }
+    /// <summary>The capabilities the line is certified for (its purpose); empty means any (M3-03).</summary>
+    public IReadOnlyList<string> Capabilities { get; init; } = [];
     public long RemainingCents => AmountCents - ObligatedCents;
     public bool UsableOn(int day) => day >= AvailableDay && day <= ExpiresDay;
+    /// <summary>True when the line's purpose covers the capability.</summary>
+    public bool Pays(string capability) => Capabilities.Count == 0 || Capabilities.Contains(capability);
 }
 
 public sealed class CardState
@@ -192,6 +200,8 @@ public enum RecordKind
     UcaOverdue, UcaStopWork, UcaResumed, Definitized, Compliance, Cash, Withdrawal,
     /// <summary>A vendor's orders exceed its real capacity (IDIQ orders are accepted regardless): delivery falls short (M3-06).</summary>
     VendorCapacity,
+    /// <summary>The comptroller's funding clock: a line released, late, about to expire, expired, or no money usable (M3-03).</summary>
+    Funding,
 }
 
 /// <summary>An IDIQ the shop can order from (M3-06): ceiling, minimum guarantee and what has been ordered so far.

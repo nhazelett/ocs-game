@@ -143,6 +143,7 @@ public sealed partial class Session
         var line = _funding.FirstOrDefault(f => f.Id == e.FundingLine);
         if (line is null) stops.Add("an IDIQ needs a funding line for its minimum guarantee");
         else if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
+        else if (!line.Pays(e.Capability)) stops.AddRange(FundingStops(line, e.Capability, null, 0));
         else if (line.RemainingCents < min) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left for a minimum guarantee of {Money(min)}");
         return (stops, inst, vendor);
     }

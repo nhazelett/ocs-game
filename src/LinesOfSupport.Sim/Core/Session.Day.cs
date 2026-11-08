@@ -35,6 +35,7 @@ public sealed partial class Session
         ResolveCapabilities(d, today);
         Settle(d, today);
         Score(d);
+        FundingClocks(d);
         _overnightTo = _records.Count;
         Day++;
     }

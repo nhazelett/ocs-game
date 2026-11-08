@@ -37,7 +37,8 @@ public enum BoardCategory { Delivery, Failure, Report, Request, VendorNotice, Hi
 public enum BoardSeverity { Info, Warning, Alert }
 
 /// <summary>What a board item links to, so the desk can open the right panel.</summary>
-public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Event, Cash, Work }
+/// <summary>Funding (M3-03): LinkId is a funding line id, or "funding" for the shop's funding as a whole; open the ledger.</summary>
+public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Event, Cash, Work, Funding }
 
 /// <summary>One thing that changed overnight.</summary>
 /// <param name="RecordId">The cause record this item shows; follow CausedBy for the chain.</param>
@@ -111,7 +112,13 @@ public sealed record VehicleOption(
     long? CeilingCents = null, long? OrderedCents = null, long? GuaranteeUnorderedCents = null);
 
 /// <summary>A funding line, with what is left and whether it can be used today.</summary>
-public sealed record FundingOption(string Id, string Type, long RemainingCents, int AvailableDay, int ExpiresDay, bool UsableToday);
+/// <param name="AvailableDay">The release day as it stands (a late release moves it).</param>
+/// <param name="ExpiresDay">The fiscal-year end: the last day the line can be obligated.</param>
+/// <param name="PlannedAvailableDay">The release day the scenario planned; later AvailableDay means the release is late (M3-03).</param>
+/// <param name="Capabilities">Capabilities the line is certified for; empty means any (M3-03).</param>
+/// <param name="PaysForThis">In the action editor: whether the line's purpose covers the editor's capability (M3-03).</param>
+public sealed record FundingOption(string Id, string Type, long RemainingCents, int AvailableDay, int ExpiresDay, bool UsableToday,
+    int PlannedAvailableDay = 0, IReadOnlyList<string>? Capabilities = null, bool PaysForThis = true);
 
 /// <summary>Everything the action editor needs to assemble an award for one site and capability.</summary>
 /// <param name="CardId">The requirement card being acted on, if any.</param>

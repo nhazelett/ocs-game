@@ -334,14 +334,13 @@
       "type": "OM",
       "amountCents": 90000000,
       "availableDay": 1,
-      "expiresDay": 75,
-      "replacementArrivesDay": 78
+      "expiresDay": 75
     },
     {
       "id": "om2",
       "type": "OM",
       "amountCents": 90000000,
-      "availableDay": 78,
+      "availableDay": 76,
       "expiresDay": 400
     }
   ],
@@ -480,6 +479,27 @@
         }
       ],
       "playerVisibleAs": "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+    },
+    {
+      "id": "fyFundingLate",
+      "label": "The new fiscal year's funding is held up",
+      "window": {
+        "earliestDay": 62,
+        "latestDay": 70
+      },
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "funding.late",
+          "target": "om2",
+          "daysRange": {
+            "min": 3,
+            "max": 10
+          },
+          "note": "The FY-end trap (SPEC 5): om1 expires day 75; om2 was planned for day 76."
+        }
+      ],
+      "playerVisibleAs": "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
     }
   ],
   "fixedSituations": [

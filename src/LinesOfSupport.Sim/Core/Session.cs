@@ -108,7 +108,12 @@ public sealed partial class Session
         ApplyPrep(prep);
 
         foreach (var f in Scenario.FundingLines)
-            _funding.Add(new FundingLineState { Id = f.Id, AmountCents = f.AmountCents, AvailableDay = f.AvailableDay, ExpiresDay = f.ExpiresDay });
+            _funding.Add(new FundingLineState
+            {
+                Id = f.Id, AmountCents = f.AmountCents, AvailableDay = f.AvailableDay, PlannedAvailableDay = f.AvailableDay,
+                ExpiresDay = f.ExpiresDay, Capabilities = [.. f.Capabilities],
+            });
+        SnapshotFunds(1);
         foreach (var c in Scenario.RequirementCards)
             _cards.Add(new CardState
             {

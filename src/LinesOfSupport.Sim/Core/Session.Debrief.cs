@@ -134,6 +134,11 @@ public sealed partial class Session
                     $"Requirement {card.Id} (submitted day {card.SubmittedDay}, needed from day {card.RequestedStartDay}) had nothing supplying it from day {d}.{tail}",
                     later is null ? (ended is null ? [] : [ended.CauseId]) : [later.CauseId]));
             }
+            if (FundingLapseFactor(siteId, capId, d) is { } lapse)
+            {
+                any = true;
+                yield return lapse;
+            }
             if (!any)
                 yield return ("uncovered", new GapFactor(GapFactorKind.Uncovered, GapTag.Avoidable, d,
                     $"Nothing supplied {cap.Label.ToLowerInvariant()} at {site.Name}; the site and its population were in the plan from day 1.", []));
@@ -289,7 +294,7 @@ public sealed partial class Session
         {
             RecordKind.Event, RecordKind.Withdrawal, RecordKind.UcaOverdue, RecordKind.UcaStopWork, RecordKind.UcaResumed,
             RecordKind.Compliance, RecordKind.Declined, RecordKind.Definitized, RecordKind.ArrangementStart, RecordKind.ArrangementEnd,
-            RecordKind.Knowledge, RecordKind.UcaProposal, RecordKind.VendorCapacity,
+            RecordKind.Knowledge, RecordKind.UcaProposal, RecordKind.VendorCapacity, RecordKind.Funding,
         };
         var events = _records.Where(r => annotate.Contains(r.Kind) && r.Day >= 1)
                              .Select(r => new TimelineEvent(r.Day, r.Kind.ToString(), r.Subject, r.Text, r.Id)).ToList();
