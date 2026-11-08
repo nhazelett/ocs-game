@@ -98,37 +98,38 @@ public sealed partial class Session
 
     // ------------------------------------------------------------------ awards
 
-    private ActionResult ApplyAward(AwardAction a)
+    /// <summary>Every check an award must pass, with the cost it would carry. Reads state only; draws no random numbers.</summary>
+    internal AwardCheck CheckAward(AwardAction a)
     {
         var stops = new List<string>();
         if (string.IsNullOrWhiteSpace(a.Id)) stops.Add("an award needs an id");
         else if (_arrangements.Any(x => x.Id == a.Id) || _work.Any(w => w.Payload is AwardPayload p && p.Action.Id == a.Id))
             stops.Add($"id {a.Id} is already used");
-        if (!Rules.Instruments.TryGetValue(a.Instrument, out var inst)) return ActionResult.Stop($"instrument {a.Instrument} is not in the rules");
-        if (!AwardableInM0.Contains(a.Instrument)) return ActionResult.Stop($"{inst.Label} is not implemented in this build");
+        if (!Rules.Instruments.TryGetValue(a.Instrument, out var inst)) return AwardCheck.Fail($"instrument {a.Instrument} is not in the rules");
+        if (!AwardableInM0.Contains(a.Instrument)) return AwardCheck.Fail($"{inst.Label} is not implemented in this build");
 
         CardState? card = null;
         if (a.Card is not null)
         {
             card = _cards.FirstOrDefault(c => c.Id == a.Card);
-            if (card is null) return ActionResult.Stop($"card {a.Card} does not exist");
-            if (Day < card.SubmittedDay) return ActionResult.Stop($"card {a.Card} has not been submitted yet");
+            if (card is null) return AwardCheck.Fail($"card {a.Card} does not exist");
+            if (Day < card.SubmittedDay) return AwardCheck.Fail($"card {a.Card} has not been submitted yet");
         }
         var siteId = a.Site ?? card?.SiteId;
         var capId = a.Capability ?? card?.CapabilityId;
-        if (siteId is null || capId is null) return ActionResult.Stop("an award needs a card, or a site and a capability");
-        if (!Scenario.Sites.Any(s => s.Id == siteId)) return ActionResult.Stop($"site {siteId} does not exist");
-        if (!_capData.ContainsKey(capId)) return ActionResult.Stop($"capability {capId} does not exist");
+        if (siteId is null || capId is null) return AwardCheck.Fail("an award needs a card, or a site and a capability");
+        if (!Scenario.Sites.Any(s => s.Id == siteId)) return AwardCheck.Fail($"site {siteId} does not exist");
+        if (!_capData.ContainsKey(capId)) return AwardCheck.Fail($"capability {capId} does not exist");
         var lines = a.Lines ?? card?.Lines.Where(kv => kv.Value).Select(kv => kv.Key).ToList()
                     ?? (_capData.TryGetValue(capId, out var cd) ? cd.Lines.Where(l => l.Kind == "core").Select(l => l.Id).ToList() : []);
-        if (lines.Count == 0) return ActionResult.Stop("no scope lines selected");
+        if (lines.Count == 0) return AwardCheck.Fail("no scope lines selected");
         foreach (var l in lines)
             if (!Cap(capId).Lines.Any(x => x.Id == l)) stops.Add($"{l} is not a {capId} line");
 
         var vendor = VendorData(a.Vendor);
-        if (vendor is null) return ActionResult.Stop($"vendor {a.Vendor} does not exist");
+        if (vendor is null) return AwardCheck.Fail($"vendor {a.Vendor} does not exist");
         var offer = vendor.Offers.FirstOrDefault(o => o.Capability == capId);
-        if (offer is null) return ActionResult.Stop($"{vendor.Name} does not offer {CapLabel(capId)}");
+        if (offer is null) return AwardCheck.Fail($"{vendor.Name} does not offer {CapLabel(capId)}");
         foreach (var l in lines)
             if (!offer.Lines.Contains(l)) stops.Add($"{vendor.Name} does not offer {LineLabel(capId, l)}");
         if (a.Quantity <= 0) stops.Add("quantity must be positive");
@@ -208,7 +209,16 @@ public sealed partial class Session
             else if (a.Instrument != "uca" && line.RemainingCents < total) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left");
             else if (a.Instrument == "uca" && line.RemainingCents <= 0) stops.Add($"funding line {line.Id} is empty");
         }
-        if (stops.Count > 0) return ActionResult.Stop([.. stops]);
+        return new AwardCheck(stops, inst, card, vendor, offer, siteId, capId, lines, daily, mob, total);
+    }
+
+    private ActionResult ApplyAward(AwardAction a)
+    {
+        var chk = CheckAward(a);
+        if (chk.Stops.Count > 0) return ActionResult.Stop([.. chk.Stops]);
+        var inst = chk.Instrument!; var vendor = chk.Vendor!; var offer = chk.Offer!;
+        var siteId = chk.SiteId!; var capId = chk.CapabilityId!; var lines = chk.Lines;
+        long daily = chk.DailyCents, mob = chk.MobilizationCents, total = chk.TotalCents;
 
         var lead = offer.LeadTimeDays;
         var startLag = _rngWork.NextInt(inst.StartLagDays);
@@ -451,4 +461,12 @@ public sealed partial class Session
     }
 
     internal static string Money(long cents) => (cents / 100m).ToString("$#,##0", System.Globalization.CultureInfo.InvariantCulture);
+}
+
+/// <summary>Result of <see cref="Session.CheckAward"/>. Stops empty means the award would be accepted today.</summary>
+internal sealed record AwardCheck(
+    IReadOnlyList<string> Stops, InstrumentData? Instrument, CardState? Card, VendorData? Vendor, VendorOfferData? Offer,
+    string? SiteId, string? CapabilityId, List<string> Lines, long DailyCents, long MobilizationCents, long TotalCents)
+{
+    public static AwardCheck Fail(string reason) => new([reason], null, null, null, null, null, null, [], 0, 0, 0);
 }
