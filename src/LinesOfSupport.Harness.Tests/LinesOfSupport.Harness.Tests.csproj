@@ -19,5 +19,7 @@
     <Content Include="../../scenarios/schema/*.json" Link="fixtures/scenarios/schema/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../scenarios/rules/*.json" Link="fixtures/scenarios/rules/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../scenarios/_stub/*.json" Link="fixtures/scenarios/_stub/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../scenarios/spoke-b/**/*.json;../../scenarios/spoke-b/**/*.expected.txt" Link="fixtures/scenarios/spoke-b/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../scenarios/spoke-b-90/**/*.json;../../scenarios/spoke-b-90/**/*.expected.txt" Link="fixtures/scenarios/spoke-b-90/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LinesOfSupport.Sim.Data;
 
 namespace LinesOfSupport.Harness;
 
@@ -6,6 +7,13 @@ internal sealed record LoadedScenario(string Id, int Days, int SiteCount, bool U
 
 internal static class ScenarioLoader
 {
+    internal static ScenarioBundle LoadBundle(LoadedScenario scenario)
+    {
+        if (!string.Equals(Path.GetFileName(scenario.FilePath), "scenario.json", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Simulation requires a scenario.json file, as required by the Sim loader.");
+        return ScenarioBundle.Load(scenario.FilePath, scenario.RulesDirectory);
+    }
+
     internal static LoadedScenario Load(string argument)
     {
         var path = ResolvePath(argument);

@@ -50,34 +50,13 @@ public sealed class HarnessTests : IDisposable
     }
 
     [Fact]
-    public void RunCountsDaysAndDoesNotClaimToReplayInputLog()
+    public void RunRejectsIncompleteFixturesInsteadOfReportingFakeSimulation()
     {
         var scenario = Scenario();
-        var log = Write("input-log.json", "[{\"day\":1,\"action\":\"placeholder\"}]");
-        var result = Run("run", scenario, "--seed", "42", "--policy", "textbook", "--log", log);
-        Assert.Equal(0, result.Code);
-        Assert.Contains("Days advanced: 30.", result.Output);
-        Assert.Contains("seed: 42; policy: textbook", result.Output);
-        Assert.Contains("NOT replayed", result.Output);
-        Assert.Contains("M0 PLACEHOLDER", result.Output);
-    }
-
-    [Fact]
-    public void RunIsRepeatableForTheSameArguments()
-    {
-        var scenario = Scenario();
-        Assert.Equal(Run("run", scenario, "--seed", "-12"), Run("run", scenario, "--seed", "-12"));
-    }
-
-    [Theory]
-    [InlineData("{", false)]
-    [InlineData("[]", true)]
-    public void RunChecksInputLogJsonAndExistence(string content, bool missing)
-    {
-        var scenario = Scenario();
-        var log = missing ? Path.Combine(root, "missing.json") : Write("input-log.json", content);
-        var result = Run("run", scenario, "--log", log);
+        var result = Run("run", scenario, "--seed", "42", "--policy", "textbook");
         Assert.Equal(1, result.Code);
+        Assert.Contains("rules", result.Error);
+        Assert.Empty(result.Output);
     }
 
     [Fact]

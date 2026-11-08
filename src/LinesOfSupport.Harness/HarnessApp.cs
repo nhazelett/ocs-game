@@ -1,5 +1,8 @@
 using System.Globalization;
 using System.Text.Json;
+using LinesOfSupport.Sim;
+using LinesOfSupport.Sim.Core;
+using LinesOfSupport.Sim.Policies;
 
 namespace LinesOfSupport.Harness;
 
@@ -12,11 +15,11 @@ public static class HarnessApp
           validate <scenario-dir>
           batch <scenario> [--seeds 200] [--policies do-nothing,greedy,textbook] [--json]
         <scenario> is a directory, scenario.json path, or folder name under scenarios/.
-        batch uses Sim policies and metrics; run remains an explicitly labeled M0 placeholder until M1-01.
+        --log replays the log's seed and actions; do not combine it with --seed or --policy.
         Exit codes: 0 success, 1 invalid data or file error, 2 invalid command/arguments.
         """;
 
-    private static readonly string[] Policies = ["do-nothing", "greedy", "textbook"];
+    private static readonly IReadOnlyList<string> Policies = PolicyCatalog.Names;
 
     public static int Run(string[] args, TextWriter output, TextWriter error)
     {
@@ -45,18 +48,24 @@ public static class HarnessApp
                     var seed = IntegerOption(options, "--seed", 0, positive: false);
                     var policy = options.GetValueOrDefault("--policy", "do-nothing");
                     RequirePolicy(policy);
+                    if (options.ContainsKey("--log") && (options.ContainsKey("--seed") || options.ContainsKey("--policy")))
+                        throw new UsageException("With --log, the seed and actions come from the log; omit --seed and --policy.");
                     var scenario = ScenarioLoader.Load(args[1]);
-                    if (options.TryGetValue("--log", out var log))
+                    var bundle = ScenarioLoader.LoadBundle(scenario);
+                    Session session;
+                    string title;
+                    if (options.TryGetValue("--log", out var logPath))
                     {
-                        // Input-log contracts belong to Fable. M0 checks syntax without inventing replay rules.
-                        using var parsedLog = JsonDocument.Parse(File.ReadAllText(log));
-                        output.WriteLine("Input log: JSON parsed; actions are NOT replayed in the M0 placeholder.");
+                        var log = LoadLog(logPath);
+                        session = Replay.Run(bundle, log);
+                        title = $"{bundle.Scenario.Title} / {Path.GetFileNameWithoutExtension(logPath)}\n{log.Note}";
                     }
-                    WritePlaceholder(output);
-                    WriteValidationMode(scenario, output);
-                    var result = PlaceholderRun.Advance(scenario, seed, policy);
-                    output.WriteLine($"Scenario: {scenario.Id}; seed: {seed}; policy: {policy}.");
-                    output.WriteLine($"Days advanced: {result.DaysAdvanced}.");
+                    else
+                    {
+                        session = Replay.Run(bundle, seed, PolicyCatalog.Create(policy));
+                        title = $"{bundle.Scenario.Title} / policy {policy}";
+                    }
+                    output.Write(SessionReport.ToText(session, title));
                     break;
                 case "batch":
                     RequireOptions(options, ["--seeds", "--policies", "--json"]);
@@ -138,8 +147,14 @@ public static class HarnessApp
             throw new UsageException($"Unknown policy '{policy}'. Choose {string.Join(", ", Policies)}.");
     }
 
-    private static void WritePlaceholder(TextWriter output) =>
-        output.WriteLine("M0 PLACEHOLDER: all policies do nothing; seeds have no effect; no mission outcomes are simulated.");
+    private static InputLog LoadLog(string path)
+    {
+        try { return InputLog.Load(path); }
+        catch (NotSupportedException ex)
+        {
+            throw new InvalidDataException($"{path}: input log cannot be deserialized: {ex.Message}", ex);
+        }
+    }
 
     private static void WriteValidationMode(LoadedScenario scenario, TextWriter output) =>
         output.WriteLine(scenario.UsedSchemas
