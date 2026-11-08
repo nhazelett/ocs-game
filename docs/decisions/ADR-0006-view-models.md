@@ -43,5 +43,8 @@ Fable
 ## Addendum, 2026-11-08 (M2-09): prep screen
 `PrepScreen.View(bundle)` -> `PrepView` (budget days, the cost of all choices together, and each choice with what it changes "with" and "without", flagging choices this build records but does not model) and `PrepScreen.Check(bundle, picks)` -> `PrepCheck` (accepted, days used, stops). Both work before a Session exists; the game shows the prep screen, then calls `Session.Create(bundle, seed, picks)`. Check's stops are the same messages Create throws. Create now also rejects a choice picked twice.
 
+## Addendum, 2026-11-08 (Q11): per-arrangement ledger field
+`Arrangement.UnobligatedIncurredCents` (read-only): incurred minus obligated, clamped at zero, and always zero for a coordination arrangement. The metric `cost.unobligatedIncurredCents` is now computed as the sum of this property, so the ledger row and the total cannot drift. The game's Ledger panel (M2-05) reads it from `SessionView.Arrangements` and does no arithmetic of its own.
+
 ## Addendum, 2026-11-08 (M2-14): commander confidence
 `SessionView.LostConfidenceSites` (sites whose commander lost confidence through a refused handshake) and a new `GapFactorKind.PriorityDeferred` (appended; Avoidable). The rule itself is in docs/assumptions.md (Commander priority when capacity is short). The held-back record is a `RecordKind.Compliance` record whose subject is the work item id. Additive; no existing view changes shape.
