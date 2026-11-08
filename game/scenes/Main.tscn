@@ -126,11 +126,31 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="ReplayRow" type="HBoxContainer" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout/ReplayRow"]
+layout_mode = 2
+text = "Approach"
+
+[node name="ReplayPicker" type="OptionButton" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout/ReplayRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+
+[node name="ReplayButton" type="Button" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout/ReplayRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Replay"
+
 [node name="BoardContainer" type="SubViewportContainer" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 stretch = true
+
 
 [node name="BoardViewport" type="SubViewport" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout/BoardContainer"]
 unique_name_in_owner = true
@@ -179,6 +199,27 @@ layout_mode = 2
 [node name="Inbox" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 visible = false
 layout_mode = 2
+
+[node name="Contents" type="VBoxContainer" parent="Margin/Layout/WorkArea/DeskTabs/Inbox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+
+[node name="InboxDay" type="Label" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="InboxRecords" type="RichTextLabel" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = false
+selection_enabled = true
 
 [node name="Reports" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 visible = false

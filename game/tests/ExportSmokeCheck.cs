@@ -24,7 +24,17 @@ internal static class ExportSmokeCheck
             var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
             var map = shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
             Require(!picker.Disabled && picker.ItemCount == catalog.Count && map.Data is not null, "Exported shell discovers and displays its packaged data.");
-            GD.Print($"EXPORT_SMOKE_PASS: {catalog.Count} scenarios, referenced rules, main scene and C# runtime.");
+            var spoke = catalog.Select(x => x.Name).ToList().IndexOf("spoke-b");
+            Require(spoke >= 0, "Packaged Spoke B is present.");
+            picker.Select(spoke);
+            picker.EmitSignal(OptionButton.SignalName.ItemSelected, spoke);
+            var replay = shell.GetNode<Button>("%ReplayButton");
+            Require(!replay.Disabled, "Packaged approach logs enable Replay.");
+            shell.GetNode<OptionButton>("%ReplayPicker").Select(0);
+            replay.EmitSignal(Button.SignalName.Pressed);
+            for (var day = 0; day < 10; day++) shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.CompletedDay == 10 && shell.Session.View!.Capabilities.Any(c => c.SiteId == "spokeBSite" && c.CapabilityId == "power" && c.TodayPermille == 0), "Packaged approach 1 reaches day-10 power down.");
+            GD.Print($"EXPORT_SMOKE_PASS: {catalog.Count} scenarios, referenced rules, real session and packaged replay.");
             shell.GetTree().Quit();
         }
         catch (Exception error)

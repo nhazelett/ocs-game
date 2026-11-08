@@ -10,7 +10,7 @@ public partial class BoardSmokeTest : Node
           {"id":"beta","name":"Beta island","isHub":false}],
          "transportLinks":[{"from":"alpha","to":"beta","mode":"barge"},
                            {"from":"alpha","to":"beta","mode":"aircraft"}],
-         "sites":[{"name":"Beta site","island":"beta","opensDay":7}]}
+         "sites":[{"id":"beta-site","name":"Beta site","island":"beta","opensDay":7}]}
         """;
 
     public override async void _Ready()

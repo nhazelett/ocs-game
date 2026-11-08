@@ -25,7 +25,8 @@ $exe = Join-Path $output 'LinesOfSupport.exe'
 & $Godot --headless --path $gameRoot --export-release 'Windows Desktop' $exe
 if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $exe)) { throw 'Windows export failed.' }
 
-# Only authored runtime JSON is copied. Reference sources, golden logs, tools and docs stay in the repo.
+# Only runtime JSON is copied, including authored approach logs used by Replay.
+# Golden expected reports, reference sources, tools and docs stay in the repo.
 $scenarioOutput = New-Item -ItemType Directory -Path (Join-Path $output 'scenarios')
 foreach ($folder in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios') -Directory) {
     if (-not (Test-Path -LiteralPath (Join-Path $folder.FullName 'scenario.json'))) { continue }
@@ -33,6 +34,14 @@ foreach ($folder in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios')
     Copy-Item -LiteralPath (Join-Path $folder.FullName 'scenario.json') -Destination $target.FullName
     $theme = Join-Path $folder.FullName 'theme.json'
     if (Test-Path -LiteralPath $theme) { Copy-Item -LiteralPath $theme -Destination $target.FullName }
+    $golden = Join-Path $folder.FullName 'golden'
+    if (Test-Path -LiteralPath $golden) {
+        $logs = @(Get-ChildItem -LiteralPath $golden -Filter 'approach*.json' -File)
+        if ($logs.Count -gt 0) {
+            $replayOutput = New-Item -ItemType Directory -Path (Join-Path $target.FullName 'golden')
+            $logs | Copy-Item -Destination $replayOutput.FullName
+        }
+    }
 }
 $rulesOutput = New-Item -ItemType Directory -Path (Join-Path $scenarioOutput.FullName 'rules')
 Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios/rules') -Filter 'rules-*.json' -File |

@@ -5,7 +5,7 @@ namespace LinesOfSupport.Game;
 // Read-only presentation data from existing schema fields. This does not load or execute a simulation session.
 internal sealed record BoardIsland(string Id, string Name, bool IsHub);
 internal sealed record BoardLink(string From, string To, string Mode);
-internal sealed record BoardSite(string Name, string Island, int OpensDay);
+internal sealed record BoardSite(string Id, string Name, string Island, int OpensDay);
 internal sealed record ScenarioBoardData(string Id, string Title, IReadOnlyList<BoardIsland> Islands,
     IReadOnlyList<BoardLink> Links, IReadOnlyList<BoardSite> Sites)
 {
@@ -21,7 +21,7 @@ internal sealed record ScenarioBoardData(string Id, string Title, IReadOnlyList<
         var links = root.GetProperty("transportLinks").EnumerateArray().Select(x =>
             new BoardLink(Text(x, "from"), Text(x, "to"), Text(x, "mode"))).ToArray();
         var sites = root.GetProperty("sites").EnumerateArray().Select(x =>
-            new BoardSite(Text(x, "name"), Text(x, "island"), x.GetProperty("opensDay").GetInt32())).ToArray();
+            new BoardSite(Text(x, "id"), Text(x, "name"), Text(x, "island"), x.GetProperty("opensDay").GetInt32())).ToArray();
         if (links.Any(x => !ids.Contains(x.From) || !ids.Contains(x.To)) || sites.Any(x => !ids.Contains(x.Island)))
             throw new InvalidDataException("A board link or site references an unknown island.");
         if (sites.Any(x => x.OpensDay < 0))
