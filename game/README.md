@@ -23,7 +23,7 @@ Island positions are a deterministic screen layout based on authored array order
 
 The Sim's Day is the day **about to be played**. After playing day 10 the strip says **Day 11 (next)**, while Inbox and the status line say **day 10 results**. At the end it says **Day 30 complete** (or 90). Inbox renders `MorningBoard().Items` with the Sim's category/severity and text, alerts first. It treats text as literal text, never markup. Site colors use the lowest capability tile's Sim-provided status: green/full, amber/degraded, red/down, grey/not open or unknown. Labels also name the condition, so color is not the only signal.
 
-Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Sim validates the scenario/rules identity and initializes the log's seed/prep; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to seed 1/no prep. The normal interactive mode submits no actions; there is no action editor or automatic policy yet. All gameplay rules remain in Sim (ADR-0005).
+Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Sim validates the scenario/rules identity and initializes the log's seed/prep; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to seed 1/no prep. The interactive mode offers Inbox decisions; award editing and automatic policy play are not present yet. All gameplay rules remain in Sim (ADR-0005).
 
 ## Morning board (M2-01)
 
@@ -68,3 +68,9 @@ The script builds, imports, exports, copies runtime data, checks the real export
 The zip contains `LinesOfSupport.exe`, its PCK, the Godot-generated self-contained .NET data directory, sibling scenario/theme/shared-rules JSON, and `scenarios/<folder>/golden/approach*.json` for Replay. Keep these together. No SDK or Godot installation is needed to run it. Reference sources, golden expected reports, validators, handoffs and kit experiment scenes are excluded. The packaged smoke check also replays approach 1 to day-10 power down from outside the checkout.
 
 After an authorized `v*` tag is pushed, open the repository's **Actions > CI > the tag run > Artifacts**, then download `LinesOfSupport-<tag>-windows-x86_64`. Extract that artifact and the package zip inside it, and launch `LinesOfSupport.exe`. This work does not create a tag or publish a release. The package can step the schematic session and authored approach replays; there is no action UI yet.
+
+## Commitment decisions (M2-02)
+
+Inbox lists unresolved handshakes and out-of-scope work before decided history, with the original record text. Handshakes offer Ratify / Park / Refuse; out-of-scope work offers Deny / Ratify. Buttons send ResolveCommitmentAction and show the Sim response. Ratification uses the Sim-selected usable funding line; no price is entered. Parked items remain actionable, while other decisions retain their status/date.
+
+A successful player action during a replay takes control of the existing session and stops future scripted actions. The Inbox warns before the decision, and the status line identifies Replay or Your decisions. Rejected actions do not stop the replay. Selecting the scenario or loading Replay again starts afresh. CommitmentSmokeTest exercises all five choices against direct Sim state hashes, messages and the next-day takeover behavior.

@@ -206,7 +206,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="Contents" type="VBoxContainer" parent="Margin/Layout/WorkArea/DeskTabs/Inbox"]
+[node name="Contents" type="ScrollContainer" parent="Margin/Layout/WorkArea/DeskTabs/Inbox"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -215,15 +215,22 @@ offset_left = 12.0
 offset_top = 12.0
 offset_right = -12.0
 offset_bottom = -12.0
+horizontal_scroll_mode = 0
 
-[node name="InboxDay" type="Label" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents"]
+[node name="Items" type="VBoxContainer" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="InboxDay" type="Label" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents/Items"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="InboxRecords" type="RichTextLabel" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents"]
+[node name="InboxRecords" type="RichTextLabel" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents/Items"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
+fit_content = true
+scroll_active = false
 bbcode_enabled = false
 selection_enabled = true
 
