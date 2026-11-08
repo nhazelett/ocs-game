@@ -28,7 +28,7 @@ Only design or priority questions go to Nick (DISSENT.md section 6). Add the que
 
 ## 5. End
 1. Handoff note `docs/handoffs/YYYY-MM-DD-fable-<topic>.md` from the template, including "PRs reviewed this session" and "Expected look of this build".
-2. Update the backlog status line.
+2. Update the backlog status line (Fable owns it; Codex PRs update only their own rows), and mark merged Codex items Done.
 3. The session's final message is short and plain: what merged, what Fable built, anything waiting in `backlog/FOR-NICK.md`. Scheduled runs send it as the run summary (push notification).
 
 ## Environment notes
