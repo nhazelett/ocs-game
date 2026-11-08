@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ocs-game/schema/rules.schema.json",
+  "title": "OCS: Lines of Support rules file (v0)",
+  "description": "Rules shared across scenarios: thresholds, instrument parameters, consequence curves, model constants. Versioned; every save records the version it was played under. Money is integer cents. Days are integers. Fractions are 0 to 1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "rulesVersion", "asOf", "thresholds", "uca", "instruments", "prepChoices", "aggregateRates", "model", "sco"],
+  "properties": {
+    "schemaVersion": { "const": 0 },
+    "rulesVersion": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}(\\.[0-9]+)?$", "description": "Year-month of the regulatory baseline, optional patch, e.g. 2025-10 or 2025-10.1" },
+    "asOf": { "type": "string", "format": "date" },
+    "notes": { "type": "string" },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["microPurchaseCents", "simplifiedAcquisitionCents", "basis"],
+      "properties": {
+        "microPurchaseCents": { "type": "integer", "minimum": 0 },
+        "simplifiedAcquisitionCents": { "type": "integer", "minimum": 0 },
+        "basis": { "type": "string", "description": "Which threshold set this is, e.g. 'contingency, outside the United States, FAR 2.101 effective 2025-10-01'" },
+        "sourceUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "uca": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["obligationCapBeforeProposal", "obligationCapAfterProposal", "definitizeWithinDays", "definitizeAtObligatedFraction", "approvalLagDays", "definitizationShopDays"],
+      "properties": {
+        "obligationCapBeforeProposal": { "type": "number", "minimum": 0, "maximum": 1 },
+        "obligationCapAfterProposal": { "type": "number", "minimum": 0, "maximum": 1 },
+        "definitizeWithinDays": { "type": "integer", "minimum": 1 },
+        "definitizeAtObligatedFraction": { "type": "number", "minimum": 0, "maximum": 1 },
+        "approvalLagDays": { "$ref": "#/$defs/intRange" },
+        "definitizationShopDays": { "$ref": "#/$defs/intRange" },
+        "sourceUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "instruments": {
+      "type": "object",
+      "description": "One entry per instrument id. Keys are the instrument ids the sim knows.",
+      "additionalProperties": false,
+      "required": ["sf44", "gpc", "purchaseOrder", "bpaEstablish", "bpaCall", "idiqEstablish", "idiqOrder", "uca", "acsa", "hostNation", "externalSupport", "coordination"],
+      "patternProperties": {
+        "^[a-zA-Z][a-zA-Z0-9]*$": { "$ref": "#/$defs/instrument" }
+      }
+    },
+    "prepChoices": {
+      "type": "array",
+      "description": "Pre-deployment window choices (SPEC 4.2).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "prepDays", "effects"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "label": { "type": "string" },
+          "prepDays": { "type": "integer", "minimum": 0 },
+          "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" }, "minItems": 1 }
+        }
+      }
+    },
+    "aggregateRates": {
+      "type": "object",
+      "description": "Daily event probabilities with a front-loaded decay: p(day) = floor + (start - floor) * 0.5^(day / halfLifeDays). Placeholders until playtesting (Nick, 7 Nov 2026).",
+      "additionalProperties": false,
+      "required": ["paymentErrorManual", "executionConfusionNoTerms", "bpaCallDeclineBase", "vendorWillingnessDecayPerLatePayment"],
+      "properties": {
+        "paymentErrorManual": { "$ref": "#/$defs/decayCurve" },
+        "executionConfusionNoTerms": { "$ref": "#/$defs/decayCurve" },
+        "bpaCallDeclineBase": { "$ref": "#/$defs/decayCurve" },
+        "vendorWillingnessDecayPerLatePayment": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilities", "defaultBufferDays", "missionWeights", "hoursPerPersonPerDay", "manualContractTimeFactor", "infoTiers"],
+      "properties": {
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "unit", "demandPerPersonPerDay", "dependsOn"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "label": { "type": "string" },
+              "unit": { "type": "string" },
+              "demandPerPersonPerDay": { "type": "number", "minimum": 0 },
+              "dependsOn": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Capability ids whose coverage gates this one's effective supply (e.g. power depends on fuel)" }
+            }
+          }
+        },
+        "defaultBufferDays": { "type": "number", "minimum": 0 },
+        "missionWeights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sortieGeneration", "throughput", "endurance", "resilience"],
+          "properties": {
+            "sortieGeneration": { "type": "number", "minimum": 0 },
+            "throughput": { "type": "number", "minimum": 0 },
+            "endurance": { "type": "number", "minimum": 0 },
+            "resilience": { "type": "number", "minimum": 0 }
+          }
+        },
+        "hoursPerPersonPerDay": { "type": "number", "minimum": 1 },
+        "manualContractTimeFactor": { "type": "number", "minimum": 1, "description": "Multiplier on written-action shop time while no contract-writing system is online" },
+        "infoTiers": { "type": "array", "items": { "enum": ["assumed", "estimated", "surveyed", "observed"] }, "minItems": 4, "maxItems": 4 }
+      }
+    },
+    "sco": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["responseLagDaysByResponsiveness", "terminationShopDayFactorWithGuidance", "disputeProbabilityWithoutGuidance", "disputeProbabilityWithGuidance", "jointBoardsStandupDays", "jointBoardsRequirementLagDays"],
+      "properties": {
+        "responseLagDaysByResponsiveness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["high", "medium", "low"],
+          "properties": {
+            "high": { "$ref": "#/$defs/intRange" },
+            "medium": { "$ref": "#/$defs/intRange" },
+            "low": { "$ref": "#/$defs/intRange" }
+          }
+        },
+        "terminationShopDayFactorWithGuidance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "disputeProbabilityWithoutGuidance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "disputeProbabilityWithGuidance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "jointBoardsStandupDays": { "$ref": "#/$defs/intRange" },
+        "jointBoardsRequirementLagDays": { "$ref": "#/$defs/intRange" }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_-]*$" },
+    "intRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": { "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 0 } }
+    },
+    "decayCurve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "floor", "halfLifeDays"],
+      "properties": {
+        "start": { "type": "number", "minimum": 0, "maximum": 1 },
+        "floor": { "type": "number", "minimum": 0, "maximum": 1 },
+        "halfLifeDays": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "binding", "writtenTerms", "shopDays", "startLagDays", "requiresPayingAgent", "requiresSystemOrManual", "maxActionCents", "limitBasis"],
+      "properties": {
+        "label": { "type": "string" },
+        "binding": { "type": "boolean", "description": "False for BPAs and coordinations: the other party may decline or withdraw" },
+        "writtenTerms": { "type": "boolean", "description": "False for SF 44 and GPC: services run on these roll the execution-confusion curve" },
+        "shopDays": { "$ref": "#/$defs/intRange", "description": "Shop-days of work to create or use the instrument; multiplied by manualContractTimeFactor when written and no system is online" },
+        "startLagDays": { "$ref": "#/$defs/intRange", "description": "Calendar days from action to the arrangement being able to deliver, excluding vendor lead time" },
+        "requiresPayingAgent": { "type": "boolean" },
+        "requiresSystemOrManual": { "type": "boolean", "description": "True for written instruments" },
+        "maxActionCents": { "type": ["integer", "null"], "minimum": 0, "description": "Hard cap per action; null means governed by limitBasis or none" },
+        "limitBasis": { "enum": ["none", "microPurchase", "simplifiedAcquisition", "vehicleScope", "nte", "partnerStock", "agreement"] },
+        "obligatesMinimumGuaranteeFraction": { "type": "number", "minimum": 0, "maximum": 1, "description": "IDIQ: fraction of estimated value obligated at award as the minimum guarantee" },
+        "declineProbabilityBase": { "type": "number", "minimum": 0, "maximum": 1, "description": "Non-binding instruments: base chance a call is declined; scaled by market tempo and vendor reliability" },
+        "withdrawalNoticeDays": { "$ref": "#/$defs/intRange", "description": "Non-binding instruments: notice given when the other party walks away" },
+        "approvalLagDays": { "$ref": "#/$defs/intRange", "description": "For instruments needing an approver (UCA via SCO, external support via SCO and higher)" },
+        "mobilizationDays": { "$ref": "#/$defs/intRange", "description": "External support: contractor mobilization after award" },
+        "minimumUsefulDurationDays": { "type": "integer", "minimum": 0 },
+        "notes": { "type": "string" }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "description": "A typed state change. The sim implements each 'kind'. Kept open-ended in v0; the Sim rejects kinds it does not know.",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string" },
+        "target": { "type": "string" },
+        "value": {},
+        "days": { "type": "integer" },
+        "fraction": { "type": "number" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}
