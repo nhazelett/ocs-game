@@ -1,0 +1,45 @@
+{
+  "scenario": "spoke-b-90",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 4 (SPEC 5, adapted): go straight for the enduring answer and nothing for day 7. SPEC 5 uses an external support request; that instrument arrives at M3, so this uses the turnkey UCA with no bridge. Same lesson: the enduring arrangement is not the first-week answer.",
+  "prepChoices": [
+    "systemAccess",
+    "cashAndPayingAgent"
+  ],
+  "actions": [
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "fuelSupply",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "maintenance",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "turnkey",
+      "instrument": "uca",
+      "vendor": "vendorB",
+      "card": "req0007",
+      "quantity": 470,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    }
+  ]
+}

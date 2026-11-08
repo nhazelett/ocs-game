@@ -9,16 +9,21 @@ namespace LinesOfSupport.Sim.Tests;
 /// </summary>
 public class GoldenTests
 {
+    private static readonly string[] Scenarios = ["spoke-b", "spoke-b-90"];
+
     public static IEnumerable<object[]> ApproachLogs()
-        => Directory.GetFiles(Path.Combine(Repo.Scenario("spoke-b"), "golden"), "approach*.json")
-                    .OrderBy(p => p, StringComparer.Ordinal).Select(p => new object[] { Path.GetFileName(p) });
+        => Scenarios.SelectMany(sc => Directory.GetFiles(Path.Combine(Repo.Scenario(sc), "golden"), "approach*.json")
+                    .OrderBy(p => p, StringComparer.Ordinal).Select(p => new object[] { sc, Path.GetFileName(p) }));
+
+    public static IEnumerable<object[]> PolicyRuns()
+        => Scenarios.SelectMany(sc => new[] { "do-nothing", "greedy", "textbook" }.Select(p => new object[] { sc, p }));
 
     [Theory]
     [MemberData(nameof(ApproachLogs))]
-    public void Approach_logs_match_their_reviewed_reports(string file)
+    public void Approach_logs_match_their_reviewed_reports(string scenario, string file)
     {
-        var bundle = Repo.Load("spoke-b");
-        var path = Path.Combine(Repo.Scenario("spoke-b"), "golden", file);
+        var bundle = Repo.Load(scenario);
+        var path = Path.Combine(Repo.Scenario(scenario), "golden", file);
         var log = InputLog.Load(path);
         var session = Replay.Run(bundle, log);
         var title = $"{bundle.Scenario.Title} / {Path.GetFileNameWithoutExtension(file)}\n{log.Note}";
@@ -26,14 +31,12 @@ public class GoldenTests
     }
 
     [Theory]
-    [InlineData("do-nothing")]
-    [InlineData("greedy")]
-    [InlineData("textbook")]
-    public void Policies_at_seed_1_match_their_reviewed_reports(string policy)
+    [MemberData(nameof(PolicyRuns))]
+    public void Policies_at_seed_1_match_their_reviewed_reports(string scenario, string policy)
     {
-        var bundle = Repo.Load("spoke-b");
+        var bundle = Repo.Load(scenario);
         var session = Replay.Run(bundle, 1, PolicyCatalog.Create(policy));
-        Check(Path.Combine(Repo.Scenario("spoke-b"), "golden", $"policy-{policy}-seed1.expected.txt"),
+        Check(Path.Combine(Repo.Scenario(scenario), "golden", $"policy-{policy}-seed1.expected.txt"),
               SessionReport.ToText(session, $"{bundle.Scenario.Title} / policy {policy}"));
     }
 

@@ -131,10 +131,12 @@ public class InvariantTests
 /// <summary>The yardstick in SPEC 6: a scenario fails review if textbook loses or do-nothing wins.</summary>
 public class BalanceTests
 {
-    [Fact]
-    public void Textbook_beats_greedy_beats_do_nothing_on_Spoke_B()
+    [Theory]
+    [InlineData("spoke-b")]
+    [InlineData("spoke-b-90")]
+    public void Textbook_beats_greedy_beats_do_nothing(string scenario)
     {
-        var bundle = Repo.Load("spoke-b");
+        var bundle = Repo.Load(scenario);
         double Median(string policy)
         {
             var v = Enumerable.Range(0, 60).Select(seed => Replay.Run(bundle, seed, PolicyCatalog.Create(policy)).Metrics["mission.output"]).OrderBy(x => x).ToList();

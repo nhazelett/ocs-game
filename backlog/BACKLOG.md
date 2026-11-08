@@ -1,4 +1,4 @@
-Status against plan: M0 code items done except M0-07 and M0-11. OBJ-0001 to 0003 decided by Nick (B, B, B with a re-review caveat). Unauthorized commitments designed (SPEC 4.5). Next: Codex M0-11, M1-03, M1-01; Fable M0-07, M1-02, M1-04.
+Status against plan: M0 code items done except M0-07 (Fable) and M0-11 (Codex PR 15 open). M1-02 Spoke B 90-day done. Next: Fable M0-07, M1-04; Codex M0-11, M1-03, M1-01.
 
 Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
 
@@ -22,6 +22,6 @@ Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell
 | M0-14 | Extend the generated kit | Terrain, routes, buildings, vehicles and support pieces share palette/script and provenance | Codex | tools/, assets/, game/, backlog/, own handoff | Queued; not started |
 | M0-15 | Batch metric spread table and --json | Per-policy min/median/max of exposed metrics; honest day-count/not-simulated fallback until Sim metrics exist | Codex | src/LinesOfSupport.Harness*, backlog/, own handoff | Queued; not started |
 | M1-01 | Harness runs the real Sim | `run` uses `Replay.Run(bundle, seed, PolicyCatalog.Create(policy))` or `Replay.Run(bundle, InputLog.Load(log))` and prints `SessionReport.ToText`; `batch` reports min/median/max of mission.output and each passCriteria metric per policy; delete PlaceholderRun. ADR-0005. | Codex | src/LinesOfSupport.Harness | Not started |
-| M1-02 | spoke-b-90: the 90-day cut of Spoke B | UCA overdue, HHQ inquiry and funding expiry visible in the golden logs | Fable | scenarios/ | Not started |
+| M1-02 | spoke-b-90: the 90-day cut of Spoke B | UCA overdue, HHQ inquiry and funding expiry visible in the golden logs | Fable | scenarios/ | Done |
 | M1-03 | Codex reads docs/DISSENT.md and the decided OBJ-0001 to OBJ-0003 | Codex handoff notes it read them; any disagreement is a new objection with an artifact | Codex | docs/objections/ | Not started |
 | M1-04 | Unauthorized commitments per SPEC 4.5 | Situation 1 inbox decision (ratify, park, refuse) with vendor patience and walk-off, markup or refusal afterward, HHQ inquiry on long parking; situation 2 deny or ratify for out-of-scope work under an active contract; per-unit precedent that moves the odds of the next one; golden logs for each choice on Spoke B | Fable | src/LinesOfSupport.Sim, scenarios/ | Not started |

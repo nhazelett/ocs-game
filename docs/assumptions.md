@@ -30,7 +30,7 @@ Legend: **Real** is the mechanism as it exists; **Modeled** is what the sim does
 | External support contract | Program-specific request and approval chain, task order competition, pricing, mobilization. | Requested from the OCS seat through the SCO; approval lag 10 to 20 days; mobilization 14 to 30 days; no competition modeled; price is a scenario parameter; minimum useful duration. No program is named in content. | Keeps content from going stale and keeps the lesson (start it early so the bridge can end). | None planned |
 | Coordination | Informal arrangements between units; no contract. | A zero-cost arrangement that can be withdrawn when scenario events say the other party's priorities changed. | Teaches the difference between coordination and contractual execution. | None planned |
 | Unauthorized commitments | FAR 1.602-3 ratification procedures and approval levels. | A unit directing a vendor creates a ratification work item that costs shop-days; no approval levels modeled. | Time cost is the lesson. | None planned |
-| Terminations | FAR Part 49; cure and show-cause notices for default; settlement for convenience; legal review. | A termination is a work item; with SCO guidance it costs half the shop-days and carries a low dispute probability; without, full cost and a higher dispute probability that resolves weeks later. No settlement cost modeled yet. | The SCO lesson. | M3 for settlement cost |
+| Terminations | FAR Part 49; cure and show-cause notices for default; settlement for convenience; legal review; deobligation of the unperformed portion. | A termination is a work item. The unperformed portion of a fully obligated award is deobligated: back to its line while the line is current, lapsed if it has expired. SCO guidance and dispute probabilities arrive with the SCO channel. No settlement cost yet. | The money lesson without settlement accounting. | M3 for settlement cost and SCO guidance |
 | Warrants | Warrant limits and authority. | A scenario parameter; null means sufficient. A prep choice can raise it. | Not a mechanic until someone asks. | On request |
 
 ## Simulation model
@@ -62,3 +62,12 @@ Legend: **Real** is the mechanism as it exists; **Modeled** is what the sim does
 | UCA obligations | Obligations are made as funds and limits allow; definitization fixes the price. | Obligated daily to cover incurred cost, up to the cap (50%, 75% after the proposal; the quoted total once definitized) and the money left on the line. Three unpaid days stop work. | Shows the caps and the funding dependency without accounting detail. | None planned |
 | Mission output | Commanders weigh sites by mission. | Each open site counts equally. | A small spoke carrying the flying mission matters as much as a large hub. | M3 commander weights |
 | Spoke B length | The prose situation runs 90 days. | The first playable cut runs 30; the UCA overdue clock and funding expiry fall after day 30 and appear as pending. | Nick chose 30 days for the first playable. | spoke-b-90 at M1 |
+
+## Added with M1-02 (8 Nov 2026)
+
+| Topic | Real | Modeled | Why | Revisit |
+| --- | --- | --- | --- | --- |
+| Definitization funding | The definitization modification obligates the definitized price with funds current at that time. | Definitizing obligates the remaining quoted total from the named line that day, as far as the line allows; any remainder waits on money. It never creates money. | Matches practice; makes fiscal-year timing matter. | None planned |
+| Vendor capacity | Capacity is a daily limit. | Counted only across arrangements whose periods overlap the new one. | A follow-on after an expiring contract is not double-booked. | None planned |
+| Incumbent follow-on | An incumbent already on site does not mobilize again. | No mobilization charge when the same vendor already has an active arrangement for the same capability at the same site. | Rewards planning the follow-on with the incumbent. | None planned |
+| Fiscal-year money | Appropriations expire; next year's funds arrive on their own schedule. | Lines have available and expiry days; spoke-b-90 has om1 expiring day 75 and om2 arriving day 78, with nothing obligable in between. | The trap in SPEC 5. | None planned |

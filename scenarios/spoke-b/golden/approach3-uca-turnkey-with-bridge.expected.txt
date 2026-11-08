@@ -38,7 +38,7 @@ Day 17
   START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
 Day 19
   ACTION    Termination of gens started.
-  END       gens terminated; performance ends day 19.
+  END       gens terminated; performance ends day 19. $38,916 deobligated back to om1.
 Day 20
   END       gens ended.
 Day 21
@@ -46,7 +46,7 @@ Day 21
 Day 22
   ACTION    Definitization of turnkey started; to be funded from om1.
 Day 24
-  DEFINITZD turnkey definitized at $634,500. Obligation caps lifted; obligations still need money on line om1.
+  DEFINITZD turnkey definitized at $634,500; obligation caps lifted; fully funded from om1.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -59,7 +59,7 @@ Spoke B Fuel                    ........................
 
 SCORECARD
   Mission output 94% (sortie generation 100%, throughput 100%, endurance 100%, resilience 58%)
-  Obligated $359,880; incurred $320,964; incurred but not obligated $0
+  Obligated $645,264; incurred $320,964; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
   Surveys 1; shop hours worked 94; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
 
@@ -69,4 +69,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.937)
 
-State hash 00208eac6f838cf9deca4adb4a6261275e2863d9e3331b16e5c012f6cbc7f420
+State hash 134ebb28b5cb97e483cc187aed4d5b2bf25e3c1428695afa0d75468ab246a3eb
