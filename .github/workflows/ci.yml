@@ -15,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reject unresolved merge markers in tracked text
+        run: |
+          python3 -m unittest discover -s tools/validate -p test_conflicts.py
+          python3 tools/validate/conflicts.py
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
@@ -90,6 +97,8 @@ jobs:
           grep -Fq 'REQUIREMENT_SMOKE_PASS:' "$RUNNER_TEMP/godot-requirement.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/ActionSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-action.log"
           grep -Fq 'ACTION_SMOKE_PASS:' "$RUNNER_TEMP/godot-action.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/DebriefSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-debrief.log"
+          grep -Fq 'DEBRIEF_SMOKE_PASS:' "$RUNNER_TEMP/godot-debrief.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/OtherActionsSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-other.log"
           grep -Fq 'OTHER_ACTIONS_SMOKE_PASS:' "$RUNNER_TEMP/godot-other.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PrepSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-prep.log"
