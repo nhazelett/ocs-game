@@ -93,15 +93,6 @@ public partial class GameShell
         RefreshMorningDesk(session.View, session.View.MorningBoard());
     }
 
-    private void RenderRequirementContext(SessionView? view)
-    {
-        DeskUi.Clear(linkedRequirement);
-        var card = SelectedCard is null ? null : view?.RequirementEditor(SelectedCard);
-        if (card is null) { linkedRequirement.AddChild(DeskUi.Label("Choose a linked requirement from the morning board.")); return; }
-        linkedRequirement.AddChild(DeskUi.Label($"{card.CardId} · {card.SiteName} · {card.CapabilityLabel}\nPeak demand: {card.PeakDemandUnits} {card.Unit}"));
-        foreach (var line in card.Lines) linkedRequirement.AddChild(DeskUi.Label($"{(line.On ? "On" : "Off")}: {line.Label}"));
-    }
-
     private void RenderLedgerContext(SessionView? view)
     {
         DeskUi.Clear(linkedLedger);
