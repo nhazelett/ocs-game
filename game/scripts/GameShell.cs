@@ -21,6 +21,7 @@ public partial class GameShell : Control
         GetNode<Button>("%Continue").Pressed += OnContinue;
         BuildMorningDesk();
         BuildCommitmentDesk();
+        BuildPerformanceDesk();
         BuildActionDesk();
         BuildDebriefDesk();
         BuildOtherActions();
@@ -148,6 +149,7 @@ public partial class GameShell : Control
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
         RefreshMorningDesk(view, board);
         RefreshCommitments(view);
+        RefreshPerformance(view);
         RefreshActionDesk(view);
         RefreshBpaDesk(view);
         RefreshDebrief(view);
