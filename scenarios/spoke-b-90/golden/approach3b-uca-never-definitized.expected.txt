@@ -101,6 +101,16 @@ GAPS AND WHY (each traced back through its causes)
   Day 69: Fuel at Spoke B down to 0%: turnkey stopped work (unpaid UCA); fuel on hand ran out.
       <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
 
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.fuel days 68-90, lowest 0%, 22 day(s) down: AVOIDABLE
+      [avoidable] turnkey stopped work on day 63: incurred costs went past the obligation cap; it had been past due for definitization since day 36.
+      [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
+  #1 spokeBSite.power days 63-90, lowest 0%, 27 day(s) down: AVOIDABLE
+      [unforeseeable] turnkey failed on day 63 with full operator and maintenance coverage.
+      [avoidable] turnkey stopped work on day 63: incurred costs went past the obligation cap; it had been past due for definitization since day 36.
+      [avoidable] Power depends on fuel, which was short. (see #0)
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, turnkey, ended on day 76.
+
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 27)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 22)

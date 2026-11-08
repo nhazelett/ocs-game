@@ -29,6 +29,7 @@ public class ViewModelTests
             foreach (var cap in s.Rules.Model.Capabilities)
                 _ = v.ActionEditor(site.Id, cap.Id);
         foreach (var a in pending.OfType<AwardAction>()) _ = v.Preview(a);
+        _ = v.Debrief();
     }
 
     [Theory]

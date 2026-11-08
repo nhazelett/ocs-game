@@ -76,3 +76,23 @@ Legend: **Real** is the mechanism as it exists; **Modeled** is what the sim does
 | Vendor capacity | Capacity is a daily limit. | Counted only across arrangements whose periods overlap the new one. | A follow-on after an expiring contract is not double-booked. | None planned |
 | Incumbent follow-on | An incumbent already on site does not mobilize again. | No mobilization charge when the same vendor already has an active arrangement for the same capability at the same site. | Rewards planning the follow-on with the incumbent. | None planned |
 | Fiscal-year money | Appropriations expire; next year's funds arrive on their own schedule. | Lines have available and expiry days; spoke-b-90 has om1 expiring day 75 and om2 arriving day 78, with nothing obligable in between. | The trap in SPEC 5. | None planned |
+
+## Debrief tags (M2-08)
+
+SPEC 4: avoidable means the information existed; discoverable means it was available for a cost; unforeseeable means no path to know. A gap takes the most controllable tag among its factors.
+
+| Factor | Tag | Rule |
+| --- | --- | --- |
+| Missing supply line | Avoidable | An arrangement for a capability that brings this one (power's fuel supply) was bought without that line; the requirement's dependency checklist showed it from the day the card was submitted. |
+| Uncovered requirement | Avoidable | A submitted requirement had nothing supplying it on a day it was needed; the debrief names the last arrangement that ended and the next one that started late. |
+| Coordination withdrawn | Avoidable | A coordination was the only source and was withdrawn; a coordination is not a contract. Counted only if no contract supplied the need after the withdrawal. |
+| Handshake lost | Avoidable | A handshake was parked or left open until the vendor walked off, or refused with nothing in its place. |
+| Off-island consumable | Discoverable, or Avoidable once surveyed | Deliveries from another island wait on the surface link; before a survey of the site's island returned, the dependency was discoverable; after, it was known. Weather closures in the three days before are named as context. |
+| Demand above supply | Avoidable | Continuous supply sized below demand; population steps are in the plan from day 1. |
+| Vendor failure | Avoidable without operator or maintenance lines, otherwise Unforeseeable | Missing lines raise daily failure odds. |
+| UCA stop work | Avoidable | Incurred costs passed the obligation cap or the money on the line; the overdue date is named when there is one. |
+| Execution confusion | Avoidable | A recurring service on a buy with no written terms. |
+| BPA call declined | Unforeseeable | A BPA is not binding; any call can be declined. |
+| Dependency | Inherits | The gap in the capability it depends on. |
+
+What the tags do not do yet: judge whether the information was worth its cost (a survey's shop hours against the gap it would have prevented). That is the counterfactual view (M3).
