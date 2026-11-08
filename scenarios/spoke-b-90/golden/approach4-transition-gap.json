@@ -1,0 +1,115 @@
+{
+  "scenario": "spoke-b-90",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "The transition planner flagging a gap (backlog M3-05): as approach4-transition-plans, but the turnkey UCA is sized at 25 days, so it ends day 41 while the external support contract cannot start before day 47. The planner shows the gap when the second plan is made (day 17) and flags it on the morning board five days before the UCA runs out; the player does nothing, and Spoke B loses power until the external contract arrives. The debrief tags the gap avoidable.",
+  "prepChoices": [
+    "systemAccess",
+    "cashAndPayingAgent"
+  ],
+  "actions": [
+    {
+      "kind": "survey",
+      "day": 1,
+      "island": "spokeB"
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "fuelSupply",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "maintenance",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "gens",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "card": "req0007",
+      "lines": [
+        "generation",
+        "maintenance"
+      ],
+      "quantity": 360,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1",
+      "cor": "corReyes"
+    },
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "turnkey",
+      "instrument": "uca",
+      "vendor": "vendorB",
+      "card": "req0007",
+      "quantity": 470,
+      "startDay": 7,
+      "durationDays": 25,
+      "fundingLine": "om1",
+      "cor": "corReyes"
+    },
+    {
+      "kind": "requestExternalSupport",
+      "day": 2,
+      "id": "extPower",
+      "card": "req0007",
+      "quantity": 470,
+      "durationDays": 60,
+      "fundingLine": "om1",
+      "cor": "corReyes"
+    },
+    {
+      "kind": "coordinate",
+      "day": 3,
+      "id": "hubFuelRun",
+      "site": "spokeBSite",
+      "capability": "fuel",
+      "quantity": 900,
+      "fromSite": "hubSite"
+    },
+    {
+      "kind": "planTransition",
+      "day": 6,
+      "id": "bridgeToUca",
+      "outgoing": "gens",
+      "incoming": "turnkey"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 16,
+      "commitment": "oos1",
+      "choice": "deny",
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "planTransition",
+      "day": 17,
+      "id": "ucaToEnduring",
+      "outgoing": "turnkey",
+      "incoming": "extPower"
+    },
+    {
+      "kind": "definitize",
+      "day": 22,
+      "arrangement": "turnkey",
+      "fundingLine": "om1"
+    }
+  ]
+}

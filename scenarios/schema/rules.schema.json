@@ -733,6 +733,26 @@
           "type": "string"
         }
       }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Transition plans between arrangements (SPEC 2 and 4; backlog M3-05): the default overlap and how far ahead the planner flags a gap.",
+      "properties": {
+        "defaultOverlapDays": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Days the incoming arrangement must deliver at full before the outgoing one is cut over, when a plan does not say."
+        },
+        "warnDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The planner flags a projected gap on the morning board once the outgoing arrangement ends within this many days."
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

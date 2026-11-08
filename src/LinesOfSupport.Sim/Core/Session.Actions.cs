@@ -34,6 +34,7 @@ public sealed partial class Session
             RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
             AcsaOrderAction o => ApplyAcsaOrder(o),
             HostNationRequestAction h => ApplyHostNationRequest(h),
+            PlanTransitionAction p => ApplyPlanTransition(p),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -62,6 +63,7 @@ public sealed partial class Session
         RequestExternalSupportAction r => $"external support request {r.Id}",
         AcsaOrderAction o => $"ACSA order {o.Id}",
         HostNationRequestAction h => $"host nation support request {h.Id}",
+        PlanTransitionAction p => $"transition plan {p.Id}",
         _ => a.GetType().Name,
     };
 

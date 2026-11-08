@@ -21,6 +21,8 @@ public enum GapFactorKind
     HostNationWithdrawn,
     /// <summary>An off-island delivery was bumped from the airlift or held in customs past its due day (M3-06).</summary>
     LiftDelay,
+    /// <summary>A transition plan's outgoing arrangement ended before the incoming one was delivering (M3-05).</summary>
+    TransitionGap,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>

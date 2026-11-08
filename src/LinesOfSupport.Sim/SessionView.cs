@@ -137,6 +137,14 @@ public sealed class SessionView
     /// <summary>Capabilities the host nation has withdrawn support for; "*" means all.</summary>
     public IReadOnlyCollection<string> HostNationWithdrawn => _s.HostNationWithdrawn;
 
+    /// <summary>Transition plans made this game and where each stands (M3-05): the timeline of both arrangements, the
+    /// projected incoming start, overlap so far, and the soft gaps the planner highlights today.</summary>
+    public IReadOnlyList<TransitionView> Transitions() => _s.BuildTransitions();
+
+    /// <summary>What a transition plan would be if made today (M3-05): the same hard stops Apply would give, and the
+    /// projection and soft gaps it would show. Changes nothing and draws no random numbers.</summary>
+    public TransitionPreview PreviewTransition(PlanTransitionAction plan) => _s.BuildTransitionPreview(plan);
+
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
 }

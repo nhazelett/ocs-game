@@ -108,6 +108,17 @@ public static class SessionReport
                 sb.AppendLine($"  {i.Id} (day {i.OpenedDay}): {i.ArrangementId} at {i.SiteId}.{i.CapabilityId}, failed days {string.Join(", ", i.FailureDays)}. Decision: {s.View.PerformanceDecision(i)}.");
             sb.AppendLine();
         }
+        var transitions = s.View.Transitions();
+        if (transitions.Count > 0)
+        {
+            sb.AppendLine("TRANSITIONS (planned handoffs between arrangements)");
+            foreach (var t in transitions)
+            {
+                var hand = t.Handoff == "onDay" ? $"cut-over day {t.CutoverDay}" : $"cut-over after {t.OverlapDays} full day(s)";
+                sb.AppendLine($"  {t.Id} (day {t.PlannedDay}): {t.OutgoingId} to {t.IncomingId} at {t.SiteId}.{t.CapabilityId}, {hand}; {t.Status}, {t.BothRunningDays} day(s) of overlap{(t.ResolvedDay is { } r ? $", resolved day {r}" : "")}.");
+            }
+            sb.AppendLine();
+        }
         var debrief = s.View.Debrief();
         if (debrief.Gaps.Count > 0)
         {
@@ -177,6 +188,7 @@ public static class SessionReport
         RecordKind.Obligation => "OBLIGATE",
         RecordKind.VendorCapacity => "CAPACITY",
         RecordKind.ExternalSupport => "EXTERNAL",
+        RecordKind.Transition => "TRANSIT",
         _ => k.ToString().ToUpperInvariant(),
     };
 }

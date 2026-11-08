@@ -351,6 +351,16 @@ public sealed record RulesFile
     public PerformanceRulesData Performance { get; init; } = new();
     public CorRulesData Cor { get; init; } = new();
     public LiftRulesData Lift { get; init; } = new();
+    public TransitionRulesData Transition { get; init; } = new();
+}
+
+/// <summary>Transition plans (M3-05, SPEC 2 and 4): the overlap a plan asks for when it does not say, and how many days
+/// before the outgoing arrangement ends the planner flags a projected gap on the morning board.</summary>
+public sealed record TransitionRulesData
+{
+    public int DefaultOverlapDays { get; init; } = 2;
+    public int WarnDays { get; init; } = 5;
+    public string? Notes { get; init; }
 }
 
 /// <summary>Strategic lift for off-island sourcing (M3-06, SPEC 4.1 "Stateside or off-island sourcing"): an airlift queue

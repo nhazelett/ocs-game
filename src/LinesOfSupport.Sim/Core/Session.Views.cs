@@ -46,6 +46,7 @@ public sealed partial class Session
         RecordKind.Funding => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.CorReport => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.ExternalSupport => (BoardCategory.HigherHq, BoardSeverity.Info),
+        RecordKind.Transition => (BoardCategory.Delivery, BoardSeverity.Warning),
         RecordKind.WorkDone or RecordKind.Knowledge or RecordKind.Definitized or RecordKind.Obligation or RecordKind.Cash
             => (BoardCategory.Report, BoardSeverity.Info),
         _ => null, // Action and Rejected are the player's own daytime acts, already seen when made.

@@ -9,7 +9,7 @@ public sealed partial class Session
         public string? FailureRecord, ConfusionRecord, CapacityRecord;
     }
 
-    /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, external support awards, lifecycle, supply, money, score.</summary>
+    /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, external support awards, lifecycle, supply, transition plans, money, score.</summary>
     public void AdvanceDay()
     {
         if (Finished) throw new InvalidOperationException("the scenario has ended");
@@ -35,6 +35,7 @@ public sealed partial class Session
         PerformanceChecks(d, today);
         ResolveCapabilities(d, today);
         CorReporting(d, today);
+        TransitionClocks(d, today);
         Settle(d, today);
         Score(d);
         FundingClocks(d);
@@ -550,6 +551,13 @@ public sealed partial class Session
                 m[$"{k}.minPercent"] = c.MinPermille / 10;
             }
             foreach (var site in Scenario.Sites) m[$"site.{site.Id}.unitHabitPermille"] = Habit(site.Id);
+            // Only when a plan exists, so games without one keep their state hash (M3-05).
+            if (_transitions.Count > 0)
+            {
+                m["transitions.planned"] = _transitions.Count;
+                m["transitions.clean"] = _transitions.Count(t => t.Outcome == TransitionOutcome.Clean);
+                m["transitions.gap"] = _transitions.Count(t => t.Outcome == TransitionOutcome.Gap);
+            }
             return m;
         }
     }

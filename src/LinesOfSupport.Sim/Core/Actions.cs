@@ -21,6 +21,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(RequestExternalSupportAction), "requestExternalSupport")]
 [JsonDerivedType(typeof(AcsaOrderAction), "acsaOrder")]
 [JsonDerivedType(typeof(HostNationRequestAction), "hostNationRequest")]
+[JsonDerivedType(typeof(PlanTransitionAction), "planTransition")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -213,6 +214,29 @@ public sealed record HostNationRequestAction : PlayerAction
     public int? StartDay { get; init; }
     public int DurationDays { get; init; }
     public string? FundingLine { get; init; }
+}
+
+/// <summary>
+/// OCS and CCO seats: plan the handoff from an outgoing arrangement to an incoming one at the same site and capability
+/// (SPEC 2 "plan a transition", SPEC 3 "Transition plan"; backlog M3-05). Planning costs no shop hours. Incoming is an
+/// arrangement or an external support request (which becomes the arrangement of the same id when awarded).
+/// Handoff "incomingDelivering" (the default): once the incoming has delivered at full on OverlapDays consecutive days
+/// (default rules transition.defaultOverlapDays), the plan starts the termination of the outgoing, so its last day is the
+/// next one, shop hours permitting. Handoff "onDay": the outgoing's last day is CutoverDay whatever the incoming is doing.
+/// Either way, if the outgoing ends before the incoming is delivering, the gap is real; the plan flags it on the morning
+/// board rules transition.warnDays ahead. Owner names the seat that owns any gap: "cco" (default) or "ocs".
+/// Hard stops: unknown or ended arrangements, a refused request, different site or capability, an outgoing already in an
+/// open plan, an overlap under one day, and a cut-over day that is not in the outgoing's remaining period.
+/// </summary>
+public sealed record PlanTransitionAction : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string Outgoing { get; init; } = "";
+    public string Incoming { get; init; } = "";
+    public int? OverlapDays { get; init; }
+    public string? Handoff { get; init; }
+    public int? CutoverDay { get; init; }
+    public string? Owner { get; init; }
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)

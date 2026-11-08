@@ -147,3 +147,29 @@ public sealed record ActionPreview(
     bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps,
     long DailyCents, long MobilizationCents, long TotalCents,
     int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours);
+
+/// <summary>
+/// A transition plan as the transition planner shows it (M3-05, SPEC 3 "Transition plan"): both arrangements on a
+/// timeline, the planned overlap, and the gaps it projects. Status: planned, overlapping (both running), cuttingOver
+/// (termination of the outgoing in work), clean, gap.
+/// </summary>
+/// <param name="Handoff">"incomingDelivering" (cut over after OverlapDays of full delivery) or "onDay" (on CutoverDay).</param>
+/// <param name="Owner">"cco" or "ocs": the seat that owns a gap.</param>
+/// <param name="OutgoingPlannedEndDay">The outgoing's last day under the plan: its end, or the cut-over day when earlier.</param>
+/// <param name="IncomingStartDay">The incoming arrangement's start day once it exists; null for a request not yet awarded.</param>
+/// <param name="IncomingStartMin">Earliest projected start (equal to Max once known); null when the incoming is lost.</param>
+/// <param name="IncomingLost">True when the incoming will not arrive (declined, ended, request refused).</param>
+/// <param name="ProjectedGapDays">Days of gap at the earliest projected start (0 when none); null when the incoming is lost.</param>
+/// <param name="FullDays">Consecutive days so far the incoming delivered at full.</param>
+/// <param name="BothRunningDays">Days the outgoing and the incoming both ran.</param>
+/// <param name="Warnings">Soft gaps: coverage gaps, short overlap, undersizing against peak demand, funding for a pending request.</param>
+public sealed record TransitionView(
+    string Id, string SiteId, string CapabilityId, string OutgoingId, string IncomingId, string Handoff, int? CutoverDay, string Owner,
+    int OverlapDays, int OutgoingStartDay, int OutgoingEndDay, int OutgoingPlannedEndDay, int? IncomingStartDay,
+    int? IncomingStartMin, int? IncomingStartMax, bool IncomingLost, int? ProjectedGapDays,
+    int FullDays, int BothRunningDays, string Status, int PlannedDay, int? CutoverStartedDay, int? ResolvedDay,
+    IReadOnlyList<string> Warnings);
+
+/// <summary>What a transition plan would be if made today. HardStops are the strings Apply would return; Plan is null when
+/// stopped.</summary>
+public sealed record TransitionPreview(bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps, TransitionView? Plan);

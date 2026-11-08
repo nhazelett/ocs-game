@@ -747,5 +747,10 @@
       "max": 6
     },
     "notes": "SPEC 4.1: airlift queue 7 to 14 days by priority and bumpable by higher-priority cargo; sealift 30 to 45; customs on arrival. Placeholder chances, tuned in playtest (Q2 pattern)."
+  },
+  "transition": {
+    "defaultOverlapDays": 2,
+    "warnDays": 5,
+    "notes": "SPEC 2 and 4 transition plan (backlog M3-05): days of verified full delivery by the incoming arrangement before the cut-over, and how many days before the outgoing ends the planner flags a projected gap. Placeholders, tuned in playtest."
   }
 }

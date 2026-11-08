@@ -1,0 +1,142 @@
+Spoke B power (90 days) / approach4-transition-plans
+Approach 4 with approach 3's bridge, run through the transition planner (SPEC 3 'Transition plan', backlog M3-05): the same actions as approach4-external-with-uca-bridge, except that instead of terminating the BPA generators by hand on day 19 the player plans two handoffs. Day 6: gens to the turnkey UCA, cut over after two days of full delivery. Day 17: the turnkey UCA to the external support contract, the same way. Both transitions complete clean; the turnkey UCA ends two days early.
+Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
+Prep: systemAccess, cashAndPayingAgent.
+
+TIMELINE
+Before day 1
+  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 1
+  ACTION    Ordered a site survey of Second Island.
+  ACTION    Requirement req0007: Generator fuel supply switched on.
+  ACTION    Requirement req0007: Operators switched on.
+  ACTION    Requirement req0007: Maintenance and repair switched on.
+  ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
+  DONE      Survey team dispatched to Second Island; findings due day 3.
+Day 2
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 35 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $370,125. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+  DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
+Day 3
+  ACTION    Coordinated with the Hub unit for 900 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
+  SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
+  EXTERNAL  External support request extPower submitted through the SCO to the external office. Approval usually takes 10 to 20 days; the contractor then mobilizes before anything arrives.
+  START     hubFuelRun began: Fuel at Spoke B from the other unit, 900 gal/day.
+Day 5
+  DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 51. UCA issued with NTE $407,138; obligations capped at 50% of NTE until a qualifying proposal.
+Day 6
+  ACTION    Transition bridgeToUca planned: Power at Spoke B from gens (ends day 66) to turnkey (starts day 17); cut-over after 2 day(s) of full delivery by turnkey; gap owner: CCO seat.
+Day 7
+  START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
+Day 12
+  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  WITHDRAWN The other unit withdrew coordination hubFuelRun (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  END       hubFuelRun ended.
+Day 15
+  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+Day 16
+  ACTION    Payment for oos1 denied: $2,400 of work outside gens's scope.
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  DONE      Denial of payment for oos1 sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  EXTERNAL  The external office awarded extPower to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from om1. The contractor mobilizes for 30 days; performance starts day 47, ends day 106.
+Day 17
+  ACTION    Transition ucaToEnduring planned: Power at Spoke B from turnkey (ends day 51) to extPower (starts day 47); cut-over after 2 day(s) of full delivery by extPower; gap owner: CCO seat.
+  START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
+Day 18
+  TRANSIT   Transition bridgeToUca: turnkey delivered at full for 2 day(s); cut-over started, termination of gens in work so its last day is day 19 if the shop gets to it.
+Day 19
+  END       gens terminated; performance ends day 19. $38,916 deobligated back to om1.
+Day 20
+  END       gens ended.
+  TRANSIT   Transition bridgeToUca complete: gens ended day 19 with turnkey delivering; 3 day(s) of overlap.
+Day 21
+  UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+Day 22
+  ACTION    Definitization of turnkey started; to be funded from om1.
+Day 24
+  DEFINITZD turnkey definitized at $370,125; obligation caps lifted; fully funded from om1.
+Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on turnkey, extPower (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+Day 47
+  START     extPower began: Power at Spoke B from Theater base support contractor, 470 kW/day.
+Day 48
+  TRANSIT   Transition ucaToEnduring: extPower delivered at full for 2 day(s); cut-over started, termination of turnkey in work so its last day is day 49 if the shop gets to it.
+Day 49
+  END       turnkey terminated; performance ends day 49.
+Day 50
+  END       turnkey ended.
+  TRANSIT   Transition ucaToEnduring complete: turnkey ended day 49 with extPower delivering; 3 day(s) of overlap.
+Day 60
+  FAIL      extPower had equipment down.
+  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
+Day 61
+  OK        Power at Spoke B restored to 100%.
+Day 64
+  COR       COR report (SSG Reyes's relief): extPower had equipment down on day 60, reported 4 day(s) later.
+Day 65
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $146,871 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+Day 75
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $146,871 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+Day 80
+  FAIL      extPower had equipment down.
+  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
+Day 81
+  OK        Power at Spoke B restored to 100%.
+Day 84
+  COR       COR report (SSG Reyes's relief): extPower had equipment down on day 80, reported 4 day(s) later.
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
+                          123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+Hub Power                 ..........................................................................................
+Hub Fuel                  ..........................................................................................
+Spoke B Power                   .....................................................5...................5..........
+Spoke B Fuel                    ....................................................................................
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 93% (sortie generation 99%, throughput 99%, endurance 100%, resilience 54%)
+  Obligated $753,129; incurred $656,309; incurred but not obligated $0
+  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
+  Surveys 1; shop hours worked 120; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
+  spokeBSite.power: 0 day(s) down, 2 degraded, lowest 50%
+
+UNAUTHORIZED COMMITMENTS (SPEC 4.5)
+  oos1 (day 15): out-of-scope work on gens, $2,400. Decision: denied on day 16.
+
+GAPS AND WHY (each traced back through its causes)
+  Day 60: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
+      <- day 60: extPower had equipment down.
+          <- day 2: External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+  Day 80: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
+      <- day 80: extPower had equipment down.
+          <- day 2: External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+
+TRANSITIONS (planned handoffs between arrangements)
+  bridgeToUca (day 6): gens to turnkey at spokeBSite.power, cut-over after 2 full day(s); clean, 3 day(s) of overlap, resolved day 20.
+  ucaToEnduring (day 17): turnkey to extPower at spokeBSite.power, cut-over after 2 full day(s); clean, 3 day(s) of overlap, resolved day 50.
+
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.power days 60-60, lowest 50%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] extPower failed on day 60 with full operator and maintenance coverage. The COR reported it on day 64.
+  #1 spokeBSite.power days 80-80, lowest 50%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] extPower failed on day 80 with full operator and maintenance coverage. The COR reported it on day 84.
+
+PASS CRITERIA
+  [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
+  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
+  [met] Mission output at least 90% (mission.output = 0.928)
+
+State hash 4d08746bfb81dc97aa928efd1dcbe221efefa63cbb38097c9a5ed3553bac218c

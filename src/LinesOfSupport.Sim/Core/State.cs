@@ -226,6 +226,43 @@ public enum RecordKind
     /// <summary>An external support request moving through the SCO and the external office: submitted, approved and
     /// awarded, or refused (M3-05).</summary>
     ExternalSupport,
+    /// <summary>A transition plan's clock: a projected gap flagged, the cut-over started, or the handoff done clean or with a
+    /// gap (M3-05).</summary>
+    Transition,
+}
+
+public enum TransitionOutcome { Open, Clean, Gap }
+
+/// <summary>
+/// A transition plan (M3-05): outgoing arrangement to incoming arrangement or external support request, at one site and
+/// capability. Resolved the day after the outgoing's last day: Clean when the incoming is delivering then (stopped work
+/// and failures aside, it is running), Gap when it is not.
+/// </summary>
+public sealed class TransitionState
+{
+    public required string Id { get; init; }
+    public required string OutgoingId { get; init; }
+    public required string IncomingId { get; init; }
+    public required string SiteId { get; init; }
+    public required string CapabilityId { get; init; }
+    public int OverlapDays { get; init; }
+    /// <summary>"incomingDelivering" or "onDay".</summary>
+    public required string Handoff { get; init; }
+    public int? CutoverDay { get; init; }
+    /// <summary>"cco" or "ocs": the seat that owns a gap if one opens.</summary>
+    public required string Owner { get; init; }
+    public int PlannedDay { get; init; }
+    /// <summary>Consecutive days, up to today, the incoming delivered at full.</summary>
+    public int FullDays { get; set; }
+    /// <summary>Days the outgoing and the incoming were both running.</summary>
+    public int BothRunningDays { get; set; }
+    public int? CutoverStartedDay { get; set; }
+    public string? WarningRecordId { get; set; }
+    public int? WarningDay { get; set; }
+    public TransitionOutcome Outcome { get; set; } = TransitionOutcome.Open;
+    public int? ResolvedDay { get; set; }
+    public string? ResolvedRecordId { get; set; }
+    public string CauseId { get; init; } = "";
 }
 
 public enum ExternalSupportStatus { Preparing, InApproval, Awarded, Refused }
