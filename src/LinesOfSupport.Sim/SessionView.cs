@@ -37,6 +37,20 @@ public sealed class SessionView
     public IReadOnlyList<PerformanceIssueState> PerformanceIssues => _s.PerformanceIssues;
     /// <summary>What was done about an issue: cure notice and its outcome, terminated, re-sourced, or no decision.</summary>
     public string PerformanceDecision(PerformanceIssueState issue) => _s.IssueDecision(issue);
+    /// <summary>True when the scenario has a COR roster: failures on contracts this office awarded reach it only through
+    /// COR or unit reports (M3-04).</summary>
+    public bool CorModeled => _s.CorModeled;
+    /// <summary>The COR roster with each COR's current quality; a rotated COR is the relief (M3-04).</summary>
+    public IReadOnlyList<CorState> Cors => _s.Cors;
+    /// <summary>"fair: reports 2 days late, about 80% of problems".</summary>
+    public string CorSummary(CorState cor) => _s.CorSummary(cor);
+    /// <summary>Lag and report odds for a COR's current quality (rules cor.qualities).</summary>
+    public CorQualityData CorQuality(CorState cor) => _s.CorQuality(cor);
+    /// <summary>False for a VendorFailure record the office has not been told about (it waits for a COR or unit report,
+    /// which is a CorReport record). The morning board already leaves those out; record lists shown to the player
+    /// should too. Every other record is known when written.</summary>
+    public bool Known(CauseRecord record)
+        => record.Kind != RecordKind.VendorFailure || _s.Arrangements.FirstOrDefault(a => a.Id == record.Subject) is not { } a || _s.Observed(a);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;

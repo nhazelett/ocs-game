@@ -69,6 +69,8 @@ Day 39
 Day 40
   START     uc4 began: Power at Spoke B from Island Power Rentals, 468 kW/day.
 Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc4 has been open 5 days).
 Day 47
   WITHDRAWN Island Power Rentals walked off uc4 after 8 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
@@ -171,4 +173,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.65)
 
-State hash f663202382dd51a3b3e2058691dd082bf972ca9e8edb84902e482149bca74310
+State hash ed0cefeeb6c9409e0f9053f73bf0ba1174097c4e6f1ae6a523d899da5a34d71c

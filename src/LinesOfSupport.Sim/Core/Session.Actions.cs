@@ -30,6 +30,7 @@ public sealed partial class Session
             EstablishBpaAction e => ApplyEstablishBpa(e),
             EstablishIdiqAction e => ApplyEstablishIdiq(e),
             CureNoticeAction c => ApplyCureNotice(c),
+            DesignateCorAction c => ApplyDesignateCor(c),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -54,6 +55,7 @@ public sealed partial class Session
         EstablishBpaAction e => $"establish BPA {e.Id}",
         EstablishIdiqAction e => $"establish IDIQ {e.Id}",
         CureNoticeAction c => $"cure notice {c.Issue}",
+        DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
         _ => a.GetType().Name,
     };
 
@@ -244,6 +246,7 @@ public sealed partial class Session
             else if (a.Instrument == "uca" && line.RemainingCents <= 0) stops.Add($"funding line {line.Id} is empty");
             if (line is not null) stops.AddRange(FundingStops(line, capId, a.StartDay, a.DurationDays));
         }
+        if (a.Cor is not null) stops.AddRange(CorStops(a.Cor, inst));
         return new AwardCheck(stops, inst, card, vendor, offer, siteId, capId, lines, daily, mob, total);
     }
 
@@ -339,7 +342,7 @@ public sealed partial class Session
             Lines = p.Lines, SupplierIslandId = p.SupplierIsland, QuantityMilli = a.Quantity * 1000, DailyCostCents = p.DailyCostCents,
             MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine, FromGuaranteeCents = fromGuarantee,
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
-            StartDay = start, EndDay = start + a.DurationDays - 1,
+            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor,
         };
         foreach (var lineId in p.Lines)
         {

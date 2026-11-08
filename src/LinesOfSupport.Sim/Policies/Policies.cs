@@ -255,12 +255,34 @@ public sealed class TextbookPolicy : IPolicy
             var need = Math.Max(1, v.PeakDemandUnits(cs.SiteId, cs.CapabilityId, v.Day, v.LastDay));
             actions.Add(new CoordinateAction { Id = $"t-coord-{cs.SiteId}-{cs.CapabilityId}-{v.Day}", Site = cs.SiteId, Capability = cs.CapabilityId, Quantity = need, FromSite = hub.Id });
         }
+
+        // 9. CORs (M3-04): every contract with written terms gets the best COR on the roster; when a COR rotates home
+        //    and the relief is worse than someone else on the roster, re-designate.
+        if (v.CorModeled)
+        {
+            var best = Helpers.BestCor(v);
+            for (var i = 0; i < actions.Count; i++)
+                if (actions[i] is AwardAction { Cor: null } aw && v.Rules.Instruments.TryGetValue(aw.Instrument, out var inst) && inst.WrittenTerms)
+                    actions[i] = aw with { Cor = best.Id };
+            foreach (var a in v.Arrangements.Where(a => a.CorId is not null && a.CreatedDay > 0
+                                                        && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended))
+            {
+                var cur = v.Cors.First(c => c.Id == a.CorId);
+                if (cur.Id != best.Id && Helpers.CorRank(v, best) < Helpers.CorRank(v, cur) && _done.Add($"cor:{a.Id}:{best.Id}"))
+                    actions.Add(new DesignateCorAction { Arrangement = a.Id, Cor = best.Id });
+            }
+        }
         return actions;
     }
 }
 
 internal static class Helpers
 {
+    /// <summary>Lower is better: report lag first, then the share of problems reported (M3-04).</summary>
+    public static int CorRank(SessionView v, CorState c) { var q = v.CorQuality(c); return q.LagDays * 1000 + (1000 - q.ReportPermille); }
+
+    public static CorState BestCor(SessionView v) => v.Cors.OrderBy(c => CorRank(v, c)).ThenBy(c => c.Id, StringComparer.Ordinal).First();
+
     public static bool CardCovered(SessionView v, string cardId)
         => v.Arrangements.Any(a => a.CardId == cardId && a.Status is not ArrangementStatus.Declined) || v.Work.Any(w => w.CompletedDay is null && w.Label.Contains(cardId, StringComparison.Ordinal));
 

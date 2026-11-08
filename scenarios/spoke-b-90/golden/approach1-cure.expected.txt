@@ -46,25 +46,31 @@ Day 26
 Day 33
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  COR       COR report (SSG Reyes): gens had equipment down on day 33.
 Day 34
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 37
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  COR       COR report (SSG Reyes): gens had equipment down on day 37.
 Day 38
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 41
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  COR       COR report (SSG Reyes): gens had equipment down on day 41.
 Day 42
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
-  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on gens on days 41 and 42. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
+  COR       COR report (SSG Reyes): gens had equipment down on day 42.
+  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on gens on days 41 and 42 (COR SSG Reyes). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 43
   ACTION    Cure notice on pi1 (gens) started: 4 shop hours.
   DONE      Cure notice on pi1 delivered to Harbor Equipment Co: 10 days to cure, ending day 53.
   FAIL      uc1 missed today's delivery (no on-site storage line).
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on gens (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 46
   FAIL      uc1 missed today's delivery (no on-site storage line).
@@ -83,6 +89,7 @@ Day 54
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   FAIL      uc1 missed today's delivery (no on-site storage line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  COR       COR report (SSG Reyes's relief): gens had equipment down on day 50, reported 4 day(s) later.
 Day 55
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
 Day 56
@@ -91,10 +98,13 @@ Day 57
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 180 kW against demand 468; fuel at 0%.
+Day 58
+  COR       COR report (SSG Reyes's relief): gens had equipment down on day 54, reported 4 day(s) later.
 Day 59
   FAIL      uc1 missed today's delivery (no on-site storage line).
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  COR       COR report (SSG Reyes's relief): gens had equipment down on day 55, reported 4 day(s) later.
 Day 63
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 65
@@ -246,4 +256,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.762)
 
-State hash 15c3c75c2c635f68d388bb88a782b27324f72569ce430455e05dbea20a2144f2
+State hash a9f8d430d43a80af897f4793ffd3a940cdf862d31e2accdf25af587c62a4b49b

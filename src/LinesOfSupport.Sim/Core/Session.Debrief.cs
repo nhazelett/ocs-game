@@ -207,9 +207,9 @@ public sealed partial class Session
                         var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
-                                $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{IssueNote(a.Id)}", [r.Id, a.CauseId])
+                                $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{IssueNote(a.Id)}", [r.Id]));
+                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:

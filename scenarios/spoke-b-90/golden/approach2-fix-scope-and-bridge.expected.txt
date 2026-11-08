@@ -64,16 +64,21 @@ Day 40
 Day 43
   FAIL      gens had equipment down (no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  COR       COR report (SSG Reyes): gens had equipment down on day 43.
 Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on gens (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 45
   FAIL      gens had equipment down (no operators line).
-  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on gens on days 43 and 45. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   OK        Fuel at Spoke B restored to 100%.
 Day 46
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 48
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 49
+  COR       COR report (SSG Reyes's relief): gens had equipment down on day 45, reported 4 day(s) later.
+  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on gens on days 43 and 45 (COR SSG Reyes's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 50
   FAIL      gens had equipment down (no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
@@ -89,11 +94,14 @@ Day 53
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
 Day 54
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  COR       COR report (SSG Reyes's relief): gens had equipment down on day 50, reported 4 day(s) later.
 Day 55
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 56
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+Day 57
+  COR       COR report (SSG Reyes's relief): gens had equipment down on day 53, reported 4 day(s) later.
 Day 59
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
@@ -193,7 +201,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 86: Fuel at Spoke B down to 0%: fuel on hand ran out.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
-  pi1 (day 45): gens at spokeBSite.power, failed days 43, 45. Decision: no decision.
+  pi1 (day 49): gens at spokeBSite.power, failed days 43, 45. Decision: no decision.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 17-19, lowest 0%, 2 day(s) down: AVOIDABLE
@@ -218,7 +226,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] gens failed (first on day 43) and had no operators line; its failure odds were higher every day it ran. Performance issue pi1 opened day 45; decision: no decision.
+      [avoidable] gens failed (first on day 43) and had no operators line; its failure odds were higher every day it ran. Performance issue pi1 opened day 49; decision: no decision.
       [avoidable] Power depends on fuel, which was short. (see #2)
       [avoidable] Power depends on fuel, which was short. (see #3)
       [avoidable] Power depends on fuel, which was short. (see #4)
@@ -234,4 +242,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.773)
 
-State hash 5074d4297a0b4d8fdeae0775c82d4e84e6936aba2eca7eeb6f30f1db27869bd7
+State hash f9a92725224b86250a654fe839dba302ba3603542598ddcb91bfda7e76b2dfbf

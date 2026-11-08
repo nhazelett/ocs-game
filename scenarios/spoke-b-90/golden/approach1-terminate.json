@@ -16,7 +16,8 @@
       "quantity": 360,
       "startDay": 7,
       "durationDays": 60,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "cor": "corReyes"
     },
     {
       "kind": "resolveCommitment",

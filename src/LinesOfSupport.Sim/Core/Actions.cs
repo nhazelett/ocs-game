@@ -17,6 +17,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(EstablishBpaAction), "establishBpa")]
 [JsonDerivedType(typeof(CureNoticeAction), "cureNotice")]
 [JsonDerivedType(typeof(EstablishIdiqAction), "establishIdiq")]
+[JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -55,6 +56,8 @@ public sealed record AwardAction : PlayerAction
     public int DurationDays { get; init; }
     public string? FundingLine { get; init; }
     public long? NteCents { get; init; }
+    /// <summary>COR designated on the award (M3-04); null for none. Only contracts with written terms take one.</summary>
+    public string? Cor { get; init; }
 }
 
 /// <summary>Borrow capacity from another site's unit. Not a contract; can be withdrawn.</summary>
@@ -132,6 +135,14 @@ public sealed record EstablishIdiqAction : PlayerAction
 public sealed record CureNoticeAction : PlayerAction
 {
     public string Issue { get; init; } = "";
+}
+
+/// <summary>Designate a COR on a running or pending contract, replacing any COR it has (M3-04, DFARS 201.602-2).
+/// Takes effect at once; no shop hours.</summary>
+public sealed record DesignateCorAction : PlayerAction
+{
+    public string Arrangement { get; init; } = "";
+    public string Cor { get; init; } = "";
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)

@@ -41,6 +41,9 @@ Day 36
 Day 41
   COMPLY    Higher HQ asked why turnkey is past due for definitization. A response is now shop work.
   DONE      Response to higher HQ on turnkey sent.
+Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on turnkey (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
 Day 61
   OBLIGATE  turnkey has incurred $528,750 against $523,463 obligated: the UCA obligation cap of 75% of NTE is reached. The vendor stops work in 3 days if this stands.
 Day 63
@@ -112,4 +115,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.8)
 
-State hash 86e3e076d939e8dfe5e0a8c773f07d3c55e49c91501691dfb3a34fe71adf53b6
+State hash 47f0cb0fd5724c215d4f86286a2fe00ea434928abf5437906c99c485896829ed

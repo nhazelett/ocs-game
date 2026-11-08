@@ -52,6 +52,11 @@ Day 22
   ACTION    Definitization of t-req0007-enduring started; to be funded from om1.
 Day 24
   DEFINITZD t-req0007-enduring definitized at $693,900; obligation caps lifted; fully funded from om1.
+Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on t-req0007-enduring (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+Day 45
+  ACTION    SGT Okafor designated COR on t-req0007-enduring, replacing SSG Reyes's relief (fair: reports 2 day(s) late, about 80% of problems).
 Day 61
   FAIL      t-req0007-enduring had equipment down.
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
@@ -60,6 +65,7 @@ Day 62
   OK        Power at Spoke B restored to 100%.
 Day 63
   DONE      Written purchase order t-req0007-enduring-next awarded to Meridian Site Services; performance starts day 77, ends day 90. Obligated $107,940.
+  COR       COR report (SGT Okafor): t-req0007-enduring had equipment down on day 61, reported 2 day(s) later.
 Day 65
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $14,346 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 68
@@ -76,6 +82,8 @@ Day 81
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
 Day 82
   OK        Power at Spoke B restored to 100%.
+Day 83
+  COR       COR report (SGT Okafor): t-req0007-enduring-next had equipment down on day 81, reported 2 day(s) later.
 Day 84
   FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 
@@ -108,9 +116,9 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.power days 61-61, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] t-req0007-enduring failed on day 61 with full operator and maintenance coverage.
+      [unforeseeable] t-req0007-enduring failed on day 61 with full operator and maintenance coverage. The COR reported it on day 63.
   #1 spokeBSite.power days 81-81, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] t-req0007-enduring-next failed on day 81 with full operator and maintenance coverage.
+      [unforeseeable] t-req0007-enduring-next failed on day 81 with full operator and maintenance coverage. The COR reported it on day 83.
 
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
@@ -118,4 +126,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.926)
 
-State hash 1fb9c296c6072798cc7aefa084afdaab5d76a0a8007b3be2182519659788e612
+State hash 7084e5d8ec4243eea233e87435aa1c7abd92d15065c67f217761460e09aa6615

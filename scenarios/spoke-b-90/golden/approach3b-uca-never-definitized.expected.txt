@@ -55,6 +55,9 @@ Day 36
 Day 41
   COMPLY    Higher HQ asked why turnkey is past due for definitization. A response is now shop work.
   DONE      Response to higher HQ on turnkey sent.
+Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on turnkey (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
 Day 61
   OBLIGATE  turnkey has incurred $528,750 against $523,463 obligated: the UCA obligation cap of 75% of NTE is reached. The vendor stops work in 3 days if this stands.
 Day 63
@@ -65,6 +68,8 @@ Day 64
   SHORT     Power at Spoke B down to 0%: turnkey stopped work (unpaid UCA); supply 0 kW against demand 468.
 Day 65
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $365,774 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 67
+  COR       COR report (SSG Reyes's relief): turnkey had equipment down on day 63, reported 4 day(s) later.
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
@@ -116,7 +121,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] No funding line with money could pay for fuel on day 77 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
   #1 spokeBSite.power days 63-90, lowest 0%, 27 day(s) down: AVOIDABLE
-      [unforeseeable] turnkey failed on day 63 with full operator and maintenance coverage.
+      [unforeseeable] turnkey failed on day 63 with full operator and maintenance coverage. The COR reported it on day 67.
       [avoidable] turnkey stopped work on day 63: incurred costs went past the obligation cap; it had been past due for definitization since day 36.
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, turnkey, ended on day 76.
@@ -128,4 +133,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.834)
 
-State hash fc030ccfd0908e0be21d05c002a7ca85b597ca2d21933f6a3f996fd590998308
+State hash 9e6a18b934bd2f8a91079ddb125f1dc90daf57ddae2f7d36ddf1ab8d13336b16

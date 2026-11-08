@@ -44,6 +44,7 @@ public sealed partial class Session
         RecordKind.Inbox => (BoardCategory.Request, BoardSeverity.Info),
         RecordKind.Event => (BoardCategory.Event, BoardSeverity.Warning),
         RecordKind.Funding => (BoardCategory.Report, BoardSeverity.Warning),
+        RecordKind.CorReport => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.WorkDone or RecordKind.Knowledge or RecordKind.Definitized or RecordKind.Obligation or RecordKind.Cash
             => (BoardCategory.Report, BoardSeverity.Info),
         _ => null, // Action and Rejected are the player's own daytime acts, already seen when made.
@@ -71,6 +72,8 @@ public sealed partial class Session
         {
             var r = _records[i];
             if (Classify(r.Kind) is not var (cat, sev)) continue;
+            // A failure on a contract watched through COR reports is not news until the report arrives (M3-04).
+            if (r.Kind == RecordKind.VendorFailure && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } fa && !Observed(fa)) continue;
             if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
             var (lk, lid) = Link(r.Subject);
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy));
@@ -296,6 +299,7 @@ public sealed partial class Session
             gaps.Add($"Supplied from {IslandData(vendor.Island).Name}: deliveries depend on the transport links to {IslandData(site.Island).Name}.");
         else if (StockIsland(vendor, capId) is var stock && stock != site.Island && TierOn(site.Island, Day) == "surveyed")
             gaps.Add($"{vendor.Name} stocks this from {IslandData(stock).Name} (survey): deliveries depend on the transport links to {IslandData(site.Island).Name}.");
+        if (CorGap(a, inst) is { } corGap) gaps.Add(corGap);
         if (inst.RequiresSystemOrManual && Day < _systemOnlineDay)
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 

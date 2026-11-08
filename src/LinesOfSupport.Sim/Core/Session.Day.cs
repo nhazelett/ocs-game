@@ -33,6 +33,7 @@ public sealed partial class Session
         CapacityLimits(d, today);
         PerformanceChecks(d, today);
         ResolveCapabilities(d, today);
+        CorReporting(d, today);
         Settle(d, today);
         Score(d);
         FundingClocks(d);

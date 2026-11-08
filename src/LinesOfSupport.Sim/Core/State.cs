@@ -44,6 +44,25 @@ public sealed class Arrangement
     public UcaState? Uca { get; set; }
     public int DaysActive { get; set; }
     public bool MobilizationCharged { get; set; }
+    /// <summary>The COR designated on this arrangement, or null for none (M3-04).</summary>
+    public string? CorId { get; set; }
+}
+
+/// <summary>A COR on the roster (M3-04). When the COR rotates home, the relief keeps the designations at a lower quality.</summary>
+public sealed class CorState
+{
+    public required string Id { get; init; }
+    public required string Name { get; set; }
+    public string? Unit { get; init; }
+    public required string Quality { get; set; }
+    /// <summary>Day the nominated COR rotated home and an untrained relief took over, or null.</summary>
+    public int? RotatedDay { get; set; }
+}
+
+/// <summary>A report of a vendor failure on its way to the office (M3-04): from the COR, or from the unit when there is none.</summary>
+public sealed record CorReport(string ArrangementId, int FailureDay, int ArriveDay, string? CorId, string FailureRecordId)
+{
+    public string? RecordId { get; set; }
 }
 
 public sealed class UcaState
@@ -202,6 +221,8 @@ public enum RecordKind
     VendorCapacity,
     /// <summary>The comptroller's funding clock: a line released, late, about to expire, expired, or no money usable (M3-03).</summary>
     Funding,
+    /// <summary>A vendor failure reported to the office: by the COR with lag and fidelity set by quality, or by the unit (M3-04).</summary>
+    CorReport,
 }
 
 /// <summary>An IDIQ the shop can order from (M3-06): ceiling, minimum guarantee and what has been ordered so far.

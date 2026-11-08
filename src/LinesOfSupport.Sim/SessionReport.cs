@@ -161,6 +161,7 @@ public static class SessionReport
         RecordKind.Shortfall => "SHORT",
         RecordKind.Restored => "OK",
         RecordKind.VendorFailure => "FAIL",
+        RecordKind.CorReport => "COR",
         RecordKind.ExecutionConfusion => "CONFUSED",
         RecordKind.PaymentError => "PAYERR",
         RecordKind.Event => "EVENT",
