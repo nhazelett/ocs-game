@@ -113,3 +113,12 @@ What the tags do not do yet: judge whether the information was worth its cost (a
 | Shop work is sequenced by the contracting officer, inside the commander's priorities. | Otherwise the queue is the player's: first queued, first served. Work tied to no site (surveys, BPA setup) is never held back. There is no player action yet to reorder the queue or to make the priority call (M3). |
 | Confidence is rebuilt over time by delivering. | Not modeled: confidence does not recover within a game. |
 | | The first day an item gets fewer hours than the plain queue would have given it, a compliance record says so and links the refusal; the debrief tags a gap "Priority deferred" when such an award had not started on the gap day. |
+
+## Life support at Spoke B scenario sites (M2-17)
+
+| Topic | Real | Modeled | Why | Revisit |
+| --- | --- | --- | --- | --- |
+| Host-nation support cost | Host-nation support is provided under an agreement and reimbursed outside the deployed shop's own funding lines. | Inherited `hostNation` arrangements bill nothing to the shop's lines; Main Island Utilities provides lodging and waste at all three sites and food at the hub. It is reachable only through those agreements, not by a CCO purchase. | Keeps free host-nation support from showing as an unpaid liability. | M3 (ACSA/HNS reimbursement) |
+| Spoke B rations | Units arrive with MREs; hot meals need power and water. | Spoke B has no food capability in this scenario (MREs are not modeled). Spoke B lodging depends on power. | The food dependency on power would make every Spoke B power gap a food gap, which MREs do not suffer. | When Spoke B gets a field-feeding card |
+| Spoke C field feeding | A camp moves from MREs to contracted hot meals. | Spoke C starts with 10 days of food on hand and card req0014 (field feeding from day 12); food depends on water there, so a water failure takes meals down too. | A real dependency on the island's other open requirement. | Playtest |
+

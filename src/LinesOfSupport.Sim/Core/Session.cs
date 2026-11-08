@@ -262,7 +262,8 @@ public sealed partial class Session
         {
             Id = a.Id, Instrument = a.Instrument, VendorId = a.Vendor, VehicleId = a.Vehicle, SiteId = a.Site,
             CapabilityId = a.Capability, Lines = [.. a.Lines], SupplierIslandId = vendor.Island, QuantityMilli = qty,
-            DailyCostCents = offer is null ? 0 : qty * offer.UnitPriceCents / 1000,
+            // Host-nation support is reimbursed outside the shop's funding lines (assumptions.md), so it bills nothing here.
+            DailyCostCents = offer is null || a.Instrument == "hostNation" ? 0 : qty * offer.UnitPriceCents / 1000,
             ReliabilityPermille = Fixed.Permille(vendor.Reliability), CreatedDay = 0,
             StartDay = a.StartDay, EndDay = a.EndDay, Status = a.StartDay <= 1 ? ArrangementStatus.Active : ArrangementStatus.Pending,
         };

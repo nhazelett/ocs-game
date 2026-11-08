@@ -115,7 +115,11 @@ public sealed class TextbookPolicy : IPolicy
             var enduringId = $"t-{card.Id}-enduring";
             if (_done.Add($"enduring:{card.Id}"))
             {
-                var turnkey = Helpers.Vendors(v, card.CapabilityId, allLines).OrderBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id).FirstOrDefault();
+                // Only vendors this office can actually buy from (not reachable only through someone else's vehicle,
+                // such as host-nation support) with room for the quantity.
+                var turnkey = Helpers.Vendors(v, card.CapabilityId, allLines)
+                    .Where(x => !x.Vendor.VehicleOnly && Helpers.HasCapacity(v, x.Vendor, card.CapabilityId, sized))
+                    .OrderBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id).FirstOrDefault();
                 if (turnkey.Vendor is not null)
                 {
                     var total = sized * turnkey.Offer.UnitPriceCents * card.DurationDays;
