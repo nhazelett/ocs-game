@@ -68,6 +68,7 @@ Day 44
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 45
   FAIL      gens had equipment down (no operators line).
+  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on gens on days 43 and 45. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   OK        Fuel at Spoke B restored to 100%.
 Day 46
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
@@ -182,6 +183,9 @@ GAPS AND WHY (each traced back through its causes)
           <- day 19: Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   Day 86: Fuel at Spoke B down to 0%: fuel on hand ran out.
 
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 45): gens at spokeBSite.power, failed days 43, 45. Decision: no decision.
+
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 17-19, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] Coordination hubFuelRun was withdrawn on day 12 and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.
@@ -205,7 +209,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] gens failed (first on day 43) and had no operators line; its failure odds were higher every day it ran.
+      [avoidable] gens failed (first on day 43) and had no operators line; its failure odds were higher every day it ran. Performance issue pi1 opened day 45; decision: no decision.
       [avoidable] Power depends on fuel, which was short. (see #2)
       [avoidable] Power depends on fuel, which was short. (see #3)
       [avoidable] Power depends on fuel, which was short. (see #4)
@@ -220,4 +224,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.773)
 
-State hash 684528b10715d1e4e7fa12f95517bda3e092ad5bd3fcfeb8dbe827cb6779ea6b
+State hash 54f3501d6a536074e5391e16d79251bae09ee78db3d317186394c5012c4368ef

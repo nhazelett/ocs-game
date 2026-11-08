@@ -600,6 +600,53 @@
           "type": "string"
         }
       }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Vendor under-delivery and cure notices (FAR 49.402-3; backlog M2-18). Permille values are 0 to 1000.",
+      "required": [
+        "underDeliveryDays",
+        "windowDays",
+        "cureNoticeShopHours",
+        "cureDays",
+        "cureRecoverPermille",
+        "curedReliabilityPermille",
+        "defaultReliabilityDropPermille"
+      ],
+      "properties": {
+        "underDeliveryDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "windowDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cureNoticeShopHours": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cureDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cureRecoverPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "curedReliabilityPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "defaultReliabilityDropPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

@@ -1,0 +1,45 @@
+{
+  "scenario": "spoke-b-90",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 1 (90 days): when the generator BPA call under-delivers on days 41 and 42, a replacement is bought while it keeps running.",
+  "prepChoices": [],
+  "actions": [
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "gens",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "card": "req0007",
+      "quantity": 360,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 12,
+      "commitment": "uc1",
+      "choice": "ratify",
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 43,
+      "id": "gens2",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorA",
+      "site": "spokeBSite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "maintenance"
+      ],
+      "quantity": 360,
+      "durationDays": 45,
+      "fundingLine": "om1"
+    }
+  ]
+}

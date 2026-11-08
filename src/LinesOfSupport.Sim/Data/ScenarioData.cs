@@ -277,6 +277,7 @@ public sealed record RulesFile
     public ModelData Model { get; init; } = new();
     public ScoRulesData Sco { get; init; } = new();
     public UnauthorizedRulesData Unauthorized { get; init; } = new();
+    public PerformanceRulesData Performance { get; init; } = new();
 }
 
 /// <summary>Unauthorized commitments (SPEC 4.5). Permille values are 0 to 1000.</summary>
@@ -297,6 +298,19 @@ public sealed record UnauthorizedRulesData
     public int QuickRatifyWithinDays { get; init; } = 3;
     public int HabitRiseOutOfScopeRatifyPermille { get; init; } = 50;
     public int HabitCapPermille { get; init; } = 600;
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>Vendor under-delivery and cure notices (FAR 49.402-3). Permille values are 0 to 1000.</summary>
+public sealed record PerformanceRulesData
+{
+    public int UnderDeliveryDays { get; init; } = 2;
+    public int WindowDays { get; init; } = 3;
+    public int CureNoticeShopHours { get; init; } = 4;
+    public int CureDays { get; init; } = 10;
+    public int CureRecoverPermille { get; init; } = 650;
+    public int CuredReliabilityPermille { get; init; } = 980;
+    public int DefaultReliabilityDropPermille { get; init; } = 100;
     public string? SourceUrl { get; init; }
 }
 

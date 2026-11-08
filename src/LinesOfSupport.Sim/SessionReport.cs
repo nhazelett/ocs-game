@@ -101,6 +101,13 @@ public static class SessionReport
             }
             sb.AppendLine();
         }
+        if (s.PerformanceIssues.Count > 0)
+        {
+            sb.AppendLine("PERFORMANCE ISSUES (FAR 49.402-3)");
+            foreach (var i in s.PerformanceIssues)
+                sb.AppendLine($"  {i.Id} (day {i.OpenedDay}): {i.ArrangementId} at {i.SiteId}.{i.CapabilityId}, failed days {string.Join(", ", i.FailureDays)}. Decision: {s.View.PerformanceDecision(i)}.");
+            sb.AppendLine();
+        }
         var debrief = s.View.Debrief();
         if (debrief.Gaps.Count > 0)
         {
