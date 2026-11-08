@@ -1,5 +1,6 @@
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Data;
+using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Sim;
 
@@ -45,4 +46,22 @@ public sealed class SessionView
 
     public bool InWork(string awardId)
         => _s.Work.Any(w => w.CompletedDay is null && w.Kind == WorkKind.Award && w.Label.EndsWith(" " + awardId, StringComparison.Ordinal));
+
+    // ---------------------------------------------------------------- view-model contracts (M0-07, ADR-0006)
+
+    /// <summary>The always-visible strip: day, shop-hours and cash gauges, usable funds, system status.</summary>
+    public TopStripView TopStrip() => _s.BuildTopStrip();
+
+    /// <summary>What changed during the last AdvanceDay, alerts first, with the capability tiles and the top strip.</summary>
+    public MorningBoardView MorningBoard() => _s.BuildMorningBoard();
+
+    /// <summary>The requirement editor for one card; null if the card does not exist or has not been submitted yet.</summary>
+    public RequirementEditorView? RequirementEditor(string cardId) => _s.BuildRequirementEditor(cardId);
+
+    /// <summary>The action editor's pickers for a site and capability (optionally a card); null for an unknown site or capability.</summary>
+    public ActionEditorView? ActionEditor(string siteId, string capabilityId, string? cardId = null) => _s.BuildActionEditor(siteId, capabilityId, cardId);
+
+    /// <summary>What an award would do if applied today: the same hard stops Apply would give, the soft gaps, cost and timing.
+    /// Changes nothing and draws no random numbers.</summary>
+    public ActionPreview Preview(AwardAction award) => _s.BuildPreview(award);
 }
