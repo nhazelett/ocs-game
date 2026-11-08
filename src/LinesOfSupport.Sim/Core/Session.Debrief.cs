@@ -154,12 +154,15 @@ public sealed partial class Session
 
         var demand = DemandMilli(site, capId, d);
         var supplyCap = contributors.Sum(a => (a.CapabilityId == capId ? a.QuantityMilli : 0) + a.SuppliedQuantityMilli.GetValueOrDefault(capId));
-        if (cap.Delivery != "consumable" && supplyCap < demand)
+        // Consumables compare the contracted daily rate with daily demand: a rate below demand drains the buffer
+        // whatever the delivery schedule, so it is a sizing gap like an undersized generator.
+        if (supplyCap < demand)
         {
             var step = site.Population.Where(p => p.Day <= d).OrderByDescending(p => p.Day).FirstOrDefault();
             var growth = step is { Day: > 1 } ? $" Population rose to {step.Count} on day {step.Day}, which the plan showed from day 1." : "";
+            var perDay = cap.Delivery == "consumable" ? " a day" : "";
             yield return ($"demand|{step?.Day}", new GapFactor(GapFactorKind.DemandAboveSupply, GapTag.Avoidable, d,
-                $"Arrangements at {site.Name} were sized for {supplyCap / 1000} {cap.Unit} against demand of {demand / 1000}.{growth}", contributors.Select(a => a.CauseId).ToList()));
+                $"Arrangements at {site.Name} were sized for {supplyCap / 1000} {cap.Unit}{perDay} against demand of {demand / 1000}{perDay}.{growth}", contributors.Select(a => a.CauseId).ToList()));
         }
 
         foreach (var a in contributors)

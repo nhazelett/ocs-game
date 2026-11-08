@@ -1,4 +1,5 @@
 using LinesOfSupport.Sim.Core;
+using LinesOfSupport.Sim.Policies;
 using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Sim.Tests;
@@ -52,6 +53,18 @@ public class DebriefTests
         var fuel = d.Gaps.First(g => g.CapabilityId == "fuel" && g.Factors.Any(f => f.Kind == GapFactorKind.CoordinationWithdrawn));
         Assert.Equal(GapTag.Avoidable, fuel.Tag);
         Assert.True(fuel.StartDay >= 12);
+    }
+
+    [Fact]
+    public void Consumable_bought_for_opening_population_names_demand_above_supply()
+    {
+        // Greedy buys Spoke C bottled water at 1,800 gal a day for 120 people; on day 15 the site grows to 160.
+        var d = Replay.Run(Repo.Load("spoke-b"), 1, PolicyCatalog.Create("greedy")).View.Debrief();
+        var water = GapOn(d, "spokeCSite.water", 15);
+        Assert.Equal(GapTag.Avoidable, water.Tag);
+        Assert.Contains(water.Factors, f => f.Kind == GapFactorKind.DemandAboveSupply
+                                            && f.Text.Contains("1800 gal a day against demand of 2400 a day")
+                                            && f.Text.Contains("day 15"));
     }
 
     [Theory]

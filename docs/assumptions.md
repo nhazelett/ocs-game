@@ -88,7 +88,7 @@ SPEC 4: avoidable means the information existed; discoverable means it was avail
 | Coordination withdrawn | Avoidable | A coordination was the only source and was withdrawn; a coordination is not a contract. Counted only if no contract supplied the need after the withdrawal. |
 | Handshake lost | Avoidable | A handshake was parked or left open until the vendor walked off, or refused with nothing in its place. |
 | Off-island consumable | Discoverable, or Avoidable once surveyed | Deliveries from another island wait on the surface link; before a survey of the site's island returned, the dependency was discoverable; after, it was known. Weather closures in the three days before are named as context. |
-| Demand above supply | Avoidable | Continuous supply sized below demand; population steps are in the plan from day 1. |
+| Demand above supply | Avoidable | Supply sized below demand: continuous capacity below the load, or a consumable rate (a day) below daily use; population steps are in the plan from day 1. |
 | Vendor failure | Avoidable without operator or maintenance lines, otherwise Unforeseeable | Missing lines raise daily failure odds. |
 | UCA stop work | Avoidable | Incurred costs passed the obligation cap or the money on the line; the overdue date is named when there is one. |
 | Execution confusion | Avoidable | A recurring service on a buy with no written terms. |

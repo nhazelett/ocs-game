@@ -128,6 +128,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 18.
       [avoidable] g-req0007 (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
+      [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
   #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
   #3 spokeBSite.power days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
@@ -137,6 +138,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #4 spokeCSite.water days 9-9, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] g-req0012 failed (first on day 9) and had no plant operators or maintenance line; its failure odds were higher every day it ran.
   #5 spokeCSite.water days 15-30, lowest 0%, 2 day(s) down: AVOIDABLE
+      [avoidable] Arrangements at Spoke C were sized for 1800 gal a day against demand of 2400 a day. Population rose to 160 on day 15, which the plan showed from day 1.
       [avoidable] g-req0012 failed (first on day 19) and had no plant operators or maintenance line; its failure odds were higher every day it ran.
 
 PASS CRITERIA
