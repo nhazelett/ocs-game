@@ -134,4 +134,45 @@ public class RulesTests
         while (!s.Finished) s.AdvanceDay();
         Assert.Equal(30, s.Metrics["day"]);
     }
+
+    [Fact]
+    public void Termination_deobligates_the_unperformed_portion_back_to_a_current_line()
+    {
+        var s = NewSpokeB();
+        Assert.True(s.Apply(new AwardAction { Id = "f", Instrument = "purchaseOrder", Vendor = "vendorE", Site = "hubSite", Capability = "fuel", Quantity = 1000, DurationDays = 40, FundingLine = "om1" }).Accepted);
+        AdvanceTo(s, 10);
+        var line = s.Funding.Single(f => f.Id == "om1");
+        var before = line.ObligatedCents;
+        Assert.True(s.Apply(new TerminateAction { Arrangement = "f" }).Accepted);
+        AdvanceTo(s, 12);
+        Assert.True(line.ObligatedCents < before, "unperformed days should return to the line");
+        var f = s.Arrangements.Single(a => a.Id == "f");
+        Assert.Equal(f.ObligatedCents, f.DailyCostCents * (f.EndDay - f.StartDay + 1));
+    }
+
+    [Fact]
+    public void Definitization_obligates_the_full_price_while_the_money_is_current()
+    {
+        var s = NewSpokeB();
+        Assert.True(s.Apply(new AwardAction { Id = "u", Instrument = "uca", Vendor = "vendorB", Site = "spokeBSite", Capability = "power", Lines = ["generation", "fuelSupply", "operator", "maintenance"], Quantity = 470, DurationDays = 60, FundingLine = "om1" }).Accepted);
+        while (!s.Arrangements.Any(a => a.Id == "u" && a.Uca!.ProposalReceived)) s.AdvanceDay();
+        Assert.True(s.Apply(new DefinitizeAction { Arrangement = "u", FundingLine = "om1" }).Accepted);
+        while (!s.Arrangements.Single(a => a.Id == "u").Uca!.Definitized) s.AdvanceDay();
+        var u = s.Arrangements.Single(a => a.Id == "u");
+        Assert.Equal(u.Uca!.QuotedTotalCents, u.ObligatedCents);
+    }
+
+    [Fact]
+    public void Vendor_capacity_counts_only_overlapping_periods_and_incumbents_do_not_remobilize()
+    {
+        var s = NewSpokeB();
+        Assert.True(s.Apply(new AwardAction { Id = "a", Instrument = "bpaCall", Vendor = "vendorC", Vehicle = "bosBpa", Site = "spokeBSite", Capability = "power", Lines = ["generation"], Quantity = 500, StartDay = 7, DurationDays = 10, FundingLine = "om1" }).Accepted);
+        // Same vendor, 500 more, but starting after "a" ends: no overlap, so capacity allows it.
+        Assert.True(s.Apply(new AwardAction { Id = "b", Instrument = "bpaCall", Vendor = "vendorC", Vehicle = "bosBpa", Site = "spokeBSite", Capability = "power", Lines = ["generation"], Quantity = 500, StartDay = 20, DurationDays = 10, FundingLine = "om1" }).Accepted);
+        var t = NewSpokeB();
+        Assert.True(t.Apply(new AwardAction { Id = "u", Instrument = "uca", Vendor = "vendorB", Site = "spokeBSite", Capability = "power", Lines = ["generation", "fuelSupply", "operator", "maintenance"], Quantity = 300, DurationDays = 20, FundingLine = "om1" }).Accepted);
+        while (!t.Arrangements.Any(a => a.Id == "u" && a.Status == ArrangementStatus.Active)) t.AdvanceDay();
+        Assert.True(t.Apply(new AwardAction { Id = "n", Instrument = "purchaseOrder", Vendor = "vendorB", Site = "spokeBSite", Capability = "power", Lines = ["generation", "fuelSupply", "operator", "maintenance"], Quantity = 300, StartDay = t.Arrangements.Single(a => a.Id == "u").EndDay + 1, DurationDays = 10, FundingLine = "om1" }).Accepted);
+        Assert.Contains(t.Records, r => r.Subject == "n" && r.Text.Contains("quoted $45,000"));
+    }
 }
