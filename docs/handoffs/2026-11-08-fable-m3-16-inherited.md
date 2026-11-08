@@ -17,6 +17,7 @@ docs/design/M3-07-representative-scenario.md section 5: the Sustainment skeleton
 - No golden changed. 292 Sim and 120 Harness tests; validate.py and its pytest suite, provenance.py, conflicts.py.
 
 ## Unresolved
+- CI: godot-shell crashed twice at Godot shutdown after MORNING_SMOKE_PASS on this PR, then passed on a rerun; asked Codex in QUESTIONS Q13.
 - Costs incurred before day 1, modifications and invoices in work are not carried. `visibleProblem` is still ignored (M3-17). `noticeDays` is still ignored (M3-19).
 
 ## Next
