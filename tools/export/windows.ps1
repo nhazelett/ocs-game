@@ -29,7 +29,7 @@ if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $exe)) { throw 'Windows
 # Golden expected reports, reference sources, tools and docs stay in the repo.
 $scenarioOutput = New-Item -ItemType Directory -Path (Join-Path $output 'scenarios')
 foreach ($folder in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios') -Directory) {
-    if (-not (Test-Path -LiteralPath (Join-Path $folder.FullName 'scenario.json'))) { continue }
+    if ($folder.Name.StartsWith('_') -or -not (Test-Path -LiteralPath (Join-Path $folder.FullName 'scenario.json'))) { continue }
     $target = New-Item -ItemType Directory -Path (Join-Path $scenarioOutput.FullName $folder.Name)
     Copy-Item -LiteralPath (Join-Path $folder.FullName 'scenario.json') -Destination $target.FullName
     $theme = Join-Path $folder.FullName 'theme.json'
@@ -46,6 +46,8 @@ foreach ($folder in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios')
 $rulesOutput = New-Item -ItemType Directory -Path (Join-Path $scenarioOutput.FullName 'rules')
 Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios/rules') -Filter 'rules-*.json' -File |
     Copy-Item -Destination $rulesOutput.FullName
+
+if (Test-Path -LiteralPath (Join-Path $scenarioOutput.FullName '_stub')) { throw 'Development stub must not ship.' }
 
 # Launch from outside both the checkout and build folder, so cwd-dependent data loading cannot pass.
 # Release templates disallow scene-path overrides; the flag checks the actual main scene instead.
