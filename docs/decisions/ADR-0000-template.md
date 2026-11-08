@@ -1,6 +1,6 @@
 ## Title
 
-## Status (Proposed / Accepted / Superseded)
+## Status (Proposed / Accepted / Contested (OBJ-NNNN) / Superseded)
 
 ## Context
 
