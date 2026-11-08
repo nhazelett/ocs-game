@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 0,
+  "rulesVersion": "2025-10",
+  "asOf": "2026-11-07",
+  "notes": "Baseline rules for all 1.0 scenarios. Thresholds are the deployed, outside-the-United-States contingency values effective 1 Oct 2025 (FAR Case 2024-001, 90 FR 41872). UCA limits from DFARS 217.7404-3 and -4. Everything under instruments, prepChoices, aggregateRates, model and sco is a first-pass tunable from SPEC v0.2 sections 4.1 to 4.4; adjust in playtesting and bump the patch number.",
+  "thresholds": {
+    "microPurchaseCents": 4000000,
+    "simplifiedAcquisitionCents": 200000000,
+    "basis": "Contingency operation, outside the United States, FAR 2.101 as amended effective 2025-10-01",
+    "sourceUrl": "https://www.federalregister.gov/documents/2025/08/27/2025-16412/federal-acquisition-regulation-inflation-adjustment-of-acquisition-related-thresholds"
+  },
+  "uca": {
+    "obligationCapBeforeProposal": 0.5,
+    "obligationCapAfterProposal": 0.75,
+    "definitizeWithinDays": 180,
+    "definitizeAtObligatedFraction": 0.5,
+    "approvalLagDays": { "min": 1, "max": 3 },
+    "definitizationShopDays": { "min": 5, "max": 7 },
+    "sourceUrl": "https://www.acquisition.gov/dfars/217.7404-limitations."
+  },
+  "instruments": {
+    "sf44": {
+      "label": "SF 44 cash purchase",
+      "binding": true,
+      "writtenTerms": false,
+      "shopDays": { "min": 0, "max": 0 },
+      "startLagDays": { "min": 0, "max": 1 },
+      "requiresPayingAgent": true,
+      "requiresSystemOrManual": false,
+      "maxActionCents": null,
+      "limitBasis": "microPurchase",
+      "notes": "Draws cash on hand; replenishment lag is per scenario. A recurring service on repeated SF 44s rolls executionConfusionNoTerms daily and is tagged in the debrief."
+    },
+    "gpc": {
+      "label": "Government purchase card",
+      "binding": true,
+      "writtenTerms": false,
+      "shopDays": { "min": 0, "max": 0 },
+      "startLagDays": { "min": 0, "max": 1 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": false,
+      "maxActionCents": null,
+      "limitBasis": "microPurchase",
+      "notes": "Vendor acceptance and surcharge are per vendor. Single-purchase and monthly limits are per scenario shop settings."
+    },
+    "purchaseOrder": {
+      "label": "Written purchase order",
+      "binding": true,
+      "writtenTerms": true,
+      "shopDays": { "min": 1, "max": 2 },
+      "startLagDays": { "min": 0, "max": 1 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": true,
+      "maxActionCents": null,
+      "limitBasis": "simplifiedAcquisition",
+      "notes": "Shop days are with a system online; multiplied by model.manualContractTimeFactor when manual. Funding must be certified before award."
+    },
+    "bpaEstablish": {
+      "label": "Establish a blanket purchase agreement",
+      "binding": false,
+      "writtenTerms": true,
+      "shopDays": { "min": 2, "max": 3 },
+      "startLagDays": { "min": 0, "max": 0 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": true,
+      "maxActionCents": null,
+      "limitBasis": "none",
+      "declineProbabilityBase": 0.08,
+      "withdrawalNoticeDays": { "min": 3, "max": 7 },
+      "notes": "Creates a vehicle. Not binding: calls can be declined and the vendor can walk away with notice."
+    },
+    "bpaCall": {
+      "label": "BPA call",
+      "binding": false,
+      "writtenTerms": true,
+      "shopDays": { "min": 1, "max": 1 },
+      "startLagDays": { "min": 0, "max": 0 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": true,
+      "maxActionCents": null,
+      "limitBasis": "vehicleScope",
+      "declineProbabilityBase": 0.08,
+      "notes": "Hard stop outside scope tags, over call limit, or after the ordering period."
+    },
+    "idiqEstablish": {
+      "label": "Establish an IDIQ",
+      "binding": true,
+      "writtenTerms": true,
+      "shopDays": { "min": 8, "max": 15 },
+      "startLagDays": { "min": 0, "max": 0 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": true,
+      "maxActionCents": null,
+      "limitBasis": "none",
+      "obligatesMinimumGuaranteeFraction": 0.05,
+      "notes": "Creates a vehicle. Binding and enforceable; vendor capacity is still finite and produces a capacity event when exceeded."
+    },
+    "idiqOrder": {
+      "label": "IDIQ order",
+      "binding": true,
+      "writtenTerms": true,
+      "shopDays": { "min": 2, "max": 4 },
+      "startLagDays": { "min": 0, "max": 0 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": true,
+      "maxActionCents": null,
+      "limitBasis": "vehicleScope",
+      "notes": "Hard stop outside scope, over ceiling, or after the ordering period."
+    },
+    "uca": {
+      "label": "Undefinitized contract action",
+      "binding": true,
+      "writtenTerms": true,
+      "shopDays": { "min": 1, "max": 2 },
+      "startLagDays": { "min": 0, "max": 1 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": true,
+      "maxActionCents": null,
+      "limitBasis": "nte",
+      "approvalLagDays": { "min": 1, "max": 3 },
+      "notes": "Approval through the SCO channel. Obligation caps and the definitization clock are in the uca block."
+    },
+    "acsa": {
+      "label": "Acquisition and cross-servicing agreement order",
+      "binding": true,
+      "writtenTerms": true,
+      "shopDays": { "min": 1, "max": 2 },
+      "startLagDays": { "min": 2, "max": 5 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": false,
+      "maxActionCents": null,
+      "limitBasis": "partnerStock",
+      "notes": "Only when actors.acsaPartner.present. Reimbursement is a ledger line later."
+    },
+    "hostNation": {
+      "label": "Host nation support",
+      "binding": false,
+      "writtenTerms": false,
+      "shopDays": { "min": 1, "max": 2 },
+      "startLagDays": { "min": 3, "max": 10 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": false,
+      "maxActionCents": null,
+      "limitBasis": "agreement",
+      "withdrawalNoticeDays": { "min": 1, "max": 3 },
+      "notes": "Only when actors.hostNation.agreementExists. Reliability per scenario; withdrawable."
+    },
+    "externalSupport": {
+      "label": "External support contract task order",
+      "binding": true,
+      "writtenTerms": true,
+      "shopDays": { "min": 2, "max": 3 },
+      "startLagDays": { "min": 0, "max": 0 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": false,
+      "maxActionCents": null,
+      "limitBasis": "none",
+      "approvalLagDays": { "min": 10, "max": 20 },
+      "mobilizationDays": { "min": 14, "max": 30 },
+      "minimumUsefulDurationDays": 60,
+      "notes": "Requested from the OCS seat through the SCO; awarded by an external office; administered locally."
+    },
+    "coordination": {
+      "label": "Coordination (not a contract)",
+      "binding": false,
+      "writtenTerms": false,
+      "shopDays": { "min": 0, "max": 0 },
+      "startLagDays": { "min": 0, "max": 1 },
+      "requiresPayingAgent": false,
+      "requiresSystemOrManual": false,
+      "maxActionCents": 0,
+      "limitBasis": "none",
+      "withdrawalNoticeDays": { "min": 0, "max": 2 },
+      "notes": "Borrowing another unit's capacity. Withdrawn when the other party's priorities change; scenario events decide when."
+    }
+  },
+  "prepChoices": [
+    { "id": "gpcAccounts", "label": "Stand up GPC accounts and cardholder limits", "prepDays": 5, "effects": [ { "kind": "shop.gpcAvailableDay", "value": 1 } ] },
+    { "id": "cashAndPayingAgent", "label": "Arrange cash and a paying agent with FM", "prepDays": 2, "effects": [ { "kind": "shop.payingAgentAvailableDay", "value": 1 }, { "kind": "shop.cashReplenishLagDays", "value": 3 } ] },
+    { "id": "systemAccess", "label": "Request contract-writing system access and location data setup", "prepDays": 3, "effects": [ { "kind": "shop.systemOnlineDay", "value": 3 } ] },
+    { "id": "pullVehicles", "label": "Pull existing vehicles with scope and ceilings from reach-back", "prepDays": 1, "effects": [ { "kind": "vehicles.infoTier", "value": "surveyed" } ] },
+    { "id": "vendorLists", "label": "Bring vendor lists and vetting from reach-back", "prepDays": 2, "effects": [ { "kind": "vendors.infoTierUpgrade", "value": 1 }, { "kind": "vetting.shopDaysFactor", "fraction": 0.5 } ] },
+    { "id": "templatesAndKit", "label": "Bring templates and a manual contracting kit", "prepDays": 1, "effects": [ { "kind": "model.manualContractTimeFactorOverride", "value": 1.25 } ] },
+    { "id": "warrantOrThreshold", "label": "Request a warrant increase or threshold determination", "prepDays": 2, "effects": [ { "kind": "shop.warrantCents", "value": null, "note": "null means sufficient for the scenario" } ] },
+    { "id": "partnerAgreements", "label": "Confirm partner agreements (ACSA, host nation)", "prepDays": 1, "effects": [ { "kind": "actors.partnersConfirmed", "value": true } ] }
+  ],
+  "aggregateRates": {
+    "paymentErrorManual": { "start": 0.12, "floor": 0.02, "halfLifeDays": 10 },
+    "executionConfusionNoTerms": { "start": 0.10, "floor": 0.03, "halfLifeDays": 14 },
+    "bpaCallDeclineBase": { "start": 0.08, "floor": 0.04, "halfLifeDays": 20 },
+    "vendorWillingnessDecayPerLatePayment": 0.1
+  },
+  "model": {
+    "capabilities": [
+      { "id": "power", "label": "Power", "unit": "kW", "demandPerPersonPerDay": 1.2, "dependsOn": ["fuel"] },
+      { "id": "fuel", "label": "Fuel", "unit": "gal", "demandPerPersonPerDay": 3.0, "dependsOn": [] },
+      { "id": "water", "label": "Water", "unit": "gal", "demandPerPersonPerDay": 15.0, "dependsOn": ["power"] },
+      { "id": "lodging", "label": "Lodging", "unit": "beds", "demandPerPersonPerDay": 1.0, "dependsOn": ["power"] },
+      { "id": "food", "label": "Food service", "unit": "meals", "demandPerPersonPerDay": 3.0, "dependsOn": ["power", "water"] },
+      { "id": "waste", "label": "Waste removal", "unit": "gal", "demandPerPersonPerDay": 12.0, "dependsOn": [] },
+      { "id": "comms", "label": "Comms backhaul", "unit": "links", "demandPerPersonPerDay": 0.01, "dependsOn": ["power"] },
+      { "id": "transport", "label": "Ground transport", "unit": "vehicle-days", "demandPerPersonPerDay": 0.02, "dependsOn": ["fuel"] },
+      { "id": "mhe", "label": "Material handling equipment", "unit": "unit-days", "demandPerPersonPerDay": 0.01, "dependsOn": ["fuel"] }
+    ],
+    "defaultBufferDays": 3,
+    "missionWeights": { "sortieGeneration": 0.35, "throughput": 0.25, "endurance": 0.25, "resilience": 0.15 },
+    "hoursPerPersonPerDay": 8,
+    "manualContractTimeFactor": 1.75,
+    "infoTiers": ["assumed", "estimated", "surveyed", "observed"]
+  },
+  "sco": {
+    "responseLagDaysByResponsiveness": {
+      "high": { "min": 1, "max": 2 },
+      "medium": { "min": 2, "max": 4 },
+      "low": { "min": 4, "max": 7 }
+    },
+    "terminationShopDayFactorWithGuidance": 0.5,
+    "disputeProbabilityWithoutGuidance": 0.35,
+    "disputeProbabilityWithGuidance": 0.08,
+    "jointBoardsStandupDays": { "min": 3, "max": 7 },
+    "jointBoardsRequirementLagDays": { "min": 1, "max": 2 }
+  }
+}
