@@ -6,12 +6,13 @@ namespace LinesOfSupport.Harness;
 public static class HarnessApp
 {
     private const string Help = """
-        OCS: Lines of Support — M0 harness (no simulation rules yet)
+        OCS: Lines of Support — command-line harness
         Usage:
           run <scenario> [--seed N] [--policy do-nothing|greedy|textbook] [--log <input-log.json>]
           validate <scenario-dir>
-          batch <scenario> [--seeds 200] [--policies do-nothing,greedy,textbook]
+          batch <scenario> [--seeds 200] [--policies do-nothing,greedy,textbook] [--json]
         <scenario> is a directory, scenario.json path, or folder name under scenarios/.
+        batch uses Sim policies and metrics; run remains an explicitly labeled M0 placeholder until M1-01.
         Exit codes: 0 success, 1 invalid data or file error, 2 invalid command/arguments.
         """;
 
@@ -58,7 +59,7 @@ public static class HarnessApp
                     output.WriteLine($"Days advanced: {result.DaysAdvanced}.");
                     break;
                 case "batch":
-                    RequireOptions(options, ["--seeds", "--policies"]);
+                    RequireOptions(options, ["--seeds", "--policies", "--json"]);
                     var count = IntegerOption(options, "--seeds", 200, positive: true);
                     var selectedPolicies = options.GetValueOrDefault("--policies", string.Join(',', Policies)).Split(',');
                     foreach (var selected in selectedPolicies)
@@ -66,26 +67,13 @@ public static class HarnessApp
                     if (selectedPolicies.Distinct(StringComparer.Ordinal).Count() != selectedPolicies.Length)
                         throw new UsageException("--policies must not contain duplicates.");
                     var batchScenario = ScenarioLoader.Load(args[1]);
-                    WritePlaceholder(output);
-                    WriteValidationMode(batchScenario, output);
-                    output.WriteLine($"Scenario: {batchScenario.Id}; seeds: 0 through {count - 1}.");
-                    output.WriteLine("Outcome spread (days advanced only; mission scores unavailable):");
-                    output.WriteLine("| Policy | Runs | Min days | Mean days | Max days | Mission outcome |");
-                    output.WriteLine("| --- | --- | --- | --- | --- | --- |");
-                    foreach (var selected in selectedPolicies)
+                    var report = BatchReport.Create(batchScenario, count, selectedPolicies);
+                    if (options.ContainsKey("--json"))
+                        output.WriteLine(report.ToJson());
+                    else
                     {
-                        var minimum = int.MaxValue;
-                        var maximum = 0;
-                        long total = 0;
-                        for (var currentSeed = 0; currentSeed < count; currentSeed++)
-                        {
-                            var days = PlaceholderRun.Advance(batchScenario, currentSeed, selected).DaysAdvanced;
-                            minimum = Math.Min(minimum, days);
-                            maximum = Math.Max(maximum, days);
-                            total += days;
-                        }
-                        var mean = ((decimal)total / count).ToString("0.00", CultureInfo.InvariantCulture);
-                        output.WriteLine($"| {selected} | {count} | {minimum} | {mean} | {maximum} | not simulated |");
+                        WriteValidationMode(batchScenario, output);
+                        report.WriteText(output);
                     }
                     break;
                 default:
@@ -109,13 +97,20 @@ public static class HarnessApp
     private static Dictionary<string, string> ParseOptions(string[] args)
     {
         var options = new Dictionary<string, string>(StringComparer.Ordinal);
-        for (var i = 2; i < args.Length; i += 2)
+        for (var i = 2; i < args.Length; i++)
         {
-            if (!args[i].StartsWith("--", StringComparison.Ordinal) || i + 1 >= args.Length ||
-                args[i + 1].StartsWith("--", StringComparison.Ordinal))
-                throw new UsageException($"Expected an option followed by a value at '{args[i]}'.");
-            if (!options.TryAdd(args[i], args[i + 1]))
-                throw new UsageException($"Option '{args[i]}' was supplied more than once.");
+            var key = args[i];
+            if (!key.StartsWith("--", StringComparison.Ordinal))
+                throw new UsageException($"Expected an option at '{key}'.");
+            var value = "";
+            if (key != "--json")
+            {
+                if (i + 1 >= args.Length || args[i + 1].StartsWith("--", StringComparison.Ordinal))
+                    throw new UsageException($"Expected an option followed by a value at '{args[i]}'.");
+                value = args[++i];
+            }
+            if (!options.TryAdd(key, value))
+                throw new UsageException($"Option '{key}' was supplied more than once.");
         }
         return options;
     }
