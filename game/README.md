@@ -25,6 +25,12 @@ The Sim's Day is the day **about to be played**. After playing day 10 the strip 
 
 Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Sim validates the scenario/rules identity and initializes the log's seed/prep; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to seed 1/no prep. The normal interactive mode submits no actions; there is no action editor or automatic policy yet. All gameplay rules remain in Sim (ADR-0005).
 
+## Morning board (M2-01)
+
+The Board tab shows the Sim's morning items in alert-first order and its capability tiles. Linked items open their requirement, select their capability/site on the map, or select the matching arrangement in Ledger. The initial requirement/ledger destinations show real read-only context; their full editor/panel work follows in M2-03/M2-05. Items without a Sim link remain plain information. Event/island links focus their existing board text; cash/work links focus their ledger context.
+
+**Continue** plays up to seven days, stopping after the first day with an Alert or Request, or at scenario completion. It uses the same day/replay path as Next day. Its tooltip states this behavior; it does not auto-decide requests. `MorningSmokeTest.tscn` verifies the stopping rule, a seven-day quiet fixture and the three primary link destinations. A day-11 screenshot is in the M2-01 handoff.
+
 ## Runtime smoke check
 
 ```sh

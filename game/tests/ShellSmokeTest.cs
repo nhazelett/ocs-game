@@ -18,7 +18,6 @@ public partial class ShellSmokeTest : Node
             for (var i = 0; i < expected.Length; i++)
             {
                 Require(tabs.GetTabTitle(i) == expected[i], $"Tab {i}: {expected[i]}.");
-                Require(expected[i] == "Inbox" || tabs.GetTabControl(i).GetChildCount() == 0, "Editors remain empty; Inbox presents records.");
                 tabs.CurrentTab = i;
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 Require(tabs.GetCurrentTabControl().Visible, "Selected tab is visible.");
