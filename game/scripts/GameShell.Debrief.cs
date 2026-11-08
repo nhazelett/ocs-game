@@ -72,7 +72,7 @@ public partial class GameShell
                 {
                     foreach (var factor in gap.Factors)
                     {
-                        detail.AddChild(DeskUi.Label($"{factor.Kind} · {factor.Tag} · first day {factor.FirstDay}\n{factor.Text}" + (factor.DependsOnGap is { } index ? $"\nDepends on gap {index}" : "")));
+                        detail.AddChild(DeskUi.Label($"{GapFactorLabel(factor.Kind)} · {factor.Tag} · first day {factor.FirstDay}\n{factor.Text}" + (factor.DependsOnGap is { } index ? $"\nDepends on gap {index}" : "")));
                         AddCauseTrace(detail, view, factor.RecordIds);
                     }
                     detail.AddChild(DeskUi.Label("Shortfall causes"));
@@ -89,6 +89,12 @@ public partial class GameShell
         if (report.Commitments.Count == 0) debriefPanel.AddChild(DeskUi.Label("No unauthorized commitments."));
         GetNode<TabContainer>("%DeskTabs").CurrentTab = 8;
     }
+
+    internal static string GapFactorLabel(GapFactorKind kind) => kind switch
+    {
+        GapFactorKind.PriorityDeferred => "Shop work deferred after lost confidence",
+        _ => kind.ToString()
+    };
 
     private static void AddCauseTrace(VBoxContainer parent, SessionView view, IReadOnlyList<string> roots)
     {

@@ -11,6 +11,13 @@ public partial class SchematicMap : Node2D
     internal void SelectSite(string? id) { SelectedSite = id; QueueRedraw(); }
     internal IReadOnlyDictionary<string, SiteCondition> Conditions { get; private set; } = new Dictionary<string, SiteCondition>();
 
+    internal IReadOnlySet<string> LostConfidenceSites { get; private set; } = new HashSet<string>();
+    internal void ShowConfidence(IEnumerable<string> sites)
+    {
+        LostConfidenceSites = sites.ToHashSet(StringComparer.Ordinal);
+        QueueRedraw();
+    }
+
     internal void ShowConditions(IReadOnlyDictionary<string, SiteCondition> conditions)
     {
         Conditions = conditions;
@@ -20,6 +27,7 @@ public partial class SchematicMap : Node2D
     internal void ShowScenario(ScenarioBoardData? data)
     {
         Data = data;
+        LostConfidenceSites = new HashSet<string>();
         Conditions = new Dictionary<string, SiteCondition>();
         QueueRedraw();
     }
@@ -77,9 +85,11 @@ public partial class SchematicMap : Node2D
                     SiteCondition.Down => new Color(.95f, .3f, .3f), _ => new Color(.7f, .7f, .7f)
                 };
                 DrawCircle(marker, 8, color);
+                if (LostConfidenceSites.Contains(sites[i].Id))
+                    DrawRect(new Rect2(marker - new Vector2(11, 11), new Vector2(22, 22)), new Color(1, .75f, .25f), false, 2);
                 if (SelectedSite == sites[i].Id) DrawArc(marker, 13, 0, Mathf.Tau, 24, Colors.White, 2, true);
                 var label = condition == SiteCondition.NotOpen ? "not open" : condition.ToString().ToLowerInvariant();
-                Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · {label} · opens day {sites[i].OpensDay}", 300, 15);
+                Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · {label} · opens day {sites[i].OpensDay}{(LostConfidenceSites.Contains(sites[i].Id) ? " · confidence lost" : "")}", 300, 15);
             }
         }
     }

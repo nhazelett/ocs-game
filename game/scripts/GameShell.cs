@@ -140,6 +140,7 @@ public partial class GameShell : Control
             };
         }
         Map.ShowConditions(conditions);
+        Map.ShowConfidence(view?.LostConfidenceSites ?? []);
         GetNode<Label>("%InboxDay").Text = view is null ? "No scenario loaded" : $"Day {session.CompletedDay} results · next day {(view.Finished ? "complete" : view.Day.ToString())}";
         var records = board?.Items ?? [];
         GetNode<RichTextLabel>("%InboxRecords").Text = records.Count == 0 ? "No records for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
