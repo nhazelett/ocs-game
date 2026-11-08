@@ -13,7 +13,7 @@ Replace `godot` with your Godot .NET executable path if it is not on PATH. Open 
 
 ## Expected build
 
-A default-theme desktop shell: the real Sim's next day, shop queue/capacity and cash gauges, a left schematic board in a SubViewport, and a right desk with nine tabs. Inbox shows the morning board; editors remain empty. Use the tab-bar arrows to reach later tabs, or keyboard focus. The board/desk split can be dragged.
+A default-theme desktop shell: the real Sim's next day, shop queue/capacity and cash gauges, a left schematic board in a SubViewport, and a right desk with nine tabs. Inbox shows the morning board; Requirements edits submitted scope cards; later desk work follows its backlog items. Use the tab-bar arrows to reach later tabs, or keyboard focus. The board/desk split can be dragged.
 
 The Scenario picker lists folders under `scenarios/` containing `scenario.json`, preferring `_stub` initially. Choose **spoke-b** or **spoke-b-90** to start a fresh Session at seed 1 with no prep choices. The board reads existing islands, transport links and site IDs/names/opensDay. It draws shapes, mode-labeled lines and site markers. Parallel links are separated so both labels are readable. No textures or art assets are present.
 
@@ -74,3 +74,7 @@ After an authorized `v*` tag is pushed, open the repository's **Actions > CI > t
 Inbox lists unresolved handshakes and out-of-scope work before decided history, with the original record text. Handshakes offer Ratify / Park / Refuse; out-of-scope work offers Deny / Ratify. Buttons send ResolveCommitmentAction and show the Sim response. Ratification uses the Sim-selected usable funding line; no price is entered. Parked items remain actionable, while other decisions retain their status/date.
 
 A successful player action during a replay takes control of the existing session and stops future scripted actions. The Inbox warns before the decision, and the status line identifies Replay or Your decisions. Rejected actions do not stop the replay. Selecting the scenario or loading Replay again starts afresh. CommitmentSmokeTest exercises all five choices against direct Sim state hashes, messages and the next-day takeover behavior.
+
+## Requirements (M2-03)
+
+The Requirements tab lists only cards returned by RequirementEditor(card). Checkboxes send SetLineAction, without advancing time; the panel then reloads the Sim view. Missing-line warnings use GapIfOff verbatim. The dependency checklist shows none / in requirement / arranged and covering arrangements; peak demand and units are shown. There is no dollar entry. RequirementSmokeTest verifies edits against direct Sim hashes and checks the warning/checklist changes.
