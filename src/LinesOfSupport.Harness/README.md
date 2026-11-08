@@ -7,6 +7,7 @@ dotnet build src/LinesOfSupport.sln -c Release
 dotnet test src/LinesOfSupport.sln -c Release --no-build
 dotnet run --project src/LinesOfSupport.Harness -- validate scenarios/_stub
 dotnet run --project src/LinesOfSupport.Harness -- run _stub --seed 42 --policy do-nothing
+dotnet run --project src/LinesOfSupport.Harness -- run spoke-b --log scenarios/spoke-b/golden/approach1-as-written.json
 dotnet run --project src/LinesOfSupport.Harness -- batch _stub --seeds 200 --policies do-nothing,greedy,textbook
 dotnet run --project src/LinesOfSupport.Harness -- batch spoke-b-90 --seeds 200 --json > batch.json
 ```
@@ -21,11 +22,11 @@ The default report has one row per policy and exposed metric, with **Runs, Min, 
 
 `--json` is a value-less flag for `batch` only. Standard output is one JSON document with `scenario`, `rulesVersion`, `simulationStatus` (`simulated`), `firstSeed`, `lastSeed`, and `results`. Each result contains `policy`, `metric`, `runs`, `min`, `median`, `max`; values are JSON numbers without the text report's rounding. The seed range is inclusive, beginning at zero. JSON output contains no validation preamble or log text. Errors go to standard error with the existing nonzero exit code and no partial report. If metric keys change across seeds or a metric is non-finite, reporting fails explicitly rather than silently dropping samples.
 
-## Run placeholder behavior (pending M1-01)
+## Run and replay (M1-01)
 
-The separate `run` verb still counts from day 0 to the scenario's `days` value and labels itself as an M0 placeholder. In that verb all three policy names do nothing and seeds have no effect. Connecting `run` and text replay/reporting is the separate M1-01 item; `batch` already uses the real Sim.
+`run` loads the validated scenario/shared rules, plays the selected policy through `Replay.Run`, and prints `SessionReport.ToText`: timeline, capability-by-day strip, scorecard, gap chains, pass criteria and final state hash. Defaults remain seed 0 and `do-nothing`. `PlaceholderRun` has been removed. Both run and batch now use the real Sim.
 
-`run <scenario> --log <input-log.json>` reads an existing input log and checks its JSON syntax. It never overwrites the file. Its actions are **not replayed**, and the command says so. No input-log shape or simulation-facing interface is defined here; those belong to Fable. The harness-only placeholder can be replaced once the contracts arrive.
+`run <scenario> --log <input-log.json>` uses `InputLog.Load` and `Replay.Run(bundle, log)`. The log supplies the seed, prep choices and dated actions; Sim checks scenario and rules identity. The log is never overwritten. Combining `--log` with `--seed` or `--policy` is a usage error, so no supplied option is silently ignored. Report titles follow the same convention as the reviewed golden reports. Errors produce no partial report. The accepted action/input-log contract remains owned by Sim (ADR-0005).
 
 ## Validation
 

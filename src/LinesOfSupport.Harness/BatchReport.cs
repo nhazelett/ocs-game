@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
 using LinesOfSupport.Sim;
-using LinesOfSupport.Sim.Data;
 using LinesOfSupport.Sim.Policies;
 
 namespace LinesOfSupport.Harness;
@@ -14,9 +13,7 @@ internal sealed record BatchReport(string Scenario, string RulesVersion, string 
 {
     internal static BatchReport Create(LoadedScenario scenario, int count, IReadOnlyList<string> policies)
     {
-        if (!string.Equals(Path.GetFileName(scenario.FilePath), "scenario.json", StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException("Batch simulation requires a scenario.json file, as required by the Sim loader.");
-        var bundle = ScenarioBundle.Load(scenario.FilePath, scenario.RulesDirectory);
+        var bundle = ScenarioLoader.LoadBundle(scenario);
         var rows = new List<MetricSpread>();
         foreach (var policy in policies)
         {
