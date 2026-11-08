@@ -164,21 +164,32 @@ public sealed class HarnessTests : IDisposable
         Assert.Contains("failed JSON Schema validation", result.Error);
     }
 
-    [Theory]
-    [InlineData("rules")]
-    [InlineData("theme")]
-    public void CompanionFilesAreRequiredAndValidatedWhenTheirSchemasExist(string name)
+    [Fact]
+    public void RulesAreSelectedByVersionFromTheSharedDirectory()
     {
-        var scenario = Scenario();
+        var scenario = Scenario("""{"id":"test","days":30,"sites":[{"id":"hub","island":"home"}],"islands":[{"id":"home"}],"rulesVersion":"test-only"}""");
         Write("scenarios/schema/scenario.json", "{\"type\":\"object\"}");
-        Write($"scenarios/schema/{name}.json", "{\"type\":\"object\",\"required\":[\"version\"]}");
-        Assert.Contains("Missing", Run("validate", scenario).Error);
-        Write($"scenarios/test/{name}.json", "{}");
-        Assert.Contains($"{name}.json failed JSON Schema validation", Run("validate", scenario).Error);
-        Write($"scenarios/test/{name}.json", "{\"version\":\"test-only\"}");
+        Write("scenarios/schema/rules.json", "{\"type\":\"object\",\"required\":[\"rulesVersion\"]}");
+        Assert.Contains("No shared rules file", Run("validate", scenario).Error);
+        Write("scenarios/rules/baseline.json", "{}");
+        Assert.Contains("rules.json failed JSON Schema validation", Run("validate", scenario).Error);
+        Write("scenarios/rules/baseline.json", "{\"rulesVersion\":\"test-only\"}");
         var valid = Run("validate", scenario);
         Assert.Equal(0, valid.Code);
         Assert.Contains("repository JSON Schemas", valid.Output);
+    }
+
+    [Fact]
+    public void ThemeIsOptionalButValidatedWhenPresent()
+    {
+        var scenario = Scenario();
+        Write("scenarios/schema/scenario.json", "{\"type\":\"object\"}");
+        Write("scenarios/schema/theme.json", "{\"required\":[\"title\"]}");
+        Assert.Equal(0, Run("validate", scenario).Code);
+        Write("scenarios/test/theme.json", "{}");
+        Assert.Contains("theme.json failed JSON Schema validation", Run("validate", scenario).Error);
+        Write("scenarios/test/theme.json", "{\"title\":\"test\"}");
+        Assert.Equal(0, Run("validate", scenario).Code);
     }
 
     [Fact]

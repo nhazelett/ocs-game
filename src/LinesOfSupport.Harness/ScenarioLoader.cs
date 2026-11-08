@@ -22,21 +22,51 @@ internal static class ScenarioLoader
 
         var schemas = SchemaCatalog.Find(path);
         schemas?.Validate("scenario", data);
-        // Companion files are optional before M0-04, required when their schemas are present.
-        foreach (var name in new[] { "rules", "theme" })
+        if (schemas?.Contains("rules") == true)
         {
-            var companionPath = Path.Combine(Path.GetDirectoryName(path)!, name + ".json");
-            if (File.Exists(companionPath))
-            {
-                using var companion = JsonDocument.Parse(File.ReadAllText(companionPath));
-                schemas?.Validate(name, companion.RootElement);
-            }
-            else if (schemas?.Contains(name) == true)
-            {
-                throw new InvalidDataException($"Missing {companionPath}; its schema is present.");
-            }
+            using var rules = LoadRules(data, schemas);
+            ScenarioReferences.Validate(data, rules.RootElement);
+        }
+        var themePath = Path.Combine(Path.GetDirectoryName(path)!, "theme.json");
+        if (File.Exists(themePath))
+        {
+            using var theme = JsonDocument.Parse(File.ReadAllText(themePath));
+            schemas?.Validate("theme", theme.RootElement);
+        }
+        // Before a schema exists, still reject malformed legacy fixture data without treating it as authoritative rules.
+        var legacyRules = Path.Combine(Path.GetDirectoryName(path)!, "rules.json");
+        if (schemas is null && File.Exists(legacyRules))
+        {
+            using var ignored = JsonDocument.Parse(File.ReadAllText(legacyRules));
         }
         return new LoadedScenario(id.GetString()!, dayCount, sites.GetArrayLength(), schemas is not null);
+    }
+
+    private static JsonDocument LoadRules(JsonElement scenario, SchemaCatalog schemas)
+    {
+        if (!scenario.TryGetProperty("rulesVersion", out var requested) || requested.ValueKind != JsonValueKind.String)
+            throw new InvalidDataException("scenario.json: rulesVersion must select a shared rules file.");
+        var directory = Path.Combine(schemas.ScenariosDirectory, "rules");
+        var versions = new Dictionary<string, string>(StringComparer.Ordinal);
+        string? selected = null;
+        if (Directory.Exists(directory))
+        {
+            foreach (var file in Directory.GetFiles(directory, "*.json").Order(StringComparer.Ordinal))
+            {
+                using var document = JsonDocument.Parse(File.ReadAllText(file));
+                schemas.Validate("rules", document.RootElement);
+                if (!document.RootElement.TryGetProperty("rulesVersion", out var version) || version.ValueKind != JsonValueKind.String)
+                    throw new InvalidDataException($"{file}: missing rulesVersion.");
+                var value = version.GetString()!;
+                if (!versions.TryAdd(value, file))
+                    throw new InvalidDataException($"Duplicate rulesVersion '{value}' in {file} and {versions[value]}.");
+                if (value == requested.GetString())
+                    selected = file;
+            }
+        }
+        if (selected is null)
+            throw new InvalidDataException($"No shared rules file matches rulesVersion '{requested.GetString()}' in {directory}.");
+        return JsonDocument.Parse(File.ReadAllText(selected));
     }
 
     private static string ResolvePath(string argument)

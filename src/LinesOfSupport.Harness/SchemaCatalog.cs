@@ -4,8 +4,9 @@ using Json.Schema;
 
 namespace LinesOfSupport.Harness;
 
-internal sealed class SchemaCatalog(Dictionary<string, JsonSchema> schemas)
+internal sealed class SchemaCatalog(Dictionary<string, JsonSchema> schemas, string directory)
 {
+    internal string ScenariosDirectory => Path.GetDirectoryName(directory)!;
     internal bool Contains(string name) => schemas.ContainsKey(name);
 
     internal static SchemaCatalog? Find(string scenarioPath)
@@ -44,7 +45,7 @@ internal sealed class SchemaCatalog(Dictionary<string, JsonSchema> schemas)
             }
             if (!schemas.ContainsKey("scenario"))
                 throw new InvalidDataException($"{directory}: schemas exist but scenario.json or scenario.schema.json is missing; refusing fallback validation.");
-            return new SchemaCatalog(schemas);
+            return new SchemaCatalog(schemas, directory);
         }
         catch (Exception ex)
         {
@@ -58,7 +59,10 @@ internal sealed class SchemaCatalog(Dictionary<string, JsonSchema> schemas)
             return;
         try
         {
-            var results = schema.Evaluate(data, new EvaluationOptions { OutputFormat = OutputFormat.List, Culture = CultureInfo.InvariantCulture });
+            var results = schema.Evaluate(data, new EvaluationOptions
+            {
+                OutputFormat = OutputFormat.List, Culture = CultureInfo.InvariantCulture, RequireFormatValidation = true
+            });
             if (!results.IsValid)
                 throw new InvalidDataException($"{name}.json failed JSON Schema validation: {JsonSerializer.Serialize(results)}");
         }

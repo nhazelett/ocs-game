@@ -1,2 +1,2 @@
-M0-08 harness fixture only. Not a playable or balanced scenario, and not the M0-04 scenario contract.
-The empty rules and theme files only prove JSON loading. Fable may replace this fixture when M0-04 lands.
+Harness fixture only, using Fable's M0-04 scenario and theme data. Not a playable or balanced scenario.
+The scenario's rulesVersion selects shared rules under scenarios/rules/. There is no separate rules.json here.
