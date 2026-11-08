@@ -176,6 +176,7 @@ public static class SessionReport
         RecordKind.Withdrawal => "WITHDRAWN",
         RecordKind.Obligation => "OBLIGATE",
         RecordKind.VendorCapacity => "CAPACITY",
+        RecordKind.ExternalSupport => "EXTERNAL",
         _ => k.ToString().ToUpperInvariant(),
     };
 }

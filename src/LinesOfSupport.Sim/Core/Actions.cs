@@ -18,6 +18,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(CureNoticeAction), "cureNotice")]
 [JsonDerivedType(typeof(EstablishIdiqAction), "establishIdiq")]
 [JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
+[JsonDerivedType(typeof(RequestExternalSupportAction), "requestExternalSupport")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -143,6 +144,31 @@ public sealed record DesignateCorAction : PlayerAction
 {
     public string Arrangement { get; init; } = "";
     public string Cor { get; init; } = "";
+}
+
+/// <summary>
+/// OCS seat: request an external support contract task order (SPEC 4.1, M3-05). The request costs shop days to
+/// prepare (rules externalSupport.shopDays); then it goes through the SCO to the external office, which approves it
+/// after rules approvalLagDays and awards it; the contractor mobilizes for rules mobilizationDays and starts no
+/// earlier than StartDay. The external office obligates the task order from FundingLine when it awards (the unit's
+/// money, sent to that office). The provider and its price are scenario data (actors.externalSupport).
+/// Hard stops: no provider for the capability, a duration under rules minimumUsefulDurationDays, scope without the
+/// core, operator and maintenance lines the provider runs (it is self-managed), quantity above the provider's
+/// capacity, and the usual funding checks. Id names the arrangement it becomes. Lines default to the card's lines.
+/// </summary>
+public sealed record RequestExternalSupportAction : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string? Card { get; init; }
+    public string? Site { get; init; }
+    public string? Capability { get; init; }
+    public List<string>? Lines { get; init; }
+    public long Quantity { get; init; }
+    public int? StartDay { get; init; }
+    public int DurationDays { get; init; }
+    public string FundingLine { get; init; } = "";
+    /// <summary>COR the unit nominates for local administration (M3-04); null for none.</summary>
+    public string? Cor { get; init; }
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)

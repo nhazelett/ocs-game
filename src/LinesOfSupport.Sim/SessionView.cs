@@ -106,6 +106,17 @@ public sealed class SessionView
     /// (in TotalCents) and in EarliestStartMin/Max the first day orders could be placed. Changes nothing.</summary>
     public ActionPreview PreviewEstablish(EstablishIdiqAction idiq) => _s.BuildEstablishIdiqPreview(idiq);
 
+    /// <summary>What an external support request would take (M3-05): the same hard stops Apply would give, the soft gaps,
+    /// its estimated cost (obligated by the external office at award) and in EarliestStartMin/Max the first day of
+    /// performance at the best and worst roll. Changes nothing and draws no random numbers.</summary>
+    public ActionPreview PreviewExternalSupport(RequestExternalSupportAction request) => _s.BuildExternalSupportPreview(request);
+
+    /// <summary>External support requests made this game and where each stands (M3-05).</summary>
+    public IReadOnlyList<ExternalSupportRequestView> ExternalSupportRequests() => _s.BuildExternalSupportRequests();
+
+    /// <summary>The external support contract the OCS seat can request, or null when the scenario has none.</summary>
+    public ExternalSupportData? ExternalSupport => _s.Scenario.Actors.ExternalSupport;
+
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
 }

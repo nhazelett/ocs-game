@@ -2,7 +2,7 @@
   "scenario": "spoke-b-90",
   "rulesVersion": "2025-10",
   "seed": 1,
-  "note": "Approach 4 (SPEC 5, adapted): go straight for the enduring answer and nothing for day 7. SPEC 5 uses an external support request; that instrument arrives at M3, so this uses the turnkey UCA with no bridge. Same lesson: the enduring arrangement is not the first-week answer.",
+  "note": "Approach 4 variant: go straight for an enduring answer with the turnkey UCA alone and nothing for day 7. The SPEC 5 instrument, the external support request, is in approach4-external-only (M3-05); approach4-external-with-uca-bridge pairs it with approach 3. Same lesson: the enduring arrangement is not the first-week answer.",
   "prepChoices": [
     "systemAccess",
     "cashAndPayingAgent"

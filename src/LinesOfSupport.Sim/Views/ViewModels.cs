@@ -129,6 +129,14 @@ public sealed record ActionEditorView(
     IReadOnlyList<InstrumentOption> Instruments, IReadOnlyList<VendorOption> Vendors,
     IReadOnlyList<VehicleOption> Vehicles, IReadOnlyList<FundingOption> Funding);
 
+/// <summary>An external support request as the OCS seat sees it (M3-05). Status: Preparing (shop work), InApproval
+/// (with the SCO and the external office), Awarded, Refused. The answer day is shown as a range until it comes;
+/// StartDay and EndDay are known once awarded.</summary>
+public sealed record ExternalSupportRequestView(
+    string Id, string SiteId, string CapabilityId, string Status, int RequestedDay, int? SubmittedDay,
+    int? ExpectedAnswerMin, int? ExpectedAnswerMax, int? AwardedDay, int? StartDay, int? EndDay,
+    long Quantity, long TotalCents, string FundingLineId, string? CardId, string? RefusedReason);
+
 /// <summary>
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return
 /// (the action is refused); SoftGaps are legal but carry a consequence the sim will play out.

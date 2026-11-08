@@ -9,7 +9,7 @@ public sealed partial class Session
         public string? FailureRecord, ConfusionRecord, CapacityRecord;
     }
 
-    /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, lifecycle, supply, money, score.</summary>
+    /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, external support awards, lifecycle, supply, money, score.</summary>
     public void AdvanceDay()
     {
         if (Finished) throw new InvalidOperationException("the scenario has ended");
@@ -22,6 +22,7 @@ public sealed partial class Session
         UcaClocks(d);
         CommitmentClocks(d);
         DoShopWork(d);
+        ExternalSupportClocks(d);
         if (_cashReplenishDay == d)
         {
             _cash = _cashInitial;
@@ -200,7 +201,7 @@ public sealed partial class Session
             if (a.Status == ArrangementStatus.Pending && a.StartDay <= d && a.EndDay >= d)
             {
                 a.Status = ArrangementStatus.Active;
-                var who = a.VendorId is null ? "the other unit" : VendorData(a.VendorId)!.Name;
+                var who = SupplierName(a);
                 AddRecord(d, RecordKind.ArrangementStart, a.Id, $"{a.Id} began: {CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} from {who}, {a.QuantityMilli / 1000} {Cap(a.CapabilityId).Unit}/day.", [a.CauseId]);
             }
             if (a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay < d)

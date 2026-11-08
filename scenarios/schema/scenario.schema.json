@@ -834,6 +834,75 @@
               "description": "Capability id to units available"
             }
           }
+        },
+        "externalSupport": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "offers"
+          ],
+          "description": "The external support contract the OCS seat can request through the SCO (M3-05, SPEC 4.1). Absent: none exists. Price is a scenario parameter; no real program is named (docs/assumptions.md).",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "description": "Generic provider name shown to the player"
+            },
+            "offers": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "capability",
+                  "lines",
+                  "capacityPerDay",
+                  "unitPriceCents"
+                ],
+                "properties": {
+                  "capability": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "lines": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "description": "Lines the contractor provides; a request must include the core, operator and maintenance ones (self-managed)"
+                  },
+                  "capacityPerDay": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "unitPriceCents": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Price per unit per day"
+                  },
+                  "mobilizationFraction": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0,
+                    "description": "Mobilization as a fraction of the task order's base cost"
+                  },
+                  "reliability": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "default": 0.97
+                  },
+                  "sites": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/id"
+                    },
+                    "description": "Site ids the contract can cover; empty or absent means any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },

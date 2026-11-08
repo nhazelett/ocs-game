@@ -22,7 +22,7 @@ public sealed partial class Session
     public int LastDay => Scenario.Days;
     public bool Finished => Day > LastDay;
 
-    private readonly DeterministicRandom _rngWork, _rngVendor, _rngEvents, _rngAggregate, _rngUca, _rngUnauthorized, _rngPerformance, _rngCor;
+    private readonly DeterministicRandom _rngWork, _rngVendor, _rngEvents, _rngAggregate, _rngUca, _rngUnauthorized, _rngPerformance, _rngCor, _rngExternal;
     private readonly List<CapabilityState> _caps = [];
     private readonly List<Arrangement> _arrangements = [];
     private readonly List<WorkItem> _work = [];
@@ -86,6 +86,7 @@ public sealed partial class Session
         _rngUnauthorized = DeterministicRandom.ForStream(seed, "unauthorized");
         _rngPerformance = DeterministicRandom.ForStream(seed, "performance");
         _rngCor = DeterministicRandom.ForStream(seed, "cor");
+        _rngExternal = DeterministicRandom.ForStream(seed, "external");
 
         _capData = Rules.Model.Capabilities.ToDictionary(c => c.Id, StringComparer.Ordinal);
         foreach (var c in Rules.Model.Capabilities) _demandPerPersonMilli[c.Id] = Fixed.Milli(c.DemandPerPersonPerDay);

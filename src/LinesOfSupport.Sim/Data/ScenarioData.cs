@@ -217,6 +217,29 @@ public sealed record CommanderData { public List<string> PriorityOrder { get; in
 public sealed record HostNationData { public bool AgreementExists { get; init; } public double? Reliability { get; init; } }
 public sealed record AcsaPartnerData { public bool Present { get; init; } public Dictionary<string, double> Stock { get; init; } = []; }
 
+/// <summary>One capability an external support contract can provide (M3-05). Price is a scenario parameter
+/// (docs/assumptions.md): unit price per unit-day, mobilization as a fraction of the task order's base cost.</summary>
+public sealed record ExternalSupportOfferData
+{
+    public string Capability { get; init; } = "";
+    /// <summary>Lines the contractor provides; a request must include the core, operator and maintenance ones.</summary>
+    public List<string> Lines { get; init; } = [];
+    public double CapacityPerDay { get; init; }
+    public long UnitPriceCents { get; init; }
+    public double MobilizationFraction { get; init; }
+    public double Reliability { get; init; } = 0.97;
+    /// <summary>Site ids the contract can cover; empty means any.</summary>
+    public List<string> Sites { get; init; } = [];
+}
+
+/// <summary>The external support contract the OCS seat can request through the SCO (M3-05). Absent: none exists.</summary>
+public sealed record ExternalSupportData
+{
+    /// <summary>Generic provider name; no real program is named in content (docs/assumptions.md).</summary>
+    public string Provider { get; init; } = "External support contractor";
+    public List<ExternalSupportOfferData> Offers { get; init; } = [];
+}
+
 public sealed record ActorsData
 {
     public ScoData Sco { get; init; } = new();
@@ -224,6 +247,7 @@ public sealed record ActorsData
     public CommanderData Commander { get; init; } = new();
     public HostNationData? HostNation { get; init; }
     public AcsaPartnerData? AcsaPartner { get; init; }
+    public ExternalSupportData? ExternalSupport { get; init; }
 }
 
 public sealed record EventWindow(int EarliestDay, int LatestDay);

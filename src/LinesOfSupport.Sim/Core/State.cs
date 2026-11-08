@@ -94,7 +94,7 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, ExternalSupportRequest }
 
 public sealed class WorkItem
 {
@@ -223,6 +223,47 @@ public enum RecordKind
     Funding,
     /// <summary>A vendor failure reported to the office: by the COR with lag and fidelity set by quality, or by the unit (M3-04).</summary>
     CorReport,
+    /// <summary>An external support request moving through the SCO and the external office: submitted, approved and
+    /// awarded, or refused (M3-05).</summary>
+    ExternalSupport,
+}
+
+public enum ExternalSupportStatus { Preparing, InApproval, Awarded, Refused }
+
+/// <summary>
+/// An external support request (M3-05, SPEC 4.1): prepared by the shop, approved by the SCO and higher, awarded by an
+/// external office, then mobilized. On award it becomes the arrangement with the same id (instrument
+/// "externalSupport"). The approval lag and mobilization are drawn when the request is made; the player sees the
+/// approval day only once the request is submitted, and the start day only once it is awarded.
+/// </summary>
+public sealed class ExternalSupportState
+{
+    public required string Id { get; init; }
+    public required string SiteId { get; init; }
+    public required string CapabilityId { get; init; }
+    public required List<string> Lines { get; init; }
+    public long QuantityMilli { get; init; }
+    public int DurationDays { get; init; }
+    public int? RequestedStartDay { get; init; }
+    public required string FundingLineId { get; init; }
+    public string? CardId { get; init; }
+    public string? CorId { get; init; }
+    public long DailyCostCents { get; init; }
+    public long MobilizationCents { get; init; }
+    public long TotalCents { get; init; }
+    public int ReliabilityPermille { get; init; }
+    public int RequestedDay { get; init; }
+    public int ApprovalLagDays { get; init; }
+    public int MobilizationDays { get; init; }
+    public ExternalSupportStatus Status { get; set; } = ExternalSupportStatus.Preparing;
+    public int? SubmittedDay { get; set; }
+    /// <summary>The day the external office answers: submitted day plus the approval lag.</summary>
+    public int? ApprovalDay { get; set; }
+    public int? AwardedDay { get; set; }
+    /// <summary>First day of performance, known once awarded.</summary>
+    public int? StartDay { get; set; }
+    public string? RefusedReason { get; set; }
+    public string CauseId { get; init; } = "";
 }
 
 /// <summary>An IDIQ the shop can order from (M3-06): ceiling, minimum guarantee and what has been ordered so far.

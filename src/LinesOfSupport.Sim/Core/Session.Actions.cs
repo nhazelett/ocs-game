@@ -31,6 +31,7 @@ public sealed partial class Session
             EstablishIdiqAction e => ApplyEstablishIdiq(e),
             CureNoticeAction c => ApplyCureNotice(c),
             DesignateCorAction c => ApplyDesignateCor(c),
+            RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -56,6 +57,7 @@ public sealed partial class Session
         EstablishIdiqAction e => $"establish IDIQ {e.Id}",
         CureNoticeAction c => $"cure notice {c.Issue}",
         DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
+        RequestExternalSupportAction r => $"external support request {r.Id}",
         _ => a.GetType().Name,
     };
 
@@ -482,6 +484,9 @@ public sealed partial class Session
             case WorkKind.EstablishVehicle:
                 if (w.Payload is EstablishIdiqAction idiqAction) CompleteEstablishIdiq(idiqAction, day, w.CauseId);
                 else CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.ExternalSupportRequest:
+                CompleteExternalRequestWork((string)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.Denial:
                 AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);

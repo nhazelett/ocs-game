@@ -214,6 +214,20 @@ public sealed class ScenarioBundle
                 }
             }
         }
+        if (s.Actors.ExternalSupport is { } ext)
+        {
+            Need(Rules.Instruments.ContainsKey("externalSupport"), "actors.externalSupport needs the externalSupport instrument in rules");
+            Need(ext.Offers.Select(o => o.Capability).Distinct().Count() == ext.Offers.Count, "actors.externalSupport offers must name each capability once");
+            foreach (var o in ext.Offers)
+            {
+                var cap = Rules.Model.Capabilities.FirstOrDefault(c => c.Id == o.Capability);
+                Need(cap is not null, $"external support capability {o.Capability} not in rules");
+                foreach (var line in o.Lines)
+                    Need(cap!.Lines.Any(l => l.Id == line), $"external support line {line} is not a {o.Capability} line");
+                Need(cap!.Lines.Any(l => l.Kind == "core" && o.Lines.Contains(l.Id)), $"external support {o.Capability} must offer the core line");
+                foreach (var site in o.Sites) Need(sites.Contains(site), $"external support {o.Capability} site {site} not found");
+            }
+        }
         foreach (var c in Rules.PrepChoices)
             foreach (var f in c.Effects) Need(Prep.KnownEffects.Contains(f.Kind), $"rules prep choice {c.Id}: effect kind {f.Kind} is not implemented");
     }

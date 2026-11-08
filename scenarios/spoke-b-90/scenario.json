@@ -381,6 +381,24 @@
         "hubSite",
         "spokeBSite"
       ]
+    },
+    "externalSupport": {
+      "provider": "Theater base support contractor",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "fuelSupply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 2000,
+          "unitPriceCents": 1100,
+          "mobilizationFraction": 0.2,
+          "reliability": 0.98
+        }
+      ]
     }
   },
   "events": [
