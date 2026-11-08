@@ -26,6 +26,7 @@ public sealed partial class Session
             CoordinateAction c => ApplyCoordinate(c),
             DefinitizeAction d => ApplyDefinitize(d),
             TerminateAction t => ApplyTerminate(t),
+            ResolveCommitmentAction r => ApplyResolve(r),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -45,6 +46,7 @@ public sealed partial class Session
         CoordinateAction c => $"coordinate {c.Id}",
         DefinitizeAction d => $"definitize {d.Arrangement}",
         TerminateAction t => $"terminate {t.Arrangement}",
+        ResolveCommitmentAction r => $"{r.Choice} {r.Commitment}",
         _ => a.GetType().Name,
     };
 
@@ -149,7 +151,9 @@ public sealed partial class Session
             stops.Add($"{vendor.Name} can supply {offer.CapacityPerDay:0} {Cap(capId).Unit}/day in total and {committed / 1000} is already committed");
         if (vendor.VehicleOnly && a.Instrument != "bpaCall") stops.Add($"{vendor.Name} is reachable only through its vehicle");
 
-        var daily = a.Quantity * offer.UnitPriceCents;
+        if (_standing.TryGetValue(vendor.Id, out var standing) && standing.DeclinesWork)
+            stops.Add($"{vendor.Name} declines work from this office after walking off an unpaid handshake");
+        var daily = a.Quantity * UnitPriceFor(vendor, offer);
         var baseCost = daily * Math.Max(0, a.DurationDays);
         // An incumbent already on site and continuing the same work does not mobilize again.
         var incumbent = _arrangements.Any(x => x.VendorId == vendor.Id && x.SiteId == siteId && x.CapabilityId == capId
@@ -426,7 +430,11 @@ public sealed partial class Session
             }
             case WorkKind.Ratification:
                 _ratifications++;
-                AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {(string)w.Payload!} completed.", [w.CauseId]);
+                if (!CompleteRatification((string)w.Payload!, day, w.CauseId))
+                    AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {(string)w.Payload!} completed.", [w.CauseId]);
+                break;
+            case WorkKind.Denial:
+                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);
                 break;
             case WorkKind.PaymentRework:
                 AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Payment error on {(string)w.Payload!} corrected.", [w.CauseId]);
@@ -445,7 +453,9 @@ public sealed partial class Session
                 if (arr.Uca is null && arr.FundingLineId is not null && _funding.FirstOrDefault(f => f.Id == arr.FundingLineId) is { } fl)
                 {
                     var performedDays = Math.Max(0, arr.EndDay - arr.StartDay + 1);
-                    var keep = Math.Min(arr.ObligatedCents, arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0));
+                    var ratifiedExtra = _commitments.Where(c => c.Kind == CommitmentKind.OutOfScope && c.ArrangementId == arr.Id && c.Decision == CommitmentDecision.Ratified)
+                                                    .Sum(c => c.AmountCents);
+                    var keep = Math.Min(arr.ObligatedCents, arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra);
                     var back = arr.ObligatedCents - keep;
                     if (back > 0)
                     {

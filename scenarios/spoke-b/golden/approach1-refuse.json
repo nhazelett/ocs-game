@@ -1,0 +1,28 @@
+{
+  "scenario": "spoke-b",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 1 with the day-11 handshake refused: the vendor stops at once and the fuel gap reopens (SPEC 4.5).",
+  "prepChoices": [],
+  "actions": [
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "gens",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "card": "req0007",
+      "quantity": 360,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 12,
+      "commitment": "uc1",
+      "choice": "refuse"
+    }
+  ]
+}

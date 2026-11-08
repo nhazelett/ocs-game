@@ -69,6 +69,25 @@ public static class SessionReport
             sb.AppendLine($"  {c.SiteId}.{c.CapabilityId}: {c.DownDays} day(s) down, {c.DegradedDays} degraded, lowest {c.MinPermille / 10}%");
         sb.AppendLine();
 
+        if (s.Commitments.Count > 0)
+        {
+            sb.AppendLine("UNAUTHORIZED COMMITMENTS (SPEC 4.5)");
+            foreach (var c in s.Commitments)
+            {
+                var what = c.Kind == CommitmentKind.Handshake
+                    ? $"handshake with {s.Scenario.Vendors.FirstOrDefault(x => x.Id == c.VendorId)?.Name ?? c.VendorId} for {c.SiteId}.{c.CapabilityId}"
+                    : $"out-of-scope work on {c.ArrangementId}, {Session.Money(c.AmountCents)}";
+                var decided = c.DecidedDay is { } dd ? $" on day {dd}" : "";
+                var walked = c.WalkedOff ? "; vendor walked off" : "";
+                var inquiry = c.InquiryDrawn ? "; drew an HHQ inquiry" : "";
+                sb.AppendLine($"  {c.Id} (day {c.OpenedDay}): {what}. Decision: {c.Decision.ToString().ToLowerInvariant()}{decided}{walked}{inquiry}.");
+            }
+            foreach (var site in s.Scenario.Sites)
+                if (s.Metrics.TryGetValue($"site.{site.Id}.unitHabitPermille", out var h) && h > 0)
+                    sb.AppendLine($"  {site.Name} unit habit of going around contracting: {h / 10:0}%");
+            sb.AppendLine();
+        }
+
         var gaps = s.Records.Where(r => r.Kind == RecordKind.Shortfall).ToList();
         if (gaps.Count > 0)
         {

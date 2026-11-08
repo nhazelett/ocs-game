@@ -457,6 +457,29 @@
         }
       ],
       "playerVisibleAs": "Harbor master: no barge movements for the next three days."
+    },
+    {
+      "id": "unitExtraWork",
+      "label": "Spoke B unit asks the power vendor for extra work",
+      "window": {
+        "earliestDay": 15,
+        "latestDay": 30
+      },
+      "fixed": true,
+      "preconditions": [
+        {
+          "kind": "contract.present",
+          "target": "spokeBSite.power"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "vendor.outOfScopeWork",
+          "target": "spokeBSite.power",
+          "value": 240000
+        }
+      ],
+      "playerVisibleAs": "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
     }
   ],
   "fixedSituations": [

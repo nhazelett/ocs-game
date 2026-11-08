@@ -202,7 +202,8 @@ public sealed partial class Session
             .Select(x => new VendorOption(
                 x.v.Id, x.v.Name, x.v.Island, IslandData(x.v.Island).Name, x.o!.Lines,
                 (int)Math.Floor(x.o.CapacityPerDay), (int)Math.Max(0, (Fixed.Milli(x.o.CapacityPerDay) - CommittedMilli(x.v.Id, capId, Day, Day)) / 1000),
-                x.o.LeadTimeDays, x.o.UnitPriceCents, Fixed.Permille(x.o.MobilizationFraction), x.v.AcceptsCash, x.v.AcceptsGpc, x.v.VehicleOnly))
+                x.o.LeadTimeDays, UnitPriceFor(x.v, x.o), Fixed.Permille(x.o.MobilizationFraction), x.v.AcceptsCash, x.v.AcceptsGpc, x.v.VehicleOnly,
+                _standing.TryGetValue(x.v.Id, out var st) ? (st.DeclinesWork ? "declines work after an unpaid handshake" : $"quotes {st.MarkupPermille / 10}% higher after an unpaid handshake") : null))
             .ToList();
 
         var vehicles = Scenario.Vehicles

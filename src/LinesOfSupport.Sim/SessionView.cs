@@ -24,6 +24,10 @@ public sealed class SessionView
     public IReadOnlyList<WorkItem> Work => _s.Work;
     public IReadOnlyList<FundingLineState> Funding => _s.Funding;
     public IReadOnlyList<CauseRecord> Records => _s.Records;
+    /// <summary>Unauthorized commitments (SPEC 4.5): handshakes and out-of-scope work, with the decision on each.</summary>
+    public IReadOnlyList<CommitmentState> Commitments => _s.Commitments;
+    /// <summary>A site unit's habit of going around contracting, 0 to 1000 permille.</summary>
+    public int UnitHabit(string siteId) => _s.Habit(siteId);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;

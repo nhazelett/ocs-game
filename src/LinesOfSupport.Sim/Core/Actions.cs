@@ -13,6 +13,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(CoordinateAction), "coordinate")]
 [JsonDerivedType(typeof(DefinitizeAction), "definitize")]
 [JsonDerivedType(typeof(TerminateAction), "terminate")]
+[JsonDerivedType(typeof(ResolveCommitmentAction), "resolveCommitment")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -74,6 +75,17 @@ public sealed record DefinitizeAction : PlayerAction
 public sealed record TerminateAction : PlayerAction
 {
     public string Arrangement { get; init; } = "";
+}
+
+/// <summary>
+/// The player's decision on an unauthorized commitment (SPEC 4.5). Handshake: ratify, park or refuse.
+/// Out-of-scope work: ratify or deny. FundingLine pays a ratification; omitted, the first usable line with money is used.
+/// </summary>
+public sealed record ResolveCommitmentAction : PlayerAction
+{
+    public string Commitment { get; init; } = "";
+    public string Choice { get; init; } = "";
+    public string? FundingLine { get; init; }
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)
