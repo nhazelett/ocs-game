@@ -32,6 +32,7 @@ public sealed partial class Session
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
+        _appliedRejected.Add(!result.Accepted);
         if (!result.Accepted)
         {
             _rejected++;

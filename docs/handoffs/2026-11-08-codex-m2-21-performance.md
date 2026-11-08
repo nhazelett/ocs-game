@@ -25,3 +25,5 @@ None. No Nick-only entry or prohibited repository operation.
 ## Next
 
 M2-22 Windows playtest builds, then M2-23 disruption display and validation. Stop new work at five open Codex PRs per the triggering request.
+
+Follow-up fix pass: merged main 2c57c1c (save/resume, counterfactual engine and Fable backlog updates) into this branch with both histories preserved. Kept the performance smoke entry alongside the main entries and used main’s backlog with only M2-21’s Status changed. On the combined tree: solution build, 193 Sim + 97 Harness tests, scenario/provenance/conflict checks, game build, actionlint and PERFORMANCE_SMOKE_PASS pass. No force-push.

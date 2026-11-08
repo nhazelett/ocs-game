@@ -17,6 +17,13 @@ public sealed record InputLog
     public List<string> PrepChoices { get; init; } = [];
     public List<PlayerAction> Actions { get; init; } = [];
 
+    /// <summary>
+    /// For a save taken mid-game: the day about to be played when it was written. Every action dated that day
+    /// has already been applied and the day has not been advanced. Absent (null) means a finished game or a plain
+    /// input log, which plays to the end (M3-01, ADR-0005 addendum).
+    /// </summary>
+    public int? SavedDay { get; init; }
+
     public static InputLog Load(string path)
         => JsonSerializer.Deserialize<InputLog>(File.ReadAllText(path), Json.Options)
            ?? throw new InvalidDataException($"{path} is not an input log");
@@ -42,6 +49,24 @@ public static class Replay
                 foreach (var a in today) session.Apply(a);
             session.AdvanceDay();
         }
+        return session;
+    }
+
+    /// <summary>
+    /// Loads a save: replays the log up to <see cref="InputLog.SavedDay"/>, applies that day's logged actions in order,
+    /// and returns the session on that day, not yet advanced. A log without SavedDay plays to the end, as
+    /// <see cref="Run(ScenarioBundle, InputLog, int?)"/> does. Saving the returned session again gives the same log.
+    /// </summary>
+    public static Session Resume(ScenarioBundle bundle, InputLog log)
+    {
+        if (log.SavedDay is not int saved) return Run(bundle, log);
+        if (saved < 1 || saved > bundle.Scenario.Days)
+            throw new InvalidDataException($"save is on day {saved}, but {bundle.Scenario.Id} runs days 1 to {bundle.Scenario.Days}");
+        var late = log.Actions.FirstOrDefault(a => a.Day > saved);
+        if (late is not null)
+            throw new InvalidDataException($"save is on day {saved} but holds an action dated day {late.Day}");
+        var session = Run(bundle, log, stopAfterDay: saved - 1);
+        foreach (var a in log.Actions.Where(a => a.Day == saved)) session.Apply(a);
         return session;
     }
 
