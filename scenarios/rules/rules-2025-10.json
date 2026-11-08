@@ -675,5 +675,26 @@
       "min": 1,
       "max": 2
     }
+  },
+  "unauthorized": {
+    "patienceDays": {
+      "min": 5,
+      "max": 15
+    },
+    "walkOffDeclinePermille": 500,
+    "walkOffMarkupPermille": 250,
+    "parkedInquiryAfterDays": 10,
+    "parkedInquiryResponseHours": 24,
+    "ratifiedBridgeDays": 7,
+    "outOfScopeDenyShopHours": 2,
+    "habitStartPermille": 0,
+    "habitRiseParkOrRefusePermille": 150,
+    "habitRiseLongOpenPermille": 100,
+    "habitLongOpenDays": 5,
+    "habitDropQuickRatifyPermille": 100,
+    "quickRatifyWithinDays": 3,
+    "habitRiseOutOfScopeRatifyPermille": 50,
+    "habitCapPermille": 600,
+    "sourceUrl": "https://www.acquisition.gov/far/1.602-3"
   }
 }

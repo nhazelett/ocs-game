@@ -68,7 +68,7 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial }
 
 public sealed class WorkItem
 {
@@ -109,6 +109,46 @@ public sealed class CardState
 }
 
 /// <summary>What the player knows about an island. Surveys raise the tier; the true facts are in the scenario.</summary>
+public enum CommitmentKind { Handshake, OutOfScope }
+
+/// <summary>Where the player's decision on an unauthorized commitment stands (SPEC 4.5).</summary>
+public enum CommitmentDecision { Open, Parked, Ratifying, Ratified, Refused, Denied }
+
+/// <summary>
+/// An unauthorized commitment waiting on, or past, the player's decision. A handshake (situation 1) has its own
+/// arrangement with the same id; out-of-scope work (situation 2) sits on an existing contract arrangement.
+/// </summary>
+public sealed class CommitmentState
+{
+    public required string Id { get; init; }
+    public required CommitmentKind Kind { get; init; }
+    public required string ArrangementId { get; init; }
+    public required string SiteId { get; init; }
+    public required string CapabilityId { get; init; }
+    public string? VendorId { get; init; }
+    public int OpenedDay { get; init; }
+    public CommitmentDecision Decision { get; set; } = CommitmentDecision.Open;
+    public int? DecidedDay { get; set; }
+    /// <summary>Handshake only: days the vendor keeps delivering unpaid before it walks off.</summary>
+    public int PatienceDays { get; init; }
+    public bool WalkedOff { get; set; }
+    public bool InquiryDrawn { get; set; }
+    public bool LongOpenCounted { get; set; }
+    /// <summary>Out-of-scope only: what the vendor billed for the extra work.</summary>
+    public long AmountCents { get; init; }
+    public string? FundingLineId { get; set; }
+    public string CauseId { get; init; } = "";
+    public bool Unresolved => Decision is CommitmentDecision.Open or CommitmentDecision.Parked;
+}
+
+/// <summary>How a vendor treats this office after walking off an unpaid handshake.</summary>
+public sealed class VendorStanding
+{
+    public bool DeclinesWork { get; init; }
+    public int MarkupPermille { get; init; }
+    public string CauseId { get; init; } = "";
+}
+
 public sealed class IslandKnowledge
 {
     public required string IslandId { get; init; }

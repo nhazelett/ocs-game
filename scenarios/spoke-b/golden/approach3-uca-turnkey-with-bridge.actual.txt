@@ -1,0 +1,76 @@
+Spoke B power / approach3-uca-turnkey-with-bridge
+Approach 3 (SPEC 5): Approach 2's bridge plus a UCA for the turnkey power package sized for 260 people, overlap, close the bridge, definitize when the proposal is in.
+Scenario spoke-b, rules 2025-10, seed 1, 30 days.
+Prep: systemAccess, cashAndPayingAgent.
+
+TIMELINE
+Before day 1
+  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 1
+  ACTION    Ordered a site survey of Second Island.
+  ACTION    Requirement req0007: Generator fuel supply switched on.
+  ACTION    Requirement req0007: Operators switched on.
+  ACTION    Requirement req0007: Maintenance and repair switched on.
+  ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
+  DONE      Survey team dispatched to Second Island; findings due day 3.
+Day 2
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
+  DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
+Day 3
+  ACTION    Coordinated with the Hub unit for 900 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
+  SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
+  START     hubFuelRun began: Fuel at Spoke B from the other unit, 900 gal/day.
+Day 5
+  DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
+Day 7
+  START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
+Day 12
+  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  WITHDRAWN The other unit withdrew coordination hubFuelRun (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  END       hubFuelRun ended.
+Day 15
+  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+Day 16
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+Day 17
+  START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
+Day 19
+  ACTION    Termination of gens started.
+  END       gens terminated; performance ends day 19. $38,916 deobligated back to om1.
+Day 20
+  COMPLY    The Spoke B unit's habit of going around contracting rises (oos1 has been open 5 days).
+  END       gens ended.
+Day 21
+  UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+Day 22
+  ACTION    Definitization of turnkey started; to be funded from om1.
+Day 24
+  DEFINITZD turnkey definitized at $634,500; obligation caps lifted; fully funded from om1.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3
+                          123456789012345678901234567890
+Hub Power                 ..............................
+Hub Fuel                  ..............................
+Spoke B Power                   ........................
+Spoke B Fuel                    ........................
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 94% (sortie generation 100%, throughput 100%, endurance 100%, resilience 58%)
+  Obligated $645,264; incurred $320,964; incurred but not obligated $0
+  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
+  Surveys 1; shop hours worked 94; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+
+PASS CRITERIA
+  [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
+  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
+  [met] Mission output at least 90% (mission.output = 0.937)
+
+State hash a40517b4d3741a8f9e67a91a5dbebdb7c08ee4365fbfde359801a9e3463495af

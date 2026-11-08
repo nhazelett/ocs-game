@@ -94,9 +94,12 @@ public sealed record InstrumentOption(
 /// <param name="UnitPriceCents">Quoted price per unit per day.</param>
 /// <param name="MobilizationPermille">Mobilization as a share of the base price, 0 to 1000.</param>
 /// <param name="VehicleOnly">Reachable only through an existing vehicle (BPA call).</param>
+/// <param name="Standing">Null normally; otherwise how this vendor treats the office after an unpaid handshake
+/// ("declines work", or the markup already included in UnitPriceCents).</param>
 public sealed record VendorOption(
     string Id, string Name, string IslandId, string IslandName, IReadOnlyList<string> Lines, int CapacityPerDay, int CapacityFreeToday,
-    int LeadTimeDays, long UnitPriceCents, int MobilizationPermille, bool AcceptsCash, bool AcceptsGpc, bool VehicleOnly);
+    int LeadTimeDays, long UnitPriceCents, int MobilizationPermille, bool AcceptsCash, bool AcceptsGpc, bool VehicleOnly,
+    string? Standing = null);
 
 /// <summary>An existing vehicle the shop knows about that could carry this action.</summary>
 public sealed record VehicleOption(

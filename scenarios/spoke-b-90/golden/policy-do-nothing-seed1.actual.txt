@@ -1,0 +1,276 @@
+Spoke B power (90 days) / policy do-nothing
+Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
+
+TIMELINE
+Before day 1
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 7
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+Day 8
+  EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 9
+  START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+Day 10
+  CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 12
+  SHORT     Fuel at Spoke B down to 16%: fuel on hand ran out.
+Day 13
+  COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
+  OK        Fuel at Spoke B restored to 100%.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+Day 15
+  WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+Day 16
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+Day 17
+  SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
+Day 18
+  COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
+Day 19
+  DONE      Response to higher HQ on uc1 sent.
+Day 21
+  EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
+  COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 22
+  START     uc2 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+Day 24
+  OK        Fuel at Spoke B restored to 100%.
+Day 26
+  COMPLY    The Spoke B unit's habit of going around contracting rises (uc2 has been open 5 days).
+Day 28
+  EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 20%).
+  COMPLY    Unauthorized commitment uc3: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 29
+  START     uc3 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+  OK        Power at Spoke B restored to 100%.
+Day 30
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 31
+  COMPLY    Higher HQ asked why unauthorized commitment uc2 has gone 10 days without ratification. A response is now shop work (24 hours).
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
+Day 32
+  DONE      Response to higher HQ on uc2 sent.
+Day 33
+  COMPLY    The Spoke B unit's habit of going around contracting rises (uc3 has been open 5 days).
+Day 36
+  WITHDRAWN Port Fuel Haulers walked off uc2 after 15 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+Day 38
+  WITHDRAWN Harbor Equipment Co walked off uc3 after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
+  COMPLY    Higher HQ asked why unauthorized commitment uc3 has gone 10 days without ratification. A response is now shop work (24 hours).
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+Day 39
+  EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
+  COMPLY    Unauthorized commitment uc4: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      Response to higher HQ on uc3 sent.
+Day 40
+  START     uc4 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+Day 41
+  EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
+  COMPLY    Unauthorized commitment uc5: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  OK        Fuel at Spoke B restored to 100%.
+Day 42
+  START     uc5 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+  OK        Power at Spoke B restored to 100%.
+Day 43
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 44
+  COMPLY    The Spoke B unit's habit of going around contracting rises (uc4 has been open 5 days).
+Day 45
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
+Day 46
+  COMPLY    The Spoke B unit's habit of going around contracting rises (uc5 has been open 5 days).
+Day 47
+  WITHDRAWN Port Fuel Haulers walked off uc4 after 8 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+Day 49
+  COMPLY    Higher HQ asked why unauthorized commitment uc4 has gone 10 days without ratification. A response is now shop work (24 hours).
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 50
+  DONE      Response to higher HQ on uc4 sent.
+Day 51
+  COMPLY    Higher HQ asked why unauthorized commitment uc5 has gone 10 days without ratification. A response is now shop work (24 hours).
+Day 52
+  DONE      Response to higher HQ on uc5 sent.
+Day 54
+  EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 50%).
+  COMPLY    Unauthorized commitment uc6: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 55
+  START     uc6 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
+Day 56
+  WITHDRAWN Harbor Equipment Co walked off uc5 after 15 days of unpaid delivery. Power at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+Day 57
+  EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 50%).
+  COMPLY    Unauthorized commitment uc7: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 58
+  START     uc7 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+Day 59
+  COMPLY    The Spoke B unit's habit of going around contracting rises (uc6 has been open 5 days).
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
+Day 60
+  CONFUSED  Execution confusion on uc7: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  SHORT     Power at Spoke B degraded to 50%: supply 234 kW against demand 468.
+Day 61
+  OK        Power at Spoke B restored to 100%.
+Day 64
+  COMPLY    Higher HQ asked why unauthorized commitment uc6 has gone 10 days without ratification. A response is now shop work (24 hours).
+  FAIL      uc6 missed today's delivery (no on-site storage line).
+Day 65
+  DONE      Response to higher HQ on uc6 sent.
+Day 66
+  FAIL      uc7 had equipment down (no maintenance and repair line, no operators line).
+  SHORT     Power at Spoke B degraded to 50%: supply 234 kW against demand 468.
+Day 67
+  COMPLY    Higher HQ asked why unauthorized commitment uc7 has gone 10 days without ratification. A response is now shop work (24 hours).
+  OK        Power at Spoke B restored to 100%.
+Day 68
+  WITHDRAWN Port Fuel Haulers walked off uc6 after 14 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  DONE      Response to higher HQ on uc7 sent.
+Day 69
+  WITHDRAWN Harbor Equipment Co walked off uc7 after 12 days of unpaid delivery. Power at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+Day 70
+  EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 60%).
+  COMPLY    Unauthorized commitment uc8: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 71
+  START     uc8 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  FAIL      uc8 missed today's delivery (no on-site storage line).
+Day 73
+  OK        Fuel at Spoke B restored to 100%.
+Day 75
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 76
+  EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 60%).
+  COMPLY    Unauthorized commitment uc9: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  OK        Fuel at Spoke B restored to 100%.
+Day 77
+  START     uc9 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+  OK        Power at Spoke B restored to 100%.
+Day 79
+  FAIL      uc8 missed today's delivery (no on-site storage line).
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 80
+  WITHDRAWN Port Fuel Haulers walked off uc8 after 10 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  COMPLY    Higher HQ asked why unauthorized commitment uc8 has gone 10 days without ratification. A response is now shop work (24 hours).
+  CONFUSED  Execution confusion on uc9: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 81
+  DONE      Response to higher HQ on uc8 sent.
+  CONFUSED  Execution confusion on uc9: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 82
+  EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 60%).
+  COMPLY    Unauthorized commitment uc10: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+Day 83
+  START     uc10 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  FAIL      uc10 missed today's delivery (no on-site storage line).
+Day 86
+  COMPLY    Higher HQ asked why unauthorized commitment uc9 has gone 10 days without ratification. A response is now shop work (24 hours).
+Day 87
+  DONE      Response to higher HQ on uc9 sent.
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
+Day 88
+  CONFUSED  Execution confusion on uc9: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  SHORT     Power at Spoke B degraded to 50%: supply 234 kW against demand 468.
+Day 89
+  OK        Power at Spoke B restored to 100%.
+Day 90
+  WITHDRAWN Harbor Equipment Co walked off uc9 after 14 days of unpaid delivery. Power at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  WITHDRAWN Port Fuel Haulers walked off uc10 after 8 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
+                          123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+Hub Power                 ..........................................................................................
+Hub Fuel                  ..........................................................................................
+Spoke B Power                   XXXXXXXXXXXXXXXXXXXXXX.X.......XXXX.XX....XXXXXX.XXX.5.....5..XXXXXXXX..XXXXXXXX.5.X
+Spoke B Fuel                    .....1....2XXXXXX......X.......XXX..XX....XXXXXX.XXX..........XXXX..X...XXXXXXXX....
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 73% (sortie generation 68%, throughput 68%, endurance 100%, resilience 52%)
+  Obligated $0; incurred $345,431; incurred but not obligated $345,431
+  Unauthorized commitments 10; UCAs past due 0; HHQ inquiries 9
+  Surveys 0; shop hours worked 216; payment errors 0; execution-confusion days 5; vendor failures 5; declined BPA calls 0
+  spokeBSite.power: 55 day(s) down, 3 degraded, lowest 0%
+  spokeBSite.fuel: 36 day(s) down, 0 degraded, lowest 0%
+
+GAPS AND WHY (each traced back through its causes)
+  Day 7: Power at Spoke B down to 0%: no arrangement supplies power.
+  Day 12: Fuel at Spoke B down to 16%: fuel on hand ran out.
+  Day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 30: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 30: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 30: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 38: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 38: Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+      <- day 38: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 43: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 43: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 43: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 49: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 49: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 49: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 56: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 56: Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+      <- day 56: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 60: Power at Spoke B degraded to 50%: supply 234 kW against demand 468.
+      <- day 60: Execution confusion on uc7: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+          <- day 57: With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 50%).
+              <- day 56: Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+                  <- day 56: Fuel at Spoke B down to 0%: fuel on hand ran out.
+              <- day 41: Unauthorized commitment uc5: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+                  <- day 41: With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
+  Day 66: Power at Spoke B degraded to 50%: supply 234 kW against demand 468.
+      <- day 66: uc7 had equipment down (no maintenance and repair line, no operators line).
+          <- day 57: With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 50%).
+              <- day 56: Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+                  <- day 56: Fuel at Spoke B down to 0%: fuel on hand ran out.
+              <- day 41: Unauthorized commitment uc5: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+                  <- day 41: With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
+  Day 69: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 69: Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+      <- day 69: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 75: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 79: Fuel at Spoke B down to 0%: fuel on hand ran out.
+      <- day 79: uc8 missed today's delivery (no on-site storage line).
+          <- day 70: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 60%).
+              <- day 69: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+              <- day 54: Unauthorized commitment uc6: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+                  <- day 54: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 50%).
+  Day 79: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 79: Fuel at Spoke B down to 0%: fuel on hand ran out.
+          <- day 79: uc8 missed today's delivery (no on-site storage line).
+              <- day 70: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 60%).
+                  <- day 69: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+                  <- day 54: Unauthorized commitment uc6: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  Day 88: Power at Spoke B degraded to 50%: supply 234 kW against demand 468.
+      <- day 88: Execution confusion on uc9: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+          <- day 76: With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 60%).
+              <- day 69: Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
+                  <- day 69: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+              <- day 54: Unauthorized commitment uc6: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+                  <- day 54: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 50%).
+  Day 90: Power at Spoke B down to 0%: no arrangement supplies power.
+
+PASS CRITERIA
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 55)
+  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 36)
+  [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 10)
+  [not met] Mission output at least 90% (mission.output = 0.732)
+
+State hash 1812994370662ee32829583e49150a26339f70a597333d67ce17985c055aa19e

@@ -2,7 +2,7 @@
   "scenario": "spoke-b-90",
   "rulesVersion": "2025-10",
   "seed": 1,
-  "note": "Approach 3 (SPEC 5): Approach 2's bridge plus a UCA for the turnkey power package sized for 260 people, overlap, close the bridge, definitize when the proposal is in.",
+  "note": "Approach 3 (SPEC 5): Approach 2's bridge plus a UCA for the turnkey power package sized for 260 people, overlap, close the bridge, definitize when the proposal is in. Out-of-scope work billed on day 15 is denied the next morning (SPEC 4.5).",
   "prepChoices": [
     "systemAccess",
     "cashAndPayingAgent"
@@ -71,6 +71,13 @@
       "capability": "fuel",
       "quantity": 900,
       "fromSite": "hubSite"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 16,
+      "commitment": "oos1",
+      "choice": "deny",
+      "fundingLine": "om1"
     },
     {
       "kind": "terminate",
