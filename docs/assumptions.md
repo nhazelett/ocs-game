@@ -48,3 +48,17 @@ Legend: **Real** is the mechanism as it exists; **Modeled** is what the sim does
 | Shop capacity | People, skills, warrants, fatigue. | People times hours per day; actions consume hours; manual contract writing multiplies written-action time. | Pacing resource. | None planned |
 | Contractor management | Accountability, base access, arming, medical, SPOT. | Out of scope except as access events. | Scope. | Post-1.0 |
 | Joint structures | JRRB, JCSB, lead service designation and more, per JP 4-10. | Stood up through the SCO in 3 to 7 days; add 1 to 2 days per new requirement; merge duplicates, stop price-war events, expose the other service's vehicles, stop cross-service unauthorized commitments. | The joint turn in SPEC 4.4. | M3 |
+
+## Added with the M0-05 simulation core (8 Nov 2026)
+
+| Topic | Real | Modeled | Why | Revisit |
+| --- | --- | --- | --- | --- |
+| Fuel by air | Small quantities can fly; hazmat rules and aircraft capacity limit it. | Consumables (fuel, water, food) from another island move only on surface links (barge, road, sealift). | Keeps the barge dependency honest; small air lifts would be noise at this scale. | M3 |
+| Link capacity | Barges and aircraft have cargo limits. | Schedule and open/closed only; `capacityPerTrip` is ignored in v0. | One constraint at a time. | M3 |
+| Missing operator or maintenance | Untrained operators and no maintenance cause breakdowns and shorter equipment life. | They do not cut capacity; they add to the daily failure chance (maintenance wear grows after a grace period). Failure halves a continuous capability for the day and loses a consumable delivery. | Shows up as the thing a CCO hears about: equipment down. | None planned |
+| Days in service | Wear, invoicing and goodwill run while equipment serves people. | Count only while the site is open. | A coordination arranged before the site opens is not yet being leaned on. | None planned |
+| Execution confusion | Cash and card buys for services lack terms; disputes follow. | Rolls only for SF 44, GPC and unauthorized handshakes lasting four days or more; host nation agreements and coordinations are exempt. | Targets the lesson Nick named. | None planned |
+| Supplies lines | A turnkey vendor sizes the fuel it brings to the site's need. | A "supplies" line is sized to the supplied capability's peak demand over the period times 1.25. | Vendor's sizing, not the player's. | None planned |
+| UCA obligations | Obligations are made as funds and limits allow; definitization fixes the price. | Obligated daily to cover incurred cost, up to the cap (50%, 75% after the proposal; the quoted total once definitized) and the money left on the line. Three unpaid days stop work. | Shows the caps and the funding dependency without accounting detail. | None planned |
+| Mission output | Commanders weigh sites by mission. | Each open site counts equally. | A small spoke carrying the flying mission matters as much as a large hub. | M3 commander weights |
+| Spoke B length | The prose situation runs 90 days. | The first playable cut runs 30; the UCA overdue clock and funding expiry fall after day 30 and appear as pending. | Nick chose 30 days for the first playable. | spoke-b-90 at M1 |

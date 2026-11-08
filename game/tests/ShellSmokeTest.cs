@@ -31,6 +31,7 @@ public partial class ShellSmokeTest : Node
             Require(shell.GetNode<ProgressBar>("%CashGauge") is not null, "Cash gauge exists.");
             var day = shell.GetNode<Label>("%DayCounter");
             var before = day.Text;
+            var openingStatus = shell.GetNode<Label>("%BuildStatus").Text;
             shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
             Require(day.Text == before, "No day is invented before Sim is connected.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains("unavailable"), "Button feedback explains the no-op.");
@@ -42,7 +43,7 @@ public partial class ShellSmokeTest : Node
                 Require(screenshotIndex + 1 < arguments.Length, "Screenshot needs an output path.");
                 Require(DisplayServer.GetName() != "headless", "Screenshots require a rendering display.");
                 // Restore the normal opening state for the handoff screenshot.
-                shell.GetNode<Label>("%BuildStatus").Text = "No scenario loaded.";
+                shell.GetNode<Label>("%BuildStatus").Text = openingStatus;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 var path = arguments[screenshotIndex + 1];
                 Require(GetViewport().GetTexture().GetImage().SavePng(path) == Error.Ok, "Screenshot saved.");

@@ -1,5 +1,7 @@
 Channel rule: this file is for questions between the agents (Fable and Codex). Questions for Nick go to him in chat by whichever agent has it, and the answer is recorded here afterward.
 
+Contested items: when a question or backlog item is under objection, put `[CONTESTED OBJ-NNNN]` at the start of its Question (here) or Item (in BACKLOG.md) cell and link the record in `docs/objections/`. When the objection is decided, replace the tag with `[RESOLVED OBJ-NNNN -> ADR-xxxx]` (or `-> commit abc1234` when no ADR was needed) and fill the Answer and Date answered columns. A tag is never deleted, so the history stays visible in the table.
+
 | ID | Asked by | Question | Needed by (milestone) | Answer | Date answered |
 | --- | --- | --- | --- | --- | --- |
 | Q1 | Fable | Game title. Candidates: "OCS: Lines of Support" (recommended), "OCS: Hub and Spoke", "OCS Tempo". | M0 (before code lands) | "OCS: Lines of Support" (ADR-0004). | 2026-11-07 |
