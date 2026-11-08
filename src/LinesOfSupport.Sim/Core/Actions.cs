@@ -84,10 +84,14 @@ public sealed record DefinitizeAction : PlayerAction
     public string FundingLine { get; init; } = "";
 }
 
-/// <summary>End an arrangement early. Settlement cost is not modeled in v0 (docs/assumptions.md).</summary>
+/// <summary>End an arrangement early. On a contract with a notice clause (an inherited row's noticeDays, M3-19),
+/// WithNotice ends performance that many days after the termination is done and draws no claim; without notice it ends
+/// at once and the vendor files a claim (rules claims), unless the vendor is in default. Other terminations carry no
+/// settlement cost in v0 (docs/assumptions.md).</summary>
 public sealed record TerminateAction : PlayerAction
 {
     public string Arrangement { get; init; } = "";
+    public bool WithNotice { get; init; }
 }
 
 /// <summary>

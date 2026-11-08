@@ -170,4 +170,7 @@ public sealed class SessionView
 
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
+
+    /// <summary>Vendor claims filed after terminations that skipped a contract's notice, settled or not (M3-19).</summary>
+    public IReadOnlyList<ClaimState> Claims => _s.Claims;
 }

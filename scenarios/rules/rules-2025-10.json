@@ -756,5 +756,11 @@
   "fileReview": {
     "hoursPerArrangement": 4,
     "notes": "Reviewing an inherited contract file at a rotation (backlog M3-17): half a person-day per file to read the contract, its modifications, the obligation record and the delivery record. Placeholder, tuned in playtest."
+  },
+  "claims": {
+    "settleShopHours": 16,
+    "settlementDays": 10,
+    "notes": "FAR 49 termination settlement (backlog M3-19): a contract terminated without the notice its terms require draws a vendor claim, settled at this many days of its daily cost (capped at the days cut short) after two person-days of shop work. Placeholders, tuned in playtest.",
+    "sourceUrl": "https://www.acquisition.gov/far/part-49"
   }
 }

@@ -35,7 +35,7 @@ public sealed partial class Session
     {
         WorkKind.Award => ((AwardPayload)w.Payload!).SiteId,
         WorkKind.Definitize => ArrangementSite(((DefinitizeAction)w.Payload!).Arrangement),
-        WorkKind.Terminate or WorkKind.PaymentRework => ArrangementSite((string)w.Payload!),
+        WorkKind.Terminate or WorkKind.PaymentRework or WorkKind.ClaimSettlement => ArrangementSite((string)w.Payload!),
         WorkKind.Ratification or WorkKind.Denial => CommitmentSite((string)w.Payload!),
         WorkKind.HhqResponse => ArrangementSite((string)w.Payload!) ?? CommitmentSite((string)w.Payload!),
         _ => null,

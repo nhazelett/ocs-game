@@ -369,6 +369,17 @@ public sealed record RulesFile
     public LiftRulesData Lift { get; init; } = new();
     public TransitionRulesData Transition { get; init; } = new();
     public FileReviewRulesData FileReview { get; init; } = new();
+    public ClaimRulesData Claims { get; init; } = new();
+}
+
+/// <summary>Vendor claims after a termination without the contract's notice (M3-19, FAR 49): shop hours to settle,
+/// and the settlement as days of the arrangement's daily cost, capped at the days cut short.</summary>
+public sealed record ClaimRulesData
+{
+    public double SettleShopHours { get; init; } = 16;
+    public int SettlementDays { get; init; } = 10;
+    public string? Notes { get; init; }
+    public string? SourceUrl { get; init; }
 }
 
 /// <summary>Reviewing inherited contract files (M3-17): shop hours per file. The findings are ready when the work is.</summary>

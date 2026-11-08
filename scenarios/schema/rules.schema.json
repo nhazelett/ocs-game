@@ -768,6 +768,29 @@
           "type": "string"
         }
       }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Vendor claims after a termination without the contract's notice (backlog M3-19, FAR 49).",
+      "properties": {
+        "settleShopHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Shop hours to settle one claim."
+        },
+        "settlementDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The settlement in days of the arrangement's daily cost, capped at the days of performance cut short."
+        },
+        "notes": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

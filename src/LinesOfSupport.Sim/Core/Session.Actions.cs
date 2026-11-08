@@ -441,9 +441,12 @@ public sealed partial class Session
         if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return ActionResult.Stop($"{t.Arrangement} is not running");
         if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == t.Arrangement))
             return ActionResult.Stop($"termination of {t.Arrangement} is already in work");
-        var rec = AddRecord(Day, RecordKind.Action, t.Arrangement, $"Termination of {t.Arrangement} started.", []);
+        if (t.WithNotice && arr.NoticeDays is not > 0) return ActionResult.Stop($"{t.Arrangement} has no termination notice clause");
+        var rec = AddRecord(Day, RecordKind.Action, t.Arrangement,
+            t.WithNotice ? $"Termination of {t.Arrangement} with {arr.NoticeDays} days' notice started." : $"Termination of {t.Arrangement} started.", []);
         var hours = arr.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true);
-        AddWork(WorkKind.Terminate, $"Terminate {t.Arrangement}", hours, Day, t.Arrangement, rec);
+        var w = AddWork(WorkKind.Terminate, $"Terminate {t.Arrangement}", hours, Day, t.Arrangement, rec);
+        if (t.WithNotice) _noticeTerminations.Add(w.Id);
         return ActionResult.Ok("termination in work");
     }
 
@@ -505,6 +508,9 @@ public sealed partial class Session
             case WorkKind.ExternalSupportRequest:
                 CompleteExternalRequestWork((string)w.Payload!, day, w.CauseId);
                 break;
+            case WorkKind.ClaimSettlement:
+                SettleClaim((string)w.Payload!, day, w.CauseId);
+                break;
             case WorkKind.FileReview:
                 CompleteFileReview((List<string>)w.Payload!, day, w.CauseId);
                 break;
@@ -520,8 +526,10 @@ public sealed partial class Session
             case WorkKind.Terminate:
             {
                 var arr = _arrangements.First(x => x.Id == (string)w.Payload!);
-                arr.EndDay = Math.Min(arr.EndDay, day);
-                if (arr.Status == ArrangementStatus.Pending) arr.Status = ArrangementStatus.Ended;
+                var plannedEnd = arr.EndDay;
+                var notice = _noticeTerminations.Contains(w.Id) ? arr.NoticeDays ?? 0 : 0;
+                arr.EndDay = Math.Min(arr.EndDay, day + notice);
+                if (arr.Status == ArrangementStatus.Pending && (notice == 0 || arr.EndDay < arr.StartDay)) arr.Status = ArrangementStatus.Ended;
                 // Deobligate the unperformed portion of a fully obligated award. It returns to its line only while
                 // the line is still current; otherwise it lapses. UCAs obligate as they go, so nothing comes back.
                 var tail = "";
@@ -541,7 +549,9 @@ public sealed partial class Session
                         else tail = $" {Money(back)} deobligated; {fl.Id} has expired, so the money lapses.";
                     }
                 }
-                AddRecord(day, RecordKind.ArrangementEnd, arr.Id, $"{arr.Id} terminated; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
+                var end = AddRecord(day, RecordKind.ArrangementEnd, arr.Id,
+                    $"{arr.Id} terminated{(notice > 0 ? $" with {notice} days' notice" : "")}; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
+                if (notice == 0) FileClaimIfOwed(arr, plannedEnd, day, end);
                 break;
             }
         }

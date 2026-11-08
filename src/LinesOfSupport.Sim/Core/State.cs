@@ -46,6 +46,19 @@ public sealed class Arrangement
     public bool MobilizationCharged { get; set; }
     /// <summary>The COR designated on this arrangement, or null for none (M3-04).</summary>
     public string? CorId { get; set; }
+    /// <summary>Days of termination notice the contract requires, or null for none (inherited noticeDays, M3-19).</summary>
+    public int? NoticeDays { get; init; }
+}
+
+/// <summary>A vendor's claim after a termination that skipped the contract's notice (M3-19). Filed when the
+/// termination is done; settled when the shop works it, charged to the arrangement's funding line.</summary>
+public sealed class ClaimState
+{
+    public required string ArrangementId { get; init; }
+    public int FiledDay { get; init; }
+    public long AmountCents { get; init; }
+    public int? SettledDay { get; set; }
+    public string FiledRecordId { get; init; } = "";
 }
 
 /// <summary>A COR on the roster (M3-04). When the COR rotates home, the relief keeps the designations at a lower quality.</summary>
@@ -97,7 +110,7 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, ExternalSupportRequest, AcsaOrder, HostNationRequest, FileReview }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, ExternalSupportRequest, AcsaOrder, HostNationRequest, FileReview, ClaimSettlement }
 
 public sealed class WorkItem
 {

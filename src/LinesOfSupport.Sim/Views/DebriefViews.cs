@@ -54,7 +54,8 @@ public sealed record ScorecardView(
     double MissionOutput, double SortieGeneration, double Throughput, double Endurance, double Resilience,
     long ObligatedCents, long IncurredCents, long UnobligatedIncurredCents,
     int UnauthorizedCommitments, int UcaOverdue, int HhqInquiries, int Surveys, int ShopHoursWorked,
-    int GapCount, int AvoidableGaps, int DiscoverableGaps, int UnforeseeableGaps);
+    int GapCount, int AvoidableGaps, int DiscoverableGaps, int UnforeseeableGaps,
+    int Claims = 0, long ClaimCents = 0);
 
 /// <summary>An unauthorized commitment and how it was decided (ADR-0007).</summary>
 public sealed record CommitmentLine(string Id, string Kind, int OpenedDay, string Decision, int? DecidedDay, bool WalkedOff, bool InquiryDrawn, string Text);
@@ -64,4 +65,9 @@ public sealed record DebriefView(
     string ScenarioTitle, int DaysPlayed, int LastDay,
     IReadOnlyList<CapabilityBand> Timeline, IReadOnlyList<TimelineEvent> Events,
     IReadOnlyList<DecisionEntry> Decisions, IReadOnlyList<GapView> Gaps,
-    ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments);
+    ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments,
+    IReadOnlyList<ClaimLine>? Claims = null);
+
+/// <summary>A vendor claim after a termination without the contract's notice (M3-19): filed day, amount, settled day
+/// (null while the shop has not settled it) and the filing record's text.</summary>
+public sealed record ClaimLine(string ArrangementId, int FiledDay, long AmountCents, int? SettledDay, string Text);

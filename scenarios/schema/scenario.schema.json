@@ -565,7 +565,7 @@
           "noticeDays": {
             "type": "integer",
             "minimum": 0,
-            "description": "Termination notice required; a claim event fires if not given"
+            "description": "Termination notice the contract requires (M3-19): a terminate action withNotice ends performance this many days after the termination is done; without notice it ends at once and the vendor files a claim (rules claims). Ignored on host nation support"
           },
           "ucaState": {
             "type": "object",

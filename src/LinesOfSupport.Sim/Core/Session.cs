@@ -312,7 +312,7 @@ public sealed partial class Session
             DailyCostCents = daily,
             ReliabilityPermille = Fixed.Permille(vendor.Reliability), CreatedDay = 0,
             StartDay = a.StartDay, EndDay = a.EndDay, Status = a.StartDay <= 1 ? ArrangementStatus.Active : ArrangementStatus.Pending,
-            CorId = a.Cor, FundingLineId = a.FundingLine, ObligatedCents = a.ObligatedCents ?? 0,
+            CorId = a.Cor, FundingLineId = a.FundingLine, ObligatedCents = a.ObligatedCents ?? 0, NoticeDays = a.NoticeDays,
             // Mobilization happened under the last rotation.
             MobilizationCharged = a.StartDay < 1,
         };
@@ -338,7 +338,8 @@ public sealed partial class Session
                 : $" UCA issued day {us.IssuedDay}, NTE {Money(us.NteCents)}, {Money(us.ObligatedCents)} obligated before day 1; definitization due by day {due} or at {Rules.Uca.DefinitizeAtObligatedFraction * 100:0}% of NTE obligated{(proposal < 1 ? "; qualifying proposal in hand" : "")}.";
         }
         _arrangements.Add(arr);
-        AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.{ucaNote}", []);
+        var noticeNote = a.NoticeDays is { } n and > 0 && a.Instrument != HostNationInstrumentId ? $" Termination needs {n} days' notice." : "";
+        AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.{ucaNote}{noticeNote}", []);
     }
 
     // ------------------------------------------------------------------ hashing and export

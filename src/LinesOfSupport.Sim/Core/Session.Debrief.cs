@@ -363,12 +363,15 @@ public sealed partial class Session
             D("mission.output"), D("mission.sortieGeneration"), D("mission.throughput"), D("mission.endurance"), D("mission.resilience"),
             L("cost.obligatedCents"), L("cost.incurredCents"), L("cost.unobligatedIncurredCents"),
             I("compliance.unauthorizedCommitments"), I("compliance.ucaOverdue"), I("compliance.hhqInquiries"), I("info.surveys"), I("shop.hoursWorked"),
-            gaps.Count, gaps.Count(g => g.Tag == GapTag.Avoidable), gaps.Count(g => g.Tag == GapTag.Discoverable), gaps.Count(g => g.Tag == GapTag.Unforeseeable));
+            gaps.Count, gaps.Count(g => g.Tag == GapTag.Avoidable), gaps.Count(g => g.Tag == GapTag.Discoverable), gaps.Count(g => g.Tag == GapTag.Unforeseeable),
+            _claims.Count, _claims.Sum(c => c.AmountCents));
 
         var commitments = _commitments.Select(c => new CommitmentLine(
             c.Id, c.Kind == CommitmentKind.Handshake ? "handshake" : "outOfScope", c.OpenedDay, c.Decision.ToString().ToLowerInvariant(),
             c.DecidedDay, c.WalkedOff, c.InquiryDrawn, _records.FirstOrDefault(r => r.Id == c.CauseId)?.Text ?? "")).ToList();
 
-        return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments);
+        var claims = _claims.Select(c => new ClaimLine(c.ArrangementId, c.FiledDay, c.AmountCents, c.SettledDay,
+                                                       _records.First(r => r.Id == c.FiledRecordId).Text)).ToList();
+        return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims);
     }
 }
