@@ -1,0 +1,182 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/GameShell.cs" id="1_shell"]
+[ext_resource type="Script" path="res://scripts/SchematicMap.cs" id="2_map"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_shell")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="GameTitle" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TopStrip" type="PanelContainer" parent="Margin/Layout"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Margin/Layout/TopStrip"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Row" type="HBoxContainer" parent="Margin/Layout/TopStrip/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="DayCounter" type="Label" parent="Margin/Layout/TopStrip/Margin/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Day 0"
+
+[node name="Shop" type="VBoxContainer" parent="Margin/Layout/TopStrip/Margin/Row"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="ShopHoursLabel" type="Label" parent="Margin/Layout/TopStrip/Margin/Row/Shop"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Shop hours: —"
+
+[node name="ShopHoursGauge" type="ProgressBar" parent="Margin/Layout/TopStrip/Margin/Row/Shop"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+tooltip_text = "Available when a scenario is connected."
+max_value = 24.0
+show_percentage = false
+
+[node name="Cash" type="VBoxContainer" parent="Margin/Layout/TopStrip/Margin/Row"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="CashLabel" type="Label" parent="Margin/Layout/TopStrip/Margin/Row/Cash"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cash: —"
+
+[node name="CashGauge" type="ProgressBar" parent="Margin/Layout/TopStrip/Margin/Row/Cash"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+tooltip_text = "Available when a scenario is connected."
+show_percentage = false
+
+[node name="Spacer" type="Control" parent="Margin/Layout/TopStrip/Margin/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NextDay" type="Button" parent="Margin/Layout/TopStrip/Margin/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+text = "Next day"
+
+[node name="WorkArea" type="HSplitContainer" parent="Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 700
+
+[node name="BoardPanel" type="PanelContainer" parent="Margin/Layout/WorkArea"]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BoardLayout" type="VBoxContainer" parent="Margin/Layout/WorkArea/BoardPanel"]
+layout_mode = 2
+
+[node name="Heading" type="Label" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout"]
+layout_mode = 2
+text = "Operating area"
+
+[node name="BoardContainer" type="SubViewportContainer" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+
+[node name="BoardViewport" type="SubViewport" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout/BoardContainer"]
+unique_name_in_owner = true
+handle_input_locally = false
+size = Vector2i(640, 480)
+render_target_update_mode = 4
+
+[node name="SchematicMap" type="Node2D" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout/BoardContainer/BoardViewport"]
+script = ExtResource("2_map")
+
+[node name="Caption" type="Label" parent="Margin/Layout/WorkArea/BoardPanel/BoardLayout"]
+layout_mode = 2
+text = "Schematic placeholder · illustrative locations"
+autowrap_mode = 2
+
+[node name="DeskTabs" type="TabContainer" parent="Margin/Layout/WorkArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 300)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Board" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+layout_mode = 2
+
+[node name="Requirements" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Actions" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Directory" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Vehicles" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Ledger" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Inbox" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Reports" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="Debrief" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+visible = false
+layout_mode = 2
+
+[node name="BuildStatus" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "No scenario loaded."
+autowrap_mode = 2
