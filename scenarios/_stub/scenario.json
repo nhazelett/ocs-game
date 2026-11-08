@@ -1,9 +1,54 @@
 {
-  "id": "m0-harness-stub",
+  "schemaVersion": 0,
+  "id": "stub",
+  "title": "Schema stub (not a playable scenario)",
+  "summary": "Minimal file that passes scenario.schema.json. Used by the harness until spoke-b lands.",
+  "rulesVersion": "2025-10",
   "days": 30,
+  "prepDays": 14,
+  "defaultSeed": 1,
+  "islands": [
+    { "id": "hub", "name": "Hub island", "isHub": true, "grid": true, "fuelPoint": true, "waterSource": "municipal", "infoTier": "observed" },
+    { "id": "spokeB", "name": "Spoke B island", "isHub": false, "grid": false, "fuelPoint": false, "waterSource": "none", "infoTier": "assumed" }
+  ],
+  "transportLinks": [
+    { "id": "barge", "from": "hub", "to": "spokeB", "mode": "barge", "capacityPerTrip": 100, "scheduleDays": [2, 5], "weatherSensitive": true },
+    { "id": "lightAir", "from": "hub", "to": "spokeB", "mode": "aircraft", "capacityPerTrip": 5, "scheduleDays": [], "weatherSensitive": true }
+  ],
   "sites": [
-    { "id": "hub" },
-    { "id": "spoke-a" },
-    { "id": "spoke-b" }
+    { "id": "hubSite", "name": "Hub", "island": "hub", "opensDay": 0, "population": [ { "day": 0, "count": 600 } ], "capabilities": [ { "id": "power" }, { "id": "fuel" } ] },
+    { "id": "spokeBSite", "name": "Spoke B", "island": "spokeB", "opensDay": 7, "population": [ { "day": 7, "count": 180 } ], "capabilities": [ { "id": "power", "critical": true }, { "id": "fuel" } ] }
+  ],
+  "requirementCards": [
+    { "id": "req0007", "site": "spokeBSite", "capability": "power", "submittedDay": 1, "requestedStartDay": 7, "durationDays": 90, "quantityHint": "6 x 60 kW generators", "lines": { "generation": true, "fuelSupply": false, "operator": false, "maintenance": false }, "submittedBy": "Spoke B advance team" }
+  ],
+  "vendors": [
+    { "id": "vendorC", "name": "Vendor C", "island": "hub", "offers": [ { "capability": "power", "lines": ["generation"], "capacityPerDay": 500, "leadTimeDays": 2, "unitPriceCents": 12000 } ], "reliability": 0.95, "acceptsGpc": true, "acceptsCash": true, "infoTier": "surveyed" }
+  ],
+  "vehicles": [
+    { "id": "bosBpa", "kind": "bpa", "vendor": "vendorC", "scopeTags": ["generation", "equipmentRental"], "callLimitCents": 4000000, "orderingPeriodEndDay": 120, "placeOfPerformance": [], "visibleOnDay1": true }
+  ],
+  "fundingLines": [
+    { "id": "om1", "type": "OM", "amountCents": 90000000, "availableDay": 1, "expiresDay": 75 }
+  ],
+  "shop": { "people": 2, "systemOnlineDay": 12, "cashOnHandCents": 5000000, "gpcAvailableDay": null, "payingAgentAvailableDay": 1 },
+  "actors": {
+    "sco": { "responsiveness": "medium", "offersJointBoardsUnprompted": false },
+    "fm": { "certificationLagDays": 1 },
+    "commander": { "priorityOrder": ["hubSite", "spokeBSite"] }
+  },
+  "events": [
+    { "id": "bargeWeather", "label": "Weather stops the barge", "window": { "earliestDay": 16, "latestDay": 16 }, "preconditions": [], "effects": [ { "kind": "link.closed", "target": "barge", "days": 3 } ], "fixed": true, "playerVisibleAs": "Harbor master: no barge movements for the next three days." }
+  ],
+  "fixedSituations": ["req0007", "bargeWeather"],
+  "variation": [
+    { "path": "/vendors/0/reliability", "kind": "numberRange", "min": 0.85, "max": 0.98 }
+  ],
+  "passCriteria": [
+    { "id": "powerUp", "label": "Spoke B power down no more than 1 day", "metric": "site.spokeBSite.power.downDays", "comparator": "<=", "value": 1 }
+  ],
+  "modelAssumptions": [
+    "Demand is linear per person per day.",
+    "Buffers are three days of demand unless stated."
   ]
 }

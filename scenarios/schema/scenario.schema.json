@@ -1,0 +1,407 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ocs-game/schema/scenario.schema.json",
+  "title": "OCS: Lines of Support scenario file (v0)",
+  "description": "An authored skeleton plus variation ranges. Fixed situations never vary by seed. Money is integer cents; days are integers counted from day 1 (day 0 is the pre-deployment window). All ids are unique within their array and referenced by id elsewhere.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "title", "rulesVersion", "days", "prepDays", "islands", "transportLinks", "sites", "requirementCards", "vendors", "vehicles", "fundingLines", "shop", "actors", "events", "fixedSituations", "variation", "passCriteria", "modelAssumptions"],
+  "properties": {
+    "schemaVersion": { "const": 0 },
+    "id": { "$ref": "#/$defs/id" },
+    "title": { "type": "string" },
+    "summary": { "type": "string", "description": "One paragraph in the SKELETONS.md form" },
+    "rulesVersion": { "type": "string", "description": "Must match a rules file's rulesVersion" },
+    "days": { "type": "integer", "minimum": 1, "maximum": 400 },
+    "prepDays": { "type": "integer", "minimum": 0, "description": "Budget for the pre-deployment window (SPEC 4.2)" },
+    "defaultSeed": { "type": "integer", "minimum": 0 },
+
+    "islands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "isHub"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "type": "string" },
+          "isHub": { "type": "boolean" },
+          "grid": { "type": "boolean", "description": "Grid power present (hidden until surveyed unless infoTier says otherwise)" },
+          "fuelPoint": { "type": "boolean" },
+          "waterSource": { "enum": ["none", "well", "municipal", "desalination"] },
+          "infoTier": { "$ref": "#/$defs/infoTier", "description": "How well the player knows this island's facts on day 1" }
+        }
+      }
+    },
+
+    "transportLinks": {
+      "type": "array",
+      "description": "Directed or undirected links between islands. A vendor on island X delivering to a site on island Y needs a link; the link's schedule and weather sensitivity gate deliveries.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "from", "to", "mode", "capacityPerTrip", "scheduleDays", "weatherSensitive"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "from": { "$ref": "#/$defs/id" },
+          "to": { "$ref": "#/$defs/id" },
+          "bidirectional": { "type": "boolean", "default": true },
+          "mode": { "enum": ["barge", "aircraft", "road", "sealift", "airlift"] },
+          "capacityPerTrip": { "type": "number", "minimum": 0, "description": "Abstract cargo units per trip" },
+          "scheduleDays": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 7 }, "description": "Days of the week the link runs (1 = day 1 of the scenario, repeating weekly). Empty means on demand." },
+          "weatherSensitive": { "type": "boolean" },
+          "priorityBumpable": { "type": "boolean", "description": "Airlift and sealift: higher-priority cargo can displace deliveries" }
+        }
+      }
+    },
+
+    "sites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "island", "opensDay", "population", "capabilities"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "type": "string" },
+          "island": { "$ref": "#/$defs/id" },
+          "opensDay": { "type": "integer", "minimum": 0 },
+          "closesDay": { "type": "integer", "minimum": 1 },
+          "population": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Step function: count applies from day onward",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["day", "count"],
+              "properties": { "day": { "type": "integer", "minimum": 0 }, "count": { "type": "integer", "minimum": 0 } }
+            }
+          },
+          "tempo": { "type": "number", "minimum": 0, "default": 1, "description": "Demand multiplier on top of population" },
+          "capabilities": {
+            "type": "array",
+            "description": "Which capabilities this site needs, with optional buffer override and mission criticality",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id"],
+              "properties": {
+                "id": { "$ref": "#/$defs/id" },
+                "bufferDays": { "type": "number", "minimum": 0 },
+                "critical": { "type": "boolean", "default": false },
+                "initialArrangements": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Arrangement ids (from inheritedArrangements) covering this on day 1" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "requirementCards": {
+      "type": "array",
+      "description": "Requirements as cards (SPEC 2, 'Scope without paperwork'). Lines are switches; an off line is a gap the player may notice.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "site", "capability", "submittedDay", "requestedStartDay", "durationDays", "lines", "submittedBy"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "site": { "$ref": "#/$defs/id" },
+          "capability": { "$ref": "#/$defs/id" },
+          "submittedDay": { "type": "integer", "minimum": 0 },
+          "requestedStartDay": { "type": "integer", "minimum": 0 },
+          "durationDays": { "type": "integer", "minimum": 1 },
+          "quantityHint": { "type": "string", "description": "What the unit wrote, e.g. '6 x 60 kW generators'" },
+          "lines": {
+            "type": "object",
+            "description": "Scope line id to on/off. Line ids come from the capability card catalog (cards.json, M1).",
+            "additionalProperties": { "type": "boolean" },
+            "minProperties": 1
+          },
+          "submittedBy": { "type": "string" },
+          "flaggedEnduring": { "type": "boolean", "default": false }
+        }
+      }
+    },
+
+    "vendors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "island", "offers", "reliability", "acceptsGpc", "acceptsCash", "infoTier"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "type": "string" },
+          "island": { "$ref": "#/$defs/id" },
+          "offers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["capability", "lines", "capacityPerDay", "leadTimeDays", "unitPriceCents"],
+              "properties": {
+                "capability": { "$ref": "#/$defs/id" },
+                "lines": { "type": "array", "items": { "type": "string" }, "description": "Which scope lines this vendor can deliver (turnkey vendors list all)" },
+                "capacityPerDay": { "type": "number", "minimum": 0, "description": "Shared across every site this vendor serves" },
+                "leadTimeDays": { "type": "integer", "minimum": 0 },
+                "unitPriceCents": { "type": "integer", "minimum": 0 }
+              }
+            }
+          },
+          "reliability": { "type": "number", "minimum": 0, "maximum": 1, "description": "True daily reliability; the directory shows an estimate per infoTier" },
+          "acceptsGpc": { "type": "boolean" },
+          "gpcSurchargeFraction": { "type": "number", "minimum": 0, "maximum": 1, "default": 0 },
+          "acceptsCash": { "type": "boolean" },
+          "vetted": { "type": "boolean", "default": false },
+          "infoTier": { "$ref": "#/$defs/infoTier" }
+        }
+      }
+    },
+
+    "vehicles": {
+      "type": "array",
+      "description": "Existing BPAs, IDIQs and external support contracts available on day 1 (or discoverable through the SCO)",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "vendor", "scopeTags", "orderingPeriodEndDay", "visibleOnDay1"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["bpa", "idiq", "externalSupport"] },
+          "vendor": { "$ref": "#/$defs/id" },
+          "scopeTags": { "type": "array", "items": { "type": "string" }, "description": "Scope line ids this vehicle covers; a call outside them is a hard stop" },
+          "ceilingCents": { "type": "integer", "minimum": 0 },
+          "obligatedCents": { "type": "integer", "minimum": 0, "default": 0 },
+          "callLimitCents": { "type": "integer", "minimum": 0 },
+          "orderingPeriodEndDay": { "type": "integer", "minimum": 0 },
+          "placeOfPerformance": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Island ids; empty means anywhere in the scenario" },
+          "ownedByOtherService": { "type": "boolean", "default": false },
+          "visibleOnDay1": { "type": "boolean" }
+        }
+      }
+    },
+
+    "inheritedArrangements": {
+      "type": "array",
+      "description": "Arrangements already running on day 1 (sustainment and drawdown scenarios)",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "instrument", "vendor", "site", "capability", "lines", "startDay", "endDay"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "instrument": { "$ref": "#/$defs/id" },
+          "vendor": { "$ref": "#/$defs/id" },
+          "vehicle": { "$ref": "#/$defs/id" },
+          "site": { "$ref": "#/$defs/id" },
+          "capability": { "$ref": "#/$defs/id" },
+          "lines": { "type": "array", "items": { "type": "string" } },
+          "startDay": { "type": "integer" },
+          "endDay": { "type": "integer" },
+          "noticeDays": { "type": "integer", "minimum": 0, "description": "Termination notice required; a claim event fires if not given" },
+          "ucaState": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["nteCents", "obligatedCents", "issuedDay", "qualifyingProposalDay", "definitized"],
+            "properties": {
+              "nteCents": { "type": "integer", "minimum": 0 },
+              "obligatedCents": { "type": "integer", "minimum": 0 },
+              "issuedDay": { "type": "integer" },
+              "qualifyingProposalDay": { "type": ["integer", "null"] },
+              "definitized": { "type": "boolean" }
+            }
+          },
+          "cor": { "$ref": "#/$defs/id" },
+          "visibleProblem": { "type": "boolean", "default": true, "description": "False for the inherited problems nobody noticed (past-due UCA, ceiling nearly hit)" }
+        }
+      }
+    },
+
+    "fundingLines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "amountCents", "availableDay", "expiresDay"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "type": { "enum": ["OM"] },
+          "amountCents": { "type": "integer", "minimum": 0 },
+          "availableDay": { "type": "integer", "minimum": 0 },
+          "expiresDay": { "type": "integer", "minimum": 1 },
+          "replacementArrivesDay": { "type": ["integer", "null"], "description": "For the fiscal-year-end trap: when the next line shows up, if at all" }
+        }
+      }
+    },
+
+    "shop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["people", "systemOnlineDay", "cashOnHandCents", "gpcAvailableDay", "payingAgentAvailableDay"],
+      "properties": {
+        "people": { "type": "integer", "minimum": 1 },
+        "systemOnlineDay": { "type": "integer", "minimum": 0, "description": "Contract-writing system available from this day; prep choices can move it earlier" },
+        "cashOnHandCents": { "type": "integer", "minimum": 0 },
+        "cashReplenishLagDays": { "type": "integer", "minimum": 0, "default": 5 },
+        "gpcAvailableDay": { "type": ["integer", "null"], "description": "null means not set up; a prep choice or a 10 to 20 day work item makes it available" },
+        "gpcSinglePurchaseCents": { "type": "integer", "minimum": 0 },
+        "gpcMonthlyCents": { "type": "integer", "minimum": 0 },
+        "payingAgentAvailableDay": { "type": ["integer", "null"] },
+        "warrantCents": { "type": ["integer", "null"], "description": "null means sufficient for the scenario" }
+      }
+    },
+
+    "actors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sco", "fm", "commander"],
+      "properties": {
+        "sco": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["responsiveness", "offersJointBoardsUnprompted"],
+          "properties": {
+            "responsiveness": { "enum": ["high", "medium", "low"] },
+            "offersJointBoardsUnprompted": { "type": "boolean" },
+            "knownVehicles": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Vehicle ids returned on a reach-back ask" }
+          }
+        },
+        "fm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["certificationLagDays"],
+          "properties": { "certificationLagDays": { "type": "integer", "minimum": 0 } }
+        },
+        "commander": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["priorityOrder"],
+          "properties": { "priorityOrder": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Site ids in priority order when capacity is short" } }
+        },
+        "hostNation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["agreementExists"],
+          "properties": { "agreementExists": { "type": "boolean" }, "reliability": { "type": "number", "minimum": 0, "maximum": 1 } }
+        },
+        "acsaPartner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["present"],
+          "properties": {
+            "present": { "type": "boolean" },
+            "stock": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 }, "description": "Capability id to units available" }
+          }
+        }
+      }
+    },
+
+    "events": {
+      "type": "array",
+      "description": "Authored event chains. Each fires once in its window when preconditions hold, applies effects, and may schedule follow-ons. Seeded: the exact day is drawn from the window.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "window", "preconditions", "effects"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "label": { "type": "string" },
+          "window": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["earliestDay", "latestDay"],
+            "properties": { "earliestDay": { "type": "integer", "minimum": 0 }, "latestDay": { "type": "integer", "minimum": 0 } }
+          },
+          "preconditions": { "type": "array", "items": { "$ref": "#/$defs/predicate" } },
+          "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" }, "minItems": 1 },
+          "followOns": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Event ids whose windows start when this fires" },
+          "fixed": { "type": "boolean", "default": false, "description": "Fires on earliestDay regardless of seed" },
+          "playerVisibleAs": { "type": "string", "description": "Inbox text when it fires, if any" }
+        }
+      }
+    },
+
+    "fixedSituations": {
+      "type": "array",
+      "description": "Ids (events, requirement cards, vendors) that variation must not touch",
+      "items": { "$ref": "#/$defs/id" }
+    },
+
+    "variation": {
+      "type": "array",
+      "description": "Seeded ranges applied over the skeleton. path is a JSON pointer into this file.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^/" },
+          "kind": { "enum": ["intRange", "numberRange", "choice", "boolean", "shuffle"] },
+          "min": { "type": "number" },
+          "max": { "type": "number" },
+          "choices": { "type": "array" },
+          "probabilityTrue": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+
+    "passCriteria": {
+      "type": "array",
+      "description": "What 'good' looks like. The harness checks these across seeds and policies.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "metric", "comparator", "value"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "label": { "type": "string" },
+          "metric": { "type": "string", "description": "A metric id the sim emits, e.g. 'site.spokeB.power.downDays'" },
+          "comparator": { "enum": ["<=", ">=", "==", "<", ">"] },
+          "value": { "type": "number" }
+        }
+      }
+    },
+
+    "modelAssumptions": {
+      "type": "array",
+      "description": "Shown to the player in the assumptions panel",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_-]*$" },
+    "infoTier": { "enum": ["assumed", "estimated", "surveyed", "observed"] },
+    "predicate": {
+      "type": "object",
+      "description": "A typed condition on state. The Sim implements each kind and rejects unknown ones.",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string" },
+        "target": { "type": "string" },
+        "comparator": { "enum": ["<=", ">=", "==", "<", ">", "exists", "notExists"] },
+        "value": {},
+        "days": { "type": "integer" }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string" },
+        "target": { "type": "string" },
+        "value": {},
+        "days": { "type": "integer" },
+        "fraction": { "type": "number" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}
