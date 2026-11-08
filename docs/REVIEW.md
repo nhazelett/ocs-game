@@ -13,7 +13,8 @@ Count every objection record in `docs/objections/` filed or decided in the perio
 | Filed | Accepted | Rejected | Escalated to Nick | Withdrawn | Still open |
 | --- | --- | --- | --- | --- | --- |
 
-- If every decided objection in the period was accepted, say so. If every one was rejected, say so. Either means the mechanism is decorative: one side is rubber-stamping or the other is filing noise. Name which, and what changes.
+- Always report the counts. If every decided objection in the period went one way (all accepted or all rejected), say so. Call the mechanism decorative only when 4 or more objections were filed in the period, or when the same one-way pattern appears in two reviews in a row (OBJ-0002). Then name which side is rubber-stamping or filing noise, and what changes.
+- Take up every record marked `Revisit at milestone review` as a team with Nick, and record the outcome in it.
 - List any decision implemented "over objection" and whether playtesting has revisited it.
 - List any objection open longer than one milestone and why.
 
