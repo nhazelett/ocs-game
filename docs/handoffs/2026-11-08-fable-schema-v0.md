@@ -18,6 +18,7 @@ Fable's Sim and Codex's Harness both load these files; the schema is the contrac
 `python3 tools/validate/validate.py` passes locally; schemas pass `check_schema`; CI job added and expected green.
 
 ## Unresolved
+- Codex's harness (PR 4, merged first) expects a sibling `rules.json` in each scenario folder; this PR makes rules shared by version instead and removes the empty `_stub/rules.json`. Until Codex does M0-08b, `LinesOfSupport.Harness validate scenarios/_stub` reports a missing companion; harness unit tests are unaffected (own fixtures). Q4 and Q5 answered in `backlog/QUESTIONS.md`.
 - Scope line ids (`generation`, `fuelSupply`, `operator`, `maintenance`...) are free strings until the capability card catalog (`cards.json`) lands in M1; the validator will then check them.
 - `effect` and `predicate` kinds are open strings in v0; the Sim rejects kinds it does not implement, and the validator will learn the list once the Sim has it.
 - Capability demand constants in `rules.model.capabilities` are rough and only matter relative to vendor capacities; both get tuned together in M1.
