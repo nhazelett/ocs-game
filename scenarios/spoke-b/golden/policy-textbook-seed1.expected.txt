@@ -36,7 +36,7 @@ Day 3
   ACTION    Requirement req0014: Food service staff switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088. Approval request routed through the SCO; answer expected in 2 day(s).
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
-  SURVEY    Survey of Third Island returned: grid power available; no fuel point; water: well; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Third Island Water Works, Coastal Provisions.
+  SURVEY    Survey of Third Island returned: grid power available; no fuel point; water: well; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Third Island Water Works, Coastal Provisions; Coastal Provisions stocks food service from Main Island, so its deliveries ride the surface link.
   DONE      Written purchase order t-req0007-fuel awarded to Port Fuel Haulers; performance starts day 6, ends day 18. Obligated $68,445.
 Day 5
   DONE      Undefinitized contract action t-req0007-enduring awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
@@ -60,11 +60,13 @@ Day 12
   START     t-req0012-enduring began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
   START     t-req0014-bridge began: Food service at Spoke C from Coastal Provisions, 528 meals/day.
 Day 13
+  SURVEY    Forecast from your Third Island survey contacts: Weather closes the Third Island crossing. No ferry sailings days 14 to 15.
   START     t-req0014-enduring began: Food service at Spoke C from Third Island Water Works, 528 meals/day.
   FAIL      t-req0014-bridge missed today's delivery (no food service staff line).
 Day 14
   ACTION    Termination of t-req0012-bridge started.
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
   END       t-req0012-bridge terminated; performance ends day 14.
   FAIL      t-req0012-bridge missed today's delivery (no maintenance line, no plant operators line).
 Day 15
@@ -87,27 +89,48 @@ Day 19
   END       t-req0007-fuel terminated; performance ends day 18.
   END       t-req0007-fuel ended.
 Day 20
+  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   END       t-req0007-bridge ended.
 Day 21
+  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 720 gal/day for 9 days (Potable water supply); $2,592 paid on the spot.
+  DONE      SF 44 cash purchase t-resize-spokeCSite-water-21 awarded to Coastal Provisions; performance starts day 24, ends day 32. Obligated $2,592.
   UCA       Meridian Site Services submitted a qualifying proposal on t-req0007-enduring. Obligation cap rises to 75% of NTE; definitization can start.
 Day 22
   ACTION    Definitization of t-req0007-enduring started; to be funded from om1.
 Day 24
   DEFINITZD t-req0007-enduring definitized at $693,900; obligation caps lifted; fully funded from om1.
+  START     t-resize-spokeCSite-water-21 began: Water at Spoke C from Coastal Provisions, 720 gal/day.
   FAIL      t-req0007-enduring had equipment down.
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
   SHORT     Lodging at Spoke B degraded to 54%: power at 54%.
   OBLIGATE  t-req0014-enduring has incurred $104,544 against $101,826 obligated: funding line om1 has $0 left. The vendor stops work in 3 days if this stands.
 Day 25
+  ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 144 meals/day for 5 days (Meal service); $6,480 paid on the spot.
+  DONE      SF 44 cash purchase t-resize-spokeCSite-food-25 awarded to Coastal Provisions; performance starts day 29, ends day 33. Obligated $6,480.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
   OBLIGATE  t-req0012-enduring has incurred $21,120 against $20,460 obligated: funding line om1 has $0 left. The vendor stops work in 3 days if this stands.
 Day 26
   UCA       Third Island Water Works submitted a qualifying proposal on t-req0014-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+  FAIL      t-resize-spokeCSite-water-21 missed today's delivery (no maintenance line, no plant operators line).
   STOPWORK  Third Island Water Works stopped work on t-req0014-enduring: costs incurred are not obligated.
 Day 27
   UCA       Third Island Water Works submitted a qualifying proposal on t-req0012-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+  FAIL      t-resize-spokeCSite-water-21 missed today's delivery (no maintenance line, no plant operators line).
   STOPWORK  Third Island Water Works stopped work on t-req0012-enduring: costs incurred are not obligated.
+Day 29
+  START     t-resize-spokeCSite-food-25 began: Food service at Spoke C from Coastal Provisions, 144 meals/day.
+  FAIL      t-resize-spokeCSite-food-25 missed today's delivery (no food service staff line).
+  SHORT     Food service at Spoke C down to 35%: t-req0014-enduring stopped work (unpaid UCA); food service on hand ran out.
+Day 30
+  ACTION    Coordinated with the Hub unit for 672 meals/day of Food service to Spoke C. Not a contract; they can withdraw it.
+  START     t-coord-spokeCSite-food-30 began: Food service at Spoke C from the other unit, 672 meals/day.
+  FAIL      t-req0007-enduring had equipment down.
+  FAIL      t-resize-spokeCSite-water-21 missed today's delivery (no maintenance line, no plant operators line).
+  SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
+  SHORT     Lodging at Spoke B degraded to 54%: power at 54%.
+  SHORT     Water at Spoke C down to 14%: t-req0012-enduring stopped work (unpaid UCA); water on hand ran out.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -117,23 +140,25 @@ Hub Fuel                  ..............................
 Hub Lodging               ..............................
 Hub Food service          ..............................
 Hub Waste removal         ..............................
-Spoke B Power                   .................5......
+Spoke B Power                   .................5.....5
 Spoke B Fuel                    ........................
-Spoke B Lodging                 .................5......
+Spoke B Lodging                 .................5.....5
 Spoke B Waste removal           ........................
-Spoke C Water                 ..........................
+Spoke C Water                 .........................1
 Spoke C Lodging               ..........................
-Spoke C Food service          ..........................
+Spoke C Food service          ........................21
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 91% (sortie generation 99%, throughput 99%, endurance 99%, resilience 44%)
-  Obligated $943,824; incurred $591,222; incurred but not obligated $16,314
+  Mission output 91% (sortie generation 99%, throughput 99%, endurance 98%, resilience 48%)
+  Obligated $952,896; incurred $595,830; incurred but not obligated $16,314
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 2; shop hours worked 140; payment errors 0; execution-confusion days 1; vendor failures 5; declined BPA calls 0
-  spokeBSite.power: 0 day(s) down, 1 degraded, lowest 54%
-  spokeBSite.lodging: 0 day(s) down, 1 degraded, lowest 54%
+  Surveys 2; shop hours worked 140; payment errors 0; execution-confusion days 1; vendor failures 10; declined BPA calls 0
+  spokeBSite.power: 0 day(s) down, 2 degraded, lowest 54%
+  spokeBSite.lodging: 0 day(s) down, 2 degraded, lowest 54%
+  spokeCSite.water: 1 day(s) down, 0 degraded, lowest 14%
+  spokeCSite.food: 2 day(s) down, 0 degraded, lowest 14%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on t-req0007-bridge, $2,400. Decision: denied on day 16.
@@ -146,18 +171,45 @@ GAPS AND WHY (each traced back through its causes)
       <- day 24: Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
           <- day 24: t-req0007-enduring had equipment down.
               <- day 1: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  Day 29: Food service at Spoke C down to 35%: t-req0014-enduring stopped work (unpaid UCA); food service on hand ran out.
+      <- day 3: Undefinitized contract action started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088. Approval request routed through the SCO; answer expected in 2 day(s).
+      <- day 29: t-resize-spokeCSite-food-25 missed today's delivery (no food service staff line).
+          <- day 25: SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 144 meals/day for 5 days (Meal service); $6,480 paid on the spot.
+  Day 30: Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
+      <- day 30: t-req0007-enduring had equipment down.
+          <- day 1: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  Day 30: Lodging at Spoke B degraded to 54%: power at 54%.
+      <- day 30: Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
+          <- day 30: t-req0007-enduring had equipment down.
+              <- day 1: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  Day 30: Water at Spoke C down to 14%: t-req0012-enduring stopped work (unpaid UCA); water on hand ran out.
+      <- day 1: Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 day(s).
+      <- day 30: t-resize-spokeCSite-water-21 missed today's delivery (no maintenance line, no plant operators line).
+          <- day 21: SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 720 gal/day for 9 days (Potable water supply); $2,592 paid on the spot.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.power days 24-24, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] t-req0007-enduring failed on day 24 with full operator and maintenance coverage.
-  #1 spokeBSite.lodging days 24-24, lowest 54%, 0 day(s) down: UNFORESEEABLE
+  #1 spokeBSite.power days 30-30, lowest 54%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] t-req0007-enduring failed on day 30 with full operator and maintenance coverage.
+  #2 spokeBSite.lodging days 24-24, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Lodging depends on power, which was short. (see #0)
+  #3 spokeBSite.lodging days 30-30, lowest 54%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] Lodging depends on power, which was short. (see #1)
+  #4 spokeCSite.water days 30-30, lowest 14%, 1 day(s) down: AVOIDABLE
+      [avoidable] t-req0012-enduring stopped work on day 27: incurred costs went past what could be obligated (the UCA obligation cap or the money on the line).
+      [avoidable] t-resize-spokeCSite-water-21 failed (first on day 30) and had no plant operators or maintenance line; its failure odds were higher every day it ran.
+  #5 spokeCSite.food days 29-30, lowest 14%, 2 day(s) down: AVOIDABLE
+      [avoidable] t-resize-spokeCSite-food-25 supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 3 showed that dependency.
+      [avoidable] t-req0014-enduring stopped work on day 26: incurred costs went past what could be obligated (the UCA obligation cap or the money on the line).
+      [avoidable] t-resize-spokeCSite-food-25 failed (first on day 29) and had no food service staff line; its failure odds were higher every day it ran.
+      [avoidable] Food service depends on water, which was short. (see #4)
 
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
-  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
+  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 1)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 90% (mission.output = 0.911)
+  [met] Mission output at least 90% (mission.output = 0.91)
 
-State hash 0eb3d42f14f979af868dcbcccfa37c82ae35acb5adbed9030575b74606bfb307
+State hash f314cd5da1c5a16fe58909f0783584e64f25d88f2465c29dcd27d7a21961b7f1

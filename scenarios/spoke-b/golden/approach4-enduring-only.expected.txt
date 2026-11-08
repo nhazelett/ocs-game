@@ -56,6 +56,7 @@ Day 13
   OK        Food service at Spoke C restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
 Day 15
   START     waterPlant began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
 Day 16
@@ -69,6 +70,9 @@ Day 17
 Day 18
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Meridian Site Services billed $2,400 for work outside turnkey's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+Day 20
+  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
 Day 28
@@ -76,6 +80,7 @@ Day 28
 Day 29
   UCA       Third Island Water Works submitted a qualifying proposal on waterPlant. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      Response to higher HQ on oos1 sent.
+  SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -91,7 +96,7 @@ Spoke B Lodging                 XXXXXXXXXX..............
 Spoke B Waste removal           ........................
 Spoke C Water                 .......7..................
 Spoke C Lodging               ..........................
-Spoke C Food service          .......7..................
+Spoke C Food service          .......7................55
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
@@ -104,7 +109,7 @@ SCORECARD
   spokeBSite.fuel: 7 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 10 day(s) down, 0 degraded, lowest 0%
   spokeCSite.water: 0 day(s) down, 1 degraded, lowest 86%
-  spokeCSite.food: 0 day(s) down, 1 degraded, lowest 86%
+  spokeCSite.food: 0 day(s) down, 3 degraded, lowest 71%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 18): out-of-scope work on turnkey, $2,400. Decision: open; drew an HHQ inquiry.
@@ -121,6 +126,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 12: Water at Spoke C degraded to 86%: water on hand ran out.
           <- day 12: waterBridge missed today's delivery (no maintenance line, no plant operators line).
               <- day 2: Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
+  Day 29: Food service at Spoke C degraded to 71%: food service on hand ran out.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
   pi1 (day 11): waterBridge at spokeCSite.water, failed days 9, 11. Decision: no decision.
@@ -138,12 +144,14 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #4 spokeCSite.food days 12-12, lowest 86%, 0 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #3)
       [avoidable] Requirement req0014 (submitted day 3, needed from day 12) had nothing supplying it from day 12. food-c did not start until day 13.
+  #5 spokeCSite.food days 29-30, lowest 71%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 10)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
   [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [not met] Mission output at least 90% (mission.output = 0.803)
+  [not met] Mission output at least 90% (mission.output = 0.802)
 
-State hash 211cf11c881b7f99f22391aaebc8561137f8521c9e368cc1cf648f61a8c6bd4c
+State hash abcb3c24b99e7317b9c3ceadf375bc6add5b8b4c7c8afc4fa5e13e129bf89de6

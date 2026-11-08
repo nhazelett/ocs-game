@@ -278,6 +278,8 @@ public sealed partial class Session
         }
         if (vendor.Island != site.Island)
             gaps.Add($"Supplied from {IslandData(vendor.Island).Name}: deliveries depend on the transport links to {IslandData(site.Island).Name}.");
+        else if (StockIsland(vendor, capId) is var stock && stock != site.Island && TierOn(site.Island, Day) == "surveyed")
+            gaps.Add($"{vendor.Name} stocks this from {IslandData(stock).Name} (survey): deliveries depend on the transport links to {IslandData(site.Island).Name}.");
         if (inst.RequiresSystemOrManual && Day < _systemOnlineDay)
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 

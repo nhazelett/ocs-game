@@ -48,7 +48,7 @@ public sealed partial class Session
         var arr = new Arrangement
         {
             Id = id, Instrument = "unauthorizedCommitment", VendorId = vendorId, SiteId = siteId, CapabilityId = capId, Lines = [core],
-            SupplierIslandId = vendor.Island, QuantityMilli = qty, DailyCostCents = qty * offer.UnitPriceCents / 1000,
+            SupplierIslandId = StockIsland(vendor, capId), QuantityMilli = qty, DailyCostCents = qty * offer.UnitPriceCents / 1000,
             ReliabilityPermille = Fixed.Permille(vendor.Reliability), Unauthorized = true, CreatedDay = day, CauseId = cause,
             StartDay = day + 1, EndDay = LastDay,
         };

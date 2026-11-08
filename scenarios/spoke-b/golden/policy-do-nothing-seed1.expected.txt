@@ -31,6 +31,7 @@ Day 13
   OK        Fuel at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
 Day 15
   WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
 Day 16
@@ -41,6 +42,9 @@ Day 18
   COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
 Day 19
   DONE      Response to higher HQ on uc1 sent.
+Day 20
+  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
 Day 21
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
   COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
@@ -137,4 +141,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash 8931b2a77ff8a0d414b5ca0a7867b14e6ac763732d51a8f7d0872db455f79582
+State hash 0a7fc2baaa5d90925817e86246ba8bd4f3a030fb71abc58af50f4f0d75307a85

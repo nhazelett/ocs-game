@@ -42,6 +42,7 @@ public sealed partial class Session
 
     private void FireEvents(int d)
     {
+        Forecasts(d);
         foreach (var e in Scenario.Events)
         {
             var (start, fired) = _eventSchedule[e.Id];
@@ -52,11 +53,52 @@ public sealed partial class Session
             var text = e.PlayerVisibleAs is { Length: > 0 } msg ? $"{e.Label}. Inbox: \"{msg}\"" : e.Label;
             var rec = AddRecord(d, RecordKind.Event, e.Id, text, []);
             _eventRecordIds[e.Id] = rec;
-            foreach (var f in e.Effects) Events.Apply(this, f, d, rec);
+            for (var i = 0; i < e.Effects.Count; i++) Events.Apply(this, e, i, d, rec);
             foreach (var follow in e.FollowOns)
                 if (_eventSchedule.TryGetValue(follow, out var s) && !s.Fired)
                     _eventSchedule[follow] = (Math.Max(s.Start, d + 1), false);
         }
+    }
+
+    /// <summary>
+    /// A link closure with forecastDays warns the player that many days ahead, but only when the link's far
+    /// (non-hub) island has been surveyed: the survey is what puts the shop in touch with the harbor (M2-19).
+    /// Unsurveyed, the closure is news on the day it starts.
+    /// </summary>
+    private void Forecasts(int d)
+    {
+        foreach (var e in Scenario.Events)
+        {
+            var (start, fired) = _eventSchedule[e.Id];
+            if (fired || _forecasted.Contains(e.Id) || start > e.Window.LatestDay) continue;
+            for (var i = 0; i < e.Effects.Count; i++)
+            {
+                var f = e.Effects[i];
+                if (f.Kind != "link.closed" || f.ForecastDays is not { } lead || start - d != lead) continue;
+                if (!e.Preconditions.All(p => Events.Holds(this, p, d))) continue;
+                var link = Scenario.TransportLinks.First(l => l.Id == f.Target);
+                var far = new[] { link.From, link.To }.Where(id => !IslandData(id).IsHub).ToList();
+                if (far.Count == 0 || !far.All(id => _knowledge.First(k => k.IslandId == id).Tier is "surveyed" or "observed")) continue;
+                _forecasted.Add(e.Id);
+                var days = EffectDays(e, i, 1);
+                var names = string.Join(" and ", far.Select(id => IslandData(id).Name));
+                AddRecord(d, RecordKind.Knowledge, e.Id,
+                    $"Forecast from your {names} survey contacts: {e.Label.TrimEnd('.')}. No {link.Id} sailings days {start} to {start + days - 1}.", []);
+            }
+        }
+    }
+
+    internal void PopulationJumpNotice(string siteId, int day, int noticeDays, int fractionPermille, string cause)
+    {
+        var site = SiteData(siteId);
+        var arrival = day + Math.Max(1, noticeDays);
+        var baseCount = PopulationOn(site, arrival);
+        if (baseCount == 0) return;
+        var extra = (int)((long)baseCount * fractionPermille / 1000);
+        if (extra <= 0) return;
+        var rec = AddRecord(day, RecordKind.Event, siteId,
+            $"{site.Name}: {extra} more personnel arrive day {arrival} ({baseCount} to {baseCount + extra}), {arrival - day} days' notice. Demand for every capability there rises with them.", [cause]);
+        _popJumps.Add(new PopulationJump(siteId, day, arrival, extra, baseCount, rec));
     }
 
     internal void CloseLink(string linkId, int fromDay, int days, string cause)
@@ -97,6 +139,9 @@ public sealed partial class Session
             }
             var local = Scenario.Vendors.Where(v => v.Island == i.Id).Select(v => v.Name).ToList();
             facts.Add(local.Count == 0 ? "no vendors on the island" : $"vendors on the island: {string.Join(", ", local)}");
+            foreach (var v in Scenario.Vendors.Where(v => v.Island == i.Id))
+                foreach (var o in v.Offers.Where(o => o.SourceIsland is { } src && src != i.Id))
+                    facts.Add($"{v.Name} stocks {CapLabel(o.Capability).ToLowerInvariant()} from {IslandData(o.SourceIsland!).Name}, so its deliveries ride the surface link");
             AddRecord(d, RecordKind.Knowledge, $"survey {k.IslandId}", $"Survey of {i.Name} returned: {string.Join("; ", facts)}.", []);
         }
     }

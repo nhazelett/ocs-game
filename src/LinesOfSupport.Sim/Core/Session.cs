@@ -34,6 +34,13 @@ public sealed partial class Session
     private readonly Dictionary<string, int> _linkClosedThrough = new(StringComparer.Ordinal);
     private readonly Dictionary<string, (int Start, bool Fired)> _eventSchedule = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _eventRecordIds = new(StringComparer.Ordinal);
+    // Seeded effect durations (effect daysRange), keyed "eventId#effectIndex"; drawn at creation (M2-19).
+    private readonly Dictionary<string, int> _effectDays = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _forecasted = new(StringComparer.Ordinal);
+    // Unplanned arrivals from site.populationJump: known to the player from the notice day on (M2-19).
+    private readonly List<PopulationJump> _popJumps = [];
+
+    internal sealed record PopulationJump(string SiteId, int NoticeDay, int ArrivalDay, int Extra, int Base, string RecordId);
     private readonly Dictionary<string, string> _linkClosureCause = new(StringComparer.Ordinal);
     private readonly List<string> _capOrder;
     private readonly Dictionary<string, CapabilityData> _capData;
@@ -122,6 +129,9 @@ public sealed partial class Session
         {
             var start = e.Fixed ? e.Window.EarliestDay : _rngEvents.NextInt(e.Window.EarliestDay, e.Window.LatestDay);
             _eventSchedule[e.Id] = (start, false);
+            for (var i = 0; i < e.Effects.Count; i++)
+                if (e.Effects[i].DaysRange is { } r)
+                    _effectDays[$"{e.Id}#{i}"] = _rngEvents.NextInt(r.Min, r.Max);
         }
     }
 
@@ -191,7 +201,18 @@ public sealed partial class Session
     internal string SiteName(string id) => SiteData(id).Name;
     internal string CapLabel(string id) => _capData[id].Label;
 
+    /// <summary>Population on a day, including unplanned arrivals the player has been told about (site.populationJump).</summary>
     internal int PopulationOn(SiteData site, int day)
+    {
+        var count = PlannedPopulationOn(site, day);
+        if (count == 0) return 0;
+        foreach (var j in _popJumps)
+            if (j.SiteId == site.Id && j.ArrivalDay <= day) count += j.Extra;
+        return count;
+    }
+
+    /// <summary>Population from the scenario plan alone (what the player could read on day 1).</summary>
+    internal int PlannedPopulationOn(SiteData site, int day)
     {
         if (day < site.OpensDay || (site.ClosesDay is { } c && day > c)) return 0;
         var count = 0;
@@ -200,9 +221,17 @@ public sealed partial class Session
         return count;
     }
 
-    internal long DemandMilli(SiteData site, string capability, int day)
+    /// <summary>Days for an event's effect: the seeded draw when it has a daysRange, else its days, else the fallback.</summary>
+    internal int EffectDays(EventData e, int index, int fallback)
+        => _effectDays.TryGetValue($"{e.Id}#{index}", out var drawn) ? drawn : e.Effects[index].Days ?? fallback;
+
+    /// <summary>The island a vendor's goods ship from for this capability (offer sourceIsland, else the vendor's island).</summary>
+    internal string StockIsland(VendorData vendor, string capability)
+        => vendor.Offers.FirstOrDefault(o => o.Capability == capability)?.SourceIsland ?? vendor.Island;
+
+    internal long DemandMilli(SiteData site, string capability, int day, bool planned = false)
     {
-        var pop = PopulationOn(site, day);
+        var pop = planned ? PlannedPopulationOn(site, day) : PopulationOn(site, day);
         if (pop == 0) return 0;
         return pop * _demandPerPersonMilli[capability] * Fixed.Permille(site.Tempo) / 1000;
     }
@@ -262,7 +291,7 @@ public sealed partial class Session
         var arr = new Arrangement
         {
             Id = a.Id, Instrument = a.Instrument, VendorId = a.Vendor, VehicleId = a.Vehicle, SiteId = a.Site,
-            CapabilityId = a.Capability, Lines = [.. a.Lines], SupplierIslandId = vendor.Island, QuantityMilli = qty,
+            CapabilityId = a.Capability, Lines = [.. a.Lines], SupplierIslandId = StockIsland(vendor, a.Capability), QuantityMilli = qty,
             // Host-nation support is reimbursed outside the shop's funding lines (assumptions.md), so it bills nothing here.
             DailyCostCents = offer is null || a.Instrument == "hostNation" ? 0 : qty * offer.UnitPriceCents / 1000,
             ReliabilityPermille = Fixed.Permille(vendor.Reliability), CreatedDay = 0,

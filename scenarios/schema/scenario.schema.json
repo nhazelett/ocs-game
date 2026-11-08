@@ -391,6 +391,10 @@
                   "minimum": 0,
                   "maximum": 2,
                   "description": "One-time mobilization cost incurred on the start day, as a fraction of the base price over the period"
+                },
+                "sourceIsland": {
+                  "$ref": "#/$defs/id",
+                  "description": "Island the consumable stock ships from when it is not the vendor's own (a local reseller that stocks from the hub). Deliveries then ride the surface links from that island; a survey of the site's island shows it."
                 }
               }
             }
@@ -1034,6 +1038,30 @@
         },
         "note": {
           "type": "string"
+        },
+        "daysRange": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "description": "Seeded alternative to days: drawn once per session from the events stream. Wins over days when both are given."
+        },
+        "forecastDays": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "link.closed only: when the link's non-hub island has been surveyed, a forecast record appears this many days before the closure."
         }
       }
     },

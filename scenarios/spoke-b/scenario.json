@@ -499,7 +499,8 @@
           ],
           "capacityPerDay": 600,
           "leadTimeDays": 2,
-          "unitPriceCents": 900
+          "unitPriceCents": 900,
+          "sourceIsland": "hub"
         }
       ],
       "reliability": 0.88,
@@ -787,6 +788,53 @@
         }
       ],
       "playerVisibleAs": "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+    },
+    {
+      "id": "ferryWeather",
+      "label": "Weather closes the Third Island crossing",
+      "window": {
+        "earliestDay": 8,
+        "latestDay": 24
+      },
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "link.closed",
+          "target": "ferry",
+          "daysRange": {
+            "min": 2,
+            "max": 4
+          },
+          "forecastDays": 1
+        }
+      ],
+      "playerVisibleAs": "Harbor master: the ferry to Third Island is tied up until the weather clears."
+    },
+    {
+      "id": "spokeCFollowOn",
+      "label": "Follow-on element ordered to Spoke C",
+      "window": {
+        "earliestDay": 9,
+        "latestDay": 20
+      },
+      "preconditions": [
+        {
+          "kind": "site.open",
+          "target": "spokeCSite"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "site.populationJump",
+          "target": "spokeCSite",
+          "fraction": 0.4,
+          "daysRange": {
+            "min": 3,
+            "max": 5
+          }
+        }
+      ],
+      "playerVisibleAs": "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
     }
   ],
   "fixedSituations": [
@@ -882,6 +930,9 @@
     "Main Island utilities never fail in this scenario so the lesson stays at Spoke B.",
     "Mission output counts each open site equally, so the spoke weighs as much as the hub.",
     "Third Island is on the host-nation grid, so Spoke C power is not tracked and water does not wait on it.",
-    "Spoke C's advance team asked for bottled water only; the island's well plant vendor offers supply with operators and maintenance but needs six days to mobilize."
+    "Spoke C's advance team asked for bottled water only; the island's well plant vendor offers supply with operators and maintenance but needs six days to mobilize.",
+    "Weather can close the Third Island ferry for 2 to 4 days on a seeded day; a survey of Third Island gets you a day's forecast.",
+    "Coastal Provisions keeps little stock on Third Island and restocks food from Main Island on the ferry; its water is local.",
+    "A follow-on element can push Spoke C's population up about 40% on 3 to 5 days' notice, on a seeded day."
   ]
 }

@@ -51,6 +51,8 @@ public sealed class SessionView
         => KnowledgeTier(islandId) is "surveyed" or "observed" ? _s.IslandData(islandId) : null;
 
     public int Population(string siteId, int day) => _s.PopulationOn(_s.SiteData(siteId), day);
+    /// <summary>Population from the scenario plan alone; differs from Population after an unplanned arrival's notice (M2-19).</summary>
+    public int PlannedPopulation(string siteId, int day) => _s.PlannedPopulationOn(_s.SiteData(siteId), day);
     public long PeakDemandUnits(string siteId, string capability, int from, int to)
         => (_s.PeakDemandMilli(siteId, capability, from, to) + 999) / 1000;
 

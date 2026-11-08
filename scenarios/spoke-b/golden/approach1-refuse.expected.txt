@@ -49,6 +49,7 @@ Day 12
   START     food-c began: Food service at Spoke C from Third Island Water Works, 480 meals/day.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
@@ -60,6 +61,8 @@ Day 16
 Day 17
   END       waterBridge ended.
 Day 20
+  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 15%).
   COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
 Day 21
@@ -77,6 +80,8 @@ Day 26
   DONE      Response to higher HQ on oos1 sent.
 Day 27
   FAIL      food-c missed today's delivery.
+Day 29
+  SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
 Day 30
   COMPLY    Higher HQ asked why unauthorized commitment uc2 has gone 10 days without ratification. A response is now shop work (24 hours).
 
@@ -94,7 +99,7 @@ Spoke B Lodging                 ...XXXXXXXXXXXXXX7777777
 Spoke B Waste removal           ........................
 Spoke C Water                 ..........................
 Spoke C Lodging               ..........................
-Spoke C Food service          ..........................
+Spoke C Food service          ........................55
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
@@ -106,6 +111,7 @@ SCORECARD
   spokeBSite.power: 14 day(s) down, 7 degraded, lowest 0%
   spokeBSite.fuel: 14 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 14 day(s) down, 7 degraded, lowest 0%
+  spokeCSite.food: 0 day(s) down, 2 degraded, lowest 71%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   uc1 (day 11): handshake with Port Fuel Haulers for spokeBSite.fuel. Decision: refused on day 12.
@@ -123,6 +129,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 24: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 24: Lodging at Spoke B degraded to 76%: power at 76%.
       <- day 24: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 29: Food service at Spoke C degraded to 71%: food service on hand ran out.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
   pi1 (day 16): waterBridge at spokeCSite.water, failed days 15, 16. Decision: no decision.
@@ -137,6 +144,8 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
   #2 spokeBSite.lodging days 10-30, lowest 0%, 14 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #1)
+  #3 spokeCSite.food days 29-30, lowest 71%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 14)
@@ -145,4 +154,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.749)
 
-State hash 039d47c7af793a88c68331bc5680cc27dfc82a0927816901415343ee47b17245
+State hash 8100dd08cab448c0f2a97a6dece1f8b38fa470f408b28d1baebb0a57d4e32aa9

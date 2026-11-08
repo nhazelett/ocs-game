@@ -26,6 +26,7 @@ public static class Events
         "coordination.withdraw",         // target: site.capability; days: notice (0 = today)
         "unit.unauthorizedCommitment",   // target: site.capability; value: vendor id
         "vendor.outOfScopeWork",         // target: site.capability; value: cents billed for work outside the active contract
+        "site.populationJump",           // target: site id; fraction: share added; days or daysRange: notice before arrival
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -82,17 +83,22 @@ public static class Events
         }
     }
 
-    internal static void Apply(Session s, EffectData e, int day, string cause)
+    internal static void Apply(Session s, EventData ev, int index, int day, string cause)
     {
+        var e = ev.Effects[index];
         switch (e.Kind)
         {
             case "link.closed":
-                s.CloseLink(e.Target ?? throw new InvalidDataException("link.closed needs a target"), day, e.Days ?? 1, cause);
+                s.CloseLink(e.Target ?? throw new InvalidDataException("link.closed needs a target"), day, s.EffectDays(ev, index, 1), cause);
+                break;
+            case "site.populationJump":
+                s.PopulationJumpNotice(e.Target ?? throw new InvalidDataException("site.populationJump needs a site"), day,
+                                       s.EffectDays(ev, index, 3), Fixed.Permille(e.Fraction ?? 0), cause);
                 break;
             case "coordination.withdraw":
             {
                 var (site, cap) = SiteCap(e.Target);
-                s.WithdrawCoordination(site, cap, day, e.Days ?? 0, cause);
+                s.WithdrawCoordination(site, cap, day, s.EffectDays(ev, index, 0), cause);
                 break;
             }
             case "unit.unauthorizedCommitment":

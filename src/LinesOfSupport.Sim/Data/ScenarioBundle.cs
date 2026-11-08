@@ -167,6 +167,11 @@ public sealed class ScenarioBundle
                 Need(cap is not null, $"vendor {v.Id} capability {o.Capability} not in rules");
                 foreach (var line in o.Lines)
                     Need(cap!.Lines.Any(l => l.Id == line), $"vendor {v.Id} line {line} is not a {o.Capability} line");
+                if (o.SourceIsland is { } src)
+                {
+                    Need(islands.Contains(src), $"vendor {v.Id} {o.Capability} sourceIsland {src} not found");
+                    Need(cap?.Delivery == "consumable", $"vendor {v.Id} {o.Capability}: sourceIsland applies only to consumables");
+                }
             }
         }
         foreach (var veh in s.Vehicles) Need(vendors.Contains(veh.Vendor), $"vehicle {veh.Id} vendor not found");
@@ -179,7 +184,19 @@ public sealed class ScenarioBundle
         foreach (var e in s.Events)
         {
             foreach (var p in e.Preconditions) Need(Events.KnownPredicates.Contains(p.Kind), $"event {e.Id}: predicate kind {p.Kind} is not implemented");
-            foreach (var f in e.Effects) Need(Events.KnownEffects.Contains(f.Kind), $"event {e.Id}: effect kind {f.Kind} is not implemented");
+            foreach (var f in e.Effects)
+            {
+                Need(Events.KnownEffects.Contains(f.Kind), $"event {e.Id}: effect kind {f.Kind} is not implemented");
+                if (f.DaysRange is { } r) Need(r.Min <= r.Max, $"event {e.Id}: {f.Kind} daysRange max is below min");
+                if (f.ForecastDays is not null) Need(f.Kind == "link.closed", $"event {e.Id}: forecastDays applies only to link.closed");
+                if (f.Kind == "site.populationJump")
+                {
+                    Need(sites.Contains(f.Target ?? ""), $"event {e.Id}: site.populationJump site {f.Target} not found");
+                    Need(f.Fraction is > 0, $"event {e.Id}: site.populationJump needs a positive fraction");
+                }
+                if (f.Kind == "link.closed")
+                    Need(s.TransportLinks.Any(l => l.Id == f.Target), $"event {e.Id}: link.closed link {f.Target} not found");
+            }
         }
         foreach (var c in Rules.PrepChoices)
             foreach (var f in c.Effects) Need(Prep.KnownEffects.Contains(f.Kind), $"rules prep choice {c.Id}: effect kind {f.Kind} is not implemented");

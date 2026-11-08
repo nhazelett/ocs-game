@@ -48,3 +48,6 @@ Fable
 
 ## Addendum, 2026-11-08 (M2-14): commander confidence
 `SessionView.LostConfidenceSites` (sites whose commander lost confidence through a refused handshake) and a new `GapFactorKind.PriorityDeferred` (appended; Avoidable). The rule itself is in docs/assumptions.md (Commander priority when capacity is short). The held-back record is a `RecordKind.Compliance` record whose subject is the work item id. Additive; no existing view changes shape.
+
+## Addendum, 2026-11-08 (M2-19): seeded disruptions
+`SessionView.PlannedPopulation(siteId, day)` (the scenario plan's population; `Population` now includes unplanned arrivals once their notice has come) and a new `GapFactorKind.PopulationJump` (appended; Unforeseeable for 7 days after the arrival, then Avoidable). The arrival notice is a `RecordKind.Event` record whose subject is the site id; a ferry forecast is a `RecordKind.Knowledge` record whose subject is the event id (`ferryWeather`), so the morning board links it as an Event. Scenario schema additions (Fable lane): effect `daysRange` and `forecastDays`, effect kind `site.populationJump`, vendor offer `sourceIsland`. Additive; no existing view changes shape.
