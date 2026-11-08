@@ -13,6 +13,8 @@ Fable's matching file is `docs/FABLE-SESSION.md`. Fable merges; Codex never merg
 3. Answer any question to Codex in `backlog/QUESTIONS.md`.
 
 ## 2. Work
+Standing authorization (Nick, 8 Nov 2026): Codex opens ordinary (non-draft) pull requests against `main` for every backlog item and for handoff notes, without asking each time. Codex never merges.
+
 1. Count your open, unmerged PRs. At ten, stop new work: spend the session on the fix pass, then end (section 5). Stacking is allowed below ten: branch from your own unmerged PR when the next item needs it and say so in the PR body.
 2. Take the highest Codex item in `backlog/BACKLOG.md` that is not Done and not blocked. Fable sets the order inside a milestone; take items in the order listed.
 3. **Claim it** before starting: push an empty branch `codex/<item-id>`. If that branch already exists on the remote and was pushed in the last three hours, another Codex session has it; take the next item.
