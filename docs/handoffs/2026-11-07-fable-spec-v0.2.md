@@ -17,16 +17,16 @@ The repo needs the spec before either agent writes code, and the decisions that 
 
 - Spec exported from the live doc at rev 39 and diffed by eye against the doc's section list (bottom line, 1 to 13, with 4.1 to 4.4 inserted after section 4).
 - Mermaid blocks checked for syntax by rendering in a Markdown preview.
-- CI `test` job skips cleanly because `src/Footprint.sln` does not exist; `provenance` passes because `assets/` holds only `PROVENANCE.md`.
+- CI `test` job skips cleanly because `src/LinesOfSupport.sln` does not exist; `provenance` passes because `assets/` holds only `PROVENANCE.md`.
 
 ## Unresolved
 
-- Game title (Q1). Project code names stay `Footprint.*` until it is set; renaming is a one-commit change before M0 code lands.
+- Game title (Q1). Project code names stay `LinesOfSupport.*` until it is set; renaming is a one-commit change before M0 code lands.
 - Scope section 4.2's prep-day costs and section 4.1's lead times are first-pass numbers and are marked as tunables in the spec.
 - Spec v0.2 still says "Steam only after an ethics opinion" in one place in section 10; the bottom line now says the ethics question is handled before public release. Section 10 is the one to read as "before a Steam page exists," which is consistent; wording to be tightened in v0.3.
 
 ## Next
 
 - Nick reviews and merges the spec PR, answers Q1 to Q3.
-- Fable (M0): scenario schema v0, `assumptions.md`, `Footprint.Sim` domain model and day loop with tests, Spoke B `scenario.json`, four approach input logs as golden files, view-model contracts.
-- Codex (M0): solution and `Footprint.Harness` scaffold, CI build of the solution, Godot 4.6 .NET project referencing Sim, first bpy kit experiment, provenance check hardening. Codex's kickoff brief is `docs/CODEX-KICKOFF.md` in this PR.
+- Fable (M0): scenario schema v0, `assumptions.md`, `LinesOfSupport.Sim` domain model and day loop with tests, Spoke B `scenario.json`, four approach input logs as golden files, view-model contracts.
+- Codex (M0): solution and `LinesOfSupport.Harness` scaffold, CI build of the solution, Godot 4.6 .NET project referencing Sim, first bpy kit experiment, provenance check hardening. Codex's kickoff brief is `docs/CODEX-KICKOFF.md` in this PR.

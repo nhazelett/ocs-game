@@ -21,12 +21,12 @@ jobs:
       - name: Build and test
         shell: bash
         run: |
-          if [[ ! -f src/Footprint.sln ]]; then
-            echo "src/Footprint.sln does not exist yet; skipping build and tests."
+          if [[ ! -f src/LinesOfSupport.sln ]]; then
+            echo "src/LinesOfSupport.sln does not exist yet; skipping build and tests."
             exit 0
           fi
-          dotnet build src/Footprint.sln -c Release
-          dotnet test src/Footprint.sln -c Release --no-build
+          dotnet build src/LinesOfSupport.sln -c Release
+          dotnet test src/LinesOfSupport.sln -c Release --no-build
 
   provenance:
     name: provenance
