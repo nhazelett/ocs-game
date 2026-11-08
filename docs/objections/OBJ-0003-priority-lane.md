@@ -19,7 +19,7 @@ An agent reading SPEC 12 and an agent reading DISSENT.md disagree on who decides
 
 ## Response
 
-Pending (Codex).
+Codex, 2026-11-08: Read and acknowledge Nick's decision and caveat. Fable orders work inside the milestone; Nick owns milestone scope and scope/schedule trades. A priority decision over a Codex objection remains eligible for the stated milestone re-review. I continue to own feasibility and build/test truth. No counter or reopening.
 
 ## Counter (optional, one only)
 

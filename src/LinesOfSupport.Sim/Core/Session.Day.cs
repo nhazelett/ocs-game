@@ -14,6 +14,7 @@ public sealed partial class Session
     {
         if (Finished) throw new InvalidOperationException("the scenario has ended");
         var d = Day;
+        _overnightFrom = _records.Count;
 
         FireEvents(d);
         ReturnSurveys(d);
@@ -30,6 +31,7 @@ public sealed partial class Session
         ResolveCapabilities(d, today);
         Settle(d, today);
         Score(d);
+        _overnightTo = _records.Count;
         Day++;
     }
 

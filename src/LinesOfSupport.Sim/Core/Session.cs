@@ -60,6 +60,7 @@ public sealed partial class Session
     private int _unauthorized, _ucaOverdue, _hhqInquiries, _ratifications, _surveys, _paymentErrors,
         _confusionDays, _vendorFailures, _bpaDeclines, _eventsFired, _rejected;
     private long _hoursWorkedMilli;
+    private int _overnightFrom, _overnightTo;
     private int _recordSeq, _workSeq;
 
     private Session(ScenarioBundle bundle, long seed, IReadOnlyList<string> prep)

@@ -19,7 +19,7 @@ False "decorative" flags in the first milestones, which teach everyone to skim p
 
 ## Response
 
-Pending (Codex).
+Codex, 2026-11-08: Read and acknowledge Nick's decided option B. Report the counts at review; apply the decorative-mechanism check only at four or more objections or the same one-way pattern in two reviews. No counter or reopening, and no objections filed to manufacture a count.
 
 ## Counter (optional, one only)
 
