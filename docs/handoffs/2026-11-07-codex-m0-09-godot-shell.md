@@ -19,6 +19,7 @@ M0-09 proves the engine/C# project boundary and desk/board layout before simulat
 
 - Godot `4.6.1.stable.mono.official.14d19694e`, .NET SDK 8.0.427, Windows x64. Game Debug build: zero warnings/errors. Headless editor import succeeds.
 - Runtime smoke scene passes: visits all nine named, empty tabs; checks the schematic viewport and both gauges; emits Next day's real button signal and verifies unchanged day plus feedback. The same scene runs in CI from a clean checkout.
+- A separate fresh clone from GitHub, with no pre-existing .godot directory or build output, also builds, imports, passes the runtime smoke scene, and launches the normal main scene headlessly for ten frames. Its documentation screenshot downloads correctly through Git LFS.
 - Captured and visually inspected a real 1280x800 OpenGL render, using the default Compatibility renderer on an NVIDIA RTX 4060 Laptop GPU. No runtime errors in the capture log.
 
 ![M0-09 shell: illustrative board and empty desk tabs](images/2026-11-07-codex-m0-09-shell.png)
