@@ -14,6 +14,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(DefinitizeAction), "definitize")]
 [JsonDerivedType(typeof(TerminateAction), "terminate")]
 [JsonDerivedType(typeof(ResolveCommitmentAction), "resolveCommitment")]
+[JsonDerivedType(typeof(EstablishBpaAction), "establishBpa")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -86,6 +87,22 @@ public sealed record ResolveCommitmentAction : PlayerAction
     public string Commitment { get; init; } = "";
     public string Choice { get; init; } = "";
     public string? FundingLine { get; init; }
+}
+
+/// <summary>
+/// Establish a blanket purchase agreement with a vendor (SPEC 4.1). Costs shop days (rules bpaEstablish); when the
+/// work is done the BPA joins the shop's vehicles and takes calls. Obligates nothing: a BPA is not binding.
+/// Id is the vehicle id. CallLimitCents defaults to the simplified acquisition threshold; OrderingPeriodDays to the
+/// rest of the scenario.
+/// </summary>
+public sealed record EstablishBpaAction : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string Vendor { get; init; } = "";
+    public string Capability { get; init; } = "";
+    public List<string> ScopeLines { get; init; } = [];
+    public long? CallLimitCents { get; init; }
+    public int? OrderingPeriodDays { get; init; }
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)
