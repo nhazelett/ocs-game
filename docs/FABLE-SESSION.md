@@ -19,6 +19,7 @@ Every Fable session follows this, whether Nick started it in chat or the hourly 
 For each open Codex PR:
 - Changed files all inside Codex's components (`src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, Codex handoff notes) and every CI check green: merge it.
 - Conflicted only in `backlog/*.md` or `.github/workflows/ci.yml`: merge `main` into the Codex branch (never force-push), keep both sides, rerun the tests, push, wait for CI, merge, and leave a one-line PR comment saying what was resolved.
+  Before committing a resolution, run `git grep -nE '^(<<<<<<< |=======$|>>>>>>> )'` and stop if it finds anything; a branch can already carry markers from an earlier bad merge, and CI does not check Markdown yet (M2-16). Never chain the commit after a resolver with `;`.
 - Touches `src/LinesOfSupport.Sim*`, `scenarios/schema/`, `scenarios/rules/`, `docs/SPEC.md` or `docs/decisions/`: review it as a design change; merge if it is right, otherwise file an objection per `docs/DISSENT.md`.
 - CI red: do not merge; comment with the failing check and leave it for Codex.
 Merging only on green CI keeps Codex's queue (limit five open PRs) moving between Nick's check-ins.

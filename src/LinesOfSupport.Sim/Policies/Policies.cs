@@ -250,7 +250,7 @@ internal static class Helpers
     public static AwardAction? FastestRoute(SessionView v, string siteId, string capability, List<string> lines, long qty, int days, string? preferIsland)
     {
         var candidates = Vendors(v, capability, lines)
-            .Where(x => !x.Vendor.VehicleOnly || v.Scenario.Vehicles.Any(b => b.Vendor == x.Vendor.Id))
+            .Where(x => !x.Vendor.VehicleOnly || v.Vehicles.Any(b => b.Vendor == x.Vendor.Id))
             .Where(x => HasCapacity(v, x.Vendor, capability, qty))
             .OrderBy(x => preferIsland is not null && x.Vendor.Island == preferIsland ? 0 : 1)
             .ThenBy(x => x.Offer.LeadTimeDays).ThenBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id)
@@ -259,7 +259,7 @@ internal static class Helpers
         {
             var total = qty * offer.UnitPriceCents * days;
             total += (long)(total * offer.MobilizationFraction);
-            var bpa = v.Scenario.Vehicles.FirstOrDefault(b => b.Kind == "bpa" && b.VisibleOnDay1 && b.Vendor == vendor.Id && v.Day <= b.OrderingPeriodEndDay
+            var bpa = v.Vehicles.FirstOrDefault(b => b.Kind == "bpa" && b.VisibleOnDay1 && b.Vendor == vendor.Id && v.Day <= b.OrderingPeriodEndDay
                                                              && lines.All(b.ScopeTags.Contains) && (b.CallLimitCents is null || total <= b.CallLimitCents));
             var line = Funding(v, total);
             if (bpa is not null && line is not null)

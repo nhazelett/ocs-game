@@ -24,6 +24,8 @@ public sealed class SessionView
     public IReadOnlyList<WorkItem> Work => _s.Work;
     public IReadOnlyList<FundingLineState> Funding => _s.Funding;
     public IReadOnlyList<CauseRecord> Records => _s.Records;
+    /// <summary>Vehicles the shop has: the scenario's plus any BPAs established this game.</summary>
+    public IReadOnlyList<VehicleData> Vehicles => _s.Vehicles;
     /// <summary>Unauthorized commitments (SPEC 4.5): handshakes and out-of-scope work, with the decision on each.</summary>
     public IReadOnlyList<CommitmentState> Commitments => _s.Commitments;
     /// <summary>A site unit's habit of going around contracting, 0 to 1000 permille.</summary>
@@ -72,4 +74,8 @@ public sealed class SessionView
     /// <summary>The debrief (SPEC 4): timeline, decisions with what was known, gaps tagged avoidable / discoverable /
     /// unforeseeable with their evidence, scorecard and commitments. Covers the days played so far.</summary>
     public DebriefView Debrief() => _s.BuildDebrief();
+
+    /// <summary>What establishing a BPA would take: hard stops, shop hours, and in EarliestStartMin/Max the first day calls
+    /// could be placed (ignoring the queue ahead). Changes nothing.</summary>
+    public ActionPreview PreviewEstablish(EstablishBpaAction bpa) => _s.BuildEstablishPreview(bpa);
 }

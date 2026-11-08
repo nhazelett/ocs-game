@@ -162,7 +162,7 @@ public sealed partial class Session
         {
             "sf44" when _payingAgentDay is null || Day < _payingAgentDay => "no paying agent with cash on hand yet",
             "gpc" when _gpcAvailableDay is null || Day < _gpcAvailableDay => "no government purchase card accounts yet",
-            "bpaCall" when !Scenario.Vehicles.Any(v => v.Kind == "bpa" && v.VisibleOnDay1 && Day <= v.OrderingPeriodEndDay)
+            "bpaCall" when !_vehicles.Any(v => v.Kind == "bpa" && v.VisibleOnDay1 && Day <= v.OrderingPeriodEndDay)
                 => "no BPA known to this shop is open for ordering",
             _ => null,
         };
@@ -206,7 +206,7 @@ public sealed partial class Session
                 _standing.TryGetValue(x.v.Id, out var st) ? (st.DeclinesWork ? "declines work after an unpaid handshake" : $"quotes {st.MarkupPermille / 10}% higher after an unpaid handshake") : null))
             .ToList();
 
-        var vehicles = Scenario.Vehicles
+        var vehicles = _vehicles
             .Where(v => v.VisibleOnDay1 && vendors.Any(o => o.Id == v.Vendor))
             .Select(v => new VehicleOption(v.Id, v.Kind, v.Vendor, v.ScopeTags, v.CallLimitCents, v.OrderingPeriodEndDay,
                                            v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay))
