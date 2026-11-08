@@ -6,7 +6,7 @@ As of 7 Nov 2026 · Author: Nick Hazelett (with Fable). Source of truth for this
 
 ## Bottom line
 
-Build a single-player, turn-based (one day per turn) management strategy game, **title to be decided (it will carry "OCS" in the name; project code names below say Footprint until it is set)**, in which one player holds two seats: OCS planner and CCO for a hub-and-spoke standup and sustainment effort in a fictional theater. The game is a deterministic, seeded simulation. The player assembles requirements, support requests and contract actions from parts; the simulation judges them by what they actually deliver on the ground, not by a quiz key. Every outcome carries a cause record, so the debrief can show what happened, what the player knew at the time, and what a different call would have done.
+Build a single-player, turn-based (one day per turn) management strategy game, ****OCS: Lines of Support** (project code names are LinesOfSupport.*)**, in which one player holds two seats: OCS planner and CCO for a hub-and-spoke standup and sustainment effort in a fictional theater. The game is a deterministic, seeded simulation. The player assembles requirements, support requests and contract actions from parts; the simulation judges them by what they actually deliver on the ground, not by a quiz key. Every outcome carries a cause record, so the debrief can show what happened, what the player knew at the time, and what a different call would have done.
 
 Boundaries I recommend holding for 1.0:
 
@@ -320,11 +320,11 @@ The honest assessment first: a polished 3D tabletop with modeled, textured, lit 
 
 ```mermaid
 flowchart TB
-    TOOLS[Footprint.Tools<br/>bpy assets, validators] -->|glTF kit| GAME[Footprint.Game<br/>Godot 4.6 .NET, board, desk UI]
+    TOOLS[LinesOfSupport.Tools<br/>bpy assets, validators] -->|glTF kit| GAME[LinesOfSupport.Game<br/>Godot 4.6 .NET, board, desk UI]
     GAME -->|export| BUILD[Windows build<br/>zip, later installer]
-    GAME -->|calls; binds view models| SIM[Footprint.Sim<br/>state, rules, day advance]
-    TESTS[Footprint.Sim.Tests<br/>xUnit, golden files] -->|verifies| SIM
-    HARN[Footprint.Harness<br/>batch runs, validate] -->|drives| SIM
+    GAME -->|calls; binds view models| SIM[LinesOfSupport.Sim<br/>state, rules, day advance]
+    TESTS[LinesOfSupport.Sim.Tests<br/>xUnit, golden files] -->|verifies| SIM
+    HARN[LinesOfSupport.Harness<br/>batch runs, validate] -->|drives| SIM
     SCEN[scenarios/*.json<br/>data, schema-checked] -->|loaded| SIM
     SIM <-->|input log replayed| SAVE[Save file<br/>scenario, rules version, seed, log]
     LOGS[Playtest input logs<br/>attached to bug reports] -->|bug replays| HARN
@@ -340,11 +340,11 @@ Every arrow points at the sim or away from it; nothing talks to the Godot projec
 
 | Project | Type | Owns | Depends on |
 | --- | --- | --- | --- |
-| `Footprint.Sim` | .NET 8 class library | State model, rules engine, day advance, event chains, CauseRecords, scenario loading, save and replay | Nothing but the .NET base library |
-| `Footprint.Sim.Tests` | xUnit | Unit, property and golden-file tests | Sim |
-| `Footprint.Harness` | Console app | Batch runs: scenario x seeds x scripted policies, outcome spread reports, scenario validation | Sim |
-| `Footprint.Game` | Godot 4.6 .NET project | Board, desk UI, debrief views, input handling, presentation state | Sim |
-| `Footprint.Tools` | Python and Blender scripts | Asset generation (bpy), schema validation, provenance checks | None at runtime |
+| `LinesOfSupport.Sim` | .NET 8 class library | State model, rules engine, day advance, event chains, CauseRecords, scenario loading, save and replay | Nothing but the .NET base library |
+| `LinesOfSupport.Sim.Tests` | xUnit | Unit, property and golden-file tests | Sim |
+| `LinesOfSupport.Harness` | Console app | Batch runs: scenario x seeds x scripted policies, outcome spread reports, scenario validation | Sim |
+| `LinesOfSupport.Game` | Godot 4.6 .NET project | Board, desk UI, debrief views, input handling, presentation state | Sim |
+| `LinesOfSupport.Tools` | Python and Blender scripts | Asset generation (bpy), schema validation, provenance checks | None at runtime |
 
 **Determinism rules (non-negotiable, enforced by tests):** one seeded generator per subsystem (market, events, vendor performance, reports) so adding a draw in one does not shift the others; integer or fixed-point arithmetic for any quantity that feeds an outcome (buffers, coverage, dollars in cents); a fixed order of subsystem updates within the day advance; no wall clock, no dictionary iteration order, no floating point in rules. The presentation layer may use floats freely because it never writes back to state.
 
@@ -361,7 +361,7 @@ Every arrow points at the sim or away from it; nothing talks to the Godot projec
 - Godot side: smoke tests through a headless export that loads each scene and plays a scripted 10-day game; manual playtests by you with the input log attached to the bug report, so any bug is a replay.
 - CI on GitHub Actions: build and test on every pull request; export a Windows build artifact on every tag.
 
-**Scenario data** is the JSON described in section 6, validated by `Footprint.Harness validate` and by a JSON Schema checked into the repo. Rules carry a version and the save records it.
+**Scenario data** is the JSON described in section 6, validated by `LinesOfSupport.Harness validate` and by a JSON Schema checked into the repo. Rules carry a version and the save records it.
 
 ## 9. Scope envelope
 
@@ -420,7 +420,7 @@ M2 is highlighted because it is the first time the game is judged as a game; the
 
 M2 is accented because it is the first time the game is judged as a game; the two diamonds are the decisions that can send work backward.
 
-**M0, Foundation.** Repo, solution skeleton, CI, scenario schema v0, decision log, this spec checked in. Done when: `dotnet test` passes in CI on a pull request; `Footprint.Harness validate` rejects a broken scenario file; a Godot project opens, references the sim and shows an empty board.
+**M0, Foundation.** Repo, solution skeleton, CI, scenario schema v0, decision log, this spec checked in. Done when: `dotnet test` passes in CI on a pull request; `LinesOfSupport.Harness validate` rejects a broken scenario file; a Godot project opens, references the sim and shows an empty board.
 
 **M1, The sim is a game in text.** Sim core for the first-playable tier; the Spoke B scenario in JSON; the harness can play it with scripted policies. Done when: all four approaches in section 5 reproduce in the harness from input logs with the expected day-10, day-12, day-16 and day-60 effects; 200-seed runs show textbook beats greedy beats do-nothing; golden-file tests exist for each approach; every state change carries a CauseRecord.
 
@@ -448,8 +448,8 @@ footprint/
   backlog/
     BACKLOG.md              prioritized, each item with acceptance criteria and an owner
   src/
-    Footprint.Sim/  Footprint.Sim.Tests/  Footprint.Harness/
-  game/                     Godot project (Footprint.Game)
+    LinesOfSupport.Sim/  LinesOfSupport.Sim.Tests/  LinesOfSupport.Harness/
+  game/                     Godot project (LinesOfSupport.Game)
   scenarios/                scenario.json, rules.json, theme.json per scenario, plus schema/
   tools/                    bpy asset scripts, validators
   assets/
@@ -464,9 +464,9 @@ footprint/
 | Component | Owner | Other agent's role |
 | --- | --- | --- |
 | Spec, ADRs, scenario design and JSON, rules data | Fable | Review for implementability |
-| `Footprint.Sim`, `Footprint.Sim.Tests` | Fable | Review, profiling, bug fixes on assigned items |
-| `Footprint.Harness` | Codex | Policy scripts for balance runs come from Fable |
-| `Footprint.Game` scaffold, desk UI, board, debrief views | Codex | Fable writes the view-model contracts the UI binds to |
+| `LinesOfSupport.Sim`, `LinesOfSupport.Sim.Tests` | Fable | Review, profiling, bug fixes on assigned items |
+| `LinesOfSupport.Harness` | Codex | Policy scripts for balance runs come from Fable |
+| `LinesOfSupport.Game` scaffold, desk UI, board, debrief views | Codex | Fable writes the view-model contracts the UI binds to |
 | Asset pipeline, bpy scripts, kit, sound | Codex | Fable reviews against the visual direction |
 | CI, exports, installer, Steamworks prep | Codex |  |
 | Playtesting, scenario truth, priority calls | Nick | Both agents turn his notes into backlog items |
@@ -483,14 +483,14 @@ Fable (M0 and M1):
 
 1. Export this spec to `docs/SPEC.md`; write ADR-0001 (stack), ADR-0002 (determinism rules), ADR-0003 (single-player two-seat first).
 2. Scenario schema v0 and `assumptions.md`.
-3. `Footprint.Sim` domain model and day-advance loop for the first-playable tier, with tests.
+3. `LinesOfSupport.Sim` domain model and day-advance loop for the first-playable tier, with tests.
 4. Spoke B `scenario.json` and the four approach input logs as golden files.
 5. View-model contracts for the morning board and the two editors.
 
 Codex (M0 and M1):
 
 1. Repo scaffold, solution, GitHub Actions (build, test, Windows export on tag).
-2. `Footprint.Harness`: run, validate, batch with outcome spread report.
+2. `LinesOfSupport.Harness`: run, validate, batch with outcome spread report.
 3. Godot 4.6 .NET project referencing Sim; empty board scene; desk UI shell with the panel layout from section 7.
 4. First bpy experiment: generate one site (tent, CHU, generator, fuel bladder, truck) flat-shaded, export glTF, render it in Godot; report what tools and steps worked.
 5. `PROVENANCE.md` template and a check that fails CI when an asset lacks an entry.

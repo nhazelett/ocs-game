@@ -2,7 +2,7 @@
 ADR-0001: Godot 4.6 .NET with C# throughout; the simulation is a separate class library
 
 ## Status (Proposed / Accepted / Superseded)
-Proposed (accepted when the spec v0.2 PR merges)
+Accepted (spec v0.2 PR 1 merged 7 Nov 2026)
 
 ## Context
 The game is a deterministic simulation with a view on it. Two AI agents write most of the code; the human reviews behavior, not source. The release target is a standalone Windows build, later Steam. See SPEC.md section 8.
@@ -14,7 +14,7 @@ The game is a deterministic simulation with a view on it. Two AI agents write mo
 4. Custom engine.
 
 ## Decision
-Option 2. `Footprint.Sim` (class library), `Footprint.Sim.Tests` (xUnit), `Footprint.Harness` (console), `Footprint.Game` (Godot 4.6 .NET), `Footprint.Tools` (Python and Blender scripts, not runtime). Project names are placeholders until the title is set.
+Option 2. `LinesOfSupport.Sim` (class library), `LinesOfSupport.Sim.Tests` (xUnit), `LinesOfSupport.Harness` (console), `LinesOfSupport.Game` (Godot 4.6 .NET), `LinesOfSupport.Tools` (Python and Blender scripts, not runtime). 
 
 ## Consequences
 - The sim runs headless for tests, 200-seed balance runs and counterfactual replays without the engine.

@@ -2,7 +2,7 @@
 ADR-0003: Single player holding two seats (OCS planner, CCO); hot-seat for groups; no network play before 1.0
 
 ## Status (Proposed / Accepted / Superseded)
-Proposed (accepted when the spec v0.2 PR merges)
+Accepted (spec v0.2 PR 1 merged 7 Nov 2026)
 
 ## Context
 The brief asked whether the OCS and CCO layers should be played by one person switching roles, cooperating players, an instructor-led group, or a combination. Primary learner is the CCO (Nick, 7 Nov 2026). See SPEC.md section 3.

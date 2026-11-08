@@ -2,7 +2,7 @@
 ADR-0002: The simulation is deterministic from (scenario, rules version, seed, input log)
 
 ## Status (Proposed / Accepted / Superseded)
-Proposed (accepted when the spec v0.2 PR merges)
+Accepted (spec v0.2 PR 1 merged 7 Nov 2026)
 
 ## Context
 Reproducible scenarios are needed for instruction (one seed code for a class), testing (golden files), and the counterfactual debrief (re-run from day N with one decision changed). See SPEC.md sections 4 and 8.
