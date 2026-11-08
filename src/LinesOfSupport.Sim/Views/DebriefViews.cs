@@ -1,7 +1,8 @@
 namespace LinesOfSupport.Sim.Views;
 
 // Debrief view-model contract (backlog M2-08, ADR-0006 addendum). SPEC 4 "Debrief logic": timeline, decisions,
-// gaps with tags, scorecard. The counterfactual view (M3) re-runs from an input log and needs no new contract here.
+// gaps with tags, scorecard. The counterfactual view (M3-02) is in Counterfactual.cs: it re-runs a changed input log
+// and compares two of these.
 
 /// <summary>SPEC 4: avoidable (the information existed), discoverable (available for a cost), unforeseeable (no path to know).</summary>
 public enum GapTag { Unforeseeable, Discoverable, Avoidable }
