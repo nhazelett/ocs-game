@@ -39,3 +39,6 @@ Fable
 
 ## Addendum, 2026-11-08 (M2-08): debrief view
 `SessionView.Debrief()` -> `DebriefView` (`Views/DebriefViews.cs`): capability bands by day (-1 before a site opens), timeline events, decisions with each island's information tier at the time, gaps (consecutive days below 100% per site capability) each tagged `Avoidable`, `Discoverable` or `Unforeseeable` (SPEC 4) from its factors, scorecard, and commitments. A gap takes its most controllable factor's tag; a `Dependency` factor inherits the tag of the gap it points to. The builder diagnoses from end-of-game state (arrangement dates and lines, survey records, population, records by day) and is read-only, so it is safe mid-game. Tag rules per factor are in docs/assumptions.md (Debrief tags). The text report gains a GAP TAGS section built from it.
+
+## Addendum, 2026-11-08 (M2-09): prep screen
+`PrepScreen.View(bundle)` -> `PrepView` (budget days, the cost of all choices together, and each choice with what it changes "with" and "without", flagging choices this build records but does not model) and `PrepScreen.Check(bundle, picks)` -> `PrepCheck` (accepted, days used, stops). Both work before a Session exists; the game shows the prep screen, then calls `Session.Create(bundle, seed, picks)`. Check's stops are the same messages Create throws. Create now also rejects a choice picked twice.

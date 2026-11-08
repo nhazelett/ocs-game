@@ -1,6 +1,6 @@
 # Codex session workflow
 
-Every Codex session follows this, whether Nick started it by hand or the ChatGPT schedule did. Scheduled runs start with no memory of earlier sessions: this file, `docs/CODEX-KICKOFF.md`, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: both agents run on a two-hour schedule, Codex offset about an hour from Fable, and keep moving unless truly stalled on a decision only Nick can make.
+Every Codex session follows this, whether Nick started it by hand or the ChatGPT schedule did. Scheduled runs start with no memory of earlier sessions: this file, `docs/CODEX-KICKOFF.md`, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: both agents run on schedules (Fable hourly) and keep moving unless truly stalled on a decision only Nick can make.
 
 Fable's matching file is `docs/FABLE-SESSION.md`. Fable merges; Codex never merges.
 

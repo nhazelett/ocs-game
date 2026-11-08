@@ -149,6 +149,8 @@ public sealed partial class Session
 
     private void ApplyPrep(IReadOnlyList<string> prep)
     {
+        if (prep.Distinct(StringComparer.Ordinal).Count() != prep.Count)
+            throw new InvalidDataException($"prep choice {prep.GroupBy(p => p).First(g => g.Count() > 1).Key} is picked twice");
         var used = 0;
         foreach (var id in prep)
         {
