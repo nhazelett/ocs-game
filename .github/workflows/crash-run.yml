@@ -1,0 +1,52 @@
+name: Crash run
+
+on:
+  workflow_dispatch:
+    inputs:
+      games:
+        description: Total games across both Spoke B scenarios and all three policies (at least 6)
+        required: true
+        default: '1000'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  crash-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build the harness
+        run: dotnet build src/LinesOfSupport.Harness/LinesOfSupport.Harness.csproj -c Release
+      - name: Run the crash matrix
+        env:
+          CRASH_GAMES: ${{ inputs.games }}
+        run: dotnet src/LinesOfSupport.Harness/bin/Release/net8.0/LinesOfSupport.Harness.dll crash-run spoke-b,spoke-b-90 --games "$CRASH_GAMES" --json > "$RUNNER_TEMP/crash-run.json"
+      - name: Summarize the results
+        if: always()
+        shell: python
+        run: |
+          import json, os
+          from pathlib import Path
+          report = Path(os.environ['RUNNER_TEMP']) / 'crash-run.json'
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              if not report.exists() or not report.stat().st_size:
+                  summary.write('No crash-run report was produced; inspect the failed build or command step.\n')
+              else:
+                  data = json.loads(report.read_text())
+                  summary.write(f"Crash run: {data['games']} games; {data['passed']} passed; {data['failed']} failed.\n\n")
+                  summary.write('| Scenario | Rules | Policy | Games | Passed | Failed | Seeds | Days checked |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n')
+                  for row in data['results']:
+                      summary.write(f"| {row['scenario']} | {row['rulesVersion']} | {row['policy']} | {row['games']} | {row['passed']} | {row['failed']} | {row['firstSeed']}–{row['lastSeed']} | {row['daysChecked']} |\n")
+                  summary.write('\nThe JSON artifact includes mission-output spreads and the scenario, rules, policy, seed, day and phase of every failure.\n')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crash-run-${{ github.sha }}
+          path: ${{ runner.temp }}/crash-run.json
+          if-no-files-found: warn
