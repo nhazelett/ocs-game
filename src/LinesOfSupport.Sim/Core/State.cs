@@ -29,6 +29,9 @@ public sealed class Arrangement
     /// <c>cost.unobligatedIncurredCents</c>, which is the sum of this over all arrangements (Q11).</summary>
     public long UnobligatedIncurredCents => IsCoordination ? 0 : Math.Max(0, IncurredCents - ObligatedCents);
     public string? FundingLineId { get; set; }
+    /// <summary>IDIQ orders: the part of ObligatedCents drawn from the vehicle's minimum guarantee, which was obligated
+    /// when the IDIQ was awarded. It never returns to a funding line on termination (M3-06).</summary>
+    public long FromGuaranteeCents { get; init; }
     public int ReliabilityPermille { get; set; }
     public bool Unauthorized { get; init; }
     public bool IsCoordination => Instrument == "coordination";
@@ -41,6 +44,25 @@ public sealed class Arrangement
     public UcaState? Uca { get; set; }
     public int DaysActive { get; set; }
     public bool MobilizationCharged { get; set; }
+    /// <summary>The COR designated on this arrangement, or null for none (M3-04).</summary>
+    public string? CorId { get; set; }
+}
+
+/// <summary>A COR on the roster (M3-04). When the COR rotates home, the relief keeps the designations at a lower quality.</summary>
+public sealed class CorState
+{
+    public required string Id { get; init; }
+    public required string Name { get; set; }
+    public string? Unit { get; init; }
+    public required string Quality { get; set; }
+    /// <summary>Day the nominated COR rotated home and an untrained relief took over, or null.</summary>
+    public int? RotatedDay { get; set; }
+}
+
+/// <summary>A report of a vendor failure on its way to the office (M3-04): from the COR, or from the unit when there is none.</summary>
+public sealed record CorReport(string ArrangementId, int FailureDay, int ArriveDay, string? CorId, string FailureRecordId)
+{
+    public string? RecordId { get; set; }
 }
 
 public sealed class UcaState
@@ -93,10 +115,18 @@ public sealed class FundingLineState
     public required string Id { get; init; }
     public long AmountCents { get; init; }
     public long ObligatedCents { get; set; }
-    public int AvailableDay { get; init; }
+    /// <summary>The day the comptroller releases the line. A <c>funding.late</c> event can push it later (M3-03).</summary>
+    public int AvailableDay { get; internal set; }
+    /// <summary>The release day the scenario planned, before any delay.</summary>
+    public int PlannedAvailableDay { get; init; }
+    /// <summary>The fiscal year end: the last day the line can be obligated.</summary>
     public int ExpiresDay { get; init; }
+    /// <summary>The capabilities the line is certified for (its purpose); empty means any (M3-03).</summary>
+    public IReadOnlyList<string> Capabilities { get; init; } = [];
     public long RemainingCents => AmountCents - ObligatedCents;
     public bool UsableOn(int day) => day >= AvailableDay && day <= ExpiresDay;
+    /// <summary>True when the line's purpose covers the capability.</summary>
+    public bool Pays(string capability) => Capabilities.Count == 0 || Capabilities.Contains(capability);
 }
 
 public sealed class CardState
@@ -187,6 +217,25 @@ public enum RecordKind
     Action, Rejected, WorkDone, ArrangementStart, ArrangementEnd, Declined, Shortfall, Restored,
     VendorFailure, ExecutionConfusion, PaymentError, Event, Inbox, Knowledge, Obligation, UcaProposal,
     UcaOverdue, UcaStopWork, UcaResumed, Definitized, Compliance, Cash, Withdrawal,
+    /// <summary>A vendor's orders exceed its real capacity (IDIQ orders are accepted regardless): delivery falls short (M3-06).</summary>
+    VendorCapacity,
+    /// <summary>The comptroller's funding clock: a line released, late, about to expire, expired, or no money usable (M3-03).</summary>
+    Funding,
+    /// <summary>A vendor failure reported to the office: by the COR with lag and fidelity set by quality, or by the unit (M3-04).</summary>
+    CorReport,
+}
+
+/// <summary>An IDIQ the shop can order from (M3-06): ceiling, minimum guarantee and what has been ordered so far.
+/// Scenario IDIQs start with their data's obligatedCents as already ordered and no guarantee left to meet.</summary>
+public sealed class IdiqState
+{
+    public required string VehicleId { get; init; }
+    public string? FundingLineId { get; init; }
+    public long? CeilingCents { get; init; }
+    public long MinimumGuaranteeCents { get; init; }
+    public long OrderedCents { get; set; }
+    /// <summary>Minimum guarantee obligated at award and not yet ordered against. Owed to the vendor regardless.</summary>
+    public long GuaranteeUnorderedCents => Math.Max(0, MinimumGuaranteeCents - OrderedCents);
 }
 
 /// <summary>

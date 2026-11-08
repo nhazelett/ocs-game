@@ -706,5 +706,24 @@
     "curedReliabilityPermille": 980,
     "defaultReliabilityDropPermille": 100,
     "sourceUrl": "https://www.acquisition.gov/far/49.402-3"
+  },
+  "cor": {
+    "qualities": {
+      "good": {
+        "lagDays": 0,
+        "reportPermille": 1000
+      },
+      "fair": {
+        "lagDays": 2,
+        "reportPermille": 800
+      },
+      "poor": {
+        "lagDays": 4,
+        "reportPermille": 500
+      }
+    },
+    "noCorLagDays": 3,
+    "reliefQuality": "poor",
+    "sourceUrl": "https://www.acquisition.gov/dfars/201.602-2-responsibilities."
   }
 }

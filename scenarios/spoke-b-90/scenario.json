@@ -334,15 +334,28 @@
       "type": "OM",
       "amountCents": 90000000,
       "availableDay": 1,
-      "expiresDay": 75,
-      "replacementArrivesDay": 78
+      "expiresDay": 75
     },
     {
       "id": "om2",
       "type": "OM",
       "amountCents": 90000000,
-      "availableDay": 78,
+      "availableDay": 76,
       "expiresDay": 400
+    }
+  ],
+  "cors": [
+    {
+      "id": "corReyes",
+      "name": "SSG Reyes",
+      "unit": "Hub sustainment cell",
+      "quality": "good"
+    },
+    {
+      "id": "corOkafor",
+      "name": "SGT Okafor",
+      "unit": "Spoke B detachment",
+      "quality": "fair"
     }
   ],
   "shop": {
@@ -480,6 +493,44 @@
         }
       ],
       "playerVisibleAs": "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+    },
+    {
+      "id": "fyFundingLate",
+      "label": "The new fiscal year's funding is held up",
+      "window": {
+        "earliestDay": 62,
+        "latestDay": 70
+      },
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "funding.late",
+          "target": "om2",
+          "daysRange": {
+            "min": 3,
+            "max": 10
+          },
+          "note": "The FY-end trap (SPEC 5): om1 expires day 75; om2 was planned for day 76."
+        }
+      ],
+      "playerVisibleAs": "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+    },
+    {
+      "id": "corRotates",
+      "label": "SSG Reyes rotates home early",
+      "window": {
+        "earliestDay": 44,
+        "latestDay": 60
+      },
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "cor.rotates",
+          "target": "corReyes",
+          "note": "SPEC 4 disruption: the COR rotates home and report quality drops (M3-04)."
+        }
+      ],
+      "playerVisibleAs": "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
     }
   ],
   "fixedSituations": [
@@ -560,6 +611,7 @@
     "Missing operator or maintenance lines do not cut capacity; they raise the daily chance of equipment going down.",
     "Main Island utilities never fail in this scenario so the lesson stays at Spoke B.",
     "Mission output counts each open site equally, so the spoke weighs as much as the hub.",
-    "Fiscal year money: om1 expires day 75; the next year's line, om2, arrives late on day 78. Nothing can be obligated in between."
+    "Fiscal year money: om1 expires day 75; the next year's line, om2, is planned for day 76 and is released 3 to 10 days late (event fyFundingLate). Nothing can be obligated in between.",
+    "COR reporting (M3-04): SSG Reyes (good) reports a vendor failure the same day; SGT Okafor (fair) two days late and about 80% of the time; Reyes rotates home between days 44 and 60 and her relief is poor. A contract with no COR is reported by the unit only when its failure shows as a shortfall."
   ]
 }

@@ -6,7 +6,7 @@ public sealed partial class Session
     {
         public int FactorPermille = 1000;          // multiplier on this arrangement's supply today
         public bool Failed, Confused, Suspended;
-        public string? FailureRecord, ConfusionRecord;
+        public string? FailureRecord, ConfusionRecord, CapacityRecord;
     }
 
     /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, lifecycle, supply, money, score.</summary>
@@ -30,10 +30,13 @@ public sealed partial class Session
         }
         Lifecycle(d);
         var today = RollArrangements(d);
+        CapacityLimits(d, today);
         PerformanceChecks(d, today);
         ResolveCapabilities(d, today);
+        CorReporting(d, today);
         Settle(d, today);
         Score(d);
+        FundingClocks(d);
         _overnightTo = _records.Count;
         Day++;
     }
@@ -297,6 +300,7 @@ public sealed partial class Session
                     if (t.Suspended) { reasons.Add($"{a.Id} stopped work (unpaid UCA)"); causes.Add(a.CauseId); }
                     if (t.FailureRecord is not null) causes.Add(t.FailureRecord);
                     if (t.ConfusionRecord is not null) causes.Add(t.ConfusionRecord);
+                    if (t.CapacityRecord is not null) { causes.Add(t.CapacityRecord); reasons.Add($"{VendorData(a.VendorId)!.Name} over capacity"); }
                     if (cap.Delivery == "consumable" && a.SupplierIslandId != site.Island)
                     {
                         a.InTransitMilli += q;
@@ -509,7 +513,7 @@ public sealed partial class Session
                 ["mission.throughput"] = Avg(_throughput),
                 ["mission.endurance"] = Avg(_endurance),
                 ["mission.resilience"] = Avg(_resilience),
-                ["cost.obligatedCents"] = _arrangements.Sum(a => a.ObligatedCents),
+                ["cost.obligatedCents"] = _arrangements.Sum(a => a.ObligatedCents) + _idiqs.Sum(i => i.GuaranteeUnorderedCents),
                 ["cost.incurredCents"] = _arrangements.Sum(a => a.IncurredCents),
                 ["cost.unobligatedIncurredCents"] = _arrangements.Sum(a => a.UnobligatedIncurredCents),
                 ["compliance.unauthorizedCommitments"] = _unauthorized,

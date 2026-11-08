@@ -53,9 +53,12 @@ Day 28
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 30
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
-  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on g-req0007 on days 28 and 30. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 31
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc2 has been open 5 days).
+  COR       Unit report from Spoke B: power fell short on day 28 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 33
+  COR       Unit report from Spoke B: power fell short on day 30 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on g-req0007 on days 28 and 30 (unit reports; no COR). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 36
   COMPLY    Higher HQ asked why unauthorized commitment uc2 has gone 10 days without ratification. A response is now shop work (24 hours).
 Day 37
@@ -65,30 +68,56 @@ Day 37
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 38
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
+Day 40
+  COR       Unit report from Spoke B: power fell short on day 37 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 41
   WITHDRAWN Second Island Fuel walked off uc2 after 15 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 Day 42
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 44
+  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+Day 45
+  COR       Unit report from Spoke B: power fell short on day 42 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 50
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 51
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 52
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 53
+  COR       Unit report from Spoke B: power fell short on day 50 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 54
+  COR       Unit report from Spoke B: power fell short on day 51 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 55
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+  COR       Unit report from Spoke B: power fell short on day 52 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 57
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 58
+  COR       Unit report from Spoke B: power fell short on day 55 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 60
+  COR       Unit report from Spoke B: power fell short on day 57 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 61
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 64
+  COR       Unit report from Spoke B: power fell short on day 61 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 65
+  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $855,288 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 67
   END       g-req0007 ended.
+Day 68
+  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
 Day 73
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 20%).
   COMPLY    Unauthorized commitment uc3: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
 Day 74
   START     uc3 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+Day 75
+  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $855,288 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
 Day 78
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc3 has been open 5 days).
   FAIL      uc3 had equipment down (no maintenance and repair line, no operators line).
@@ -99,6 +128,7 @@ Day 84
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
   COMPLY    Unauthorized commitment uc4: the Spoke B unit arranged Power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on uc3 sent.
+  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
   START     uc4 began: Power at Spoke B from Island Power Rentals, 468 kW/day.
 Day 86
@@ -152,7 +182,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 41: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
-  pi1 (day 30): g-req0007 at spokeBSite.power, failed days 28, 30. Decision: re-sourced (uc3).
+  pi1 (day 33): g-req0007 at spokeBSite.power, failed days 28, 30. Decision: re-sourced (uc3).
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
@@ -165,16 +195,18 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] uc2 failed (first on day 37) and had no on-site storage line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 41.
+      [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
   #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
   #3 spokeBSite.power days 15-90, lowest 0%, 75 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #1)
       [avoidable] Arrangements at Spoke B were sized for 324 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] g-req0007 failed (first on day 28) and had no operators or maintenance and repair line; its failure odds were higher every day it ran. Performance issue pi1 opened day 30; decision: re-sourced (uc3).
+      [avoidable] g-req0007 failed (first on day 28) and had no operators or maintenance and repair line; its failure odds were higher every day it ran. With no COR, the unit reported it on day 31, after the mission effect. Performance issue pi1 opened day 33; decision: re-sourced (uc3).
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 67. The last arrangement supplying it, g-req0007, ended on day 66. uc3 did not start until day 74.
       [avoidable] uc3 failed (first on day 78) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc3 was left unresolved and the vendor walked off on day 83.
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 83. The last arrangement supplying it, uc3, ended on day 82. uc4 did not start until day 85.
+      [avoidable] No funding line with money could pay for power on day 83 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] uc4 failed (first on day 86) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
 
 PASS CRITERIA
@@ -183,4 +215,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.675)
 
-State hash 4cc75e0a6779a9a68424f8c8a25abe36ae790e369892dee8fb4340736fe3d46c
+State hash bcf03a9ec34b9e36b173491b4a530c26eb39b9c5bf9dcd58463f077fa6ce4449

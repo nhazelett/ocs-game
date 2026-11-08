@@ -4,7 +4,7 @@ namespace LinesOfSupport.Sim.Core;
 
 public sealed partial class Session
 {
-    private static readonly HashSet<string> AwardableInM0 = ["sf44", "gpc", "purchaseOrder", "bpaCall", "uca"];
+    private static readonly HashSet<string> AwardableInM0 = ["sf44", "gpc", "purchaseOrder", "bpaCall", "idiqOrder", "uca"];
 
     private sealed record AwardPayload(AwardAction Action, string SiteId, string CapabilityId, List<string> Lines,
         long DailyCostCents, long MobilizationCents, long TotalCents, int StartLag, int LeadTime, int ReliabilityPermille, string SupplierIsland);
@@ -28,7 +28,9 @@ public sealed partial class Session
             TerminateAction t => ApplyTerminate(t),
             ResolveCommitmentAction r => ApplyResolve(r),
             EstablishBpaAction e => ApplyEstablishBpa(e),
+            EstablishIdiqAction e => ApplyEstablishIdiq(e),
             CureNoticeAction c => ApplyCureNotice(c),
+            DesignateCorAction c => ApplyDesignateCor(c),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -51,7 +53,9 @@ public sealed partial class Session
         TerminateAction t => $"terminate {t.Arrangement}",
         ResolveCommitmentAction r => $"{r.Choice} {r.Commitment}",
         EstablishBpaAction e => $"establish BPA {e.Id}",
+        EstablishIdiqAction e => $"establish IDIQ {e.Id}",
         CureNoticeAction c => $"cure notice {c.Issue}",
+        DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
         _ => a.GetType().Name,
     };
 
@@ -152,9 +156,11 @@ public sealed partial class Session
                       + _work.Where(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Vendor == vendor.Id && p.CapabilityId == capId
                                          && Overlaps(p.Action.StartDay ?? w.CreatedDay, (p.Action.StartDay ?? w.CreatedDay) + Math.Max(1, p.Action.DurationDays) - 1))
                              .Sum(w => ((AwardPayload)w.Payload!).Action.Quantity * 1000);
-        if (a.Quantity * 1000 + committed > capacity)
+        // An IDIQ order is binding on the vendor within the ceiling, so it is accepted above the vendor's capacity;
+        // the shortfall plays out as a capacity event at delivery (M3-06).
+        if (a.Instrument != "idiqOrder" && a.Quantity * 1000 + committed > capacity)
             stops.Add($"{vendor.Name} can supply {offer.CapacityPerDay:0} {Cap(capId).Unit}/day in total and {committed / 1000} is already committed");
-        if (vendor.VehicleOnly && a.Instrument != "bpaCall") stops.Add($"{vendor.Name} is reachable only through its vehicle");
+        if (vendor.VehicleOnly && a.Instrument is not ("bpaCall" or "idiqOrder")) stops.Add($"{vendor.Name} is reachable only through its vehicle");
 
         if (_standing.TryGetValue(vendor.Id, out var standing) && standing.DeclinesWork)
             stops.Add($"{vendor.Name} declines work from this office after walking off an unpaid handshake");
@@ -183,6 +189,7 @@ public sealed partial class Session
         }
         if (_warrantCents is { } warrant && total > warrant) stops.Add($"{Money(total)} exceeds the warrant of {Money(warrant)}");
 
+        long fromGuarantee = 0;
         switch (a.Instrument)
         {
             case "sf44":
@@ -209,15 +216,37 @@ public sealed partial class Session
                 if (veh.PlaceOfPerformance.Count > 0 && !veh.PlaceOfPerformance.Contains(SiteData(siteId).Island))
                     stops.Add($"{SiteName(siteId)} is outside {veh.Id}'s place of performance");
                 break;
+            case "idiqOrder":
+            {
+                var idv = _vehicles.FirstOrDefault(v => v.Id == a.Vehicle);
+                if (idv is null) { stops.Add("an IDIQ order needs an IDIQ vehicle"); break; }
+                if (idv.Kind != "idiq") { stops.Add($"{idv.Id} is not an IDIQ"); break; }
+                if (!idv.VisibleOnDay1) stops.Add($"{idv.Id} is not known to this shop");
+                if (idv.Vendor != vendor.Id) stops.Add($"{idv.Id} is with a different vendor");
+                if (Day > idv.OrderingPeriodEndDay) stops.Add($"{idv.Id}'s ordering period ended on day {idv.OrderingPeriodEndDay}");
+                foreach (var l in lines) if (!idv.ScopeTags.Contains(l)) stops.Add($"{LineLabel(capId, l)} is outside {idv.Id}'s scope");
+                if (idv.PlaceOfPerformance.Count > 0 && !idv.PlaceOfPerformance.Contains(SiteData(siteId).Island))
+                    stops.Add($"{SiteName(siteId)} is outside {idv.Id}'s place of performance");
+                var idq = Idiq(idv.Id)!;
+                var pending = PendingOrderCents(idv.Id);
+                if (idq.CeilingCents is { } ceiling && idq.OrderedCents + pending + total > ceiling)
+                    stops.Add($"{Money(total)} would bring orders on {idv.Id} to {Money(idq.OrderedCents + pending + total)}, over its ceiling of {Money(ceiling)}");
+                fromGuarantee = Math.Min(total, Math.Max(0, idq.GuaranteeUnorderedCents - pending));
+                break;
+            }
         }
         if (inst.RequiresSystemOrManual)
         {
+            var need = total - fromGuarantee;
             var line = _funding.FirstOrDefault(f => f.Id == a.FundingLine);
-            if (line is null) stops.Add("a written action needs a funding line");
+            if (need == 0 && a.FundingLine is null && a.Instrument == "idiqOrder") { } // paid in full from the IDIQ's minimum guarantee
+            else if (line is null) stops.Add("a written action needs a funding line");
             else if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
-            else if (a.Instrument != "uca" && line.RemainingCents < total) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left");
+            else if (a.Instrument != "uca" && line.RemainingCents < need) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left");
             else if (a.Instrument == "uca" && line.RemainingCents <= 0) stops.Add($"funding line {line.Id} is empty");
+            if (line is not null) stops.AddRange(FundingStops(line, capId, a.StartDay, a.DurationDays));
         }
+        if (a.Cor is not null) stops.AddRange(CorStops(a.Cor, inst));
         return new AwardCheck(stops, inst, card, vendor, offer, siteId, capId, lines, daily, mob, total);
     }
 
@@ -285,17 +314,23 @@ public sealed partial class Session
                 return;
             }
         }
-        long obligated = 0;
+        long obligated = 0, fromGuarantee = 0;
+        var idiq = a.Instrument == "idiqOrder" ? Idiq(a.Vehicle) : null;
+        if (idiq is not null) fromGuarantee = Math.Min(p.TotalCents, idiq.GuaranteeUnorderedCents);
         if (inst.RequiresSystemOrManual && a.Instrument != "uca")
         {
-            var line = _funding.First(f => f.Id == a.FundingLine);
-            if (!line.UsableOn(day) || line.RemainingCents < p.TotalCents)
+            // An IDIQ order spends the minimum guarantee (obligated at award) before new money from the line.
+            var need = p.TotalCents - fromGuarantee;
+            var line = _funding.FirstOrDefault(f => f.Id == a.FundingLine);
+            if (need > 0 && (line is null || !line.UsableOn(day) || line.RemainingCents < need))
             {
-                AddRecord(day, RecordKind.Rejected, a.Id, $"{inst.Label} {a.Id} could not be awarded: funding line {line.Id} could not cover {Money(p.TotalCents)} on day {day}.", [causeId]);
+                var rej = AddRecord(day, RecordKind.Rejected, a.Id, $"{inst.Label} {a.Id} could not be awarded on day {day}: {FundingShortReason(line, need, day)}.", [causeId]);
+                _fundingRejections.Add((a.Id, p.SiteId, p.CapabilityId, day, rej));
                 return;
             }
-            line.ObligatedCents += p.TotalCents;
+            if (line is not null) line.ObligatedCents += need;
             obligated = p.TotalCents;
+            if (idiq is not null) idiq.OrderedCents += p.TotalCents;
         }
         else if (a.Instrument is "sf44" or "gpc") obligated = p.TotalCents;
 
@@ -305,9 +340,9 @@ public sealed partial class Session
         {
             Id = a.Id, Instrument = a.Instrument, VendorId = a.Vendor, VehicleId = a.Vehicle, SiteId = p.SiteId, CapabilityId = p.CapabilityId,
             Lines = p.Lines, SupplierIslandId = p.SupplierIsland, QuantityMilli = a.Quantity * 1000, DailyCostCents = p.DailyCostCents,
-            MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine,
+            MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine, FromGuaranteeCents = fromGuarantee,
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
-            StartDay = start, EndDay = start + a.DurationDays - 1,
+            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor,
         };
         foreach (var lineId in p.Lines)
         {
@@ -328,7 +363,9 @@ public sealed partial class Session
         _arrangements.Add(arr);
         var tail = arr.Uca is { } u
             ? $" UCA issued with NTE {Money(u.NteCents)}; obligations capped at {Rules.Uca.ObligationCapBeforeProposal * 100:0}% of NTE until a qualifying proposal."
-            : $" Obligated {Money(obligated)}.";
+            : fromGuarantee > 0
+                ? $" Obligated {Money(obligated)}, {Money(fromGuarantee)} of it from {a.Vehicle}'s minimum guarantee."
+                : $" Obligated {Money(obligated)}.";
         AddRecord(day, RecordKind.WorkDone, a.Id, $"{inst.Label} {a.Id} awarded to {VendorData(a.Vendor)!.Name}; performance starts day {arr.StartDay}, ends day {arr.EndDay}.{tail}", [causeId]);
     }
 
@@ -374,7 +411,8 @@ public sealed partial class Session
         if (u.Definitized) return ActionResult.Stop($"{d.Arrangement} is already definitized");
         if (u.DefinitizationInWork) return ActionResult.Stop($"definitization of {d.Arrangement} is already in work");
         if (!u.ProposalReceived) return ActionResult.Stop($"{VendorData(arr.VendorId)!.Name} has not submitted a qualifying proposal yet");
-        if (!_funding.Any(f => f.Id == d.FundingLine)) return ActionResult.Stop($"funding line {d.FundingLine} does not exist");
+        if (_funding.FirstOrDefault(f => f.Id == d.FundingLine) is not { } dl) return ActionResult.Stop($"funding line {d.FundingLine} does not exist");
+        if (!dl.Pays(arr.CapabilityId)) return ActionResult.Stop([.. FundingStops(dl, arr.CapabilityId, null, 0)]);
         u.DefinitizationInWork = true;
         var rec = AddRecord(Day, RecordKind.Action, d.Arrangement, $"Definitization of {d.Arrangement} started; to be funded from {d.FundingLine}.", []);
         AddWork(WorkKind.Definitize, $"Definitize {d.Arrangement}", Hours(_rngWork.NextInt(Rules.Uca.DefinitizationShopDays), true), Day, d, rec);
@@ -442,7 +480,8 @@ public sealed partial class Session
                 CompleteCureNotice((string)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.EstablishVehicle:
-                CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
+                if (w.Payload is EstablishIdiqAction idiqAction) CompleteEstablishIdiq(idiqAction, day, w.CauseId);
+                else CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.Denial:
                 AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);
@@ -466,7 +505,9 @@ public sealed partial class Session
                     var performedDays = Math.Max(0, arr.EndDay - arr.StartDay + 1);
                     var ratifiedExtra = _commitments.Where(c => c.Kind == CommitmentKind.OutOfScope && c.ArrangementId == arr.Id && c.Decision == CommitmentDecision.Ratified)
                                                     .Sum(c => c.AmountCents);
-                    var keep = Math.Min(arr.ObligatedCents, arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra);
+                    // The part of an IDIQ order paid from the minimum guarantee stays spent: the guarantee is owed regardless.
+                    var keep = Math.Min(arr.ObligatedCents, Math.Max(arr.FromGuaranteeCents,
+                        arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra));
                     var back = arr.ObligatedCents - keep;
                     if (back > 0)
                     {

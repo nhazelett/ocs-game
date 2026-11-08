@@ -27,6 +27,9 @@ public sealed record ScenarioFile
     public List<VehicleData> Vehicles { get; init; } = [];
     public List<InheritedArrangementData> InheritedArrangements { get; init; } = [];
     public List<FundingLineData> FundingLines { get; init; } = [];
+    /// <summary>Contracting officer's representatives the units have nominated (M3-04). Empty means the scenario does not
+    /// model COR reporting: every vendor failure is seen the day it happens, as before.</summary>
+    public List<CorData> Cors { get; init; } = [];
     public ShopData Shop { get; init; } = new();
     public ActorsData Actors { get; init; } = new();
     public List<EventData> Events { get; init; } = [];
@@ -167,6 +170,17 @@ public sealed record InheritedArrangementData
     // Not in schema v0 for inherited arrangements: quantity defaults to the vendor's capacity for the capability.
 }
 
+/// <summary>A nominated COR (DFARS 201.602-2): who watches a contract's performance for the government (M3-04).</summary>
+public sealed record CorData
+{
+    public string Id { get; init; } = "";
+    public string Name { get; init; } = "";
+    /// <summary>Unit that nominated the COR (text only).</summary>
+    public string? Unit { get; init; }
+    /// <summary>A key of rules cor.qualities: sets report lag and fidelity.</summary>
+    public string Quality { get; init; } = "fair";
+}
+
 public sealed record FundingLineData
 {
     public string Id { get; init; } = "";
@@ -174,7 +188,8 @@ public sealed record FundingLineData
     public long AmountCents { get; init; }
     public int AvailableDay { get; init; }
     public int ExpiresDay { get; init; }
-    public int? ReplacementArrivesDay { get; init; }
+    /// <summary>Capabilities the line is certified for; absent or empty means any (M3-03).</summary>
+    public List<string> Capabilities { get; init; } = [];
 }
 
 public sealed record ShopData
@@ -284,6 +299,29 @@ public sealed record RulesFile
     public ScoRulesData Sco { get; init; } = new();
     public UnauthorizedRulesData Unauthorized { get; init; } = new();
     public PerformanceRulesData Performance { get; init; } = new();
+    public CorRulesData Cor { get; init; } = new();
+}
+
+/// <summary>COR report lag and fidelity by quality (M3-04, DFARS 201.602-2). Permille values are 0 to 1000.</summary>
+public sealed record CorRulesData
+{
+    public Dictionary<string, CorQualityData> Qualities { get; init; } = new(StringComparer.Ordinal)
+    {
+        ["good"] = new() { LagDays = 0, ReportPermille = 1000 },
+        ["fair"] = new() { LagDays = 2, ReportPermille = 800 },
+        ["poor"] = new() { LagDays = 4, ReportPermille = 500 },
+    };
+    /// <summary>With no COR, a failure is reported only when it shows as a mission effect, by the unit, this many days later.</summary>
+    public int NoCorLagDays { get; init; } = 3;
+    /// <summary>Quality of the untrained relief who takes over when a COR rotates home.</summary>
+    public string ReliefQuality { get; init; } = "poor";
+    public string? SourceUrl { get; init; }
+}
+
+public sealed record CorQualityData
+{
+    public int LagDays { get; init; }
+    public int ReportPermille { get; init; } = 1000;
 }
 
 /// <summary>Unauthorized commitments (SPEC 4.5). Permille values are 0 to 1000.</summary>

@@ -27,6 +27,8 @@ public static class Events
         "unit.unauthorizedCommitment",   // target: site.capability; value: vendor id
         "vendor.outOfScopeWork",         // target: site.capability; value: cents billed for work outside the active contract
         "site.populationJump",           // target: site id; fraction: share added; days or daysRange: notice before arrival
+        "funding.late",                  // target: funding line id; days or daysRange: delay to its release (M3-03)
+        "cor.rotates",                   // target: COR id; an untrained relief takes over its designations (M3-04)
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -115,6 +117,12 @@ public static class Events
                 s.OutOfScopeWork(site, cap, cents, day, cause);
                 break;
             }
+            case "funding.late":
+                s.FundingLate(e.Target ?? throw new InvalidDataException("funding.late needs a funding line"), day, s.EffectDays(ev, index, 0), cause);
+                break;
+            case "cor.rotates":
+                s.RotateCor(e.Target ?? throw new InvalidDataException("cor.rotates needs a COR"), day, cause);
+                break;
             case "inbox":
                 break;
             default:

@@ -22,7 +22,7 @@ public sealed partial class Session
     public int LastDay => Scenario.Days;
     public bool Finished => Day > LastDay;
 
-    private readonly DeterministicRandom _rngWork, _rngVendor, _rngEvents, _rngAggregate, _rngUca, _rngUnauthorized, _rngPerformance;
+    private readonly DeterministicRandom _rngWork, _rngVendor, _rngEvents, _rngAggregate, _rngUca, _rngUnauthorized, _rngPerformance, _rngCor;
     private readonly List<CapabilityState> _caps = [];
     private readonly List<Arrangement> _arrangements = [];
     private readonly List<WorkItem> _work = [];
@@ -85,6 +85,7 @@ public sealed partial class Session
         _rngUca = DeterministicRandom.ForStream(seed, "uca");
         _rngUnauthorized = DeterministicRandom.ForStream(seed, "unauthorized");
         _rngPerformance = DeterministicRandom.ForStream(seed, "performance");
+        _rngCor = DeterministicRandom.ForStream(seed, "cor");
 
         _capData = Rules.Model.Capabilities.ToDictionary(c => c.Id, StringComparer.Ordinal);
         foreach (var c in Rules.Model.Capabilities) _demandPerPersonMilli[c.Id] = Fixed.Milli(c.DemandPerPersonPerDay);
@@ -108,7 +109,12 @@ public sealed partial class Session
         ApplyPrep(prep);
 
         foreach (var f in Scenario.FundingLines)
-            _funding.Add(new FundingLineState { Id = f.Id, AmountCents = f.AmountCents, AvailableDay = f.AvailableDay, ExpiresDay = f.ExpiresDay });
+            _funding.Add(new FundingLineState
+            {
+                Id = f.Id, AmountCents = f.AmountCents, AvailableDay = f.AvailableDay, PlannedAvailableDay = f.AvailableDay,
+                ExpiresDay = f.ExpiresDay, Capabilities = [.. f.Capabilities],
+            });
+        SnapshotFunds(1);
         foreach (var c in Scenario.RequirementCards)
             _cards.Add(new CardState
             {
@@ -125,6 +131,7 @@ public sealed partial class Session
                     SiteId = site.Id, CapabilityId = sc.Id, Critical = sc.Critical,
                     BufferDaysPermille = Fixed.Permille(sc.BufferDays ?? Rules.Model.DefaultBufferDays),
                 });
+        foreach (var c in Scenario.Cors) _cors.Add(new CorState { Id = c.Id, Name = c.Name, Unit = c.Unit, Quality = c.Quality });
         foreach (var a in Scenario.InheritedArrangements) AddInherited(a);
         foreach (var e in Scenario.Events)
         {
@@ -299,6 +306,7 @@ public sealed partial class Session
             DailyCostCents = offer is null || a.Instrument == "hostNation" ? 0 : qty * offer.UnitPriceCents / 1000,
             ReliabilityPermille = Fixed.Permille(vendor.Reliability), CreatedDay = 0,
             StartDay = a.StartDay, EndDay = a.EndDay, Status = a.StartDay <= 1 ? ArrangementStatus.Active : ArrangementStatus.Pending,
+            CorId = a.Cor,
         };
         _arrangements.Add(arr);
         AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.", []);

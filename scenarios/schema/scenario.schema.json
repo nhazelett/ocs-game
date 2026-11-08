@@ -634,12 +634,42 @@
             "type": "integer",
             "minimum": 1
           },
-          "replacementArrivesDay": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "For the fiscal-year-end trap: when the next line shows up, if at all"
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true,
+            "description": "Capabilities the line is certified for (its purpose); absent or empty means any. Paying another capability from it is a hard stop (M3-03)."
+          }
+        }
+      }
+    },
+    "cors": {
+      "type": "array",
+      "description": "Contracting officer's representatives the units have nominated (DFARS 201.602-2; backlog M3-04). When present, a vendor failure on a contract this office awarded with written terms reaches the office only as a COR report (lag and fidelity set by quality) or, with no COR, as a unit report of the mission effect. Absent or empty: every failure is seen the day it happens.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "quality"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit that nominated the COR (text only)"
+          },
+          "quality": {
+            "type": "string",
+            "description": "A key of rules cor.qualities"
           }
         }
       }

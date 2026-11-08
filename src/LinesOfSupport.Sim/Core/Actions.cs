@@ -16,6 +16,8 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(ResolveCommitmentAction), "resolveCommitment")]
 [JsonDerivedType(typeof(EstablishBpaAction), "establishBpa")]
 [JsonDerivedType(typeof(CureNoticeAction), "cureNotice")]
+[JsonDerivedType(typeof(EstablishIdiqAction), "establishIdiq")]
+[JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -54,6 +56,8 @@ public sealed record AwardAction : PlayerAction
     public int DurationDays { get; init; }
     public string? FundingLine { get; init; }
     public long? NteCents { get; init; }
+    /// <summary>COR designated on the award (M3-04); null for none. Only contracts with written terms take one.</summary>
+    public string? Cor { get; init; }
 }
 
 /// <summary>Borrow capacity from another site's unit. Not a contract; can be withdrawn.</summary>
@@ -106,11 +110,39 @@ public sealed record EstablishBpaAction : PlayerAction
     public int? OrderingPeriodDays { get; init; }
 }
 
+/// <summary>
+/// Establish a single-award IDIQ contract with a vendor (SPEC 4.1, M3-06). Costs shop days (rules idiqEstablish,
+/// 8 to 15); when the work is done the IDIQ joins the shop's vehicles and takes orders (AwardAction with instrument
+/// "idiqOrder"). Binding: orders are not declined. The minimum guarantee is obligated from FundingLine when the
+/// contract is awarded and is owed whether or not it is ordered; orders draw it down first.
+/// Id is the vehicle id. MinimumGuaranteeCents defaults to the rules' obligatesMinimumGuaranteeFraction of the
+/// ceiling, which is also its floor; OrderingPeriodDays defaults to the rest of the scenario.
+/// </summary>
+public sealed record EstablishIdiqAction : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string Vendor { get; init; } = "";
+    public string Capability { get; init; } = "";
+    public List<string> ScopeLines { get; init; } = [];
+    public long CeilingCents { get; init; }
+    public long? MinimumGuaranteeCents { get; init; }
+    public int? OrderingPeriodDays { get; init; }
+    public string FundingLine { get; init; } = "";
+}
+
 /// <summary>Issue a cure notice on a performance issue (FAR 49.402-3; M2-18). Costs shop hours; the vendor then has
 /// the rules' cure period to recover or be in default.</summary>
 public sealed record CureNoticeAction : PlayerAction
 {
     public string Issue { get; init; } = "";
+}
+
+/// <summary>Designate a COR on a running or pending contract, replacing any COR it has (M3-04, DFARS 201.602-2).
+/// Takes effect at once; no shop hours.</summary>
+public sealed record DesignateCorAction : PlayerAction
+{
+    public string Arrangement { get; init; } = "";
+    public string Cor { get; init; } = "";
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)
