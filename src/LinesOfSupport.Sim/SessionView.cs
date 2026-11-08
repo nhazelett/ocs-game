@@ -28,6 +28,9 @@ public sealed class SessionView
     public IReadOnlyList<VehicleData> Vehicles => _s.Vehicles;
     /// <summary>Unauthorized commitments (SPEC 4.5): handshakes and out-of-scope work, with the decision on each.</summary>
     public IReadOnlyList<CommitmentState> Commitments => _s.Commitments;
+    /// <summary>Sites whose commander lost confidence in contracting (a refused handshake). Their shop work waits behind
+    /// other sites' on days the shop is short (M2-14).</summary>
+    public IReadOnlyCollection<string> LostConfidenceSites => _s.LostConfidenceSites;
     /// <summary>A site unit's habit of going around contracting, 0 to 1000 permille.</summary>
     public int UnitHabit(string siteId) => _s.Habit(siteId);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;

@@ -50,6 +50,17 @@ public sealed partial class Session
                 yield return ($"dep|{gi}", new GapFactor(GapFactorKind.Dependency, GapTag.Unforeseeable, d,
                     $"{cap.Label} depends on {CapLabel(dep).ToLowerInvariant()}, which was short.", [], gi));
 
+        // An award that would have supplied it was held back behind other sites' work and had not started (M2-14).
+        foreach (var df in _deferrals.Where(x => x.SiteId == siteId && x.Capabilities.Contains(capId) && x.Day <= d))
+        {
+            var arr = _arrangements.FirstOrDefault(a => a.Id == df.ArrangementId);
+            if (arr is not null && (arr.Status == ArrangementStatus.Declined || arr.StartDay <= d)) continue;
+            var refused = _records.First(r => r.Id == df.RefusalRecordId).Subject;
+            yield return ($"prio|{df.WorkId}", new GapFactor(GapFactorKind.PriorityDeferred, GapTag.Avoidable, d,
+                $"{df.Label} waited behind other shop work from day {df.Day}: {site.Name}'s commander lost confidence in contracting when {refused} was refused, so its work went last when hours were short.",
+                [df.RecordId, df.RefusalRecordId]));
+        }
+
         var contributors = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && ActiveOn(a, d)).ToList();
         if (contributors.Count == 0)
         {
