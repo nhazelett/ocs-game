@@ -74,6 +74,8 @@ public sealed class SchemaIntegrationTests : IDisposable
     [InlineData("duplicateVersion")]
     [InlineData("badDate")]
     [InlineData("negativeThreshold")]
+    [InlineData("wrongFilename")]
+    [InlineData("mismatchedVersion")]
     public void SharedRulesMustExistBeUnambiguousAndMatchSchema(string mutation)
     {
         var path = Path.Combine(root, "scenarios", "rules", "rules-2025-10.json");
@@ -84,6 +86,8 @@ public sealed class SchemaIntegrationTests : IDisposable
             case "duplicateVersion": File.Copy(path, Path.Combine(Path.GetDirectoryName(path)!, "duplicate.json")); break;
             case "badDate": data["asOf"] = "not-a-date"; File.WriteAllText(path, data.ToJsonString()); break;
             case "negativeThreshold": data["thresholds"]!["microPurchaseCents"] = -1; File.WriteAllText(path, data.ToJsonString()); break;
+            case "wrongFilename": File.Move(path, Path.Combine(Path.GetDirectoryName(path)!, "arbitrary.json")); break;
+            case "mismatchedVersion": data["rulesVersion"] = "2025-11"; File.WriteAllText(path, data.ToJsonString()); break;
         }
         Assert.Equal(1, Run("validate").Code);
     }
