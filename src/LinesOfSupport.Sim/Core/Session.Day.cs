@@ -459,7 +459,7 @@ public sealed partial class Session
                 ["mission.resilience"] = Avg(_resilience),
                 ["cost.obligatedCents"] = _arrangements.Sum(a => a.ObligatedCents),
                 ["cost.incurredCents"] = _arrangements.Sum(a => a.IncurredCents),
-                ["cost.unobligatedIncurredCents"] = _arrangements.Where(a => !a.IsCoordination).Sum(a => Math.Max(0, a.IncurredCents - a.ObligatedCents)),
+                ["cost.unobligatedIncurredCents"] = _arrangements.Sum(a => a.UnobligatedIncurredCents),
                 ["compliance.unauthorizedCommitments"] = _unauthorized,
                 ["compliance.ucaOverdue"] = _ucaOverdue,
                 ["compliance.hhqInquiries"] = _hhqInquiries,
