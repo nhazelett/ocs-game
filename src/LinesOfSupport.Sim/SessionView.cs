@@ -68,4 +68,8 @@ public sealed class SessionView
     /// <summary>What an award would do if applied today: the same hard stops Apply would give, the soft gaps, cost and timing.
     /// Changes nothing and draws no random numbers.</summary>
     public ActionPreview Preview(AwardAction award) => _s.BuildPreview(award);
+
+    /// <summary>The debrief (SPEC 4): timeline, decisions with what was known, gaps tagged avoidable / discoverable /
+    /// unforeseeable with their evidence, scorecard and commitments. Covers the days played so far.</summary>
+    public DebriefView Debrief() => _s.BuildDebrief();
 }

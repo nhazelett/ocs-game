@@ -101,6 +101,18 @@ public static class SessionReport
             }
             sb.AppendLine();
         }
+        var debrief = s.View.Debrief();
+        if (debrief.Gaps.Count > 0)
+        {
+            sb.AppendLine("GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)");
+            foreach (var g in debrief.Gaps)
+            {
+                sb.AppendLine($"  #{g.Index} {g.SiteId}.{g.CapabilityId} days {g.StartDay}-{g.EndDay}, lowest {g.LowestPermille / 10}%, {g.DownDays} day(s) down: {g.Tag.ToString().ToUpperInvariant()}");
+                foreach (var f in g.Factors)
+                    sb.AppendLine($"      [{f.Tag.ToString().ToLowerInvariant()}] {f.Text}{(f.DependsOnGap is { } x ? $" (see #{x})" : "")}");
+            }
+            sb.AppendLine();
+        }
         var pass = s.Scenario.PassCriteria;
         if (pass.Count > 0)
         {

@@ -77,6 +77,18 @@ GAPS AND WHY (each traced back through its causes)
       <- day 16: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 20: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
+      [avoidable] gens (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
+      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+  #1 spokeBSite.fuel days 15-19, lowest 0%, 4 day(s) down: DISCOVERABLE
+      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+  #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
+      [avoidable] Power depends on fuel, which was short. (see #0)
+  #3 spokeBSite.power days 15-30, lowest 0%, 4 day(s) down: AVOIDABLE
+      [discoverable] Power depends on fuel, which was short. (see #1)
+      [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
+
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 7)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)

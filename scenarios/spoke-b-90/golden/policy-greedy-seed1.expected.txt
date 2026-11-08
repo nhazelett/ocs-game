@@ -150,6 +150,28 @@ GAPS AND WHY (each traced back through its causes)
   Day 38: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   Day 41: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
+      [avoidable] g-req0007 (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
+      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+  #1 spokeBSite.fuel days 15-90, lowest 0%, 62 day(s) down: AVOIDABLE
+      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 18.
+      [avoidable] g-req0007 (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
+      [avoidable] uc2 failed (first on day 37) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 41.
+  #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
+      [avoidable] Power depends on fuel, which was short. (see #0)
+  #3 spokeBSite.power days 15-90, lowest 0%, 75 day(s) down: AVOIDABLE
+      [avoidable] Power depends on fuel, which was short. (see #1)
+      [avoidable] Arrangements at Spoke B were sized for 324 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
+      [avoidable] g-req0007 failed (first on day 28) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 67. The last arrangement supplying it, g-req0007, ended on day 66. uc3 did not start until day 74.
+      [avoidable] uc3 failed (first on day 78) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] Handshake uc3 was left unresolved and the vendor walked off on day 83.
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 83. The last arrangement supplying it, uc3, ended on day 82. uc4 did not start until day 85.
+      [avoidable] uc4 failed (first on day 86) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 78)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 65)
