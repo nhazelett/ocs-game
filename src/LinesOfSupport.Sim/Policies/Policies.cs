@@ -68,6 +68,7 @@ public sealed class TextbookPolicy : IPolicy
 {
     public string Name => "textbook";
     private readonly HashSet<string> _done = [];
+    private readonly HashSet<string> _bridges = [];
 
     public IEnumerable<string> PrepChoices(ScenarioBundle bundle)
     {
@@ -134,7 +135,10 @@ public sealed class TextbookPolicy : IPolicy
                 var island = v.Scenario.Sites.First(s => s.Id == card.SiteId).Island;
                 var bridge = Helpers.FastestRoute(v, card.SiteId, card.CapabilityId, core, sized, bridgeDays, preferIsland: null);
                 if (bridge is not null)
+                {
+                    _bridges.Add($"t-{card.Id}-bridge");
                     actions.Add(bridge with { Id = $"t-{card.Id}-bridge", Card = card.Id, Lines = core, StartDay = card.RequestedStartDay });
+                }
                 foreach (var supplies in cap.Lines.Where(l => l.Kind == "supplies" && l.Supplies is not null))
                 {
                     var target = supplies.Supplies!;
@@ -143,14 +147,17 @@ public sealed class TextbookPolicy : IPolicy
                     var targetCore = v.Rules.Model.Capabilities.First(c => c.Id == target).Lines.Where(l => l.Kind == "core").Select(l => l.Id).ToList();
                     var local = Helpers.FastestRoute(v, card.SiteId, target, targetCore, need, bridgeDays, preferIsland: island);
                     if (local is not null)
+                    {
+                        _bridges.Add($"t-{card.Id}-{target}");
                         actions.Add(local with { Id = $"t-{card.Id}-{target}", Lines = targetCore, StartDay = Math.Max(v.Day, card.RequestedStartDay - 1) });
+                    }
                 }
             }
 
             // 4. Close the bridge once the enduring arrangement has run two days.
             var enduring = v.Arrangements.FirstOrDefault(a => a.Id == enduringId);
             if (enduring is { Status: ArrangementStatus.Active, DaysActive: >= 2 })
-                foreach (var b in v.Arrangements.Where(a => a.Id.StartsWith($"t-{card.Id}-", StringComparison.Ordinal) && a.Id != enduringId && a.Status == ArrangementStatus.Active))
+                foreach (var b in v.Arrangements.Where(a => _bridges.Contains(a.Id) && a.CardId != enduringId && a.Status == ArrangementStatus.Active && (a.CardId == card.Id || a.Id.StartsWith($"t-{card.Id}-", StringComparison.Ordinal))))
                     if (_done.Add($"end:{b.Id}"))
                         actions.Add(new TerminateAction { Arrangement = b.Id });
 
@@ -162,7 +169,39 @@ public sealed class TextbookPolicy : IPolicy
             }
         }
 
-        // 6. Any consumable running dry at an open site with nothing pending: emergency coordination from the hub.
+        // 6. Plan the follow-on: anything covering a capability at a site that stays open past its end gets a
+        //    successor awarded before it runs out, starting a day early for overlap.
+        foreach (var a in v.Arrangements.Where(a => a.Status is ArrangementStatus.Active && !a.IsCoordination && !a.Unauthorized && a.VendorId is not null && a.Instrument != "hostNation"))
+        {
+            var site = v.Scenario.Sites.First(s => s.Id == a.SiteId);
+            var siteEnd = Math.Min(site.ClosesDay ?? v.LastDay, v.LastDay);
+            if (a.EndDay >= siteEnd || a.EndDay - v.Day > 14) continue;
+            var key = $"follow:{a.Id}";
+            if (_done.Contains(key)) continue;
+            var replaced = _bridges.Contains(a.Id) || v.InWork($"{a.Id}-next")
+                           || v.Arrangements.Any(b => b.Id != a.Id && b.SiteId == a.SiteId
+                                                      && (b.CapabilityId == a.CapabilityId || b.SuppliedQuantityMilli.ContainsKey(a.CapabilityId))
+                                                      && b.Status is ArrangementStatus.Pending or ArrangementStatus.Active && b.EndDay > a.EndDay);
+            if (replaced) { _done.Add(key); continue; }
+            var vendor = v.Scenario.Vendors.First(x => x.Id == a.VendorId);
+            var offer = vendor.Offers.First(o => o.Capability == a.CapabilityId);
+            // Overlap a day when a new vendor takes over; the incumbent simply continues the day after.
+            var start = Math.Max(v.Day + 1, a.EndDay + 1);
+            var days = siteEnd - start + 1;
+            var qty = Math.Max(a.QuantityMilli / 1000, v.PeakDemandUnits(a.SiteId, a.CapabilityId, start, siteEnd));
+            var total = qty * offer.UnitPriceCents * days;   // incumbent: no second mobilization
+            var line = Helpers.Funding(v, total);
+            if (line is null) continue;   // try again tomorrow; new money may arrive
+            var instrument = total <= v.Rules.Thresholds.SimplifiedAcquisitionCents ? "purchaseOrder" : "uca";
+            _done.Add(key);
+            actions.Add(new AwardAction
+            {
+                Id = $"{a.Id}-next", Instrument = instrument, Vendor = vendor.Id, Site = a.SiteId, Capability = a.CapabilityId,
+                Lines = a.Lines, Quantity = qty, StartDay = start, DurationDays = days, FundingLine = line.Id,
+            });
+        }
+
+        // 7. Any consumable running dry at an open site with nothing pending: emergency coordination from the hub.
         foreach (var cs in v.Capabilities.Where(c => c.History.Count > 0 && c.TodayPermille < 1000))
         {
             var cap = v.Rules.Model.Capabilities.First(c => c.Id == cs.CapabilityId);

@@ -46,7 +46,7 @@ Day 21
 Day 22
   ACTION    Definitization of t-req0007-enduring started; to be funded from om1.
 Day 24
-  DEFINITZD t-req0007-enduring definitized at $693,900. Obligation caps lifted; obligations still need money on line om1.
+  DEFINITZD t-req0007-enduring definitized at $693,900; obligation caps lifted; fully funded from om1.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -59,7 +59,7 @@ Spoke B Fuel                    ........................
 
 SCORECARD
   Mission output 94% (sortie generation 100%, throughput 100%, endurance 100%, resilience 60%)
-  Obligated $423,054; incurred $423,054; incurred but not obligated $0
+  Obligated $777,714; incurred $423,054; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
   Surveys 1; shop hours worked 108; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
 
@@ -69,4 +69,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.94)
 
-State hash 3ba3a4748ad44d311c55279a037fac58b158e8d6f809902f96087356cf65e1e4
+State hash 31144347310a2fc9fc2869c19b52386ade3f1ffd90640a469d0fa1c762a75a58
