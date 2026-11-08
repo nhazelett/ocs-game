@@ -213,11 +213,22 @@ public sealed class ScenarioBundle
         }
         foreach (var e in s.Events)
         {
-            foreach (var p in e.Preconditions) Need(Events.KnownPredicates.Contains(p.Kind), $"event {e.Id}: predicate kind {p.Kind} is not implemented");
+            foreach (var p in e.Preconditions)
+            {
+                Need(Events.KnownPredicates.Contains(p.Kind), $"event {e.Id}: predicate kind {p.Kind} is not implemented");
+                if (p.Kind is "arrangement.noCureNotice" or "arrangement.notReplaced")
+                    Need(s.InheritedArrangements.Any(a => a.Id == p.Target), $"event {e.Id}: {p.Kind} target {p.Target} is not an inherited arrangement");
+            }
             foreach (var f in e.Effects)
             {
                 Need(Events.KnownEffects.Contains(f.Kind), $"event {e.Id}: effect kind {f.Kind} is not implemented");
                 if (f.DaysRange is { } r) Need(r.Min <= r.Max, $"event {e.Id}: {f.Kind} daysRange max is below min");
+                if (f.Kind == "vendor.reliabilityDrop")
+                {
+                    Need(s.InheritedArrangements.Any(a => a.Id == f.Target), $"event {e.Id}: vendor.reliabilityDrop target {f.Target} is not an inherited arrangement");
+                    Need(f.Value is { ValueKind: System.Text.Json.JsonValueKind.Number } rv && rv.GetDouble() is >= 0 and <= 1,
+                         $"event {e.Id}: vendor.reliabilityDrop value must be a reliability between 0 and 1");
+                }
                 if (f.ForecastDays is not null) Need(f.Kind == "link.closed", $"event {e.Id}: forecastDays applies only to link.closed");
                 if (f.Kind == "site.populationJump")
                 {

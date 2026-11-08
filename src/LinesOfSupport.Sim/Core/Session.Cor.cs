@@ -66,7 +66,7 @@ public sealed partial class Session
         if (a is null) return ActionResult.Stop($"arrangement {c.Arrangement} does not exist");
         var cor = CorOf(c.Cor);
         if (cor is null) return ActionResult.Stop($"COR {c.Cor} is not on the roster");
-        if (!Curable(a)) return ActionResult.Stop($"{a.Id} is not a contract with written terms awarded by this office");
+        if (!Curable(a)) return ActionResult.Stop($"{a.Id} is not a contract with written terms administered by this office");
         if (a.Status is not (ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended))
             return ActionResult.Stop($"{a.Id} is not running");
         if (a.CorId == cor.Id) return ActionResult.Stop($"{cor.Name} is already the COR on {a.Id}");

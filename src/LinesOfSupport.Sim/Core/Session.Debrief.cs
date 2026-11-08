@@ -233,6 +233,14 @@ public sealed partial class Session
                     case RecordKind.VendorFailure:
                     {
                         var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
+                        // Slips that opened a performance issue, then an authored drop the player's action would have
+                        // prevented (M3-18).
+                        if (missing.Count == 0 && DropFactor(a, d, r.Id) is { } drop)
+                        {
+                            yield return ($"fail|{a.Id}|drop", new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
+                                $"{drop.Text}{CorNote(a, d)}{IssueNote(a.Id)}", drop.Ids));
+                            break;
+                        }
                         // An inherited vendor whose real delivery record the handover overstated (M3-17): the failure was in
                         // its file, so it is discoverable until the file is reviewed and avoidable after.
                         if (missing.Count == 0 && _reportedReliability.TryGetValue(a.Id, out var reported)
@@ -247,7 +255,7 @@ public sealed partial class Session
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
                                 $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
+                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:
