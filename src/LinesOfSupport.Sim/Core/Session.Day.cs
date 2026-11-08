@@ -387,7 +387,12 @@ public sealed partial class Session
             if (u.UnpaidDays == 1)
             {
                 var capBinding = !u.Definitized && a.ObligatedCents >= ceiling;
-                var why = capBinding ? $"the UCA obligation cap of {capPm / 10}% of NTE is reached" : $"funding line {a.FundingLineId} cannot cover it";
+                var fl = _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
+                var why = capBinding ? $"the UCA obligation cap of {capPm / 10}% of NTE is reached"
+                    : fl is null ? "it has no funding line"
+                    : d > fl.ExpiresDay ? $"funding line {fl.Id} expired on day {fl.ExpiresDay}"
+                    : d < fl.AvailableDay ? $"funding line {fl.Id} is not available until day {fl.AvailableDay}"
+                    : $"funding line {fl.Id} has {Money(fl.RemainingCents)} left";
                 AddRecord(d, RecordKind.Obligation, a.Id, $"{a.Id} has incurred {Money(a.IncurredCents)} against {Money(a.ObligatedCents)} obligated: {why}. The vendor stops work in {Rules.Uca.StopWorkAfterUnpaidDays} days if this stands.", [a.CauseId]);
             }
             if (u.UnpaidDays >= Rules.Uca.StopWorkAfterUnpaidDays && a.Status == ArrangementStatus.Active)

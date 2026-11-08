@@ -1,0 +1,22 @@
+{
+  "scenario": "spoke-b-90",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 1 (SPEC 5): buy exactly what the requirement says. BPA call for six 60 kW generators, nothing else. No prep, no survey.",
+  "prepChoices": [],
+  "actions": [
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "gens",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "card": "req0007",
+      "quantity": 360,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    }
+  ]
+}

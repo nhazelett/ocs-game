@@ -133,11 +133,16 @@ public sealed partial class Session
             if (!offer.Lines.Contains(l)) stops.Add($"{vendor.Name} does not offer {LineLabel(capId, l)}");
         if (a.Quantity <= 0) stops.Add("quantity must be positive");
         if (a.DurationDays <= 0) stops.Add("duration must be positive");
+        // Vendor capacity is shared across every arrangement that runs on the same days as this one.
         var capacity = Fixed.Milli(offer.CapacityPerDay);
+        var newStart = Math.Max(a.StartDay ?? Day, Day);
+        var newEnd = newStart + Math.Max(1, a.DurationDays) - 1;
+        bool Overlaps(int s0, int e0) => s0 <= newEnd && e0 >= newStart;
         var committed = _arrangements.Where(x => x.VendorId == vendor.Id && x.CapabilityId == capId
-                                                 && x.Status is ArrangementStatus.Pending or ArrangementStatus.Active)
+                                                 && x.Status is ArrangementStatus.Pending or ArrangementStatus.Active && Overlaps(x.StartDay, x.EndDay))
                                      .Sum(x => x.QuantityMilli)
-                      + _work.Where(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Vendor == vendor.Id && p.CapabilityId == capId)
+                      + _work.Where(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Vendor == vendor.Id && p.CapabilityId == capId
+                                         && Overlaps(p.Action.StartDay ?? w.CreatedDay, (p.Action.StartDay ?? w.CreatedDay) + Math.Max(1, p.Action.DurationDays) - 1))
                              .Sum(w => ((AwardPayload)w.Payload!).Action.Quantity * 1000);
         if (a.Quantity * 1000 + committed > capacity)
             stops.Add($"{vendor.Name} can supply {offer.CapacityPerDay:0} {Cap(capId).Unit}/day in total and {committed / 1000} is already committed");
@@ -145,7 +150,10 @@ public sealed partial class Session
 
         var daily = a.Quantity * offer.UnitPriceCents;
         var baseCost = daily * Math.Max(0, a.DurationDays);
-        var mob = Fixed.MulPermille(baseCost, Fixed.Permille(offer.MobilizationFraction));
+        // An incumbent already on site and continuing the same work does not mobilize again.
+        var incumbent = _arrangements.Any(x => x.VendorId == vendor.Id && x.SiteId == siteId && x.CapabilityId == capId
+                                               && x.Status == ArrangementStatus.Active);
+        var mob = incumbent ? 0 : Fixed.MulPermille(baseCost, Fixed.Permille(offer.MobilizationFraction));
         if (a.Instrument == "gpc")
         {
             var sur = Fixed.Permille(vendor.GpcSurchargeFraction);
@@ -394,8 +402,16 @@ public sealed partial class Session
                 arr.Uca!.Definitized = true;
                 arr.Uca.DefinitizationInWork = false;
                 arr.FundingLineId = d.FundingLine;
+                // The definitization modification obligates the definitized price with money current today.
+                // Definitizing never creates money: if the line cannot cover it, the remainder waits on funding.
+                var line = _funding.First(f => f.Id == d.FundingLine);
+                var need = Math.Max(0, arr.Uca.QuotedTotalCents - arr.ObligatedCents);
+                var add = line.UsableOn(day) ? Math.Min(need, line.RemainingCents) : 0;
+                arr.ObligatedCents += add;
+                line.ObligatedCents += add;
+                var funded = add == need ? $"fully funded from {line.Id}" : $"{Money(add)} of {Money(need)} funded from {line.Id}; the rest waits on money";
                 AddRecord(day, RecordKind.Definitized, arr.Id,
-                    $"{arr.Id} definitized at {Money(arr.Uca.QuotedTotalCents)}. Obligation caps lifted; obligations still need money on line {d.FundingLine}.", [w.CauseId]);
+                    $"{arr.Id} definitized at {Money(arr.Uca.QuotedTotalCents)}; obligation caps lifted; {funded}.", [w.CauseId]);
                 break;
             }
             case WorkKind.Ratification:
@@ -413,7 +429,22 @@ public sealed partial class Session
                 var arr = _arrangements.First(x => x.Id == (string)w.Payload!);
                 arr.EndDay = Math.Min(arr.EndDay, day);
                 if (arr.Status == ArrangementStatus.Pending) arr.Status = ArrangementStatus.Ended;
-                AddRecord(day, RecordKind.ArrangementEnd, arr.Id, $"{arr.Id} terminated; performance ends day {arr.EndDay}.", [w.CauseId]);
+                // Deobligate the unperformed portion of a fully obligated award. It returns to its line only while
+                // the line is still current; otherwise it lapses. UCAs obligate as they go, so nothing comes back.
+                var tail = "";
+                if (arr.Uca is null && arr.FundingLineId is not null && _funding.FirstOrDefault(f => f.Id == arr.FundingLineId) is { } fl)
+                {
+                    var performedDays = Math.Max(0, arr.EndDay - arr.StartDay + 1);
+                    var keep = Math.Min(arr.ObligatedCents, arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0));
+                    var back = arr.ObligatedCents - keep;
+                    if (back > 0)
+                    {
+                        arr.ObligatedCents = keep;
+                        if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} deobligated back to {fl.Id}."; }
+                        else tail = $" {Money(back)} deobligated; {fl.Id} has expired, so the money lapses.";
+                    }
+                }
+                AddRecord(day, RecordKind.ArrangementEnd, arr.Id, $"{arr.Id} terminated; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
                 break;
             }
         }

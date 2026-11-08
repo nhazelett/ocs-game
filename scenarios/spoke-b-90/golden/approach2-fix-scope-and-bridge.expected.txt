@@ -1,0 +1,179 @@
+Spoke B power (90 days) / approach2-fix-scope-and-bridge
+Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel.
+Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
+Prep: systemAccess, cashAndPayingAgent.
+
+TIMELINE
+Before day 1
+  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 1
+  ACTION    Ordered a site survey of Second Island.
+  ACTION    Requirement req0007: Generator fuel supply switched on.
+  ACTION    Requirement req0007: Operators switched on.
+  ACTION    Requirement req0007: Maintenance and repair switched on.
+  ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
+  DONE      Survey team dispatched to Second Island; findings due day 3.
+Day 2
+  DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
+Day 3
+  ACTION    Coordinated with the Hub unit for 900 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
+  SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
+  START     hubFuelRun began: Fuel at Spoke B from the other unit, 900 gal/day.
+Day 7
+  START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
+Day 12
+  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  WITHDRAWN The other unit withdrew coordination hubFuelRun (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  END       hubFuelRun ended.
+Day 16
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+Day 17
+  SHORT     Fuel at Spoke B degraded to 77%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B degraded to 77%: fuel at 77%.
+Day 18
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 19
+  EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation; ratification work lands on the shop.
+  COMPLY    Ratification package for uc1 completed.
+Day 20
+  START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  OK        Fuel at Spoke B restored to 100%.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 21
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+Day 24
+  OK        Fuel at Spoke B restored to 100%.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 40
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 43
+  FAIL      gens had equipment down (no operators line).
+  SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+Day 44
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 45
+  FAIL      gens had equipment down (no operators line).
+  OK        Fuel at Spoke B restored to 100%.
+Day 46
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 48
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 50
+  FAIL      gens had equipment down (no operators line).
+  SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+Day 51
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 52
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  OK        Fuel at Spoke B restored to 100%.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 53
+  FAIL      gens had equipment down (no operators line).
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+Day 54
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 55
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 56
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+Day 59
+  OK        Fuel at Spoke B restored to 100%.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 67
+  END       gens ended.
+  SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+Day 72
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 73
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 75
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 76
+  OK        Fuel at Spoke B restored to 100%.
+Day 77
+  CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 79
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 80
+  OK        Fuel at Spoke B restored to 100%.
+Day 82
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 85
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+  SHORT     Fuel at Spoke B degraded to 50%: fuel on hand ran out.
+Day 86
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 87
+  OK        Fuel at Spoke B restored to 100%.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
+                          123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+Hub Power                 ..........................................................................................
+Hub Fuel                  ..........................................................................................
+Spoke B Power                   ..........7XX7XXX77777777777777777772X277772X7277XXX77777777XXXXXXXXXXXXXXXXXXXXXXXX
+Spoke B Fuel                    ..........7XX.XXX....................X......X....XXX................X...X.....5X....
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 77% (sortie generation 74%, throughput 74%, endurance 100%, resilience 52%)
+  Obligated $49,680; incurred $423,495; incurred but not obligated $373,815
+  Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 0
+  Surveys 1; shop hours worked 34; payment errors 0; execution-confusion days 1; vendor failures 13; declined BPA calls 0
+  spokeBSite.power: 38 day(s) down, 36 degraded, lowest 0%
+  spokeBSite.fuel: 13 day(s) down, 2 degraded, lowest 0%
+
+GAPS AND WHY (each traced back through its causes)
+  Day 17: Fuel at Spoke B degraded to 77%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 17: Power at Spoke B degraded to 77%: fuel at 77%.
+      <- day 17: Fuel at Spoke B degraded to 77%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 18: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 18: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 18: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 20: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 21: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 21: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+      <- day 21: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 24: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 43: Power at Spoke B down to 38%: supply 180 kW against demand 468.
+      <- day 43: gens had equipment down (no operators line).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
+  Day 44: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 46: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 50: Power at Spoke B down to 38%: supply 180 kW against demand 468.
+      <- day 50: gens had equipment down (no operators line).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
+  Day 51: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 52: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 53: Power at Spoke B down to 38%: supply 180 kW against demand 468.
+      <- day 53: gens had equipment down (no operators line).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
+  Day 54: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 56: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 56: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+      <- day 56: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 59: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 67: Power at Spoke B down to 0%: no arrangement supplies power.
+  Day 75: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 79: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 85: Fuel at Spoke B degraded to 50%: fuel on hand ran out.
+      <- day 85: uc1 missed today's delivery (no on-site storage line).
+          <- day 19: Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  Day 86: Fuel at Spoke B down to 0%: fuel on hand ran out.
+
+PASS CRITERIA
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 38)
+  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 13)
+  [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
+  [not met] Mission output at least 90% (mission.output = 0.773)
+
+State hash 7b720ccade7ddffcdc3dfb24dfdc23502571e06b741a740a56a848890dd0ece8
