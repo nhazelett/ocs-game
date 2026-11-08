@@ -21,10 +21,6 @@ jobs:
       - name: Build and test
         shell: bash
         run: |
-          if [[ ! -f src/LinesOfSupport.sln ]]; then
-            echo "src/LinesOfSupport.sln does not exist yet; skipping build and tests."
-            exit 0
-          fi
           dotnet build src/LinesOfSupport.sln -c Release
           dotnet test src/LinesOfSupport.sln -c Release --no-build
 

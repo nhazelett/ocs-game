@@ -1,0 +1,9 @@
+{
+  "id": "m0-harness-stub",
+  "days": 30,
+  "sites": [
+    { "id": "hub" },
+    { "id": "spoke-a" },
+    { "id": "spoke-b" }
+  ]
+}
