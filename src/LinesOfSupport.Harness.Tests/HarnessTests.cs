@@ -171,9 +171,9 @@ public sealed class HarnessTests : IDisposable
         Write("scenarios/schema/scenario.json", "{\"type\":\"object\"}");
         Write("scenarios/schema/rules.json", "{\"type\":\"object\",\"required\":[\"rulesVersion\"]}");
         Assert.Contains("No shared rules file", Run("validate", scenario).Error);
-        Write("scenarios/rules/baseline.json", "{}");
+        Write("scenarios/rules/rules-test-only.json", "{}");
         Assert.Contains("rules.json failed JSON Schema validation", Run("validate", scenario).Error);
-        Write("scenarios/rules/baseline.json", "{\"rulesVersion\":\"test-only\"}");
+        Write("scenarios/rules/rules-test-only.json", "{\"rulesVersion\":\"test-only\"}");
         var valid = Run("validate", scenario);
         Assert.Equal(0, valid.Code);
         Assert.Contains("repository JSON Schemas", valid.Output);

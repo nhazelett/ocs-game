@@ -47,8 +47,14 @@ internal static class ScenarioLoader
         if (!scenario.TryGetProperty("rulesVersion", out var requested) || requested.ValueKind != JsonValueKind.String)
             throw new InvalidDataException("scenario.json: rulesVersion must select a shared rules file.");
         var directory = Path.Combine(schemas.ScenariosDirectory, "rules");
+        var requestedVersion = requested.GetString()!;
+        if (string.IsNullOrWhiteSpace(requestedVersion) || requestedVersion.IndexOfAny(['/', '\\']) >= 0 ||
+            requestedVersion.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            throw new InvalidDataException("rulesVersion must be a file-name version, not a path.");
+        var selected = Path.Combine(directory, $"rules-{requestedVersion}.json");
+        if (!File.Exists(selected))
+            throw new InvalidDataException($"No shared rules file at {selected} for rulesVersion '{requestedVersion}'.");
         var versions = new Dictionary<string, string>(StringComparer.Ordinal);
-        string? selected = null;
         if (Directory.Exists(directory))
         {
             foreach (var file in Directory.GetFiles(directory, "*.json").Order(StringComparer.Ordinal))
@@ -60,13 +66,15 @@ internal static class ScenarioLoader
                 var value = version.GetString()!;
                 if (!versions.TryAdd(value, file))
                     throw new InvalidDataException($"Duplicate rulesVersion '{value}' in {file} and {versions[value]}.");
-                if (value == requested.GetString())
-                    selected = file;
             }
         }
-        if (selected is null)
-            throw new InvalidDataException($"No shared rules file matches rulesVersion '{requested.GetString()}' in {directory}.");
-        return JsonDocument.Parse(File.ReadAllText(selected));
+        var result = JsonDocument.Parse(File.ReadAllText(selected));
+        if (result.RootElement.GetProperty("rulesVersion").GetString() != requestedVersion)
+        {
+            result.Dispose();
+            throw new InvalidDataException($"{selected}: rulesVersion does not match scenario rulesVersion '{requestedVersion}'.");
+        }
+        return result;
     }
 
     private static string ResolvePath(string argument)
