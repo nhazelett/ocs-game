@@ -1,5 +1,5 @@
 Spoke B power / approach2-fix-scope-and-bridge
-Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel. The handshake opened on day 19 is ratified the next morning (SPEC 4.5).
+Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel. The handshake opened on day 19 is ratified the next morning (SPEC 4.5). Spoke C (all approaches alike): scope completed and a UCA to the island water works on day 2, with a bottled-water purchase order as the bridge.
 Scenario spoke-b, rules 2025-10, seed 1, 30 days.
 Prep: systemAccess, cashAndPayingAgent.
 
@@ -16,16 +16,25 @@ Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
   DONE      Survey team dispatched to Second Island; findings due day 3.
 Day 2
+  ACTION    Requirement req0012: Plant operators switched on.
+  ACTION    Requirement req0012: Maintenance switched on.
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    Written purchase order started with Coastal Bottlers: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
 Day 3
   ACTION    Coordinated with the Hub unit for 900 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
+  DONE      Written purchase order waterBridge awarded to Coastal Bottlers; performance starts day 5, ends day 16. Obligated $12,672.
   START     hubFuelRun began: Fuel at Spoke B from the other unit, 900 gal/day.
+Day 5
+  DONE      Undefinitized contract action waterPlant awarded to Third Island Water Works; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
+  START     waterBridge began: Water at Spoke C from Coastal Bottlers, 2640 gal/day.
 Day 7
   START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
 Day 12
   EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew coordination hubFuelRun (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
+  START     waterPlant began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   END       hubFuelRun ended.
@@ -35,6 +44,7 @@ Day 15
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
 Day 17
+  END       waterBridge ended.
   SHORT     Fuel at Spoke B degraded to 77%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Power at Spoke B degraded to 77%: fuel at 77%.
 Day 18
@@ -52,6 +62,8 @@ Day 20
 Day 21
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+Day 22
+  UCA       Third Island Water Works submitted a qualifying proposal on waterPlant. Obligation cap rises to 75% of NTE; definitization can start.
 Day 24
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
@@ -59,22 +71,28 @@ Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
 Day 26
   DONE      Response to higher HQ on oos1 sent.
+Day 28
+  FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 30
+  FAIL      gens had equipment down (no operators line).
+  SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
                           123456789012345678901234567890
 Hub Power                 ..............................
 Hub Fuel                  ..............................
-Spoke B Power                   ..........7XX7XXX7777777
+Spoke B Power                   ..........7XX7XXX7777772
 Spoke B Fuel                    ..........7XX.XXX.......
+Spoke C Water                 ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 85% (sortie generation 87%, throughput 87%, endurance 100%, resilience 56%)
-  Obligated $91,800; incurred $77,787; incurred but not obligated $15,795
+  Mission output 86% (sortie generation 91%, throughput 91%, endurance 100%, resilience 44%)
+  Obligated $128,892; incurred $114,879; incurred but not obligated $15,795
   Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 1
-  Surveys 1; shop hours worked 58; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
-  spokeBSite.power: 5 day(s) down, 9 degraded, lowest 0%
+  Surveys 1; shop hours worked 100; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
+  spokeBSite.power: 6 day(s) down, 8 degraded, lowest 0%
   spokeBSite.fuel: 5 day(s) down, 1 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
@@ -93,6 +111,9 @@ GAPS AND WHY (each traced back through its causes)
   Day 21: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
       <- day 21: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 24: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 30: Power at Spoke B down to 38%: supply 180 kW against demand 468.
+      <- day 30: gens had equipment down (no operators line).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 17-19, lowest 0%, 2 day(s) down: AVOIDABLE
@@ -100,15 +121,17 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] gens (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
   #1 spokeBSite.fuel days 21-23, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-  #2 spokeBSite.power days 17-30, lowest 0%, 5 day(s) down: AVOIDABLE
+  #2 spokeBSite.power days 17-30, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Power depends on fuel, which was short. (see #1)
+      [avoidable] gens failed (first on day 30) and had no operators line; its failure odds were higher every day it ran.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 5)
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 6)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 5)
+  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
-  [not met] Mission output at least 90% (mission.output = 0.854)
+  [not met] Mission output at least 90% (mission.output = 0.859)
 
-State hash d65f0c3d7726aae372bc1c3e846fc68f660943ae2c1aae6d260f4d39416eb8ce
+State hash 724103a14ed1c01496f905b7d16f65ddb9d9d5280b43a46b716aaf5e799d9832

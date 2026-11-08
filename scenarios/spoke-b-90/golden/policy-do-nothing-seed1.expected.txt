@@ -139,6 +139,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 17-90, lowest 0%, 62 day(s) down: AVOIDABLE
       [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 15.
+      [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] uc2 failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 36.
   #2 spokeBSite.power days 7-90, lowest 0%, 78 day(s) down: AVOIDABLE
