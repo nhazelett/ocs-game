@@ -2,7 +2,7 @@
   "scenario": "spoke-b",
   "rulesVersion": "2025-10",
   "seed": 1,
-  "note": "Approach 1 with the day-11 handshake refused: the vendor stops at once and the fuel gap reopens (SPEC 4.5).",
+  "note": "Approach 1 with the day-11 handshake refused: the vendor stops at once and the fuel gap reopens (SPEC 4.5). Spoke C (all approaches alike): scope completed and a UCA to the island water works on day 2, with a bottled-water purchase order as the bridge.",
   "prepChoices": [],
   "actions": [
     {
@@ -16,6 +16,48 @@
       "quantity": 360,
       "startDay": 7,
       "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "setLine",
+      "day": 2,
+      "card": "req0012",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 2,
+      "card": "req0012",
+      "line": "maintenance",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "waterPlant",
+      "instrument": "uca",
+      "vendor": "vendorF",
+      "card": "req0012",
+      "quantity": 2640,
+      "startDay": 5,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "waterBridge",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorG",
+      "site": "spokeCSite",
+      "capability": "water",
+      "lines": [
+        "supply"
+      ],
+      "quantity": 2640,
+      "startDay": 5,
+      "durationDays": 12,
       "fundingLine": "om1"
     },
     {

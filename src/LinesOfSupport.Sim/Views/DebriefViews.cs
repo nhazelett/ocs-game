@@ -10,7 +10,7 @@ public enum GapTag { Unforeseeable, Discoverable, Avoidable }
 public enum GapFactorKind
 {
     Dependency, MissingSupplyLine, Uncovered, CoordinationWithdrawn, HandshakeLost, OffIslandDependency,
-    DemandAboveSupply, VendorFailure, StopWork, ExecutionConfusion, BpaDeclined,
+    DemandAboveSupply, VendorFailure, StopWork, ExecutionConfusion, BpaDeclined, PriorityDeferred,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>

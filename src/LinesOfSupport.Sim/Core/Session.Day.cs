@@ -123,15 +123,21 @@ public sealed partial class Session
     private void DoShopWork(int d)
     {
         var hours = _hoursPerDayMilli;
-        foreach (var w in _work)
+        // Creation order is the player's queue. When the shop is short, work for a site whose commander lost
+        // confidence in contracting (a refused handshake, SPEC 4.5) waits behind everything else (M2-14).
+        var ready = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay <= d).ToList();
+        var order = _lostConfidence.Count == 0 ? ready : ready.OrderBy(ConfidenceRank).ToList();
+        var spent = new Dictionary<WorkItem, long>();
+        foreach (var w in order)
         {
             if (hours <= 0) break;
-            if (w.CompletedDay is not null || w.WaitUntilDay > d) continue;
             var spend = Math.Min(hours, w.HoursRemainingMilli);
             w.HoursRemainingMilli -= spend;
             hours -= spend;
             _hoursWorkedMilli += spend;
+            spent[w] = spend;
         }
+        if (_lostConfidence.Count > 0) RecordDeferrals(d, ready, spent);
         // Complete in creation order after spending, so a zero-hour item finishes the day it is ready.
         foreach (var w in _work.ToList())
             if (w.CompletedDay is null && w.WaitUntilDay <= d && w.HoursRemainingMilli <= 0)
@@ -459,7 +465,7 @@ public sealed partial class Session
                 ["mission.resilience"] = Avg(_resilience),
                 ["cost.obligatedCents"] = _arrangements.Sum(a => a.ObligatedCents),
                 ["cost.incurredCents"] = _arrangements.Sum(a => a.IncurredCents),
-                ["cost.unobligatedIncurredCents"] = _arrangements.Where(a => !a.IsCoordination).Sum(a => Math.Max(0, a.IncurredCents - a.ObligatedCents)),
+                ["cost.unobligatedIncurredCents"] = _arrangements.Sum(a => a.UnobligatedIncurredCents),
                 ["compliance.unauthorizedCommitments"] = _unauthorized,
                 ["compliance.ucaOverdue"] = _ucaOverdue,
                 ["compliance.hhqInquiries"] = _hhqInquiries,

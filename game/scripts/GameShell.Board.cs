@@ -34,6 +34,7 @@ public partial class GameShell
         boardFocus.Text = "";
         Map.SelectSite(null);
         ResetAwardForm();
+        ResetBpaForm();
         coordinationQuantity = 1;
     }
 

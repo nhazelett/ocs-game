@@ -24,6 +24,10 @@ public sealed class Arrangement
     public long MobilizationCents { get; init; }
     public long ObligatedCents { get; set; }
     public long IncurredCents { get; set; }
+    /// <summary>Cost incurred but not yet covered by obligation, never negative. Always zero for a
+    /// coordination arrangement (no money moves). The per-arrangement term of the metric
+    /// <c>cost.unobligatedIncurredCents</c>, which is the sum of this over all arrangements (Q11).</summary>
+    public long UnobligatedIncurredCents => IsCoordination ? 0 : Math.Max(0, IncurredCents - ObligatedCents);
     public string? FundingLineId { get; set; }
     public int ReliabilityPermille { get; init; }
     public bool Unauthorized { get; init; }

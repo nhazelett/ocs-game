@@ -50,6 +50,17 @@ public sealed partial class Session
                 yield return ($"dep|{gi}", new GapFactor(GapFactorKind.Dependency, GapTag.Unforeseeable, d,
                     $"{cap.Label} depends on {CapLabel(dep).ToLowerInvariant()}, which was short.", [], gi));
 
+        // An award that would have supplied it was held back behind other sites' work and had not started (M2-14).
+        foreach (var df in _deferrals.Where(x => x.SiteId == siteId && x.Capabilities.Contains(capId) && x.Day <= d))
+        {
+            var arr = _arrangements.FirstOrDefault(a => a.Id == df.ArrangementId);
+            if (arr is not null && (arr.Status == ArrangementStatus.Declined || arr.StartDay <= d)) continue;
+            var refused = _records.First(r => r.Id == df.RefusalRecordId).Subject;
+            yield return ($"prio|{df.WorkId}", new GapFactor(GapFactorKind.PriorityDeferred, GapTag.Avoidable, d,
+                $"{df.Label} waited behind other shop work from day {df.Day}: {site.Name}'s commander lost confidence in contracting when {refused} was refused, so its work went last when hours were short.",
+                [df.RecordId, df.RefusalRecordId]));
+        }
+
         var contributors = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && ActiveOn(a, d)).ToList();
         if (contributors.Count == 0)
         {
@@ -143,12 +154,15 @@ public sealed partial class Session
 
         var demand = DemandMilli(site, capId, d);
         var supplyCap = contributors.Sum(a => (a.CapabilityId == capId ? a.QuantityMilli : 0) + a.SuppliedQuantityMilli.GetValueOrDefault(capId));
-        if (cap.Delivery != "consumable" && supplyCap < demand)
+        // Consumables compare the contracted daily rate with daily demand: a rate below demand drains the buffer
+        // whatever the delivery schedule, so it is a sizing gap like an undersized generator.
+        if (supplyCap < demand)
         {
             var step = site.Population.Where(p => p.Day <= d).OrderByDescending(p => p.Day).FirstOrDefault();
             var growth = step is { Day: > 1 } ? $" Population rose to {step.Count} on day {step.Day}, which the plan showed from day 1." : "";
+            var perDay = cap.Delivery == "consumable" ? " a day" : "";
             yield return ($"demand|{step?.Day}", new GapFactor(GapFactorKind.DemandAboveSupply, GapTag.Avoidable, d,
-                $"Arrangements at {site.Name} were sized for {supplyCap / 1000} {cap.Unit} against demand of {demand / 1000}.{growth}", contributors.Select(a => a.CauseId).ToList()));
+                $"Arrangements at {site.Name} were sized for {supplyCap / 1000} {cap.Unit}{perDay} against demand of {demand / 1000}{perDay}.{growth}", contributors.Select(a => a.CauseId).ToList()));
         }
 
         foreach (var a in contributors)

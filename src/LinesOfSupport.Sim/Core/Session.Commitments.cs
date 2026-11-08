@@ -130,6 +130,7 @@ public sealed partial class Session
                 _confidenceHits++;
                 var rec = AddRecord(Day, RecordKind.ArrangementEnd, c.Id,
                     $"{c.Id} refused: {vendor} stops at once and {CapLabel(c.CapabilityId).ToLowerInvariant()} at {SiteName(c.SiteId)} has no source from it. The site commander's confidence in contracting drops.", [c.CauseId]);
+                LoseConfidence(c.SiteId, rec);
                 var habit = ShiftHabit(c.SiteId, Uc.HabitRiseParkOrRefusePermille, "the handshake was refused with nothing in its place", rec);
                 if (habit.Length > 0) AddRecord(Day, RecordKind.Compliance, c.SiteId, habit.Trim(), [rec]);
                 return ActionResult.Ok("refused");
