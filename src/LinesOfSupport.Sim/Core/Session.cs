@@ -321,4 +321,10 @@ public sealed partial class Session
         Scenario = Scenario.Id, RulesVersion = Rules.RulesVersion, Seed = Seed,
         PrepChoices = [.. PrepChoices], Actions = [.. _applied],
     };
+
+    /// <summary>
+    /// A save of the game as it stands: the input log plus <see cref="InputLog.SavedDay"/> (today, or null once
+    /// finished). Load it with <see cref="Replay.Resume"/>. The game autosaves this each morning and on demand (M3-01).
+    /// </summary>
+    public InputLog ToSave() => ToInputLog() with { SavedDay = Finished ? null : Day };
 }
