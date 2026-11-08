@@ -1,0 +1,94 @@
+{
+  "scenario": "spoke-b",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 3 with the day-15 out-of-scope invoice ratified instead of denied: shop days spent, $2,400 obligated, and the unit learns the shortcut works (SPEC 4.5).",
+  "prepChoices": [
+    "systemAccess",
+    "cashAndPayingAgent"
+  ],
+  "actions": [
+    {
+      "kind": "survey",
+      "day": 1,
+      "island": "spokeB"
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "fuelSupply",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 1,
+      "card": "req0007",
+      "line": "maintenance",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "gens",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "card": "req0007",
+      "lines": [
+        "generation",
+        "maintenance"
+      ],
+      "quantity": 360,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "turnkey",
+      "instrument": "uca",
+      "vendor": "vendorB",
+      "card": "req0007",
+      "quantity": 470,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "coordinate",
+      "day": 3,
+      "id": "hubFuelRun",
+      "site": "spokeBSite",
+      "capability": "fuel",
+      "quantity": 900,
+      "fromSite": "hubSite"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 16,
+      "commitment": "oos1",
+      "choice": "ratify",
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "terminate",
+      "day": 19,
+      "arrangement": "gens"
+    },
+    {
+      "kind": "definitize",
+      "day": 22,
+      "arrangement": "turnkey",
+      "fundingLine": "om1"
+    }
+  ]
+}

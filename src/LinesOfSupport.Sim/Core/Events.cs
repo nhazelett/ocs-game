@@ -16,6 +16,7 @@ public static class Events
         "capability.below",          // target: site.capability; value: fraction 0..1 (yesterday's level)
         "coordination.runningDays",  // target: site.capability; comparator; value: days
         "contract.absent",           // target: site.capability; true when no contract (or pending award) supplies it
+        "contract.present",          // target: site.capability; true when an active contract (not a handshake or coordination) supplies it
         "arrangement.active",        // target: arrangement id
     };
 
@@ -24,6 +25,7 @@ public static class Events
         "link.closed",                   // target: link id; days
         "coordination.withdraw",         // target: site.capability; days: notice (0 = today)
         "unit.unauthorizedCommitment",   // target: site.capability; value: vendor id
+        "vendor.outOfScopeWork",         // target: site.capability; value: cents billed for work outside the active contract
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -67,6 +69,12 @@ public static class Events
                                                        && (a.CapabilityId == cap || a.SuppliedQuantityMilli.ContainsKey(cap)));
                 return !supplied;
             }
+            case "contract.present":
+            {
+                var (site, cap) = SiteCap(p.Target);
+                return s.Arrangements.Any(a => a.SiteId == site && a.CapabilityId == cap && !a.IsCoordination && !a.Unauthorized
+                                               && a.Status == ArrangementStatus.Active);
+            }
             case "arrangement.active":
                 return s.Arrangements.Any(a => a.Id == p.Target && a.Status == ArrangementStatus.Active);
             default:
@@ -92,6 +100,13 @@ public static class Events
                 var (site, cap) = SiteCap(e.Target);
                 var vendor = e.Value is { ValueKind: JsonValueKind.String } v ? v.GetString()! : throw new InvalidDataException("unit.unauthorizedCommitment needs a vendor id value");
                 s.UnauthorizedCommitment(site, cap, vendor, day, cause);
+                break;
+            }
+            case "vendor.outOfScopeWork":
+            {
+                var (site, cap) = SiteCap(e.Target);
+                var cents = e.Value is { ValueKind: JsonValueKind.Number } v ? v.GetInt64() : throw new InvalidDataException("vendor.outOfScopeWork needs a cents value");
+                s.OutOfScopeWork(site, cap, cents, day, cause);
                 break;
             }
             case "inbox":

@@ -1,5 +1,5 @@
 Spoke B power (90 days) / approach2-fix-scope-and-bridge
-Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel.
+Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel. The handshake opened on day 19 is ratified the next morning (SPEC 4.5).
 Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 Prep: systemAccess, cashAndPayingAgent.
 
@@ -29,6 +29,9 @@ Day 12
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   END       hubFuelRun ended.
+Day 15
+  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
 Day 17
@@ -39,9 +42,10 @@ Day 18
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 19
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
-  COMPLY    Unauthorized commitment: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation; ratification work lands on the shop.
-  COMPLY    Ratification package for uc1 completed.
+  COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
 Day 20
+  ACTION    Ratification of uc1 started: 2 shop day(s). Port Fuel Haulers is told it will be paid.
+  COMPLY    Ratification of uc1 completed: $42,120 obligated from om1. Port Fuel Haulers keeps delivering; deliveries after day 27 are owed and not obligated until a contract covers the need.
   START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
@@ -51,6 +55,10 @@ Day 21
 Day 24
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 25
+  COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+Day 26
+  DONE      Response to higher HQ on oos1 sent.
 Day 40
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 43
@@ -126,11 +134,15 @@ Spoke B Fuel                    ..........7XX.XXX....................X......X...
 
 SCORECARD
   Mission output 77% (sortie generation 74%, throughput 74%, endurance 100%, resilience 52%)
-  Obligated $49,680; incurred $423,495; incurred but not obligated $373,815
-  Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 34; payment errors 0; execution-confusion days 1; vendor failures 13; declined BPA calls 0
+  Obligated $91,800; incurred $423,495; incurred but not obligated $331,695
+  Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 1
+  Surveys 1; shop hours worked 58; payment errors 0; execution-confusion days 1; vendor failures 13; declined BPA calls 0
   spokeBSite.power: 38 day(s) down, 36 degraded, lowest 0%
   spokeBSite.fuel: 13 day(s) down, 2 degraded, lowest 0%
+
+UNAUTHORIZED COMMITMENTS (SPEC 4.5)
+  oos1 (day 15): out-of-scope work on gens, $2,400. Decision: open; drew an HHQ inquiry.
+  uc1 (day 19): handshake with Port Fuel Haulers for spokeBSite.fuel. Decision: ratified on day 20.
 
 GAPS AND WHY (each traced back through its causes)
   Day 17: Fuel at Spoke B degraded to 77%: fuel on hand ran out; no arrangement supplies fuel.
@@ -176,4 +188,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.773)
 
-State hash 7b720ccade7ddffcdc3dfb24dfdc23502571e06b741a740a56a848890dd0ece8
+State hash 684528b10715d1e4e7fa12f95517bda3e092ad5bd3fcfeb8dbe827cb6779ea6b

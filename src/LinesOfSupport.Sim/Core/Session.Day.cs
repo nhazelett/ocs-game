@@ -17,8 +17,10 @@ public sealed partial class Session
         _overnightFrom = _records.Count;
 
         FireEvents(d);
+        UnitHabits(d);
         ReturnSurveys(d);
         UcaClocks(d);
+        CommitmentClocks(d);
         DoShopWork(d);
         if (_cashReplenishDay == d)
         {
@@ -71,27 +73,6 @@ public sealed partial class Session
             AddRecord(day, RecordKind.Withdrawal, a.Id,
                 $"The other unit withdrew coordination {a.Id} ({CapLabel(capId)} to {SiteName(siteId)}); last day of support {a.EndDay}. A coordination is not a contract.", [cause, a.CauseId]);
         }
-    }
-
-    internal void UnauthorizedCommitment(string siteId, string capId, string vendorId, int day, string cause)
-    {
-        var vendor = VendorData(vendorId) ?? throw new InvalidDataException($"vendor {vendorId} not found");
-        var offer = vendor.Offers.First(o => o.Capability == capId);
-        var qty = Math.Min(Fixed.Milli(offer.CapacityPerDay), PeakDemandMilli(siteId, capId, day, LastDay));
-        var core = Cap(capId).Lines.First(l => l.Kind == "core").Id;
-        var id = $"uc{_unauthorized + 1}";
-        var arr = new Arrangement
-        {
-            Id = id, Instrument = "unauthorizedCommitment", VendorId = vendorId, SiteId = siteId, CapabilityId = capId, Lines = [core],
-            SupplierIslandId = vendor.Island, QuantityMilli = qty, DailyCostCents = qty * offer.UnitPriceCents / 1000,
-            ReliabilityPermille = Fixed.Permille(vendor.Reliability), Unauthorized = true, CreatedDay = day, CauseId = cause,
-            StartDay = day + 1, EndDay = LastDay,
-        };
-        _arrangements.Add(arr);
-        _unauthorized++;
-        var rec = AddRecord(day, RecordKind.Compliance, id,
-            $"Unauthorized commitment: the {SiteName(siteId)} unit arranged {CapLabel(capId)} directly with {vendor.Name}. No contract, no terms, no obligation; ratification work lands on the shop.", [cause]);
-        AddWork(WorkKind.Ratification, $"Ratify {id}", Fixed.Milli(Rules.Model.Work.RatificationShopDays * Rules.Model.HoursPerPersonPerDay), day, id, rec);
     }
 
     private void ReturnSurveys(int d)
@@ -483,6 +464,12 @@ public sealed partial class Session
                 ["compliance.ucaOverdue"] = _ucaOverdue,
                 ["compliance.hhqInquiries"] = _hhqInquiries,
                 ["compliance.ratifications"] = _ratifications,
+                ["compliance.handshakeWalkOffs"] = _walkOffs,
+                ["compliance.habitHandshakes"] = _habitHandshakes,
+                ["compliance.outOfScopeWork"] = _outOfScope,
+                ["compliance.outOfScopeDenied"] = _outOfScopeDenied,
+                ["compliance.commanderConfidenceHits"] = _confidenceHits,
+                ["compliance.commitmentsUnresolved"] = _commitments.Count(c => c.Unresolved),
                 ["info.surveys"] = _surveys,
                 ["shop.hoursWorked"] = _hoursWorkedMilli / 1000,
                 ["work.paymentErrors"] = _paymentErrors,
@@ -500,6 +487,7 @@ public sealed partial class Session
                 m[$"{k}.degradedDays"] = c.DegradedDays;
                 m[$"{k}.minPercent"] = c.MinPermille / 10;
             }
+            foreach (var site in Scenario.Sites) m[$"site.{site.Id}.unitHabitPermille"] = Habit(site.Id);
             return m;
         }
     }

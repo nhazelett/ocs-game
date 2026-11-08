@@ -86,6 +86,14 @@ public sealed class TextbookPolicy : IPolicy
     public IEnumerable<PlayerAction> Decide(SessionView v)
     {
         var actions = new List<PlayerAction>();
+        // Unauthorized commitments: ratify a handshake at once (the vendor delivered in good faith and the need is
+        // real); deny payment for out-of-scope work under an active contract.
+        foreach (var c in v.Commitments.Where(c => c.Unresolved))
+            actions.Add(new ResolveCommitmentAction
+            {
+                Commitment = c.Id, Choice = c.Kind == CommitmentKind.Handshake ? "ratify" : "deny",
+                FundingLine = v.Funding.Where(f => f.UsableOn(v.Day) && f.RemainingCents > 0).Select(f => f.Id).FirstOrDefault(),
+            });
         if (v.Day == 1)
             foreach (var island in v.Scenario.Sites.Select(s => s.Island).Distinct())
                 if (v.KnowledgeTier(island) is "assumed" or "estimated" && !v.SurveyPending(island))

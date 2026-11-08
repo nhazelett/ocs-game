@@ -276,6 +276,28 @@ public sealed record RulesFile
     public AggregateRatesData AggregateRates { get; init; } = new();
     public ModelData Model { get; init; } = new();
     public ScoRulesData Sco { get; init; } = new();
+    public UnauthorizedRulesData Unauthorized { get; init; } = new();
+}
+
+/// <summary>Unauthorized commitments (SPEC 4.5). Permille values are 0 to 1000.</summary>
+public sealed record UnauthorizedRulesData
+{
+    public IntRange PatienceDays { get; init; } = new(5, 15);
+    public int WalkOffDeclinePermille { get; init; } = 500;
+    public int WalkOffMarkupPermille { get; init; } = 250;
+    public int ParkedInquiryAfterDays { get; init; } = 10;
+    public int ParkedInquiryResponseHours { get; init; } = 24;
+    public int RatifiedBridgeDays { get; init; } = 7;
+    public int OutOfScopeDenyShopHours { get; init; } = 2;
+    public int HabitStartPermille { get; init; }
+    public int HabitRiseParkOrRefusePermille { get; init; } = 150;
+    public int HabitRiseLongOpenPermille { get; init; } = 100;
+    public int HabitLongOpenDays { get; init; } = 5;
+    public int HabitDropQuickRatifyPermille { get; init; } = 100;
+    public int QuickRatifyWithinDays { get; init; } = 3;
+    public int HabitRiseOutOfScopeRatifyPermille { get; init; } = 50;
+    public int HabitCapPermille { get; init; } = 600;
+    public string? SourceUrl { get; init; }
 }
 
 public sealed record ThresholdsData

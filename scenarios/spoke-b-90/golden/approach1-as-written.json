@@ -2,7 +2,7 @@
   "scenario": "spoke-b-90",
   "rulesVersion": "2025-10",
   "seed": 1,
-  "note": "Approach 1 (SPEC 5): buy exactly what the requirement says. BPA call for six 60 kW generators, nothing else. No prep, no survey.",
+  "note": "Approach 1 (SPEC 5): buy exactly what the requirement says. BPA call for six 60 kW generators, nothing else. No prep, no survey. The handshake opened on day 11 is ratified the next morning (SPEC 4.5).",
   "prepChoices": [],
   "actions": [
     {
@@ -16,6 +16,13 @@
       "quantity": 360,
       "startDay": 7,
       "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 12,
+      "commitment": "uc1",
+      "choice": "ratify",
       "fundingLine": "om1"
     }
   ]

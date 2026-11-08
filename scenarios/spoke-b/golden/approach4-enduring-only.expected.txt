@@ -27,8 +27,15 @@ Day 17
   START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
+Day 18
+  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  COMPLY    Out-of-scope work oos1: Meridian Site Services billed $2,400 for work outside turnkey's scope, done on a unit member's say-so. Decision: deny payment or ratify.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+Day 28
+  COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+Day 29
+  DONE      Response to higher HQ on oos1 sent.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -42,10 +49,13 @@ Spoke B Fuel                    ...XXXXXXX..............
 SCORECARD
   Mission output 82% (sortie generation 81%, throughput 81%, endurance 100%, resilience 56%)
   Obligated $310,200; incurred $310,200; incurred but not obligated $0
-  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 28; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 1
+  Surveys 0; shop hours worked 52; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
   spokeBSite.power: 10 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 7 day(s) down, 0 degraded, lowest 0%
+
+UNAUTHORIZED COMMITMENTS (SPEC 4.5)
+  oos1 (day 18): out-of-scope work on turnkey, $2,400. Decision: open; drew an HHQ inquiry.
 
 GAPS AND WHY (each traced back through its causes)
   Day 7: Power at Spoke B down to 0%: no arrangement supplies power.
@@ -57,4 +67,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.822)
 
-State hash a276f56a6ed2edd73faa0cef77b6817a18c58aeca683d282cd481f6a5d59ea38
+State hash 09a3c0e3dbe93a00a6a1fb9918e7d9531e3de47cdd8c5cbca83ffe0afb5e95dd

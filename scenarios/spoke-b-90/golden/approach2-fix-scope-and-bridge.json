@@ -2,7 +2,7 @@
   "scenario": "spoke-b-90",
   "rulesVersion": "2025-10",
   "seed": 1,
-  "note": "Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel.",
+  "note": "Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel. The handshake opened on day 19 is ratified the next morning (SPEC 4.5).",
   "prepChoices": [
     "systemAccess",
     "cashAndPayingAgent"
@@ -59,6 +59,13 @@
       "capability": "fuel",
       "quantity": 900,
       "fromSite": "hubSite"
+    },
+    {
+      "kind": "resolveCommitment",
+      "day": 20,
+      "commitment": "uc1",
+      "choice": "ratify",
+      "fundingLine": "om1"
     }
   ]
 }

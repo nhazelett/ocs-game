@@ -29,8 +29,13 @@ Day 7
   START     t-req0007-bridge began: Power at Spoke B from Harbor Equipment Co, 514 kW/day.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+Day 15
+  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside t-req0007-bridge's scope, done on a unit member's say-so. Decision: deny payment or ratify.
 Day 16
+  ACTION    Payment for oos1 denied: $2,400 of work outside t-req0007-bridge's scope.
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  DONE      Denial of payment for oos1 sent to the vendor: work outside the contract was not ordered by a contracting officer.
 Day 17
   START     t-req0007-enduring began: Power at Spoke B from Meridian Site Services, 514 kW/day.
 Day 19
@@ -61,7 +66,10 @@ SCORECARD
   Mission output 94% (sortie generation 100%, throughput 100%, endurance 100%, resilience 60%)
   Obligated $777,714; incurred $423,054; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 108; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  Surveys 1; shop hours worked 110; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+
+UNAUTHORIZED COMMITMENTS (SPEC 4.5)
+  oos1 (day 15): out-of-scope work on t-req0007-bridge, $2,400. Decision: denied on day 16.
 
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
@@ -69,4 +77,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.94)
 
-State hash 31144347310a2fc9fc2869c19b52386ade3f1ffd90640a469d0fa1c762a75a58
+State hash 9fc041e7cdee412ab52acc2df7ae7e0f13a02e3a35697535a1548433651024cf

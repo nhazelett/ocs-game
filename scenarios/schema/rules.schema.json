@@ -513,6 +513,93 @@
           "$ref": "#/$defs/intRange"
         }
       }
+    },
+    "unauthorized": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Unauthorized commitments: handshake patience, walk-off, parked-ratification inquiry, out-of-scope work, unit precedent (SPEC 4.5). Permille values are 0 to 1000.",
+      "required": [
+        "patienceDays",
+        "walkOffDeclinePermille",
+        "walkOffMarkupPermille",
+        "parkedInquiryAfterDays",
+        "parkedInquiryResponseHours",
+        "ratifiedBridgeDays",
+        "outOfScopeDenyShopHours",
+        "habitStartPermille",
+        "habitRiseParkOrRefusePermille",
+        "habitRiseLongOpenPermille",
+        "habitLongOpenDays",
+        "habitDropQuickRatifyPermille",
+        "quickRatifyWithinDays",
+        "habitRiseOutOfScopeRatifyPermille",
+        "habitCapPermille"
+      ],
+      "properties": {
+        "patienceDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "Days a handshake vendor keeps delivering unpaid before it walks off (SPEC 4.5)"
+        },
+        "walkOffDeclinePermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "walkOffMarkupPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parkedInquiryAfterDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parkedInquiryResponseHours": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ratifiedBridgeDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outOfScopeDenyShopHours": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitStartPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitRiseParkOrRefusePermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitRiseLongOpenPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitLongOpenDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitDropQuickRatifyPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quickRatifyWithinDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitRiseOutOfScopeRatifyPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "habitCapPermille": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {
