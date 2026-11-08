@@ -3,6 +3,7 @@
 Expected look of this build and why: no visible change in the game. The transition plan exists in the Sim, the harness report (a TRANSITIONS section and TRANSIT timeline lines) and two new goldens; the transition planner screen with overlap bars is new UI and waits for the M2 gate.
 
 ## PRs reviewed this session
+- Opened PR 82 (M3-05 transition plans, stacked on 81) and PR 83 (M3-07 plan and backlog rows M3-16 to M3-18, docs only, stacked on 82).
 - PRs 78, 79, 80 and 81 (Fable, stacked in that order): "ready to merge" comments already stand and no head has moved since, so no new comment. No open Codex PRs. Scheduled run: no merges attempted (FOR-NICK #1).
 
 ## Changed
@@ -25,5 +26,5 @@ SPEC 2 (the OCS seat plans transitions), SPEC 3 "Transition plan" (outgoing and 
 - The warn and overlap defaults are placeholders for playtest.
 
 ## Next
-- Fable: M3-07 (60-day hub and three spokes scenario using the partner, host nation, stateside routes and a transition), once the M3-05/M3-06 stack is merged or stacked on it.
+- Fable: M3-16 (inherited arrangement fidelity), then M3-17 and M3-18, then M3-07, per the plan in docs/design/M3-07-representative-scenario.md (PR 83, stacked on PR 82; stack the next branch on fable/M3-07-plan).
 - Codex: M3-12, M3-13, M3-14, M3-11; M3-15 after the stack merges. Codex `validate.py` needs no change for this PR (the rules block is schema-checked).
