@@ -55,6 +55,32 @@ jobs:
           done < <(find assets -type f ! -path 'assets/PROVENANCE.md' -print0)
           exit "$missing"
 
+  godot-shell:
+    name: godot-shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Download Godot 4.6.1 .NET
+        shell: bash
+        run: |
+          curl --fail --location --retry 3 'https://github.com/godotengine/godot-builds/releases/download/4.6.1-stable/Godot_v4.6.1-stable_mono_linux_x86_64.zip' --output "$RUNNER_TEMP/godot.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          godot_bin=$(find "$RUNNER_TEMP/godot" -type f -name '*mono_linux.x86_64' -print -quit)
+          test -n "$godot_bin"
+          chmod +x "$godot_bin"
+          echo "GODOT_BIN=$godot_bin" >> "$GITHUB_ENV"
+      - name: Build, import and smoke-test the shell
+        shell: bash
+        run: |
+          dotnet build game/LinesOfSupport.Game.csproj -c Debug
+          "$GODOT_BIN" --headless --path game --editor --import --quit
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/ShellSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-smoke.log"
+          grep -Fq 'SHELL_SMOKE_PASS:' "$RUNNER_TEMP/godot-smoke.log"
+
   export-windows:
     name: export-windows
     if: startsWith(github.ref, 'refs/tags/v')
