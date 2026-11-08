@@ -55,7 +55,7 @@ public partial class GameShell
         {
             var key = tile.SiteId + "." + tile.CapabilityId;
             var name = view!.Scenario.Sites.Single(s => s.Id == tile.SiteId).Name;
-            var button = DeskUi.Button($"{name} · {tile.Label}: {tile.TodayPermille / 10m:0.#}% · {tile.Status}", () => SelectCapability(key));
+            var button = DeskUi.Button($"{name} · {tile.Label}: {tile.TodayPermille / 10m:0.#}% · {tile.Status}{(view.LostConfidenceSites.Contains(tile.SiteId) ? " · commander confidence lost" : "")}", () => SelectCapability(key));
             button.ToggleMode = true; button.ButtonPressed = SelectedCapability == key;
             button.SetMeta("capability", key); morningTiles.AddChild(button);
         }
