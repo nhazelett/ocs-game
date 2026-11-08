@@ -174,6 +174,7 @@ public static class SessionReport
         RecordKind.Cash => "CASH",
         RecordKind.Withdrawal => "WITHDRAWN",
         RecordKind.Obligation => "OBLIGATE",
+        RecordKind.VendorCapacity => "CAPACITY",
         _ => k.ToString().ToUpperInvariant(),
     };
 }

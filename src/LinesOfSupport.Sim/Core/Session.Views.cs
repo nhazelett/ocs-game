@@ -33,6 +33,7 @@ public sealed partial class Session
         RecordKind.PaymentError => (BoardCategory.Failure, BoardSeverity.Warning),
         RecordKind.Withdrawal => (BoardCategory.VendorNotice, BoardSeverity.Alert),
         RecordKind.Declined => (BoardCategory.VendorNotice, BoardSeverity.Warning),
+        RecordKind.VendorCapacity => (BoardCategory.Failure, BoardSeverity.Warning),
         RecordKind.UcaProposal => (BoardCategory.VendorNotice, BoardSeverity.Info),
         RecordKind.UcaResumed => (BoardCategory.VendorNotice, BoardSeverity.Info),
         RecordKind.UcaOverdue => (BoardCategory.HigherHq, BoardSeverity.Warning),
@@ -164,6 +165,8 @@ public sealed partial class Session
             "gpc" when _gpcAvailableDay is null || Day < _gpcAvailableDay => "no government purchase card accounts yet",
             "bpaCall" when !_vehicles.Any(v => v.Kind == "bpa" && v.VisibleOnDay1 && Day <= v.OrderingPeriodEndDay)
                 => "no BPA known to this shop is open for ordering",
+            "idiqOrder" when !_vehicles.Any(v => v.Kind == "idiq" && v.VisibleOnDay1 && Day <= v.OrderingPeriodEndDay)
+                => "no IDIQ known to this shop is open for ordering",
             _ => null,
         };
     }
@@ -209,7 +212,8 @@ public sealed partial class Session
         var vehicles = _vehicles
             .Where(v => v.VisibleOnDay1 && vendors.Any(o => o.Id == v.Vendor))
             .Select(v => new VehicleOption(v.Id, v.Kind, v.Vendor, v.ScopeTags, v.CallLimitCents, v.OrderingPeriodEndDay,
-                                           v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay))
+                                           v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay,
+                                           Idiq(v.Id)?.CeilingCents, Idiq(v.Id)?.OrderedCents, Idiq(v.Id)?.GuaranteeUnorderedCents))
             .ToList();
 
         var funding = _funding.Select(f =>
@@ -270,6 +274,14 @@ public sealed partial class Session
         if (!inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays)
             gaps.Add($"No written terms on a {a.DurationDays}-day service: execution-confusion events can occur while it runs.");
         if (a.Instrument == "bpaCall") gaps.Add("A BPA is not binding: the vendor may decline the call.");
+        if (a.Instrument == "idiqOrder")
+        {
+            var free = Math.Max(0, Fixed.Milli(offer.CapacityPerDay) - CommittedMilli(vendor.Id, capId, startMin, Math.Min(end, LastDay)));
+            if (a.Quantity * 1000 > free)
+                gaps.Add($"{vendor.Name} has about {free / 1000} {Rate(cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
+            if (Idiq(a.Vehicle) is { GuaranteeUnorderedCents: > 0 } q)
+                gaps.Add($"{Money(Math.Min(chk.TotalCents, Math.Max(0, q.GuaranteeUnorderedCents - PendingOrderCents(q.VehicleId))))} of this order comes from {q.VehicleId}'s minimum guarantee, already obligated.");
+        }
         if (a.Instrument == "uca")
         {
             var before = Fixed.Permille(Rules.Uca.ObligationCapBeforeProposal) / 10;

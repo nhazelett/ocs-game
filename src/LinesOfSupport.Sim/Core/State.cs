@@ -29,6 +29,9 @@ public sealed class Arrangement
     /// <c>cost.unobligatedIncurredCents</c>, which is the sum of this over all arrangements (Q11).</summary>
     public long UnobligatedIncurredCents => IsCoordination ? 0 : Math.Max(0, IncurredCents - ObligatedCents);
     public string? FundingLineId { get; set; }
+    /// <summary>IDIQ orders: the part of ObligatedCents drawn from the vehicle's minimum guarantee, which was obligated
+    /// when the IDIQ was awarded. It never returns to a funding line on termination (M3-06).</summary>
+    public long FromGuaranteeCents { get; init; }
     public int ReliabilityPermille { get; set; }
     public bool Unauthorized { get; init; }
     public bool IsCoordination => Instrument == "coordination";
@@ -187,6 +190,21 @@ public enum RecordKind
     Action, Rejected, WorkDone, ArrangementStart, ArrangementEnd, Declined, Shortfall, Restored,
     VendorFailure, ExecutionConfusion, PaymentError, Event, Inbox, Knowledge, Obligation, UcaProposal,
     UcaOverdue, UcaStopWork, UcaResumed, Definitized, Compliance, Cash, Withdrawal,
+    /// <summary>A vendor's orders exceed its real capacity (IDIQ orders are accepted regardless): delivery falls short (M3-06).</summary>
+    VendorCapacity,
+}
+
+/// <summary>An IDIQ the shop can order from (M3-06): ceiling, minimum guarantee and what has been ordered so far.
+/// Scenario IDIQs start with their data's obligatedCents as already ordered and no guarantee left to meet.</summary>
+public sealed class IdiqState
+{
+    public required string VehicleId { get; init; }
+    public string? FundingLineId { get; init; }
+    public long? CeilingCents { get; init; }
+    public long MinimumGuaranteeCents { get; init; }
+    public long OrderedCents { get; set; }
+    /// <summary>Minimum guarantee obligated at award and not yet ordered against. Owed to the vendor regardless.</summary>
+    public long GuaranteeUnorderedCents => Math.Max(0, MinimumGuaranteeCents - OrderedCents);
 }
 
 /// <summary>

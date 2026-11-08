@@ -213,6 +213,15 @@ public sealed partial class Session
                         break;
                 }
             }
+            if (CapacityShort(a.Id, d))
+            {
+                // The order preview showed the vendor's capacity left, so ordering past it was a known risk; the
+                // supplementary buy that would have covered it was the player's to make (M3-06).
+                var ev = _records.Last(r => r.Kind == RecordKind.VendorCapacity && r.Subject == a.Id && r.Day <= d);
+                yield return ($"capacity|{a.Id}", new GapFactor(GapFactorKind.VendorCapacity, GapTag.Avoidable, d,
+                    $"{a.Id} is an IDIQ order above what {VendorData(a.VendorId)?.Name ?? "the vendor"} could supply (capacity event, day {ev.Day}). The contract was binding, but binding does not add capacity; the order preview showed the capacity left, and a second source or a supplementary buy would have covered the rest.",
+                    [ev.Id, a.CauseId]));
+            }
             if (a.Uca is not null && _records.LastOrDefault(r => r.Subject == a.Id && r.Day <= d && r.Kind is RecordKind.UcaStopWork or RecordKind.UcaResumed) is { Kind: RecordKind.UcaStopWork } stop)
             {
                 var overdue = _records.FirstOrDefault(r => r.Subject == a.Id && r.Kind == RecordKind.UcaOverdue && r.Day <= stop.Day);
@@ -280,7 +289,7 @@ public sealed partial class Session
         {
             RecordKind.Event, RecordKind.Withdrawal, RecordKind.UcaOverdue, RecordKind.UcaStopWork, RecordKind.UcaResumed,
             RecordKind.Compliance, RecordKind.Declined, RecordKind.Definitized, RecordKind.ArrangementStart, RecordKind.ArrangementEnd,
-            RecordKind.Knowledge, RecordKind.UcaProposal,
+            RecordKind.Knowledge, RecordKind.UcaProposal, RecordKind.VendorCapacity,
         };
         var events = _records.Where(r => annotate.Contains(r.Kind) && r.Day >= 1)
                              .Select(r => new TimelineEvent(r.Day, r.Kind.ToString(), r.Subject, r.Text, r.Id)).ToList();

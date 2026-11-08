@@ -24,7 +24,7 @@ public sealed class SessionView
     public IReadOnlyList<WorkItem> Work => _s.Work;
     public IReadOnlyList<FundingLineState> Funding => _s.Funding;
     public IReadOnlyList<CauseRecord> Records => _s.Records;
-    /// <summary>Vehicles the shop has: the scenario's plus any BPAs established this game.</summary>
+    /// <summary>Vehicles the shop has: the scenario's plus any BPAs and IDIQs established this game.</summary>
     public IReadOnlyList<VehicleData> Vehicles => _s.Vehicles;
     /// <summary>Unauthorized commitments (SPEC 4.5): handshakes and out-of-scope work, with the decision on each.</summary>
     public IReadOnlyList<CommitmentState> Commitments => _s.Commitments;
@@ -87,4 +87,11 @@ public sealed class SessionView
     /// <summary>What establishing a BPA would take: hard stops, shop hours, and in EarliestStartMin/Max the first day calls
     /// could be placed (ignoring the queue ahead). Changes nothing.</summary>
     public ActionPreview PreviewEstablish(EstablishBpaAction bpa) => _s.BuildEstablishPreview(bpa);
+
+    /// <summary>What establishing an IDIQ would take (M3-06): hard stops, shop hours, the minimum guarantee it obligates
+    /// (in TotalCents) and in EarliestStartMin/Max the first day orders could be placed. Changes nothing.</summary>
+    public ActionPreview PreviewEstablish(EstablishIdiqAction idiq) => _s.BuildEstablishIdiqPreview(idiq);
+
+    /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
+    public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
 }

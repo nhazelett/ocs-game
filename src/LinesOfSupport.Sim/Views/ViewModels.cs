@@ -102,9 +102,13 @@ public sealed record VendorOption(
     string? Standing = null);
 
 /// <summary>An existing vehicle the shop knows about that could carry this action.</summary>
+/// <param name="CeilingCents">IDIQs: the contract ceiling (null for BPAs, or an IDIQ with no ceiling in its data).</param>
+/// <param name="OrderedCents">IDIQs: value ordered so far; the ceiling less this is what is left to order.</param>
+/// <param name="GuaranteeUnorderedCents">IDIQs: minimum guarantee obligated at award and not yet ordered against.</param>
 public sealed record VehicleOption(
     string Id, string Kind, string VendorId, IReadOnlyList<string> ScopeLines, long? CallLimitCents,
-    int OrderingPeriodEndDay, IReadOnlyList<string> PlaceOfPerformance, bool OpenToday);
+    int OrderingPeriodEndDay, IReadOnlyList<string> PlaceOfPerformance, bool OpenToday,
+    long? CeilingCents = null, long? OrderedCents = null, long? GuaranteeUnorderedCents = null);
 
 /// <summary>A funding line, with what is left and whether it can be used today.</summary>
 public sealed record FundingOption(string Id, string Type, long RemainingCents, int AvailableDay, int ExpiresDay, bool UsableToday);
