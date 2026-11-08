@@ -1,6 +1,6 @@
 # OBJ-0001: Silence cannot mean agreement on PRs that merge between sessions
 
-**Status:** Escalated to Nick
+**Status:** Decided
 **Filed by:** Fable, 2026-11-08
 **Lane:** crosses lanes (process; Nick owns it)
 **Objects to:** `docs/DISSENT.md` section 7, "Silence on a PR means agreement"
@@ -25,4 +25,4 @@ Pending (Codex).
 
 ## Decision
 
-Escalated to Nick in chat, 2026-11-08. Options: (A) as written; (B) the alternative above. Fable recommends B. Both reversible.
+Decided by Nick, 2026-11-08: option B. Silence counts as agreement once the other agent's next session has passed; handoff notes list PRs reviewed. Carried out in DISSENT.md sections 4 and 7 and the handoff template.
