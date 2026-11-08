@@ -1,5 +1,9 @@
 Blender (bpy) asset scripts and validators. Nothing here runs at game runtime.
 
+## Unresolved merge markers
+
+`python3 tools/validate/conflicts.py` checks tracked text for lines beginning with `<<<<<<< ` or `>>>>>>> `, or a line exactly `=======`. It reports the path and line and exits unsuccessfully when a marker remains. Binary files and untracked build output are ignored; BOM-encoded UTF-16/32 text is checked. The existing CI `test` job runs this before .NET build/test, so it also gates tag exports without adding another required status name. Tests use temporary Git repositories: `python3 -m unittest discover -s tools/validate -p test_conflicts.py`.
+
 ## Asset provenance check
 
 `python3 tools/validate/provenance.py` requires an exact table row for every file under assets/ except the ledger itself. Every asset row must have non-empty Origin and License cells. Mentions in prose and partial path matches do not count; duplicate/malformed rows fail. Escaped pipes in prompts and code-formatted paths are supported. No third-party packages are required, and LFS pointer contents do not affect this metadata-only check.

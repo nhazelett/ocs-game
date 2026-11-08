@@ -1,6 +1,7 @@
 using LinesOfSupport.Sim;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Data;
+using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Game;
 
@@ -12,6 +13,8 @@ internal sealed class GameSessionBridge
     private InputLog? log;
     internal SessionView? View => session?.View;
     internal bool IsReplay => log is not null;
+    internal PrepView? Prep => bundle is not null && session is null ? PrepScreen.View(bundle) : null;
+    internal PrepCheck CheckPrep(IEnumerable<string> picks) => PrepScreen.Check(bundle ?? throw new InvalidOperationException("Load a scenario first."), picks);
     internal ActionResult Apply(PlayerAction action)
     {
         if (session is null) return ActionResult.Stop("Load a scenario before making a decision.");
@@ -29,9 +32,16 @@ internal sealed class GameSessionBridge
     {
         Clear();
         var loaded = ScenarioBundle.Load(path);
-        var created = Session.Create(loaded, 1);
         bundle = loaded;
-        session = created;
+    }
+
+    internal void StartScenario(IEnumerable<string> picks)
+    {
+        var chosen = picks.ToArray();
+        var check = CheckPrep(chosen);
+        if (!check.Accepted) throw new InvalidDataException(string.Join("; ", check.Stops));
+        session = Session.Create(bundle!, 1, chosen);
+        log = null;
     }
 
     internal void LoadReplay(string path)

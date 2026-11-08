@@ -17,8 +17,10 @@ public partial class SessionSmokeTest : Node
             var spoke = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == "spoke-b");
             picker.Select(spoke);
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, spoke);
+            Require(shell.Session.View is null, "Scenario selection waits for prep before creating a session.");
+            shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
-            Require(shell.Session.StateHash == Session.Create(bundle, 1).StateHash(), "Scenario selection starts seed 1 with no prep.");
+            Require(shell.Session.StateHash == Session.Create(bundle, 1).StateHash(), "Deploy without picks starts seed 1 with no prep.");
             var approach = shell.GetNode<OptionButton>("%ReplayPicker");
             var first = Enumerable.Range(0, approach.ItemCount).Single(i => approach.GetItemText(i) == "approach1 as written");
             approach.Select(first);
@@ -58,10 +60,12 @@ public partial class SessionSmokeTest : Node
             next.EmitSignal(Button.SignalName.Pressed);
             Require(next.Disabled && shell.Session.StateHash == finished, "Finished sessions cannot advance again.");
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, spoke);
+            shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == Session.Create(bundle, 1).StateHash(), "Switching scenario clears replay state.");
             var ninety = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == "spoke-b-90");
             picker.Select(ninety);
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, ninety);
+            shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
             var longBundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b-90"));
             Require(shell.Session.StateHash == Session.Create(longBundle, 1).StateHash() && shell.Session.View!.LastDay == 90, "The 90-day scenario starts a fresh seeded session.");
             next.EmitSignal(Button.SignalName.Pressed);

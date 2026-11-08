@@ -22,8 +22,10 @@ public partial class GameShell : Control
         BuildMorningDesk();
         BuildCommitmentDesk();
         BuildActionDesk();
+        BuildDebriefDesk();
         BuildOtherActions();
         BuildBpaDesk();
+        BuildPrepDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -61,6 +63,7 @@ public partial class GameShell : Control
     {
         ResetDeskSelection();
         session.Clear();
+        ShowPrepChoices();
         Map.ShowScenario(null);
         replays = [];
         GetNode<OptionButton>("%ReplayPicker").Clear();
@@ -70,10 +73,11 @@ public partial class GameShell : Control
             Map.ShowScenario(data);
             GetNode<Label>("%BoardCaption").Text = data.Title + " · schematic layout, not geographic positions";
             session.LoadScenario(scenarios[(int)index].ScenarioPath);
+            ShowPrepChoices();
             var directory = Path.Combine(Path.GetDirectoryName(scenarios[(int)index].ScenarioPath)!, "golden");
             replays = Directory.Exists(directory) ? Directory.GetFiles(directory, "approach*.json").Order(StringComparer.Ordinal).ToArray() : [];
             foreach (var replay in replays) GetNode<OptionButton>("%ReplayPicker").AddItem(Path.GetFileNameWithoutExtension(replay).Replace('-', ' '));
-            RefreshDisplay("Seed 1 · no prep choices. Next day plays day 1.");
+            RefreshDisplay("Choose pre-deployment preparations, then Deploy. Replay uses its own recorded preparations.");
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or
             KeyNotFoundException or InvalidOperationException or FormatException)
@@ -145,5 +149,7 @@ public partial class GameShell : Control
         RefreshCommitments(view);
         RefreshActionDesk(view);
         RefreshBpaDesk(view);
+        RefreshDebrief(view);
+        RefreshPrepVisibility();
     }
 }
