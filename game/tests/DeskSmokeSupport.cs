@@ -35,4 +35,10 @@ internal static class DeskSmokeSupport
     {
         for (var i = 0; i < days; i++) shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
     }
+
+    internal static void Pick(OptionButton picker, string id)
+    {
+        var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemMetadata(i).AsString() == id);
+        picker.Select(index); picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);
+    }
 }
