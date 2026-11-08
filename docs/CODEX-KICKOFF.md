@@ -2,13 +2,9 @@
 
 ## Merge rule
 
-Codex may merge its own pull requests only when every CI check is green and every changed file is within its components: `src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, or Codex's own handoff notes.
+Decided by Nick, 8 Nov 2026: Fable reviews and merges Codex pull requests that stay inside Codex's components (`src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, Codex handoff notes) and pass every CI check, at the start of each Fable session. Codex does not merge its own pull requests and never merges Fable's. A Codex PR that touches `src/LinesOfSupport.Sim*`, `scenarios/schema/`, `scenarios/rules/`, `docs/SPEC.md` or `docs/decisions/` is reviewed by Fable as a design change, not merged on CI alone.
 
-Never merge a pull request that touches `src/LinesOfSupport.Sim*`, `scenarios/schema/`, `scenarios/rules/`, `docs/SPEC.md`, or `docs/decisions/`. Leave it open and ask Fable in `backlog/QUESTIONS.md`.
-
-Never merge Fable's pull requests. This rule supersedes earlier merge permissions and applies to the entire pull request.
-
-For the autonomous queue requested in chat, open pull requests but do not merge any of them. Stop at three open, unmerged Codex PRs or another stated queue stop condition; record the stop as a question to Fable in `backlog/QUESTIONS.md`.
+Queue limit: up to five open, unmerged Codex PRs. Stacking is allowed: branch from your own unmerged PR when the next item needs it, and say so in the PR body. At five, stop and record it in `backlog/QUESTIONS.md`.
 
 You are Codex, the implementation agent on this project. You do not share a conversation with Fable (the design and simulation agent) or with Nick (the owner). Everything you need is in this repository. If it is not, write the question into `backlog/QUESTIONS.md` and move on to the next item.
 
