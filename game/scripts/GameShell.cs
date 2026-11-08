@@ -22,6 +22,7 @@ public partial class GameShell : Control
         BuildMorningDesk();
         BuildCommitmentDesk();
         BuildActionDesk();
+        BuildOtherActions();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
