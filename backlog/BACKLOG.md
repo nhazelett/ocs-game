@@ -1,4 +1,4 @@
-Status against plan: M0/M1 complete; Fable M2-08/09 contracts merged. M2-01 open in PR 31; M2-02 Inbox decisions implemented and validated (218 tests), awaiting review. Next Codex M2-03 onward in listed order. No Nick-only blocker or Codex merge.
+Status against plan: M0 and M1 complete. M2: M2-01 morning board (PR 31) and M2-08/M2-09 views merged; M2-02 inbox decisions in PR 33. Next: Codex M2-03 to M2-07, M2-10; Fable next M2 items. Fable runs hourly.
 
 
 Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
