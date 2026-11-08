@@ -90,6 +90,15 @@ GAPS AND WHY (each traced back through its causes)
   Day 77: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 82: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.fuel days 82-90, lowest 0%, 9 day(s) down: AVOIDABLE
+      [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
+  #1 spokeBSite.power days 63-63, lowest 50%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] turnkey failed on day 63 with full operator and maintenance coverage.
+  #2 spokeBSite.power days 77-90, lowest 0%, 14 day(s) down: AVOIDABLE
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, turnkey, ended on day 76.
+      [avoidable] Power depends on fuel, which was short. (see #0)
+
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 14)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 9)

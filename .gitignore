@@ -21,3 +21,6 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Golden test failure output (GoldenTests writes these next to the expected file)
+scenarios/**/golden/*.actual.txt

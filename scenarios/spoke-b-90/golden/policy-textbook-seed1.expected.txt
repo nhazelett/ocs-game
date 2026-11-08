@@ -96,6 +96,12 @@ GAPS AND WHY (each traced back through its causes)
       <- day 81: t-req0007-enduring-next had equipment down.
           <- day 62: Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 14 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $107,940.
 
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.power days 61-61, lowest 54%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] t-req0007-enduring failed on day 61 with full operator and maintenance coverage.
+  #1 spokeBSite.power days 81-81, lowest 54%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] t-req0007-enduring-next failed on day 81 with full operator and maintenance coverage.
+
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)

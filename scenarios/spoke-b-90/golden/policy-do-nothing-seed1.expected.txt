@@ -134,6 +134,24 @@ GAPS AND WHY (each traced back through its causes)
                   <- day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
                   <- day 8: Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
 
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 spokeBSite.fuel days 12-12, lowest 16%, 1 day(s) down: DISCOVERABLE
+      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+  #1 spokeBSite.fuel days 17-90, lowest 0%, 62 day(s) down: AVOIDABLE
+      [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 15.
+      [avoidable] uc2 failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 36.
+  #2 spokeBSite.power days 7-90, lowest 0%, 78 day(s) down: AVOIDABLE
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. uc3 did not start until day 29.
+      [discoverable] Power depends on fuel, which was short. (see #0)
+      [avoidable] Power depends on fuel, which was short. (see #1)
+      [avoidable] Handshake uc3 was left unresolved and the vendor walked off on day 38.
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 38. The last arrangement supplying it, uc3, ended on day 37. uc4 did not start until day 40.
+      [avoidable] Handshake uc4 was left unresolved and the vendor walked off on day 47.
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 47. The last arrangement supplying it, uc4, ended on day 46. uc5 did not start until day 49.
+      [avoidable] Handshake uc5 was left unresolved and the vendor walked off on day 63.
+      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 63. The last arrangement supplying it, uc5, ended on day 62.
+
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 78)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 63)
