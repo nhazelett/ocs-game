@@ -213,7 +213,34 @@ public sealed class TextbookPolicy : IPolicy
             });
         }
 
-        // 7. Any consumable running dry at an open site with nothing pending: emergency coordination from the hub.
+        // 7. Resize when the plan changes: if what is now known about demand (an unplanned arrival's notice) is above
+        //    everything contracted for a capability at a site, buy the difference, but only by a route that costs no
+        //    shop days (BPA call, cash, card): a written buy would delay the definitizations already in the queue,
+        //    which costs more than a short dip. Tried again each day until capacity frees up.
+        foreach (var site in v.Scenario.Sites)
+        {
+            var siteEnd = Math.Min(site.ClosesDay ?? v.LastDay, v.LastDay);
+            if (v.Day >= siteEnd) continue;
+            foreach (var cs in v.Capabilities.Where(c => c.SiteId == site.Id))
+            {
+                var held = v.ArrangementsFor(site.Id, cs.CapabilityId)
+                            .Where(a => a.Status is ArrangementStatus.Pending or ArrangementStatus.Active && !a.IsCoordination && !a.Unauthorized && a.EndDay >= siteEnd)
+                            .ToList();
+                if (!held.Any(a => a.Instrument != "hostNation")) continue;
+                var supplied = held.Sum(a => (a.CapabilityId == cs.CapabilityId ? a.QuantityMilli : 0) + a.SuppliedQuantityMilli.GetValueOrDefault(cs.CapabilityId)) / 1000;
+                var need = v.PeakDemandUnits(site.Id, cs.CapabilityId, v.Day + 1, siteEnd);
+                var key = $"resize:{site.Id}:{cs.CapabilityId}:{need}";
+                if (need <= supplied || _done.Contains(key)) continue;
+                var cap = v.Rules.Model.Capabilities.First(c => c.Id == cs.CapabilityId);
+                var core = cap.Lines.Where(l => l.Kind == "core").Select(l => l.Id).ToList();
+                var buy = Helpers.FastestRoute(v, site.Id, cs.CapabilityId, core, need - supplied, siteEnd - v.Day, site.Island);
+                if (buy is not { Instrument: "sf44" or "gpc" or "bpaCall" }) continue;
+                _done.Add(key);
+                actions.Add(buy with { Id = $"t-resize-{site.Id}-{cs.CapabilityId}-{v.Day}" });
+            }
+        }
+
+        // 8. Any consumable running dry at an open site with nothing pending: emergency coordination from the hub.
         foreach (var cs in v.Capabilities.Where(c => c.History.Count > 0 && c.TodayPermille < 1000))
         {
             var cap = v.Rules.Model.Capabilities.First(c => c.Id == cs.CapabilityId);
@@ -256,7 +283,7 @@ internal static class Helpers
         var candidates = Vendors(v, capability, lines)
             .Where(x => !x.Vendor.VehicleOnly || v.Vehicles.Any(b => b.Vendor == x.Vendor.Id))
             .Where(x => HasCapacity(v, x.Vendor, capability, qty))
-            .OrderBy(x => preferIsland is not null && x.Vendor.Island == preferIsland ? 0 : 1)
+            .OrderBy(x => preferIsland is not null && (x.Offer.SourceIsland ?? x.Vendor.Island) == preferIsland ? 0 : 1)
             .ThenBy(x => x.Offer.LeadTimeDays).ThenBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id)
             .ToList();
         foreach (var (vendor, offer) in candidates)

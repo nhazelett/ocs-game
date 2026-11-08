@@ -79,7 +79,12 @@ public class DebriefTests
     [Fact]
     public void Approach_3_has_no_gaps_and_approach_4_is_late_not_unlucky()
     {
-        Assert.Empty(Debrief("spoke-b", "approach3-uca-turnkey-with-bridge").Gaps);
+        // Approach 3 covers every planned need. The only gaps left are the seeded Spoke C follow-on element a
+        // scripted log cannot react to (M2-19), and those tag unforeseeable, not as the player's.
+        var gaps = Debrief("spoke-b", "approach3-uca-turnkey-with-bridge").Gaps;
+        Assert.All(gaps, g => Assert.Equal("spokeCSite", g.SiteId));
+        Assert.All(gaps, g => Assert.Equal(GapTag.Unforeseeable, g.Tag));
+        Assert.Contains(gaps.SelectMany(g => g.Factors), f => f.Kind == GapFactorKind.PopulationJump);
         var power = GapOn(Debrief("spoke-b", "approach4-enduring-only"), "spokeBSite.power", 7);
         Assert.Equal(GapTag.Avoidable, power.Tag);
         Assert.Contains(power.Factors, f => f.Kind == GapFactorKind.Uncovered && f.Text.Contains("did not start until"));

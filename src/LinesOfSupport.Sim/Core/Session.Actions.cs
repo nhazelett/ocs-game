@@ -228,7 +228,7 @@ public sealed partial class Session
 
         var lead = offer.LeadTimeDays;
         var startLag = _rngWork.NextInt(inst.StartLagDays);
-        var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead, Fixed.Permille(vendor.Reliability), vendor.Island);
+        var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead, Fixed.Permille(vendor.Reliability), StockIsland(vendor, capId));
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
         var lineText = string.Join(", ", lines.Select(l => LineLabel(capId, l)));
 

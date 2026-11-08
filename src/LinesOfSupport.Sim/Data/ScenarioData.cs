@@ -105,6 +105,8 @@ public sealed record VendorOfferData
     public int LeadTimeDays { get; init; }
     public long UnitPriceCents { get; init; }
     public double MobilizationFraction { get; init; }
+    /// <summary>Island the consumable stock ships from when it is not the vendor's own (a local reseller stocking from the hub). Null: the vendor's island.</summary>
+    public string? SourceIsland { get; init; }
 }
 
 public sealed record VendorData
@@ -226,6 +228,10 @@ public sealed record EffectData
     public string? Target { get; init; }
     public JsonElement? Value { get; init; }
     public int? Days { get; init; }
+    /// <summary>Seeded alternative to Days: drawn once per session from the events stream at creation.</summary>
+    public IntRange? DaysRange { get; init; }
+    /// <summary>link.closed only: days of warning a survey of the link's far island buys (a forecast record the day before).</summary>
+    public int? ForecastDays { get; init; }
     public double? Fraction { get; init; }
     public string? Note { get; init; }
 }

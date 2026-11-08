@@ -54,6 +54,7 @@ Day 13
   OK        Lodging at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
@@ -71,6 +72,9 @@ Day 17
   END       waterBridge ended.
 Day 18
   WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+Day 20
+  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
 Day 21
   COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
 Day 22
@@ -87,6 +91,8 @@ Day 27
   START     uc2 began: Fuel at Spoke B from Second Island Fuel, 700 gal/day.
   FAIL      food-c missed today's delivery.
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
+Day 29
+  SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -102,18 +108,19 @@ Spoke B Lodging                 ...XXX..7XXXXXXXXXXX2222
 Spoke B Waste removal           ........................
 Spoke C Water                 ..........................
 Spoke C Lodging               ..........................
-Spoke C Food service          ..........................
+Spoke C Food service          ........................55
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 74% (sortie generation 80%, throughput 80%, endurance 80%, resilience 44%)
+  Mission output 74% (sortie generation 80%, throughput 80%, endurance 79%, resilience 44%)
   Obligated $264,180; incurred $238,042; incurred but not obligated $51,190
   Unauthorized commitments 2; UCAs past due 0; HHQ inquiries 2
   Surveys 0; shop hours worked 118; payment errors 0; execution-confusion days 0; vendor failures 5; declined BPA calls 0
   spokeBSite.power: 18 day(s) down, 1 degraded, lowest 0%
   spokeBSite.fuel: 14 day(s) down, 5 degraded, lowest 0%
   spokeBSite.lodging: 18 day(s) down, 1 degraded, lowest 0%
+  spokeCSite.food: 0 day(s) down, 2 degraded, lowest 71%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   uc1 (day 11): handshake with Port Fuel Haulers for spokeBSite.fuel. Decision: parked on day 12; vendor walked off; drew an HHQ inquiry.
@@ -141,6 +148,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 16: Power at Spoke B down to 0%: fuel at 0%.
           <- day 16: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 27: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
+  Day 29: Food service at Spoke C degraded to 71%: food service on hand ran out.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
@@ -161,6 +169,8 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Lodging depends on power, which was short. (see #2)
   #5 spokeBSite.lodging days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #3)
+  #6 spokeCSite.food days 29-30, lowest 71%, 0 day(s) down: UNFORESEEABLE
+      [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)
@@ -169,4 +179,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.742)
 
-State hash 307cc252b6cbcfcc62fb2fd80407601cf86a0c6db64a950b14778363c872047f
+State hash 549f847886c36a0c1c26c6dc5902773960b566aeb8cdc973b06e1fb16bfda3ab

@@ -21,6 +21,9 @@ public sealed partial class Session
         return band;
     }
 
+    /// <summary>Days after an unplanned arrival before a remaining shortfall counts as the player's (docs/assumptions.md).</summary>
+    internal const int PopulationJumpReactDays = 7;
+
     private int? SurveyedDay(string islandId)
         => _records.FirstOrDefault(r => r.Kind == RecordKind.Knowledge && r.Subject == $"survey {islandId}")?.Day;
 
@@ -137,10 +140,15 @@ public sealed partial class Session
             foreach (var a in contributors.Where(a => a.SupplierIslandId != site.Island))
             {
                 var surveyed = SurveyedDay(site.Island);
+                // Only closures of a link between the supplier's island and this site's island.
+                var links = Scenario.TransportLinks.Where(l => (l.From == a.SupplierIslandId && l.To == site.Island) || (l.To == a.SupplierIslandId && l.From == site.Island))
+                                                   .Select(l => l.Id).ToHashSet(StringComparer.Ordinal);
                 var closures = _records.Where(r => r.Kind == RecordKind.Event && r.Day <= d && r.Day >= d - 3
-                                                   && Scenario.Events.FirstOrDefault(e => e.Id == r.Subject)?.Effects.Any(x => x.Kind == "link.closed") == true)
+                                                   && Scenario.Events.FirstOrDefault(e => e.Id == r.Subject)?.Effects.Any(x => x.Kind == "link.closed" && links.Contains(x.Target ?? "")) == true)
                                        .ToList();
                 var weather = closures.Count == 0 ? "" : $" {string.Join(" ", closures.Select(c => $"On day {c.Day}: {c.Text.TrimEnd('.')}."))}";
+                var forecasts = _records.Where(r => r.Kind == RecordKind.Knowledge && closures.Any(c => c.Subject == r.Subject) && r.Day < d).ToList();
+                if (forecasts.Count > 0) weather += $" The forecast came on day {forecasts[0].Day}, a day ahead because the island had been surveyed.";
                 var islandName = IslandData(site.Island).Name;
                 var from = IslandData(a.SupplierIslandId).Name;
                 var ids = new List<string> { a.CauseId };
@@ -156,7 +164,20 @@ public sealed partial class Session
         var supplyCap = contributors.Sum(a => (a.CapabilityId == capId ? a.QuantityMilli : 0) + a.SuppliedQuantityMilli.GetValueOrDefault(capId));
         // Consumables compare the contracted daily rate with daily demand: a rate below demand drains the buffer
         // whatever the delivery schedule, so it is a sizing gap like an undersized generator.
-        if (supplyCap < demand)
+        // An unplanned arrival (site.populationJump) the arrangements were sized for without: no path to know before
+        // the notice, so unforeseeable at first; still short a week after the arrival is a sizing gap again (M2-19).
+        var planned = DemandMilli(site, capId, d, planned: true);
+        var jump = _popJumps.Where(j => j.SiteId == siteId && j.ArrivalDay <= d).OrderByDescending(j => j.ArrivalDay).FirstOrDefault();
+        if (jump is not null && supplyCap < demand && supplyCap >= planned)
+        {
+            var late = d >= jump.ArrivalDay + PopulationJumpReactDays;
+            var perDay = cap.Delivery == "consumable" ? " a day" : "";
+            var text = $"{jump.Extra} unplanned personnel arrived at {site.Name} on day {jump.ArrivalDay} on {jump.ArrivalDay - jump.NoticeDay} days' notice (day {jump.NoticeDay}); arrangements sized for the plan's {planned / 1000} {cap.Unit}{perDay} fell short of {demand / 1000}{perDay}.";
+            yield return (late ? $"jump|{jump.RecordId}|late" : $"jump|{jump.RecordId}", late
+                ? new GapFactor(GapFactorKind.PopulationJump, GapTag.Avoidable, d, text + $" Still short {PopulationJumpReactDays} days after they arrived: the notice left time to resize.", [jump.RecordId])
+                : new GapFactor(GapFactorKind.PopulationJump, GapTag.Unforeseeable, d, text + " Nothing before the notice showed it coming.", [jump.RecordId]));
+        }
+        else if (supplyCap < demand)
         {
             var step = site.Population.Where(p => p.Day <= d).OrderByDescending(p => p.Day).FirstOrDefault();
             var growth = step is { Day: > 1 } ? $" Population rose to {step.Count} on day {step.Day}, which the plan showed from day 1." : "";
