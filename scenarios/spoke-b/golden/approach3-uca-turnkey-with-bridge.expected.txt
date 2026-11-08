@@ -47,6 +47,7 @@ Day 7
   DONE      Written purchase order food-c awarded to Third Island Water Works; performance starts day 14, ends day 41. Obligated $177,408.
   START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
   FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
+  INBOX     Performance issue pi1: Coastal Provisions under-delivered on waterBridge on days 6 and 7. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 12
   EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew coordination hubFuelRun (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
@@ -125,6 +126,9 @@ GAPS AND WHY (each traced back through its causes)
   Day 26: Food service at Spoke C degraded to 85%: food service on hand ran out.
   Day 30: Water at Spoke C degraded to 85%: water on hand ran out.
 
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 7): waterBridge at spokeCSite.water, failed days 6, 7. Decision: no decision.
+
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeCSite.water days 30-30, lowest 85%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 2400 gal a day fell short of 3360 a day. Nothing before the notice showed it coming.
@@ -139,4 +143,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.914)
 
-State hash a4362badc01b6845a3d17754e2a42a27d1b73cf09e390881c61d5f6e2d05c43e
+State hash f936dd0c8182ef318714f80f6d7c00a4bb1f36d6b7302e82981386cb3a4b9c5e

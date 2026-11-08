@@ -53,6 +53,7 @@ Day 28
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 30
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+  INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on g-req0007 on days 28 and 30. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 31
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc2 has been open 5 days).
 Day 36
@@ -150,6 +151,9 @@ GAPS AND WHY (each traced back through its causes)
   Day 38: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   Day 41: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 30): g-req0007 at spokeBSite.power, failed days 28, 30. Decision: re-sourced (uc3).
+
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] g-req0007 (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
@@ -166,7 +170,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #3 spokeBSite.power days 15-90, lowest 0%, 75 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #1)
       [avoidable] Arrangements at Spoke B were sized for 324 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] g-req0007 failed (first on day 28) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] g-req0007 failed (first on day 28) and had no operators or maintenance and repair line; its failure odds were higher every day it ran. Performance issue pi1 opened day 30; decision: re-sourced (uc3).
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 67. The last arrangement supplying it, g-req0007, ended on day 66. uc3 did not start until day 74.
       [avoidable] uc3 failed (first on day 78) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
       [avoidable] Handshake uc3 was left unresolved and the vendor walked off on day 83.
@@ -179,4 +183,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.675)
 
-State hash e62438c4c5654bcd78138c6f27eac70332d8943ab38702ff4f27324979d81a24
+State hash 4cc75e0a6779a9a68424f8c8a25abe36ae790e369892dee8fb4340736fe3d46c

@@ -15,6 +15,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(TerminateAction), "terminate")]
 [JsonDerivedType(typeof(ResolveCommitmentAction), "resolveCommitment")]
 [JsonDerivedType(typeof(EstablishBpaAction), "establishBpa")]
+[JsonDerivedType(typeof(CureNoticeAction), "cureNotice")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -103,6 +104,13 @@ public sealed record EstablishBpaAction : PlayerAction
     public List<string> ScopeLines { get; init; } = [];
     public long? CallLimitCents { get; init; }
     public int? OrderingPeriodDays { get; init; }
+}
+
+/// <summary>Issue a cure notice on a performance issue (FAR 49.402-3; M2-18). Costs shop hours; the vendor then has
+/// the rules' cure period to recover or be in default.</summary>
+public sealed record CureNoticeAction : PlayerAction
+{
+    public string Issue { get; init; } = "";
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)

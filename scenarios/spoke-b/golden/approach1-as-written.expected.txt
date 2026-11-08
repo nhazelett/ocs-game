@@ -214,4 +214,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.802)
 
-State hash fe7d87b5cf6ce2bb0a7089367bd4d0082861a9cb4c01b201f93d725b00a32c8f
+State hash de3de2aa3069becb6173422cfe509840b32f3627ac5f545f3dd29fe1741dd575

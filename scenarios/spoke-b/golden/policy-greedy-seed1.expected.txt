@@ -31,6 +31,7 @@ Day 8
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
 Day 9
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
+  INBOX     Performance issue pi1: Coastal Provisions under-delivered on g-req0012 on days 8 and 9. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: water at 0%.
 Day 10
@@ -66,6 +67,7 @@ Day 16
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
   FAIL      g-req0014 missed today's delivery (no food service staff line).
+  INBOX     Performance issue pi2: Coastal Provisions under-delivered on g-req0014 on days 15 and 16. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
@@ -112,6 +114,7 @@ Day 29
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 30
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+  INBOX     Performance issue pi3: Harbor Equipment Co under-delivered on g-req0007 on days 29 and 30. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   SHORT     Food service at Spoke C degraded to 53%: water at 53%.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
@@ -214,6 +217,11 @@ GAPS AND WHY (each traced back through its causes)
   Day 30: Food service at Spoke C degraded to 53%: water at 53%.
       <- day 28: Water at Spoke C degraded to 53%: water on hand ran out.
 
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 9): g-req0012 at spokeCSite.water, failed days 8, 9. Decision: no decision.
+  pi2 (day 16): g-req0014 at spokeCSite.food, failed days 15, 16. Decision: no decision.
+  pi3 (day 30): g-req0007 at spokeBSite.power, failed days 29, 30. Decision: no decision.
+
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] g-req0007 (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
@@ -229,16 +237,16 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #3 spokeBSite.power days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #1)
       [avoidable] Arrangements at Spoke B were sized for 324 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] g-req0007 failed (first on day 29) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] g-req0007 failed (first on day 29) and had no operators or maintenance and repair line; its failure odds were higher every day it ran. Performance issue pi3 opened day 30; decision: no decision.
   #4 spokeBSite.lodging days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #2)
   #5 spokeBSite.lodging days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #3)
   #6 spokeCSite.water days 9-9, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] g-req0012 failed (first on day 9) and had no plant operators or maintenance line; its failure odds were higher every day it ran.
+      [avoidable] g-req0012 failed (first on day 9) and had no plant operators or maintenance line; its failure odds were higher every day it ran. Performance issue pi1 opened day 9; decision: no decision.
   #7 spokeCSite.water days 15-30, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Arrangements at Spoke C were sized for 1800 gal a day against demand of 2400 a day. Population rose to 160 on day 15, which the plan showed from day 1.
-      [avoidable] g-req0012 failed (first on day 16) and had no plant operators or maintenance line; its failure odds were higher every day it ran.
+      [avoidable] g-req0012 failed (first on day 16) and had no plant operators or maintenance line; its failure odds were higher every day it ran. Performance issue pi1 opened day 9; decision: no decision.
   #8 spokeCSite.food days 9-9, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #6)
       [avoidable] Nothing supplied food service at Spoke C; the site and its population were in the plan from day 1.
@@ -246,7 +254,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Food service depends on water, which was short. (see #7)
       [discoverable] g-req0014 supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 14: Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears.".
       [avoidable] Arrangements at Spoke C were sized for 360 meals a day against demand of 480 a day. Population rose to 160 on day 15, which the plan showed from day 1.
-      [avoidable] g-req0014 failed (first on day 15) and had no food service staff line; its failure odds were higher every day it ran.
+      [avoidable] g-req0014 failed (first on day 15) and had no food service staff line; its failure odds were higher every day it ran. Performance issue pi2 opened day 16; decision: no decision.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)
@@ -255,4 +263,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.7)
 
-State hash d66448b0823fff9f54f049b2bad0ed74843e78299aecb9dd281e992564699f0a
+State hash 374f7a0d51f951286ed97069fb3cf68493898ecd5ef61c7c1b4286215f828cad

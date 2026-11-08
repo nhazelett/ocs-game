@@ -123,6 +123,13 @@ What the tags do not do yet: judge whether the information was worth its cost (a
 | Spoke B rations | Units arrive with MREs; hot meals need power and water. | Spoke B has no food capability in this scenario (MREs are not modeled). Spoke B lodging depends on power. | The food dependency on power would make every Spoke B power gap a food gap, which MREs do not suffer. | When Spoke B gets a field-feeding card |
 | Spoke C field feeding | A camp moves from MREs to contracted hot meals. | Spoke C starts with 10 days of food on hand and card req0014 (field feeding from day 12); food depends on water there, so a water failure takes meals down too. | A real dependency on the island's other open requirement. | Playtest |
 
+## Vendor under-delivery and cure notices (M2-18)
+
+| Topic | Real | Modeled | Why | Revisit |
+| --- | --- | --- | --- | --- |
+| Cure notice | FAR 49.402-3: before terminating for default for failure to perform, the contracting officer gives written notice and at least 10 days to cure; then may terminate for default, with the vendor's rights and the government's excess reprocurement costs. | A written contract that under-delivers 2 days in any 3 raises an inbox issue. Cure notice: 4 shop hours, 10-day cure period, then 65% cured (performance back to standard) or default (performance slips further). No termination-for-default settlement, excess reprocurement costs or show-cause notice; terminating after default deobligates the unperformed portion like any termination. | The decision and its timing are the lesson; the claims process is M3. | M3 (T4D and excess costs) |
+| Re-source | Buying a replacement while the incumbent keeps performing is a CCO choice, often paired with a cure notice. | Any new award for the same site and capability after the issue opens counts as re-sourcing in the debrief. | Read back from the record; no extra action. | None planned |
+
 ## Seeded disruptions (M2-19)
 
 | Topic | Real | Modeled | Why | Revisit |

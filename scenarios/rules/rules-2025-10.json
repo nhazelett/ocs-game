@@ -696,5 +696,15 @@
     "habitRiseOutOfScopeRatifyPermille": 50,
     "habitCapPermille": 600,
     "sourceUrl": "https://www.acquisition.gov/far/1.602-3"
+  },
+  "performance": {
+    "underDeliveryDays": 2,
+    "windowDays": 3,
+    "cureNoticeShopHours": 4,
+    "cureDays": 10,
+    "cureRecoverPermille": 650,
+    "curedReliabilityPermille": 980,
+    "defaultReliabilityDropPermille": 100,
+    "sourceUrl": "https://www.acquisition.gov/far/49.402-3"
   }
 }

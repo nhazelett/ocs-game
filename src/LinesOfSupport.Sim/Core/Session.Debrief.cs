@@ -10,6 +10,11 @@ public sealed partial class Session
 {
     private int DaysPlayed => Math.Min(Day - 1, LastDay);
 
+    private string IssueNote(string arrangementId)
+        => _issues.LastOrDefault(i => i.ArrangementId == arrangementId) is { } i
+            ? $" Performance issue {i.Id} opened day {i.OpenedDay}; decision: {IssueDecision(i)}."
+            : "";
+
     /// <summary>Capability levels by day, index 0 = day 1; -1 where the site was not open.</summary>
     private int[] Band(CapabilityState cs)
     {
@@ -197,9 +202,9 @@ public sealed partial class Session
                         var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
-                                $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.", [r.Id, a.CauseId])
+                                $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.", [r.Id]));
+                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:
