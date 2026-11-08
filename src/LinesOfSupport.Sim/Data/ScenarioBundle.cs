@@ -191,6 +191,18 @@ public sealed class ScenarioBundle
             Need(Rules.Instruments.ContainsKey(a.Instrument), $"arrangement {a.Id} instrument {a.Instrument} not in rules");
             Need(vendors.Contains(a.Vendor), $"arrangement {a.Id} vendor not found");
             Need(sites.Contains(a.Site), $"arrangement {a.Id} site not found");
+            Need(a.StartDay <= a.EndDay, $"arrangement {a.Id} ends before it starts");
+            if (a.Quantity is { } q) Need(q > 0, $"arrangement {a.Id} quantity must be positive");
+            if (a.DailyCostCents is { } dc) Need(dc >= 0, $"arrangement {a.Id} dailyCostCents must not be negative");
+            if (a.FundingLine is not null) Need(s.FundingLines.Any(f => f.Id == a.FundingLine), $"arrangement {a.Id} funding line {a.FundingLine} not found");
+            if (a.ObligatedCents is > 0) Need(a.FundingLine is not null, $"arrangement {a.Id} has obligatedCents but no fundingLine");
+            if (a.UcaState is { } u)
+            {
+                Need(a.Instrument == "uca", $"arrangement {a.Id} has ucaState but instrument {a.Instrument}");
+                Need(u.NteCents > 0 && u.ObligatedCents <= u.NteCents, $"arrangement {a.Id} ucaState obligatedCents must be within a positive nteCents");
+                Need(u.QualifyingProposalDay is null || u.QualifyingProposalDay >= u.IssuedDay, $"arrangement {a.Id} qualifying proposal before the UCA was issued");
+                Need(u.Definitized || a.FundingLine is not null, $"arrangement {a.Id}: an undefinitized UCA needs a fundingLine to obligate from");
+            }
         }
         foreach (var e in s.Events)
         {

@@ -154,6 +154,8 @@ public sealed record UcaStateData
     public int IssuedDay { get; init; }
     public int? QualifyingProposalDay { get; init; }
     public bool Definitized { get; init; }
+    /// <summary>The price definitization settles at (M3-16); null means the daily cost over the whole period of performance.</summary>
+    public long? QuotedTotalCents { get; init; }
 }
 
 public sealed record InheritedArrangementData
@@ -171,7 +173,15 @@ public sealed record InheritedArrangementData
     public UcaStateData? UcaState { get; init; }
     public string? Cor { get; init; }
     public bool VisibleProblem { get; init; } = true;
-    // Not in schema v0 for inherited arrangements: quantity defaults to the vendor's capacity for the capability.
+    /// <summary>Units per day (M3-16); null means the vendor's capacity for the capability.</summary>
+    public double? Quantity { get; init; }
+    /// <summary>Cost per day of performance (M3-16); null means quantity times the vendor's unit price (zero for host nation support).</summary>
+    public long? DailyCostCents { get; init; }
+    /// <summary>Obligated for performance from day 1 on, already counted against FundingLine (M3-16). For a UCA, money
+    /// obligated before day 1 is ucaState.obligatedCents instead.</summary>
+    public long? ObligatedCents { get; init; }
+    /// <summary>The line the arrangement is funded from (M3-16); a UCA obligates as it incurs from this line.</summary>
+    public string? FundingLine { get; init; }
 }
 
 /// <summary>A nominated COR (DFARS 201.602-2): who watches a contract's performance for the government (M3-04).</summary>

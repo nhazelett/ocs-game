@@ -473,7 +473,7 @@ public sealed partial class Session
                 // The definitization modification obligates the definitized price with money current today.
                 // Definitizing never creates money: if the line cannot cover it, the remainder waits on funding.
                 var line = _funding.First(f => f.Id == d.FundingLine);
-                var need = Math.Max(0, arr.Uca.QuotedTotalCents - arr.ObligatedCents);
+                var need = Math.Max(0, arr.Uca.QuotedTotalCents - arr.ObligatedCents - arr.Uca.PriorObligatedCents);
                 var add = line.UsableOn(day) ? Math.Min(need, line.RemainingCents) : 0;
                 arr.ObligatedCents += add;
                 line.ObligatedCents += add;

@@ -69,6 +69,9 @@ public sealed class UcaState
 {
     public long NteCents { get; init; }
     public long QuotedTotalCents { get; init; }
+    /// <summary>An inherited UCA's obligations from before day 1 (M3-16). They count toward the NTE caps, the 50%
+    /// definitization trigger and the definitized price, but not toward this game's obligated cost.</summary>
+    public long PriorObligatedCents { get; init; }
     public int IssuedDay { get; init; }
     public int QualifyingProposalDay { get; init; }
     public bool ProposalReceived { get; set; }

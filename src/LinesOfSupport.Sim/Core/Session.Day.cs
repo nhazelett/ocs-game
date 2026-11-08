@@ -410,9 +410,10 @@ public sealed partial class Session
         var capPm = u.ProposalReceived ? Fixed.Permille(Rules.Uca.ObligationCapAfterProposal) : Fixed.Permille(Rules.Uca.ObligationCapBeforeProposal);
         var ceiling = u.Definitized ? u.QuotedTotalCents : Fixed.MulPermille(u.NteCents, capPm);
         var need = a.IncurredCents - a.ObligatedCents;
+        var toward = a.ObligatedCents + u.PriorObligatedCents;
         if (need > 0)
         {
-            var room = Math.Max(0, ceiling - a.ObligatedCents);
+            var room = Math.Max(0, ceiling - toward);
             var line = _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
             var money = line is not null && line.UsableOn(d) ? line.RemainingCents : 0;
             var add = Math.Min(need, Math.Min(room, money));
@@ -428,7 +429,7 @@ public sealed partial class Session
             u.UnpaidDays++;
             if (u.UnpaidDays == 1)
             {
-                var capBinding = !u.Definitized && a.ObligatedCents >= ceiling;
+                var capBinding = !u.Definitized && a.ObligatedCents + u.PriorObligatedCents >= ceiling;
                 var fl = _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
                 var why = capBinding ? $"the UCA obligation cap of {capPm / 10}% of NTE is reached"
                     : fl is null ? "it has no funding line"
@@ -454,7 +455,7 @@ public sealed partial class Session
         }
         if (!u.Definitized && !u.Overdue)
         {
-            var obligatedPm = Fixed.Ratio(a.ObligatedCents, u.NteCents);
+            var obligatedPm = Fixed.Ratio(a.ObligatedCents + u.PriorObligatedCents, u.NteCents);
             if (obligatedPm >= Fixed.Permille(Rules.Uca.DefinitizeAtObligatedFraction) || d >= u.IssuedDay + Rules.Uca.DefinitizeWithinDays)
             {
                 u.Overdue = true;
