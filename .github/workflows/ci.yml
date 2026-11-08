@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build and test
+        shell: bash
+        run: |
+          if [[ ! -f src/Footprint.sln ]]; then
+            echo "src/Footprint.sln does not exist yet; skipping build and tests."
+            exit 0
+          fi
+          dotnet build src/Footprint.sln -c Release
+          dotnet test src/Footprint.sln -c Release --no-build
+
+  provenance:
+    name: provenance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check asset provenance
+        shell: bash
+        run: |
+          missing=0
+          while IFS= read -r -d '' path; do
+            if ! grep -Fq -- "$path" assets/PROVENANCE.md; then
+              echo "Missing provenance: $path"
+              missing=1
+            fi
+          done < <(find assets -type f ! -path 'assets/PROVENANCE.md' -print0)
+          exit "$missing"
+
+  export-windows:
+    name: export-windows
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder Godot export
+        run: echo "Godot export to be configured by Codex at M0"

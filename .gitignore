@@ -1,0 +1,23 @@
+# Godot 4 (export_presets.cfg is tracked)
+.godot/
+*.import
+.mono/
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+
+# Blender
+*.blend1
+*.blend2
+
+# Python
+__pycache__/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
