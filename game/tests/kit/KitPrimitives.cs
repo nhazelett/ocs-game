@@ -1,4 +1,5 @@
 using Godot;
+using System.Text.Json;
 
 namespace LinesOfSupport.Game.Tests;
 
@@ -6,6 +7,10 @@ namespace LinesOfSupport.Game.Tests;
 internal static class KitPrimitives
 {
     internal static readonly string[] Names = ["tent", "chu", "generator", "fuel-bladder", "light-truck"];
+    internal static readonly string[] ExtensionNames = ["terrain-sand", "terrain-scrub", "terrain-coast",
+        "road-straight", "road-corner", "route-straight", "route-corner", "warehouse", "town-block",
+        "antenna-mast", "guard-tower", "barrier-set", "fuel-truck", "bus", "forklift", "pallet", "water-buffalo"];
+    internal static readonly string[] AllNames = [.. Names, .. ExtensionNames];
     private static readonly Color Sand = new(0.64f, 0.58f, 0.43f);
     private static readonly Color Olive = new(0.42f, 0.43f, 0.31f);
     private static readonly Color Dark = new(0.16f, 0.18f, 0.17f);
@@ -40,10 +45,41 @@ internal static class KitPrimitives
                     foreach (var z in new[] { -1f, 1f })
                         Part(root, Cylinder(.37f, .25f), new Vector3(x, .38f, z), Dark).Rotation = new Vector3(0, 0, Mathf.Pi / 2);
                 break;
-            default: throw new ArgumentException($"Unknown kit piece {name}.");
+            default: FromRecipe(root, name); break;
         }
         return root;
     }
+
+    private static void FromRecipe(Node3D root, string name)
+    {
+        if (!ExtensionNames.Contains(name)) throw new ArgumentException($"Unknown kit piece {name}.");
+        var recipe = Path.GetFullPath(Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "tools", "bpy", "kit_parts.json"));
+        using var json = JsonDocument.Parse(File.ReadAllText(recipe));
+        foreach (var part in json.RootElement.GetProperty(name).EnumerateArray())
+        {
+            var at = Vector(part.GetProperty("at"));
+            var color = part.GetProperty("color").GetString() switch
+            {
+                "sand" => Sand, "olive" => Olive, "dark" => Dark, "glass" => Glass,
+                var unknown => throw new InvalidDataException($"Unknown palette color {unknown}.")
+            };
+            if (part.GetProperty("shape").GetString() == "box")
+                Box(root, Vector(part.GetProperty("size")), at, color);
+            else if (part.GetProperty("shape").GetString() == "cylinder")
+            {
+                var instance = Part(root, Cylinder(part.GetProperty("radius").GetSingle(), part.GetProperty("length").GetSingle()), at, color);
+                var axis = part.TryGetProperty("axis", out var value) ? value.GetString() : "y";
+                instance.Rotation = axis switch
+                {
+                    "x" => new Vector3(0, 0, Mathf.Pi / 2), "z" => new Vector3(Mathf.Pi / 2, 0, 0),
+                    "y" => Vector3.Zero, _ => throw new InvalidDataException($"Unknown axis {axis}.")
+                };
+            }
+            else throw new InvalidDataException("Unknown recipe shape.");
+        }
+    }
+
+    private static Vector3 Vector(JsonElement array) => new(array[0].GetSingle(), array[1].GetSingle(), array[2].GetSingle());
 
     private static CylinderMesh Cylinder(float radius, float length) =>
         new() { TopRadius = radius, BottomRadius = radius, Height = length, RadialSegments = 8, Rings = 1 };

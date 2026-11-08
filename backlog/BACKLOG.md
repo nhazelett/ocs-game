@@ -1,4 +1,4 @@
-Status against plan: M0 code items done except M0-07 and M0-11. Sim core and Spoke B (PR 12), dissent mechanism (PR 13), Codex M0-08b (PR 9), M0-09b (PR 10) and M0-10 (PR 11) merged. Next: Codex M0-11, M1-03, M1-01; Fable M0-07, M1-02.
+Status against plan: prior Codex PRs 9, 10 and 11 merged; M0-11 (PR 15) and M0-13 (PR 16) open. M0-14's extended 22-piece kit is implemented and validated, PR pending. Stop when three Codex PRs are open; next in Nick's explicit queue is M0-15. Fable's M0-07 and additional M1 work remain separate backlog items.
 
 Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
 
@@ -19,7 +19,7 @@ Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell
 | M0-11 | Provenance check covers glTF and audio; PROVENANCE.md template filled for the kit | CI provenance job fails on an untracked asset | Codex | assets/, .github/ | Queued; not started because three-PR stop reached |
 | M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (read by Codex; M0-08 handoff references it) |
 | M0-13 | Windows export in CI on v* tags | Godot .NET/templates export game to zip artifact; steps documented | Codex | game/, .github/, backlog/, own handoff | Queued; not started |
-| M0-14 | Extend the generated kit | Terrain, routes, buildings, vehicles and support pieces share palette/script and provenance | Codex | tools/, assets/, game/, backlog/, own handoff | Queued; not started |
+| M0-14 | Extend the generated kit | Terrain, routes, buildings, vehicles and support pieces share palette/script and provenance | Codex | tools/, assets/, game/, backlog/, own handoff | Implemented; 22-piece gallery, shared recipe, generated provenance and local checks pass; PR pending |
 | M0-15 | Batch metric spread table and --json | Per-policy min/median/max of exposed metrics; honest day-count/not-simulated fallback until Sim metrics exist | Codex | src/LinesOfSupport.Harness*, backlog/, own handoff | Queued; not started |
 | M1-01 | Harness runs the real Sim | `run` uses `Replay.Run(bundle, seed, PolicyCatalog.Create(policy))` or `Replay.Run(bundle, InputLog.Load(log))` and prints `SessionReport.ToText`; `batch` reports min/median/max of mission.output and each passCriteria metric per policy; delete PlaceholderRun. ADR-0005. | Codex | src/LinesOfSupport.Harness | Not started |
 | M1-02 | spoke-b-90: the 90-day cut of Spoke B | UCA overdue, HHQ inquiry and funding expiry visible in the golden logs | Fable | scenarios/ | Not started |

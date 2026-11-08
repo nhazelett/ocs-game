@@ -11,10 +11,13 @@ public partial class KitExperiment : Node3D
             var args = OS.GetCmdlineUserArgs();
             var root = Path.GetFullPath(Path.Combine(ProjectSettings.GlobalizePath("res://"), ".."));
             var assets = Path.Combine(root, "assets", "kit");
-            if (args.Contains("--generate-fallback-kit"))
+            var extended = args.Contains("--extended-kit");
+            var names = extended ? KitPrimitives.AllNames : KitPrimitives.Names;
+            if (args.Contains("--generate-fallback-kit") || args.Contains("--generate-extension-kit"))
             {
                 Directory.CreateDirectory(assets);
-                foreach (var name in KitPrimitives.Names)
+                var generate = args.Contains("--generate-extension-kit") ? KitPrimitives.ExtensionNames : names;
+                foreach (var name in generate)
                 {
                     var piece = KitPrimitives.Create(name);
                     AddChild(piece);
@@ -31,9 +34,9 @@ public partial class KitExperiment : Node3D
             var positions = new[] { new Vector3(-4, 0, -2), new Vector3(0, 0, -2), new Vector3(4, 0, -2),
                 new Vector3(-2.4f, 0, 2.5f), new Vector3(2.4f, 0, 2.5f) };
             var loaded = 0;
-            for (var i = 0; i < KitPrimitives.Names.Length; i++)
+            for (var i = 0; i < names.Length; i++)
             {
-                var name = KitPrimitives.Names[i];
+                var name = names[i];
                 var path = Path.Combine(assets, name + ".glb");
                 Node3D piece;
                 if (File.Exists(path))
@@ -47,12 +50,13 @@ public partial class KitExperiment : Node3D
                 }
                 else
                     piece = KitPrimitives.Create(name);
-                piece.Position = positions[i];
+                var at = extended ? new Vector3((i % 5 - 2) * 9, 0, (i / 5 - 2) * 9) : positions[i];
+                piece.Position = at;
                 AddChild(piece);
-                AddChild(new Label3D { Text = name, Position = positions[i] + new Vector3(0, 2.8f, 0),
-                    Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, FontSize = 48, PixelSize = .005f });
+                AddChild(new Label3D { Text = name, Position = at + (extended ? new Vector3(0, .3f, 3) : new Vector3(0, 2.8f, 0)),
+                    Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, FontSize = 48, PixelSize = extended ? .013f : .005f });
             }
-            var floor = new MeshInstance3D { Mesh = new PlaneMesh { Size = new Vector2(16, 12) }, Position = new Vector3(0, -.03f, 0),
+            var floor = new MeshInstance3D { Mesh = new PlaneMesh { Size = extended ? new Vector2(48, 48) : new Vector2(16, 12) }, Position = new Vector3(0, -.03f, 0),
                 MaterialOverride = new StandardMaterial3D { AlbedoColor = new Color(.42f, .41f, .36f), Roughness = 1 } };
             AddChild(floor);
             var light = new DirectionalLight3D { RotationDegrees = new Vector3(-55, -30, 0), ShadowEnabled = true, LightEnergy = 1.2f };
@@ -61,12 +65,12 @@ public partial class KitExperiment : Node3D
                 BackgroundColor = new Color(.16f, .17f, .18f), AmbientLightSource = Godot.Environment.AmbientSource.Color,
                 AmbientLightColor = Colors.White, AmbientLightEnergy = .45f };
             AddChild(new WorldEnvironment { Environment = environment });
-            var camera = new Camera3D { Projection = Camera3D.ProjectionType.Orthogonal, Size = 15, Current = true };
+            var camera = new Camera3D { Projection = Camera3D.ProjectionType.Orthogonal, Size = extended ? 54 : 15, Current = true };
             AddChild(camera);
-            camera.LookAtFromPosition(new Vector3(11, 10, 14), new Vector3(0, .8f, 0));
+            camera.LookAtFromPosition(extended ? new Vector3(12, 60, 45) : new Vector3(11, 10, 14), new Vector3(0, .8f, 0));
             var overlay = new CanvasLayer();
             AddChild(overlay);
-            overlay.AddChild(new Label { Text = "M0 kit experiment · generated primitive fallback · Blender unavailable", Position = new Vector2(20, 16) });
+            overlay.AddChild(new Label { Text = $"M0 kit experiment · {names.Length} generated primitive pieces · Blender unavailable", Position = new Vector2(20, 16) });
             Require(camera.Projection == Camera3D.ProjectionType.Orthogonal && GetChildren().OfType<DirectionalLight3D>().Count() == 1,
                 "One directional light and orthographic camera.");
             var shot = Array.IndexOf(args, "--screenshot");
@@ -76,7 +80,7 @@ public partial class KitExperiment : Node3D
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Kit screenshot saved.");
             }
-            GD.Print($"KIT_SMOKE_PASS: five pieces, {loaded} glTF files loaded, vertex colors, orthographic camera, one directional light.");
+            GD.Print($"KIT_SMOKE_PASS: {(extended ? names.Length.ToString() : "five")} pieces, {loaded} glTF files loaded, vertex colors, orthographic camera, one directional light.");
             if (DisplayServer.GetName() == "headless" || args.Contains("--smoke-test") || shot >= 0)
                 GetTree().Quit();
         }

@@ -1,11 +1,42 @@
-"""Check the five M0 glTF binary pieces without Blender or third-party Python packages."""
+"""Check every M0 glTF binary piece and the shared recipe without Blender or dependencies."""
 import json
+import math
 from pathlib import Path
 import struct
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 NAMES = ("tent", "chu", "generator", "fuel-bladder", "light-truck")
+EXTENSIONS = ("terrain-sand", "terrain-scrub", "terrain-coast", "road-straight", "road-corner",
+              "route-straight", "route-corner", "warehouse", "town-block", "antenna-mast",
+              "guard-tower", "barrier-set", "fuel-truck", "bus", "forklift", "pallet", "water-buffalo")
+
+
+def validate_recipes():
+    recipes = json.loads((ROOT / "tools/bpy/kit_parts.json").read_text(encoding="utf-8"))
+    if set(recipes) != set(EXTENSIONS):
+        raise ValueError("recipe must cover the complete M0-14 extension")
+    for name, parts in recipes.items():
+        if not parts:
+            raise ValueError(f"{name}: empty piece")
+        for part in parts:
+            if part["color"] not in ("sand", "olive", "dark", "glass"):
+                raise ValueError(f"{name}: color outside the shared palette")
+            at = part["at"]
+            if len(at) != 3 or not all(isinstance(x, (int, float)) and math.isfinite(x) for x in at):
+                raise ValueError(f"{name}: position needs three finite coordinates")
+            if part["shape"] == "box":
+                dimensions = part["size"]
+                if len(dimensions) != 3:
+                    raise ValueError(f"{name}: box needs three dimensions")
+            elif part["shape"] == "cylinder":
+                dimensions = (part["radius"], part["length"])
+                if part.get("axis", "y") not in ("x", "y", "z"):
+                    raise ValueError(f"{name}: invalid cylinder axis")
+            else:
+                raise ValueError(f"{name}: unsupported shape")
+            if not all(isinstance(x, (int, float)) and math.isfinite(x) and x > 0 for x in dimensions):
+                raise ValueError(f"{name}: primitive dimensions must be positive and finite")
 
 
 def validate(path):
@@ -31,7 +62,11 @@ def validate(path):
 
 def main():
     errors = []
-    for name in NAMES:
+    try:
+        validate_recipes()
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        errors.append(f"kit_parts.json: {error}")
+    for name in (*NAMES, *EXTENSIONS):
         path = ROOT / "assets" / "kit" / f"{name}.glb"
         try:
             count = validate(path)
