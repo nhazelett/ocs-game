@@ -4,7 +4,7 @@ Status against plan: M0 in progress. Spec v0.2 merged (PR 1). Title decided (PR 
 | --- | --- | --- | --- | --- | --- |
 | M0-01 | Review and merge spec v0.2; accept ADR-0001 to 0003 | PR merged; ADR status lines changed to Accepted | Nick | docs/ | Done |
 | M0-02 | Decide the game title | Q1 answered; one commit renames project code names | Nick | repo-wide rename | Done |
-| M0-03 | Scenario skeletons in prose (tutorial, sustainment, surge with joint turn, drawdown) | One paragraph each in scenarios/README.md or sent to Fable | Nick | scenarios/ | Not started |
+| M0-03 | Scenario skeletons in prose (tutorial, sustainment, surge with joint turn, drawdown) | One paragraph each in scenarios/SKELETONS.md | Nick (drafted by Fable, approved in chat) | scenarios/ | Done |
 | M0-04 | Scenario schema v0 (scenario.json, rules.json, theme.json) and assumptions.md | JSON Schema files in scenarios/schema/; assumptions.md lists every simplification beside the real rule | Fable | scenarios/schema/, docs/ | Not started |
 | M0-05 | LinesOfSupport.Sim domain model and day-advance loop (first-playable tier) with unit and property tests | dotnet test green; invariants hold across 200 seeds on a stub scenario | Fable | src/LinesOfSupport.Sim, src/LinesOfSupport.Sim.Tests | Not started |
 | M0-06 | Spoke B scenario.json plus four approach input logs as golden files | Harness reproduces the day 10, 12, 16 and 60 effects described in SPEC section 5 | Fable | scenarios/spoke-b/ | Not started |
