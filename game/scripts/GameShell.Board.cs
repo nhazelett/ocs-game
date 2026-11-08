@@ -34,6 +34,7 @@ public partial class GameShell
         boardFocus.Text = "";
         Map.SelectSite(null);
         ResetAwardForm();
+        coordinationQuantity = 1;
     }
 
     private void RefreshMorningDesk(SessionView? view, MorningBoardView? board)
@@ -59,6 +60,7 @@ public partial class GameShell
         }
         RenderRequirementContext(view);
         RenderLedgerContext(view);
+        RefreshBoardActions(view);
     }
 
     internal void NavigateBoardItem(BoardItem item)
@@ -97,6 +99,7 @@ public partial class GameShell
     private void RenderLedgerContext(SessionView? view)
     {
         DeskUi.Clear(linkedLedger);
+        definitizations.Clear(); terminations.Clear();
         if (view is null) { linkedLedger.AddChild(DeskUi.Label("No scenario loaded.")); return; }
         linkedLedger.AddChild(DeskUi.Label($"Cash: {DeskUi.Money(view.TopStrip().CashCents)}"));
         foreach (var arrangement in view.Arrangements)
@@ -107,6 +110,7 @@ public partial class GameShell
             });
             button.ToggleMode = true; button.ButtonPressed = SelectedArrangement == arrangement.Id;
             button.SetMeta("arrangement", arrangement.Id); linkedLedger.AddChild(button);
+            AddArrangementActions(linkedLedger, arrangement, view);
         }
         if (view.Arrangements.Count == 0) linkedLedger.AddChild(DeskUi.Label("No arrangements yet."));
     }

@@ -84,3 +84,7 @@ The Requirements tab lists only cards returned by RequirementEditor(card). Check
 Choose a submitted requirement or a site/capability, then instrument, vendor, known vehicle and funding line from ActionEditor. Unavailable instruments are disabled with their actual reason. Quantity, requested start and duration are numeric pickers; quotes, mobilization and totals are display-only. UCA NTE uses the engine default, never Game arithmetic.
 
 Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview scroll independently, and Award stays in the footer. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
+
+## Other desk actions (M2-06)
+
+Board offers surveys for unsurveyed islands, showing their knowledge tier and pending state. Select a capability tile to coordinate a chosen quantity per day from another site; units come from its action view. Ledger rows offer Terminate, disabled while already queued. UCAs show proposal/definitization state and offer a funding picker plus Definitize once the proposal has arrived. All actions go to Sim and show ActionResult; no lag, capacity or financial consequence is computed here. OtherActionsSmokeTest compares all four commands to direct Sim actions on real fixtures.
