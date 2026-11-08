@@ -1,0 +1,72 @@
+Spoke B power / policy textbook
+Scenario spoke-b, rules 2025-10, seed 1, 30 days.
+Prep: systemAccess, cashAndPayingAgent, pullVehicles, vendorLists, templatesAndKit, gpcAccounts.
+
+TIMELINE
+Before day 1
+  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent, pullVehicles, vendorLists, templatesAndKit, gpcAccounts (14 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+Day 1
+  ACTION    Ordered a site survey of Second Island.
+  ACTION    Requirement req0007: Generator fuel supply switched on.
+  ACTION    Requirement req0007: Operators switched on.
+  ACTION    Requirement req0007: Maintenance and repair switched on.
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
+  ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke B, 1170 gal/day for 13 days (Fuel delivery); quoted $68,445.
+  DONE      Survey team dispatched to Second Island; findings due day 3.
+Day 2
+  DONE      BPA call t-req0007-bridge awarded to Harbor Equipment Co; performance starts day 7, ends day 19. Obligated $15,369.
+Day 3
+  SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
+  DONE      Written purchase order t-req0007-fuel awarded to Port Fuel Haulers; performance starts day 6, ends day 18. Obligated $68,445.
+Day 5
+  DONE      Undefinitized contract action t-req0007-enduring awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
+Day 6
+  START     t-req0007-fuel began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+Day 7
+  START     t-req0007-bridge began: Power at Spoke B from Harbor Equipment Co, 514 kW/day.
+Day 14
+  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+Day 16
+  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+Day 17
+  START     t-req0007-enduring began: Power at Spoke B from Meridian Site Services, 514 kW/day.
+Day 19
+  ACTION    Termination of t-req0007-bridge started.
+  ACTION    Termination of t-req0007-fuel started.
+  END       t-req0007-bridge terminated; performance ends day 19.
+  END       t-req0007-fuel terminated; performance ends day 18.
+  END       t-req0007-fuel ended.
+Day 20
+  END       t-req0007-bridge ended.
+Day 21
+  UCA       Meridian Site Services submitted a qualifying proposal on t-req0007-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+Day 22
+  ACTION    Definitization of t-req0007-enduring started; to be funded from om1.
+Day 24
+  DEFINITZD t-req0007-enduring definitized at $693,900. Obligation caps lifted; obligations still need money on line om1.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2    2    3
+                          123456789012345678901234567890
+Hub Power                 ..............................
+Hub Fuel                  ..............................
+Spoke B Power                   ........................
+Spoke B Fuel                    ........................
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 94% (sortie generation 100%, throughput 100%, endurance 100%, resilience 60%)
+  Obligated $423,054; incurred $423,054; incurred but not obligated $0
+  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
+  Surveys 1; shop hours worked 108; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+
+PASS CRITERIA
+  [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
+  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
+  [met] Mission output at least 90% (mission.output = 0.94)
+
+State hash 3ba3a4748ad44d311c55279a037fac58b158e8d6f809902f96087356cf65e1e4

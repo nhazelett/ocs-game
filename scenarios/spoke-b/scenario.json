@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 0,
+  "id": "spoke-b",
+  "title": "Spoke B power",
+  "summary": "First playable. The hub island is open with 600 personnel. Spoke B, an outer island, opens day 7 with 180 personnel growing to 260 on day 20. The spoke's advance team asks for six 60 kW generators and nothing else. Spoke B has no grid and no fuel point, and the only surface link is a twice-weekly barge. A 30-day cut of the 90-day situation in scenarios/SKELETONS.md: the UCA clock and the funding-expiry trap run past day 30 and show in the debrief as pending.",
+  "rulesVersion": "2025-10",
+  "days": 30,
+  "prepDays": 14,
+  "defaultSeed": 1,
+  "islands": [
+    {
+      "id": "hub",
+      "name": "Main Island",
+      "isHub": true,
+      "grid": true,
+      "fuelPoint": true,
+      "waterSource": "municipal",
+      "infoTier": "observed"
+    },
+    {
+      "id": "spokeB",
+      "name": "Second Island",
+      "isHub": false,
+      "grid": false,
+      "fuelPoint": false,
+      "waterSource": "none",
+      "infoTier": "assumed"
+    }
+  ],
+  "transportLinks": [
+    {
+      "id": "barge",
+      "from": "hub",
+      "to": "spokeB",
+      "mode": "barge",
+      "capacityPerTrip": 200,
+      "scheduleDays": [
+        3,
+        6
+      ],
+      "weatherSensitive": true
+    },
+    {
+      "id": "lightAir",
+      "from": "hub",
+      "to": "spokeB",
+      "mode": "aircraft",
+      "capacityPerTrip": 5,
+      "scheduleDays": [],
+      "weatherSensitive": true
+    }
+  ],
+  "sites": [
+    {
+      "id": "hubSite",
+      "name": "Hub",
+      "island": "hub",
+      "opensDay": 0,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 0,
+          "count": 600
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "power",
+          "bufferDays": 0,
+          "initialArrangements": [
+            "hubGrid"
+          ]
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 5,
+          "initialBufferDays": 5,
+          "initialArrangements": [
+            "hubFuelPoint"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spokeBSite",
+      "name": "Spoke B",
+      "island": "spokeB",
+      "opensDay": 7,
+      "tempo": 1.5,
+      "population": [
+        {
+          "day": 7,
+          "count": 180
+        },
+        {
+          "day": 20,
+          "count": 260
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "power",
+          "bufferDays": 0,
+          "critical": true
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 5,
+          "initialBufferDays": 3,
+          "critical": true
+        }
+      ]
+    }
+  ],
+  "requirementCards": [
+    {
+      "id": "req0007",
+      "site": "spokeBSite",
+      "capability": "power",
+      "submittedDay": 1,
+      "requestedStartDay": 7,
+      "durationDays": 60,
+      "quantityHint": "6 x 60 kW generators",
+      "lines": {
+        "generation": true,
+        "fuelSupply": false,
+        "operator": false,
+        "maintenance": false
+      },
+      "submittedBy": "Spoke B advance team",
+      "flaggedEnduring": false
+    }
+  ],
+  "vendors": [
+    {
+      "id": "hubUtilities",
+      "name": "Main Island Utilities (host nation)",
+      "island": "hub",
+      "vehicleOnly": true,
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 5000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        },
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 10000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        }
+      ],
+      "reliability": 1.0,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed"
+    },
+    {
+      "id": "vendorA",
+      "name": "Island Power Rentals",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "maintenance"
+          ],
+          "capacityPerDay": 600,
+          "leadTimeDays": 4,
+          "unitPriceCents": 250
+        }
+      ],
+      "reliability": 0.96,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": false,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "vendorB",
+      "name": "Meridian Site Services",
+      "island": "spokeB",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "fuelSupply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 800,
+          "leadTimeDays": 9,
+          "unitPriceCents": 1500,
+          "mobilizationFraction": 0.5
+        }
+      ],
+      "reliability": 0.98,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated",
+      "qualifyingProposalLagDays": {
+        "min": 14,
+        "max": 20
+      }
+    },
+    {
+      "id": "vendorC",
+      "name": "Harbor Equipment Co",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "maintenance"
+          ],
+          "capacityPerDay": 600,
+          "leadTimeDays": 2,
+          "unitPriceCents": 230
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "surveyed"
+    },
+    {
+      "id": "vendorD",
+      "name": "Second Island Fuel",
+      "island": "spokeB",
+      "offers": [
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery"
+          ],
+          "capacityPerDay": 700,
+          "leadTimeDays": 1,
+          "unitPriceCents": 700
+        }
+      ],
+      "reliability": 0.88,
+      "acceptsGpc": false,
+      "acceptsCash": true,
+      "vetted": false,
+      "infoTier": "assumed"
+    },
+    {
+      "id": "vendorE",
+      "name": "Port Fuel Haulers",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 4000,
+          "leadTimeDays": 1,
+          "unitPriceCents": 450
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "estimated"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "bosBpa",
+      "kind": "bpa",
+      "vendor": "vendorC",
+      "scopeTags": [
+        "generation",
+        "maintenance",
+        "equipmentRental"
+      ],
+      "callLimitCents": 25000000,
+      "orderingPeriodEndDay": 120,
+      "placeOfPerformance": [],
+      "visibleOnDay1": true
+    }
+  ],
+  "inheritedArrangements": [
+    {
+      "id": "hubGrid",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "hubFuelPoint",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    }
+  ],
+  "fundingLines": [
+    {
+      "id": "om1",
+      "type": "OM",
+      "amountCents": 90000000,
+      "availableDay": 1,
+      "expiresDay": 75
+    }
+  ],
+  "shop": {
+    "people": 2,
+    "systemOnlineDay": 12,
+    "cashOnHandCents": 5000000,
+    "cashReplenishLagDays": 5,
+    "gpcAvailableDay": null,
+    "gpcSinglePurchaseCents": 4000000,
+    "gpcMonthlyCents": 15000000,
+    "payingAgentAvailableDay": 5
+  },
+  "actors": {
+    "sco": {
+      "responsiveness": "medium",
+      "offersJointBoardsUnprompted": false
+    },
+    "fm": {
+      "certificationLagDays": 1
+    },
+    "commander": {
+      "priorityOrder": [
+        "hubSite",
+        "spokeBSite"
+      ]
+    }
+  },
+  "events": [
+    {
+      "id": "growthNotice",
+      "label": "Second increment confirmed for Spoke B",
+      "window": {
+        "earliestDay": 14,
+        "latestDay": 14
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "inbox"
+        }
+      ],
+      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+    },
+    {
+      "id": "hubFuelsWithdraw",
+      "label": "Hub fuels flight pulls its support",
+      "window": {
+        "earliestDay": 5,
+        "latestDay": 30
+      },
+      "fixed": true,
+      "preconditions": [
+        {
+          "kind": "coordination.runningDays",
+          "target": "spokeBSite.fuel",
+          "comparator": ">",
+          "value": 4
+        }
+      ],
+      "effects": [
+        {
+          "kind": "coordination.withdraw",
+          "target": "spokeBSite.fuel",
+          "days": 2
+        }
+      ],
+      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+    },
+    {
+      "id": "unitHandshake",
+      "label": "Spoke B unit finds its own fuel",
+      "window": {
+        "earliestDay": 8,
+        "latestDay": 30
+      },
+      "fixed": true,
+      "preconditions": [
+        {
+          "kind": "capability.below",
+          "target": "spokeBSite.power",
+          "value": 0.5
+        },
+        {
+          "kind": "contract.absent",
+          "target": "spokeBSite.fuel"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "unit.unauthorizedCommitment",
+          "target": "spokeBSite.fuel",
+          "value": "vendorE"
+        }
+      ],
+      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+    },
+    {
+      "id": "bargeWeather",
+      "label": "Weather stops the barge",
+      "window": {
+        "earliestDay": 16,
+        "latestDay": 16
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "link.closed",
+          "target": "barge",
+          "days": 3
+        }
+      ],
+      "playerVisibleAs": "Harbor master: no barge movements for the next three days."
+    }
+  ],
+  "fixedSituations": [
+    "req0007",
+    "growthNotice",
+    "hubFuelsWithdraw",
+    "unitHandshake",
+    "bargeWeather",
+    "hubUtilities"
+  ],
+  "variation": [
+    {
+      "path": "/vendors/1/reliability",
+      "kind": "numberRange",
+      "min": 0.92,
+      "max": 0.98
+    },
+    {
+      "path": "/vendors/2/offers/0/leadTimeDays",
+      "kind": "intRange",
+      "min": 8,
+      "max": 11
+    },
+    {
+      "path": "/vendors/3/reliability",
+      "kind": "numberRange",
+      "min": 0.92,
+      "max": 0.97
+    },
+    {
+      "path": "/vendors/4/reliability",
+      "kind": "numberRange",
+      "min": 0.8,
+      "max": 0.92
+    },
+    {
+      "path": "/vendors/5/reliability",
+      "kind": "numberRange",
+      "min": 0.92,
+      "max": 0.97
+    }
+  ],
+  "passCriteria": [
+    {
+      "id": "powerUp",
+      "label": "Spoke B power never down more than one day",
+      "metric": "site.spokeBSite.power.downDays",
+      "comparator": "<=",
+      "value": 1
+    },
+    {
+      "id": "fuelUp",
+      "label": "Spoke B fuel never out more than one day",
+      "metric": "site.spokeBSite.fuel.downDays",
+      "comparator": "<=",
+      "value": 1
+    },
+    {
+      "id": "noUc",
+      "label": "No unauthorized commitments",
+      "metric": "compliance.unauthorizedCommitments",
+      "comparator": "==",
+      "value": 0
+    },
+    {
+      "id": "mission",
+      "label": "Mission output at least 90%",
+      "metric": "mission.output",
+      "comparator": ">=",
+      "value": 0.9
+    }
+  ],
+  "modelAssumptions": [
+    "Demand is linear: people times a per-person rate times the site's tempo (Spoke B runs at 1.5 for flying operations).",
+    "Fuel is consumed whether or not generators run; generators need fuel at the site to produce power.",
+    "Fuel from another island arrives only on barge days. Fuel does not fly.",
+    "Spoke B can store five days of fuel; it opens with three.",
+    "Missing operator or maintenance lines do not cut capacity; they raise the daily chance of equipment going down.",
+    "Main Island utilities never fail in this scenario so the lesson stays at Spoke B.",
+    "Mission output counts each open site equally, so the spoke weighs as much as the hub."
+  ]
+}
