@@ -224,6 +224,17 @@ public sealed class ScenarioBundle
         foreach (var e in s.Events)
             foreach (var f in e.Effects.Where(f => f.Kind == "acsa.withdraw"))
                 Need(f.Target is null || caps.Contains(f.Target), $"event {e.Id}: acsa.withdraw capability {f.Target} not in rules");
+        if (s.Actors.HostNation is { } hn)
+        {
+            if (hn.Island is { } hi) Need(islands.Contains(hi), $"hostNation island {hi} not found");
+            foreach (var c in hn.Capacity.Keys) Need(caps.Contains(c), $"hostNation capacity capability {c} not in rules");
+            foreach (var c in hn.UnitPriceCents.Keys) Need(hn.Capacity.ContainsKey(c), $"hostNation price for {c} has no capacity");
+            foreach (var site in hn.Sites) Need(s.Sites.Any(x => x.Id == site), $"hostNation site {site} not found");
+            if (hn.AgreementExists) Need(Rules.Instruments.ContainsKey("hostNation"), "hostNation agreement needs the hostNation instrument in rules");
+        }
+        foreach (var e in s.Events)
+            foreach (var f in e.Effects.Where(f => f.Kind == "hostNation.withdraw"))
+                Need(f.Target is null || caps.Contains(f.Target), $"event {e.Id}: hostNation.withdraw capability {f.Target} not in rules");
         if (s.Actors.ExternalSupport is { } ext)
         {
             Need(Rules.Instruments.ContainsKey("externalSupport"), "actors.externalSupport needs the externalSupport instrument in rules");

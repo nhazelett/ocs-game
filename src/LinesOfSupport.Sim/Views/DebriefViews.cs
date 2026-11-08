@@ -17,6 +17,8 @@ public enum GapFactorKind
     FundingLapse,
     /// <summary>The partner withdrew an ACSA order and nothing contractual was behind it (M3-06).</summary>
     AcsaWithdrawn,
+    /// <summary>The host nation withdrew support (requested or inherited) and nothing contractual was behind it (M3-06).</summary>
+    HostNationWithdrawn,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>

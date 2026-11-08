@@ -811,7 +811,39 @@
             "reliability": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "default": 0.9
+            },
+            "name": {
+              "type": "string",
+              "description": "Generic host nation name shown to the player (no real nation is named)"
+            },
+            "island": {
+              "$ref": "#/$defs/id",
+              "description": "Island the host nation supplies from; absent means the requesting site's island"
+            },
+            "capacity": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0
+              },
+              "description": "Capability id to units per day the agreement provides, shared by every host nation support request on the same days (M3-06). Inherited hostNation arrangements are not counted against it"
+            },
+            "unitPriceCents": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "description": "Capability id to the shop's cost share per unit per day; absent or 0 means no cost to the shop and no funding line"
+            },
+            "sites": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "description": "Sites the agreement covers; empty or absent means every site"
             }
           }
         },

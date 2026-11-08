@@ -214,7 +214,19 @@ public sealed record ScoData
 
 public sealed record FmData { public int CertificationLagDays { get; init; } }
 public sealed record CommanderData { public List<string> PriorityOrder { get; init; } = []; }
-public sealed record HostNationData { public bool AgreementExists { get; init; } public double? Reliability { get; init; } }
+/// <summary>A host nation support agreement (M3-06). Capacity is units per day the host nation provides per capability under
+/// the agreement, shared by every request on the same days; price is the shop's cost share per unit per day (0 when the
+/// host nation bears it). Sites empty means the agreement covers every site.</summary>
+public sealed record HostNationData
+{
+    public bool AgreementExists { get; init; }
+    public double? Reliability { get; init; }
+    public string Name { get; init; } = "the host nation";
+    public string? Island { get; init; }
+    public Dictionary<string, double> Capacity { get; init; } = [];
+    public Dictionary<string, long> UnitPriceCents { get; init; } = [];
+    public List<string> Sites { get; init; } = [];
+}
 /// <summary>A partner military with an ACSA (M3-06). Stock is units per day it can spare per capability, shared by all
 /// orders on the same days; price is reimbursable per unit per day.</summary>
 public sealed record AcsaPartnerData

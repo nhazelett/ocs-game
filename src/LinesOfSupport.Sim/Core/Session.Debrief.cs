@@ -93,6 +93,19 @@ public sealed partial class Session
                 yield return ($"acsa|{ac.Id}", new GapFactor(GapFactorKind.AcsaWithdrawn, GapTag.Avoidable, d,
                     $"ACSA order {ac.Id} was withdrawn by {PartnerName} on day {w.Day} (last day of support {ac.EndDay}) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.", [w.Id, ac.CauseId]));
             }
+            foreach (var hn in _arrangements.Where(a => a.Instrument == HostNationInstrument && a.SiteId == siteId && Supplies(a, capId) && a.EndDay < d && a.EndDay >= lastContractEnd))
+            {
+                var w = _records.FirstOrDefault(r => r.Kind == RecordKind.Withdrawal && r.Subject == hn.Id);
+                if (w is null) continue;
+                any = true;
+                // Support the player asked for is the player's choice; support the force arrived with was withdrawable from day 1,
+                // so a backup was there to be found.
+                yield return ($"hn|{hn.Id}", hn.CreatedDay > 0
+                    ? new GapFactor(GapFactorKind.HostNationWithdrawn, GapTag.Avoidable, d,
+                        $"Host nation support request {hn.Id} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. Host nation support rests on an agreement the host nation can withdraw.", [w.Id, hn.CauseId])
+                    : new GapFactor(GapFactorKind.HostNationWithdrawn, GapTag.Discoverable, d,
+                        $"Inherited host nation support {hn.Id} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.", [w.Id]));
+            }
             foreach (var c in _commitments.Where(c => c.Kind == CommitmentKind.Handshake && c.SiteId == siteId && c.CapabilityId == capId))
             {
                 var arr = _arrangements.First(a => a.Id == c.ArrangementId);

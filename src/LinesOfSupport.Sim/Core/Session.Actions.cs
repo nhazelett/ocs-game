@@ -33,6 +33,7 @@ public sealed partial class Session
             DesignateCorAction c => ApplyDesignateCor(c),
             RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
             AcsaOrderAction o => ApplyAcsaOrder(o),
+            HostNationRequestAction h => ApplyHostNationRequest(h),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -60,6 +61,7 @@ public sealed partial class Session
         DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
         RequestExternalSupportAction r => $"external support request {r.Id}",
         AcsaOrderAction o => $"ACSA order {o.Id}",
+        HostNationRequestAction h => $"host nation support request {h.Id}",
         _ => a.GetType().Name,
     };
 
@@ -489,6 +491,9 @@ public sealed partial class Session
                 break;
             case WorkKind.AcsaOrder:
                 CompleteAcsaOrder((AcsaPayload)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.HostNationRequest:
+                CompleteHostNationRequest((HostNationPayload)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.ExternalSupportRequest:
                 CompleteExternalRequestWork((string)w.Payload!, day, w.CauseId);

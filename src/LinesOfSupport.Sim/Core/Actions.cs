@@ -20,6 +20,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
 [JsonDerivedType(typeof(RequestExternalSupportAction), "requestExternalSupport")]
 [JsonDerivedType(typeof(AcsaOrderAction), "acsaOrder")]
+[JsonDerivedType(typeof(HostNationRequestAction), "hostNationRequest")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -190,6 +191,26 @@ public sealed record AcsaOrderAction : PlayerAction
     public int? StartDay { get; init; }
     public int DurationDays { get; init; }
     public string FundingLine { get; init; } = "";
+}
+
+/// <summary>
+/// CCO seat: request support from the host nation under an existing host nation support agreement (SPEC 4.1, M3-06).
+/// Costs rules hostNation.shopDays; the host nation starts after rules hostNation.startLagDays (slow to establish). It
+/// supplies and runs the capability's core line (operator and maintenance lines included). The shop's cost share, when the
+/// scenario sets one, is obligated from FundingLine when the request is placed; with no cost share no line is needed.
+/// Hard stops: no agreement, a capability or site the agreement does not cover, quantity above the agreement's daily
+/// capacity less other requests on the same days, a capability the host nation has withdrawn, and the usual funding checks.
+/// </summary>
+public sealed record HostNationRequestAction : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string? Card { get; init; }
+    public string? Site { get; init; }
+    public string? Capability { get; init; }
+    public long Quantity { get; init; }
+    public int? StartDay { get; init; }
+    public int DurationDays { get; init; }
+    public string? FundingLine { get; init; }
 }
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)

@@ -94,7 +94,7 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, ExternalSupportRequest, AcsaOrder }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, ExternalSupportRequest, AcsaOrder, HostNationRequest }
 
 public sealed class WorkItem
 {

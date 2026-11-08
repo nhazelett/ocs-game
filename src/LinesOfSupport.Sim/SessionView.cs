@@ -127,6 +127,16 @@ public sealed class SessionView
     /// <summary>Capabilities the partner has withdrawn its ACSA support for; "*" means all.</summary>
     public IReadOnlyCollection<string> AcsaWithdrawn => _s.AcsaWithdrawn;
 
+    /// <summary>What a host nation support request would take (M3-06): hard stops, soft gaps, the shop's cost share and the
+    /// first day of support at the best and worst roll. Changes nothing and draws no random numbers.</summary>
+    public ActionPreview PreviewHostNation(HostNationRequestAction request) => _s.BuildHostNationPreview(request);
+
+    /// <summary>The host nation support agreement, or null when none exists.</summary>
+    public HostNationData? HostNation => _s.Scenario.Actors.HostNation is { AgreementExists: true } h ? h : null;
+
+    /// <summary>Capabilities the host nation has withdrawn support for; "*" means all.</summary>
+    public IReadOnlyCollection<string> HostNationWithdrawn => _s.HostNationWithdrawn;
+
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
 }

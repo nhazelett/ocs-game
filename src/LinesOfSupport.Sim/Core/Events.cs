@@ -30,6 +30,7 @@ public static class Events
         "funding.late",                  // target: funding line id; days or daysRange: delay to its release (M3-03)
         "cor.rotates",                   // target: COR id; an untrained relief takes over its designations (M3-04)
         "acsa.withdraw",                 // target: capability id, or absent for all; days or daysRange: notice (M3-06)
+        "hostNation.withdraw",           // target: capability id, or absent for all; days or daysRange: notice, else rules hostNation.withdrawalNoticeDays (M3-06)
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -126,6 +127,9 @@ public static class Events
                 break;
             case "acsa.withdraw":
                 s.WithdrawAcsa(e.Target, day, s.EffectDays(ev, index, 0), cause);
+                break;
+            case "hostNation.withdraw":
+                s.WithdrawHostNation(e.Target, day, s.EffectDays(ev, index, -1), cause);
                 break;
             case "inbox":
                 break;
