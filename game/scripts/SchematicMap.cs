@@ -2,13 +2,23 @@ using Godot;
 
 namespace LinesOfSupport.Game;
 
+internal enum SiteCondition { Unknown, NotOpen, Full, Degraded, Down }
+
 public partial class SchematicMap : Node2D
 {
     internal ScenarioBoardData? Data { get; private set; }
+    internal IReadOnlyDictionary<string, SiteCondition> Conditions { get; private set; } = new Dictionary<string, SiteCondition>();
+
+    internal void ShowConditions(IReadOnlyDictionary<string, SiteCondition> conditions)
+    {
+        Conditions = conditions;
+        QueueRedraw();
+    }
 
     internal void ShowScenario(ScenarioBoardData? data)
     {
         Data = data;
+        Conditions = new Dictionary<string, SiteCondition>();
         QueueRedraw();
     }
 
@@ -58,8 +68,15 @@ public partial class SchematicMap : Node2D
             for (var i = 0; i < sites.Length; i++)
             {
                 var marker = point + new Vector2(0, i * 32);
-                DrawCircle(marker, 5, new Color(0.85f, 0.85f, 0.85f));
-                Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · opens day {sites[i].OpensDay}", 250, 15);
+                var condition = Conditions.GetValueOrDefault(sites[i].Id, SiteCondition.Unknown);
+                var color = condition switch
+                {
+                    SiteCondition.Full => new Color(.3f, .8f, .55f), SiteCondition.Degraded => new Color(1, .75f, .25f),
+                    SiteCondition.Down => new Color(.95f, .3f, .3f), _ => new Color(.7f, .7f, .7f)
+                };
+                DrawCircle(marker, 8, color);
+                var label = condition == SiteCondition.NotOpen ? "not open" : condition.ToString().ToLowerInvariant();
+                Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · {label} · opens day {sites[i].OpensDay}", 300, 15);
             }
         }
     }
