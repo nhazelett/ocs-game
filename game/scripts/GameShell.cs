@@ -18,6 +18,8 @@ public partial class GameShell : Control
         GetNode<Label>("%GameTitle").Text = ProjectSettings.GetSetting("application/config/name").AsString();
         GetNode<Button>("%NextDay").Pressed += OnNextDay;
         GetNode<Button>("%ReplayButton").Pressed += OnReplay;
+        GetNode<Button>("%Continue").Pressed += OnContinue;
+        BuildMorningDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -53,6 +55,7 @@ public partial class GameShell : Control
 
     private void LoadScenario(long index)
     {
+        ResetDeskSelection();
         session.Clear();
         Map.ShowScenario(null);
         replays = [];
@@ -88,6 +91,7 @@ public partial class GameShell : Control
         if (index < 0 || index >= replays.Length) return;
         try
         {
+            ResetDeskSelection();
             session.LoadReplay(replays[index]);
             RefreshDisplay($"Replay loaded: {Path.GetFileNameWithoutExtension(replays[index]).Replace('-', ' ')}. Next day plays day 1.");
         }
@@ -105,6 +109,7 @@ public partial class GameShell : Control
         GetNode<Label>("%BuildStatus").Text = status;
         GetNode<Label>("%DayCounter").Text = strip is null ? "No scenario" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Day {strip.Day} (next)";
         GetNode<Button>("%NextDay").Disabled = view is null || view.Finished;
+        GetNode<Button>("%Continue").Disabled = view is null || view.Finished;
         var shop = GetNode<ProgressBar>("%ShopHoursGauge");
         var capacity = strip?.ShopHoursPerDay ?? 0;
         GetNode<Label>("%ShopHoursLabel").Text = strip is null ? "Shop: —" : $"Shop: {strip.ShopHoursQueued} h queued / {capacity} h/day";
@@ -132,5 +137,6 @@ public partial class GameShell : Control
         GetNode<RichTextLabel>("%InboxRecords").Text = records.Count == 0 ? "No records for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
         GetNode<OptionButton>("%ReplayPicker").Disabled = replays.Length == 0;
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
+        RefreshMorningDesk(view, board);
     }
 }

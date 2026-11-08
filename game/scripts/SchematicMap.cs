@@ -7,6 +7,8 @@ internal enum SiteCondition { Unknown, NotOpen, Full, Degraded, Down }
 public partial class SchematicMap : Node2D
 {
     internal ScenarioBoardData? Data { get; private set; }
+    internal string? SelectedSite { get; private set; }
+    internal void SelectSite(string? id) { SelectedSite = id; QueueRedraw(); }
     internal IReadOnlyDictionary<string, SiteCondition> Conditions { get; private set; } = new Dictionary<string, SiteCondition>();
 
     internal void ShowConditions(IReadOnlyDictionary<string, SiteCondition> conditions)
@@ -75,6 +77,7 @@ public partial class SchematicMap : Node2D
                     SiteCondition.Down => new Color(.95f, .3f, .3f), _ => new Color(.7f, .7f, .7f)
                 };
                 DrawCircle(marker, 8, color);
+                if (SelectedSite == sites[i].Id) DrawArc(marker, 13, 0, Mathf.Tau, 24, Colors.White, 2, true);
                 var label = condition == SiteCondition.NotOpen ? "not open" : condition.ToString().ToLowerInvariant();
                 Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · {label} · opens day {sites[i].OpensDay}", 300, 15);
             }
