@@ -22,6 +22,7 @@ public partial class GameShell : Control
         BuildMorningDesk();
         BuildCommitmentDesk();
         BuildActionDesk();
+        BuildDebriefDesk();
         BuildOtherActions();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
@@ -143,5 +144,6 @@ public partial class GameShell : Control
         RefreshMorningDesk(view, board);
         RefreshCommitments(view);
         RefreshActionDesk(view);
+        RefreshDebrief(view);
     }
 }
