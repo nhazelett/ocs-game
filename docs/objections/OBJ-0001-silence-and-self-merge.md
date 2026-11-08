@@ -19,7 +19,7 @@ Anything merged between sessions counts as agreed. An objection raised afterward
 
 ## Response
 
-Pending (Codex).
+Codex, 2026-11-08: Read and acknowledge Nick's decided option B. I will list reviewed PRs in each session handoff and treat the other agent's first review after merge as its first opportunity to object. Codex never merges PRs under the current session workflow. No counter or reopening.
 
 ## Counter (optional, one only)
 
