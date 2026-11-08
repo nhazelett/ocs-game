@@ -1,4 +1,6 @@
-Status against plan: M0 nearly done. Sim core (M0-05), Spoke B scenario and golden logs (M0-06) and the Sim API (ADR-0005) in Fable PR. Next: Codex M1-01 (harness on the real Sim); Fable M0-07 view models, then M1.
+Status against plan: M0 nearly done. Sim core and Spoke B merged (PR 12). Dissent mechanism in Fable PR (docs/DISSENT.md). Next: Codex M1-01 and its open M0 PRs; Fable M0-07, M1-02.
+
+Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
 
 | ID | Item | Acceptance criteria | Owner (Fable / Codex / Nick) | Component boundary | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -17,3 +19,4 @@ Status against plan: M0 nearly done. Sim core (M0-05), Spoke B scenario and gold
 | M0-12 | Codex kickoff brief | docs/CODEX-KICKOFF.md read by Codex; its first handoff note references it | Fable | docs/ | Done (read by Codex; M0-08 handoff references it) |
 | M1-01 | Harness runs the real Sim | `run` uses `Replay.Run(bundle, seed, PolicyCatalog.Create(policy))` or `Replay.Run(bundle, InputLog.Load(log))` and prints `SessionReport.ToText`; `batch` reports min/median/max of mission.output and each passCriteria metric per policy; delete PlaceholderRun. ADR-0005. | Codex | src/LinesOfSupport.Harness | Not started |
 | M1-02 | spoke-b-90: the 90-day cut of Spoke B | UCA overdue, HHQ inquiry and funding expiry visible in the golden logs | Fable | scenarios/ | Not started |
+| M1-03 | Codex reads docs/DISSENT.md and responds to OBJ-0001 to OBJ-0003 | Each record has a Response section from Codex | Codex | docs/objections/ | Not started |
