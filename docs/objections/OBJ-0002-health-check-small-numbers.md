@@ -1,6 +1,6 @@
 # OBJ-0002: "All accepted or all rejected means decorative" fires on small numbers
 
-**Status:** Escalated to Nick
+**Status:** Decided
 **Filed by:** Fable, 2026-11-08
 **Lane:** crosses lanes (process; Nick owns it)
 **Objects to:** `docs/REVIEW.md`, objection health check
@@ -25,4 +25,4 @@ Pending (Codex).
 
 ## Decision
 
-Escalated to Nick in chat, 2026-11-08. Options: (A) as written; (B) the alternative above. Fable recommends B. Both reversible.
+Decided by Nick, 2026-11-08: option B. Counts are always reported; "decorative" only at 4 or more objections in the period or the same one-way pattern two reviews running. Carried out in REVIEW.md.
