@@ -1,0 +1,13 @@
+{
+  "scenario": "spoke-b", "rulesVersion": "2025-10", "seed": 1,
+  "note": "Approach 2 (SPEC 5): survey day 1, fix the requirement, bridge with BPA generators (with maintenance) and a fuel coordination with the hub fuels flight. No contract for fuel.",
+  "prepChoices": ["systemAccess", "cashAndPayingAgent"],
+  "actions": [
+    { "kind": "survey", "day": 1, "island": "spokeB" },
+    { "kind": "setLine", "day": 1, "card": "req0007", "line": "fuelSupply", "on": true },
+    { "kind": "setLine", "day": 1, "card": "req0007", "line": "operator", "on": true },
+    { "kind": "setLine", "day": 1, "card": "req0007", "line": "maintenance", "on": true },
+    { "kind": "award", "day": 1, "id": "gens", "instrument": "bpaCall", "vendor": "vendorC", "vehicle": "bosBpa", "card": "req0007", "lines": ["generation", "maintenance"], "quantity": 360, "startDay": 7, "durationDays": 60, "fundingLine": "om1" },
+    { "kind": "coordinate", "day": 3, "id": "hubFuelRun", "site": "spokeBSite", "capability": "fuel", "quantity": 900, "fromSite": "hubSite" }
+  ]
+}

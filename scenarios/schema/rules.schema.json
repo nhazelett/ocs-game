@@ -5,44 +5,146 @@
   "description": "Rules shared across scenarios: thresholds, instrument parameters, consequence curves, model constants. Versioned; every save records the version it was played under. Money is integer cents. Days are integers. Fractions are 0 to 1.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "rulesVersion", "asOf", "thresholds", "uca", "instruments", "prepChoices", "aggregateRates", "model", "sco"],
+  "required": [
+    "schemaVersion",
+    "rulesVersion",
+    "asOf",
+    "thresholds",
+    "uca",
+    "instruments",
+    "prepChoices",
+    "aggregateRates",
+    "model",
+    "sco"
+  ],
   "properties": {
-    "schemaVersion": { "const": 0 },
-    "rulesVersion": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}(\\.[0-9]+)?$", "description": "Year-month of the regulatory baseline, optional patch, e.g. 2025-10 or 2025-10.1" },
-    "asOf": { "type": "string", "format": "date" },
-    "notes": { "type": "string" },
+    "schemaVersion": {
+      "const": 0
+    },
+    "rulesVersion": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}(\\.[0-9]+)?$",
+      "description": "Year-month of the regulatory baseline, optional patch, e.g. 2025-10 or 2025-10.1"
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
     "thresholds": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["microPurchaseCents", "simplifiedAcquisitionCents", "basis"],
+      "required": [
+        "microPurchaseCents",
+        "simplifiedAcquisitionCents",
+        "basis"
+      ],
       "properties": {
-        "microPurchaseCents": { "type": "integer", "minimum": 0 },
-        "simplifiedAcquisitionCents": { "type": "integer", "minimum": 0 },
-        "basis": { "type": "string", "description": "Which threshold set this is, e.g. 'contingency, outside the United States, FAR 2.101 effective 2025-10-01'" },
-        "sourceUrl": { "type": "string", "format": "uri" }
+        "microPurchaseCents": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "simplifiedAcquisitionCents": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "basis": {
+          "type": "string",
+          "description": "Which threshold set this is, e.g. 'contingency, outside the United States, FAR 2.101 effective 2025-10-01'"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri"
+        }
       }
     },
     "uca": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["obligationCapBeforeProposal", "obligationCapAfterProposal", "definitizeWithinDays", "definitizeAtObligatedFraction", "approvalLagDays", "definitizationShopDays"],
+      "required": [
+        "obligationCapBeforeProposal",
+        "obligationCapAfterProposal",
+        "definitizeWithinDays",
+        "definitizeAtObligatedFraction",
+        "approvalLagDays",
+        "definitizationShopDays",
+        "qualifyingProposalLagDays",
+        "stopWorkAfterUnpaidDays",
+        "hhqInquiryAfterOverdueDays",
+        "defaultNtePermilleOfQuote"
+      ],
       "properties": {
-        "obligationCapBeforeProposal": { "type": "number", "minimum": 0, "maximum": 1 },
-        "obligationCapAfterProposal": { "type": "number", "minimum": 0, "maximum": 1 },
-        "definitizeWithinDays": { "type": "integer", "minimum": 1 },
-        "definitizeAtObligatedFraction": { "type": "number", "minimum": 0, "maximum": 1 },
-        "approvalLagDays": { "$ref": "#/$defs/intRange" },
-        "definitizationShopDays": { "$ref": "#/$defs/intRange" },
-        "sourceUrl": { "type": "string", "format": "uri" }
+        "obligationCapBeforeProposal": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "obligationCapAfterProposal": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "definitizeWithinDays": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "definitizeAtObligatedFraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "approvalLagDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "definitizationShopDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "qualifyingProposalLagDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "Days from issuance to the vendor's qualifying proposal, unless the vendor overrides it"
+        },
+        "stopWorkAfterUnpaidDays": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hhqInquiryAfterOverdueDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "defaultNtePermilleOfQuote": {
+          "type": "integer",
+          "minimum": 1000
+        }
       }
     },
     "instruments": {
       "type": "object",
       "description": "One entry per instrument id. Keys are the instrument ids the sim knows.",
       "additionalProperties": false,
-      "required": ["sf44", "gpc", "purchaseOrder", "bpaEstablish", "bpaCall", "idiqEstablish", "idiqOrder", "uca", "acsa", "hostNation", "externalSupport", "coordination"],
+      "required": [
+        "sf44",
+        "gpc",
+        "purchaseOrder",
+        "bpaEstablish",
+        "bpaCall",
+        "idiqEstablish",
+        "idiqOrder",
+        "uca",
+        "acsa",
+        "hostNation",
+        "externalSupport",
+        "coordination"
+      ],
       "patternProperties": {
-        "^[a-zA-Z][a-zA-Z0-9]*$": { "$ref": "#/$defs/instrument" }
+        "^[a-zA-Z][a-zA-Z0-9]*$": {
+          "$ref": "#/$defs/instrument"
+        }
       }
     },
     "prepChoices": {
@@ -51,12 +153,30 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "label", "prepDays", "effects"],
+        "required": [
+          "id",
+          "label",
+          "prepDays",
+          "effects"
+        ],
         "properties": {
-          "id": { "$ref": "#/$defs/id" },
-          "label": { "type": "string" },
-          "prepDays": { "type": "integer", "minimum": 0 },
-          "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" }, "minItems": 1 }
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "label": {
+            "type": "string"
+          },
+          "prepDays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/effect"
+            },
+            "minItems": 1
+          }
         }
       }
     },
@@ -64,18 +184,47 @@
       "type": "object",
       "description": "Daily event probabilities with a front-loaded decay: p(day) = floor + (start - floor) * 0.5^(day / halfLifeDays). Placeholders until playtesting (Nick, 7 Nov 2026).",
       "additionalProperties": false,
-      "required": ["paymentErrorManual", "executionConfusionNoTerms", "bpaCallDeclineBase", "vendorWillingnessDecayPerLatePayment"],
+      "required": [
+        "paymentErrorManual",
+        "executionConfusionNoTerms",
+        "bpaCallDeclineBase",
+        "vendorWillingnessDecayPerLatePayment"
+      ],
       "properties": {
-        "paymentErrorManual": { "$ref": "#/$defs/decayCurve" },
-        "executionConfusionNoTerms": { "$ref": "#/$defs/decayCurve" },
-        "bpaCallDeclineBase": { "$ref": "#/$defs/decayCurve" },
-        "vendorWillingnessDecayPerLatePayment": { "type": "number", "minimum": 0, "maximum": 1 }
+        "paymentErrorManual": {
+          "$ref": "#/$defs/decayCurve"
+        },
+        "executionConfusionNoTerms": {
+          "$ref": "#/$defs/decayCurve"
+        },
+        "bpaCallDeclineBase": {
+          "$ref": "#/$defs/decayCurve"
+        },
+        "vendorWillingnessDecayPerLatePayment": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
       }
     },
     "model": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["capabilities", "defaultBufferDays", "missionWeights", "hoursPerPersonPerDay", "manualContractTimeFactor", "infoTiers"],
+      "required": [
+        "capabilities",
+        "defaultBufferDays",
+        "missionWeights",
+        "hoursPerPersonPerDay",
+        "manualContractTimeFactor",
+        "infoTiers",
+        "failure",
+        "work",
+        "supplyLineSizingPermille",
+        "cashReplenishThresholdPermille",
+        "executionConfusionMinDurationDays",
+        "downThresholdPermille",
+        "invoiceIntervalDays"
+      ],
       "properties": {
         "capabilities": {
           "type": "array",
@@ -83,109 +232,454 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["id", "label", "unit", "demandPerPersonPerDay", "dependsOn"],
+            "required": [
+              "id",
+              "label",
+              "unit",
+              "demandPerPersonPerDay",
+              "dependsOn",
+              "delivery",
+              "lines"
+            ],
             "properties": {
-              "id": { "$ref": "#/$defs/id" },
-              "label": { "type": "string" },
-              "unit": { "type": "string" },
-              "demandPerPersonPerDay": { "type": "number", "minimum": 0 },
-              "dependsOn": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Capability ids whose coverage gates this one's effective supply (e.g. power depends on fuel)" }
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "label": {
+                "type": "string"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "demandPerPersonPerDay": {
+                "type": "number",
+                "minimum": 0
+              },
+              "dependsOn": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/id"
+                },
+                "description": "Capability ids whose coverage gates this one's effective supply (e.g. power depends on fuel)"
+              },
+              "delivery": {
+                "enum": [
+                  "continuous",
+                  "consumable"
+                ],
+                "description": "continuous: installed capacity (power, lodging). consumable: delivered and buffered (fuel, water, food); off-island suppliers deliver only on surface-link run days."
+              },
+              "lines": {
+                "type": "array",
+                "description": "Scope lines for this capability's requirement card (seed of the card catalog). core: supplies this capability. supplies: also supplies another capability at the site. operator, maintenance: their absence raises daily failure risk.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "kind"
+                  ],
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/id"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "core",
+                        "supplies",
+                        "operator",
+                        "maintenance"
+                      ]
+                    },
+                    "supplies": {
+                      "$ref": "#/$defs/id"
+                    }
+                  }
+                }
+              }
             }
           }
         },
-        "defaultBufferDays": { "type": "number", "minimum": 0 },
+        "defaultBufferDays": {
+          "type": "number",
+          "minimum": 0
+        },
         "missionWeights": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["sortieGeneration", "throughput", "endurance", "resilience"],
+          "required": [
+            "sortieGeneration",
+            "throughput",
+            "endurance",
+            "resilience"
+          ],
           "properties": {
-            "sortieGeneration": { "type": "number", "minimum": 0 },
-            "throughput": { "type": "number", "minimum": 0 },
-            "endurance": { "type": "number", "minimum": 0 },
-            "resilience": { "type": "number", "minimum": 0 }
+            "sortieGeneration": {
+              "type": "number",
+              "minimum": 0
+            },
+            "throughput": {
+              "type": "number",
+              "minimum": 0
+            },
+            "endurance": {
+              "type": "number",
+              "minimum": 0
+            },
+            "resilience": {
+              "type": "number",
+              "minimum": 0
+            }
           }
         },
-        "hoursPerPersonPerDay": { "type": "number", "minimum": 1 },
-        "manualContractTimeFactor": { "type": "number", "minimum": 1, "description": "Multiplier on written-action shop time while no contract-writing system is online" },
-        "infoTiers": { "type": "array", "items": { "enum": ["assumed", "estimated", "surveyed", "observed"] }, "minItems": 4, "maxItems": 4 }
+        "hoursPerPersonPerDay": {
+          "type": "number",
+          "minimum": 1
+        },
+        "manualContractTimeFactor": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Multiplier on written-action shop time while no contract-writing system is online"
+        },
+        "infoTiers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "assumed",
+              "estimated",
+              "surveyed",
+              "observed"
+            ]
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "failure": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "missingOperatorPermillePerDay",
+            "missingMaintenancePermillePerDayAfterGrace",
+            "missingMaintenanceGraceDays",
+            "missingMaintenanceCapPermille",
+            "continuousFailureSupplyPermille"
+          ],
+          "properties": {
+            "missingOperatorPermillePerDay": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "missingMaintenancePermillePerDayAfterGrace": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "missingMaintenanceGraceDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missingMaintenanceCapPermille": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "continuousFailureSupplyPermille": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000,
+              "description": "Share of rated supply still delivered on a failure day for continuous capabilities"
+            }
+          }
+        },
+        "work": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "surveyShopHours",
+            "surveyReturnDays",
+            "ratificationShopDays",
+            "paymentErrorReworkHours",
+            "hhqInquiryResponseHours",
+            "terminationShopDays"
+          ],
+          "properties": {
+            "surveyShopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "surveyReturnDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ratificationShopDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "paymentErrorReworkHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "hhqInquiryResponseHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "terminationShopDays": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "supplyLineSizingPermille": {
+          "type": "integer",
+          "minimum": 1000,
+          "description": "A 'supplies' line is sized by the vendor to the peak demand of the supplied capability over the period, times this"
+        },
+        "cashReplenishThresholdPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "executionConfusionMinDurationDays": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Arrangements without written terms that run at least this long roll the execution-confusion curve daily"
+        },
+        "downThresholdPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "invoiceIntervalDays": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "sco": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["responseLagDaysByResponsiveness", "terminationShopDayFactorWithGuidance", "disputeProbabilityWithoutGuidance", "disputeProbabilityWithGuidance", "jointBoardsStandupDays", "jointBoardsRequirementLagDays"],
+      "required": [
+        "responseLagDaysByResponsiveness",
+        "terminationShopDayFactorWithGuidance",
+        "disputeProbabilityWithoutGuidance",
+        "disputeProbabilityWithGuidance",
+        "jointBoardsStandupDays",
+        "jointBoardsRequirementLagDays"
+      ],
       "properties": {
         "responseLagDaysByResponsiveness": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["high", "medium", "low"],
+          "required": [
+            "high",
+            "medium",
+            "low"
+          ],
           "properties": {
-            "high": { "$ref": "#/$defs/intRange" },
-            "medium": { "$ref": "#/$defs/intRange" },
-            "low": { "$ref": "#/$defs/intRange" }
+            "high": {
+              "$ref": "#/$defs/intRange"
+            },
+            "medium": {
+              "$ref": "#/$defs/intRange"
+            },
+            "low": {
+              "$ref": "#/$defs/intRange"
+            }
           }
         },
-        "terminationShopDayFactorWithGuidance": { "type": "number", "minimum": 0, "maximum": 1 },
-        "disputeProbabilityWithoutGuidance": { "type": "number", "minimum": 0, "maximum": 1 },
-        "disputeProbabilityWithGuidance": { "type": "number", "minimum": 0, "maximum": 1 },
-        "jointBoardsStandupDays": { "$ref": "#/$defs/intRange" },
-        "jointBoardsRequirementLagDays": { "$ref": "#/$defs/intRange" }
+        "terminationShopDayFactorWithGuidance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "disputeProbabilityWithoutGuidance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "disputeProbabilityWithGuidance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "jointBoardsStandupDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "jointBoardsRequirementLagDays": {
+          "$ref": "#/$defs/intRange"
+        }
       }
     }
   },
   "$defs": {
-    "id": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_-]*$" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9_-]*$"
+    },
     "intRange": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["min", "max"],
-      "properties": { "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 0 } }
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
     },
     "decayCurve": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["start", "floor", "halfLifeDays"],
+      "required": [
+        "start",
+        "floor",
+        "halfLifeDays"
+      ],
       "properties": {
-        "start": { "type": "number", "minimum": 0, "maximum": 1 },
-        "floor": { "type": "number", "minimum": 0, "maximum": 1 },
-        "halfLifeDays": { "type": "number", "exclusiveMinimum": 0 }
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "floor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "halfLifeDays": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
       }
     },
     "instrument": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["label", "binding", "writtenTerms", "shopDays", "startLagDays", "requiresPayingAgent", "requiresSystemOrManual", "maxActionCents", "limitBasis"],
+      "required": [
+        "label",
+        "binding",
+        "writtenTerms",
+        "shopDays",
+        "startLagDays",
+        "requiresPayingAgent",
+        "requiresSystemOrManual",
+        "maxActionCents",
+        "limitBasis"
+      ],
       "properties": {
-        "label": { "type": "string" },
-        "binding": { "type": "boolean", "description": "False for BPAs and coordinations: the other party may decline or withdraw" },
-        "writtenTerms": { "type": "boolean", "description": "False for SF 44 and GPC: services run on these roll the execution-confusion curve" },
-        "shopDays": { "$ref": "#/$defs/intRange", "description": "Shop-days of work to create or use the instrument; multiplied by manualContractTimeFactor when written and no system is online" },
-        "startLagDays": { "$ref": "#/$defs/intRange", "description": "Calendar days from action to the arrangement being able to deliver, excluding vendor lead time" },
-        "requiresPayingAgent": { "type": "boolean" },
-        "requiresSystemOrManual": { "type": "boolean", "description": "True for written instruments" },
-        "maxActionCents": { "type": ["integer", "null"], "minimum": 0, "description": "Hard cap per action; null means governed by limitBasis or none" },
-        "limitBasis": { "enum": ["none", "microPurchase", "simplifiedAcquisition", "vehicleScope", "nte", "partnerStock", "agreement"] },
-        "obligatesMinimumGuaranteeFraction": { "type": "number", "minimum": 0, "maximum": 1, "description": "IDIQ: fraction of estimated value obligated at award as the minimum guarantee" },
-        "declineProbabilityBase": { "type": "number", "minimum": 0, "maximum": 1, "description": "Non-binding instruments: base chance a call is declined; scaled by market tempo and vendor reliability" },
-        "withdrawalNoticeDays": { "$ref": "#/$defs/intRange", "description": "Non-binding instruments: notice given when the other party walks away" },
-        "approvalLagDays": { "$ref": "#/$defs/intRange", "description": "For instruments needing an approver (UCA via SCO, external support via SCO and higher)" },
-        "mobilizationDays": { "$ref": "#/$defs/intRange", "description": "External support: contractor mobilization after award" },
-        "minimumUsefulDurationDays": { "type": "integer", "minimum": 0 },
-        "notes": { "type": "string" }
+        "label": {
+          "type": "string"
+        },
+        "binding": {
+          "type": "boolean",
+          "description": "False for BPAs and coordinations: the other party may decline or withdraw"
+        },
+        "writtenTerms": {
+          "type": "boolean",
+          "description": "False for SF 44 and GPC: services run on these roll the execution-confusion curve"
+        },
+        "shopDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "Shop-days of work to create or use the instrument; multiplied by manualContractTimeFactor when written and no system is online"
+        },
+        "startLagDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "Calendar days from action to the arrangement being able to deliver, excluding vendor lead time"
+        },
+        "requiresPayingAgent": {
+          "type": "boolean"
+        },
+        "requiresSystemOrManual": {
+          "type": "boolean",
+          "description": "True for written instruments"
+        },
+        "maxActionCents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Hard cap per action; null means governed by limitBasis or none"
+        },
+        "limitBasis": {
+          "enum": [
+            "none",
+            "microPurchase",
+            "simplifiedAcquisition",
+            "vehicleScope",
+            "nte",
+            "partnerStock",
+            "agreement"
+          ]
+        },
+        "obligatesMinimumGuaranteeFraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "IDIQ: fraction of estimated value obligated at award as the minimum guarantee"
+        },
+        "declineProbabilityBase": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Non-binding instruments: base chance a call is declined; scaled by market tempo and vendor reliability"
+        },
+        "withdrawalNoticeDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "Non-binding instruments: notice given when the other party walks away"
+        },
+        "approvalLagDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "For instruments needing an approver (UCA via SCO, external support via SCO and higher)"
+        },
+        "mobilizationDays": {
+          "$ref": "#/$defs/intRange",
+          "description": "External support: contractor mobilization after award"
+        },
+        "minimumUsefulDurationDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     },
     "effect": {
       "type": "object",
       "description": "A typed state change. The sim implements each 'kind'. Kept open-ended in v0; the Sim rejects kinds it does not know.",
       "additionalProperties": false,
-      "required": ["kind"],
+      "required": [
+        "kind"
+      ],
       "properties": {
-        "kind": { "type": "string" },
-        "target": { "type": "string" },
+        "kind": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
         "value": {},
-        "days": { "type": "integer" },
-        "fraction": { "type": "number" },
-        "note": { "type": "string" }
+        "days": {
+          "type": "integer"
+        },
+        "fraction": {
+          "type": "number"
+        },
+        "note": {
+          "type": "string"
+        }
       }
     }
   }
