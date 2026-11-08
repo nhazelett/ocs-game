@@ -22,6 +22,7 @@ internal static class DeskSmokeSupport
         var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
         var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == name);
         picker.Select(index); picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);
+        shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
     }
 
     internal static void Replay(GameShell shell, string name = "approach1 as written")
