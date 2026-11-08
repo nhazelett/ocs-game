@@ -20,7 +20,7 @@ M0-08 needs a runnable, independently tested command-line foundation while M0-04
 - .NET SDK 8.0.427 installed for local verification at `C:\Users\nickh\.codex\tools\dotnet8\dotnet.exe`; no persistent PATH change. This machine previously had only the runtime. Contributors need a .NET 8 SDK on PATH or can invoke that local executable.
 - Release solution build: zero warnings/errors. Release tests: 43 passed (42 harness cases plus one Sim placeholder). Tests cover bad JSON, missing/invalid fields and files, CLI argument errors, repeatability, log parsing, all three policies across 200 seeds, schema-only failures, malformed schemas, reference resolution, and rules/theme companions.
 - Executed real console commands: `validate scenarios/_stub`, `run _stub --seed 42 --policy do-nothing`, and `batch _stub --seeds 200 --policies do-nothing,greedy,textbook`. All succeed; run reports 30 days and batch reports 200 runs per policy with no simulated outcomes.
-- PR CI results will be checked before handing this item to Nick. The provenance check is unchanged; no asset files were added. Export remains the existing tag-only placeholder.
+- [PR 4](https://github.com/nhazelett/ocs-game/pull/4): implementation commit `a3d87ee` passed GitHub `test` and `provenance` on Ubuntu ([CI run](https://github.com/nhazelett/ocs-game/actions/runs/42446632617)). The provenance check is unchanged; no asset files were added. Export was skipped as intended on a PR and remains the existing tag-only placeholder. Final bookkeeping changes trigger the same checks again; use the PR for current status.
 
 ## Unresolved
 
