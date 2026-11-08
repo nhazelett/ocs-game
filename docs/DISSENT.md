@@ -1,6 +1,6 @@
 # Dissent: how Fable and Codex disagree, decide, and move on
 
-Both agents can disagree, collaborate and re-attack when it makes sense. The mechanism exists to catch real problems early and to settle them without Nick most of the time. It is not a ritual. Set by Nick, 8 Nov 2026. Open objections to this document itself: OBJ-0001, OBJ-0002, OBJ-0003 (escalated to Nick).
+Both agents can disagree, collaborate and re-attack when it makes sense. The mechanism exists to catch real problems early and to settle them without Nick most of the time. It is not a ritual. Set by Nick, 8 Nov 2026; amended the same day by his decisions on OBJ-0001 to OBJ-0003.
 
 ## 1. What counts as an objection
 
@@ -18,10 +18,14 @@ Preference or style is not an objection and is not filed. "I would have done it 
 
 | Agent | Owns | Can block on |
 | --- | --- | --- |
-| Fable | Design intent, scope, priority | "This is not what the game is" |
+| Fable | Design intent, scope, and priority (the order of work inside a milestone) | "This is not what the game is" |
 | Codex | Feasibility, build and test truth | "This cannot be built as specified" or "this fails tests" |
 
 Each agent can block inside its own lane. Neither agent blocks in the other's lane. An agent may still object in the other's lane; it just cannot block, and the lane owner decides.
+
+Nick owns what is in or out of a milestone and any trade between scope and schedule (SPEC 12; OBJ-0003).
+
+Priority decisions are not a way to silence the other agent. When Fable decides a priority question over a Codex objection, the record is marked `Revisit at milestone review`, and the next review takes it up as a team with Nick, without needing new evidence. Work continues on Fable's decision until then (OBJ-0003).
 
 ## 3. Cycle
 
@@ -34,7 +38,7 @@ If the disagreement crosses lanes, or the lane owner cannot decide, it escalates
 
 ## 4. Closed decisions stay closed
 
-A decided objection, an accepted ADR or a merged PR is closed. It reopens only on new evidence: a test result, a build result or a playtest finding. A better argument is not new evidence. Reopening cites the evidence in a new objection record that links the old one.
+A decided objection, an accepted ADR or a merged PR is closed. A merged PR becomes closed only once the other agent's next session has passed; each handoff note lists the PRs that agent reviewed that session (OBJ-0001). It reopens only on new evidence: a test result, a build result or a playtest finding. A better argument is not new evidence. Reopening cites the evidence in a new objection record that links the old one. The one exception: records marked `Revisit at milestone review` are reopened at that review without new evidence.
 
 ## 5. Disagree and commit
 
@@ -54,7 +58,7 @@ Never escalate a technical dispute to Nick. It stays in the repo until a test pr
 
 ## 7. No theater
 
-No quotas, no devil's advocate roles, no mandatory concerns per PR. Silence on a PR means agreement (see OBJ-0001 for an open question on what silence means when PRs merge between sessions).
+No quotas, no devil's advocate roles, no mandatory concerns per PR. Silence on a PR means agreement once the other agent's next session has passed without an objection (OBJ-0001). Until then, an objection to a merged PR is a first objection, not a reopening.
 
 ## 8. Where things live
 

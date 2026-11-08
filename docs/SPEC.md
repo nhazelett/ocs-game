@@ -246,6 +246,24 @@ The tradeoff is latency against coherence, and the sim is honest about it both w
 
 **Why not a third seat.** The SCO's work is judgment and approvals, not building things, and a seat with nothing to assemble is a quiz. As a channel they stay in the middle of OCS and contracting, which is where you put them.
 
+## 4.5 Unauthorized commitments: two situations, one decision, and precedent
+
+Decided with Nick, 8 Nov 2026. A unit going around contracting is usually a symptom of a gap the player left, and the debrief traces it back to that gap. What the player does next is the decision, and it plays differently by situation.
+
+**Situation 1: a handshake with no contract.** A unit arranges support directly with a vendor, often a non-traditional one, because nothing covered the need (Spoke B, day 10). The vendor delivers in good faith. It lands in the inbox as a decision:
+
+| Choice | Cost now | What follows |
+| --- | --- | --- |
+| Ratify now | Shop days (rules `ratificationShopDays`) | Vendor paid, goodwill intact, can be put on a proper contract. The commitment stays on the record as resolved. |
+| Park it | Nothing now | The vendor keeps delivering unpaid while its patience drains. After a seeded 5 to 15 days it walks off mid-delivery and the gap reopens; afterward it declines your work or quotes at a markup. A long-parked ratification draws a higher HQ inquiry, which costs more shop time than ratifying would have. |
+| Refuse and stop it | Nothing now | The vendor stops at once and the gap reopens; the site commander's confidence in contracting drops (a priority-order penalty when capacity is short). |
+
+**Situation 2: work outside an active contract by a vendor who knows better.** A vendor already under contract performs extra or out-of-scope work on a unit member's say-so. Denying payment for that work is legitimate, and a vendor in this position usually does not walk, because it values the contract it has. The player chooses to deny or to ratify; denying costs little and teaches the vendor; ratifying costs shop days. Separate event, separate debrief line.
+
+**Precedent.** Each unit has a habit level. A parked or refused handshake, or a long-unresolved one, raises the chance that unit goes around contracting again; a quick ratification paired with a real contract for the need lowers it. Precedent is the reason "park it" is a gamble rather than a free pass, and the reason the cheapest unauthorized commitment is the one prevented by closing the gap.
+
+What the game does not do: a generic penalty meter. Every cost here is something that happens in the world, so the debrief can explain it.
+
 ## 5. Worked situation: power at Spoke B
 
 This is the first authored situation and the acceptance test for the first playable. It combines three of the brief's examples: an enduring effort starting while scope is still being refined, power equipment without the support to run it, and a UCA that buys speed and sells a debt.
@@ -469,7 +487,7 @@ footprint/
 | `LinesOfSupport.Game` scaffold, desk UI, board, debrief views | Codex | Fable writes the view-model contracts the UI binds to |
 | Asset pipeline, bpy scripts, kit, sound | Codex | Fable reviews against the visual direction |
 | CI, exports, installer, Steamworks prep | Codex |  |
-| Playtesting, scenario truth, priority calls | Nick | Both agents turn his notes into backlog items |
+| Playtesting, scenario truth, milestone scope (what is in or out, scope versus schedule) | Nick | Both agents turn his notes into backlog items |
 
 **Boundary rule:** an agent does not edit files in the other agent's component without a backlog item that says so. Shared contracts (the view-model interfaces between Sim and Game, the scenario schema) change only by ADR.
 
