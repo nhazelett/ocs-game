@@ -43,17 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Check asset provenance
-        shell: bash
         run: |
-          missing=0
-          while IFS= read -r -d '' path; do
-            if ! grep -Fq -- "$path" assets/PROVENANCE.md; then
-              echo "Missing provenance: $path"
-              missing=1
-            fi
-          done < <(find assets -type f ! -path 'assets/PROVENANCE.md' -print0)
-          exit "$missing"
+          python3 -m unittest discover -s tools/validate -p test_provenance.py
+          python3 tools/validate/provenance.py
 
   godot-shell:
     name: godot-shell

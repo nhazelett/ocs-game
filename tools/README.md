@@ -1,5 +1,11 @@
 Blender (bpy) asset scripts and validators. Nothing here runs at game runtime.
 
+## Asset provenance check
+
+`python3 tools/validate/provenance.py` requires an exact table row for every file under assets/ except the ledger itself. Every asset row must have non-empty Origin and License cells. Mentions in prose and partial path matches do not count; duplicate/malformed rows fail. Escaped pipes in prompts and code-formatted paths are supported. No third-party packages are required, and LFS pointer contents do not affect this metadata-only check.
+
+Tests: `python3 -m unittest discover -s tools/validate -p test_provenance.py`. These include missing rows, blank Origin/License, audio/GLB files, spaced paths and misleading path mentions. `Project license TBD` is an honest non-empty value here; this check does not decide or approve the project's license.
+
 ## M0-10 five-piece kit
 
 `bpy/generate_kit.py` creates tent, CHU, generator, fuel bladder and light truck meshes from parameters, with flat polygon normals and the four-color sand/olive/dark/glass palette. `--scale` sets uniform dimensions, `--asset` selects a piece, and `--date` records provenance. Each piece exports as a single glTF 2.0 `.glb` under `assets/kit/`; no textures or real-world marks. The script updates those paths' provenance rows and preserves unrelated rows.

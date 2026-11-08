@@ -1,4 +1,4 @@
-Status against plan: M0 code items done except M0-07 and M0-11. Sim core and Spoke B (PR 12), dissent mechanism (PR 13), Codex M0-08b (PR 9), M0-09b (PR 10) and M0-10 (PR 11) merged. Next: Codex M0-11, M1-03, M1-01; Fable M0-07, M1-02.
+Status against plan: M0 in progress. Prior queue PRs 9/10/11 are merged. M0-11 strict provenance implemented (eight provenance tests and 136 .NET tests pass); PR pending. Resumed user queue continues M0-13, M0-14, M0-15. No Codex queue PRs will be merged.
 
 Items under objection carry `[CONTESTED OBJ-NNNN]` at the start of the Item cell, then `[RESOLVED OBJ-NNNN -> ADR-xxxx]` once decided (conventions in backlog/QUESTIONS.md, rules in docs/DISSENT.md).
 
