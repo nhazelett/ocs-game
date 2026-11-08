@@ -15,6 +15,8 @@ public partial class GameShell : Control
         GetNode<Button>("%NextDay").Pressed += OnNextDay;
         RefreshStrip();
         PopulateScenarios();
+        if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
+            Tests.ExportSmokeCheck.Run(this);
     }
 
     private void PopulateScenarios()
@@ -22,7 +24,7 @@ public partial class GameShell : Control
         var picker = GetNode<OptionButton>("%ScenarioPicker");
         try
         {
-            var root = ScenarioRootOverride ?? Path.GetFullPath(Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "scenarios"));
+            var root = ScenarioRootOverride ?? GamePaths.ScenarioRoot;
             scenarios = ScenarioCatalog.Discover(root);
             foreach (var scenario in scenarios)
                 picker.AddItem(scenario.Name);
