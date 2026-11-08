@@ -70,3 +70,6 @@ Fable
 
 ## Addendum, 2026-11-08 (M3-06): host nation support in the views
 `SessionView.PreviewHostNation(request)` returns an `ActionPreview` (hard stops as `Apply`; soft gaps for withdrawability, supply lines not included, quantity below peak, a late start against the card, an off-island source; cost share daily and total, zero when the host nation bears it; shop hours; first day of support at the best and worst roll). `SessionView.HostNation` is the agreement or null; `SessionView.HostNationWithdrawn` lists withdrawn capabilities ("*" for all). Debrief factor `HostNationWithdrawn`. No game screen yet: a request form waits for the M2 gate like the other new route forms.
+
+## Addendum, 2026-11-08 (M3-06): off-island sourcing in the views
+`SessionView.Preview(award)` with an off-island vendor and `Lift` adds the lift to the start range (best case: queue or transit minimum; worst case: maximum plus every bump and the longest customs hold) and a soft gap naming the mode, its days, bumping (airlift) and customs. `VendorData.Lift` and `VendorData.OffIsland` let the action editor offer a lift picker for off-island vendors; that picker is a change to the action editor and waits for the M2 gate. Debrief factor `LiftDelay`.

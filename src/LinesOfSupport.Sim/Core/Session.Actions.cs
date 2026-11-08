@@ -253,6 +253,7 @@ public sealed partial class Session
             if (line is not null) stops.AddRange(FundingStops(line, capId, a.StartDay, a.DurationDays));
         }
         if (a.Cor is not null) stops.AddRange(CorStops(a.Cor, inst));
+        stops.AddRange(OffIslandStops(a, vendor, capId));
         return new AwardCheck(stops, inst, card, vendor, offer, siteId, capId, lines, daily, mob, total);
     }
 
@@ -264,8 +265,9 @@ public sealed partial class Session
         var siteId = chk.SiteId!; var capId = chk.CapabilityId!; var lines = chk.Lines;
         long daily = chk.DailyCents, mob = chk.MobilizationCents, total = chk.TotalCents;
 
-        var lead = offer.LeadTimeDays;
         var startLag = _rngWork.NextInt(inst.StartLagDays);
+        // Off-island goods add strategic lift to the vendor's lead time, drawn after the work stream so local awards are unchanged.
+        var lead = offer.LeadTimeDays + (vendor.OffIsland ? DrawLift(a.Lift!) : 0);
         var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead, Fixed.Permille(vendor.Reliability), StockIsland(vendor, capId));
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
         var lineText = string.Join(", ", lines.Select(l => LineLabel(capId, l)));
@@ -367,6 +369,7 @@ public sealed partial class Session
             };
         }
         _arrangements.Add(arr);
+        if (a.Lift is not null && VendorData(a.Vendor) is { OffIsland: true }) RegisterShipment(arr, a.Lift, day, causeId);
         var tail = arr.Uca is { } u
             ? $" UCA issued with NTE {Money(u.NteCents)}; obligations capped at {Rules.Uca.ObligationCapBeforeProposal * 100:0}% of NTE until a qualifying proposal."
             : fromGuarantee > 0

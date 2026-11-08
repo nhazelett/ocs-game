@@ -431,6 +431,17 @@
             "type": "boolean",
             "default": false,
             "description": "Reachable only through its vehicles (no open-market award)"
+          },
+          "lift": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "airlift",
+                "sealift"
+              ]
+            },
+            "uniqueItems": true,
+            "description": "Off-island (stateside or regional) supplier: strategic lift modes it ships by to its island, the port of entry (M3-06). Absent or empty means a local vendor"
           }
         }
       }

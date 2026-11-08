@@ -126,6 +126,10 @@ public sealed record VendorData
     public string InfoTier { get; init; } = "estimated";
     public IntRange? QualifyingProposalLagDays { get; init; }
     public bool VehicleOnly { get; init; }
+    /// <summary>Off-island (stateside or regional) supplier (M3-06): goods come by strategic lift to the port of entry,
+    /// which is Island. Lift lists the modes it ships by ("airlift", "sealift"); empty means a local vendor.</summary>
+    public List<string> Lift { get; init; } = [];
+    public bool OffIsland => Lift.Count > 0;
 }
 
 public sealed record VehicleData
@@ -346,6 +350,20 @@ public sealed record RulesFile
     public UnauthorizedRulesData Unauthorized { get; init; } = new();
     public PerformanceRulesData Performance { get; init; } = new();
     public CorRulesData Cor { get; init; } = new();
+    public LiftRulesData Lift { get; init; } = new();
+}
+
+/// <summary>Strategic lift for off-island sourcing (M3-06, SPEC 4.1 "Stateside or off-island sourcing"): an airlift queue
+/// that higher-priority cargo can bump, sealift transit, and a customs hold chance on arrival at the port of entry.</summary>
+public sealed record LiftRulesData
+{
+    public IntRange AirliftQueueDays { get; init; } = new(7, 14);
+    public double AirliftBumpChance { get; init; } = 0.2;
+    public IntRange AirliftBumpDelayDays { get; init; } = new(3, 7);
+    public int AirliftMaxBumps { get; init; } = 2;
+    public IntRange SealiftTransitDays { get; init; } = new(30, 45);
+    public double CustomsHoldChance { get; init; } = 0.25;
+    public IntRange CustomsHoldDays { get; init; } = new(2, 6);
 }
 
 /// <summary>COR report lag and fidelity by quality (M3-04, DFARS 201.602-2). Permille values are 0 to 1000.</summary>

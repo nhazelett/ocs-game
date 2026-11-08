@@ -694,6 +694,45 @@
           "type": "string"
         }
       }
+    },
+    "lift": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Strategic lift for off-island sourcing (SPEC 4.1; backlog M3-06): airlift queue and bumping, sealift transit, customs hold on arrival at the port of entry.",
+      "properties": {
+        "airliftQueueDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "airliftBumpChance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "airliftBumpDelayDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "airliftMaxBumps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sealiftTransitDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "customsHoldChance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "customsHoldDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

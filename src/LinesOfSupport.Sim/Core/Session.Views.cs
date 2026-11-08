@@ -254,8 +254,9 @@ public sealed partial class Session
         }
         var minDone = Completion(inst.ShopDays.Min, Rules.Uca.ApprovalLagDays.Min);
         var maxDone = Completion(inst.ShopDays.Max, Rules.Uca.ApprovalLagDays.Max);
-        var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays);
-        var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays);
+        var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
+        var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
+        var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
         var hMin = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
         var hMax = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
 
@@ -296,6 +297,10 @@ public sealed partial class Session
             var after = Fixed.Permille(Rules.Uca.ObligationCapAfterProposal) / 10;
             gaps.Add($"Obligations capped at {before}% of the NTE until the qualifying proposal and {after}% after; definitization is due within {Rules.Uca.DefinitizeWithinDays} days and takes shop time.");
         }
+        if (vendor.OffIsland && a.Lift is { } liftMode)
+            gaps.Add(liftMode == "airlift"
+                ? $"Comes by airlift to {IslandData(vendor.Island).Name}: {Lift.AirliftQueueDays.Min} to {Lift.AirliftQueueDays.Max} days in the queue, higher-priority cargo can bump it, and customs can hold it on arrival."
+                : $"Comes by sealift to {IslandData(vendor.Island).Name}: {Lift.SealiftTransitDays.Min} to {Lift.SealiftTransitDays.Max} days in transit, and customs can hold it on arrival.");
         if (vendor.Island != site.Island)
             gaps.Add($"Supplied from {IslandData(vendor.Island).Name}: deliveries depend on the transport links to {IslandData(site.Island).Name}.");
         else if (StockIsland(vendor, capId) is var stock && stock != site.Island && TierOn(site.Island, Day) == "surveyed")

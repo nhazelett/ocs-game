@@ -198,6 +198,7 @@ public sealed partial class Session
     {
         foreach (var a in _arrangements)
         {
+            if (a.Status == ArrangementStatus.Pending && a.StartDay == d && _shipments.TryGetValue(a.Id, out var sh)) ArrivalChecks(a, sh, d);
             if (a.Status == ArrangementStatus.Pending && a.StartDay <= d && a.EndDay >= d)
             {
                 a.Status = ArrangementStatus.Active;

@@ -61,6 +61,8 @@ public sealed record AwardAction : PlayerAction
     public long? NteCents { get; init; }
     /// <summary>COR designated on the award (M3-04); null for none. Only contracts with written terms take one.</summary>
     public string? Cor { get; init; }
+    /// <summary>Off-island vendors only (M3-06): "airlift" or "sealift", one of the vendor's lift modes.</summary>
+    public string? Lift { get; init; }
 }
 
 /// <summary>Borrow capacity from another site's unit. Not a contract; can be withdrawn.</summary>

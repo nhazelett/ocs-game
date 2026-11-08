@@ -725,5 +725,27 @@
     "noCorLagDays": 3,
     "reliefQuality": "poor",
     "sourceUrl": "https://www.acquisition.gov/dfars/201.602-2-responsibilities."
+  },
+  "lift": {
+    "airliftQueueDays": {
+      "min": 7,
+      "max": 14
+    },
+    "airliftBumpChance": 0.2,
+    "airliftBumpDelayDays": {
+      "min": 3,
+      "max": 7
+    },
+    "airliftMaxBumps": 2,
+    "sealiftTransitDays": {
+      "min": 30,
+      "max": 45
+    },
+    "customsHoldChance": 0.25,
+    "customsHoldDays": {
+      "min": 2,
+      "max": 6
+    },
+    "notes": "SPEC 4.1: airlift queue 7 to 14 days by priority and bumpable by higher-priority cargo; sealift 30 to 45; customs on arrival. Placeholder chances, tuned in playtest (Q2 pattern)."
   }
 }

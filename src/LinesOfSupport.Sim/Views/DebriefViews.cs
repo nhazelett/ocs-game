@@ -19,6 +19,8 @@ public enum GapFactorKind
     AcsaWithdrawn,
     /// <summary>The host nation withdrew support (requested or inherited) and nothing contractual was behind it (M3-06).</summary>
     HostNationWithdrawn,
+    /// <summary>An off-island delivery was bumped from the airlift or held in customs past its due day (M3-06).</summary>
+    LiftDelay,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>

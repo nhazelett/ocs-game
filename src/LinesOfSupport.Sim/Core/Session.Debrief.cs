@@ -69,6 +69,8 @@ public sealed partial class Session
                 [df.RecordId, df.RefusalRecordId]));
         }
 
+        foreach (var lf in LiftDelayFactors(siteId, capId, d)) yield return lf;
+
         var contributors = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && ActiveOn(a, d)).ToList();
         if (contributors.Count == 0)
         {

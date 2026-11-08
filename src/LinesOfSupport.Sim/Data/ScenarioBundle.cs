@@ -161,6 +161,7 @@ public sealed class ScenarioBundle
         foreach (var v in s.Vendors)
         {
             Need(islands.Contains(v.Island), $"vendor {v.Id} island not found");
+            foreach (var m in v.Lift) Need(m is "airlift" or "sealift", $"vendor {v.Id} lift mode {m} is not airlift or sealift");
             foreach (var o in v.Offers)
             {
                 var cap = Rules.Model.Capabilities.FirstOrDefault(c => c.Id == o.Capability);
