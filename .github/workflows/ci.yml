@@ -23,6 +23,7 @@ jobs:
         run: |
           dotnet build src/LinesOfSupport.sln -c Release
           dotnet test src/LinesOfSupport.sln -c Release --no-build
+          dotnet run --project src/LinesOfSupport.Harness -c Release --no-build -- validate scenarios/_stub
 
   scenarios:
     name: scenarios

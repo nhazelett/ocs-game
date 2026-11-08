@@ -15,4 +15,9 @@
     </PackageReference>
     <ProjectReference Include="../LinesOfSupport.Harness/LinesOfSupport.Harness.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="../../scenarios/schema/*.json" Link="fixtures/scenarios/schema/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../scenarios/rules/*.json" Link="fixtures/scenarios/rules/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../scenarios/_stub/*.json" Link="fixtures/scenarios/_stub/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
