@@ -13,6 +13,7 @@ public partial class GameShell
     internal string? SelectedArrangement { get; private set; }
     internal VBoxContainer MorningItems => morningItems;
     internal VBoxContainer MorningTiles => morningTiles;
+    internal Label BoardFocus => boardFocus;
 
     private void BuildMorningDesk()
     {
@@ -59,6 +60,18 @@ public partial class GameShell
             button.ToggleMode = true; button.ButtonPressed = SelectedCapability == key;
             button.SetMeta("capability", key); morningTiles.AddChild(button);
         }
+        if (view is not null && SelectedCapability is { } selected)
+        {
+            var tile = board?.Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == selected);
+            if (tile is not null)
+            {
+                var name = view.Scenario.Sites.Single(s => s.Id == tile.SiteId).Name;
+                var day = Math.Min(view.Day, view.LastDay);
+                var population = view.Population(tile.SiteId, day);
+                var planned = view.PlannedPopulation(tile.SiteId, day);
+                boardFocus.Text = $"Selected: {tile.Label} at {name} · {tile.Status} · {tile.TodayPermille / 10m:0.#}%\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
+            }
+        }
         RenderRequirementContext(view);
         RenderLedgerContext(view);
         RefreshBoardActions(view);
@@ -88,13 +101,13 @@ public partial class GameShell
 
     private void SelectCapability(string key)
     {
-        var tile = session.View?.MorningBoard().Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == key);
+        if (session.View is not { } view) return;
+        var tile = view.MorningBoard().Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == key);
         if (tile is null) return;
         SelectedCapability = key;
         Map.SelectSite(tile.SiteId);
-        boardFocus.Text = $"Selected: {tile.Label} at {session.View!.Scenario.Sites.Single(s => s.Id == tile.SiteId).Name} · {tile.Status} · {tile.TodayPermille / 10m:0.#}%";
         GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
-        RefreshMorningDesk(session.View, session.View.MorningBoard());
+        RefreshMorningDesk(view, view.MorningBoard());
     }
 
     private void RenderLedgerContext(SessionView? view)
