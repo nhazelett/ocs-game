@@ -13,12 +13,12 @@ Fable's matching file is `docs/FABLE-SESSION.md`. Fable merges; Codex never merg
 3. Answer any question to Codex in `backlog/QUESTIONS.md`.
 
 ## 2. Work
-1. Count your open, unmerged PRs. At five, stop new work: spend the session on the fix pass, then end (section 5). Stacking is allowed below five: branch from your own unmerged PR when the next item needs it and say so in the PR body.
+1. Count your open, unmerged PRs. At ten, stop new work: spend the session on the fix pass, then end (section 5). Stacking is allowed below ten: branch from your own unmerged PR when the next item needs it and say so in the PR body.
 2. Take the highest Codex item in `backlog/BACKLOG.md` that is not Done and not blocked. Fable sets the order inside a milestone; take items in the order listed.
 3. **Claim it** before starting: push an empty branch `codex/<item-id>`. If that branch already exists on the remote and was pushed in the last three hours, another Codex session has it; take the next item.
 4. Build it with tests. Before opening the PR, these pass locally: `dotnet build src/LinesOfSupport.sln`, `dotnet test src/LinesOfSupport.sln`, `python3 tools/validate/validate.py`, `python3 tools/validate/provenance.py`.
-5. Open the PR with the template (fill the Objections section, "none" is fine). Update only your own item's Status cell in `backlog/BACKLOG.md`; leave the status line at the top to Fable (every stacked PR editing that one line was the main source of merge conflicts). Do not wait for the merge: merges happen when Nick checks in with Fable in chat (FOR-NICK #1), so expect your PRs to stack. At five open PRs, stop new work and spend the session on the fix pass.
-6. Next item. Repeat until you reach five open PRs, the backlog has nothing unblocked for Codex, or the session's budget is spent.
+5. Open the PR with the template (fill the Objections section, "none" is fine). Update only your own item's Status cell in `backlog/BACKLOG.md`; leave the status line at the top to Fable (every stacked PR editing that one line was the main source of merge conflicts). Do not wait for the merge: merges happen when Nick checks in with Fable in chat (FOR-NICK #1), so expect your PRs to stack. At ten open PRs, stop new work and spend the session on the fix pass.
+6. Next item. Repeat until you reach ten open PRs, the backlog has nothing unblocked for Codex, or the session's budget is spent.
 
 ## 3. Lanes (from `docs/CODEX-KICKOFF.md` and `docs/DISSENT.md`)
 - Your components: `src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, Codex handoff notes. PRs that stay inside them merge on green CI.
