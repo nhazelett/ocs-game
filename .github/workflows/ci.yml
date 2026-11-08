@@ -88,6 +88,8 @@ jobs:
           grep -Fq 'COMMITMENT_SMOKE_PASS:' "$RUNNER_TEMP/godot-commitment.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/RequirementSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-requirement.log"
           grep -Fq 'REQUIREMENT_SMOKE_PASS:' "$RUNNER_TEMP/godot-requirement.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/ActionSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-action.log"
+          grep -Fq 'ACTION_SMOKE_PASS:' "$RUNNER_TEMP/godot-action.log"
           python3 -m py_compile tools/bpy/generate_kit.py
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"

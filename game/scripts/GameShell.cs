@@ -21,6 +21,7 @@ public partial class GameShell : Control
         GetNode<Button>("%Continue").Pressed += OnContinue;
         BuildMorningDesk();
         BuildCommitmentDesk();
+        BuildActionDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -140,5 +141,6 @@ public partial class GameShell : Control
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
         RefreshMorningDesk(view, board);
         RefreshCommitments(view);
+        RefreshActionDesk(view);
     }
 }

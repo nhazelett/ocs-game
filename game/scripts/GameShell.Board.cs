@@ -33,6 +33,7 @@ public partial class GameShell
         SelectedCard = SelectedCapability = SelectedArrangement = null;
         boardFocus.Text = "";
         Map.SelectSite(null);
+        ResetAwardForm();
     }
 
     private void RefreshMorningDesk(SessionView? view, MorningBoardView? board)
