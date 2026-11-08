@@ -185,6 +185,7 @@ public sealed class ScenarioBundle
         Need(cors.Count == s.Cors.Count, "COR ids must be unique");
         foreach (var c in s.Cors) Need(Rules.Cor.Qualities.ContainsKey(c.Quality), $"COR {c.Id} quality {c.Quality} not in rules cor.qualities");
         Need(Rules.Cor.Qualities.ContainsKey(Rules.Cor.ReliefQuality), $"rules cor.reliefQuality {Rules.Cor.ReliefQuality} not in cor.qualities");
+        Need(Rules.FileReview.HoursPerArrangement >= 0, "rules fileReview.hoursPerArrangement must not be negative");
         foreach (var a in s.InheritedArrangements)
         {
             if (a.Cor is not null) Need(cors.Contains(a.Cor), $"arrangement {a.Id} COR {a.Cor} not found");
@@ -196,6 +197,12 @@ public sealed class ScenarioBundle
             if (a.DailyCostCents is { } dc) Need(dc >= 0, $"arrangement {a.Id} dailyCostCents must not be negative");
             if (a.FundingLine is not null) Need(s.FundingLines.Any(f => f.Id == a.FundingLine), $"arrangement {a.Id} funding line {a.FundingLine} not found");
             if (a.ObligatedCents is > 0) Need(a.FundingLine is not null, $"arrangement {a.Id} has obligatedCents but no fundingLine");
+            if (a.ReportedReliability is { } rr)
+            {
+                Need(rr is >= 0 and <= 1, $"arrangement {a.Id} reportedReliability must be between 0 and 1");
+                Need(!a.VisibleProblem, $"arrangement {a.Id} has reportedReliability but visibleProblem is not false");
+            }
+            if (!a.VisibleProblem) Need(a.Instrument != "hostNation", $"arrangement {a.Id}: host nation support has no contract file to review, so its problem cannot be hidden");
             if (a.UcaState is { } u)
             {
                 Need(a.Instrument == "uca", $"arrangement {a.Id} has ucaState but instrument {a.Instrument}");

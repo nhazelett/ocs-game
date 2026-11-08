@@ -137,6 +137,11 @@ public sealed record ExternalSupportRequestView(
     int? ExpectedAnswerMin, int? ExpectedAnswerMax, int? AwardedDay, int? StartDay, int? EndDay,
     long Quantity, long TotalCents, string FundingLineId, string? CardId, string? RefusedReason);
 
+/// <summary>An inherited contract file the shop can review (M3-17). ReviewedDay is the day its findings came in, with
+/// FindingsRecordId the Knowledge record that lists them; InReview while the review is in the shop's queue.</summary>
+public sealed record InheritedFileView(
+    string ArrangementId, string SiteId, string CapabilityId, string Instrument, int? ReviewedDay, bool InReview, string? FindingsRecordId);
+
 /// <summary>
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return
 /// (the action is refused); SoftGaps are legal but carry a consequence the sim will play out.

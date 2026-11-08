@@ -22,6 +22,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(AcsaOrderAction), "acsaOrder")]
 [JsonDerivedType(typeof(HostNationRequestAction), "hostNationRequest")]
 [JsonDerivedType(typeof(PlanTransitionAction), "planTransition")]
+[JsonDerivedType(typeof(ReviewFilesAction), "reviewFiles")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -141,6 +142,18 @@ public sealed record EstablishIdiqAction : PlayerAction
 public sealed record CureNoticeAction : PlayerAction
 {
     public string Issue { get; init; } = "";
+}
+
+/// <summary>
+/// Review the contract files handed over by the last rotation (M3-17): shop hours per inherited arrangement (rules
+/// fileReview). When the work is done, each file reviewed yields a Knowledge record of what it shows (a UCA's
+/// definitization clock, an IDIQ's ceiling and ordered value, the vendor's real delivery record), including problems
+/// the handover did not mention. Arrangements empty or null means every inherited contract file not yet reviewed.
+/// Host nation support has no contract file of the shop's and is not reviewable.
+/// </summary>
+public sealed record ReviewFilesAction : PlayerAction
+{
+    public List<string>? Arrangements { get; init; }
 }
 
 /// <summary>Designate a COR on a running or pending contract, replacing any COR it has (M3-04, DFARS 201.602-2).

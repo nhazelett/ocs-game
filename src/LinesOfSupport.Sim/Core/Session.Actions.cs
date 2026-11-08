@@ -35,6 +35,7 @@ public sealed partial class Session
             AcsaOrderAction o => ApplyAcsaOrder(o),
             HostNationRequestAction h => ApplyHostNationRequest(h),
             PlanTransitionAction p => ApplyPlanTransition(p),
+            ReviewFilesAction r => ApplyReviewFiles(r),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -64,6 +65,7 @@ public sealed partial class Session
         AcsaOrderAction o => $"ACSA order {o.Id}",
         HostNationRequestAction h => $"host nation support request {h.Id}",
         PlanTransitionAction p => $"transition plan {p.Id}",
+        ReviewFilesAction => "file review",
         _ => a.GetType().Name,
     };
 
@@ -502,6 +504,9 @@ public sealed partial class Session
                 break;
             case WorkKind.ExternalSupportRequest:
                 CompleteExternalRequestWork((string)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.FileReview:
+                CompleteFileReview((List<string>)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.Denial:
                 AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);

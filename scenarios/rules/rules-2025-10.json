@@ -752,5 +752,9 @@
     "defaultOverlapDays": 2,
     "warnDays": 5,
     "notes": "SPEC 2 and 4 transition plan (backlog M3-05): days of verified full delivery by the incoming arrangement before the cut-over, and how many days before the outgoing ends the planner flags a projected gap. Placeholders, tuned in playtest."
+  },
+  "fileReview": {
+    "hoursPerArrangement": 4,
+    "notes": "Reviewing an inherited contract file at a rotation (backlog M3-17): half a person-day per file to read the contract, its modifications, the obligation record and the delivery record. Placeholder, tuned in playtest."
   }
 }

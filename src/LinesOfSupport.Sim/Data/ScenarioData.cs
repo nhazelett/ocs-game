@@ -172,7 +172,13 @@ public sealed record InheritedArrangementData
     public int? NoticeDays { get; init; }
     public UcaStateData? UcaState { get; init; }
     public string? Cor { get; init; }
+    /// <summary>False for an inherited problem the handover did not mention (M3-17): a UCA's overdue clock, an IDIQ's
+    /// ceiling and ordered value, or (with ReportedReliability) the vendor's real delivery record stay out of the views
+    /// until a file review finds them.</summary>
     public bool VisibleProblem { get; init; } = true;
+    /// <summary>The delivery record the handover reported, 0 to 1, when it differs from the vendor's true reliability
+    /// (M3-17). Only on a row whose VisibleProblem is false.</summary>
+    public double? ReportedReliability { get; init; }
     /// <summary>Units per day (M3-16); null means the vendor's capacity for the capability.</summary>
     public double? Quantity { get; init; }
     /// <summary>Cost per day of performance (M3-16); null means quantity times the vendor's unit price (zero for host nation support).</summary>
@@ -362,6 +368,14 @@ public sealed record RulesFile
     public CorRulesData Cor { get; init; } = new();
     public LiftRulesData Lift { get; init; } = new();
     public TransitionRulesData Transition { get; init; } = new();
+    public FileReviewRulesData FileReview { get; init; } = new();
+}
+
+/// <summary>Reviewing inherited contract files (M3-17): shop hours per file. The findings are ready when the work is.</summary>
+public sealed record FileReviewRulesData
+{
+    public double HoursPerArrangement { get; init; } = 4;
+    public string? Notes { get; init; }
 }
 
 /// <summary>Transition plans (M3-05, SPEC 2 and 4): the overlap a plan asks for when it does not say, and how many days

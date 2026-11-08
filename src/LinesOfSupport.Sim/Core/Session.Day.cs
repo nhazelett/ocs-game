@@ -166,6 +166,7 @@ public sealed partial class Session
             {
                 _hhqInquiries++;
                 var rec = AddRecord(d, RecordKind.Compliance, a.Id, $"Higher HQ asked why {a.Id} is past due for definitization. A response is now shop work.", []);
+                RevealByInquiry(a, d, rec);
                 AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {a.Id}", Fixed.Milli(Rules.Model.Work.HhqInquiryResponseHours), d, a.Id, rec);
             }
         }

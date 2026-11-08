@@ -753,6 +753,21 @@
           "type": "string"
         }
       }
+    },
+    "fileReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Reviewing the inherited contract files (backlog M3-17): what it costs the shop. The findings come in when the work is done.",
+      "properties": {
+        "hoursPerArrangement": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Shop hours per inherited contract file reviewed."
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

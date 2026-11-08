@@ -612,7 +612,13 @@
           "visibleProblem": {
             "type": "boolean",
             "default": true,
-            "description": "False for the inherited problems nobody noticed (past-due UCA, ceiling nearly hit)"
+            "description": "False for the inherited problems nobody noticed (past-due UCA, ceiling nearly hit, a vendor's real delivery record): kept out of the views until a file review (reviewFiles action) or, for a past-due UCA, a higher-HQ inquiry finds them (M3-17). Not allowed on host nation support, which has no contract file to review"
+          },
+          "reportedReliability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The delivery record the handover reported, shown instead of the vendor's true reliability until the file is reviewed (M3-17). Only with visibleProblem false"
           },
           "quantity": {
             "type": "number",

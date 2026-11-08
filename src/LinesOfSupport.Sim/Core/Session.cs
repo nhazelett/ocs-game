@@ -321,6 +321,7 @@ public sealed partial class Session
         foreach (var lineId in a.Lines)
             if (Cap(a.Capability).Lines.FirstOrDefault(l => l.Id == lineId) is { Kind: "supplies", Supplies: { } target } && CapState(a.Site, target) is not null && a.Quantity is not null)
                 arr.SuppliedQuantityMilli[target] = Fixed.MulPermille(PeakDemandMilli(a.Site, target, Math.Max(1, a.StartDay), Math.Min(a.EndDay, LastDay)), Rules.Model.SupplyLineSizingPermille);
+        RegisterHidden(a);
         var ucaNote = "";
         if (a.UcaState is { } us)
         {
@@ -332,7 +333,8 @@ public sealed partial class Session
                 Definitized = us.Definitized, PriorObligatedCents = us.ObligatedCents,
             };
             var due = us.IssuedDay + Rules.Uca.DefinitizeWithinDays;
-            ucaNote = us.Definitized ? " UCA, definitized."
+            // A hidden UCA shows as an ordinary contract until its file is reviewed (M3-17).
+            ucaNote = !a.VisibleProblem ? "" : us.Definitized ? " UCA, definitized."
                 : $" UCA issued day {us.IssuedDay}, NTE {Money(us.NteCents)}, {Money(us.ObligatedCents)} obligated before day 1; definitization due by day {due} or at {Rules.Uca.DefinitizeAtObligatedFraction * 100:0}% of NTE obligated{(proposal < 1 ? "; qualifying proposal in hand" : "")}.";
         }
         _arrangements.Add(arr);

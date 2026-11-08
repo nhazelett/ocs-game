@@ -46,11 +46,34 @@ public sealed class SessionView
     public string CorSummary(CorState cor) => _s.CorSummary(cor);
     /// <summary>Lag and report odds for a COR's current quality (rules cor.qualities).</summary>
     public CorQualityData CorQuality(CorState cor) => _s.CorQuality(cor);
-    /// <summary>False for a VendorFailure record the office has not been told about (it waits for a COR or unit report,
-    /// which is a CorReport record). The morning board already leaves those out; record lists shown to the player
-    /// should too. Every other record is known when written.</summary>
-    public bool Known(CauseRecord record)
-        => record.Kind != RecordKind.VendorFailure || _s.Arrangements.FirstOrDefault(a => a.Id == record.Subject) is not { } a || _s.Observed(a);
+    /// <summary>False for a record the office has not been told about yet: a VendorFailure waiting for a COR or unit
+    /// report, which is a CorReport record (M3-04), or a hidden inherited UCA's UcaOverdue or UcaProposal notice until its
+    /// file is reviewed or higher HQ asks about it (M3-17). Known as of today, so a record can become known later. The
+    /// morning board already leaves these out; record lists shown to the player should too.</summary>
+    public bool Known(CauseRecord record) => _s.RecordKnown(record);
+
+    /// <summary>True while an inherited arrangement carries a problem the handover did not mention and nobody has found
+    /// (M3-17). While true, show it as an ordinary contract: no UCA clocks or state (its <c>Uca</c> is not the player's to
+    /// see), <see cref="ShownReliabilityPermille"/> rather than <c>ReliabilityPermille</c>, and for an IDIQ order no
+    /// vehicle ceiling or ordered value (<see cref="IdiqTermsHidden"/>).</summary>
+    public bool ProblemHidden(Arrangement arrangement) => _s.ProblemHidden(arrangement);
+
+    /// <summary>The delivery record the office believes, permille: the handover's reported reliability while a hidden
+    /// problem is unfound, else the true one (M3-17).</summary>
+    public int ShownReliabilityPermille(Arrangement arrangement) => _s.ShownReliability(arrangement);
+
+    /// <summary>True while an inherited order with a hidden problem keeps this IDIQ's ceiling and ordered value out of
+    /// view (M3-17). <see cref="ActionEditor"/> already nulls them in its VehicleOption; read <see cref="Idiqs"/> through
+    /// this.</summary>
+    public bool IdiqTermsHidden(string vehicleId) => _s.IdiqTermsHidden(vehicleId);
+
+    /// <summary>Inherited contract files the shop can review, with the day each was reviewed (M3-17). Host nation support
+    /// has no file of the shop's and is not listed.</summary>
+    public IReadOnlyList<InheritedFileView> InheritedFiles() => _s.BuildInheritedFiles();
+
+    /// <summary>What a file review would take (M3-17): hard stops, shop hours (min and max equal) and in
+    /// EarliestStartMin/Max the day the findings would come in, ignoring the queue ahead. Changes nothing.</summary>
+    public ActionPreview PreviewReviewFiles(ReviewFilesAction review) => _s.BuildReviewFilesPreview(review);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;

@@ -74,8 +74,9 @@ public sealed partial class Session
         {
             var r = _records[i];
             if (Classify(r.Kind) is not var (cat, sev)) continue;
-            // A failure on a contract watched through COR reports is not news until the report arrives (M3-04).
-            if (r.Kind == RecordKind.VendorFailure && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } fa && !Observed(fa)) continue;
+            // A failure on a contract watched through COR reports is not news until the report arrives (M3-04); a hidden
+            // inherited UCA's clock is not news until its file is reviewed (M3-17).
+            if (!RecordKnown(r)) continue;
             if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
             var (lk, lid) = Link(r.Subject);
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy));
@@ -221,7 +222,10 @@ public sealed partial class Session
             .Where(v => v.VisibleOnDay1 && vendors.Any(o => o.Id == v.Vendor))
             .Select(v => new VehicleOption(v.Id, v.Kind, v.Vendor, v.ScopeTags, v.CallLimitCents, v.OrderingPeriodEndDay,
                                            v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay,
-                                           Idiq(v.Id)?.CeilingCents, Idiq(v.Id)?.OrderedCents, Idiq(v.Id)?.GuaranteeUnorderedCents))
+                                           // An inherited order with a hidden problem keeps the vehicle's terms out of view (M3-17).
+                                           IdiqTermsHidden(v.Id) ? null : Idiq(v.Id)?.CeilingCents,
+                                           IdiqTermsHidden(v.Id) ? null : Idiq(v.Id)?.OrderedCents,
+                                           IdiqTermsHidden(v.Id) ? null : Idiq(v.Id)?.GuaranteeUnorderedCents))
             .ToList();
 
         var funding = _funding.Select(f =>

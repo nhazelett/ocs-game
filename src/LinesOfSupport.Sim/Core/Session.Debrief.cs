@@ -233,6 +233,16 @@ public sealed partial class Session
                     case RecordKind.VendorFailure:
                     {
                         var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
+                        // An inherited vendor whose real delivery record the handover overstated (M3-17): the failure was in
+                        // its file, so it is discoverable until the file is reviewed and avoidable after.
+                        if (missing.Count == 0 && _reportedReliability.TryGetValue(a.Id, out var reported)
+                            && HiddenNote(a.Id, d, $"its real delivery record ({a.ReliabilityPermille / 10}% on time, not the {reported / 10}% reported at handover)") is { } hn)
+                        {
+                            yield return ($"fail|{a.Id}|hidden|{hn.Tag}", new GapFactor(GapFactorKind.VendorFailure, hn.Tag, d,
+                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
+                                hn.RecordId is null ? [r.Id] : [r.Id, hn.RecordId]));
+                            break;
+                        }
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
                                 $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
@@ -261,8 +271,12 @@ public sealed partial class Session
                 var why = overdue is null
                     ? "incurred costs went past what could be obligated (the UCA obligation cap or the money on the line)"
                     : $"incurred costs went past the obligation cap; it had been past due for definitization since day {overdue.Day}";
-                yield return ($"stop|{a.Id}", new GapFactor(GapFactorKind.StopWork, GapTag.Avoidable, d,
-                    $"{a.Id} stopped work on day {stop.Day}: {why}.", overdue is null ? [stop.Id, a.CauseId] : [stop.Id, overdue.Id]));
+                // A hidden inherited UCA (M3-17): discoverable while its clock was unfound on the stop day, avoidable once found.
+                var hidden = HiddenNote(a.Id, stop.Day, "its definitization clock");
+                var ids = overdue is null ? new List<string> { stop.Id, a.CauseId } : [stop.Id, overdue.Id];
+                if (hidden?.RecordId is { } found) ids.Add(found);
+                yield return ($"stop|{a.Id}", new GapFactor(GapFactorKind.StopWork, hidden?.Tag ?? GapTag.Avoidable, d,
+                    $"{a.Id} stopped work on day {stop.Day}: {why}.{hidden?.Note}", ids));
             }
         }
     }
