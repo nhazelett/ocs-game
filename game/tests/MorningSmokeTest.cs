@@ -21,9 +21,9 @@ public partial class MorningSmokeTest : Node
             do
             {
                 expected.AdvanceDay(); days++;
-            } while (days < 7 && !expected.Finished && !expected.View.MorningBoard().Items.Any(i => i.Severity == BoardSeverity.Alert || i.Category == BoardCategory.Request));
+            } while (!expected.Finished && expected.View.MorningBoard().Lead is null);
             shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.StateHash == expected.StateHash() && shell.Session.CompletedDay == days, "Continue stops exactly at the Sim's first alert/request or seven-day bound.");
+            Require(shell.Session.StateHash == expected.StateHash() && shell.Session.CompletedDay == days, "Continue stops exactly at the next Sim-projected lead or completion.");
 
             Replay(shell); Step(shell, 10);
             var board = shell.Session.View!.MorningBoard();
@@ -62,8 +62,8 @@ public partial class MorningSmokeTest : Node
             DeveloperWorkspace(quiet);
             DeployWithoutPrep(quiet);
             quiet.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(quiet.Session.CompletedDay == 7, "A quiet scenario stops after exactly seven days.");
-            GD.Print("MORNING_SMOKE_PASS: alert-first board, linked targets, event stop and seven-day limit.");
+            Require(quiet.Session.View!.Finished && quiet.Session.CompletedDay == quiet.Session.View.LastDay, "A quiet scenario continues to completion without an arbitrary week stop.");
+            GD.Print("MORNING_SMOKE_PASS: alert-first details, linked targets, Sim lead stop and quiet completion.");
             shell.QueueFree(); quiet.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
