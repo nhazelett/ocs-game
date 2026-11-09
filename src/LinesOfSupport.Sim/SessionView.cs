@@ -100,6 +100,23 @@ public sealed class SessionView
     /// <summary>What a file review would take (M3-17): hard stops, shop hours (min and max equal) and in
     /// EarliestStartMin/Max the day the findings would come in, ignoring the queue ahead. Changes nothing.</summary>
     public ActionPreview PreviewReviewFiles(ReviewFilesAction review) => _s.BuildReviewFilesPreview(review);
+
+    // Going to people (M2R-04, docs/design/opening-and-guidance.md 6.2 and 6.2a). Each visit is an action with a shop-hour
+    // cost; what the person says comes back as a RecordKind.Visit record, linked to them by BoardLinkKind.Person.
+    /// <summary>Hours, ready day and hard stops for FindFinanceAction, JoinStaffMeetingAction, AskScoAction,
+    /// MeetVendorAction or EngageJ4Action. For a question, the ready range is when the answer can come back; for the
+    /// J4, the first day of support.</summary>
+    public ActionPreview PreviewVisit(PlayerAction visit) => _s.BuildVisitPreview(visit);
+    /// <summary>Day the shop found the finance office, or null.</summary>
+    public int? FinanceFoundDay => _s.FinanceFoundDay;
+    public StaffMeetingView StaffMeeting => _s.BuildStaffMeeting();
+    public IReadOnlyList<ScoQuestionView> ScoQuestions => _s.BuildScoQuestions();
+    /// <summary>How sure the directory is about a vendor: assumed, estimated, surveyed or observed. Meeting them raises it.</summary>
+    public string VendorConfidence(string vendorId) => _s.VendorData(vendorId) is { } v ? _s.VendorConfidence(v) : "assumed";
+    /// <summary>Day the shop met this vendor, or null.</summary>
+    public int? VendorMetDay(string vendorId) => _s.VendorMetDay(vendorId);
+    /// <summary>Vendors with a rep in the cast who could come by: the ones a meeting is offered for.</summary>
+    public IReadOnlyList<PersonView> VendorReps => People.Where(p => p.Role == "vendorRep").ToList();
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;

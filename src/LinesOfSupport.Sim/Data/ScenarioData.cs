@@ -19,6 +19,9 @@ public sealed record ScenarioFile
     public int Days { get; init; }
     public int PrepDays { get; init; }
     public int? DefaultSeed { get; init; }
+    /// <summary>A tutorial scenario (M2R-04, M2R-08): the SCO's staff may add a direction to a factual answer. In every
+    /// other scenario they answer with facts and limits only (design doc R4).</summary>
+    public bool Tutorial { get; init; }
     public List<IslandData> Islands { get; init; } = [];
     public List<TransportLinkData> TransportLinks { get; init; } = [];
     public List<SiteData> Sites { get; init; } = [];
@@ -460,6 +463,7 @@ public sealed record RulesFile
     public ClaimRulesData Claims { get; init; } = new();
     public SmallBuysRulesData SmallBuys { get; init; } = new();
     public GpcProgramRulesData GpcProgram { get; init; } = new();
+    public GoingToPeopleRulesData GoingToPeople { get; init; } = new();
 }
 
 /// <summary>Vendor claims after a termination without the contract's notice (M3-19, FAR 49): shop hours to settle,
@@ -572,6 +576,69 @@ public sealed record GpcProgramRulesData
 {
     public int StandUpShopHours { get; init; } = 40;
     public int DivertedPermille { get; init; } = 800;
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>Going to people (M2R-04, design doc 6.2 and 6.2a): what each visit costs in shop hours and what it returns.</summary>
+public sealed record GoingToPeopleRulesData
+{
+    public FindFinanceRulesData FindFinance { get; init; } = new();
+    public StaffMeetingRulesData StaffMeeting { get; init; } = new();
+    public AskScoRulesData AskSco { get; init; } = new();
+    public MeetVendorRulesData MeetVendor { get; init; } = new();
+    public EngageJ4RulesData EngageJ4 { get; init; } = new();
+}
+
+/// <summary>Finding the finance office: the paying agent is set up within PayingAgentWithinDays of the visit (never later
+/// than already planned) and cash replenishment takes at most ReplenishLagDays from then on.</summary>
+public sealed record FindFinanceRulesData
+{
+    public int ShopHours { get; init; } = 3;
+    public int PayingAgentWithinDays { get; init; } = 3;
+    public int ReplenishLagDays { get; init; } = 3;
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>The commander's staff meeting: joining costs hours once, each weekly meeting after that costs WeeklyShopHours
+/// and shows requirements due to be submitted within PreviewDays.</summary>
+public sealed record StaffMeetingRulesData
+{
+    public int JoinShopHours { get; init; } = 2;
+    public int WeeklyShopHours { get; init; } = 2;
+    public int EveryDays { get; init; } = 7;
+    public int PreviewDays { get; init; } = 7;
+}
+
+/// <summary>Reachback to the SCO's staff: a question from the short list, answered after the SCO's response lag
+/// (rules sco.responseLagDaysByResponsiveness). TutorialDirection is added to an answer only in a tutorial.</summary>
+public sealed record AskScoRulesData
+{
+    public int ShopHours { get; init; } = 1;
+    public List<ScoQuestionData> Questions { get; init; } = [];
+}
+
+public sealed record ScoQuestionData
+{
+    /// <summary>One of fuel, routes, vehicles, thresholds: the Sim builds the answer's facts from the scenario and rules.</summary>
+    public string Id { get; init; } = "";
+    public string Label { get; init; } = "";
+    public string? TutorialDirection { get; init; }
+}
+
+/// <summary>Meeting a vendor who comes by: the directory entry firms up to at least Confidence, and the vendor raises any
+/// old contract of theirs the handover did not mention that is still waiting on the office.</summary>
+public sealed record MeetVendorRulesData
+{
+    public int ShopHours { get; init; } = 2;
+    public string Confidence { get; init; } = "estimated";
+}
+
+/// <summary>Getting the J4 to add a site to the ACSA order (design doc 6.2a): shop hours through the OCS seat, then the
+/// ACSA manager adds the site after LagDays. The partner's stock is the ceiling; reimbursement is the J4's, not the shop's.</summary>
+public sealed record EngageJ4RulesData
+{
+    public int ShopHours { get; init; } = 4;
+    public int LagDays { get; init; } = 3;
     public string? SourceUrl { get; init; }
 }
 

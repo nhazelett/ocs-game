@@ -110,7 +110,9 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, GpcProgram, ExternalSupportRequest, AcsaOrder, HostNationRequest, FileReview, ClaimSettlement }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, GpcProgram, ExternalSupportRequest, AcsaOrder, HostNationRequest, FileReview, ClaimSettlement,
+    /// <summary>Going to people (M2R-04): finding finance, the staff meeting, a question to the SCO, a vendor meeting, the J4.</summary>
+    Visit }
 
 public sealed class WorkItem
 {
@@ -248,6 +250,9 @@ public enum RecordKind
     /// <summary>A transition plan's clock: a projected gap flagged, the cut-over started, or the handoff done clean or with a
     /// gap (M3-05).</summary>
     Transition,
+    /// <summary>Going to people (M2R-04): what finance, the staff meeting, the SCO's staff, a vendor or the J4 said.
+    /// The subject is "person &lt;id&gt;" when a cast member said it.</summary>
+    Visit,
 }
 
 public enum TransitionOutcome { Open, Clean, Gap }

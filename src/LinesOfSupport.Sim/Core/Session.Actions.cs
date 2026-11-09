@@ -32,6 +32,11 @@ public sealed partial class Session
             CureNoticeAction c => ApplyCureNotice(c),
             HoldSmallBuysAction h => ApplyHoldSmallBuys(h),
             StandUpGpcProgramAction => ApplyStandUpGpcProgram(),
+            FindFinanceAction => ApplyFindFinance(),
+            JoinStaffMeetingAction j => ApplyJoinStaffMeeting(j),
+            AskScoAction q => ApplyAskSco(q),
+            MeetVendorAction m => ApplyMeetVendor(m),
+            EngageJ4Action j => ApplyEngageJ4(j),
             DesignateCorAction c => ApplyDesignateCor(c),
             RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
             AcsaOrderAction o => ApplyAcsaOrder(o),
@@ -64,6 +69,11 @@ public sealed partial class Session
         CureNoticeAction c => $"cure notice {c.Issue}",
         HoldSmallBuysAction h => h.Hold ? "hold small buys" : "release small buys",
         StandUpGpcProgramAction => "stand up GPC program",
+        FindFinanceAction => "find finance",
+        JoinStaffMeetingAction j => j.Attend ? "join the staff meeting" : "stop going to the staff meeting",
+        AskScoAction q => $"ask the SCO ({q.Question})",
+        MeetVendorAction m => $"meet vendor {m.Vendor}",
+        EngageJ4Action j => $"engage the J4 {j.Id}",
         DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
         RequestExternalSupportAction r => $"external support request {r.Id}",
         AcsaOrderAction o => $"ACSA order {o.Id}",
@@ -498,6 +508,9 @@ public sealed partial class Session
                 break;
             case WorkKind.GpcProgram:
                 CompleteGpcProgram(day, w.CauseId);
+                break;
+            case WorkKind.Visit:
+                CompleteVisit(w, day);
                 break;
             case WorkKind.CureNotice:
                 CompleteCureNotice((string)w.Payload!, day, w.CauseId);

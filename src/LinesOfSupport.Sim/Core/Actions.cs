@@ -18,6 +18,11 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(CureNoticeAction), "cureNotice")]
 [JsonDerivedType(typeof(HoldSmallBuysAction), "holdSmallBuys")]
 [JsonDerivedType(typeof(StandUpGpcProgramAction), "standUpGpcProgram")]
+[JsonDerivedType(typeof(FindFinanceAction), "findFinance")]
+[JsonDerivedType(typeof(JoinStaffMeetingAction), "joinStaffMeeting")]
+[JsonDerivedType(typeof(AskScoAction), "askSco")]
+[JsonDerivedType(typeof(MeetVendorAction), "meetVendor")]
+[JsonDerivedType(typeof(EngageJ4Action), "engageJ4")]
 [JsonDerivedType(typeof(EstablishIdiqAction), "establishIdiq")]
 [JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
 [JsonDerivedType(typeof(RequestExternalSupportAction), "requestExternalSupport")]
@@ -268,6 +273,43 @@ public sealed record HoldSmallBuysAction : PlayerAction
 /// <summary>Stand up a decentralized purchase card program: shop hours now, most small buys off the shop afterward.
 /// Needs purchase card accounts. Design doc 6.1.</summary>
 public sealed record StandUpGpcProgramAction : PlayerAction;
+
+/// <summary>Go and find the finance office (M2R-04, design doc 6.2): sets up or speeds the paying agent and cash
+/// replenishment, and returns the real cash and card timing. Once per game.</summary>
+public sealed record FindFinanceAction : PlayerAction;
+
+/// <summary>Get into the commander's weekly staff meeting (Attend true), or stop going (false). Once in, each meeting costs
+/// shop hours and returns the commander's priorities and requirements before they are submitted (design doc 6.2).</summary>
+public sealed record JoinStaffMeetingAction : PlayerAction
+{
+    public bool Attend { get; init; } = true;
+}
+
+/// <summary>Send the SCO's staff a question from the short list (rules goingToPeople.askSco.questions). The answer is a
+/// fact and comes back after the SCO's response lag; only a tutorial adds a direction (design doc R4).</summary>
+public sealed record AskScoAction : PlayerAction
+{
+    public string Question { get; init; } = "";
+}
+
+/// <summary>Meet a vendor who has come by (design doc 6.2): their directory entry firms up, and they raise any old
+/// contract of theirs that is still waiting on the office.</summary>
+public sealed record MeetVendorAction : PlayerAction
+{
+    public string Vendor { get; init; } = "";
+}
+
+/// <summary>Get the J4 to put a site on the ACSA order (design doc 6.2a), through the OCS seat. The ACSA manager adds the
+/// site and daily quantity after a lag; the partner's stock is the ceiling and the reimbursement is the J4's, not the shop's.</summary>
+public sealed record EngageJ4Action : PlayerAction
+{
+    public string Id { get; init; } = "";
+    public string Site { get; init; } = "";
+    public string Capability { get; init; } = "fuel";
+    public long Quantity { get; init; }
+    /// <summary>Days of support; null runs to the end of the scenario.</summary>
+    public int? DurationDays { get; init; }
+}
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)
 {
