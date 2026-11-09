@@ -92,6 +92,7 @@ public partial class GameShell
 
     internal static string GapFactorLabel(GapFactorKind kind) => kind switch
     {
+        GapFactorKind.FundingLapse => "Funding lapse",
         GapFactorKind.PopulationJump => "Unplanned population arrival",
         GapFactorKind.PriorityDeferred => "Shop work deferred after lost confidence",
         _ => kind.ToString()

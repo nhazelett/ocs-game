@@ -56,6 +56,12 @@ def cross_checks(sc, rules):
                 if source not in islands: errs.append(f"vendor {v['id']} {o['capability']}: sourceIsland {source} not found")
                 if cap_data.get(o["capability"], {}).get("delivery") != "consumable":
                     errs.append(f"vendor {v['id']} {o['capability']}: sourceIsland applies only to consumables")
+    for funding in sc.get("fundingLines", []):
+        for capability in funding.get("capabilities", []):
+            if capability not in caps:
+                errs.append(f"funding line {funding['id']}: capability {capability} not in rules")
+        if funding["availableDay"] > funding["expiresDay"]:
+            errs.append(f"funding line {funding['id']}: expires before it is released")
     for v in sc["vehicles"]:
         if v["vendor"] not in vendors: errs.append(f"vehicle {v['id']}: vendor {v['vendor']} not found")
         for isl in v.get("placeOfPerformance", []):
@@ -78,6 +84,11 @@ def cross_checks(sc, rules):
                 errs.append(f"event {e['id']}: forecastDays applies only to link.closed")
             if kind == "link.closed" and effect.get("target") not in links:
                 errs.append(f"event {e['id']}: link.closed link {effect.get('target')} not found")
+            if kind == "funding.late":
+                if effect.get("target") not in ids("fundingLines"):
+                    errs.append(f"event {e['id']}: funding.late funding line {effect.get('target')} not found")
+                if (effect.get("days") or 0) <= 0 and (duration or {}).get("max", 0) <= 0:
+                    errs.append(f"event {e['id']}: funding.late needs a positive days or daysRange")
             if kind == "site.populationJump":
                 if effect.get("target") not in sites:
                     errs.append(f"event {e['id']}: site.populationJump site {effect.get('target')} not found")

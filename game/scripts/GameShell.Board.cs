@@ -11,6 +11,7 @@ public partial class GameShell
     internal string? SelectedCard { get; private set; }
     internal string? SelectedCapability { get; private set; }
     internal string? SelectedArrangement { get; private set; }
+    internal string? SelectedFunding { get; private set; }
     internal VBoxContainer MorningItems => morningItems;
     internal VBoxContainer MorningTiles => morningTiles;
     internal Label BoardFocus => boardFocus;
@@ -31,7 +32,7 @@ public partial class GameShell
 
     private void ResetDeskSelection()
     {
-        SelectedCard = SelectedCapability = SelectedArrangement = null;
+        SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
         boardFocus.Text = "";
         Map.SelectSite(null);
         ResetAwardForm();
@@ -87,8 +88,21 @@ public partial class GameShell
                 RenderRequirementContext(session.View); break;
             case BoardLinkKind.SiteCapability: SelectCapability(item.LinkId); break;
             case BoardLinkKind.Arrangement:
-                SelectedArrangement = item.LinkId; tabs.CurrentTab = 5;
+                SelectedArrangement = item.LinkId; SelectedFunding = null; tabs.CurrentTab = 5;
                 RenderLedgerContext(session.View); break;
+            case BoardLinkKind.Funding:
+                SelectedArrangement = null;
+                SelectedFunding = session.View?.Funding.Any(f => f.Id == item.LinkId) == true ? item.LinkId : null;
+                tabs.CurrentTab = 5; RenderLedgerContext(session.View);
+                var focus = linkedLedger.GetChildren().OfType<Label>()
+                    .FirstOrDefault(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == SelectedFunding);
+                if (focus is null) linkedLedger.AddChild(DeskUi.Label(item.Text));
+                else Callable.From(() =>
+                {
+                    if (!GodotObject.IsInstanceValid(focus) || !focus.IsInsideTree()) return;
+                    focus.GrabFocus(); ((ScrollContainer)linkedLedger.GetParent()).EnsureControlVisible(focus);
+                }).CallDeferred();
+                break;
             case BoardLinkKind.Cash:
             case BoardLinkKind.Work:
                 tabs.CurrentTab = 5; RenderLedgerContext(session.View);
@@ -119,7 +133,12 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("Funding lines"));
         foreach (var funding in view.Funding)
         {
-            var row = DeskUi.Label($"{funding.Id} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
+            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{funding.Id} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
+            var purpose = funding.Capabilities.Count == 0 ? "any" : string.Join(", ", funding.Capabilities);
+            row.Text += $"\nPurpose: {purpose}";
+            if (funding.AvailableDay > funding.PlannedAvailableDay)
+                row.Text += $"\nRelease: planned day {funding.PlannedAvailableDay}, now day {funding.AvailableDay}";
+            row.FocusMode = FocusModeEnum.All;
             row.SetMeta("funding", funding.Id); linkedLedger.AddChild(row);
         }
         if (view.Funding.Count == 0) linkedLedger.AddChild(DeskUi.Label("No funding lines."));
@@ -128,7 +147,7 @@ public partial class GameShell
         {
             var button = DeskUi.Button($"{arrangement.Id} · {arrangement.Status}\nObligated {DeskUi.Money(arrangement.ObligatedCents)} · incurred {DeskUi.Money(arrangement.IncurredCents)}\nUnobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
             {
-                SelectedArrangement = arrangement.Id; RenderLedgerContext(session.View);
+                SelectedArrangement = arrangement.Id; SelectedFunding = null; RenderLedgerContext(session.View);
             });
             button.ToggleMode = true; button.ButtonPressed = SelectedArrangement == arrangement.Id;
             button.SetMeta("arrangement", arrangement.Id); linkedLedger.AddChild(button);
