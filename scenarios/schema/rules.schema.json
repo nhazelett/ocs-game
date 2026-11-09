@@ -844,6 +844,154 @@
           "type": "string"
         }
       }
+    },
+    "goingToPeople": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Going to people (design doc 6.2, 6.2a): shop-hour costs and what each visit returns.",
+      "properties": {
+        "notes": {
+          "type": "string"
+        },
+        "findFinance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "shopHours",
+            "payingAgentWithinDays",
+            "replenishLagDays"
+          ],
+          "properties": {
+            "shopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payingAgentWithinDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "replenishLagDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sourceUrl": {
+              "type": "string"
+            }
+          }
+        },
+        "staffMeeting": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "joinShopHours",
+            "weeklyShopHours",
+            "everyDays",
+            "previewDays"
+          ],
+          "properties": {
+            "joinShopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "weeklyShopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "everyDays": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "previewDays": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "askSco": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "shopHours",
+            "questions"
+          ],
+          "properties": {
+            "shopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "questions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "label"
+                ],
+                "properties": {
+                  "id": {
+                    "enum": [
+                      "fuel",
+                      "routes",
+                      "vehicles",
+                      "thresholds"
+                    ]
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "tutorialDirection": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "meetVendor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "shopHours",
+            "confidence"
+          ],
+          "properties": {
+            "shopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "confidence": {
+              "enum": [
+                "assumed",
+                "estimated",
+                "surveyed",
+                "observed"
+              ]
+            }
+          }
+        },
+        "engageJ4": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "shopHours",
+            "lagDays"
+          ],
+          "properties": {
+            "shopHours": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "lagDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sourceUrl": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {
