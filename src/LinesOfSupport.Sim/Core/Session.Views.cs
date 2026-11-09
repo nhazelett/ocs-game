@@ -79,7 +79,7 @@ public sealed partial class Session
             if (!RecordKnown(r)) continue;
             if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
             var (lk, lid) = Link(r.Subject);
-            items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy));
+            items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy, PersonFor(lk, lid)));
         }
         var ordered = items.Select((it, i) => (it, i)).OrderByDescending(x => x.it.Severity).ThenBy(x => x.i).Select(x => x.it).ToList();
         return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles());
@@ -106,6 +106,39 @@ public sealed partial class Session
         }
         return tiles;
     }
+
+    // ------------------------------------------------------------------ people (M2R-01)
+
+    internal PersonView? BuildPerson(string? id)
+    {
+        if (id is null || Scenario.People.FirstOrDefault(p => p.Id == id) is not { } p) return null;
+        var vendor = p.Vendor is null ? null : Scenario.Vendors.FirstOrDefault(v => v.Id == p.Vendor)?.Name;
+        return new PersonView(p.Id, p.Name, p.Rank, p.Unit, p.Role, p.Portrait, p.Lines, vendor);
+    }
+
+    internal IReadOnlyList<PersonView> BuildPeople() => Scenario.People.Select(p => BuildPerson(p.Id)!).ToList();
+
+    /// <summary>The first vendorRep for a vendor, if the cast has one.</summary>
+    internal PersonView? VendorRep(string? vendorId) =>
+        vendorId is null ? null : BuildPerson(Scenario.People.FirstOrDefault(p => p.Role == "vendorRep" && p.Vendor == vendorId)?.Id);
+
+    /// <summary>Who a board item is heard from: the card's person, an event's speaker, the vendor's rep for an arrangement.</summary>
+    internal PersonView? PersonFor(BoardLinkKind kind, string linkId) => kind switch
+    {
+        BoardLinkKind.Card => BuildPerson(_cards.FirstOrDefault(c => c.Id == linkId)?.PersonId),
+        BoardLinkKind.Event => BuildPerson(Scenario.Events.FirstOrDefault(e => e.Id == linkId)?.From),
+        BoardLinkKind.Arrangement => VendorRep(_arrangements.FirstOrDefault(a => a.Id == linkId)?.VendorId),
+        _ => null,
+    };
+
+    internal PersonView? RecordPerson(CauseRecord r)
+    {
+        var (lk, lid) = Link(r.Subject);
+        return PersonFor(lk, lid);
+    }
+
+    /// <summary>A card's name on screen: what and where ("Power for Spoke B").</summary>
+    internal string CardTitle(CardState card) => $"{Cap(card.CapabilityId).Label} for {SiteData(card.SiteId).Name}";
 
     // ------------------------------------------------------------------ requirement editor
 
@@ -146,10 +179,12 @@ public sealed partial class Session
             return new RequirementDependency(dep, CapLabel(dep), coverage, covering);
         }).ToList();
         var tied = _arrangements.Where(a => a.CardId == card.Id && a.Status != ArrangementStatus.Declined).Select(a => a.Id).ToList();
+        var person = BuildPerson(card.PersonId);
         return new RequirementEditorView(
-            card.Id, site.Id, site.Name, cap.Id, cap.Label, cap.Unit, card.SubmittedBy, card.SubmittedDay,
+            card.Id, site.Id, site.Name, cap.Id, cap.Label, cap.Unit, person?.WithUnit ?? card.SubmittedBy, card.SubmittedDay,
             card.RequestedStartDay, card.DurationDays, card.QuantityHint,
-            (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied);
+            (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied,
+            CardTitle(card), person, card.Message);
     }
 
     // ------------------------------------------------------------------ action editor

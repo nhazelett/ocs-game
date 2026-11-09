@@ -228,7 +228,8 @@
         "operator": false,
         "maintenance": false
       },
-      "submittedBy": "Spoke B advance team",
+      "person": "ruiz",
+      "message": "Advance team at Spoke B needs power by day 7. I wrote it up as six sixty-kilowatt generators.",
       "flaggedEnduring": false
     },
     {
@@ -244,7 +245,8 @@
         "operator": false,
         "maintenance": false
       },
-      "submittedBy": "Spoke C advance team",
+      "person": "okafor",
+      "message": "Spoke C has no water of its own. We need bottled water from day 5, about eighteen hundred gallons a day.",
       "flaggedEnduring": false
     },
     {
@@ -259,7 +261,8 @@
         "service": true,
         "operator": false
       },
-      "submittedBy": "Spoke C camp commandant",
+      "person": "brandt",
+      "message": "Hot meals for the camp, three a day, from day 12. The MREs won't last.",
       "flaggedEnduring": false
     }
   ],
@@ -652,6 +655,150 @@
       "expiresDay": 75
     }
   ],
+  "people": [
+    {
+      "id": "whitfield",
+      "name": "Sam Whitfield",
+      "rank": "Capt",
+      "unit": "Contracting",
+      "role": "outgoingCco",
+      "portrait": "whitfield",
+      "lines": {
+        "greeting": "Welcome to the island. I fly out in three days, so let's get you the keys.",
+        "farewell": "Spoke B opens in a week and nobody's bought them power yet. CE's outside."
+      }
+    },
+    {
+      "id": "ruiz",
+      "name": "Ana Ruiz",
+      "rank": "Capt",
+      "unit": "3 CES",
+      "role": "customer",
+      "site": "spokeBSite",
+      "portrait": "ruiz",
+      "lines": {
+        "greeting": "I'm the engineer for the spokes. I'll be in your doorway a lot."
+      }
+    },
+    {
+      "id": "hale",
+      "name": "Tom Hale",
+      "rank": "MSgt",
+      "unit": "Spoke B detachment",
+      "role": "customer",
+      "site": "spokeBSite",
+      "portrait": "hale",
+      "lines": {
+        "greeting": "First sergeant out at Spoke B. If my people need something, you'll hear it from me."
+      }
+    },
+    {
+      "id": "bell",
+      "name": "Marcus Bell",
+      "rank": "TSgt",
+      "unit": "LRS fuels flight",
+      "role": "customer",
+      "site": "hubSite",
+      "portrait": "bell",
+      "lines": {
+        "greeting": "Fuels. We can lend a truck now and then, not for long."
+      }
+    },
+    {
+      "id": "park",
+      "name": "Daniel Park",
+      "rank": "Lt Col",
+      "unit": "Hub commander",
+      "role": "commander",
+      "site": "hubSite",
+      "portrait": "park",
+      "lines": {
+        "greeting": "The hub comes first, then Spoke B, then Spoke C. That's the order if we run short."
+      }
+    },
+    {
+      "id": "cole",
+      "name": "Erin Cole",
+      "rank": "Maj",
+      "unit": "SCO staff, reachback",
+      "role": "scoStaff",
+      "portrait": "cole",
+      "lines": {
+        "greeting": "Send questions to the SCO box. We answer with what the rules say, not what you should do."
+      }
+    },
+    {
+      "id": "nair",
+      "name": "Priya Nair",
+      "rank": "Capt",
+      "unit": "Comptroller",
+      "role": "finance",
+      "portrait": "nair",
+      "lines": {
+        "greeting": "Funding questions come to me. Certification takes a day once you send it."
+      }
+    },
+    {
+      "id": "delgado",
+      "name": "Rosa Delgado",
+      "rank": "Ms.",
+      "unit": "Island Power Rentals",
+      "role": "vendorRep",
+      "vendor": "vendorA",
+      "portrait": "delgado",
+      "lines": {
+        "greeting": "We rent generators on the main island. Barge to the spokes, of course."
+      }
+    },
+    {
+      "id": "mensah",
+      "name": "Kofi Mensah",
+      "rank": "Mr.",
+      "unit": "Port Fuel Haulers",
+      "role": "vendorRep",
+      "vendor": "vendorE",
+      "portrait": "mensah",
+      "lines": {
+        "greeting": "We haul fuel anywhere the barge goes. Happy to get on your list."
+      }
+    },
+    {
+      "id": "okafor",
+      "name": "David Okafor",
+      "rank": "1st Lt",
+      "unit": "Spoke C advance team",
+      "role": "customer",
+      "site": "spokeCSite",
+      "portrait": "okafor",
+      "lines": {
+        "greeting": "Advance team lead at Spoke C."
+      }
+    },
+    {
+      "id": "brandt",
+      "name": "Lena Brandt",
+      "rank": "MSgt",
+      "unit": "Spoke C camp",
+      "role": "customer",
+      "site": "spokeCSite",
+      "portrait": "brandt",
+      "lines": {
+        "greeting": "Camp commandant at Spoke C. Right now everyone eats MREs."
+      }
+    },
+    {
+      "id": "lin",
+      "name": "Grace Lin",
+      "rank": "Maj",
+      "unit": "Spoke C commander",
+      "role": "commander",
+      "site": "spokeCSite",
+      "portrait": "lin",
+      "lines": {
+        "greeting": "Spoke C. We're small and we're last in line, I know."
+      }
+    }
+  ],
   "shop": {
     "people": 2,
     "systemOnlineDay": 12,
@@ -665,17 +812,20 @@
   "actors": {
     "sco": {
       "responsiveness": "medium",
-      "offersJointBoardsUnprompted": false
+      "offersJointBoardsUnprompted": false,
+      "person": "cole"
     },
     "fm": {
-      "certificationLagDays": 1
+      "certificationLagDays": 1,
+      "person": "nair"
     },
     "commander": {
       "priorityOrder": [
         "hubSite",
         "spokeBSite",
         "spokeCSite"
-      ]
+      ],
+      "person": "park"
     }
   },
   "events": [
@@ -693,7 +843,8 @@
           "kind": "inbox"
         }
       ],
-      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan.",
+      "from": "hale"
     },
     {
       "id": "hubFuelsWithdraw",
@@ -718,7 +869,8 @@
           "days": 2
         }
       ],
-      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days.",
+      "from": "bell"
     },
     {
       "id": "unitHandshake",
@@ -746,7 +898,8 @@
           "value": "vendorE"
         }
       ],
-      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?",
+      "from": "hale"
     },
     {
       "id": "bargeWeather",
@@ -834,7 +987,8 @@
           }
         }
       ],
-      "playerVisibleAs": "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+      "playerVisibleAs": "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message.",
+      "from": "lin"
     }
   ],
   "fixedSituations": [
