@@ -120,7 +120,7 @@ public class TransitionTests
         PlayTo(s, 8);
         var v = s.View.Transitions().Single();
         Assert.True(v.IncomingLost);
-        Assert.Contains(v.Warnings, w => w.StartsWith("turnkey will not arrive", StringComparison.Ordinal));
+        Assert.Contains(v.Warnings, w => w.Contains(" will not arrive", StringComparison.Ordinal));
         PlayTo(s, 70);
         var t = s.Transitions.Single();
         Assert.Equal(66 - s.Rules.Transition.WarnDays, t.WarningDay);
@@ -149,16 +149,16 @@ public class TransitionTests
     public static IEnumerable<object[]> Stops() =>
     [
         [Plan("", "gens", "turnkey"), "needs an id"],
-        [Plan("p", "nope", "turnkey"), "nope is not an arrangement"],
-        [Plan("p", "gens", "nope"), "nope is not an arrangement or an external support request"],
+        [Plan("p", "nope", "turnkey"), "is not an arrangement"],
+        [Plan("p", "gens", "nope"), "is not an arrangement or an external support request"],
         [Plan("p", "gens", "gens"), "the same arrangement"],
-        [Plan("p", "gens", "hubFuelRun"), "hubFuelRun is fuel at Spoke B"],
+        [Plan("p", "gens", "hubFuelRun"), "is fuel at Spoke B"],
         [Plan("p", "gens", "turnkey") with { OverlapDays = 0 }, "at least one day"],
         [Plan("p", "gens", "turnkey") with { Owner = "sco" }, "gap owner sco"],
         [Plan("p", "gens", "turnkey") with { Handoff = "whenever" }, "handoff whenever"],
         [Plan("p", "gens", "turnkey") with { Handoff = "onDay" }, "needs a cut-over day"],
         [Plan("p", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 6 }, "after today"],
-        [Plan("p", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 67 }, "after gens ends (day 66)"],
+        [Plan("p", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 67 }, "ends (day 66)"],
     ];
 
     [Theory]
@@ -190,7 +190,7 @@ public class TransitionTests
         Assert.True(s.Apply(Plan("bridge", "gens", "turnkey")).Accepted);
         var again = s.Apply(Plan("bridge2", "gens", "turnkey"));
         Assert.False(again.Accepted);
-        Assert.Contains("already the outgoing side of transition bridge", again.Message);
+        Assert.Contains("already the outgoing side of the hand-off", again.Message);
         Assert.False(s.Apply(Plan("bridge", "turnkey", "gens")).Accepted); // id reused
     }
 

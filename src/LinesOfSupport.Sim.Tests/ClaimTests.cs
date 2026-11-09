@@ -80,7 +80,7 @@ public class ClaimTests
         var debrief = s.View.Debrief();
         Assert.Equal(1, debrief.Scorecard.Claims);
         Assert.Equal(claim.AmountCents, debrief.Scorecard.ClaimCents);
-        Assert.Contains("filed a claim on bFuel", Assert.Single(debrief.Claims!).Text);
+        Assert.Contains("filed a claim on Second Island Fuel fuel at Spoke B", Assert.Single(debrief.Claims!).Text);
     }
 
     [Fact]

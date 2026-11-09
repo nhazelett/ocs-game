@@ -1,0 +1,141 @@
+Week one at the hub / policy textbook
+Scenario tutorial, rules 2025-10, seed 1, 20 days.
+Prep: systemAccess, cashAndPayingAgent, pullVehicles, vendorLists, templatesAndKit, gpcAccounts.
+
+TIMELINE
+Before day 1
+  ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM; pull existing vehicles with scope and ceilings from reach-back; bring vendor lists and vetting from reach-back; bring templates and a manual contracting kit; stand up GPC accounts and cardholder limits (14 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Water at Hub from Main Island Utilities (host nation), days 9 to 400.
+  START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Material handling equipment at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Lodging at Hub from Island Camp Services (BPA call), days -20 to 40.
+  START     Inherited: Food service at Hub from Island Camp Services (BPA call), days -20 to 40.
+Day 1
+  ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
+  ACTION    Ordered a review of the inherited contract files: Island Camp Services lodging at Hub, Island Camp Services food service at Hub.
+  ACTION    The request for water for Hub: Plant operators switched on.
+  ACTION    The request for water for Hub: Maintenance switched on.
+  ACTION    Government purchase card to Island Mart: Water at Hub, 4950 gal/day for 7 days (Potable water supply); $10,707 paid on the spot.
+  DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $10,707.
+  EVENT     Your mentor on the cash box. Inbox: "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  SURVEY    File review: lodging at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
+  SURVEY    File review: food service at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
+  DONE      CE small buys: none worked today (no hours left); 2 waiting.
+Day 2
+  EVENT     Your mentor on agreements. Inbox: "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
+  START     Water at Hub from Island Mart began, 4950 gal/day.
+Day 3
+  EVENT     Your mentor's last note. Inbox: "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
+  EVENT     The host nation takes its forklift back. Inbox: "Main Island Utilities: our forklift goes back to the port after day 7."
+  WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
+  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
+  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 6 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 4
+  ACTION    The request for material handling equipment for Hub: Operators switched on.
+  ACTION    Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day(s).
+  ! gpc t-tutForklift-bridge: Rejected: Coastal Rentals can supply 4 unit-days/day in total and 3 is already committed
+  EVENT     Harbor Equipment Co is short of forklifts this week
+  DONE      CE small buys: 7 worked today (3.5 h of shop time, 1 on cards).
+Day 5
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+Day 6
+  DONE      Undefinitized contract action awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 8, ends day 20. UCA issued with NTE $9,438; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+Day 7
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+Day 8
+  EVENT     The host nation pulls its honey trucks. Inbox: "Main Island Utilities: we need our honey trucks back after day 12."
+  WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  END       Main Island Utilities (host nation) material handling equipment at Hub ended.
+  START     Material handling equipment at Hub from Coastal Rentals began, 3 unit-days/day.
+Day 9
+  ACTION    Undefinitized contract action started with Main Island Sanitation: Waste removal at Hub, 3960 gal/day for 8 days (Removal and disposal); quoted $1,267. Approval request routed through the SCO; answer expected in 1 day(s).
+  ! sf44 t-tutWaste-bridge: Rejected: Main Island Sanitation can supply 6000 gal/day in total and 3960 is already committed
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
+  END       Island Mart water at Hub ended.
+Day 10
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 2 on cards).
+Day 11
+  DONE      Undefinitized contract action awarded to Main Island Sanitation for waste removal at Hub; performance starts day 14, ends day 21. UCA issued with NTE $1,394; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery.
+Day 12
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+Day 13
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  END       Main Island Utilities (host nation) waste removal at Hub ended.
+  SHORT     Waste removal at Hub down to 0%: no arrangement supplies waste removal.
+Day 14
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  START     Waste removal at Hub from Main Island Sanitation began, 3960 gal/day.
+  FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery.
+  OK        Waste removal at Hub restored to 100%.
+Day 15
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  OBLIGATE  Coastal Rentals material handling equipment at Hub has incurred $5,280 against $4,719 obligated: the UCA obligation cap of 50% of NTE is reached. The vendor stops work in 3 days if this stands.
+  UCA-DUE   Coastal Rentals material handling equipment at Hub is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+Day 16
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+Day 17
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  STOPWORK  Coastal Rentals stopped work on Coastal Rentals material handling equipment at Hub: costs incurred are not obligated.
+Day 18
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  SHORT     Material handling equipment at Hub down to 0%: Coastal Rentals material handling equipment at Hub stopped work (unpaid UCA); supply 0 unit-days against demand 3.
+  OBLIGATE  Main Island Sanitation waste removal at Hub has incurred $792 against $697 obligated: the UCA obligation cap of 50% of NTE is reached. The vendor stops work in 3 days if this stands.
+  UCA-DUE   Main Island Sanitation waste removal at Hub is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+Day 19
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+Day 20
+  COMPLY    Higher HQ asked why Coastal Rentals material handling equipment at Hub is past due for definitization. A response is now shop work.
+  DONE      Response to higher HQ on Coastal Rentals material handling equipment at Hub sent.
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 2 on cards).
+  STOPWORK  Main Island Sanitation stopped work on Main Island Sanitation waste removal at Hub: costs incurred are not obligated.
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2
+                          12345678901234567890
+Hub Power                 ....................
+Hub Fuel                  ....................
+Hub Water                 ....................
+Hub Lodging               ....................
+Hub Food service          ....................
+Hub Waste removal         ............X.......
+Hub Material handling equ .................XXX
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 96% (sortie generation 100%, throughput 85%, endurance 100%, resilience 100%)
+  Obligated $640,123; incurred $330,416; incurred but not obligated $2,293
+  Unauthorized commitments 0; UCAs past due 2; HHQ inquiries 1
+  Surveys 0; shop hours worked 79; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 0
+  hubSite.waste: 1 day(s) down, 0 degraded, lowest 0%
+  hubSite.mhe: 3 day(s) down, 0 degraded, lowest 0%
+
+GAPS AND WHY (each traced back through its causes)
+  Day 13: Waste removal at Hub down to 0%: no arrangement supplies waste removal.
+  Day 18: Material handling equipment at Hub down to 0%: Coastal Rentals material handling equipment at Hub stopped work (unpaid UCA); supply 0 unit-days against demand 3.
+      <- day 4: Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day(s).
+
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 hubSite.waste days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
+      [discoverable] Inherited host nation support for waste removal at Hub was withdrawn by the host nation on day 8 (last day of support 12) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
+      [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12. Main Island Sanitation waste removal at Hub did not start until day 14.
+  #1 hubSite.mhe days 18-20, lowest 0%, 3 day(s) down: AVOIDABLE
+      [avoidable] Coastal Rentals material handling equipment at Hub stopped work on day 17: incurred costs went past the obligation cap; it had been past due for definitization since day 15.
+
+PASS CRITERIA
+  [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
+  [not met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 3)
+  [not met] Waste removal never out (site.hubSite.waste.downDays = 1)
+  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
+  [met] Mission output at least 95% (mission.output = 0.962)
+
+State hash c620657deda4baceb1df8fb768ba87301cbdb42563ff514890597b4d6213f8ee

@@ -20,9 +20,9 @@ public sealed partial class Session
         if (amount <= 0) return;
         var vendor = VendorData(arr.VendorId)?.Name ?? "The vendor";
         var rec = AddRecord(day, RecordKind.Compliance, arr.Id,
-            $"{vendor} filed a claim on {arr.Id}: terminated without the {arr.NoticeDays} days' notice the contract requires. Settlement about {Money(amount)} ({days} days of its cost); settling it is shop work.", [causeId]);
+            $"{vendor} filed a claim on {NameOf(arr.Id)}: terminated without the {arr.NoticeDays} days' notice the contract requires. Settlement about {Money(amount)} ({days} days of its cost); settling it is shop work.", [causeId]);
         _claims.Add(new ClaimState { ArrangementId = arr.Id, FiledDay = day, AmountCents = amount, FiledRecordId = rec });
-        AddWork(WorkKind.ClaimSettlement, $"Settle claim on {arr.Id}", Fixed.Milli(Rules.Claims.SettleShopHours), day + 1, arr.Id, rec);
+        AddWork(WorkKind.ClaimSettlement, $"Settle claim on {NameOf(arr.Id)}", Fixed.Milli(Rules.Claims.SettleShopHours), day + 1, arr.Id, rec);
     }
 
     private void SettleClaim(string arrangementId, int day, string causeId)
@@ -36,7 +36,7 @@ public sealed partial class Session
         var add = line is not null && line.UsableOn(day) ? Math.Min(claim.AmountCents, Math.Max(0, line.RemainingCents)) : 0;
         if (line is not null) line.ObligatedCents += add;
         arr.ObligatedCents += add;
-        var funded = add == claim.AmountCents ? $"paid from {line!.Id}" : $"{Money(add)} paid{(line is null ? "" : $" from {line.Id}")}; the rest waits on money";
-        AddRecord(day, RecordKind.Compliance, arrangementId, $"Claim on {arrangementId} settled at {Money(claim.AmountCents)}, {funded}.", [causeId, claim.FiledRecordId]);
+        var funded = add == claim.AmountCents ? $"paid from {NameOf(line!.Id)}" : $"{Money(add)} paid{(line is null ? "" : $" from {NameOf(line.Id)}")}; the rest waits on money";
+        AddRecord(day, RecordKind.Compliance, arrangementId, $"Claim on {NameOf(arrangementId)} settled at {Money(claim.AmountCents)}, {funded}.", [causeId, claim.FiledRecordId]);
     }
 }

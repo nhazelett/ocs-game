@@ -4,79 +4,79 @@ Scenario sustainment, rules 2025-10, seed 1, 60 days.
 
 TIMELINE
 Before day 1
-  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  START     Inherited: Lodging at Spoke C from Third Island Camp Services (uca), days -119 to 60.
-  START     Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
-  START     Inherited: Food service at Spoke B from Island Provisions (bpaCall), days -24 to 35.
-  START     Inherited: Fuel at Spoke A from Port Fuel Haulers (idiqOrder), days -19 to 40.
-  START     Inherited: Fuel at Spoke C from Port Fuel Haulers (idiqOrder), days -19 to 40.
-  START     Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
-  START     Inherited: Waste removal at Hub from Main Island Sanitation (purchaseOrder), days -14 to 75.
-  START     Inherited: Water at Spoke A from Partner force (ACSA) (acsa), days -9 to 50.
-  START     Inherited: Comms backhaul at Spoke A from North Island Telecom (purchaseOrder), days -9 to 21.
-  START     Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (gpc), days -5 to 24.
-  START     Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (purchaseOrder), days -2 to 27.
-  START     Inherited: Lodging at Spoke B from Second Island Camp Services (purchaseOrder), days -28 to 31.
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+  START     Inherited: Lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60.
+  START     Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
+  START     Inherited: Food service at Spoke B from Island Provisions (BPA call), days -24 to 35.
+  START     Inherited: Fuel at Spoke A from Port Fuel Haulers (IDIQ order), days -19 to 40.
+  START     Inherited: Fuel at Spoke C from Port Fuel Haulers (IDIQ order), days -19 to 40.
+  START     Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
+  START     Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
+  START     Inherited: Water at Spoke A from Partner force (ACSA) (acquisition and cross-servicing agreement order), days -9 to 50.
+  START     Inherited: Comms backhaul at Spoke A from North Island Telecom (written purchase order), days -9 to 21.
+  START     Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (government purchase card), days -5 to 24.
+  START     Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (written purchase order), days -2 to 27.
+  START     Inherited: Lodging at Spoke B from Second Island Camp Services (written purchase order), days -28 to 31.
 Day 1
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 2
   ACTION    Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100. Approval request routed through the SCO; answer expected in 2 day(s).
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  CONFUSED  Execution confusion on hubTransport: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  CONFUSED  Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
 Day 3
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Ground transport at Hub restored to 100%.
-  COR       COR report (SFC Duarte): bFuel missed its delivery on day 1, reported 2 day(s) later.
+  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 1, reported 2 day(s) later.
 Day 4
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 5
   ACTION    Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 day(s).
-  DONE      Undefinitized contract action comms awarded to North Island Telecom; performance starts day 22, ends day 60. UCA issued with NTE $38,610; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action awarded to North Island Telecom for comms backhaul at Spoke A; performance starts day 22, ends day 60. UCA issued with NTE $38,610; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 6
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      cFuel missed today's delivery.
-  COR       COR report (SSG Mensah): cFuel missed its delivery on day 6.
+  FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery.
+  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke C missed its delivery on day 6.
 Day 7
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
-  FAIL      bLodging had equipment down.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Camp Services lodging at Spoke B had equipment down.
   SHORT     Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
 Day 8
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Lodging at Spoke B restored to 100%.
-  UCA-DUE   cLodging is due for definitization (47% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+  UCA-DUE   Third Island Camp Services lodging at Spoke C is due for definitization (47% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 9
   ACTION    Undefinitized contract action started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 unit-days/day for 33 days (MHE equipment); quoted $17,820. Approval request routed through the SCO; answer expected in 2 day(s).
-  DONE      Undefinitized contract action trucks awarded to Main Island Motor Pool Rentals; performance starts day 25, ends day 60. UCA issued with NTE $88,704; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action awarded to Main Island Motor Pool Rentals for ground transport at Hub; performance starts day 25, ends day 60. UCA issued with NTE $88,704; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SFC Duarte): bFuel missed its delivery on day 7, reported 2 day(s) later.
-  COR       COR report (SGT Oyelaran): bLodging had equipment down on day 7, reported 2 day(s) later.
+  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 7, reported 2 day(s) later.
 Day 10
   EVENT     SFC Duarte rotates home. Inbox: "S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training."
-  COR       SFC Duarte rotates home. An untrained relief takes over as COR on bFuel, hubWaste (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SFC Duarte rotates home. An untrained relief takes over as COR on Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 11
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 12
-  DONE      Undefinitized contract action forklifts awarded to Harbor Equipment Co; performance starts day 28, ends day 60. UCA issued with NTE $19,602; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 60. UCA issued with NTE $19,602; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 13
   ACTION    Undefinitized contract action started with Second Island Camp Services: Lodging at Spoke B, 270 beds/day for 29 days (Shelters or CHUs); quoted $250,560. Approval request routed through the SCO; answer expected in 2 day(s).
-  COMPLY    Higher HQ asked why cLodging is past due for definitization. A response is now shop work.
-  DONE      Response to higher HQ on cLodging sent.
+  COMPLY    Higher HQ asked why Third Island Camp Services lodging at Spoke C is past due for definitization. A response is now shop work.
+  DONE      Response to higher HQ on Third Island Camp Services lodging at Spoke C sent.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      aPower had equipment down.
-  FAIL      bFood missed today's delivery.
+  FAIL      North Island Power and Light power at Spoke A had equipment down.
+  FAIL      Island Provisions food service at Spoke B missed today's delivery.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
-  COR       COR report (SSG Mensah): aPower had equipment down on day 13.
+  COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 13.
 Day 14
   EVENT     Higher HQ declines to extend the BPAs. Inbox: "Regional contracting office: the equipment and food BPAs will not be extended past day 20. Calls already placed run to their end; anything after needs another vehicle."
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -85,67 +85,67 @@ Day 14
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 15
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFood missed today's delivery.
-  COR       COR report (SGT Oyelaran): bFood missed its delivery on day 13, reported 2 day(s) later.
+  FAIL      Island Provisions food service at Spoke B missed today's delivery.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 day(s) later.
 Day 16
-  DONE      Undefinitized contract action beds awarded to Second Island Camp Services; performance starts day 32, ends day 60. UCA issued with NTE $275,616; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action awarded to Second Island Camp Services for lodging at Spoke B; performance starts day 32, ends day 60. UCA issued with NTE $275,616; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  UCA-DUE   aPower is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+  UCA-DUE   North Island Power and Light power at Spoke A is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 17
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SGT Oyelaran): bFood missed its delivery on day 15, reported 2 day(s) later.
-  INBOX     Performance issue pi1: Island Provisions under-delivered on bFood on days 13 and 15 (COR SGT Oyelaran). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 15, reported 2 day(s) later.
+  INBOX     Performance issue: Island Provisions under-delivered on food service at Spoke B on days 13 and 15 (COR SGT Oyelaran). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 18
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFood missed today's delivery.
+  FAIL      Island Provisions food service at Spoke B missed today's delivery.
 Day 19
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 20
   EVENT     Second Island Fuel falls behind
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
-  COR       COR report (SGT Oyelaran): bFood missed its delivery on day 18, reported 2 day(s) later.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 18, reported 2 day(s) later.
 Day 21
-  COMPLY    Higher HQ asked why aPower is past due for definitization. A response is now shop work.
-  DONE      Response to higher HQ on aPower sent.
+  COMPLY    Higher HQ asked why North Island Power and Light power at Spoke A is past due for definitization. A response is now shop work.
+  DONE      Response to higher HQ on North Island Power and Light power at Spoke A sent.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 22
   EVENT     Spoke C grows by 60. Inbox: "Spoke C: an aviation detachment of 60 arrives day 30 to stay."
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
-  UCA       North Island Telecom submitted a qualifying proposal on comms. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       North Island Telecom submitted a qualifying proposal for comms backhaul at Spoke A. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       aComms ended.
-  START     comms began: Comms backhaul at Spoke A from North Island Telecom, 3 links/day.
-  FAIL      bFuel missed today's delivery.
+  END       North Island Telecom comms backhaul at Spoke A ended.
+  START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 23
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 24
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 25
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       hubTransport ended.
-  START     trucks began: Ground transport at Hub from Main Island Motor Pool Rentals, 14 vehicle-days/day.
-  FAIL      bFuel missed today's delivery.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 21, reported 4 day(s) later.
+  END       Main Island Motor Pool Rentals ground transport at Hub ended.
+  START     Ground transport at Hub from Main Island Motor Pool Rentals began, 14 vehicle-days/day.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 day(s) later.
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 27
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bGens had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 23, reported 4 day(s) later.
-  INBOX     Performance issue pi2: Second Island Fuel under-delivered on bFuel on days 21 and 23 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 23, reported 4 day(s) later.
+  INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 21 and 23 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 28
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       cMhe ended.
-  START     forklifts began: Material handling equipment at Spoke C from Harbor Equipment Co, 3 unit-days/day.
-  FAIL      aPower had equipment down.
-  FAIL      cFuel missed today's delivery.
-  FAIL      trucks had equipment down (no maintenance line).
+  END       Harbor Equipment Co material handling equipment at Spoke C ended.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 3 unit-days/day.
+  FAIL      North Island Power and Light power at Spoke A had equipment down.
+  FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery.
+  FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
@@ -153,12 +153,12 @@ Day 28
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
-  COR       COR report (SSG Mensah): aPower had equipment down on day 28.
-  COR       COR report (SSG Mensah): cFuel missed its delivery on day 28.
-  COR       COR report (SSG Mensah): trucks had equipment down on day 28.
+  COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 28.
+  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke C missed its delivery on day 28.
+  COR       COR report (SSG Mensah): Main Island Motor Pool Rentals ground transport at Hub had equipment down on day 28.
 Day 29
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bGens had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
   OK        Ground transport at Hub restored to 100%.
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
@@ -166,61 +166,61 @@ Day 29
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 25, reported 4 day(s) later.
-  COR       COR report (SGT Oyelaran): bGens had equipment down on day 27, reported 2 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 25, reported 4 day(s) later.
+  COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 27, reported 2 day(s) later.
 Day 30
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
 Day 31
-  UCA       Main Island Motor Pool Rentals submitted a qualifying proposal on trucks. Obligation cap rises to 75% of NTE; definitization can start.
-  UCA       Second Island Camp Services submitted a qualifying proposal on beds. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       Main Island Motor Pool Rentals submitted a qualifying proposal for ground transport at Hub. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       Second Island Camp Services submitted a qualifying proposal for lodging at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       bGens ended.
-  FAIL      cLodging had equipment down.
-  FAIL      bLodging had equipment down.
+  END       Harbor Equipment Co power at Spoke B ended.
+  FAIL      Third Island Camp Services lodging at Spoke C had equipment down.
+  FAIL      Second Island Camp Services lodging at Spoke B had equipment down.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
   SHORT     Lodging at Spoke B down to 0%: supply 135 beds against demand 260; power at 0%.
   SHORT     Food service at Spoke B down to 0%: power at 0%.
   SHORT     Lodging at Spoke C down to 38%: supply 80 beds against demand 210.
-  COR       COR report (SGT Oyelaran): bGens had equipment down on day 29, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 29, reported 2 day(s) later.
 Day 32
-  UCA       Harbor Equipment Co submitted a qualifying proposal on forklifts. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       Harbor Equipment Co submitted a qualifying proposal for material handling equipment at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       bLodging ended.
-  START     beds began: Lodging at Spoke B from Second Island Camp Services, 270 beds/day.
-  FAIL      bFuel missed today's delivery.
+  END       Second Island Camp Services lodging at Spoke B ended.
+  START     Lodging at Spoke B from Second Island Camp Services began, 270 beds/day.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B degraded to 69%: fuel on hand ran out.
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
 Day 33
   DONE      CE small buys: 10 worked today (5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SGT Oyelaran): cLodging had equipment down on day 31, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Third Island Camp Services lodging at Spoke C had equipment down on day 31, reported 2 day(s) later.
 Day 34
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B down to 28%: fuel on hand ran out.
 Day 35
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      bFuel missed today's delivery.
-  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 45, $1,395,510 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $1,395,510 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
   EVENT     The partner force needs its water back. Inbox: "Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days."
-  WITHDRAWN Partner force withdrew ACSA order aWater (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to om1.
+  WITHDRAWN Partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Inbox: "Harbor master: no barge movements to Second Island for the next three days."
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       bFood ended.
-  FAIL      bFuel missed today's delivery.
-  FAIL      trucks had equipment down (no maintenance line).
+  END       Island Provisions food service at Spoke B ended.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 32, reported 4 day(s) later.
-  COR       COR report (SSG Mensah): trucks had equipment down on day 36.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 day(s) later.
+  COR       COR report (SSG Mensah): Main Island Motor Pool Rentals ground transport at Hub had equipment down on day 36.
 Day 37
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   OK        Ground transport at Hub restored to 100%.
   SHORT     Fuel at Spoke C degraded to 85%: fuel on hand ran out.
   SHORT     Material handling equipment at Spoke C degraded to 85%: fuel at 85%.
@@ -231,120 +231,120 @@ Day 38
   SHORT     Material handling equipment at Spoke C down to 0%: fuel at 0%.
 Day 39
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       aWater ended.
-  FAIL      bFuel missed today's delivery.
+  END       Partner force (ACSA) water at Spoke A ended.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B down to 28%: fuel on hand ran out.
   OK        Fuel at Spoke C restored to 100%.
   OK        Material handling equipment at Spoke C restored to 100%.
 Day 40
   DONE      CE small buys: 10 worked today (5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 36, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 36, reported 4 day(s) later.
 Day 41
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       aFuel ended.
-  END       cFuel ended.
+  END       Port Fuel Haulers fuel at Spoke A ended.
+  END       Port Fuel Haulers fuel at Spoke C ended.
 Day 42
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   SHORT     Water at Spoke A down to 0%: water on hand ran out; no arrangement supplies water.
 Day 43
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  UCA-DUE   comms is due for definitization (51% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+  UCA-DUE   North Island Telecom comms backhaul at Spoke A is due for definitization (51% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 44
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
-  FUNDING   Comptroller: funding line om2 ($3,000,000) will not be released on day 46 as planned; expect it on day 55.
+  FUNDING   Comptroller: the O&M line from day 46 ($3,000,000) will not be released on day 46 as planned; expect it on day 55.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      aPower had equipment down.
+  FAIL      North Island Power and Light power at Spoke A had equipment down.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
-  COR       COR report (SSG Mensah): aPower had equipment down on day 44.
-  UCA-DUE   trucks is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+  COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 44.
+  UCA-DUE   Main Island Motor Pool Rentals ground transport at Hub is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 45
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   OK        Power at Spoke A restored to 100%.
   OK        Comms backhaul at Spoke A restored to 100%.
   SHORT     Fuel at Spoke C degraded to 66%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Material handling equipment at Spoke C degraded to 66%: fuel at 66%.
-  FUNDING   Funding line om1 reached its fiscal-year end with day 45: $1,183,610 never obligated can no longer pay for anything new.
-  FUNDING   No funding line has money usable from day 46: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 55.
+  FUNDING   The O&M line good through day 45 reached its fiscal-year end with day 45: $1,183,610 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 46: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 46, expected day 55.
 Day 46
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      comms had equipment down (no maintenance line).
+  FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance line).
   SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
   SHORT     Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Material handling equipment at Spoke C down to 0%: fuel at 0%.
-  COR       COR report (SSG Mensah): comms had equipment down on day 46.
-  OBLIGATE  aPower has incurred $120,060 against $117,450 obligated: funding line om1 expired on day 45. The vendor stops work in 3 days if this stands.
-  OBLIGATE  cLodging has incurred $294,400 against $288,000 obligated: funding line om1 expired on day 45. The vendor stops work in 3 days if this stands.
-  OBLIGATE  comms has incurred $22,500 against $21,600 obligated: funding line om1 expired on day 45. The vendor stops work in 3 days if this stands.
-  OBLIGATE  trucks has incurred $49,280 against $47,040 obligated: funding line om1 expired on day 45. The vendor stops work in 3 days if this stands.
-  OBLIGATE  forklifts has incurred $10,260 against $9,720 obligated: funding line om1 expired on day 45. The vendor stops work in 3 days if this stands.
-  OBLIGATE  beds has incurred $129,600 against $120,960 obligated: funding line om1 expired on day 45. The vendor stops work in 3 days if this stands.
+  COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 46.
+  OBLIGATE  North Island Power and Light power at Spoke A has incurred $120,060 against $117,450 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
+  OBLIGATE  Third Island Camp Services lodging at Spoke C has incurred $294,400 against $288,000 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
+  OBLIGATE  North Island Telecom comms backhaul at Spoke A has incurred $22,500 against $21,600 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
+  OBLIGATE  Main Island Motor Pool Rentals ground transport at Hub has incurred $49,280 against $47,040 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
+  OBLIGATE  Harbor Equipment Co material handling equipment at Spoke C has incurred $10,260 against $9,720 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
+  OBLIGATE  Second Island Camp Services lodging at Spoke B has incurred $129,600 against $120,960 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
 Day 47
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
-  FAIL      beds had equipment down (no maintenance line).
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Camp Services lodging at Spoke B had equipment down (no maintenance line).
   OK        Comms backhaul at Spoke A restored to 100%.
   SHORT     Fuel at Spoke B degraded to 69%: fuel on hand ran out.
 Day 48
-  COMPLY    Higher HQ asked why comms is past due for definitization. A response is now shop work.
-  DONE      Response to higher HQ on comms sent.
+  COMPLY    Higher HQ asked why North Island Telecom comms backhaul at Spoke A is past due for definitization. A response is now shop work.
+  DONE      Response to higher HQ on North Island Telecom comms backhaul at Spoke A sent.
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      bFuel missed today's delivery.
-  FAIL      forklifts had equipment down (no maintenance line, no operators line).
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
-  STOPWORK  North Island Power and Light stopped work on aPower: costs incurred are not obligated.
-  STOPWORK  Third Island Camp Services stopped work on cLodging: costs incurred are not obligated.
-  STOPWORK  North Island Telecom stopped work on comms: costs incurred are not obligated.
-  STOPWORK  Main Island Motor Pool Rentals stopped work on trucks: costs incurred are not obligated.
-  STOPWORK  Harbor Equipment Co stopped work on forklifts: costs incurred are not obligated.
-  STOPWORK  Second Island Camp Services stopped work on beds: costs incurred are not obligated.
+  STOPWORK  North Island Power and Light stopped work on North Island Power and Light power at Spoke A: costs incurred are not obligated.
+  STOPWORK  Third Island Camp Services stopped work on Third Island Camp Services lodging at Spoke C: costs incurred are not obligated.
+  STOPWORK  North Island Telecom stopped work on North Island Telecom comms backhaul at Spoke A: costs incurred are not obligated.
+  STOPWORK  Main Island Motor Pool Rentals stopped work on Main Island Motor Pool Rentals ground transport at Hub: costs incurred are not obligated.
+  STOPWORK  Harbor Equipment Co stopped work on Harbor Equipment Co material handling equipment at Spoke C: costs incurred are not obligated.
+  STOPWORK  Second Island Camp Services stopped work on Second Island Camp Services lodging at Spoke B: costs incurred are not obligated.
 Day 49
-  COMPLY    Higher HQ asked why trucks is past due for definitization. A response is now shop work.
-  DONE      Response to higher HQ on trucks sent.
+  COMPLY    Higher HQ asked why Main Island Motor Pool Rentals ground transport at Hub is past due for definitization. A response is now shop work.
+  DONE      Response to higher HQ on Main Island Motor Pool Rentals ground transport at Hub sent.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  SHORT     Ground transport at Hub down to 0%: trucks stopped work (unpaid UCA); supply 0 vehicle-days against demand 13.
-  SHORT     Power at Spoke A down to 0%: aPower stopped work (unpaid UCA); supply 0 kW against demand 264.
-  SHORT     Comms backhaul at Spoke A down to 0%: comms stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
+  SHORT     Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicle-days against demand 13.
+  SHORT     Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
+  SHORT     Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
   OK        Fuel at Spoke B restored to 100%.
-  SHORT     Lodging at Spoke C down to 0%: cLodging stopped work (unpaid UCA); supply 0 beds against demand 210.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 45, reported 4 day(s) later.
+  SHORT     Lodging at Spoke C down to 0%: Third Island Camp Services lodging at Spoke C stopped work (unpaid UCA); supply 0 beds against demand 210.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 45, reported 4 day(s) later.
 Day 50
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B down to 28%: fuel on hand ran out.
-  COR       COR report (SGT Oyelaran): forklifts had equipment down on day 48, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Harbor Equipment Co material handling equipment at Spoke C had equipment down on day 48, reported 2 day(s) later.
 Day 51
   DONE      CE small buys: 10 worked today (5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 47, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 47, reported 4 day(s) later.
 Day 52
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 48, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 48, reported 4 day(s) later.
 Day 53
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 54
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  SHORT     Fuel at Spoke A down to 0%: aPower stopped work (unpaid UCA); fuel on hand ran out.
-  FUNDING   Comptroller released funding line om2: $3,000,000 usable from day 55, 9 day(s) later than planned.
+  SHORT     Fuel at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); fuel on hand ran out.
+  FUNDING   Comptroller released the O&M line from day 46: $3,000,000 usable from day 55, 9 day(s) later than planned.
 Day 55
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 56
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      bFuel missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 57
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 58
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 59
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      hubWaste had equipment down.
+  FAIL      Main Island Sanitation waste removal at Hub had equipment down.
   SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
 Day 60
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Waste removal at Hub restored to 100%.
-  COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 56, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 56, reported 4 day(s) later.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6
@@ -387,78 +387,78 @@ SCORECARD
 
 GAPS AND WHY (each traced back through its causes)
   Day 2: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
-      <- day 2: Execution confusion on hubTransport: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
-          <- day 0: Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (gpc), days -5 to 24.
+      <- day 2: Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+          <- day 0: Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (government purchase card), days -5 to 24.
   Day 7: Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
-      <- day 7: bLodging had equipment down.
-          <- day 0: Inherited: Lodging at Spoke B from Second Island Camp Services (purchaseOrder), days -28 to 31.
+      <- day 7: Second Island Camp Services lodging at Spoke B had equipment down.
+          <- day 0: Inherited: Lodging at Spoke B from Second Island Camp Services (written purchase order), days -28 to 31.
   Day 13: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-      <- day 13: aPower had equipment down.
-          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+      <- day 13: North Island Power and Light power at Spoke A had equipment down.
+          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 13: Water at Spoke A degraded to 54%: power at 54%.
       <- day 13: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-          <- day 13: aPower had equipment down.
-              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+          <- day 13: North Island Power and Light power at Spoke A had equipment down.
+              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 13: Comms backhaul at Spoke A degraded to 54%: power at 54%.
       <- day 13: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-          <- day 13: aPower had equipment down.
-              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+          <- day 13: North Island Power and Light power at Spoke A had equipment down.
+              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 27: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 27: bGens had equipment down (no operators line).
-          <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
+      <- day 27: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 27: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 27: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 27: bGens had equipment down (no operators line).
-              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
+          <- day 27: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 27: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 27: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 27: bGens had equipment down (no operators line).
-              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
+          <- day 27: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 28: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
-      <- day 28: trucks had equipment down (no maintenance line).
+      <- day 28: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
           <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 day(s).
   Day 28: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-      <- day 28: aPower had equipment down.
-          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+      <- day 28: North Island Power and Light power at Spoke A had equipment down.
+          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 28: Water at Spoke A degraded to 54%: power at 54%.
       <- day 28: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-          <- day 28: aPower had equipment down.
-              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+          <- day 28: North Island Power and Light power at Spoke A had equipment down.
+              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 28: Comms backhaul at Spoke A degraded to 54%: power at 54%.
       <- day 28: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-          <- day 28: aPower had equipment down.
-              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+          <- day 28: North Island Power and Light power at Spoke A had equipment down.
+              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 29: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 29: bGens had equipment down (no operators line).
-          <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
+      <- day 29: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 29: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 29: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 29: bGens had equipment down (no operators line).
-              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
+          <- day 29: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 29: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 29: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 29: bGens had equipment down (no operators line).
-              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30.
+          <- day 29: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+              <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 30: Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
   Day 31: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 31: Lodging at Spoke B down to 0%: supply 135 beds against demand 260; power at 0%.
-      <- day 31: bLodging had equipment down.
-          <- day 0: Inherited: Lodging at Spoke B from Second Island Camp Services (purchaseOrder), days -28 to 31.
+      <- day 31: Second Island Camp Services lodging at Spoke B had equipment down.
+          <- day 0: Inherited: Lodging at Spoke B from Second Island Camp Services (written purchase order), days -28 to 31.
       <- day 31: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 31: Food service at Spoke B down to 0%: power at 0%.
       <- day 31: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 31: Lodging at Spoke C down to 38%: supply 80 beds against demand 210.
-      <- day 31: cLodging had equipment down.
-          <- day 0: Inherited: Lodging at Spoke C from Third Island Camp Services (uca), days -119 to 60.
+      <- day 31: Third Island Camp Services lodging at Spoke C had equipment down.
+          <- day 0: Inherited: Lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60.
   Day 32: Fuel at Spoke B degraded to 69%: fuel on hand ran out.
-      <- day 32: bFuel missed today's delivery.
-          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
+      <- day 32: Second Island Fuel fuel at Spoke B missed today's delivery.
+          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 32: Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
   Day 34: Fuel at Spoke B down to 28%: fuel on hand ran out.
-      <- day 34: bFuel missed today's delivery.
-          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
+      <- day 34: Second Island Fuel fuel at Spoke B missed today's delivery.
+          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 36: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
-      <- day 36: trucks had equipment down (no maintenance line).
+      <- day 36: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
           <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 day(s).
   Day 37: Fuel at Spoke C degraded to 85%: fuel on hand ran out.
   Day 37: Material handling equipment at Spoke C degraded to 85%: fuel at 85%.
@@ -467,49 +467,49 @@ GAPS AND WHY (each traced back through its causes)
   Day 38: Material handling equipment at Spoke C down to 0%: fuel at 0%.
       <- day 38: Fuel at Spoke C down to 0%: fuel on hand ran out.
   Day 39: Fuel at Spoke B down to 28%: fuel on hand ran out.
-      <- day 39: bFuel missed today's delivery.
-          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
+      <- day 39: Second Island Fuel fuel at Spoke B missed today's delivery.
+          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 42: Water at Spoke A down to 0%: water on hand ran out; no arrangement supplies water.
   Day 44: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-      <- day 44: aPower had equipment down.
-          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+      <- day 44: North Island Power and Light power at Spoke A had equipment down.
+          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 44: Comms backhaul at Spoke A degraded to 54%: power at 54%.
       <- day 44: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
-          <- day 44: aPower had equipment down.
-              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+          <- day 44: North Island Power and Light power at Spoke A had equipment down.
+              <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 45: Fuel at Spoke C degraded to 66%: fuel on hand ran out; no arrangement supplies fuel.
   Day 45: Material handling equipment at Spoke C degraded to 66%: fuel at 66%.
       <- day 45: Fuel at Spoke C degraded to 66%: fuel on hand ran out; no arrangement supplies fuel.
   Day 46: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
-      <- day 46: comms had equipment down (no maintenance line).
+      <- day 46: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance line).
           <- day 2: Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100. Approval request routed through the SCO; answer expected in 2 day(s).
   Day 46: Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   Day 46: Material handling equipment at Spoke C down to 0%: fuel at 0%.
       <- day 46: Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   Day 47: Fuel at Spoke B degraded to 69%: fuel on hand ran out.
-      <- day 47: bFuel missed today's delivery.
-          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
+      <- day 47: Second Island Fuel fuel at Spoke B missed today's delivery.
+          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 48: Fuel at Spoke B down to 0%: fuel on hand ran out.
-      <- day 48: bFuel missed today's delivery.
-          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
-  Day 49: Ground transport at Hub down to 0%: trucks stopped work (unpaid UCA); supply 0 vehicle-days against demand 13.
+      <- day 48: Second Island Fuel fuel at Spoke B missed today's delivery.
+          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
+  Day 49: Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicle-days against demand 13.
       <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 day(s).
-  Day 49: Power at Spoke A down to 0%: aPower stopped work (unpaid UCA); supply 0 kW against demand 264.
-      <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  Day 49: Comms backhaul at Spoke A down to 0%: comms stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
+  Day 49: Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
+      <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+  Day 49: Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
       <- day 2: Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100. Approval request routed through the SCO; answer expected in 2 day(s).
-      <- day 49: Power at Spoke A down to 0%: aPower stopped work (unpaid UCA); supply 0 kW against demand 264.
-          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  Day 49: Lodging at Spoke C down to 0%: cLodging stopped work (unpaid UCA); supply 0 beds against demand 210.
-      <- day 0: Inherited: Lodging at Spoke C from Third Island Camp Services (uca), days -119 to 60.
+      <- day 49: Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
+          <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+  Day 49: Lodging at Spoke C down to 0%: Third Island Camp Services lodging at Spoke C stopped work (unpaid UCA); supply 0 beds against demand 210.
+      <- day 0: Inherited: Lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60.
   Day 50: Fuel at Spoke B down to 28%: fuel on hand ran out.
-      <- day 50: bFuel missed today's delivery.
-          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60. Termination needs 15 days' notice.
-  Day 54: Fuel at Spoke A down to 0%: aPower stopped work (unpaid UCA); fuel on hand ran out.
-      <- day 0: Inherited: Power at Spoke A from North Island Power and Light (uca), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
+      <- day 50: Second Island Fuel fuel at Spoke B missed today's delivery.
+          <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
+  Day 54: Fuel at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); fuel on hand ran out.
+      <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 59: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
-      <- day 59: hubWaste had equipment down.
-          <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (purchaseOrder), days -14 to 75.
+      <- day 59: Main Island Sanitation waste removal at Hub had equipment down.
+          <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
   pi1 (day 17): bFood at spokeBSite.food, failed days 13, 15. Decision: no decision.
@@ -517,34 +517,34 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.waste days 59-59, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] hubWaste failed on day 59 with full operator and maintenance coverage. Its report was still on the way (due day 63) when the game ended.
+      [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 59 with full operator and maintenance coverage. Its report was still on the way (due day 63) when the game ended.
   #1 hubSite.transport days 2-2, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] hubTransport ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed.
   #2 hubSite.transport days 28-28, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] trucks failed (first on day 28) and had no maintenance line; its failure odds were higher every day it ran.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub failed (first on day 28) and had no maintenance line; its failure odds were higher every day it ran.
   #3 hubSite.transport days 36-36, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] trucks failed (first on day 36) and had no maintenance line; its failure odds were higher every day it ran.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub failed (first on day 36) and had no maintenance line; its failure odds were higher every day it ran.
   #4 hubSite.transport days 49-60, lowest 0%, 12 day(s) down: AVOIDABLE
-      [avoidable] trucks stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 44.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 44.
   #5 spokeASite.fuel days 54-60, lowest 0%, 7 day(s) down: AVOIDABLE
-      [avoidable] aPower stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 16.
+      [avoidable] North Island Power and Light power at Spoke A stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 16.
   #6 spokeASite.power days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] aPower failed on day 13 with full operator and maintenance coverage.
+      [unforeseeable] North Island Power and Light power at Spoke A failed on day 13 with full operator and maintenance coverage.
   #7 spokeASite.power days 28-28, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] aPower failed on day 28 with full operator and maintenance coverage.
+      [unforeseeable] North Island Power and Light power at Spoke A failed on day 28 with full operator and maintenance coverage.
   #8 spokeASite.power days 44-44, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] aPower failed on day 44 with full operator and maintenance coverage.
+      [unforeseeable] North Island Power and Light power at Spoke A failed on day 44 with full operator and maintenance coverage.
   #9 spokeASite.power days 49-60, lowest 0%, 12 day(s) down: AVOIDABLE
-      [avoidable] aPower stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 16.
+      [avoidable] North Island Power and Light power at Spoke A stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 16.
       [avoidable] Power depends on fuel, which was short. (see #5)
   #10 spokeASite.water days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Water depends on power, which was short. (see #6)
   #11 spokeASite.water days 28-28, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Water depends on power, which was short. (see #7)
   #12 spokeASite.water days 42-60, lowest 0%, 19 day(s) down: AVOIDABLE
-      [avoidable] ACSA order aWater was withdrawn by Partner force on day 36 (last day of support 38) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.
+      [avoidable] The ACSA order for water at Spoke A was withdrawn by Partner force on day 36 (last day of support 38) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.
       [unforeseeable] Water depends on power, which was short. (see #8)
-      [avoidable] No funding line with money could pay for water on day 46 (days 46 to 54). om1 reached its fiscal-year end with day 45. om2 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for water on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [avoidable] Water depends on power, which was short. (see #9)
   #13 spokeASite.comms days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Comms backhaul depends on power, which was short. (see #6)
@@ -553,71 +553,71 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #15 spokeASite.comms days 44-44, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Comms backhaul depends on power, which was short. (see #8)
   #16 spokeASite.comms days 46-46, lowest 68%, 0 day(s) down: AVOIDABLE
-      [avoidable] comms failed (first on day 46) and had no maintenance line; its failure odds were higher every day it ran.
+      [avoidable] North Island Telecom comms backhaul at Spoke A failed (first on day 46) and had no maintenance line; its failure odds were higher every day it ran.
   #17 spokeASite.comms days 49-60, lowest 0%, 12 day(s) down: AVOIDABLE
       [avoidable] Comms backhaul depends on power, which was short. (see #9)
-      [avoidable] comms stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 43.
+      [avoidable] North Island Telecom comms backhaul at Spoke A stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 43.
   #18 spokeBSite.fuel days 32-32, lowest 69%, 0 day(s) down: DISCOVERABLE
-      [discoverable] bFuel failed on day 32 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. The COR reported it on day 36. Performance issue pi2 opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 32 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. The COR reported it on day 36. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #19 spokeBSite.fuel days 34-37, lowest 0%, 4 day(s) down: DISCOVERABLE
-      [discoverable] bFuel failed on day 34 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. Performance issue pi2 opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 34 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #20 spokeBSite.fuel days 39-39, lowest 28%, 1 day(s) down: DISCOVERABLE
-      [discoverable] bFuel failed on day 39 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. Performance issue pi2 opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 39 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #21 spokeBSite.fuel days 47-48, lowest 0%, 1 day(s) down: DISCOVERABLE
-      [discoverable] bFuel failed on day 47 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. The COR reported it on day 51. Performance issue pi2 opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 47 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. The COR reported it on day 51. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #22 spokeBSite.fuel days 50-50, lowest 28%, 1 day(s) down: DISCOVERABLE
-      [discoverable] bFuel failed on day 50 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. Performance issue pi2 opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 50 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #23 spokeBSite.power days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] bGens failed (first on day 27) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 29.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 27) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 29.
   #24 spokeBSite.power days 29-29, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] bGens failed (first on day 29) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 31.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 29) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 31.
   #25 spokeBSite.power days 31-60, lowest 0%, 30 day(s) down: AVOIDABLE
       [avoidable] Nothing supplied power at Spoke B; the site and its population were in the plan from day 1.
       [discoverable] Power depends on fuel, which was short. (see #18)
       [discoverable] Power depends on fuel, which was short. (see #19)
       [discoverable] Power depends on fuel, which was short. (see #20)
-      [avoidable] No funding line with money could pay for power on day 46 (days 46 to 54). om1 reached its fiscal-year end with day 45. om2 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for power on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [discoverable] Power depends on fuel, which was short. (see #21)
       [discoverable] Power depends on fuel, which was short. (see #22)
   #26 spokeBSite.lodging days 7-7, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] bLodging failed on day 7 with full operator and maintenance coverage. The COR reported it on day 9.
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full operator and maintenance coverage. The COR reported it on day 9.
   #27 spokeBSite.lodging days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #23)
   #28 spokeBSite.lodging days 29-29, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #24)
   #29 spokeBSite.lodging days 31-60, lowest 0%, 30 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #25)
-      [unforeseeable] bLodging failed on day 31 with full operator and maintenance coverage. Its COR (fair) did not report it.
-      [avoidable] beds failed (first on day 47) and had no maintenance line; its failure odds were higher every day it ran. Its COR (fair) did not report it.
-      [avoidable] beds stopped work on day 48: incurred costs went past what could be obligated (the UCA obligation cap or the money on the line).
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 31 with full operator and maintenance coverage. Its COR (fair) did not report it.
+      [avoidable] Second Island Camp Services lodging at Spoke B failed (first on day 47) and had no maintenance line; its failure odds were higher every day it ran. Its COR (fair) did not report it.
+      [avoidable] Second Island Camp Services lodging at Spoke B stopped work on day 48: incurred costs went past what could be obligated (the UCA obligation cap or the money on the line).
   #30 spokeBSite.food days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #23)
-      [discoverable] bFood supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [discoverable] Island Provisions food service at Spoke B supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #31 spokeBSite.food days 29-29, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #24)
-      [discoverable] bFood supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [discoverable] Island Provisions food service at Spoke B supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #32 spokeBSite.food days 31-60, lowest 0%, 30 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #25)
-      [discoverable] bFood supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [discoverable] Island Provisions food service at Spoke B supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] Nothing supplied food service at Spoke B; the site and its population were in the plan from day 1.
-      [avoidable] No funding line with money could pay for food service on day 46 (days 46 to 54). om1 reached its fiscal-year end with day 45. om2 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for food service on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #33 spokeCSite.fuel days 37-38, lowest 0%, 1 day(s) down: AVOIDABLE
-      [discoverable] cFuel supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [discoverable] Port Fuel Haulers fuel at Spoke C supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 450 gal a day fell short of 630 a day. Still short 7 days after they arrived: the notice left time to resize.
   #34 spokeCSite.fuel days 45-60, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Nobody owned fuel at Spoke C. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 600 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
-      [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). om1 reached its fiscal-year end with day 45. om2 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #35 spokeCSite.lodging days 30-60, lowest 0%, 13 day(s) down: AVOIDABLE
       [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Nothing before the notice showed it coming.
-      [unforeseeable] cLodging failed on day 31 with full operator and maintenance coverage. The COR reported it on day 33.
+      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 31 with full operator and maintenance coverage. The COR reported it on day 33.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Still short 7 days after they arrived: the notice left time to resize.
-      [avoidable] cLodging stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 8. Higher HQ's inquiry on day 13 brought its definitization clock to light.
+      [avoidable] Third Island Camp Services lodging at Spoke C stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 8. Higher HQ's inquiry on day 13 brought its definitization clock to light.
   #36 spokeCSite.mhe days 37-38, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Material handling equipment depends on fuel, which was short. (see #33)
   #37 spokeCSite.mhe days 45-60, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Material handling equipment depends on fuel, which was short. (see #34)
-      [avoidable] forklifts failed (first on day 48) and had no operators or maintenance line; its failure odds were higher every day it ran. The COR reported it on day 50.
-      [avoidable] forklifts stopped work on day 48: incurred costs went past what could be obligated (the UCA obligation cap or the money on the line).
+      [avoidable] Harbor Equipment Co material handling equipment at Spoke C failed (first on day 48) and had no operators or maintenance line; its failure odds were higher every day it ran. The COR reported it on day 50.
+      [avoidable] Harbor Equipment Co material handling equipment at Spoke C stopped work on day 48: incurred costs went past what could be obligated (the UCA obligation cap or the money on the line).
 
 PASS CRITERIA
   [not met] Spoke A power never down more than two days (site.spokeASite.power.downDays = 12)
@@ -626,4 +626,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 6399000)
   [not met] Mission output at least 88% (mission.output = 0.681)
 
-State hash dfa2bfac2de9941a7fbd002e1538d1e43daa06ce64200620806d03a53e2f5346
+State hash 44a21252b3e3861fdd2d89c55d1473355aaeb4cb896c31769a8f98d2a9e7686c

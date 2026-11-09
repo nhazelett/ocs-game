@@ -63,17 +63,17 @@ public sealed partial class Session
     {
         if (!CorModeled) return ActionResult.Stop("this scenario has no COR roster");
         var a = _arrangements.FirstOrDefault(x => x.Id == c.Arrangement);
-        if (a is null) return ActionResult.Stop($"arrangement {c.Arrangement} does not exist");
+        if (a is null) return ActionResult.Stop($"arrangement {NameOf(c.Arrangement)} does not exist");
         var cor = CorOf(c.Cor);
         if (cor is null) return ActionResult.Stop($"COR {c.Cor} is not on the roster");
-        if (!Curable(a)) return ActionResult.Stop($"{a.Id} is not a contract with written terms administered by this office");
+        if (!Curable(a)) return ActionResult.Stop($"{NameOf(a.Id)} is not a contract with written terms administered by this office");
         if (a.Status is not (ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended))
-            return ActionResult.Stop($"{a.Id} is not running");
-        if (a.CorId == cor.Id) return ActionResult.Stop($"{cor.Name} is already the COR on {a.Id}");
+            return ActionResult.Stop($"{NameOf(a.Id)} is not running");
+        if (a.CorId == cor.Id) return ActionResult.Stop($"{cor.Name} is already the COR on {NameOf(a.Id)}");
         var was = CorOf(a.CorId);
         a.CorId = cor.Id;
         AddRecord(Day, RecordKind.Action, a.Id,
-            $"{cor.Name} designated COR on {a.Id}{(was is null ? "" : $", replacing {was.Name}")} ({CorSummary(cor)}).", []);
+            $"{cor.Name} designated COR on {NameOf(a.Id)}{(was is null ? "" : $", replacing {was.Name}")} ({CorSummary(cor)}).", []);
         return ActionResult.Ok("designated");
     }
 
@@ -87,7 +87,7 @@ public sealed partial class Session
         c.Quality = Rules.Cor.ReliefQuality;
         c.Name = $"{was}'s relief";
         var covers = _arrangements.Where(a => a.CorId == c.Id && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended)
-                                  .Select(a => a.Id).ToList();
+                                  .Select(a => ArrName(a)).ToList();
         AddRecord(day, RecordKind.CorReport, c.Id,
             $"{was} rotates home. An untrained relief takes over as COR{(covers.Count > 0 ? $" on {string.Join(", ", covers)}" : "")} ({CorSummary(c)}). Designate another COR to restore reporting.",
             [cause]);
@@ -118,9 +118,9 @@ public sealed partial class Session
             var what = Cap(a.CapabilityId).Delivery == "consumable" ? "missed its delivery" : "had equipment down";
             var late = d > r.FailureDay ? $", reported {d - r.FailureDay} day(s) later" : "";
             r.RecordId = CorOf(r.CorId) is { } cor
-                ? AddRecord(d, RecordKind.CorReport, a.Id, $"COR report ({cor.Name}): {a.Id} {what} on day {r.FailureDay}{late}.", [r.FailureRecordId])
+                ? AddRecord(d, RecordKind.CorReport, a.Id, $"COR report ({cor.Name}): {NameOf(a.Id)} {what} on day {r.FailureDay}{late}.", [r.FailureRecordId])
                 : AddRecord(d, RecordKind.CorReport, a.Id,
-                    $"Unit report from {SiteName(a.SiteId)}: {CapLabel(a.CapabilityId).ToLowerInvariant()} fell short on day {r.FailureDay} and the unit blames {VendorData(a.VendorId)?.Name ?? "the vendor"} ({a.Id}){late}. {a.Id} has no COR, so nobody was checking its deliveries for the government.",
+                    $"Unit report from {SiteName(a.SiteId)}: {CapLabel(a.CapabilityId).ToLowerInvariant()} fell short on day {r.FailureDay} and the unit blames {VendorData(a.VendorId)?.Name ?? "the vendor"}{late}. That contract has no COR, so nobody was checking its deliveries for the government.",
                     [r.FailureRecordId]);
             arrived.Add(r);
         }

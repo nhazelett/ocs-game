@@ -1,0 +1,109 @@
+Week one at the hub / approach2-cash-for-waste
+The trap: waste paid for on SF 44 cash buys because it was faster. No written terms and no COR; the unit and the vendor argue about what was ordered.
+Scenario tutorial, rules 2025-10, seed 1, 20 days.
+Prep: gpcAccounts, cashAndPayingAgent, systemAccess.
+
+TIMELINE
+Before day 1
+  ACTION    Pre-deployment: stand up GPC accounts and cardholder limits; arrange cash and a paying agent with FM; request contract-writing system access and location data setup (10 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Water at Hub from Main Island Utilities (host nation), days 9 to 400.
+  START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Material handling equipment at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Lodging at Hub from Island Camp Services (BPA call), days -20 to 40.
+  START     Inherited: Food service at Hub from Island Camp Services (BPA call), days -20 to 40.
+Day 1
+  ACTION    Government purchase card to Island Mart: Water at Hub, 4500 gal/day for 7 days (Potable water supply); $9,734 paid on the spot.
+  DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $9,734.
+  EVENT     Your mentor on the cash box. Inbox: "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 2
+  EVENT     Your mentor on agreements. Inbox: "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  START     Water at Hub from Island Mart began, 4500 gal/day.
+Day 3
+  EVENT     Your mentor's last note. Inbox: "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
+  EVENT     The host nation takes its forklift back. Inbox: "Main Island Utilities: our forklift goes back to the port after day 7."
+  WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 4
+  ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Maintenance); quoted $7,020.
+  EVENT     Harbor Equipment Co is short of forklifts this week
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 5
+  DECLINED  Harbor Equipment Co declined the BPA call for material handling equipment at Hub. A BPA is not binding; the vendor may decline any call.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 6
+  ACTION    The request for material handling equipment for Hub: Operators switched on.
+  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); $8,580 paid on the spot.
+  DONE      Government purchase card awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 8, ends day 20. Obligated $8,580.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 7
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 8
+  EVENT     The host nation pulls its honey trucks. Inbox: "Main Island Utilities: we need our honey trucks back after day 12."
+  WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  END       Main Island Utilities (host nation) material handling equipment at Hub ended.
+  START     Material handling equipment at Hub from Coastal Rentals began, 3 unit-days/day.
+Day 9
+  ACTION    SF 44 cash purchase to Main Island Sanitation: Waste removal at Hub, 3600 gal/day for 8 days (Removal and disposal); $1,152 paid on the spot.
+  DONE      SF 44 cash purchase awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated $1,152.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
+  END       Island Mart water at Hub ended.
+Day 10
+  DONE      CE small buys: 3 worked today (1.5 h of shop time).
+Day 11
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery.
+Day 12
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 13
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  END       Main Island Utilities (host nation) waste removal at Hub ended.
+  START     Waste removal at Hub from Main Island Sanitation began, 3600 gal/day.
+Day 14
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  FAIL      Main Island Utilities (host nation) power at Hub had equipment down.
+Day 15
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 16
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 17
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 18
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 19
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 20
+  DONE      CE small buys: 3 worked today (1.5 h of shop time).
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2
+                          12345678901234567890
+Hub Power                 ....................
+Hub Fuel                  ....................
+Hub Water                 ....................
+Hub Lodging               ....................
+Hub Food service          ....................
+Hub Waste removal         ....................
+Hub Material handling equ ....................
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 100% (sortie generation 100%, throughput 100%, endurance 100%, resilience 100%)
+  Obligated $643,466; incurred $331,466; incurred but not obligated $0
+  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
+  Surveys 0; shop hours worked 29; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 1
+
+PASS CRITERIA
+  [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
+  [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 0)
+  [met] Waste removal never out (site.hubSite.waste.downDays = 0)
+  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
+  [met] Mission output at least 95% (mission.output = 1)
+
+State hash 1baff42f139a0c12941950815b0476d9a2046bd47cb690488e93b68489ebc9bd

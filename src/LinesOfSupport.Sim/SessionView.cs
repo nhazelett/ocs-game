@@ -107,6 +107,17 @@ public sealed class SessionView
     /// MeetVendorAction or EngageJ4Action. For a question, the ready range is when the answer can come back; for the
     /// J4, the first day of support.</summary>
     public ActionPreview PreviewVisit(PlayerAction visit) => _s.BuildVisitPreview(visit);
+    // Plain names (M2R-07, design doc R6). Ids are keys for actions and links; show these instead.
+    /// <summary>"Harbor Equipment Co power at Spoke B": an arrangement (or a pending award, or a handshake) by who, what and where.</summary>
+    public string ArrangementName(string id) => _s.ArrName(id);
+    /// <summary>"the O&amp;M line", or with its dates when there is more than one of its type.</summary>
+    public string FundingName(string id) => _s.FundingName(id);
+    /// <summary>"the Meridian Site Services BPA".</summary>
+    public string VehicleName(string id) => _s.VehicleName(id);
+    /// <summary>"the request for power at Spoke B".</summary>
+    public string CardName(string id) => _s.CardName(id);
+    /// <summary>Any id a record, board item or debrief line refers to, as a name.</summary>
+    public string NameOf(string id) => _s.NameOf(id);
     /// <summary>Day the shop found the finance office, or null.</summary>
     public int? FinanceFoundDay => _s.FinanceFoundDay;
     public StaffMeetingView StaffMeeting => _s.BuildStaffMeeting();
@@ -145,7 +156,7 @@ public sealed class SessionView
         => _s.Arrangements.Where(a => a.SiteId == siteId && (a.CapabilityId == capability || a.SuppliedQuantityMilli.ContainsKey(capability)));
 
     public bool InWork(string awardId)
-        => _s.Work.Any(w => w.CompletedDay is null && w.Kind == WorkKind.Award && w.Label.EndsWith(" " + awardId, StringComparison.Ordinal));
+        => _s.Work.Any(w => w.CompletedDay is null && w.Kind == WorkKind.Award && w.SubjectId == awardId);
 
     // ---------------------------------------------------------------- view-model contracts (M0-07, ADR-0006)
 

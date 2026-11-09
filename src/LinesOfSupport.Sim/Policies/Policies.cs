@@ -336,7 +336,7 @@ internal static class Helpers
     public static CorState BestCor(SessionView v) => v.Cors.OrderBy(c => CorRank(v, c)).ThenBy(c => c.Id, StringComparer.Ordinal).First();
 
     public static bool CardCovered(SessionView v, string cardId)
-        => v.Arrangements.Any(a => a.CardId == cardId && a.Status is not ArrangementStatus.Declined) || v.Work.Any(w => w.CompletedDay is null && w.Label.Contains(cardId, StringComparison.Ordinal));
+        => v.Arrangements.Any(a => a.CardId == cardId && a.Status is not ArrangementStatus.Declined) || v.Work.Any(w => w.CompletedDay is null && (w.SubjectId?.Contains(cardId, StringComparison.Ordinal) ?? false));
 
     public static IEnumerable<(VendorData Vendor, VendorOfferData Offer)> Vendors(SessionView v, string capability, IReadOnlyCollection<string> lines)
         => v.Scenario.Vendors.SelectMany(vd => vd.Offers.Where(o => o.Capability == capability && lines.All(o.Lines.Contains)).Select(o => (vd, o)));

@@ -62,7 +62,7 @@ public class PerformanceTests
         var t = Golden("approach1-terminate");
         Assert.Equal("terminated", t.View.PerformanceDecision(t.PerformanceIssues.First(i => i.Id == "pi1")));
         Assert.Contains(Golden("approach1-cure").View.Debrief().Gaps.SelectMany(g => g.Factors),
-                        f => f.Kind == Views.GapFactorKind.VendorFailure && f.Text.Contains("Performance issue pi1"));
+                        f => f.Kind == Views.GapFactorKind.VendorFailure && f.Text.Contains("The performance issue with Harbor Equipment Co on power at Spoke B opened"));
     }
 
     [Fact]

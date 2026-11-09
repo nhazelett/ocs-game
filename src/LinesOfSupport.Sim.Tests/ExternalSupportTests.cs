@@ -85,9 +85,9 @@ public class ExternalSupportTests
         Assert.Null(v.AwardedDay);
         // Submission and award reach the morning board as higher-HQ news.
         var board = s.View.MorningBoard();
-        Assert.Contains(board.Items, i => i.Category == BoardCategory.HigherHq && i.Text.Contains("submitted through the SCO"));
+        Assert.Contains(board.Items, i => i.Category == BoardCategory.HigherHq && i.Text.Contains("went through the SCO"));
         while (s.View.ExternalSupportRequests().Single().Status == "InApproval") s.AdvanceDay();
-        Assert.Contains(s.View.MorningBoard().Items, i => i.Category == BoardCategory.HigherHq && i.Text.Contains("awarded ext"));
+        Assert.Contains(s.View.MorningBoard().Items, i => i.Category == BoardCategory.HigherHq && i.Text.Contains("The external office awarded"));
         Assert.NotNull(s.View.ExternalSupportRequests().Single().StartDay);
     }
 

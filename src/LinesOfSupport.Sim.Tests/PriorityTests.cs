@@ -37,7 +37,7 @@ public class PriorityTests
         return s;
     }
 
-    private static WorkItem Award(Session s) => s.Work.Single(w => w.Kind == WorkKind.Award && w.Label.EndsWith("turnkey"));
+    private static WorkItem Award(Session s) => s.Work.Single(w => w.Kind == WorkKind.Award && w.SubjectId == "turnkey");
 
     [Fact]
     public void Refusal_marks_the_site_and_only_that_site()

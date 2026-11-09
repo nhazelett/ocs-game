@@ -43,14 +43,14 @@ public sealed partial class Session
         if (string.IsNullOrWhiteSpace(r.Id)) stops.Add("a request needs an id");
         else if (_arrangements.Any(x => x.Id == r.Id) || _external.Any(x => x.Id == r.Id)
                  || _work.Any(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Id == r.Id))
-            stops.Add($"id {r.Id} is already used");
+            stops.Add($"id {NameOf(r.Id)} is already used");
 
         CardState? card = null;
         if (r.Card is not null)
         {
             card = _cards.FirstOrDefault(c => c.Id == r.Card);
-            if (card is null) return Fail($"card {r.Card} does not exist");
-            if (Day < card.SubmittedDay) return Fail($"card {r.Card} has not been submitted yet");
+            if (card is null) return Fail($"{CardName(r.Card)} does not exist");
+            if (Day < card.SubmittedDay) return Fail($"{CardName(r.Card)} has not been submitted yet");
         }
         var siteId = r.Site ?? card?.SiteId;
         var capId = r.Capability ?? card?.CapabilityId;
@@ -92,8 +92,8 @@ public sealed partial class Session
         if (line is null) stops.Add("a request needs a funding line: the external office obligates the unit's money");
         else
         {
-            if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
-            else if (line.RemainingCents < total) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left for an estimated {Money(total)}");
+            if (!line.UsableOn(Day)) stops.Add($"{NameOf(line.Id)} is not usable on day {Day}");
+            else if (line.RemainingCents < total) stops.Add($"{NameOf(line.Id)} has {Money(line.RemainingCents)} left for an estimated {Money(total)}");
             stops.AddRange(FundingStops(line, capId, r.StartDay, r.DurationDays));
         }
         if (r.Cor is not null) stops.AddRange(CorStops(r.Cor, inst));
@@ -112,7 +112,7 @@ public sealed partial class Session
         var where = $"{CapLabel(capId)} at {SiteName(chk.SiteId!)}";
         var lineText = string.Join(", ", chk.Lines.Select(l => LineLabel(capId, l)));
         var rec = AddRecord(Day, RecordKind.Action, r.Id,
-            $"External support request {r.Id} started: {where}, {r.Quantity} {Cap(capId).Unit}/day for {r.DurationDays} days ({lineText}), estimated {Money(chk.TotalCents)} from {r.FundingLine}; {shopDays} shop day(s) to prepare, then the SCO and the external office.", []);
+            $"External support request started: {where}, {r.Quantity} {Cap(capId).Unit}/day for {r.DurationDays} days ({lineText}), estimated {Money(chk.TotalCents)} from {NameOf(r.FundingLine)}; {shopDays} shop day(s) to prepare, then the SCO and the external office.", []);
         _external.Add(new ExternalSupportState
         {
             Id = r.Id, SiteId = chk.SiteId!, CapabilityId = capId, Lines = chk.Lines, QuantityMilli = r.Quantity * 1000,
@@ -121,7 +121,7 @@ public sealed partial class Session
             ReliabilityPermille = Fixed.Permille(chk.Offer!.Reliability), RequestedDay = Day,
             ApprovalLagDays = approval, MobilizationDays = mobilization, CauseId = rec,
         });
-        AddWork(WorkKind.ExternalSupportRequest, $"External support request {r.Id}", Hours(shopDays, inst.RequiresSystemOrManual),
+        AddWork(WorkKind.ExternalSupportRequest, $"External support request for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual),
                 Day + Scenario.Actors.Fm.CertificationLagDays, r.Id, rec);
         return ActionResult.Ok("request in work");
     }
@@ -135,7 +135,7 @@ public sealed partial class Session
         r.ApprovalDay = day + r.ApprovalLagDays;
         var lag = Rules.Instruments[ExternalInstrument].ApprovalLagDays ?? new IntRange(r.ApprovalLagDays, r.ApprovalLagDays);
         AddRecord(day, RecordKind.ExternalSupport, id,
-            $"External support request {id} submitted through the SCO to the external office. Approval usually takes {lag.Min} to {lag.Max} days; the contractor then mobilizes before anything arrives.", [causeId]);
+            $"{Upper(ExternalName(id))} went through the SCO to the external office. Approval usually takes {lag.Min} to {lag.Max} days; the contractor then mobilizes before anything arrives.", [causeId]);
     }
 
     /// <summary>On the approval day the external office awards the task order and obligates it, or refuses it.</summary>
@@ -149,7 +149,7 @@ public sealed partial class Session
                 r.Status = ExternalSupportStatus.Refused;
                 r.RefusedReason = FundingShortReason(line, r.TotalCents, d);
                 var rej = AddRecord(d, RecordKind.ExternalSupport, r.Id,
-                    $"The external office approved {r.Id} but could not award it: {r.RefusedReason}. The request lapses; a new one starts the approval over.", [r.CauseId]);
+                    $"The external office approved {NameOf(r.Id)} but could not award it: {r.RefusedReason}. The request lapses; a new one starts the approval over.", [r.CauseId]);
                 _fundingRejections.Add((r.Id, r.SiteId, r.CapabilityId, d, rej));
                 continue;
             }
@@ -175,7 +175,7 @@ public sealed partial class Session
             }
             _arrangements.Add(arr);
             AddRecord(d, RecordKind.ExternalSupport, r.Id,
-                $"The external office awarded {r.Id} to {ExternalProvider} after {d - r.SubmittedDay} days in approval: {CapLabel(r.CapabilityId)} at {SiteName(r.SiteId)}, {r.QuantityMilli / 1000} {Cap(r.CapabilityId).Unit}/day. Obligated {Money(r.TotalCents)} from {line.Id}. The contractor mobilizes for {r.MobilizationDays} days; performance starts day {start}, ends day {arr.EndDay}.",
+                $"The external office awarded {NameOf(r.Id)} to {ExternalProvider} after {d - r.SubmittedDay} days in approval: {CapLabel(r.CapabilityId)} at {SiteName(r.SiteId)}, {r.QuantityMilli / 1000} {Cap(r.CapabilityId).Unit}/day. Obligated {Money(r.TotalCents)} from {NameOf(line.Id)}. The contractor mobilizes for {r.MobilizationDays} days; performance starts day {start}, ends day {arr.EndDay}.",
                 [r.CauseId]);
         }
     }
@@ -213,7 +213,7 @@ public sealed partial class Session
             gaps.Add($"{r.Quantity} {Rate(cap)} against peak demand of {peak} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
         if (chk.Card is { } card && startMin > card.RequestedStartDay)
             gaps.Add($"Earliest start is day {startMin}; the requirement asks for day {card.RequestedStartDay}.");
-        gaps.Add($"The external office obligates the task order from {r.FundingLine} when it awards, around day {Prepared(inst.ShopDays.Min) + approval.Min} to {Prepared(inst.ShopDays.Max) + approval.Max}: the line needs {Money(chk.TotalCents)} left then, or the award fails and the request starts over.");
+        gaps.Add($"The external office obligates the task order from {NameOf(r.FundingLine)} when it awards, around day {Prepared(inst.ShopDays.Min) + approval.Min} to {Prepared(inst.ShopDays.Max) + approval.Max}: the line needs {Money(chk.TotalCents)} left then, or the award fails and the request starts over.");
         if (CorGap(new AwardAction { Cor = r.Cor }, inst) is { } corGap) gaps.Add(corGap);
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
                                  hMin, hMax, startMin, startMax, queue);
@@ -233,6 +233,6 @@ public sealed partial class Session
     private string ExternalNote(Arrangement a)
     {
         if (a.Instrument != ExternalInstrument || _external.FirstOrDefault(r => r.Id == a.Id) is not { } r) return "";
-        return $" {a.Id} is an external support contract: requested day {r.RequestedDay}, submitted day {r.SubmittedDay}, awarded day {r.AwardedDay} after {r.ApprovalLagDays} days in approval, then {r.MobilizationDays} days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.";
+        return $" {NameOf(a.Id)} is an external support contract: requested day {r.RequestedDay}, submitted day {r.SubmittedDay}, awarded day {r.AwardedDay} after {r.ApprovalLagDays} days in approval, then {r.MobilizationDays} days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.";
     }
 }

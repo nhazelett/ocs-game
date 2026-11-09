@@ -93,7 +93,7 @@ public sealed partial class Session
                 var days = EffectDays(e, i, 1);
                 var names = string.Join(" and ", far.Select(id => IslandData(id).Name));
                 AddRecord(d, RecordKind.Knowledge, e.Id,
-                    $"Forecast from your {names} survey contacts: {e.Label.TrimEnd('.')}. No {link.Id} sailings days {start} to {start + days - 1}.", []);
+                    $"Forecast from your {names} survey contacts: {e.Label.TrimEnd('.')}. No {NameOf(link.Id)} sailings days {start} to {start + days - 1}.", []);
             }
         }
     }
@@ -124,7 +124,7 @@ public sealed partial class Session
         {
             a.EndDay = Math.Min(a.EndDay, day + noticeDays - 1);
             AddRecord(day, RecordKind.Withdrawal, a.Id,
-                $"The other unit withdrew coordination {a.Id} ({CapLabel(capId)} to {SiteName(siteId)}); last day of support {a.EndDay}. A coordination is not a contract.", [cause, a.CauseId]);
+                $"The other unit withdrew its coordination ({CapLabel(capId)} to {SiteName(siteId)}); last day of support {a.EndDay}. A coordination is not a contract.", [cause, a.CauseId]);
         }
     }
 
@@ -165,14 +165,14 @@ public sealed partial class Session
             {
                 u.ProposalReceived = true;
                 AddRecord(d, RecordKind.UcaProposal, a.Id,
-                    $"{VendorData(a.VendorId)!.Name} submitted a qualifying proposal on {a.Id}. Obligation cap rises to {Rules.Uca.ObligationCapAfterProposal * 100:0}% of NTE; definitization can start.", [a.CauseId]);
+                    $"{VendorData(a.VendorId)!.Name} submitted a qualifying proposal for {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)}. Obligation cap rises to {Rules.Uca.ObligationCapAfterProposal * 100:0}% of NTE; definitization can start.", [a.CauseId]);
             }
             if (u.HhqInquiryDay == d && !u.Definitized)
             {
                 _hhqInquiries++;
-                var rec = AddRecord(d, RecordKind.Compliance, a.Id, $"Higher HQ asked why {a.Id} is past due for definitization. A response is now shop work.", []);
+                var rec = AddRecord(d, RecordKind.Compliance, a.Id, $"Higher HQ asked why {NameOf(a.Id)} is past due for definitization. A response is now shop work.", []);
                 RevealByInquiry(a, d, rec);
-                AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {a.Id}", Fixed.Milli(Rules.Model.Work.HhqInquiryResponseHours), d, a.Id, rec);
+                AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {NameOf(a.Id)}", Fixed.Milli(Rules.Model.Work.HhqInquiryResponseHours), d, a.Id, rec);
             }
         }
     }
@@ -221,12 +221,12 @@ public sealed partial class Session
             {
                 a.Status = ArrangementStatus.Active;
                 var who = SupplierName(a);
-                AddRecord(d, RecordKind.ArrangementStart, a.Id, $"{a.Id} began: {CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} from {who}, {a.QuantityMilli / 1000} {Cap(a.CapabilityId).Unit}/day.", [a.CauseId]);
+                AddRecord(d, RecordKind.ArrangementStart, a.Id, $"{CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} from {who} began, {a.QuantityMilli / 1000} {Cap(a.CapabilityId).Unit}/day.", [a.CauseId]);
             }
             if (a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay < d)
             {
                 a.Status = ArrangementStatus.Ended;
-                AddRecord(d, RecordKind.ArrangementEnd, a.Id, $"{a.Id} ended.", [a.CauseId]);
+                AddRecord(d, RecordKind.ArrangementEnd, a.Id, $"{Upper(NameOf(a.Id))} ended.", [a.CauseId]);
             }
             if (a.Status == ArrangementStatus.Pending && a.EndDay < d) a.Status = ArrangementStatus.Ended;
         }
@@ -267,7 +267,7 @@ public sealed partial class Session
                 if (!a.IsCoordination && missingMaintenance) why.AddRange(cap.Lines.Where(l => l.Kind == "maintenance").Select(l => $"no {l.Label!.ToLowerInvariant()} line"));
                 if (!a.IsCoordination && missingOperator) why.AddRange(cap.Lines.Where(l => l.Kind == "operator").Select(l => $"no {l.Label!.ToLowerInvariant()} line"));
                 t.FailureRecord = AddRecord(d, RecordKind.VendorFailure, a.Id,
-                    $"{a.Id} {(consumable ? "missed today's delivery" : "had equipment down")}{(why.Count > 0 ? $" ({string.Join(", ", why)})" : "")}.", [a.CauseId]);
+                    $"{Upper(NameOf(a.Id))} {(consumable ? "missed today's delivery" : "had equipment down")}{(why.Count > 0 ? $" ({string.Join(", ", why)})" : "")}.", [a.CauseId]);
             }
             // Execution confusion is the cost of running a recurring service on a cash or card buy (or a handshake):
             // nobody wrote down what was bought. Agreements and coordinations between governments or units are exempt.
@@ -278,7 +278,7 @@ public sealed partial class Session
                 t.Confused = true;
                 t.FactorPermille = t.FactorPermille * 500 / 1000;
                 t.ConfusionRecord = AddRecord(d, RecordKind.ExecutionConfusion, a.Id,
-                    $"Execution confusion on {a.Id}: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.", [a.CauseId]);
+                    $"Execution confusion on {NameOf(a.Id)}: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.", [a.CauseId]);
             }
         }
         return result;
@@ -317,7 +317,7 @@ public sealed partial class Session
                     if (q == 0) continue;
                     contributors++;
                     q = Fixed.MulPermille(q, t.FactorPermille);
-                    if (t.Suspended) { reasons.Add($"{a.Id} stopped work (unpaid UCA)"); causes.Add(a.CauseId); }
+                    if (t.Suspended) { reasons.Add($"{Upper(NameOf(a.Id))} stopped work (unpaid UCA)"); causes.Add(a.CauseId); }
                     if (t.FailureRecord is not null) causes.Add(t.FailureRecord);
                     if (t.ConfusionRecord is not null) causes.Add(t.ConfusionRecord);
                     if (t.CapacityRecord is not null) { causes.Add(t.CapacityRecord); reasons.Add($"{VendorData(a.VendorId)!.Name} over capacity"); }
@@ -421,8 +421,8 @@ public sealed partial class Session
             {
                 _paymentErrors++;
                 var rec = AddRecord(d, RecordKind.PaymentError, a.Id,
-                    $"Payment error on {a.Id}'s invoice (manual contract, no contract-writing system yet). Rework costs the shop {Rules.Model.Work.PaymentErrorReworkHours} hours.", [a.CauseId]);
-                AddWork(WorkKind.PaymentRework, $"Fix payment on {a.Id}", Fixed.Milli(Rules.Model.Work.PaymentErrorReworkHours), d, a.Id, rec);
+                    $"Payment error on {NameOf(a.Id)}'s invoice (manual contract, no contract-writing system yet). Rework costs the shop {Rules.Model.Work.PaymentErrorReworkHours} hours.", [a.CauseId]);
+                AddWork(WorkKind.PaymentRework, $"Fix payment on {NameOf(a.Id)}", Fixed.Milli(Rules.Model.Work.PaymentErrorReworkHours), d, a.Id, rec);
             }
         }
     }
@@ -455,15 +455,15 @@ public sealed partial class Session
                 var fl = _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
                 var why = capBinding ? $"the UCA obligation cap of {capPm / 10}% of NTE is reached"
                     : fl is null ? "it has no funding line"
-                    : d > fl.ExpiresDay ? $"funding line {fl.Id} expired on day {fl.ExpiresDay}"
-                    : d < fl.AvailableDay ? $"funding line {fl.Id} is not available until day {fl.AvailableDay}"
-                    : $"funding line {fl.Id} has {Money(fl.RemainingCents)} left";
-                AddRecord(d, RecordKind.Obligation, a.Id, $"{a.Id} has incurred {Money(a.IncurredCents)} against {Money(a.ObligatedCents)} obligated: {why}. The vendor stops work in {Rules.Uca.StopWorkAfterUnpaidDays} days if this stands.", [a.CauseId]);
+                    : d > fl.ExpiresDay ? $"{Upper(NameOf(fl.Id))} expired on day {fl.ExpiresDay}"
+                    : d < fl.AvailableDay ? $"{Upper(NameOf(fl.Id))} is not available until day {fl.AvailableDay}"
+                    : $"{Upper(NameOf(fl.Id))} has {Money(fl.RemainingCents)} left";
+                AddRecord(d, RecordKind.Obligation, a.Id, $"{Upper(NameOf(a.Id))} has incurred {Money(a.IncurredCents)} against {Money(a.ObligatedCents)} obligated: {why}. The vendor stops work in {Rules.Uca.StopWorkAfterUnpaidDays} days if this stands.", [a.CauseId]);
             }
             if (u.UnpaidDays >= Rules.Uca.StopWorkAfterUnpaidDays && a.Status == ArrangementStatus.Active)
             {
                 a.Status = ArrangementStatus.Suspended;
-                AddRecord(d, RecordKind.UcaStopWork, a.Id, $"{VendorData(a.VendorId)!.Name} stopped work on {a.Id}: costs incurred are not obligated.", [a.CauseId]);
+                AddRecord(d, RecordKind.UcaStopWork, a.Id, $"{VendorData(a.VendorId)!.Name} stopped work on {NameOf(a.Id)}: costs incurred are not obligated.", [a.CauseId]);
             }
         }
         else
@@ -471,7 +471,7 @@ public sealed partial class Session
             if (a.Status == ArrangementStatus.Suspended)
             {
                 a.Status = ArrangementStatus.Active;
-                AddRecord(d, RecordKind.UcaResumed, a.Id, $"{a.Id} resumed: obligations caught up.", [a.CauseId]);
+                AddRecord(d, RecordKind.UcaResumed, a.Id, $"{Upper(NameOf(a.Id))} resumed: obligations caught up.", [a.CauseId]);
             }
             u.UnpaidDays = 0;
         }
@@ -484,7 +484,7 @@ public sealed partial class Session
                 u.HhqInquiryDay = d + Rules.Uca.HhqInquiryAfterOverdueDays;
                 _ucaOverdue++;
                 AddRecord(d, RecordKind.UcaOverdue, a.Id,
-                    $"{a.Id} is due for definitization ({obligatedPm / 10}% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.", [a.CauseId]);
+                    $"{Upper(NameOf(a.Id))} is due for definitization ({obligatedPm / 10}% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.", [a.CauseId]);
             }
         }
     }

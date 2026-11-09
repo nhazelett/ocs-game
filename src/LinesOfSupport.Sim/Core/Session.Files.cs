@@ -108,9 +108,9 @@ public sealed partial class Session
     {
         var (files, stops) = CheckReviewFiles(r);
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
-        var rec = AddRecord(Day, RecordKind.Action, "file review", $"Ordered a review of the inherited contract files: {string.Join(", ", files)}.", []);
+        var rec = AddRecord(Day, RecordKind.Action, "file review", $"Ordered a review of the inherited contract files: {string.Join(", ", files.Select(ArrName))}.", []);
         var hours = Fixed.Milli(Rules.FileReview.HoursPerArrangement) * files.Count;
-        AddWork(WorkKind.FileReview, $"Review files {string.Join(", ", files)}", hours, Day, files, rec);
+        AddWork(WorkKind.FileReview, $"Review {files.Count} inherited contract file{(files.Count == 1 ? "" : "s")}", hours, Day, files, rec);
         return ActionResult.Ok("file review in work");
     }
 
@@ -121,7 +121,7 @@ public sealed partial class Session
             var a = _arrangements.First(x => x.Id == id);
             _reviewedDay[id] = day;
             _reviewedReliability[id] = a.ReliabilityPermille;
-            var rec = AddRecord(day, RecordKind.Knowledge, id, $"File review of {id}: {Findings(a, day)}", [causeId]);
+            var rec = AddRecord(day, RecordKind.Knowledge, id, $"File review: {Findings(a, day)}", [causeId]);
             if (_hiddenProblems.Contains(id)) _revealed.TryAdd(id, (day, rec, RevealSource.Review));
         }
     }
@@ -131,8 +131,8 @@ public sealed partial class Session
     {
         var parts = new List<string>
         {
-            $"{CapLabel(a.CapabilityId).ToLowerInvariant()} at {SiteName(a.SiteId)} from {VendorData(a.VendorId)?.Name ?? "the vendor"} ({a.Instrument}), days {a.StartDay} to {a.EndDay}" +
-            (a.FundingLineId is null ? "" : $", funded from {a.FundingLineId}"),
+            $"{CapLabel(a.CapabilityId).ToLowerInvariant()} at {SiteName(a.SiteId)} from {VendorData(a.VendorId)?.Name ?? "the vendor"} ({InstrumentLabel(a.Instrument)}), days {a.StartDay} to {a.EndDay}" +
+            (a.FundingLineId is null ? "" : $", funded from {NameOf(a.FundingLineId)}"),
         };
         if (a.Uca is { } u)
         {
@@ -147,8 +147,8 @@ public sealed partial class Session
         }
         if (a.Instrument == "idiqOrder" && Idiq(a.VehicleId) is { } q)
             parts.Add(q.CeilingCents is { } c
-                ? $"{q.VehicleId} ceiling {Money(c)}, {Money(q.OrderedCents)} ordered ({Fixed.Ratio(q.OrderedCents, c) / 10}%), {Money(Math.Max(0, c - q.OrderedCents))} left to order"
-                : $"{q.VehicleId} has no ceiling; {Money(q.OrderedCents)} ordered");
+                ? $"{Upper(NameOf(q.VehicleId))} ceiling {Money(c)}, {Money(q.OrderedCents)} ordered ({Fixed.Ratio(q.OrderedCents, c) / 10}%), {Money(Math.Max(0, c - q.OrderedCents))} left to order"
+                : $"{Upper(NameOf(q.VehicleId))} has no ceiling; {Money(q.OrderedCents)} ordered");
         if (_reportedReliability.TryGetValue(a.Id, out var reported))
             parts.Add($"delivery record {a.ReliabilityPermille / 10}% on time, not the {reported / 10}% reported at handover");
         else

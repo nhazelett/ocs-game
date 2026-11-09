@@ -40,7 +40,7 @@ public sealed partial class Session
         if (drop is null) return null;
         var issue = _issues.Where(i => i.ArrangementId == a.Id && i.OpenedDay < drop.Day).OrderBy(i => i.OpenedDay).FirstOrDefault();
         if (issue is null) return null;
-        return ($"{a.Id} failed on day {d} after its vendor's performance fell on day {drop.Day} ({drop.FromPermille / 10}% to {drop.ToPermille / 10}% on time). Performance issue {issue.Id}, opened day {issue.OpenedDay}, had shown the slips; a cure notice or a replacement before day {drop.Day} would have held it.",
+        return ($"{Upper(NameOf(a.Id))} failed on day {d} after its vendor's performance fell on day {drop.Day} ({drop.FromPermille / 10}% to {drop.ToPermille / 10}% on time). Performance issue {NameOf(issue.Id)}, opened day {issue.OpenedDay}, had shown the slips; a cure notice or a replacement before day {drop.Day} would have held it.",
                 [failureRecordId, drop.EventRecordId, issue.CauseId]);
     }
 

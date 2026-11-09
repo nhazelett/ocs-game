@@ -45,18 +45,18 @@ public sealed partial class Session
     internal IEnumerable<string> FundingStops(FundingLineState line, string capability, int? startDay, int durationDays)
     {
         if (!line.Pays(capability))
-            yield return $"funding line {line.Id} is certified for {Purpose(line)} only, not {CapLabel(capability).ToLowerInvariant()}";
+            yield return $"{Upper(NameOf(line.Id))} is certified for {Purpose(line)} only, not {CapLabel(capability).ToLowerInvariant()}";
         var start = startDay ?? Day;
         if (durationDays > SeverableServiceMaxDays && start + durationDays - 1 > line.ExpiresDay)
-            yield return $"a service paid from {line.Id} that runs past its fiscal-year end (day {line.ExpiresDay}) may last at most 12 months";
+            yield return $"a service paid from {NameOf(line.Id)} that runs past its fiscal-year end (day {line.ExpiresDay}) may last at most 12 months";
     }
 
     /// <summary>Why a line cannot pay for an award completing today, in words for the rejection record.</summary>
     private string FundingShortReason(FundingLineState? line, long need, int day)
         => line is null ? "no funding line was named"
-            : day > line.ExpiresDay ? $"funding line {line.Id} expired with day {line.ExpiresDay}"
-            : day < line.AvailableDay ? $"funding line {line.Id} is not released until day {line.AvailableDay}"
-            : $"funding line {line.Id} has {Money(line.RemainingCents)} left of the {Money(need)} needed";
+            : day > line.ExpiresDay ? $"{Upper(NameOf(line.Id))} expired with day {line.ExpiresDay}"
+            : day < line.AvailableDay ? $"{Upper(NameOf(line.Id))} is not released until day {line.AvailableDay}"
+            : $"{Upper(NameOf(line.Id))} has {Money(line.RemainingCents)} left of the {Money(need)} needed";
 
     /// <summary>Event effect <c>funding.late</c>: the comptroller pushes a line's release back (M3-03).</summary>
     internal void FundingLate(string lineId, int day, int delayDays, string cause)
@@ -66,7 +66,7 @@ public sealed partial class Session
         var was = line.AvailableDay;
         line.AvailableDay = was + delayDays;
         AddRecord(day, RecordKind.Funding, line.Id,
-            $"Comptroller: funding line {line.Id} ({Money(line.AmountCents)}) will not be released on day {was} as planned; expect it on day {line.AvailableDay}.", [cause]);
+            $"Comptroller: {NameOf(line.Id)} ({Money(line.AmountCents)}) will not be released on day {was} as planned; expect it on day {line.AvailableDay}.", [cause]);
     }
 
     /// <summary>End of each day: the comptroller's notices for tomorrow morning, and tomorrow's funding snapshot.</summary>
@@ -77,17 +77,17 @@ public sealed partial class Session
         {
             if (f.ExpiresDay == d && f.AvailableDay <= d)
                 AddRecord(d, RecordKind.Funding, f.Id, f.RemainingCents > 0
-                    ? $"Funding line {f.Id} reached its fiscal-year end with day {d}: {Money(f.RemainingCents)} never obligated can no longer pay for anything new."
-                    : $"Funding line {f.Id} reached its fiscal-year end with day {d}, fully obligated.", []);
+                    ? $"{Upper(NameOf(f.Id))} reached its fiscal-year end with day {d}: {Money(f.RemainingCents)} never obligated can no longer pay for anything new."
+                    : $"{Upper(NameOf(f.Id))} reached its fiscal-year end with day {d}, fully obligated.", []);
             if (f.ExpiresDay - d == FundingExpiryWarningDays && f.AvailableDay <= d && f.RemainingCents > 0 && next <= LastDay)
                 AddRecord(d, RecordKind.Funding, f.Id,
-                    $"Comptroller: funding line {f.Id} reaches its fiscal-year end with day {f.ExpiresDay}, {Money(f.RemainingCents)} still unobligated. Awards, definitizations and ratifications that complete after day {f.ExpiresDay} need another line; a service awarded before then may run up to 12 months past it.", []);
+                    $"Comptroller: {NameOf(f.Id)} reaches its fiscal-year end with day {f.ExpiresDay}, {Money(f.RemainingCents)} still unobligated. Awards, definitizations and ratifications that complete after day {f.ExpiresDay} need another line; a service awarded before then may run up to 12 months past it.", []);
             if (f.AvailableDay == next && next > 1 && next <= LastDay)
             {
                 var late = f.AvailableDay > f.PlannedAvailableDay ? $", {f.AvailableDay - f.PlannedAvailableDay} day(s) later than planned" : "";
                 var purpose = f.Capabilities.Count > 0 ? $" for {Purpose(f)}" : "";
                 _fundingReleases.Add(AddRecord(d, RecordKind.Funding, f.Id,
-                    $"Comptroller released funding line {f.Id}: {Money(f.RemainingCents)}{purpose} usable from day {next}{late}.", []));
+                    $"Comptroller released {NameOf(f.Id)}: {Money(f.RemainingCents)}{purpose} usable from day {next}{late}.", []));
             }
         }
         SnapshotFunds(next);
@@ -96,7 +96,7 @@ public sealed partial class Session
             var coming = _funding.Where(f => f.AvailableDay > next && f.RemainingCents > 0).OrderBy(f => f.AvailableDay).FirstOrDefault();
             AddRecord(d, RecordKind.Funding, "funding",
                 $"No funding line has money usable from day {next}: nothing new can be awarded, definitized or ratified until one does. "
-                + (coming is null ? "No further funding is scheduled." : $"Next release: {coming.Id}, expected day {coming.AvailableDay}."), []);
+                + (coming is null ? "No further funding is scheduled." : $"Next release: {NameOf(coming.Id)}, expected day {coming.AvailableDay}."), []);
         }
     }
 
@@ -121,13 +121,13 @@ public sealed partial class Session
                                               && r.Text.Contains("will not be released", StringComparison.Ordinal)).ToList();
         var text = $"No funding line with money could pay for {cap} on day {d}"
                    + (from < to ? $" (days {from} to {to}{(reopened ? "" : ", the end of the game")})" : "") + ".";
-        if (ended.Count > 0) text += $" {string.Join(" and ", ended)} reached its fiscal-year end with day {from - 1}.";
+        if (ended.Count > 0) text += $" {Upper(string.Join(" and ", ended.Select(FundingName)))} reached its fiscal-year end with day {from - 1}.";
         foreach (var f in released)
             text += f.AvailableDay > f.PlannedAvailableDay
-                ? $" {f.Id} was released day {f.AvailableDay}, {f.AvailableDay - f.PlannedAvailableDay} day(s) late" + (lateNotices.Count > 0 ? $" (the comptroller warned on day {lateNotices[0].Day})." : ".")
-                : $" {f.Id} was released day {f.AvailableDay}.";
+                ? $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}, {f.AvailableDay - f.PlannedAvailableDay} day(s) late" + (lateNotices.Count > 0 ? $" (the comptroller warned on day {lateNotices[0].Day})." : ".")
+                : $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}.";
         var rejected = _fundingRejections.Where(x => x.SiteId == siteId && x.CapabilityId == capId && x.Day >= from && x.Day <= d).ToList();
-        if (rejected.Count > 0) text += $" {string.Join(", ", rejected.Select(x => x.AwardId))} reached award with no money to pay for it.";
+        if (rejected.Count > 0) text += $" {Upper(string.Join(", ", rejected.Select(x => ArrName(x.AwardId))))} reached award with no money to pay for it.";
         var before = from > 1 && Enumerable.Range(1, from - 1).Any(x => FundedOn(x, capId));
         var ids = new List<string>();
         ids.AddRange(lateNotices.Select(r => r.Id));

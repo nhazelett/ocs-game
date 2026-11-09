@@ -5,45 +5,45 @@ Prep: systemAccess, cashAndPayingAgent.
 
 TIMELINE
 Before day 1
-  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
-  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
-  START     Inherited: Lodging at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Food service at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Waste removal at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Lodging at Spoke B from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Waste removal at Spoke B from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Lodging at Spoke C from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Waste removal at Spoke C from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Lodging at Spoke B from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Waste removal at Spoke B from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Lodging at Spoke C from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Waste removal at Spoke C from Main Island Utilities (host nation), days 1 to 400.
 Day 1
-  ACTION    Requirement req0007: Generator fuel supply switched on.
-  ACTION    Requirement req0007: Operators switched on.
-  ACTION    Requirement req0007: Maintenance and repair switched on.
+  ACTION    The request for power for Spoke B: Generator fuel supply switched on.
+  ACTION    The request for power for Spoke B: Operators switched on.
+  ACTION    The request for power for Spoke B: Maintenance and repair switched on.
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 2 day(s).
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  ACTION    Requirement req0012: Plant operators switched on.
-  ACTION    Requirement req0012: Maintenance switched on.
+  ACTION    The request for water for Spoke C: Plant operators switched on.
+  ACTION    The request for water for Spoke C: Maintenance switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 day(s).
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
-  ACTION    Requirement req0014: Food service staff switched on.
+  ACTION    The request for food service for Spoke C: Food service staff switched on.
   ACTION    Written purchase order started with Third Island Water Works: Food service at Spoke C, 480 meals/day for 28 days (Meal service, Food service staff); quoted $177,408.
-  DONE      Written purchase order waterBridge awarded to Coastal Provisions; performance starts day 5, ends day 16. Obligated $12,672.
+  DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 16. Obligated $12,672.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 4
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 5
-  DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
-  START     waterBridge began: Water at Spoke C from Coastal Provisions, 2640 gal/day.
+  START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
 Day 6
   DONE      CE small buys: none worked today (no hours left); 14 waiting.
-  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
 Day 7
-  DONE      Undefinitized contract action waterPlant awarded to Third Island Water Works; performance starts day 15, ends day 74. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
-  DONE      Written purchase order food-c awarded to Third Island Water Works; performance starts day 13, ends day 40. Obligated $177,408.
+  DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 15, ends day 74. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 13, ends day 40. Obligated $177,408.
   COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 21 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
   DONE      CE small buys: none worked today (no hours left); 21 waiting.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
@@ -61,27 +61,27 @@ Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     food-c began: Food service at Spoke C from Third Island Water Works, 480 meals/day.
+  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 15
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     waterPlant began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 17
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  END       waterBridge ended.
-  START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
+  END       Coastal Provisions water at Spoke C ended.
+  START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
 Day 18
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
-  COMPLY    Out-of-scope work oos1: Meridian Site Services billed $2,400 for work outside turnkey's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  COMPLY    Out-of-scope work: Meridian Site Services billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -90,7 +90,7 @@ Day 20
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 21
-  UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -102,15 +102,15 @@ Day 25
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  FAIL      hubFuelPoint missed today's delivery.
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 28
   COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
 Day 29
-  UCA       Third Island Water Works submitted a qualifying proposal on waterPlant. Obligation cap rises to 75% of NTE; definitization can start.
-  DONE      Response to higher HQ on oos1 sent.
+  UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
+  DONE      Response to higher HQ on the handshake with Meridian Site Services for power at Spoke B sent.
   DONE      CE small buys: 15 worked today (7.5 h of shop time).
   SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
 Day 30
@@ -158,7 +158,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #0 spokeBSite.fuel days 10-16, lowest 0%, 7 day(s) down: AVOIDABLE
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.power days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. turnkey did not start until day 17.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Meridian Site Services power at Spoke B did not start until day 17.
       [avoidable] Power depends on fuel, which was short. (see #0)
   #2 spokeBSite.lodging days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #1)
@@ -172,4 +172,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash 19ae2803751c6923602230e7f7f4602d1250ccf910f5019d46c6a0d6b841c8fa
+State hash f7b8af193b9bf21621bf172a5f4d7ab57f1bd7989488e5cf74954c11a6b68d74

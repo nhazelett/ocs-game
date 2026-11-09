@@ -32,37 +32,37 @@ public sealed partial class Session
         TransitionCheck Done(Arrangement? o, string? site, string? cap) => new(stops, o, site, cap, overlap, handoff, owner);
 
         if (string.IsNullOrWhiteSpace(p.Id)) stops.Add("a transition plan needs an id");
-        else if (_transitions.Any(t => t.Id == p.Id)) stops.Add($"id {p.Id} is already used");
+        else if (_transitions.Any(t => t.Id == p.Id)) stops.Add($"id {NameOf(p.Id)} is already used");
 
         var outA = _arrangements.FirstOrDefault(a => a.Id == p.Outgoing);
-        if (outA is null) { stops.Add($"{p.Outgoing} is not an arrangement"); return Done(null, null, null); }
-        if (outA.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) stops.Add($"{outA.Id} is not running");
+        if (outA is null) { stops.Add($"{NameOf(p.Outgoing)} is not an arrangement"); return Done(null, null, null); }
+        if (outA.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) stops.Add($"{NameOf(outA.Id)} is not running");
         if (p.Incoming == p.Outgoing) { stops.Add("the outgoing and the incoming are the same arrangement"); return Done(outA, null, null); }
 
         string? inSite, inCap;
         if (_arrangements.FirstOrDefault(a => a.Id == p.Incoming) is { } inA)
         {
             (inSite, inCap) = (inA.SiteId, inA.CapabilityId);
-            if (inA.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) stops.Add($"{inA.Id} is not running");
+            if (inA.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) stops.Add($"{NameOf(inA.Id)} is not running");
         }
         else if (_external.FirstOrDefault(r => r.Id == p.Incoming) is { } req)
         {
             (inSite, inCap) = (req.SiteId, req.CapabilityId);
-            if (req.Status == ExternalSupportStatus.Refused) stops.Add($"external support request {req.Id} was refused");
+            if (req.Status == ExternalSupportStatus.Refused) stops.Add($"{NameOf(req.Id)} was refused");
         }
-        else { stops.Add($"{p.Incoming} is not an arrangement or an external support request"); return Done(outA, null, null); }
+        else { stops.Add($"{NameOf(p.Incoming)} is not an arrangement or an external support request"); return Done(outA, null, null); }
 
         if (inSite != outA.SiteId || inCap != outA.CapabilityId)
-            stops.Add($"{p.Incoming} is {CapLabel(inCap!).ToLowerInvariant()} at {SiteName(inSite!)}; {outA.Id} is {CapLabel(outA.CapabilityId).ToLowerInvariant()} at {SiteName(outA.SiteId)}");
+            stops.Add($"{NameOf(p.Incoming)} is {CapLabel(inCap!).ToLowerInvariant()} at {SiteName(inSite!)}; {NameOf(outA.Id)} is {CapLabel(outA.CapabilityId).ToLowerInvariant()} at {SiteName(outA.SiteId)}");
         if (_transitions.FirstOrDefault(t => t.Outcome == TransitionOutcome.Open && t.OutgoingId == outA.Id) is { } open)
-            stops.Add($"{outA.Id} is already the outgoing side of transition {open.Id}");
+            stops.Add($"{NameOf(outA.Id)} is already the outgoing side of {NameOf(open.Id)}");
         if (overlap < 1) stops.Add("the overlap must be at least one day: the cut-over waits for the incoming to deliver");
         if (owner is not ("cco" or "ocs")) stops.Add($"gap owner {owner} is not cco or ocs");
         if (handoff == HandoffOnDay)
         {
             if (p.CutoverDay is not { } c) stops.Add("an onDay handoff needs a cut-over day");
             else if (c <= Day) stops.Add($"the cut-over day must be after today (day {Day})");
-            else if (c > outA.EndDay) stops.Add($"cut-over day {c} is after {outA.Id} ends (day {outA.EndDay})");
+            else if (c > outA.EndDay) stops.Add($"cut-over day {c} is after {NameOf(outA.Id)} ends (day {outA.EndDay})");
         }
         else if (handoff != HandoffIncomingDelivering) stops.Add($"handoff {handoff} is not incomingDelivering or onDay");
         return Done(outA, outA.SiteId, outA.CapabilityId);
@@ -77,7 +77,7 @@ public sealed partial class Session
         var inText = lost is not null ? lost : min == max ? $"starts day {min}" : $"expected to start day {min} to {max}";
         var handText = chk.Handoff == HandoffOnDay
             ? $"cut-over on day {p.CutoverDay}"
-            : $"cut-over after {chk.OverlapDays} day(s) of full delivery by {p.Incoming}";
+            : $"cut-over after {chk.OverlapDays} day(s) of full delivery by {NameOf(p.Incoming)}";
         TransitionState Make(string cause) => new()
         {
             Id = p.Id, OutgoingId = outA.Id, IncomingId = p.Incoming, SiteId = outA.SiteId, CapabilityId = outA.CapabilityId,
@@ -86,7 +86,7 @@ public sealed partial class Session
         };
         var warnings = TransitionWarnings(Make(""));
         var rec = AddRecord(Day, RecordKind.Action, p.Id,
-            $"Transition {p.Id} planned: {CapLabel(outA.CapabilityId)} at {SiteName(outA.SiteId)} from {outA.Id} (ends day {outA.EndDay}) to {p.Incoming} ({inText}); {handText}; gap owner: {OwnerName(chk.Owner)}.{(warnings.Count == 0 ? "" : $" Planner: {string.Join(" ", warnings)}")}", [outA.CauseId]);
+            $"Transition planned: {CapLabel(outA.CapabilityId)} at {SiteName(outA.SiteId)} from {NameOf(outA.Id)} (ends day {outA.EndDay}) to {NameOf(p.Incoming)} ({inText}); {handText}; gap owner: {OwnerName(chk.Owner)}.{(warnings.Count == 0 ? "" : $" Planner: {string.Join(" ", warnings)}")}", [outA.CauseId]);
         _transitions.Add(Make(rec));
         return ActionResult.Ok(warnings.Count == 0 ? "transition planned" : $"transition planned; {string.Join(" ", warnings)}");
     }
@@ -101,12 +101,12 @@ public sealed partial class Session
         if (_arrangements.FirstOrDefault(a => a.Id == incomingId) is { } a)
             return a.Status switch
             {
-                ArrangementStatus.Declined => (null, null, $"{a.Id} was declined"),
-                ArrangementStatus.Ended => (null, null, $"{a.Id} has ended"),
+                ArrangementStatus.Declined => (null, null, $"{Upper(NameOf(a.Id))} was declined"),
+                ArrangementStatus.Ended => (null, null, $"{Upper(NameOf(a.Id))} has ended"),
                 _ => (a.StartDay, a.StartDay, null),
             };
         var r = _external.First(x => x.Id == incomingId);
-        if (r.Status == ExternalSupportStatus.Refused) return (null, null, $"external support request {r.Id} was refused: {r.RefusedReason}");
+        if (r.Status == ExternalSupportStatus.Refused) return (null, null, $"{NameOf(r.Id)} was refused: {r.RefusedReason}");
         var inst = Rules.Instruments[ExternalInstrument];
         var approval = inst.ApprovalLagDays ?? new IntRange(1, 1);
         var mob = inst.MobilizationDays ?? new IntRange(0, 0);
@@ -143,15 +143,15 @@ public sealed partial class Session
         var owner = $" Gap owner: {OwnerName(t.Owner)}.";
         var (min, max, lost) = IncomingStart(t.IncomingId);
         if (lost is not null)
-            w.Add($"{t.IncomingId} will not arrive ({lost}): {where} has nothing behind {outA.Id} after day {end} unless another arrangement covers it.{owner}");
+            w.Add($"{Upper(NameOf(t.IncomingId))} will not arrive ({lost}): {where} has nothing behind {NameOf(outA.Id)} after day {end} unless another arrangement covers it.{owner}");
         else if (min > end)
-            w.Add($"{t.IncomingId} is not expected before day {min} and {outA.Id} ends day {end}: a gap of at least {min - end - 1} day(s) (days {end + 1} to {min - 1}) unless another arrangement covers it.{owner}");
+            w.Add($"{Upper(NameOf(t.IncomingId))} is not expected before day {min} and {NameOf(outA.Id)} ends day {end}: a gap of at least {min - end - 1} day(s) (days {end + 1} to {min - 1}) unless another arrangement covers it.{owner}");
         else if (max > end)
-            w.Add($"{t.IncomingId} may start as late as day {max} and {outA.Id} ends day {end}: up to {max - end - 1} day(s) of gap if it does.{owner}");
+            w.Add($"{Upper(NameOf(t.IncomingId))} may start as late as day {max} and {NameOf(outA.Id)} ends day {end}: up to {max - end - 1} day(s) of gap if it does.{owner}");
         else if (t.Handoff == HandoffIncomingDelivering && t.CutoverStartedDay is null && max + t.OverlapDays > end)
-            w.Add($"{outA.Id} ends day {end}, before {t.OverlapDays} day(s) of full delivery by {t.IncomingId} can be verified (it starts day {max}): the handoff will be {outA.Id}'s own end, with {end - max!.Value + 1} day(s) of overlap.");
+            w.Add($"{Upper(NameOf(outA.Id))} ends day {end}, before {t.OverlapDays} day(s) of full delivery by {NameOf(t.IncomingId)} can be verified (it starts day {max}): the handoff will be {NameOf(outA.Id)}'s own end, with {end - max!.Value + 1} day(s) of overlap.");
         else if (t.Handoff == HandoffOnDay && end - max!.Value + 1 < t.OverlapDays)
-            w.Add($"Only {end - max.Value + 1} day(s) of overlap before the cut-over on day {end} if {t.IncomingId} starts day {max}; the plan asks for {t.OverlapDays}.");
+            w.Add($"Only {end - max.Value + 1} day(s) of overlap before the cut-over on day {end} if {NameOf(t.IncomingId)} starts day {max}; the plan asks for {t.OverlapDays}.");
 
         if (lost is null && max is { } latest)
         {
@@ -170,7 +170,7 @@ public sealed partial class Session
                 var peak = (PeakDemandMilli(t.SiteId, t.CapabilityId, from, to) + 999) / 1000;
                 var cap = Cap(t.CapabilityId);
                 if (qty / 1000 < peak)
-                    w.Add($"{t.IncomingId} supplies {qty / 1000} {Rate(cap)} against peak demand of {peak} {Rate(cap)} after the cut-over: the difference is a shortfall unless something else covers it.");
+                    w.Add($"{Upper(NameOf(t.IncomingId))} supplies {qty / 1000} {Rate(cap)} against peak demand of {peak} {Rate(cap)} after the cut-over: the difference is a shortfall unless something else covers it.");
             }
             if (_external.FirstOrDefault(x => x.Id == t.IncomingId) is { Status: not ExternalSupportStatus.Awarded } req
                 && _funding.FirstOrDefault(f => f.Id == req.FundingLineId) is { } line)
@@ -178,9 +178,9 @@ public sealed partial class Session
                 var inst = Rules.Instruments[ExternalInstrument];
                 var answerLatest = latest - 1 - (inst.MobilizationDays?.Max ?? 0);
                 if (line.ExpiresDay < answerLatest)
-                    w.Add($"Funding: {line.Id} can be obligated only through day {line.ExpiresDay} and the external office may not award {req.Id} before day {answerLatest}: if the line lapses first the request is refused and the gap opens.");
+                    w.Add($"Funding: {NameOf(line.Id)} can be obligated only through day {line.ExpiresDay} and the external office may not award {NameOf(req.Id)} before day {answerLatest}: if the line lapses first the request is refused and the gap opens.");
                 else if (line.RemainingCents < req.TotalCents)
-                    w.Add($"Funding: {line.Id} has {Money(line.RemainingCents)} left for {req.Id}'s {Money(req.TotalCents)}: the external office will refuse it unless money is found.");
+                    w.Add($"Funding: {NameOf(line.Id)} has {Money(line.RemainingCents)} left for {NameOf(req.Id)}'s {Money(req.TotalCents)}: the external office will refuse it unless money is found.");
             }
         }
         return w;
@@ -208,17 +208,17 @@ public sealed partial class Session
                 {
                     t.Outcome = TransitionOutcome.Clean;
                     t.ResolvedRecordId = AddRecord(d, RecordKind.Transition, outA.Id,
-                        $"Transition {t.Id} complete: {outA.Id} ended day {outA.EndDay} with {t.IncomingId} delivering; {t.BothRunningDays} day(s) of overlap.", [t.CauseId]);
+                        $"{Upper(NameOf(t.Id))} complete: {NameOf(outA.Id)} ended day {outA.EndDay} with {NameOf(t.IncomingId)} delivering; {t.BothRunningDays} day(s) of overlap.", [t.CauseId]);
                 }
                 else
                 {
                     t.Outcome = TransitionOutcome.Gap;
                     var (min, _, lost) = IncomingStart(t.IncomingId);
-                    var why = lost ?? (min is { } m && m > d ? $"{t.IncomingId} is not expected before day {m}" : $"{t.IncomingId} is not running");
+                    var why = lost ?? (min is { } m && m > d ? $"{Upper(NameOf(t.IncomingId))} is not expected before day {m}" : $"{Upper(NameOf(t.IncomingId))} is not running");
                     var causes = new List<string> { t.CauseId };
                     if (t.WarningRecordId is { } wr) causes.Add(wr);
                     t.ResolvedRecordId = AddRecord(d, RecordKind.Transition, outA.Id,
-                        $"Transition {t.Id} left a gap: {outA.Id} ended day {outA.EndDay} and {why}. {CapLabel(t.CapabilityId)} at {SiteName(t.SiteId)} has nothing behind it. Gap owner: {OwnerName(t.Owner)}.", causes);
+                        $"{Upper(NameOf(t.Id))} left a gap: {NameOf(outA.Id)} ended day {outA.EndDay} and {why}. {CapLabel(t.CapabilityId)} at {SiteName(t.SiteId)} has nothing behind it. Gap owner: {OwnerName(t.Owner)}.", causes);
                 }
                 continue;
             }
@@ -235,11 +235,11 @@ public sealed partial class Session
                     t.CutoverStartedDay = d;
                     var why = t.Handoff == HandoffOnDay
                         ? $"cut-over day {t.CutoverDay}"
-                        : $"{t.IncomingId} delivered at full for {t.FullDays} day(s)";
+                        : $"{Upper(NameOf(t.IncomingId))} delivered at full for {t.FullDays} day(s)";
                     var rec = AddRecord(d, RecordKind.Transition, outA.Id,
-                        $"Transition {t.Id}: {why}; cut-over started, termination of {outA.Id} in work so its last day is day {d + 1} if the shop gets to it.", [t.CauseId]);
+                        $"{Upper(NameOf(t.Id))}: {why}; cut-over started, termination of {NameOf(outA.Id)} in work so its last day is day {d + 1} if the shop gets to it.", [t.CauseId]);
                     if (!_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (w.Payload as string) == outA.Id))
-                        AddWork(WorkKind.Terminate, $"Terminate {outA.Id}", outA.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true), d, outA.Id, rec);
+                        AddWork(WorkKind.Terminate, $"Terminate {NameOf(outA.Id)}", outA.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true), d, outA.Id, rec);
                 }
             }
 
@@ -251,10 +251,10 @@ public sealed partial class Session
                 {
                     t.WarningDay = d;
                     var gapText = lost is not null
-                        ? $"{t.IncomingId} will not arrive ({lost})"
-                        : $"{t.IncomingId} is not expected before day {min}, a gap of at least {min - end - 1} day(s)";
+                        ? $"{Upper(NameOf(t.IncomingId))} will not arrive ({lost})"
+                        : $"{Upper(NameOf(t.IncomingId))} is not expected before day {min}, a gap of at least {min - end - 1} day(s)";
                     t.WarningRecordId = AddRecord(d, RecordKind.Transition, outA.Id,
-                        $"Transition planner: {outA.Id} ends day {end} and {gapText}. {CapLabel(t.CapabilityId)} at {SiteName(t.SiteId)} goes uncovered unless something bridges it. Gap owner: {OwnerName(t.Owner)}.", [t.CauseId]);
+                        $"Transition planner: {NameOf(outA.Id)} ends day {end} and {gapText}. {CapLabel(t.CapabilityId)} at {SiteName(t.SiteId)} goes uncovered unless something bridges it. Gap owner: {OwnerName(t.Owner)}.", [t.CauseId]);
                 }
             }
         }
@@ -308,15 +308,15 @@ public sealed partial class Session
             if (d <= outA.EndDay) continue;
             var inA = _arrangements.FirstOrDefault(a => a.Id == t.IncomingId);
             if (inA is not null && ActiveOn(inA, d)) continue;
-            var later = inA is not null && inA.Status != ArrangementStatus.Declined && inA.StartDay > d ? $" {inA.Id} started day {inA.StartDay}." : "";
+            var later = inA is not null && inA.Status != ArrangementStatus.Declined && inA.StartDay > d ? $" {NameOf(inA.Id)} started day {inA.StartDay}." : "";
             var ids = new List<string> { t.CauseId };
             if (t.WarningRecordId is { } w) ids.Add(w);
             if (t.ResolvedRecordId is { } r) ids.Add(r);
             yield return ($"trans|{t.Id}", t.WarningDay is { } wd && wd < outA.EndDay
                 ? new GapFactor(GapFactorKind.TransitionGap, GapTag.Avoidable, outA.EndDay + 1,
-                    $"Transition {t.Id} from {outA.Id} to {t.IncomingId} left a gap: {outA.Id} ended day {outA.EndDay} before {t.IncomingId} was delivering.{later} The transition planner flagged it on day {wd}; a bridge or an earlier start would have covered it. Gap owner: {OwnerName(t.Owner)}.", ids)
+                    $"The hand-off from {NameOf(outA.Id)} to {NameOf(t.IncomingId)} left a gap: {NameOf(outA.Id)} ended day {outA.EndDay} before {NameOf(t.IncomingId)} was delivering.{later} The transition planner flagged it on day {wd}; a bridge or an earlier start would have covered it. Gap owner: {OwnerName(t.Owner)}.", ids)
                 : new GapFactor(GapFactorKind.TransitionGap, GapTag.Unforeseeable, outA.EndDay + 1,
-                    $"Transition {t.Id} from {outA.Id} to {t.IncomingId} left a gap: {outA.Id} ended day {outA.EndDay} before {t.IncomingId} was delivering.{later} The planner showed no gap before the outgoing's last day.", ids));
+                    $"The hand-off from {NameOf(outA.Id)} to {NameOf(t.IncomingId)} left a gap: {NameOf(outA.Id)} ended day {outA.EndDay} before {NameOf(t.IncomingId)} was delivering.{later} The planner showed no gap before the outgoing's last day.", ids));
         }
     }
 }

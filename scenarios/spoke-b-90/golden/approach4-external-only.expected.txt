@@ -5,17 +5,17 @@ Prep: systemAccess, cashAndPayingAgent.
 
 TIMELINE
 Before day 1
-  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
-  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
+  ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
-  ACTION    Requirement req0007: Generator fuel supply switched on.
-  ACTION    Requirement req0007: Operators switched on.
-  ACTION    Requirement req0007: Maintenance and repair switched on.
-  ACTION    External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+  ACTION    The request for power for Spoke B: Generator fuel supply switched on.
+  ACTION    The request for power for Spoke B: Operators switched on.
+  ACTION    The request for power for Spoke B: Maintenance and repair switched on.
+  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  EXTERNAL  External support request extPower submitted through the SCO to the external office. Approval usually takes 10 to 20 days; the contractor then mobilizes before anything arrives.
+  EXTERNAL  The external support request for power at Spoke B went through the SCO to the external office. Approval usually takes 10 to 20 days; the contractor then mobilizes before anything arrives.
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 3
   DONE      CE small buys: 8 worked today (4 h of shop time).
@@ -30,30 +30,30 @@ Day 7
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 8
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
-  COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
 Day 10
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Fuel at Spoke B down to 16%: fuel on hand ran out.
 Day 13
-  COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
+  COMPLY    The Spoke B unit's habit of going around contracting rises (Port Fuel Haulers fuel at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 15
-  WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  WITHDRAWN Port Fuel Haulers walked off Port Fuel Haulers fuel at Spoke B after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  EXTERNAL  The external office awarded extPower to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from om1. The contractor mobilizes for 30 days; performance starts day 46, ends day 105.
+  EXTERNAL  The external office awarded the external contract's power at Spoke B to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from the O&M line good through day 75. The contractor mobilizes for 30 days; performance starts day 46, ends day 105.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
@@ -61,10 +61,10 @@ Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
 Day 18
-  COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
+  COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 5 waiting.
 Day 19
-  DONE      Response to higher HQ on uc1 sent.
+  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
   DONE      CE small buys: 11 worked today (5.5 h of shop time).
 Day 20
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -116,13 +116,13 @@ Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on extPower (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on the external contract's power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 46
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     extPower began: Power at Spoke B from Theater base support contractor, 470 kW/day.
+  START     Power at Spoke B from Theater base support contractor began, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 47
@@ -143,7 +143,7 @@ Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 55
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      extPower had equipment down.
+  FAIL      The external contract's power at Spoke B had equipment down.
   SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 56
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -154,7 +154,7 @@ Day 58
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 59
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): extPower had equipment down on day 55, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 55, reported 4 day(s) later.
 Day 60
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 61
@@ -167,9 +167,9 @@ Day 64
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 65
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      extPower had equipment down.
+  FAIL      The external contract's power at Spoke B had equipment down.
   SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $527,760 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $527,760 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Power at Spoke B restored to 100%.
@@ -177,11 +177,11 @@ Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
-  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): extPower had equipment down on day 65, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 65, reported 4 day(s) later.
 Day 70
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 71
@@ -194,8 +194,8 @@ Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $527,760 never obligated can no longer pay for anything new.
-  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $527,760 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 77
@@ -214,7 +214,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -254,26 +254,26 @@ GAPS AND WHY (each traced back through its causes)
   Day 12: Fuel at Spoke B down to 16%: fuel on hand ran out.
   Day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
   Day 55: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 55: extPower had equipment down.
-          <- day 1: External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+      <- day 55: The external contract's power at Spoke B had equipment down.
+          <- day 1: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
   Day 65: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 65: extPower had equipment down.
-          <- day 1: External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+      <- day 65: The external contract's power at Spoke B had equipment down.
+          <- day 1: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 12-12, lowest 16%, 1 day(s) down: DISCOVERABLE
-      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 17-45, lowest 0%, 29 day(s) down: AVOIDABLE
-      [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 15.
+      [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #2 spokeBSite.power days 7-45, lowest 0%, 39 day(s) down: AVOIDABLE
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. extPower did not start until day 46. extPower is an external support contract: requested day 1, submitted day 2, awarded day 15 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. the external contract's power at Spoke B did not start until day 46. the external contract's power at Spoke B is an external support contract: requested day 1, submitted day 2, awarded day 15 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
   #3 spokeBSite.power days 55-55, lowest 50%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] extPower failed on day 55 with full operator and maintenance coverage. The COR reported it on day 59.
+      [unforeseeable] The external contract's power at Spoke B failed on day 55 with full operator and maintenance coverage. The COR reported it on day 59.
   #4 spokeBSite.power days 65-65, lowest 50%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] extPower failed on day 65 with full operator and maintenance coverage. The COR reported it on day 69.
+      [unforeseeable] The external contract's power at Spoke B failed on day 65 with full operator and maintenance coverage. The COR reported it on day 69.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 39)
@@ -281,4 +281,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.789)
 
-State hash 97de4d989cee144247c52d0b3b3c17772a3f955198e7ec7d7085787e62b05d3c
+State hash 589172ddf395244d34ee78aaf09b8f026e487543d9a7cdfa7a19750b3e919135

@@ -5,36 +5,36 @@ Prep: systemAccess, cashAndPayingAgent.
 
 TIMELINE
 Before day 1
-  ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
-  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
+  ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    Ordered a site survey of Second Island.
-  ACTION    Requirement req0007: Generator fuel supply switched on.
-  ACTION    Requirement req0007: Operators switched on.
-  ACTION    Requirement req0007: Maintenance and repair switched on.
+  ACTION    The request for power for Spoke B: Generator fuel supply switched on.
+  ACTION    The request for power for Spoke B: Operators switched on.
+  ACTION    The request for power for Spoke B: Maintenance and repair switched on.
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
-  DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
+  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
   ACTION    Coordinated with the Hub unit for 900 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   DONE      CE small buys: 4 worked today (2 h of shop time).
-  START     hubFuelRun began: Fuel at Spoke B from the other unit, 900 gal/day.
+  START     Fuel at Spoke B from the other unit began, 900 gal/day.
 Day 4
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 5
-  DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 8 worked today (4 h of shop time); 1 still waiting.
 Day 6
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -45,45 +45,45 @@ Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
   EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
-  WITHDRAWN The other unit withdrew coordination hubFuelRun (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
+  WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  END       hubFuelRun ended.
+  END       The other unit's fuel at Spoke B ended.
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
-  COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
-  ACTION    Payment for oos1 denied: $2,400 of work outside gens's scope.
+  ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
-  DONE      Denial of payment for oos1 sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
+  START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
 Day 18
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 19
-  ACTION    Termination of gens started.
-  END       gens terminated; performance ends day 19. $38,916 deobligated back to om1.
+  ACTION    Termination of Harbor Equipment Co power at Spoke B started.
+  END       Harbor Equipment Co power at Spoke B terminated; performance ends day 19. $38,916 deobligated back to the O&M line good through day 75.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 20
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       gens ended.
+  END       Harbor Equipment Co power at Spoke B ended.
 Day 21
-  UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 22
-  ACTION    Definitization of turnkey started; to be funded from om1.
+  ACTION    Definitization of Meridian Site Services power at Spoke B started; to be funded from the O&M line good through day 75.
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 23
   DONE      CE small buys: none worked today (no hours left); 12 waiting.
 Day 24
-  DEFINITZD turnkey definitized at $634,500; obligation caps lifted; fully funded from om1.
+  DEFINITZD Meridian Site Services power at Spoke B definitized at $634,500; obligation caps lifted; fully funded from the O&M line good through day 75.
   DONE      CE small buys: 16 worked today (8 h of shop time); 2 still waiting.
 Day 25
   DONE      CE small buys: 8 worked today (4 h of shop time).
@@ -101,7 +101,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      hubFuelPoint missed today's delivery.
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -122,12 +122,12 @@ Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      hubFuelPoint missed today's delivery.
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on turnkey (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -171,14 +171,14 @@ Day 64
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 65
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $254,736 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $254,736 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
-  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -194,16 +194,16 @@ Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      hubFuelPoint missed today's delivery.
-  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $254,736 never obligated can no longer pay for anything new.
-  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $254,736 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      turnkey had equipment down.
+  FAIL      Meridian Site Services power at Spoke B had equipment down.
   SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 77
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       turnkey ended.
+  END       Meridian Site Services power at Spoke B ended.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -211,7 +211,7 @@ Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 80
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): turnkey had equipment down on day 76, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): Meridian Site Services power at Spoke B had equipment down on day 76, reported 4 day(s) later.
 Day 81
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 62%: fuel on hand ran out; no arrangement supplies fuel.
@@ -222,7 +222,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -258,7 +258,7 @@ UNAUTHORIZED COMMITMENTS (SPEC 4.5)
 
 GAPS AND WHY (each traced back through its causes)
   Day 76: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 76: turnkey had equipment down.
+      <- day 76: Meridian Site Services power at Spoke B had equipment down.
           <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
   Day 77: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 81: Fuel at Spoke B degraded to 62%: fuel on hand ran out; no arrangement supplies fuel.
@@ -266,12 +266,12 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 81-90, lowest 0%, 9 day(s) down: AVOIDABLE
-      [avoidable] No funding line with money could pay for fuel on day 81 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for fuel on day 81 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.power days 76-90, lowest 0%, 14 day(s) down: AVOIDABLE
-      [unforeseeable] turnkey failed on day 76 with full operator and maintenance coverage. The COR reported it on day 80.
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, turnkey, ended on day 76.
-      [avoidable] No funding line with money could pay for power on day 77 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [unforeseeable] Meridian Site Services power at Spoke B failed on day 76 with full operator and maintenance coverage. The COR reported it on day 80.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, Meridian Site Services power at Spoke B, ended on day 76.
+      [avoidable] No funding line with money could pay for power on day 77 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] Power depends on fuel, which was short. (see #0)
 
 PASS CRITERIA
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.878)
 
-State hash 9b53faa07bd60f38b8a3c011b4ccd18b8da1743752414c63bfaee7be4db933f8
+State hash 630d2a9c3c3c938aaab9dc0fafcb1393e94f30cb0a6b3c1b89920d2110504c3a

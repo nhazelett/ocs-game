@@ -23,7 +23,7 @@ public sealed partial class Session
         if (!Rules.Instruments.TryGetValue("bpaEstablish", out var inst)) return (["bpaEstablish is not in the rules"], null, null);
         if (string.IsNullOrWhiteSpace(e.Id)) stops.Add("a BPA needs an id");
         else if (_vehicles.Any(v => v.Id == e.Id) || _work.Any(w => w.CompletedDay is null && EstablishingId(w.Payload) == e.Id))
-            stops.Add($"id {e.Id} is already used");
+            stops.Add($"id {NameOf(e.Id)} is already used");
         var vendor = VendorData(e.Vendor);
         if (vendor is null) return ([.. stops, $"vendor {e.Vendor} does not exist"], inst, null);
         if (!_capData.ContainsKey(e.Capability)) return ([.. stops, $"capability {e.Capability} does not exist"], inst, vendor);
@@ -52,8 +52,8 @@ public sealed partial class Session
         var shopDays = _rngWork.NextInt(inst!.ShopDays);
         var lines = string.Join(", ", e.ScopeLines.Select(l => LineLabel(e.Capability, l)));
         var rec = AddRecord(Day, RecordKind.Action, e.Id,
-            $"BPA {e.Id} with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}); {shopDays} shop day(s) to set up. A BPA is not binding and obligates nothing.", []);
-        AddWork(WorkKind.EstablishVehicle, $"Establish BPA {e.Id}", Hours(shopDays, inst.RequiresSystemOrManual), Day, e, rec);
+            $"BPA with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}); {shopDays} shop day(s) to set up. A BPA is not binding and obligates nothing.", []);
+        AddWork(WorkKind.EstablishVehicle, $"Establish a BPA with {VendorData(e.Vendor)?.Name}", Hours(shopDays, inst.RequiresSystemOrManual), Day, e, rec);
         return ActionResult.Ok("in work");
     }
 
@@ -67,7 +67,7 @@ public sealed partial class Session
             OrderingPeriodEndDay = end, PlaceOfPerformance = [], VisibleOnDay1 = true,
         });
         AddRecord(day, RecordKind.WorkDone, e.Id,
-            $"BPA {e.Id} with {VendorData(e.Vendor)!.Name} is in place: calls up to {Money(limit)} each, ordering through day {end}.", [causeId]);
+            $"BPA with {VendorData(e.Vendor)!.Name} is in place: calls up to {Money(limit)} each, ordering through day {end}.", [causeId]);
     }
 
     internal ActionPreview BuildEstablishPreview(EstablishBpaAction e)
@@ -114,7 +114,7 @@ public sealed partial class Session
         if (!Rules.Instruments.TryGetValue("idiqEstablish", out var inst)) return (["idiqEstablish is not in the rules"], null, null);
         if (string.IsNullOrWhiteSpace(e.Id)) stops.Add("an IDIQ needs an id");
         else if (_vehicles.Any(v => v.Id == e.Id) || _work.Any(w => w.CompletedDay is null && EstablishingId(w.Payload) == e.Id))
-            stops.Add($"id {e.Id} is already used");
+            stops.Add($"id {NameOf(e.Id)} is already used");
         var vendor = VendorData(e.Vendor);
         if (vendor is null) return ([.. stops, $"vendor {e.Vendor} does not exist"], inst, null);
         if (!_capData.ContainsKey(e.Capability)) return ([.. stops, $"capability {e.Capability} does not exist"], inst, vendor);
@@ -142,9 +142,9 @@ public sealed partial class Session
         }
         var line = _funding.FirstOrDefault(f => f.Id == e.FundingLine);
         if (line is null) stops.Add("an IDIQ needs a funding line for its minimum guarantee");
-        else if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
+        else if (!line.UsableOn(Day)) stops.Add($"{NameOf(line.Id)} is not usable on day {Day}");
         else if (!line.Pays(e.Capability)) stops.AddRange(FundingStops(line, e.Capability, null, 0));
-        else if (line.RemainingCents < min) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left for a minimum guarantee of {Money(min)}");
+        else if (line.RemainingCents < min) stops.Add($"{NameOf(line.Id)} has {Money(line.RemainingCents)} left for a minimum guarantee of {Money(min)}");
         return (stops, inst, vendor);
     }
 
@@ -156,8 +156,8 @@ public sealed partial class Session
         var lines = string.Join(", ", e.ScopeLines.Select(l => LineLabel(e.Capability, l)));
         var min = MinimumGuaranteeFor(e, inst);
         var rec = AddRecord(Day, RecordKind.Action, e.Id,
-            $"IDIQ {e.Id} with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}), ceiling {Money(e.CeilingCents)}, minimum guarantee {Money(min)} from {e.FundingLine}; {shopDays} shop day(s) to award.", []);
-        AddWork(WorkKind.EstablishVehicle, $"Establish IDIQ {e.Id}", Hours(shopDays, inst.RequiresSystemOrManual), Day, e, rec);
+            $"IDIQ with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}), ceiling {Money(e.CeilingCents)}, minimum guarantee {Money(min)} from {NameOf(e.FundingLine)}; {shopDays} shop day(s) to award.", []);
+        AddWork(WorkKind.EstablishVehicle, $"Establish an IDIQ with {VendorData(e.Vendor)?.Name}", Hours(shopDays, inst.RequiresSystemOrManual), Day, e, rec);
         return ActionResult.Ok("in work");
     }
 
@@ -169,7 +169,7 @@ public sealed partial class Session
         var vendor = VendorData(e.Vendor)!;
         if (!line.UsableOn(day) || line.RemainingCents < min)
         {
-            AddRecord(day, RecordKind.Rejected, e.Id, $"IDIQ {e.Id} could not be awarded: funding line {line.Id} could not cover the minimum guarantee of {Money(min)} on day {day}.", [causeId]);
+            AddRecord(day, RecordKind.Rejected, e.Id, $"IDIQ with {VendorData(e.Vendor)?.Name} could not be awarded: {NameOf(line.Id)} could not cover the minimum guarantee of {Money(min)} on day {day}.", [causeId]);
             return;
         }
         line.ObligatedCents += min;
@@ -181,7 +181,7 @@ public sealed partial class Session
         });
         _idiqs.Add(new IdiqState { VehicleId = e.Id, FundingLineId = line.Id, CeilingCents = e.CeilingCents, MinimumGuaranteeCents = min });
         AddRecord(day, RecordKind.WorkDone, e.Id,
-            $"IDIQ {e.Id} awarded to {vendor.Name}: orders up to a ceiling of {Money(e.CeilingCents)} through day {end}. Minimum guarantee of {Money(min)} obligated from {line.Id}; it is owed whether or not it is ordered.", [causeId]);
+            $"IDIQ awarded to {vendor.Name}: orders up to a ceiling of {Money(e.CeilingCents)} through day {end}. Minimum guarantee of {Money(min)} obligated from {NameOf(line.Id)}; it is owed whether or not it is ordered.", [causeId]);
     }
 
     internal ActionPreview BuildEstablishIdiqPreview(EstablishIdiqAction e)
@@ -243,7 +243,7 @@ public sealed partial class Session
                     var unit = Cap(capId).Unit;
                     rec = AddRecord(d, RecordKind.VendorCapacity, a.Id,
                         $"Capacity event: {vendor.Name} can supply about {offer.CapacityPerDay:0} {unit}/day of {CapLabel(capId).ToLowerInvariant()} and has {load / 1000} {unit}/day on order. "
-                        + $"IDIQ order {a.Id} gets {give / 1000} of its {a.QuantityMilli / 1000} {unit}/day. A binding order does not add capacity: a second source or a supplementary buy covers the rest.",
+                        + $"{Upper(NameOf(a.Id))} gets {give / 1000} of its {a.QuantityMilli / 1000} {unit}/day. A binding order does not add capacity: a second source or a supplementary buy covers the rest.",
                         [a.CauseId]);
                     _capacityEpisode[a.Id] = rec;
                 }
