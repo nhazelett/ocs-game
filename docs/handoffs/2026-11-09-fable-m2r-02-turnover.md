@@ -29,7 +29,7 @@ None new beyond the M2R-01 note (PR 95 reviewed by comment; see the M2R-01 hando
 docs/design/opening-and-guidance.md 3.1, 3.2, R6 and R9 (Nick: no bullet points in game text).
 
 ## Validated how
-`dotnet test src/LinesOfSupport.sln` 377 Sim (16 new in TurnoverTests: four prose paragraphs with no list marks or ids for every scenario folder, the shop paragraph follows prep, sustainment's hidden problems do not reach the turnover, bad references refused) and 120 Harness pass; every golden unchanged; `validate.py`, `provenance.py`, `conflicts.py` pass.
+`dotnet test src/LinesOfSupport.sln` 377 Sim (16 new in TurnoverTests: four prose paragraphs with no list marks or ids for every scenario folder, the shop paragraph follows prep, sustainment's hidden problems do not reach the turnover, bad references refused, a remark for a missing item ignored) and 120 Harness pass; every golden unchanged; `validate.py`, `provenance.py`, `conflicts.py` pass.
 
 ## Unresolved
 - The vendor paragraph lists every vendor, which is long for Spoke B (eight). If Nick finds it heavy, the turnover can name only the vendors the outgoing CCO has a remark for and leave the rest to the directory.
@@ -39,3 +39,5 @@ docs/design/opening-and-guidance.md 3.1, 3.2, R6 and R9 (Nick: no bullet points 
 
 ## Next
 M2R-03 (CE small-buy stream and the GPC program).
+
+Fix after CI (02:15 UTC): godot-shell failed on this branch because the game's quiet smoke fixture (game/tests/MorningSmokeTest.cs) empties `inheritedArrangements` but keeps the rest of spoke-b, so the turnover remark for `hubFuelPoint` named an arrangement that was no longer there and the bundle refused to load. The Sim now ignores a remark whose item is absent; validate.py is to flag it for authors (M2R-18). No game file was touched.

@@ -214,11 +214,9 @@ public sealed class ScenarioBundle
         if (s.Turnover is { } t)
         {
             NeedPerson(t.From, "turnover.from", "outgoingCco");
-            foreach (var k in t.Remarks.Arrangements.Keys)
-                Need(s.InheritedArrangements.Any(a => a.Id == k), $"turnover remark for arrangement {k}: no such inherited arrangement");
-            foreach (var k in t.Remarks.Vendors.Keys) Need(vendors.Contains(k), $"turnover remark for vendor {k}: no such vendor");
-            foreach (var k in t.Remarks.FundingLines.Keys)
-                Need(s.FundingLines.Any(f => f.Id == k), $"turnover remark for funding line {k}: no such funding line");
+            // A remark whose item is absent is never shown, so it is not a load error: derived fixtures (the game's quiet
+            // smoke scenario) strip inherited arrangements and keep the rest. tools/validate/validate.py flags such
+            // remarks for authors (M2R-18).
         }
         if (s.PrepBriefing is { } pb)
         {

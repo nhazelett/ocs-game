@@ -122,9 +122,6 @@ public class TurnoverTests
 
     [Theory]
     [InlineData("from", "must have role outgoingCco")]
-    [InlineData("arrangement", "no such inherited arrangement")]
-    [InlineData("vendor", "no such vendor")]
-    [InlineData("funding", "no such funding line")]
     [InlineData("prepChoice", "is not in rules")]
     [InlineData("prepBudget", "prep-days; the scenario allows")]
     [InlineData("prepFrom", "prepBriefing.from person nobody not found")]
@@ -137,14 +134,22 @@ public class TurnoverTests
             switch (what)
             {
                 case "from": t["from"] = "ruiz"; break;
-                case "arrangement": t["remarks"]!["arrangements"]!["nope"] = "x"; break;
-                case "vendor": t["remarks"]!["vendors"]!["nope"] = "x"; break;
-                case "funding": t["remarks"]!["fundingLines"]!["nope"] = "x"; break;
                 case "prepChoice": pb["choices"]!["nope"] = "x"; break;
                 case "prepBudget": pb["defaults"] = new JsonArray("gpcAccounts", "cashAndPayingAgent", "systemAccess", "vendorLists", "warrantOrThreshold", "pullVehicles"); break;
                 case "prepFrom": pb["from"] = "nobody"; break;
             }
         }));
         Assert.Contains(message, ex.Message);
+    }
+
+    [Fact]
+    public void A_remark_for_an_item_that_is_not_there_is_ignored()
+    {
+        // The game's quiet smoke fixture empties inheritedArrangements and keeps the turnover.
+        var b = With(root => root["inheritedArrangements"] = new JsonArray());
+        var t = Session.Create(b, 1).View.Turnover();
+        Assert.Empty(t.Contracts);
+        Assert.DoesNotContain("never let us down", string.Join(" ", t.Sections.Select(x => x.Text)));
+        Assert.Contains("You're not inheriting any contracts.", t.Text(TurnoverSectionKind.Contracts));
     }
 }
