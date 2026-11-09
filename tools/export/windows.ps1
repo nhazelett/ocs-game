@@ -54,6 +54,8 @@ $fontOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'asse
 foreach ($font in @('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bold.ttf', 'Atkinson-OFL.txt')) {
     Copy-Item -LiteralPath (Join-Path $repoRoot "assets/art-studies/fonts/$font") -Destination $fontOutput.FullName
 }
+$portraitOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/portraits')
+Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/portraits') -Filter '*.svg' -File | Copy-Item -Destination $portraitOutput.FullName
 
 # Launch from outside both the checkout and build folder, so cwd-dependent data loading cannot pass.
 # Release templates disallow scene-path overrides; the flag checks the actual main scene instead.

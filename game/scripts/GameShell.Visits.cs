@@ -58,10 +58,10 @@ public partial class GameShell
             mentorMessages.AddChild(card);
             var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 14); card.AddChild(row);
             var portrait = new PersonPortrait { SizeFlagsVertical = SizeFlags.ShrinkBegin };
-            if (item.Person!.Portrait is { } key) portrait.SetMeta("portrait_key", key);
+            portrait.SetPerson(item.Person);
             row.AddChild(portrait);
             var words = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; row.AddChild(words);
-            words.AddChild(DeskUi.Label(item.Person.WithUnit));
+            words.AddChild(DeskUi.Label(item.Person!.WithUnit));
             var message = DeskUi.Label(item.Text); message.SetMeta("mentor_record", item.RecordId); words.AddChild(message);
             mentorMessages.Visible = true;
         }
@@ -80,6 +80,7 @@ public partial class GameShell
         var person = contactPeople.TryGetValue(visitContact ?? "", out var personId) && personId is not null ? view.Person(personId) : null;
         if (person is not null)
         {
+            var face=new PersonPortrait{SizeFlagsHorizontal=SizeFlags.ShrinkBegin};face.SetPerson(person);visitsForm.AddChild(face);
             visitsForm.AddChild(DeskUi.Label(person.WithUnit));
             if (person.Line("greeting") is { } greeting) visitsForm.AddChild(DeskUi.Label(greeting));
         }

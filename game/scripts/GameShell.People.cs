@@ -33,7 +33,7 @@ public partial class GameShell
             customerMessages.AddChild(card);
             var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 14); card.AddChild(row);
             var portrait = new PersonPortrait { TooltipText = request.Person?.DisplayName ?? "Customer", SizeFlagsVertical = SizeFlags.ShrinkBegin };
-            if (request.Person?.Portrait is { } key) portrait.SetMeta("portrait_key", key);
+            portrait.SetPerson(request.Person);
             row.AddChild(portrait);
             var words = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; words.AddThemeConstantOverride("separation", 10); row.AddChild(words);
             words.AddChild(DeskUi.Label(request.Person?.WithUnit ?? request.SubmittedBy));

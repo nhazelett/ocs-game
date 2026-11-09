@@ -52,7 +52,7 @@ public partial class GameShell
         var sender = new HBoxContainer(); sender.AddThemeConstantOverride("separation", 20); debriefPanel.AddChild(sender);
         if (report.Summary?.From is { } person)
         {
-            sender.AddChild(new PersonPortrait { TooltipText = person.DisplayName, SizeFlagsVertical = SizeFlags.ShrinkBegin });
+            var portrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};portrait.SetPerson(person);sender.AddChild(portrait);
         }
         DebriefSpeaker = DeskUi.Label(report.Summary?.From?.WithUnit ?? "After the deployment");
         DebriefSpeaker.AddThemeFontSizeOverride("font_size", 22);
