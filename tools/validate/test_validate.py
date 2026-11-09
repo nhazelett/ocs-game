@@ -128,5 +128,53 @@ class FundingReferenceTests(unittest.TestCase):
             self.assertIn("funding.late funding line missing-line not found", output.getvalue())
 
 
+class CorReferenceTests(unittest.TestCase):
+    def setUp(self):
+        self.scenario = checker.load(checker.ROOT / "scenarios/spoke-b-90/scenario.json")
+        self.rules = checker.load(checker.RULES_DIR / "rules-2025-10.json")
+
+    def failures(self): return checker.cross_checks(self.scenario, self.rules)
+
+    def test_authored_roster_and_valid_inherited_cor_pass(self):
+        self.scenario["inheritedArrangements"][0]["cor"] = self.scenario["cors"][0]["id"]
+        self.assertEqual([], self.failures())
+
+    def test_duplicate_ids_are_rejected(self):
+        self.scenario["cors"].append(copy.deepcopy(self.scenario["cors"][0]))
+        self.assertIn("COR ids must be unique", self.failures())
+
+    def test_quality_must_name_a_rules_key(self):
+        self.scenario["cors"][0]["quality"] = "missing-quality"
+        self.assertTrue(any("quality missing-quality not in rules cor.qualities" in e for e in self.failures()))
+
+    def test_inherited_cor_must_be_on_roster(self):
+        self.scenario["inheritedArrangements"][0]["cor"] = "missing-cor"
+        self.assertTrue(any("COR missing-cor not found" in e for e in self.failures()))
+
+    def test_rotation_target_must_be_on_roster(self):
+        effect = next(f for e in self.scenario["events"] for f in e["effects"] if f["kind"] == "cor.rotates")
+        effect["target"] = "missing-cor"
+        self.assertTrue(any("cor.rotates COR missing-cor not found" in e for e in self.failures()))
+
+    def test_relief_quality_must_name_a_rules_key(self):
+        self.rules["cor"]["reliefQuality"] = "missing-quality"
+        self.assertTrue(any("cor.reliefQuality missing-quality not in cor.qualities" in e for e in self.failures()))
+
+    def test_optional_cor_rules_use_the_same_defaults_as_sim(self):
+        self.rules.pop("cor")
+        self.assertEqual([], self.failures())
+
+    def test_cli_rejects_schema_valid_bad_cor_reference(self):
+        self.scenario["inheritedArrangements"][0]["cor"] = "missing-cor"
+        self.assertEqual([], checker.errors(checker.validator("scenario"), self.scenario, "fixture"))
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); folder = root / "scenarios/broken"; folder.mkdir(parents=True)
+            (folder / "scenario.json").write_text(json.dumps(self.scenario))
+            output = io.StringIO()
+            with patch.object(checker, "ROOT", root), contextlib.redirect_stdout(output):
+                self.assertEqual(1, checker.main([str(folder)]))
+            self.assertIn("COR missing-cor not found", output.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()

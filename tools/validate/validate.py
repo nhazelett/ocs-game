@@ -66,7 +66,18 @@ def cross_checks(sc, rules):
         if v["vendor"] not in vendors: errs.append(f"vehicle {v['id']}: vendor {v['vendor']} not found")
         for isl in v.get("placeOfPerformance", []):
             if isl not in islands: errs.append(f"vehicle {v['id']}: island {isl} not found")
+    cors = ids("cors")
+    if len(cors) != len(sc.get("cors", [])): errs.append("COR ids must be unique")
+    cor_rules = rules.get("cor", {})
+    qualities = set(cor_rules.get("qualities", {"good": {}, "fair": {}, "poor": {}}))
+    for cor in sc.get("cors", []):
+        if cor["quality"] not in qualities:
+            errs.append(f"COR {cor['id']}: quality {cor['quality']} not in rules cor.qualities")
+    relief = cor_rules.get("reliefQuality", "poor")
+    if relief not in qualities: errs.append(f"rules cor.reliefQuality {relief} not in cor.qualities")
     for a in sc.get("inheritedArrangements", []):
+        if a.get("cor") is not None and a["cor"] not in cors:
+            errs.append(f"arrangement {a['id']}: COR {a['cor']} not found")
         if a["instrument"] not in instruments: errs.append(f"arrangement {a['id']}: instrument {a['instrument']} not in rules")
         if a["vendor"] not in vendors: errs.append(f"arrangement {a['id']}: vendor {a['vendor']} not found")
         if a["site"] not in sites: errs.append(f"arrangement {a['id']}: site {a['site']} not found")
@@ -84,6 +95,8 @@ def cross_checks(sc, rules):
                 errs.append(f"event {e['id']}: forecastDays applies only to link.closed")
             if kind == "link.closed" and effect.get("target") not in links:
                 errs.append(f"event {e['id']}: link.closed link {effect.get('target')} not found")
+            if kind == "cor.rotates" and effect.get("target") not in cors:
+                errs.append(f"event {e['id']}: cor.rotates COR {effect.get('target')} not found")
             if kind == "funding.late":
                 if effect.get("target") not in ids("fundingLines"):
                     errs.append(f"event {e['id']}: funding.late funding line {effect.get('target')} not found")

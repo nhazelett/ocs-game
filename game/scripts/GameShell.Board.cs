@@ -127,7 +127,7 @@ public partial class GameShell
     private void RenderLedgerContext(SessionView? view)
     {
         DeskUi.Clear(linkedLedger);
-        definitizations.Clear(); terminations.Clear();
+        definitizations.Clear(); terminations.Clear(); CorDesignations.Clear();
         if (view is null) { linkedLedger.AddChild(DeskUi.Label("No scenario loaded.")); return; }
         linkedLedger.AddChild(DeskUi.Label($"Cash: {DeskUi.Money(view.TopStrip().CashCents)}"));
         linkedLedger.AddChild(DeskUi.Label("Funding lines"));
@@ -151,6 +151,7 @@ public partial class GameShell
             });
             button.ToggleMode = true; button.ButtonPressed = SelectedArrangement == arrangement.Id;
             button.SetMeta("arrangement", arrangement.Id); linkedLedger.AddChild(button);
+            AddCorDesignation(linkedLedger, arrangement, view);
             AddArrangementActions(linkedLedger, arrangement, view);
         }
         if (view.Arrangements.Count == 0) linkedLedger.AddChild(DeskUi.Label("No arrangements yet."));
