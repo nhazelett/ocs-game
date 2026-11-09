@@ -28,7 +28,7 @@ public partial class ConfidenceSmokeTest : Node
             foreach (var tile in shell.MorningTiles.GetChildren().OfType<Button>())
                 Require(tile.Text.Contains("commander confidence lost") == (tile.GetMeta("capability").AsString().StartsWith("spokeBSite.")), "Only the refused site's capability rows are marked.");
             Apply(new AwardAction { Day = expected.Day, Id = "turnkey", Instrument = "uca", Vendor = "vendorB", Card = "req0007", Quantity = 470, StartDay = 20, DurationDays = 60, FundingLine = "om1" });
-            var award = expected.Work.Single(w => w.Kind == WorkKind.Award && w.Label.EndsWith("turnkey"));
+            var award = expected.Work.Single(w => w.Kind == WorkKind.Award && w.SubjectId == "turnkey");
             while (expected.Day < award.WaitUntilDay) Advance();
             Apply(new SurveyAction { Day = expected.Day, Island = "spokeB" });
             Apply(new EstablishBpaAction { Day = expected.Day, Id = "fuelBpa", Vendor = "vendorD", Capability = "fuel", ScopeLines = ["delivery"], CallLimitCents = 5000000 });
