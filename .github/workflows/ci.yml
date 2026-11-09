@@ -45,6 +45,7 @@ jobs:
         run: |
           pip install --quiet jsonschema
           python3 -m unittest discover -s tools/validate -p test_validate.py
+          python3 -m unittest discover -s tools/validate -p test_people.py
           python3 tools/validate/validate.py
 
   provenance:
