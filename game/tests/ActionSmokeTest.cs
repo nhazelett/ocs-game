@@ -13,7 +13,7 @@ public partial class ActionSmokeTest : Node
         {
             var shell = Shell(this);
             var original = shell.Session.StateHash;
-            Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VendorInput, "vendorC"); Pick(shell.VehicleInput, "bosBpa");
+            Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
             shell.QuantityInput.Value = 360;
             Require(shell.Session.StateHash == original, "Changing every picker/quantity only previews, never mutates Sim.");
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
