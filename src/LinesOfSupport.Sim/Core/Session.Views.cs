@@ -49,6 +49,7 @@ public sealed partial class Session
         RecordKind.CorReport => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.ExternalSupport => (BoardCategory.HigherHq, BoardSeverity.Info),
         RecordKind.Transition => (BoardCategory.Delivery, BoardSeverity.Warning),
+        RecordKind.Visit => (BoardCategory.Report, BoardSeverity.Info),
         RecordKind.WorkDone or RecordKind.Knowledge or RecordKind.Definitized or RecordKind.Obligation or RecordKind.Cash
             => (BoardCategory.Report, BoardSeverity.Info),
         _ => null, // Action and Rejected are the player's own daytime acts, already seen when made.
@@ -60,6 +61,7 @@ public sealed partial class Session
         if (subject is "smallBuys" or "gpcProgram") return (BoardLinkKind.SmallBuys, subject);
         if (subject == "funding" || _funding.Any(f => f.Id == subject)) return (BoardLinkKind.Funding, subject);
         if (subject.StartsWith("survey ", StringComparison.Ordinal)) return (BoardLinkKind.Island, subject[7..]);
+        if (subject.StartsWith("person ", StringComparison.Ordinal)) return (BoardLinkKind.Person, subject[7..]);
         if (_arrangements.Any(a => a.Id == subject)) return (BoardLinkKind.Arrangement, subject);
         if (_cards.Any(c => c.Id == subject)) return (BoardLinkKind.Card, subject);
         if (Scenario.Events.Any(e => e.Id == subject)) return (BoardLinkKind.Event, subject);
@@ -131,6 +133,7 @@ public sealed partial class Session
         BoardLinkKind.Card => BuildPerson(_cards.FirstOrDefault(c => c.Id == linkId)?.PersonId),
         BoardLinkKind.Event => BuildPerson(Scenario.Events.FirstOrDefault(e => e.Id == linkId)?.From),
         BoardLinkKind.Arrangement => VendorRep(_arrangements.FirstOrDefault(a => a.Id == linkId)?.VendorId),
+        BoardLinkKind.Person => BuildPerson(linkId),
         _ => null,
     };
 

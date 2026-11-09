@@ -64,7 +64,9 @@ public enum BoardSeverity { Info, Warning, Alert }
 
 /// <summary>What a board item links to, so the desk can open the right panel.</summary>
 /// <summary>Funding (M3-03): LinkId is a funding line id, or "funding" for the shop's funding as a whole; open the ledger.</summary>
-public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Event, Cash, Work, Funding, SmallBuys }
+/// <summary>Person (M2R-04): LinkId is a people[] id; the item is something that person said (finance, the staff meeting,
+/// the SCO's staff, a vendor). Show the person, never the id.</summary>
+public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Event, Cash, Work, Funding, SmallBuys, Person }
 
 /// <summary>One thing that changed overnight.</summary>
 /// <param name="RecordId">The cause record this item shows; follow CausedBy for the chain.</param>
@@ -223,3 +225,19 @@ public sealed record TransitionView(
 /// <summary>What a transition plan would be if made today. HardStops are the strings Apply would return; Plan is null when
 /// stopped.</summary>
 public sealed record TransitionPreview(bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps, TransitionView? Plan);
+
+// ------------------------------------------------------------------ going to people (M2R-04)
+
+/// <summary>The commander's staff meeting as the shop sees it (design doc 6.2).</summary>
+/// <param name="Attending">The shop goes every week.</param>
+/// <param name="Joining">Getting into the meeting is in the shop's queue.</param>
+/// <param name="NextDay">Day of the next meeting, when attending.</param>
+/// <param name="MeetingDays">Days the shop was at the meeting.</param>
+/// <param name="PreviewedCards">Requirement cards heard about at a meeting before they were submitted (card ids, for
+/// linking; show the card's title).</param>
+public sealed record StaffMeetingView(bool Attending, bool Joining, int? NextDay, IReadOnlyList<int> MeetingDays, IReadOnlyList<string> PreviewedCards);
+
+/// <summary>One question the SCO's staff take (rules goingToPeople.askSco). Show Label; Id is what AskScoAction sends.</summary>
+/// <param name="Pending">Asked and not yet answered.</param>
+/// <param name="Asked">Asked at least once this game.</param>
+public sealed record ScoQuestionView(string Id, string Label, bool Pending, bool Asked);

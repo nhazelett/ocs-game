@@ -21,7 +21,9 @@ public sealed partial class Session
         ReturnSurveys(d);
         UcaClocks(d);
         CommitmentClocks(d);
+        PeopleBeforeWork(d);
         DoShopWork(d);
+        PeopleAfterWork(d);
         SmallBuys(d);
         ExternalSupportClocks(d);
         if (_cashReplenishDay == d)

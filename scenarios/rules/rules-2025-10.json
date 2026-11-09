@@ -774,5 +774,54 @@
     "standUpShopHours": 40,
     "divertedPermille": 800,
     "sourceUrl": "https://www.acquisition.gov/far/13.301"
+  },
+  "goingToPeople": {
+    "notes": "Going to people (backlog M2R-04, docs/design/opening-and-guidance.md 6.2 and 6.2a). Each visit costs shop hours and returns facts. Placeholder hours, tuned in playtest.",
+    "findFinance": {
+      "shopHours": 3,
+      "payingAgentWithinDays": 3,
+      "replenishLagDays": 3,
+      "sourceUrl": "https://www.acquisition.gov/far/13.306"
+    },
+    "staffMeeting": {
+      "joinShopHours": 2,
+      "weeklyShopHours": 2,
+      "everyDays": 7,
+      "previewDays": 7
+    },
+    "askSco": {
+      "shopHours": 1,
+      "questions": [
+        {
+          "id": "fuel",
+          "label": "Who normally provides bulk fuel here?",
+          "tutorialDirection": "Get the J4 working on fuel for any site you are standing up. Buying it yourself is the stopgap, not the plan."
+        },
+        {
+          "id": "routes",
+          "label": "When do the barge and the aircraft run?",
+          "tutorialDirection": "Count the barge days before you promise a start date at a spoke."
+        },
+        {
+          "id": "vehicles",
+          "label": "What contract vehicles can we order from?",
+          "tutorialDirection": "If a vehicle already covers it, an order is faster than a new contract."
+        },
+        {
+          "id": "thresholds",
+          "label": "What are the purchase thresholds for this operation?",
+          "tutorialDirection": "Keep small buys on cards and save the shop for the big ones."
+        }
+      ]
+    },
+    "meetVendor": {
+      "shopHours": 2,
+      "confidence": "estimated"
+    },
+    "engageJ4": {
+      "shopHours": 4,
+      "lagDays": 3,
+      "sourceUrl": "https://www.jcs.mil/Portals/36/Documents/Doctrine/pubs/jp4_10.pdf"
+    }
   }
 }
