@@ -88,8 +88,9 @@ public partial class SchematicMap : Node2D
                 if (LostConfidenceSites.Contains(sites[i].Id))
                     DrawRect(new Rect2(marker - new Vector2(11, 11), new Vector2(22, 22)), new Color(1, .75f, .25f), false, 2);
                 if (SelectedSite == sites[i].Id) DrawArc(marker, 13, 0, Mathf.Tau, 24, Colors.White, 2, true);
-                var label = condition == SiteCondition.NotOpen ? "not open" : condition.ToString().ToLowerInvariant();
-                Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · {label} · opens day {sites[i].OpensDay}{(LostConfidenceSites.Contains(sites[i].Id) ? " · confidence lost" : "")}", 300, 15);
+                var label = condition switch { SiteCondition.NotOpen => $"opens day {sites[i].OpensDay}", SiteCondition.Full => "supported",
+                    SiteCondition.Degraded => "partly supported", SiteCondition.Down => "support interrupted", _ => "not assessed" };
+                Label(point + new Vector2(0, 65 + i * 32), $"{sites[i].Name} · {label}{(LostConfidenceSites.Contains(sites[i].Id) ? " · confidence lost" : "")}", 300, 15);
             }
         }
     }

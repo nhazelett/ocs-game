@@ -40,8 +40,12 @@ public partial class LeadSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash() && !shell.BoardDetailsVisible, "Continue stops at the next actual Sim lead and returns to the uncluttered morning.");
             shell.DeveloperToggle.ButtonPressed = true; Replay(shell); Step(shell, 10); shell.DeveloperToggle.ButtonPressed = false;
             lead = shell.Session.View!.MorningBoard().Lead!; hash = shell.Session.StateHash;
+            Require(!shell.GetNode<Label>("%BuildStatus").Visible, "Replay and day-result diagnostics disappear when developer tools are turned off.");
             Require(shell.DisplayedLead == lead && shell.LeadWords.Text == lead.Text && !shell.BoardDetailsVisible, "Morning after day 10 binds the actual lead without re-ranking it.");
             await Capture("day11");
+            shell.DeveloperToggle.ButtonPressed = true;
+            Require(shell.GetNode<Label>("%BuildStatus").Visible && shell.GetNode<Label>("%BuildStatus").Text.Contains("Replay"), "Developer opt-in restores the diagnostic status.");
+            shell.DeveloperToggle.ButtonPressed = false;
             shell.LeadOpen.EmitSignal(Button.SignalName.Pressed);
             var commitment = shell.Session.View.Commitments.FirstOrDefault(c => c.ArrangementId == lead.LinkId && c.Decision == CommitmentDecision.Open);
             if (lead.LinkKind == BoardLinkKind.Arrangement && commitment is not null)

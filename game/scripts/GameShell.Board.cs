@@ -173,6 +173,6 @@ public partial class GameShell
         }
         if (session.View?.Finished == true) reason = "scenario complete";
         else if (count > 0) FocusNewMorning();
-        RefreshDisplay($"Continued {count} days: {reason}. Results through day {session.CompletedDay}.");
+        RefreshDisplay($"Continued {count} days: {reason}. Results through day {session.CompletedDay}.", developerOnly: true);
     }
 }
