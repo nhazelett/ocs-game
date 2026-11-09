@@ -6,6 +6,26 @@ namespace LinesOfSupport.Sim.Views;
 // feed outcomes: money is in cents, quantities are whole units, shop time is whole hours rounded up.
 // Text is facts and limits, never advice on how to do the job.
 
+// ------------------------------------------------------------------ people (M2R-01)
+
+/// <summary>A person in the scenario's cast, as the player meets them. Show <see cref="DisplayName"/> and Unit; Id is for
+/// lookups only and never appears in player-facing text (docs/design/opening-and-guidance.md R6).</summary>
+/// <param name="Role">customer, outgoingCco, scoStaff, finance, commander or vendorRep.</param>
+/// <param name="Portrait">Art key for the portrait, if the scenario names one.</param>
+/// <param name="Lines">Short lines for the moments the game uses this person (keys such as "greeting", "farewell").</param>
+/// <param name="VendorName">vendorRep only: the vendor's name.</param>
+public sealed record PersonView(
+    string Id, string Name, string Rank, string Unit, string Role, string? Portrait,
+    IReadOnlyDictionary<string, string> Lines, string? VendorName = null)
+{
+    /// <summary>Rank and name, e.g. "Capt Ana Ruiz"; the name alone when there is no rank.</summary>
+    public string DisplayName => Rank.Length == 0 ? Name : $"{Rank} {Name}";
+    /// <summary>Rank, name and unit, e.g. "Capt Ana Ruiz, 3 CES".</summary>
+    public string WithUnit => Unit.Length == 0 ? DisplayName : $"{DisplayName}, {Unit}";
+    /// <summary>The line for a moment, or null when the scenario wrote none.</summary>
+    public string? Line(string moment) => Lines.TryGetValue(moment, out var l) ? l : null;
+}
+
 // ------------------------------------------------------------------ top strip
 
 /// <summary>The always-visible strip: day, shop hours and cash gauges, funds and system status.</summary>
@@ -44,9 +64,11 @@ public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Eve
 /// <param name="RecordId">The cause record this item shows; follow CausedBy for the chain.</param>
 /// <param name="Day">The day the change happened (the day just played).</param>
 /// <param name="LinkId">Id to open: arrangement id, card id, "site.capability", island id, event id, "cash" or work label.</param>
+/// <param name="Person">Who the player hears it from (M2R-01): the card's person, the event's speaker, or the vendor's rep;
+/// null when no one in particular.</param>
 public sealed record BoardItem(
     string RecordId, int Day, BoardCategory Category, BoardSeverity Severity,
-    BoardLinkKind LinkKind, string LinkId, string Text, IReadOnlyList<string> CausedBy);
+    BoardLinkKind LinkKind, string LinkId, string Text, IReadOnlyList<string> CausedBy, PersonView? Person = null);
 
 /// <summary>One capability tile at a site, as of this morning.</summary>
 /// <param name="TodayPermille">Share of demand met on the day just played, 0 to 1000.</param>
@@ -74,11 +96,16 @@ public sealed record RequirementDependency(string CapabilityId, string Label, st
 
 /// <summary>The requirement editor's view of one card: what it asks for, its lines, and what it depends on.</summary>
 /// <param name="PeakDemandUnits">Peak daily demand for the capability at the site over the card's window, from population.</param>
+/// <param name="SubmittedBy">Who brought it, as shown: the person's rank, name and unit, or the card's free text.</param>
 /// <param name="CoveredBy">Arrangements (any status but declined) already tied to this card.</param>
+/// <param name="Title">What and where, e.g. "Power for Spoke B": the card's name on screen (M2R-01).</param>
+/// <param name="Person">The person who brought it, when the scenario names one (M2R-01).</param>
+/// <param name="Message">What they said when they brought it, in their words.</param>
 public sealed record RequirementEditorView(
     string CardId, string SiteId, string SiteName, string CapabilityId, string CapabilityLabel, string Unit,
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
-    IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy);
+    IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
+    string Title = "", PersonView? Person = null, string? Message = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 

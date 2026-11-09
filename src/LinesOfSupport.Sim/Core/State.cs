@@ -156,6 +156,9 @@ public sealed class CardState
     public int DurationDays { get; init; }
     public string? QuantityHint { get; init; }
     public string SubmittedBy { get; init; } = "";
+    /// <summary>The person who brought the card (M2R-01), a people[] id; null for a free-text submitter.</summary>
+    public string? PersonId { get; init; }
+    public string? Message { get; init; }
 }
 
 /// <summary>What the player knows about an island. Surveys raise the tier; the true facts are in the scenario.</summary>

@@ -277,8 +277,7 @@
           "submittedDay",
           "requestedStartDay",
           "durationDays",
-          "lines",
-          "submittedBy"
+          "lines"
         ],
         "properties": {
           "id": {
@@ -315,13 +314,34 @@
             "minProperties": 1
           },
           "submittedBy": {
-            "type": "string"
+            "type": "string",
+            "description": "Free-text submitter; used only when the card names no person"
           },
           "flaggedEnduring": {
             "type": "boolean",
             "default": false
+          },
+          "person": {
+            "$ref": "#/$defs/id",
+            "description": "The people[] id of who brings the requirement (M2R-01)"
+          },
+          "message": {
+            "type": "string",
+            "description": "What that person says when they bring it, in their words"
           }
-        }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "person"
+            ]
+          },
+          {
+            "required": [
+              "submittedBy"
+            ]
+          }
+        ]
       }
     },
     "vendors": {
@@ -716,6 +736,68 @@
         }
       }
     },
+    "people": {
+      "type": "array",
+      "description": "The cast (M2R-01, docs/design/opening-and-guidance.md 5): who brings work, hands over the shop, answers questions and runs the money. Ids are references only and never shown to the player.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "rank",
+          "unit",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Given name and surname as shown, e.g. 'Ana Ruiz'"
+          },
+          "rank": {
+            "type": "string",
+            "description": "Rank or title abbreviation as shown, e.g. 'Capt', 'MSgt', 'Mr.'; empty for none"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit or company as shown, e.g. '3 CES'"
+          },
+          "role": {
+            "enum": [
+              "customer",
+              "outgoingCco",
+              "scoStaff",
+              "finance",
+              "commander",
+              "vendorRep"
+            ]
+          },
+          "portrait": {
+            "type": "string",
+            "description": "Art key for the portrait"
+          },
+          "vendor": {
+            "$ref": "#/$defs/id",
+            "description": "vendorRep only: the vendor this person works for"
+          },
+          "site": {
+            "$ref": "#/$defs/id",
+            "description": "Where the person is posted, when it matters"
+          },
+          "lines": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Moment key (greeting, farewell, ...) to a short line in this person's voice"
+          }
+        }
+      }
+    },
     "shop": {
       "type": "object",
       "additionalProperties": false,
@@ -808,6 +890,10 @@
                 "$ref": "#/$defs/id"
               },
               "description": "Vehicle ids returned on a reach-back ask"
+            },
+            "person": {
+              "$ref": "#/$defs/id",
+              "description": "people[] id with role scoStaff"
             }
           }
         },
@@ -821,6 +907,10 @@
             "certificationLagDays": {
               "type": "integer",
               "minimum": 0
+            },
+            "person": {
+              "$ref": "#/$defs/id",
+              "description": "people[] id with role finance"
             }
           }
         },
@@ -837,6 +927,10 @@
                 "$ref": "#/$defs/id"
               },
               "description": "Site ids in priority order when capacity is short"
+            },
+            "person": {
+              "$ref": "#/$defs/id",
+              "description": "people[] id with role commander"
             }
           }
         },
@@ -1068,6 +1162,10 @@
           "playerVisibleAs": {
             "type": "string",
             "description": "Inbox text when it fires, if any"
+          },
+          "from": {
+            "$ref": "#/$defs/id",
+            "description": "people[] id of who the player hears it from (M2R-01); absent for weather or a notice"
           }
         }
       }

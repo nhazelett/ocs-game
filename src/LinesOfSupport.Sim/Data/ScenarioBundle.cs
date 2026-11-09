@@ -181,6 +181,35 @@ public sealed class ScenarioBundle
             foreach (var c in f.Capabilities) Need(caps.Contains(c), $"funding line {f.Id} capability {c} not in rules");
             Need(f.AvailableDay <= f.ExpiresDay, $"funding line {f.Id} expires before it is released");
         }
+        // People (M2R-01): unique ids, known roles, and every reference names a person in the right role.
+        var people = new Dictionary<string, PersonData>(StringComparer.Ordinal);
+        foreach (var p in s.People) Need(people.TryAdd(p.Id, p), $"person id {p.Id} is not unique");
+        string[] roles = ["customer", "outgoingCco", "scoStaff", "finance", "commander", "vendorRep"];
+        foreach (var p in s.People)
+        {
+            Need(roles.Contains(p.Role), $"person {p.Id} role {p.Role} is not one of {string.Join(", ", roles)}");
+            Need(p.Name.Length > 0, $"person {p.Id} has no name");
+            if (p.Vendor is not null) Need(vendors.Contains(p.Vendor), $"person {p.Id} vendor {p.Vendor} not found");
+            Need(p.Role != "vendorRep" || p.Vendor is not null, $"person {p.Id} is a vendorRep with no vendor");
+            if (p.Site is not null) Need(sites.Contains(p.Site), $"person {p.Id} site {p.Site} not found");
+        }
+        void NeedPerson(string? id, string what, string role)
+        {
+            if (id is null) return;
+            Need(people.TryGetValue(id, out var p), $"{what} person {id} not found");
+            if (p is not null) Need(p.Role == role, $"{what} person {id} must have role {role}, has {p.Role}");
+        }
+        foreach (var c in s.RequirementCards)
+        {
+            if (c.Person is not null) Need(people.ContainsKey(c.Person), $"card {c.Id} person {c.Person} not found");
+            Need(c.Person is not null || c.SubmittedBy.Length > 0, $"card {c.Id} names neither a person nor submittedBy");
+        }
+        foreach (var e in s.Events)
+            if (e.From is not null) Need(people.ContainsKey(e.From), $"event {e.Id} from {e.From} not found");
+        NeedPerson(s.Actors.Sco.Person, "actors.sco", "scoStaff");
+        NeedPerson(s.Actors.Fm.Person, "actors.fm", "finance");
+        NeedPerson(s.Actors.Commander.Person, "actors.commander", "commander");
+
         var cors = s.Cors.Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
         Need(cors.Count == s.Cors.Count, "COR ids must be unique");
         foreach (var c in s.Cors) Need(Rules.Cor.Qualities.ContainsKey(c.Quality), $"COR {c.Id} quality {c.Quality} not in rules cor.qualities");
