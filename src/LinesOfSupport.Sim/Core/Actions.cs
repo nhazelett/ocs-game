@@ -16,6 +16,8 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(ResolveCommitmentAction), "resolveCommitment")]
 [JsonDerivedType(typeof(EstablishBpaAction), "establishBpa")]
 [JsonDerivedType(typeof(CureNoticeAction), "cureNotice")]
+[JsonDerivedType(typeof(HoldSmallBuysAction), "holdSmallBuys")]
+[JsonDerivedType(typeof(StandUpGpcProgramAction), "standUpGpcProgram")]
 [JsonDerivedType(typeof(EstablishIdiqAction), "establishIdiq")]
 [JsonDerivedType(typeof(DesignateCorAction), "designateCor")]
 [JsonDerivedType(typeof(RequestExternalSupportAction), "requestExternalSupport")]
@@ -255,6 +257,17 @@ public sealed record PlanTransitionAction : PlayerAction
     public int? CutoverDay { get; init; }
     public string? Owner { get; init; }
 }
+
+/// <summary>Hold the customer small-buy stream (the shop stops working it; a backlog builds and the customer notices)
+/// or release it. Design doc 6.1.</summary>
+public sealed record HoldSmallBuysAction : PlayerAction
+{
+    public bool Hold { get; init; } = true;
+}
+
+/// <summary>Stand up a decentralized purchase card program: shop hours now, most small buys off the shop afterward.
+/// Needs purchase card accounts. Design doc 6.1.</summary>
+public sealed record StandUpGpcProgramAction : PlayerAction;
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)
 {

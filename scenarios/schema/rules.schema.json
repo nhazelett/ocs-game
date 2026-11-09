@@ -791,6 +791,59 @@
           "type": "string"
         }
       }
+    },
+    "smallBuys": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The customer small-buy stream that consumes shop hours every day (design doc 6.1). 13 milli-buys per person per day puts a 300-person hub near four buys a day.",
+      "required": [
+        "buysPerPersonPerDayMilli",
+        "hoursEachMilli",
+        "complainAfterHeldDays"
+      ],
+      "properties": {
+        "buysPerPersonPerDayMilli": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hoursEachMilli": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "complainAfterHeldDays": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "customerUnit": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "gpcProgram": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Standing up a decentralized purchase card program diverts most small buys off the shop (design doc 6.1).",
+      "required": [
+        "standUpShopHours",
+        "divertedPermille"
+      ],
+      "properties": {
+        "standUpShopHours": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "divertedPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {
