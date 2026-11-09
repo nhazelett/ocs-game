@@ -18,7 +18,7 @@ public partial class CorSmokeTest : Node
             shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json");
             Require(shell.CorInput is null, "Scenario without a roster has no COR picker.");
             Scenario(shell, "spoke-b-90");
-            Pick(shell.InstrumentInput, "purchaseOrder"); Pick(shell.VendorInput, "vendorA");
+            Pick(shell.VendorInput, "vendorA"); Pick(shell.InstrumentInput, "purchaseOrder");
             shell.QuantityInput.Value = 60; shell.DurationInput.Value = 10;
             Require(shell.CorInput is not null && shell.PendingAward!.Cor is null, "Written award with a roster offers None by default.");
             Require(shell.AwardPreview!.SoftGaps.Any(g => g.StartsWith("No COR named")), "None preserves Sim's no-COR warning.");
