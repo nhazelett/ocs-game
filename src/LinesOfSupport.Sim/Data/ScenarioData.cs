@@ -410,6 +410,8 @@ public sealed record RulesFile
     public TransitionRulesData Transition { get; init; } = new();
     public FileReviewRulesData FileReview { get; init; } = new();
     public ClaimRulesData Claims { get; init; } = new();
+    public SmallBuysRulesData SmallBuys { get; init; } = new();
+    public GpcProgramRulesData GpcProgram { get; init; } = new();
 }
 
 /// <summary>Vendor claims after a termination without the contract's notice (M3-19, FAR 49): shop hours to settle,
@@ -504,6 +506,24 @@ public sealed record PerformanceRulesData
     public int CureRecoverPermille { get; init; } = 650;
     public int CuredReliabilityPermille { get; init; } = 980;
     public int DefaultReliabilityDropPermille { get; init; } = 100;
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>The customer small-buy stream (design doc 6.1). Milli-buys per person per day; hours per buy in milli-hours.</summary>
+public sealed record SmallBuysRulesData
+{
+    public int BuysPerPersonPerDayMilli { get; init; } = 7;
+    public int HoursEachMilli { get; init; } = 500;
+    public int ComplainAfterHeldDays { get; init; } = 3;
+    public string CustomerUnit { get; init; } = "CE";
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>Standing up a decentralized purchase card program (design doc 6.1).</summary>
+public sealed record GpcProgramRulesData
+{
+    public int StandUpShopHours { get; init; } = 40;
+    public int DivertedPermille { get; init; } = 800;
     public string? SourceUrl { get; init; }
 }
 

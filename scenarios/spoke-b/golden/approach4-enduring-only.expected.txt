@@ -20,48 +20,68 @@ Day 1
   ACTION    Requirement req0007: Operators switched on.
   ACTION    Requirement req0007: Maintenance and repair switched on.
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 2 day(s).
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   ACTION    Requirement req0012: Plant operators switched on.
   ACTION    Requirement req0012: Maintenance switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 day(s).
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
   ACTION    Requirement req0014: Food service staff switched on.
   ACTION    Written purchase order started with Third Island Water Works: Food service at Spoke C, 480 meals/day for 28 days (Meal service, Food service staff); quoted $177,408.
   DONE      Written purchase order waterBridge awarded to Coastal Provisions; performance starts day 5, ends day 16. Obligated $12,672.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 4
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 5
   DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: none worked today (no hours left); 9 waiting.
   START     waterBridge began: Water at Spoke C from Coastal Provisions, 2640 gal/day.
 Day 6
+  DONE      CE small buys: none worked today (no hours left); 14 waiting.
   FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
 Day 7
   DONE      Undefinitized contract action waterPlant awarded to Third Island Water Works; performance starts day 15, ends day 74. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      Written purchase order food-c awarded to Third Island Water Works; performance starts day 13, ends day 40. Obligated $177,408.
+  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 21 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
+  DONE      CE small buys: none worked today (no hours left); 21 waiting.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
+Day 8
+  DONE      CE small buys: 27 worked today (13.5 h of shop time).
 Day 9
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
 Day 10
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 Day 11
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
   INBOX     Performance issue pi1: Coastal Provisions under-delivered on waterBridge on days 9 and 11. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 12
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
   SHORT     Water at Spoke C degraded to 86%: water on hand ran out.
   SHORT     Food service at Spoke C degraded to 86%: water at 86%.
 Day 13
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     food-c began: Food service at Spoke C from Third Island Water Works, 480 meals/day.
   OK        Water at Spoke C restored to 100%.
   OK        Food service at Spoke C restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 15
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     waterPlant began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 17
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   END       waterBridge ended.
   START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
@@ -70,17 +90,38 @@ Day 17
 Day 18
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Meridian Site Services billed $2,400 for work outside turnkey's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 19
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 20
   EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+Day 22
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+Day 23
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+Day 24
+  DONE      CE small buys: 8 worked today (4 h of shop time).
+Day 25
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+Day 26
+  DONE      CE small buys: 8 worked today (4 h of shop time).
+Day 27
+  DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 28
   COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 7 waiting.
 Day 29
   UCA       Third Island Water Works submitted a qualifying proposal on waterPlant. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      Response to higher HQ on oos1 sent.
+  DONE      CE small buys: 15 worked today (7.5 h of shop time).
   SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
+Day 30
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -104,7 +145,7 @@ SCORECARD
   Mission output 80% (sortie generation 88%, throughput 88%, endurance 87%, resilience 40%)
   Obligated $522,720; incurred $469,920; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 102; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
+  Surveys 0; shop hours worked 197; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
   spokeBSite.power: 10 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 7 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 10 day(s) down, 0 degraded, lowest 0%
@@ -154,4 +195,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.802)
 
-State hash abcb3c24b99e7317b9c3ceadf375bc6add5b8b4c7c8afc4fa5e13e129bf89de6
+State hash 05b43e66e8782278f7ed372920e1d8e592dc8d23c9f0ebfead57a730062cbaed
