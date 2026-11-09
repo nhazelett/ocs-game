@@ -32,4 +32,4 @@ Nick approved publication of M2R-32 and M2R-33 in chat on 9 Nov 2026 at 22:25 UT
 
 ## Next
 
-Deliver the tested M2R-32 result as an ordinary PR against main, stacked on reviewed PR 135. M2R-33 is an independent child of the same reviewed stack and has its own PR. Fable reviews and merges at Nick's check-in; Nick's cold playtest remains M2R-23. Final publication results are recorded in the M2R-33 session handoff. No PR merge, main push, force-push or shared-branch deletion.
+Published as [PR 136](https://github.com/nhazelett/ocs-game/pull/136), ordinary and mergeable against main, stacked on reviewed PR 135. M2R-33 is independently published as [PR 137](https://github.com/nhazelett/ocs-game/pull/137). All three screenshots and both task handoffs are uploaded; FOR-NICK #7 is answered. GitHub checks: [PR 136](https://github.com/nhazelett/ocs-game/pull/136/checks), [PR 137](https://github.com/nhazelett/ocs-game/pull/137/checks). Fable reviews and merges at Nick's check-in. Nick's cold playtest remains M2R-23. No PR merge, main push, force-push or shared-branch deletion.
