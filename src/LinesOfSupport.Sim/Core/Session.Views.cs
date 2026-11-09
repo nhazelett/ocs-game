@@ -82,7 +82,7 @@ public sealed partial class Session
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy, PersonFor(lk, lid)));
         }
         var ordered = items.Select((it, i) => (it, i)).OrderByDescending(x => x.it.Severity).ThenBy(x => x.i).Select(x => x.it).ToList();
-        return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles());
+        return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles(), BuildLead(ordered));
     }
 
     private List<CapabilityTile> BuildTiles()
