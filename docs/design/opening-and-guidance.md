@@ -40,6 +40,8 @@ R8. **It teaches itself.** No instructor is assumed. The tutorial plus in-world 
 
 R9. **Game text reads like a person wrote it.** No bullet lists, no headers, no bold labels in anything a player reads in the game. The turnover is four short paragraphs in the outgoing CCO's voice, not four cards of bullets. Nick: "we don't want the game looking like AI format, and bullet points highlight it."
 
+R11. **A nod, never a steer.** Scenario text may plant one true remark that a thoughtful player can connect to a coming decision ("the host nation fuel point at the hub has never let us down" sits next to the barge lesson). It never adds a second hint, a question, or a verb pointing at the decision. Nick approved the turnover text on this basis, 8 Nov 2026.
+
 R10. **Fuel is not the CCO's buy.** Bulk fuel comes through the ACSA manager (J4) or DLA Energy, so the CCO's move on a fuel dependency is to get the J4 engaged, through the OCS seat. The local fuel vendor stays in the market as the expensive stopgap (a purchase order or SF 44 delivery while the ACSA line is set up), and a turnkey power vendor may bring its own fuel. A CCO who sees fuel uncovered and does nothing still owns the gap.
 
 ## 3. The opening
