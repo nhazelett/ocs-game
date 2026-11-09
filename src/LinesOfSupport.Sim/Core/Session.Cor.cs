@@ -38,7 +38,7 @@ public sealed partial class Session
     internal string CorSummary(CorState c)
     {
         var q = CorQuality(c);
-        return $"{c.Quality}: reports {(q.LagDays == 0 ? "the same day" : $"{q.LagDays} day(s) late")}, about {q.ReportPermille / 10}% of problems";
+        return $"{c.Quality}: reports {(q.LagDays == 0 ? "the same day" : $"{Plural(q.LagDays, "day")} late")}, about {q.ReportPermille / 10}% of problems";
     }
 
     internal IEnumerable<string> CorStops(string corId, InstrumentData inst)
@@ -56,7 +56,7 @@ public sealed partial class Session
             return CorQuality(c) is { LagDays: 0, ReportPermille: >= 1000 }
                 ? null
                 : $"COR {c.Name} is {CorSummary(c)}: some vendor problems will reach you late or not at all.";
-        return $"No COR named: nobody checks the vendor's deliveries for the government. Problems surface as mission effects, reported by the unit {Rules.Cor.NoCorLagDays} day(s) later.";
+        return $"No COR named: nobody checks the vendor's deliveries for the government. Problems surface as mission effects, reported by the unit {Plural(Rules.Cor.NoCorLagDays, "day")} later.";
     }
 
     private ActionResult ApplyDesignateCor(DesignateCorAction c)
@@ -116,7 +116,7 @@ public sealed partial class Session
         {
             var a = _arrangements.First(x => x.Id == r.ArrangementId);
             var what = Cap(a.CapabilityId).Delivery == "consumable" ? "missed its delivery" : "had equipment down";
-            var late = d > r.FailureDay ? $", reported {d - r.FailureDay} day(s) later" : "";
+            var late = d > r.FailureDay ? $", reported {Plural(d - r.FailureDay, "day")} later" : "";
             r.RecordId = CorOf(r.CorId) is { } cor
                 ? AddRecord(d, RecordKind.CorReport, a.Id, $"COR report ({cor.Name}): {NameOf(a.Id)} {what} on day {r.FailureDay}{late}.", [r.FailureRecordId])
                 : AddRecord(d, RecordKind.CorReport, a.Id,

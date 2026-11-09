@@ -37,7 +37,7 @@ Day 3
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 4
   ACTION    The request for material handling equipment for Hub: Operators switched on.
-  ACTION    Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day.
   ! gpc t-tutForklift-bridge: Rejected: Coastal Rentals can supply 4 unit-days/day in total and 3 is already committed
   EVENT     Harbor Equipment Co is short of forklifts this week
   DONE      CE small buys: 7 worked today (3.5 h of shop time, 1 on cards).
@@ -55,7 +55,7 @@ Day 8
   END       Main Island Utilities (host nation) material handling equipment at Hub ended.
   START     Material handling equipment at Hub from Coastal Rentals began, 3 unit-days/day.
 Day 9
-  ACTION    Undefinitized contract action started with Main Island Sanitation: Waste removal at Hub, 3960 gal/day for 8 days (Removal and disposal); quoted $1,267. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    Undefinitized contract action started with Main Island Sanitation: Waste removal at Hub, 3960 gal/day for 8 days (Removal and disposal); quoted $1,267. Approval request routed through the SCO; answer expected in 1 day.
   ! sf44 t-tutWaste-bridge: Rejected: Main Island Sanitation can supply 6000 gal/day in total and 3960 is already committed
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
   START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
@@ -122,7 +122,7 @@ SCORECARD
 GAPS AND WHY (each traced back through its causes)
   Day 13: Waste removal at Hub down to 0%: no arrangement supplies waste removal.
   Day 18: Material handling equipment at Hub down to 0%: Coastal Rentals material handling equipment at Hub stopped work (unpaid UCA); supply 0 unit-days against demand 3.
-      <- day 4: Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day(s).
+      <- day 4: Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.waste days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
@@ -138,4 +138,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.962)
 
-State hash 932f3d618bed97f2a3d6fe928b90e571a477030ffeace404fd1bd24126c46011
+State hash 17acdf572ffd82a9b0a1707d38735d7b491166c75c8a4888896e4b7e0e88ef2d

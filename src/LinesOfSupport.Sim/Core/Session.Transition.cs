@@ -77,7 +77,7 @@ public sealed partial class Session
         var inText = lost is not null ? lost : min == max ? $"starts day {min}" : $"expected to start day {min} to {max}";
         var handText = chk.Handoff == HandoffOnDay
             ? $"cut-over on day {p.CutoverDay}"
-            : $"cut-over after {chk.OverlapDays} day(s) of full delivery by {NameOf(p.Incoming)}";
+            : $"cut-over after {Plural(chk.OverlapDays, "day")} of full delivery by {NameOf(p.Incoming)}";
         TransitionState Make(string cause) => new()
         {
             Id = p.Id, OutgoingId = outA.Id, IncomingId = p.Incoming, SiteId = outA.SiteId, CapabilityId = outA.CapabilityId,
@@ -145,13 +145,13 @@ public sealed partial class Session
         if (lost is not null)
             w.Add($"{Upper(NameOf(t.IncomingId))} will not arrive ({lost}): {where} has nothing behind {NameOf(outA.Id)} after day {end} unless another arrangement covers it.{owner}");
         else if (min > end)
-            w.Add($"{Upper(NameOf(t.IncomingId))} is not expected before day {min} and {NameOf(outA.Id)} ends day {end}: a gap of at least {min - end - 1} day(s) (days {end + 1} to {min - 1}) unless another arrangement covers it.{owner}");
+            w.Add($"{Upper(NameOf(t.IncomingId))} is not expected before day {min} and {NameOf(outA.Id)} ends day {end}: a gap of at least {Plural(min - end - 1, "day")} (days {end + 1} to {min - 1}) unless another arrangement covers it.{owner}");
         else if (max > end)
-            w.Add($"{Upper(NameOf(t.IncomingId))} may start as late as day {max} and {NameOf(outA.Id)} ends day {end}: up to {max - end - 1} day(s) of gap if it does.{owner}");
+            w.Add($"{Upper(NameOf(t.IncomingId))} may start as late as day {max} and {NameOf(outA.Id)} ends day {end}: up to {Plural(max - end - 1, "day")} of gap if it does.{owner}");
         else if (t.Handoff == HandoffIncomingDelivering && t.CutoverStartedDay is null && max + t.OverlapDays > end)
-            w.Add($"{Upper(NameOf(outA.Id))} ends day {end}, before {t.OverlapDays} day(s) of full delivery by {NameOf(t.IncomingId)} can be verified (it starts day {max}): the handoff will be {NameOf(outA.Id)}'s own end, with {end - max!.Value + 1} day(s) of overlap.");
+            w.Add($"{Upper(NameOf(outA.Id))} ends day {end}, before {Plural(t.OverlapDays, "day")} of full delivery by {NameOf(t.IncomingId)} can be verified (it starts day {max}): the handoff will be {NameOf(outA.Id)}'s own end, with {Plural(end - max!.Value + 1, "day")} of overlap.");
         else if (t.Handoff == HandoffOnDay && end - max!.Value + 1 < t.OverlapDays)
-            w.Add($"Only {end - max.Value + 1} day(s) of overlap before the cut-over on day {end} if {NameOf(t.IncomingId)} starts day {max}; the plan asks for {t.OverlapDays}.");
+            w.Add($"Only {Plural(end - max.Value + 1, "day")} of overlap before the cut-over on day {end} if {NameOf(t.IncomingId)} starts day {max}; the plan asks for {t.OverlapDays}.");
 
         if (lost is null && max is { } latest)
         {
@@ -208,7 +208,7 @@ public sealed partial class Session
                 {
                     t.Outcome = TransitionOutcome.Clean;
                     t.ResolvedRecordId = AddRecord(d, RecordKind.Transition, outA.Id,
-                        $"{Upper(NameOf(t.Id))} complete: {NameOf(outA.Id)} ended day {outA.EndDay} with {NameOf(t.IncomingId)} delivering; {t.BothRunningDays} day(s) of overlap.", [t.CauseId]);
+                        $"{Upper(NameOf(t.Id))} complete: {NameOf(outA.Id)} ended day {outA.EndDay} with {NameOf(t.IncomingId)} delivering; {Plural(t.BothRunningDays, "day")} of overlap.", [t.CauseId]);
                 }
                 else
                 {
@@ -235,7 +235,7 @@ public sealed partial class Session
                     t.CutoverStartedDay = d;
                     var why = t.Handoff == HandoffOnDay
                         ? $"cut-over day {t.CutoverDay}"
-                        : $"{Upper(NameOf(t.IncomingId))} delivered at full for {t.FullDays} day(s)";
+                        : $"{Upper(NameOf(t.IncomingId))} delivered at full for {Plural(t.FullDays, "day")}";
                     var rec = AddRecord(d, RecordKind.Transition, outA.Id,
                         $"{Upper(NameOf(t.Id))}: {why}; cut-over started, termination of {NameOf(outA.Id)} in work so its last day is day {d + 1} if the shop gets to it.", [t.CauseId]);
                     if (!_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (w.Payload as string) == outA.Id))
@@ -252,7 +252,7 @@ public sealed partial class Session
                     t.WarningDay = d;
                     var gapText = lost is not null
                         ? $"{Upper(NameOf(t.IncomingId))} will not arrive ({lost})"
-                        : $"{Upper(NameOf(t.IncomingId))} is not expected before day {min}, a gap of at least {min - end - 1} day(s)";
+                        : $"{Upper(NameOf(t.IncomingId))} is not expected before day {min}, a gap of at least {Plural(min - end - 1, "day")}";
                     t.WarningRecordId = AddRecord(d, RecordKind.Transition, outA.Id,
                         $"Transition planner: {NameOf(outA.Id)} ends day {end} and {gapText}. {CapLabel(t.CapabilityId)} at {SiteName(t.SiteId)} goes uncovered unless something bridges it. Gap owner: {OwnerName(t.Owner)}.", [t.CauseId]);
                 }

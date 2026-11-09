@@ -28,7 +28,7 @@ Day 2
 Day 3
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Ground transport at Hub restored to 100%.
-  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 1, reported 2 day(s) later.
+  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 1, reported 2 days later.
 Day 4
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 5
@@ -48,11 +48,11 @@ Day 8
   UCA-DUE   Third Island Camp Services lodging at Spoke C is due for definitization (47% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 9
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 day(s) later.
-  COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 7, reported 2 day(s) later.
+  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 days later.
+  COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 7, reported 2 days later.
 Day 10
   EVENT     SFC Duarte rotates home. S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training.
-  COR       SFC Duarte rotates home. An untrained relief takes over as COR on Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SFC Duarte rotates home. An untrained relief takes over as COR on Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 11
@@ -78,13 +78,13 @@ Day 14
 Day 15
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Island Provisions food service at Spoke B missed today's delivery.
-  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 days later.
 Day 16
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   UCA-DUE   North Island Power and Light power at Spoke A is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 17
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 15, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 15, reported 2 days later.
   INBOX     Performance issue: Island Provisions under-delivered on food service at Spoke B on days 13 and 15 (COR SGT Oyelaran). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 18
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -95,7 +95,7 @@ Day 20
   EVENT     Second Island Fuel falls behind
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 18, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 18, reported 2 days later.
 Day 21
   COMPLY    Higher HQ asked why North Island Power and Light power at Spoke A is past due for definitization. A response is now shop work.
   DONE      Response to higher HQ on North Island Power and Light power at Spoke A sent.
@@ -124,8 +124,8 @@ Day 25
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Main Island Motor Pool Rentals ground transport at Hub ended.
   SHORT     Ground transport at Hub down to 0%: no arrangement supplies ground transport.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 day(s) later.
-  COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 23, reported 2 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 days later.
+  COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 23, reported 2 days later.
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
@@ -138,7 +138,7 @@ Day 27
   SHORT     Lodging at Spoke B degraded to 56%: power at 56%.
   SHORT     Food service at Spoke B degraded to 56%: power at 56%.
   SHORT     Material handling equipment at Spoke C degraded to 66%: supply 1 unit-days against demand 1.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 23, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 23, reported 4 days later.
   INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 21 and 23 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 28
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -155,7 +155,7 @@ Day 29
   FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   FAIL      Second Island Camp Services lodging at Spoke B had equipment down.
-  COR       COR report (SGT Oyelaran): Harbor Equipment Co material handling equipment at Spoke C had equipment down on day 27, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Harbor Equipment Co material handling equipment at Spoke C had equipment down on day 27, reported 2 days later.
   COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke A missed its delivery on day 29.
 Day 30
   DONE      CE small buys: 10 worked today (5 h of shop time).
@@ -174,16 +174,16 @@ Day 31
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
-  COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 29, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 29, reported 2 days later.
 Day 32
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Second Island Camp Services lodging at Spoke B ended.
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 28, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 28, reported 4 days later.
 Day 33
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      Island Provisions food service at Spoke B missed today's delivery.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 29, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 29, reported 4 days later.
 Day 34
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Third Island Camp Services lodging at Spoke C had equipment down.
@@ -191,7 +191,7 @@ Day 34
 Day 35
   DONE      CE small buys: 10 worked today (5 h of shop time).
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 31, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 31, reported 4 days later.
   FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $1,471,630 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
   EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
@@ -200,7 +200,7 @@ Day 36
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Island Provisions food service at Spoke B ended.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  COR       COR report (SGT Oyelaran): Third Island Camp Services lodging at Spoke C had equipment down on day 34, reported 2 day(s) later.
+  COR       COR report (SGT Oyelaran): Third Island Camp Services lodging at Spoke C had equipment down on day 34, reported 2 days later.
 Day 37
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
@@ -217,18 +217,18 @@ Day 39
 Day 40
   DONE      CE small buys: 10 worked today (5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 36, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 36, reported 4 days later.
 Day 41
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Port Fuel Haulers fuel at Spoke A ended.
   END       Port Fuel Haulers fuel at Spoke C ended.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 37, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 37, reported 4 days later.
 Day 42
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   SHORT     Water at Spoke A down to 0%: water on hand ran out; no arrangement supplies water.
 Day 43
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 39, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 39, reported 4 days later.
 Day 44
   EVENT     The new fiscal year's funding is held up. Comptroller: the new fiscal year's O&M release is held up at higher headquarters.
   FUNDING   Comptroller: the O&M line from day 46 ($3,000,000) will not be released on day 46 as planned; expect it on day 55.
@@ -257,7 +257,7 @@ Day 47
 Day 48
   DONE      CE small buys: 10 worked today (5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 44, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 44, reported 4 days later.
   STOPWORK  North Island Power and Light stopped work on North Island Power and Light power at Spoke A: costs incurred are not obligated.
   STOPWORK  Third Island Camp Services stopped work on Third Island Camp Services lodging at Spoke C: costs incurred are not obligated.
 Day 49
@@ -269,10 +269,10 @@ Day 49
 Day 50
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 46, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 46, reported 4 days later.
 Day 51
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 47, reported 4 day(s) later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 47, reported 4 days later.
 Day 52
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 53
@@ -280,7 +280,7 @@ Day 53
 Day 54
   DONE      CE small buys: 10 worked today (5 h of shop time).
   SHORT     Fuel at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); fuel on hand ran out.
-  FUNDING   Comptroller released the O&M line from day 46: $3,000,000 usable from day 55, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 46: $3,000,000 usable from day 55, 9 days later than planned.
 Day 55
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 56
@@ -449,7 +449,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed.
   #1 hubSite.transport days 25-60, lowest 0%, 36 day(s) down: AVOIDABLE
       [avoidable] The request for ground transport for Hub (submitted day 5, needed from day 25) had nothing supplying it from day 25. The last arrangement supplying it, Main Island Motor Pool Rentals ground transport at Hub, ended on day 24.
-      [avoidable] No funding line with money could pay for ground transport on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for ground transport on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #2 spokeASite.fuel days 54-60, lowest 0%, 7 day(s) down: AVOIDABLE
       [avoidable] North Island Power and Light power at Spoke A stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 16.
   #3 spokeASite.power days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
@@ -468,7 +468,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #9 spokeASite.water days 42-60, lowest 0%, 19 day(s) down: AVOIDABLE
       [avoidable] The ACSA order for water at Spoke A was withdrawn by Partner force on day 36 (last day of support 38) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.
       [unforeseeable] Water depends on power, which was short. (see #5)
-      [avoidable] No funding line with money could pay for water on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for water on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [avoidable] Water depends on power, which was short. (see #6)
   #10 spokeASite.comms days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Comms backhaul depends on power, which was short. (see #3)
@@ -476,7 +476,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The request for comms backhaul for Spoke A (submitted day 2, needed from day 22) had nothing supplying it from day 22. The last arrangement supplying it, North Island Telecom comms backhaul at Spoke A, ended on day 21.
       [unforeseeable] Comms backhaul depends on power, which was short. (see #4)
       [unforeseeable] Comms backhaul depends on power, which was short. (see #5)
-      [avoidable] No funding line with money could pay for comms backhaul on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for comms backhaul on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [avoidable] Comms backhaul depends on power, which was short. (see #6)
   #12 spokeBSite.fuel days 27-31, lowest 0%, 4 day(s) down: DISCOVERABLE
       [discoverable] Second Island Fuel fuel at Spoke B failed on day 27 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
@@ -493,7 +493,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Nothing supplied power at Spoke B; the site and its population were in the plan from day 1.
       [discoverable] Power depends on fuel, which was short. (see #13)
       [discoverable] Power depends on fuel, which was short. (see #14)
-      [avoidable] No funding line with money could pay for power on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for power on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [discoverable] Power depends on fuel, which was short. (see #15)
   #18 spokeBSite.lodging days 7-7, lowest 51%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full operator and maintenance coverage. The COR reported it on day 9.
@@ -503,7 +503,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Lodging depends on power, which was short. (see #17)
       [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 28 with full operator and maintenance coverage. Its COR (fair) did not report it.
       [avoidable] The request for lodging for Spoke B (submitted day 13, needed from day 32) had nothing supplying it from day 32. The last arrangement supplying it, Second Island Camp Services lodging at Spoke B, ended on day 31.
-      [avoidable] No funding line with money could pay for lodging on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for lodging on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #21 spokeBSite.food days 23-23, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #16)
       [discoverable] Island Provisions food service at Spoke B supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
@@ -512,13 +512,13 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Island Provisions food service at Spoke B supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [unforeseeable] Island Provisions food service at Spoke B failed on day 33 with full operator and maintenance coverage. Its COR (fair) did not report it. The performance issue with Island Provisions on food service at Spoke B opened day 17; decision: no decision.
       [avoidable] Nothing supplied food service at Spoke B; the site and its population were in the plan from day 1.
-      [avoidable] No funding line with money could pay for food service on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for food service on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #23 spokeCSite.fuel days 38-38, lowest 80%, 0 day(s) down: AVOIDABLE
       [discoverable] Port Fuel Haulers fuel at Spoke C supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 450 gal a day fell short of 630 a day. Still short 7 days after they arrived: the notice left time to resize.
   #24 spokeCSite.fuel days 45-60, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Nobody owned fuel at Spoke C. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 600 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
-      [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #25 spokeCSite.lodging days 30-60, lowest 0%, 13 day(s) down: AVOIDABLE
       [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Nothing before the notice showed it coming.
       [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 34 with full operator and maintenance coverage. The COR reported it on day 36.
@@ -529,7 +529,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The request for material handling equipment for Spoke C (submitted day 9, needed from day 28) had nothing supplying it from day 28. The last arrangement supplying it, Harbor Equipment Co material handling equipment at Spoke C, ended on day 27.
       [avoidable] Material handling equipment depends on fuel, which was short. (see #23)
       [avoidable] Material handling equipment depends on fuel, which was short. (see #24)
-      [avoidable] No funding line with money could pay for material handling equipment on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for material handling equipment on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
 
 PASS CRITERIA
   [not met] Spoke A power never down more than two days (site.spokeASite.power.downDays = 12)
@@ -538,4 +538,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.559)
 
-State hash bbb28eff2f3fee753e2bacec0172477c0722f7a449149ab2df4a4c400b85460e
+State hash 74414927e7a8535c703ad1183d9d75bf90006d911b0ed843d358786df9c35ed7

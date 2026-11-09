@@ -112,7 +112,7 @@ public sealed partial class Session
         var where = $"{CapLabel(capId)} at {SiteName(chk.SiteId!)}";
         var lineText = string.Join(", ", chk.Lines.Select(l => LineLabel(capId, l)));
         var rec = AddRecord(Day, RecordKind.Action, r.Id,
-            $"External support request started: {where}, {r.Quantity} {Cap(capId).Unit}/day for {r.DurationDays} days ({lineText}), estimated {Money(chk.TotalCents)} from {NameOf(r.FundingLine)}; {shopDays} shop day(s) to prepare, then the SCO and the external office.", []);
+            $"External support request started: {where}, {r.Quantity} {Cap(capId).Unit}/day for {r.DurationDays} days ({lineText}), estimated {Money(chk.TotalCents)} from {NameOf(r.FundingLine)}; {Plural(shopDays, "shop day")} to prepare, then the SCO and the external office.", []);
         _external.Add(new ExternalSupportState
         {
             Id = r.Id, SiteId = chk.SiteId!, CapabilityId = capId, Lines = chk.Lines, QuantityMilli = r.Quantity * 1000,

@@ -51,7 +51,7 @@ public sealed partial class Session
                 i.Outcome = CureOutcome.Cured;
                 a.ReliabilityPermille = Math.Max(a.ReliabilityPermille, Perf.CuredReliabilityPermille);
                 AddRecord(d, RecordKind.Compliance, i.Id,
-                    $"{vendor} cured {NameOf(i.Id)}: the cure period ended with a corrective plan in place ({lateFailures} failure day(s) during the period). Performance is back to standard.", [i.CauseId]);
+                    $"{vendor} cured {NameOf(i.Id)}: the cure period ended with a corrective plan in place ({Plural(lateFailures, "failure day")} during the period). Performance is back to standard.", [i.CauseId]);
             }
             else
             {

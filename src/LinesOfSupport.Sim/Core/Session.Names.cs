@@ -60,7 +60,9 @@ public sealed partial class Session
     internal string IssueName(string? id) => _issues.FirstOrDefault(i => i.Id == id) is { } i ? IssueName(i) : "that performance issue";
 
     internal string CommitmentName(CommitmentState c)
-        => $"the handshake with {VendorData(c.VendorId)?.Name ?? "the vendor"} for {Lower(CapLabel(c.CapabilityId))} at {SiteName(c.SiteId)}";
+        => c.Kind == CommitmentKind.Handshake
+            ? $"the handshake with {VendorData(c.VendorId)?.Name ?? "the vendor"} for {Lower(CapLabel(c.CapabilityId))} at {SiteName(c.SiteId)}"
+            : $"the extra work {VendorData(c.VendorId)?.Name ?? "the vendor"} did on {Lower(CapLabel(c.CapabilityId))} at {SiteName(c.SiteId)}";
 
     internal string CommitmentName(string? id) => _commitments.FirstOrDefault(c => c.Id == id) is { } c ? CommitmentName(c) : "that commitment";
 
@@ -98,6 +100,17 @@ public sealed partial class Session
         string s => s,
         _ => null,
     };
+
+    /// <summary>A count with its noun, singular for one ("1 day", "3 shop days"): no "day(s)" in player text (M2R-27).</summary>
+    private static readonly System.Text.RegularExpressions.Regex SentenceStart =
+        new(@"(^|[.!?]\s+)([a-z])", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>Capitalizes each sentence's first letter, so a name that starts lower case ("the external contract's power")
+    /// does not start a sentence that way (M2R-27).</summary>
+    internal static string SentenceCase(string text) => SentenceStart.Replace(text, m => m.Groups[1].Value + char.ToUpperInvariant(m.Groups[2].Value[0]));
+
+    internal static string Plural(long n, string noun) => n == 1 ? $"1 {noun}" : $"{n} {noun}s";
+    internal static string Plural(long? n, string noun) => n is { } v ? Plural(v, noun) : $"{noun}s";
 
     internal static string Upper(string s) => s.Length == 0 ? s : char.ToUpperInvariant(s[0]) + s[1..];
 

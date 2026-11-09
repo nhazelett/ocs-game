@@ -87,7 +87,7 @@ public class TransitionTests
         Assert.Equal(TransitionOutcome.Gap, t.Outcome);
         Assert.Equal(41 - s.Rules.Transition.WarnDays, t.WarningDay);
         var plan = s.Records.Single(r => r.Kind == RecordKind.Action && r.Subject == "ucaToEnduring");
-        Assert.Contains("a gap of at least 5 day(s) (days 42 to 46)", plan.Text);
+        Assert.Contains("a gap of at least 5 days (days 42 to 46)", plan.Text);
         var warning = s.Records.Single(r => r.Id == t.WarningRecordId);
         Assert.Equal(RecordKind.Transition, warning.Kind);
         Assert.Equal(1, s.Metrics["transitions.gap"]);

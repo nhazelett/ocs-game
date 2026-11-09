@@ -84,7 +84,7 @@ public sealed partial class Session
                     $"Comptroller: {NameOf(f.Id)} reaches its fiscal-year end with day {f.ExpiresDay}, {Money(f.RemainingCents)} still unobligated. Awards, definitizations and ratifications that complete after day {f.ExpiresDay} need another line; a service awarded before then may run up to 12 months past it.", []);
             if (f.AvailableDay == next && next > 1 && next <= LastDay)
             {
-                var late = f.AvailableDay > f.PlannedAvailableDay ? $", {f.AvailableDay - f.PlannedAvailableDay} day(s) later than planned" : "";
+                var late = f.AvailableDay > f.PlannedAvailableDay ? $", {Plural(f.AvailableDay - f.PlannedAvailableDay, "day")} later than planned" : "";
                 var purpose = f.Capabilities.Count > 0 ? $" for {Purpose(f)}" : "";
                 _fundingReleases.Add(AddRecord(d, RecordKind.Funding, f.Id,
                     $"Comptroller released {NameOf(f.Id)}: {Money(f.RemainingCents)}{purpose} usable from day {next}{late}.", []));
@@ -124,7 +124,7 @@ public sealed partial class Session
         if (ended.Count > 0) text += $" {Upper(string.Join(" and ", ended.Select(FundingName)))} reached its fiscal-year end with day {from - 1}.";
         foreach (var f in released)
             text += f.AvailableDay > f.PlannedAvailableDay
-                ? $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}, {f.AvailableDay - f.PlannedAvailableDay} day(s) late" + (lateNotices.Count > 0 ? $" (the comptroller warned on day {lateNotices[0].Day})." : ".")
+                ? $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}, {Plural(f.AvailableDay - f.PlannedAvailableDay, "day")} late" + (lateNotices.Count > 0 ? $" (the comptroller warned on day {lateNotices[0].Day})." : ".")
                 : $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}.";
         var rejected = _fundingRejections.Where(x => x.SiteId == siteId && x.CapabilityId == capId && x.Day >= from && x.Day <= d).ToList();
         if (rejected.Count > 0) text += $" {Upper(string.Join(", ", rejected.Select(x => ArrName(x.AwardId))))} reached award with no money to pay for it.";

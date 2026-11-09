@@ -202,7 +202,7 @@ public sealed partial class Session
     internal string AddRecord(int day, RecordKind kind, string subject, string text, IReadOnlyList<string> causedBy)
     {
         var id = $"r{++_recordSeq}";
-        _records.Add(new CauseRecord(id, day, kind, subject, text, causedBy));
+        _records.Add(new CauseRecord(id, day, kind, subject, SentenceCase(text), causedBy));
         return id;
     }
 

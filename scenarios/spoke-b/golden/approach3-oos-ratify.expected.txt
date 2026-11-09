@@ -24,10 +24,10 @@ Day 1
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day.
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 days.
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -81,9 +81,9 @@ Day 15
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
 Day 16
-  ACTION    Ratification of the handshake with Harbor Equipment Co for power at Spoke B started: 2 shop day(s). Harbor Equipment Co is told it will be paid.
+  ACTION    Ratification of the extra work Harbor Equipment Co did on power at Spoke B started: 2 shop days. Harbor Equipment Co is told it will be paid.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
-  COMPLY    Ratification of the handshake with Harbor Equipment Co for power at Spoke B completed: $2,400 obligated from the O&M line.
+  COMPLY    Ratification of the extra work Harbor Equipment Co did on power at Spoke B completed: $2,400 obligated from the O&M line.
   COMPLY    The Spoke B unit's habit of going around contracting rises (out-of-scope work was paid).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
 Day 17
@@ -172,4 +172,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.915)
 
-State hash 961c9e7fa09a4d90489958d10ff710688111f971a1ab639f03ef3521f838e173
+State hash ac7810c2b441dee330a5a8ac7530400148de2aa799c9f033640e89316fe28bcb

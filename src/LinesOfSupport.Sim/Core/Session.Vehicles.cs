@@ -52,7 +52,7 @@ public sealed partial class Session
         var shopDays = _rngWork.NextInt(inst!.ShopDays);
         var lines = string.Join(", ", e.ScopeLines.Select(l => LineLabel(e.Capability, l)));
         var rec = AddRecord(Day, RecordKind.Action, e.Id,
-            $"BPA with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}); {shopDays} shop day(s) to set up. A BPA is not binding and obligates nothing.", []);
+            $"BPA with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}); {Plural(shopDays, "shop day")} to set up. A BPA is not binding and obligates nothing.", []);
         AddWork(WorkKind.EstablishVehicle, $"Establish a BPA with {VendorData(e.Vendor)?.Name}", Hours(shopDays, inst.RequiresSystemOrManual), Day, e, rec);
         return ActionResult.Ok("in work");
     }
@@ -156,7 +156,7 @@ public sealed partial class Session
         var lines = string.Join(", ", e.ScopeLines.Select(l => LineLabel(e.Capability, l)));
         var min = MinimumGuaranteeFor(e, inst);
         var rec = AddRecord(Day, RecordKind.Action, e.Id,
-            $"IDIQ with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}), ceiling {Money(e.CeilingCents)}, minimum guarantee {Money(min)} from {NameOf(e.FundingLine)}; {shopDays} shop day(s) to award.", []);
+            $"IDIQ with {vendor!.Name} started: {CapLabel(e.Capability)} ({lines}), ceiling {Money(e.CeilingCents)}, minimum guarantee {Money(min)} from {NameOf(e.FundingLine)}; {Plural(shopDays, "shop day")} to award.", []);
         AddWork(WorkKind.EstablishVehicle, $"Establish an IDIQ with {VendorData(e.Vendor)?.Name}", Hours(shopDays, inst.RequiresSystemOrManual), Day, e, rec);
         return ActionResult.Ok("in work");
     }

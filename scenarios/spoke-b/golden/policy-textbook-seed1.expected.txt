@@ -21,11 +21,11 @@ Day 1
   ACTION    Ordered a site survey of Third Island.
   ACTION    The request for power for Spoke B: Operators switched on.
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 days.
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 days.
   ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2640 gal/day for 10 days (Potable water supply); $10,560 paid on the spot.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated $10,560.
   VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with Partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. Partner force can cut it back when its own needs rise.
@@ -37,7 +37,7 @@ Day 2
   DONE      CE small buys: none worked today (no hours left); 8 waiting.
 Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088. Approval request routed through the SCO; answer expected in 2 days.
   CASH      Cash on hand down to $6,176; FM replenishment expected day 6.
   ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 528 meals/day for 7 days (Meal service); $33,264 paid on the spot.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for food service at Spoke C; performance starts day 12, ends day 18. Obligated $33,264.
@@ -93,9 +93,9 @@ Day 15
   END       Coastal Provisions water at Spoke C ended.
   END       Coastal Provisions food service at Spoke C ended.
 Day 16
-  ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
+  ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
-  DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 17
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
@@ -215,4 +215,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.925)
 
-State hash 0fb6873e858ade799794a0020e719d4941b91974b01a15b0d741738499a068ec
+State hash 947b6bc72a649287797625bdef51a76887cbe273d988feada6a0d7b955bf0f6b

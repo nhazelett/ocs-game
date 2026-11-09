@@ -17,8 +17,8 @@ Day 1
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 25 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $264,375. Approval request routed through the SCO; answer expected in 1 day(s).
-  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 25 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $264,375. Approval request routed through the SCO; answer expected in 1 day.
+  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop days to prepare, then the SCO and the external office.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
@@ -33,7 +33,7 @@ Day 5
   DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 41. UCA issued with NTE $290,813; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 8 worked today (4 h of shop time); 5 still waiting.
 Day 6
-  ACTION    Transition planned: Power at Spoke B from Harbor Equipment Co power at Spoke B (ends day 66) to Meridian Site Services power at Spoke B (starts day 17); cut-over after 2 day(s) of full delivery by Meridian Site Services power at Spoke B; gap owner: CCO seat.
+  ACTION    Transition planned: Power at Spoke B from Harbor Equipment Co power at Spoke B (ends day 66) to Meridian Site Services power at Spoke B (starts day 17); cut-over after 2 days of full delivery by Meridian Site Services power at Spoke B; gap owner: CCO seat.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
@@ -61,25 +61,25 @@ Day 15
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
-  ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
+  ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
-  DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   EXTERNAL  The external office awarded the external contract's power at Spoke B to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from the O&M line good through day 75. The contractor mobilizes for 30 days; performance starts day 47, ends day 106.
 Day 17
-  ACTION    Transition planned: Power at Spoke B from Meridian Site Services power at Spoke B (ends day 41) to the external contract's power at Spoke B (starts day 47); cut-over after 2 day(s) of full delivery by the external contract's power at Spoke B; gap owner: CCO seat. Planner: The external contract's power at Spoke B is not expected before day 47 and Meridian Site Services power at Spoke B ends day 41: a gap of at least 5 day(s) (days 42 to 46) unless another arrangement covers it. Gap owner: CCO seat.
+  ACTION    Transition planned: Power at Spoke B from Meridian Site Services power at Spoke B (ends day 41) to the external contract's power at Spoke B (starts day 47); cut-over after 2 days of full delivery by the external contract's power at Spoke B; gap owner: CCO seat. Planner: The external contract's power at Spoke B is not expected before day 47 and Meridian Site Services power at Spoke B ends day 41: a gap of at least 5 days (days 42 to 46) unless another arrangement covers it. Gap owner: CCO seat.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
 Day 18
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  TRANSIT   The hand-off of power at Spoke B: Meridian Site Services power at Spoke B delivered at full for 2 day(s); cut-over started, termination of Harbor Equipment Co power at Spoke B in work so its last day is day 19 if the shop gets to it.
+  TRANSIT   The hand-off of power at Spoke B: Meridian Site Services power at Spoke B delivered at full for 2 days; cut-over started, termination of Harbor Equipment Co power at Spoke B in work so its last day is day 19 if the shop gets to it.
 Day 19
   END       Harbor Equipment Co power at Spoke B terminated; performance ends day 19. $38,916 deobligated back to the O&M line good through day 75.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 20
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
-  TRANSIT   The hand-off of power at Spoke B complete: Harbor Equipment Co power at Spoke B ended day 19 with Meridian Site Services power at Spoke B delivering; 3 day(s) of overlap.
+  TRANSIT   The hand-off of power at Spoke B complete: Harbor Equipment Co power at Spoke B ended day 19 with Meridian Site Services power at Spoke B delivering; 3 days of overlap.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -116,7 +116,7 @@ Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 36
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  TRANSIT   Transition planner: Meridian Site Services power at Spoke B ends day 41 and The external contract's power at Spoke B is not expected before day 47, a gap of at least 5 day(s). Power at Spoke B goes uncovered unless something bridges it. Gap owner: CCO seat.
+  TRANSIT   Transition planner: Meridian Site Services power at Spoke B ends day 41 and The external contract's power at Spoke B is not expected before day 47, a gap of at least 5 days. Power at Spoke B goes uncovered unless something bridges it. Gap owner: CCO seat.
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 38
@@ -137,7 +137,7 @@ Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on the external contract's power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on the external contract's power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -227,7 +227,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -269,8 +269,8 @@ TRANSITIONS (planned handoffs between arrangements)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.power days 42-46, lowest 0%, 5 day(s) down: AVOIDABLE
-      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 42. The last arrangement supplying it, Meridian Site Services power at Spoke B, ended on day 41. the external contract's power at Spoke B did not start until day 47. the external contract's power at Spoke B is an external support contract: requested day 2, submitted day 3, awarded day 16 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
-      [avoidable] The hand-off from Meridian Site Services power at Spoke B to the external contract's power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 41 before the external contract's power at Spoke B was delivering. the external contract's power at Spoke B started day 47. The transition planner flagged it on day 36; a bridge or an earlier start would have covered it. Gap owner: CCO seat.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 42. The last arrangement supplying it, Meridian Site Services power at Spoke B, ended on day 41. The external contract's power at Spoke B did not start until day 47. The external contract's power at Spoke B is an external support contract: requested day 2, submitted day 3, awarded day 16 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
+      [avoidable] The hand-off from Meridian Site Services power at Spoke B to the external contract's power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 41 before the external contract's power at Spoke B was delivering. The external contract's power at Spoke B started day 47. The transition planner flagged it on day 36; a bridge or an earlier start would have covered it. Gap owner: CCO seat.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 5)
@@ -278,4 +278,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.911)
 
-State hash 942d2ac271fc55f3480102d625f73cf41228a906479197ffcab8d6c22f6b0e80
+State hash e7fe2113f395600bab436d32928bfbcf69c354830c5b3428e3d857e4c3cbaf72

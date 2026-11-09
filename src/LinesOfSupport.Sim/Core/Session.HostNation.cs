@@ -110,7 +110,7 @@ public sealed partial class Session
         var capId = chk.CapabilityId!;
         var cost = chk.TotalCents > 0 ? $"cost share {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}" : "no cost to the shop";
         var rec = AddRecord(Day, RecordKind.Action, o.Id,
-            $"Host nation support request to {HostNationName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; {cost}; {shopDays} shop day(s).", []);
+            $"Host nation support request to {HostNationName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; {cost}; {Plural(shopDays, "shop day")}.", []);
         // A request with no cost share does not wait for FM to certify funds.
         var lagFm = chk.TotalCents > 0 ? Scenario.Actors.Fm.CertificationLagDays : 0;
         AddWork(WorkKind.HostNationRequest, $"Host nation support request for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual), Day + lagFm,

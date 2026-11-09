@@ -335,7 +335,8 @@ public sealed partial class Session
                 foreach (var (key, f) in DiagnoseDay(siteId, capId, d, (c, day) => GapIndexFor(siteId, c, day)))
                 {
                     if (!seen.Add(key)) continue;
-                    factors.Add(f.DependsOnGap is { } gi ? f with { Tag = gaps[gi].Tag } : f);
+                    var tagged = f.DependsOnGap is { } gi ? f with { Tag = gaps[gi].Tag } : f;
+                    factors.Add(tagged with { Text = SentenceCase(tagged.Text) });
                 }
             var band = bandByKey[$"{siteId}.{capId}"];
             var lowest = Enumerable.Range(start, end - start + 1).Min(d => band[d - 1]);
@@ -377,6 +378,99 @@ public sealed partial class Session
 
         var claims = _claims.Select(c => new ClaimLine(c.ArrangementId, c.FiledDay, c.AmountCents, c.SettledDay,
                                                        _records.First(r => r.Id == c.FiledRecordId).Text)).ToList();
-        return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims);
+        return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims,
+                               BuildDebriefSummary(played, gaps, score));
     }
+
+    // ------------------------------------------------------------------ the debrief's opening (M2R-27)
+
+    /// <summary>
+    /// The debrief's first paragraph in a person's words (R9): how the days went, the gap that mattered most with the
+    /// evidence the gap already carries, what went down with it, and how the rest split by tag. Facts only (R4): every
+    /// clause is a scorecard band, a gap's own text or a count. The lead gap is the most controllable root gap (one with a
+    /// cause of its own, not only a knock-on), then the earliest, then the longest down.
+    /// </summary>
+    private DebriefSummary BuildDebriefSummary(int played, IReadOnlyList<GapView> gaps, ScorecardView score)
+    {
+        var from = BuildPerson(Scenario.Actors.Sco.Person) ?? BuildPerson(Scenario.Actors.Commander.Person);
+        var parts = new List<string>();
+        var span = played == 1 ? "Over one day" : $"Over {DebriefWords.Number(played)} days";
+        if (gaps.Count == 0)
+            return new DebriefSummary(from, $"{span}, no site ran short of anything.", null);
+        parts.Add(score.MissionOutput switch
+        {
+            >= 0.98 => $"{span}, every site had what it needed nearly every day.",
+            >= 0.90 => $"{span}, the sites had what they needed most of the time.",
+            >= 0.75 => $"{span}, the sites went short more often than they should have.",
+            _ => $"{span}, the sites went short much of the time.",
+        });
+
+        static bool Root(GapView g) => g.Factors.Count == 0 || g.Factors.Any(f => f.DependsOnGap is null);
+        var lead = gaps.Where(Root).DefaultIfEmpty(gaps[0])
+                       .OrderByDescending(g => g.Tag).ThenBy(g => g.StartDay).ThenByDescending(g => g.DownDays).ThenBy(g => g.Index)
+                       .First();
+        var when = lead.EndDay > lead.StartDay ? $"days {lead.StartDay} to {lead.EndDay}" : $"day {lead.StartDay}";
+        parts.Add($"The gap that mattered most was {Lower(lead.Label)} at {SiteName(lead.SiteId)}, {when}.");
+        var own = lead.Factors.Where(f => f.DependsOnGap is null).OrderByDescending(f => f.Tag).ThenBy(f => f.FirstDay).Take(2).ToList();
+        if (own.Count == 0) parts.Add("Nothing on record explains it; nobody could have seen it coming.");
+        parts.AddRange(own.Select(f => f.Text.Trim()));
+
+        // Gaps that went down with the lead, directly or through another knock-on.
+        var with = new SortedSet<int>();
+        bool grew;
+        do
+        {
+            grew = false;
+            foreach (var g in gaps)
+                if (g.Index != lead.Index && !with.Contains(g.Index) && g.Factors.Count > 0
+                    && g.Factors.All(f => f.DependsOnGap is { } d && (d == lead.Index || with.Contains(d))))
+                    grew = with.Add(g.Index) || grew;
+        } while (grew);
+        if (with.Count > 0)
+        {
+            var names = with.Select(i => gaps[i]).GroupBy(g => g.SiteId)
+                            .Select(grp => $"{JoinAnd(grp.Select(g => Lower(g.Label)).Distinct().ToList())} at {SiteName(grp.Key)}").ToList();
+            parts.Add($"{Upper(JoinAnd(names))} went down with it.");
+        }
+
+        var rest = gaps.Where(g => g.Index != lead.Index && !with.Contains(g.Index)).ToList();
+        if (rest.Count > 0)
+        {
+            var tags = rest.Select(g => g.Tag).Distinct().ToList();
+            if (tags.Count == 1)
+            {
+                var one = rest.Count == 1;
+                var them = one ? "it" : "all of them";
+                var lead2 = one ? "There was one more gap" : $"There were {DebriefWords.Number(rest.Count)} more gaps";
+                parts.Add(tags[0] switch
+                {
+                    GapTag.Avoidable => $"{lead2}, and you could have avoided {them}.",
+                    GapTag.Discoverable => $"{lead2}, and you could have found out about {them} in time.",
+                    _ => $"{lead2}, and nobody could have seen {(one ? "it" : "any of them")} coming.",
+                });
+            }
+            else
+            {
+                var kinds = new List<string>();
+                void Add(GapTag t, string words)
+                {
+                    var n = rest.Count(g => g.Tag == t);
+                    if (n > 0) kinds.Add($"{DebriefWords.Number(n)} {words}");
+                }
+                Add(GapTag.Avoidable, "you could have avoided");
+                Add(GapTag.Discoverable, "you could have found out about in time");
+                Add(GapTag.Unforeseeable, "nobody could have seen coming");
+                parts.Add($"There were {DebriefWords.Number(rest.Count)} more gaps: {JoinAnd(kinds)}.");
+            }
+        }
+        return new DebriefSummary(from, string.Join(" ", parts), lead.Index);
+    }
+
+    private static string JoinAnd(IReadOnlyList<string> items) => items.Count switch
+    {
+        0 => "",
+        1 => items[0],
+        2 => $"{items[0]} and {items[1]}",
+        _ => string.Join(", ", items.Take(items.Count - 1)) + ", and " + items[^1],
+    };
 }

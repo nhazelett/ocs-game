@@ -95,7 +95,7 @@ public sealed partial class Session
             if (sh.DelayRecords.Count == 0) continue;
             var a = _arrangements.First(x => x.Id == id);
             if (a.SiteId != siteId || !Supplies(a, capId) || d < sh.PlannedStart || d >= a.StartDay) continue;
-            var why = string.Join(" and ", new[] { sh.Bumps > 0 ? $"bumped from the airlift {sh.Bumps} time(s)" : null, sh.CustomsHeld ? "held in customs" : null }.Where(x => x is not null));
+            var why = string.Join(" and ", new[] { sh.Bumps > 0 ? $"bumped from the airlift {Plural(sh.Bumps, "time")}" : null, sh.CustomsHeld ? "held in customs" : null }.Where(x => x is not null));
             yield return ($"lift|{id}", new GapFactor(GapFactorKind.LiftDelay, GapTag.Unforeseeable, d,
                 $"Off-island delivery {id} was due day {sh.PlannedStart} and arrived day {a.StartDay}: {why}. Strategic lift and customs are outside the shop's control; a bridge covers the wait.", [.. sh.DelayRecords]));
         }
