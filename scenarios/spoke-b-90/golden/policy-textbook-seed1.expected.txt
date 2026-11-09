@@ -8,6 +8,7 @@ Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
   START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
 Day 1
+  ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
   ACTION    Ordered a site survey of Second Island.
   ACTION    Requirement req0007: Generator fuel supply switched on.
   ACTION    Requirement req0007: Operators switched on.
@@ -16,76 +17,231 @@ Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
   ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke B, 1170 gal/day for 13 days (Fuel delivery); quoted $68,445.
   DONE      Survey team dispatched to Second Island; findings due day 3.
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 2
   DONE      BPA call t-req0007-bridge awarded to Harbor Equipment Co; performance starts day 7, ends day 19. Obligated $15,369.
+  DONE      CE small buys: none worked today (no hours left); 8 waiting.
 Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   DONE      Written purchase order t-req0007-fuel awarded to Port Fuel Haulers; performance starts day 6, ends day 18. Obligated $68,445.
+  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 12 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
+  DONE      CE small buys: none worked today (no hours left); 12 waiting.
+Day 4
+  DONE      CE small buys: none worked today (no hours left); 16 waiting.
 Day 5
   DONE      Undefinitized contract action t-req0007-enduring awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: none worked today (no hours left); 21 waiting.
 Day 6
+  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
+  DONE      CE small buys: 24 worked today (12 h of shop time); 1 still waiting.
   START     t-req0007-fuel began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
 Day 7
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     t-req0007-bridge began: Power at Spoke B from Harbor Equipment Co, 514 kW/day.
+Day 8
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 9
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
+Day 10
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 11
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
+Day 12
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
+Day 13
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside t-req0007-bridge's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 16
   ACTION    Payment for oos1 denied: $2,400 of work outside t-req0007-bridge's scope.
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
   DONE      Denial of payment for oos1 sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 17
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     t-req0007-enduring began: Power at Spoke B from Meridian Site Services, 514 kW/day.
+Day 18
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 19
   ACTION    Termination of t-req0007-bridge started.
   ACTION    Termination of t-req0007-fuel started.
   END       t-req0007-bridge terminated; performance ends day 19.
   END       t-req0007-fuel terminated; performance ends day 18.
+  DONE      CE small buys: none worked today (no hours left); 2 waiting, 4 went on cards.
   END       t-req0007-fuel ended.
 Day 20
+  DONE      CE small buys: 4 worked today (2 h of shop time, 4 on cards).
   END       t-req0007-bridge ended.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal on t-req0007-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 22
   ACTION    Definitization of t-req0007-enduring started; to be funded from om1.
+  DONE      CE small buys: none worked today (no hours left); 2 waiting, 4 went on cards.
+Day 23
+  DONE      CE small buys: none worked today (no hours left); 4 waiting, 4 went on cards.
 Day 24
   DEFINITZD t-req0007-enduring definitized at $693,900; obligation caps lifted; fully funded from om1.
+  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 6 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
+  DONE      CE small buys: none worked today (no hours left); 6 waiting, 4 went on cards.
+Day 25
+  DONE      CE small buys: 8 worked today (4 h of shop time, 4 on cards).
+Day 26
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 27
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 28
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 29
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 30
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 31
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 32
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 33
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 34
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 35
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 36
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 37
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 38
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 39
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 40
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 41
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 42
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 43
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on t-req0007-enduring (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 45
   ACTION    SGT Okafor designated COR on t-req0007-enduring, replacing SSG Reyes's relief (fair: reports 2 day(s) late, about 80% of problems).
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 46
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 47
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 48
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 49
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 50
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 51
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 52
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 53
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 54
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 55
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 56
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 57
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 58
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 59
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 60
+  DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 61
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   FAIL      t-req0007-enduring had equipment down.
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
 Day 62
   ACTION    Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 14 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $107,940.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   OK        Power at Spoke B restored to 100%.
 Day 63
   DONE      Written purchase order t-req0007-enduring-next awarded to Meridian Site Services; performance starts day 77, ends day 90. Obligated $107,940.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   COR       COR report (SGT Okafor): t-req0007-enduring had equipment down on day 61, reported 2 day(s) later.
+Day 64
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 65
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $14,346 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 66
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 67
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 69
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 70
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 71
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 72
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 73
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 74
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 75
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   FUNDING   Funding line om1 reached its fiscal-year end with day 75: $14,346 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+Day 76
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 77
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   END       t-req0007-enduring ended.
   START     t-req0007-enduring-next began: Power at Spoke B from Meridian Site Services, 514 kW/day.
+Day 78
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 79
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 80
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 81
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   FAIL      t-req0007-enduring-next had equipment down.
   SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
 Day 82
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   OK        Power at Spoke B restored to 100%.
 Day 83
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   COR       COR report (SGT Okafor): t-req0007-enduring-next had equipment down on day 81, reported 2 day(s) later.
 Day 84
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+Day 85
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 86
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 87
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 88
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 89
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+Day 90
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -100,7 +256,7 @@ SCORECARD
   Mission output 93% (sortie generation 99%, throughput 99%, endurance 100%, resilience 53%)
   Obligated $885,654; incurred $885,654; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 118; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
+  Surveys 1; shop hours worked 251; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
   spokeBSite.power: 0 day(s) down, 2 degraded, lowest 54%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
@@ -126,4 +282,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.926)
 
-State hash 7084e5d8ec4243eea233e87435aa1c7abd92d15065c67f217761460e09aa6615
+State hash 4e49aa391183920d91cb65f79e1713075d1b22172240cdd4927dae897eb705df
