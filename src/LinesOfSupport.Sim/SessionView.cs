@@ -152,6 +152,11 @@ public sealed class SessionView
     /// unforeseeable with their evidence, scorecard and commitments. Covers the days played so far.</summary>
     public DebriefView Debrief() => _s.BuildDebrief();
 
+    /// <summary>What actually moved on the day just played, for the map (M2R-09, OBJ-0004): link states, delivery runs that
+    /// happened, cargo held by a closed or unscheduled route, off-island shipments in transit, and the day's site changes
+    /// with Known flags. Day 0 with empty lists before any day is played.</summary>
+    public MapDayView MapDay() => _s.BuildMapDay();
+
     /// <summary>What establishing a BPA would take: hard stops, shop hours, and in EarliestStartMin/Max the first day calls
     /// could be placed (ignoring the queue ahead). Changes nothing.</summary>
     public ActionPreview PreviewEstablish(EstablishBpaAction bpa) => _s.BuildEstablishPreview(bpa);
