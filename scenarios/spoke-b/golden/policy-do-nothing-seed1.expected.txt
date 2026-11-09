@@ -4,7 +4,7 @@ Scenario spoke-b, rules 2025-10, seed 1, 30 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
@@ -124,7 +124,7 @@ Spoke C Waste removal         ..........................
 
 SCORECARD
   Mission output 61% (sortie generation 71%, throughput 71%, endurance 51%, resilience 38%)
-  Obligated $0; incurred $77,843; incurred but not obligated $77,843
+  Obligated $0; incurred $88,373; incurred but not obligated $88,373
   Unauthorized commitments 3; UCAs past due 0; HHQ inquiries 1
   Surveys 0; shop hours worked 119; payment errors 0; execution-confusion days 1; vendor failures 1; declined BPA calls 0
   spokeBSite.power: 22 day(s) down, 2 degraded, lowest 0%
@@ -160,6 +160,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 17-30, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 15.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] uc2 failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
   #2 spokeBSite.power days 7-30, lowest 0%, 22 day(s) down: AVOIDABLE
@@ -182,4 +183,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash c5cb1068b758dc5f98537eceb95699e6af8870ad0bcf53f80ad1f8dfbb8cbd72
+State hash 5203764d2ac861f515b3adafa9a412710e57eeef1e297a9f7c4fc49971955e2c

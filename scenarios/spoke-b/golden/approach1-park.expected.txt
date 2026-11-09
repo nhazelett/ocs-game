@@ -5,7 +5,7 @@ Scenario spoke-b, rules 2025-10, seed 1, 30 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
@@ -45,7 +45,6 @@ Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
@@ -62,6 +61,7 @@ Day 12
   START     waterPlant began: Water at Spoke C from Third Island Water Works, 2640 gal/day.
   START     food-c began: Food service at Spoke C from Third Island Water Works, 480 meals/day.
   START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -75,7 +75,6 @@ Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      waterBridge missed today's delivery (no maintenance line, no plant operators line).
   SHORT     Fuel at Spoke B degraded to 88%: fuel on hand ran out.
   SHORT     Power at Spoke B degraded to 88%: fuel at 88%.
   SHORT     Lodging at Spoke B degraded to 88%: power at 88%.
@@ -101,6 +100,7 @@ Day 20
 Day 21
   COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
+  FAIL      hubFuelPoint missed today's delivery.
 Day 22
   UCA       Third Island Water Works submitted a qualifying proposal on waterPlant. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      Response to higher HQ on uc1 sent.
@@ -117,17 +117,16 @@ Day 26
   COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on oos1 sent.
   DONE      CE small buys: 15 worked today (7.5 h of shop time).
-  FAIL      gens had equipment down (no maintenance and repair line, no operators line).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
   START     uc2 began: Fuel at Spoke B from Second Island Fuel, 700 gal/day.
-  FAIL      food-c missed today's delivery.
+  FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
 Day 28
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 29
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
 Day 30
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 
@@ -139,25 +138,24 @@ Hub Fuel                  ..............................
 Hub Lodging               ..............................
 Hub Food service          ..............................
 Hub Waste removal         ..............................
-Spoke B Power                   ...XXX..7XXXXXXXXXXX2222
+Spoke B Power                   ...XXX..7XXXXXXXXXXX1222
 Spoke B Fuel                    ...XXX..7XXXXXXXXXXX5555
-Spoke B Lodging                 ...XXX..7XXXXXXXXXXX2222
+Spoke B Lodging                 ...XXX..7XXXXXXXXXXX1222
 Spoke B Waste removal           ........................
 Spoke C Water                 ..........................
 Spoke C Lodging               ..........................
-Spoke C Food service          ........................55
+Spoke C Food service          ..........................
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 74% (sortie generation 80%, throughput 80%, endurance 79%, resilience 44%)
-  Obligated $264,180; incurred $238,042; incurred but not obligated $51,190
+  Mission output 74% (sortie generation 79%, throughput 79%, endurance 79%, resilience 44%)
+  Obligated $264,180; incurred $248,572; incurred but not obligated $61,720
   Unauthorized commitments 2; UCAs past due 0; HHQ inquiries 2
   Surveys 0; shop hours worked 213; payment errors 0; execution-confusion days 0; vendor failures 5; declined BPA calls 0
   spokeBSite.power: 18 day(s) down, 1 degraded, lowest 0%
   spokeBSite.fuel: 14 day(s) down, 5 degraded, lowest 0%
   spokeBSite.lodging: 18 day(s) down, 1 degraded, lowest 0%
-  spokeCSite.food: 0 day(s) down, 2 degraded, lowest 71%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   uc1 (day 11): handshake with Port Fuel Haulers for spokeBSite.fuel. Decision: parked on day 12; vendor walked off; drew an HHQ inquiry.
@@ -185,35 +183,34 @@ GAPS AND WHY (each traced back through its causes)
       <- day 16: Power at Spoke B down to 0%: fuel at 0%.
           <- day 16: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 27: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
-  Day 29: Food service at Spoke C degraded to 71%: food service on hand ran out.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] gens (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 15-30, lowest 0%, 11 day(s) down: AVOIDABLE
       [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] Handshake uc1 was left parked and the vendor walked off on day 18.
       [avoidable] gens (power) was bought without its generator fuel supply line, and nothing else supplied fuel. Requirement req0007's dependency checklist showed fuel uncovered from day 1.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
   #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
   #3 spokeBSite.power days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #1)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] gens failed (first on day 26) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] gens failed (first on day 27) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
   #4 spokeBSite.lodging days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #2)
   #5 spokeBSite.lodging days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #3)
-  #6 spokeCSite.food days 29-30, lowest 71%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 14)
   [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
-  [not met] Mission output at least 90% (mission.output = 0.742)
+  [not met] Mission output at least 90% (mission.output = 0.74)
 
-State hash 9c2f012b3ab69c8f18d2b6317c15dd8ff8b52d318f2c8129f25bf43e99ae7f28
+State hash 7302457d7e43f0ad2c91300494a89c5e0b5c78f2f078baf81abe1d13cf80a7a9

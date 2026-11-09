@@ -36,6 +36,59 @@ public sealed partial class Session
     private bool VisitInWork(string kind, string? target = null)
         => _work.Any(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.Payload is VisitPayload p && p.Kind == kind && (target is null || p.Target == target));
 
+    /// <summary>Whether the usual owner has the capability at the site in hand (R10): an ACSA line covers it on some day of the
+    /// window (inherited, ordered by the OCS seat, or added by the J4), or a J4 request for it is still in work.</summary>
+    internal bool OwnerEngaged(string siteId, string capId, int from, int to)
+        => _arrangements.Any(a => a.Instrument == AcsaInstrument && a.SiteId == siteId && a.CapabilityId == capId
+                                  && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active && a.StartDay <= to && a.EndDay >= from)
+           || _work.Any(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "j4", Extra: EngageJ4Action j } && j.Site == siteId && j.Capability == capId);
+
+    /// <summary>
+    /// Debrief factor (M2R-06, R10): the capability has a usual owner other than the office (fuel: the J4 through the ACSA
+    /// partner) and the partner here can spare it, yet on a gap day no ACSA line covered it. Avoidable: the owner was there to
+    /// be engaged from day 1 (the dependency checklist names them), and a local vendor was the stopgap meanwhile.
+    /// </summary>
+    private (string Key, GapFactor F)? OwnerFactor(string siteId, string capId, int d)
+    {
+        var cap = Cap(capId);
+        if (cap.UsualOwner is null || Partner is not { } partner) return null;
+        if (!partner.Stock.TryGetValue(capId, out var stock) || stock <= 0) return null;
+        // Only when nothing at all supplied it that day: a stopgap that was bought and then failed (a barge closure, a vendor
+        // failure) has its own factor, and the owner's line would have crossed the same water.
+        if (_arrangements.Any(a => a.SiteId == siteId && Supplies(a, capId) && ActiveOn(a, d) && a.Status is not ArrangementStatus.Declined))
+            return null;
+        var what = cap.Label.ToLowerInvariant();
+        var where = SiteName(siteId);
+        var req = J4Request(siteId, capId);
+        string text; List<string> ids = [];
+        if (req is null)
+            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {partner.Name} had {stock:0} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
+        else
+        {
+            var (asked, start, id) = req.Value;
+            text = start is { } sd
+                ? $"The J4 was asked for {what} at {where} on day {asked} and the ACSA line began on day {sd}; until then nobody owned it. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}."
+                : $"The J4 was asked for {what} at {where} on day {asked} and could not add it; nothing stood in for the ACSA line. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}.";
+            if (_records.FirstOrDefault(r => r.Subject == id) is { } rec) ids.Add(rec.Id);
+        }
+        return ($"owner|{siteId}|{capId}", new GapFactor(GapFactorKind.OwnerNotEngaged, GapTag.Avoidable, d, text, ids));
+    }
+
+    private static string Capitalize(string s) => s.Length == 0 ? s : char.ToUpperInvariant(s[0]) + s[1..];
+
+    /// <summary>The first J4 request for the capability at the site, if any: the day it was asked and the day support began (or
+    /// was refused).</summary>
+    internal (int AskedDay, int? StartDay, string RequestId)? J4Request(string siteId, string capId)
+    {
+        var items = _work.Where(w => w.Payload is VisitPayload { Kind: "j4", Extra: EngageJ4Action j } && j.Site == siteId && j.Capability == capId)
+                         .OrderBy(w => w.CreatedDay).ToList();
+        if (items.Count == 0) return null;
+        var w = items[0];
+        var j = (EngageJ4Action)((VisitPayload)w.Payload!).Extra!;
+        var arr = _arrangements.FirstOrDefault(a => a.Id == j.Id && a.Instrument == AcsaInstrument);
+        return (w.CreatedDay, arr?.StartDay, j.Id);
+    }
+
     /// <summary>Who said it, as the player meets them ("Capt Priya Nair, Comptroller"), or the fallback.</summary>
     private string Who(string? personId, string fallback) => BuildPerson(personId)?.WithUnit ?? fallback;
     /// <summary>The same, as the subject of a sentence: an appositive unit gets its closing comma ("Lt Col Daniel Park, Hub

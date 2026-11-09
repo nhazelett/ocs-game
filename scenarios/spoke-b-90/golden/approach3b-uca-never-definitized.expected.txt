@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
 Day 1
   ACTION    Ordered a site survey of Second Island.
   ACTION    Requirement req0007: Generator fuel supply switched on.
@@ -99,6 +99,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -122,6 +123,7 @@ Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
@@ -167,8 +169,6 @@ Day 62
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 63
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      turnkey had equipment down.
-  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
   STOPWORK  Meridian Site Services stopped work on turnkey: costs incurred are not obligated.
 Day 64
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -180,12 +180,10 @@ Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): turnkey had equipment down on day 63, reported 4 day(s) later.
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  SHORT     Fuel at Spoke B degraded to 62%: turnkey stopped work (unpaid UCA); fuel on hand ran out.
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: turnkey stopped work (unpaid UCA); fuel on hand ran out.
@@ -227,12 +225,14 @@ Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 87
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 88
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 89
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 90
   DONE      CE small buys: 6 worked today (3 h of shop time).
 
@@ -241,39 +241,33 @@ CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 Hub Power                 ..........................................................................................
 Hub Fuel                  ..........................................................................................
-Spoke B Power                   ........................................................5XXXXXXXXXXXXXXXXXXXXXXXXXXX
-Spoke B Fuel                    .............................................................5XXXXXXXXXXXXXXXXXXXXXX
+Spoke B Power                   .........................................................XXXXXXXXXXXXXXXXXXXXXXXXXXX
+Spoke B Fuel                    ..............................................................XXXXXXXXXXXXXXXXXXXXXX
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 83% (sortie generation 84%, throughput 84%, endurance 100%, resilience 53%)
+  Mission output 84% (sortie generation 84%, throughput 84%, endurance 100%, resilience 53%)
   Obligated $534,227; incurred $553,614; incurred but not obligated $19,388
   Unauthorized commitments 0; UCAs past due 1; HHQ inquiries 2
-  Surveys 1; shop hours worked 343; payment errors 0; execution-confusion days 0; vendor failures 1; declined BPA calls 0
-  spokeBSite.power: 27 day(s) down, 1 degraded, lowest 0%
-  spokeBSite.fuel: 22 day(s) down, 1 degraded, lowest 0%
+  Surveys 1; shop hours worked 343; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
+  spokeBSite.power: 27 day(s) down, 0 degraded, lowest 0%
+  spokeBSite.fuel: 22 day(s) down, 0 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on gens, $2,400. Decision: open; drew an HHQ inquiry.
 
 GAPS AND WHY (each traced back through its causes)
-  Day 63: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 63: turnkey had equipment down.
-          <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
   Day 64: Power at Spoke B down to 0%: turnkey stopped work (unpaid UCA); supply 0 kW against demand 468.
-      <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
-  Day 68: Fuel at Spoke B degraded to 62%: turnkey stopped work (unpaid UCA); fuel on hand ran out.
       <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
   Day 69: Fuel at Spoke B down to 0%: turnkey stopped work (unpaid UCA); fuel on hand ran out.
       <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
-  #0 spokeBSite.fuel days 68-90, lowest 0%, 22 day(s) down: AVOIDABLE
+  #0 spokeBSite.fuel days 69-90, lowest 0%, 22 day(s) down: AVOIDABLE
       [avoidable] turnkey stopped work on day 63: incurred costs went past the obligation cap; it had been past due for definitization since day 36.
       [avoidable] No funding line with money could pay for fuel on day 77 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
-      [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
-  #1 spokeBSite.power days 63-90, lowest 0%, 27 day(s) down: AVOIDABLE
-      [unforeseeable] turnkey failed on day 63 with full operator and maintenance coverage. The COR reported it on day 67.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+  #1 spokeBSite.power days 64-90, lowest 0%, 27 day(s) down: AVOIDABLE
       [avoidable] turnkey stopped work on day 63: incurred costs went past the obligation cap; it had been past due for definitization since day 36.
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, turnkey, ended on day 76.
@@ -283,6 +277,6 @@ PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 27)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 22)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [not met] Mission output at least 90% (mission.output = 0.834)
+  [not met] Mission output at least 90% (mission.output = 0.835)
 
-State hash e8f2d3395e6c5bd3ecbaf8039b185f5f32bc41d18e43a13c8d6ab64d3659d7aa
+State hash b3bbabecd890841738e04d3cb5ec46025b481d6620cba22f58d38ba122ff8abe

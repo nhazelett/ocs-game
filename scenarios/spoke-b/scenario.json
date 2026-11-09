@@ -437,7 +437,7 @@
           ],
           "capacityPerDay": 4000,
           "leadTimeDays": 1,
-          "unitPriceCents": 450
+          "unitPriceCents": 600
         }
       ],
       "reliability": 0.95,
@@ -511,6 +511,29 @@
       "acceptsCash": true,
       "vetted": false,
       "infoTier": "assumed"
+    },
+    {
+      "id": "partnerForce",
+      "name": "Partner force (ACSA)",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 4000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed",
+      "vehicleOnly": true
     }
   ],
   "vehicles": [
@@ -546,8 +569,8 @@
     },
     {
       "id": "hubFuelPoint",
-      "instrument": "hostNation",
-      "vendor": "hubUtilities",
+      "instrument": "acsa",
+      "vendor": "partnerForce",
       "site": "hubSite",
       "capability": "fuel",
       "lines": [
@@ -555,7 +578,10 @@
         "storage"
       ],
       "startDay": 1,
-      "endDay": 400
+      "endDay": 400,
+      "quantity": 2000,
+      "dailyCostCents": 0,
+      "obligatedCents": 0
     },
     {
       "id": "hubLodging",
@@ -807,12 +833,12 @@
   "turnover": {
     "from": "whitfield",
     "shop": "Here's the shop. It isn't much.",
-    "contracts": "Everything we have runs through the host nation.",
+    "contracts": "Everything we have runs through the host nation, except fuel.",
     "vendorList": "Here's who I've used. Half of these I've never called.",
     "money": "Last, the money.",
     "remarks": {
       "arrangements": {
-        "hubFuelPoint": "The host nation fuel point at the hub has never let us down."
+        "hubFuelPoint": "The partner force's fuel point is the J4's deal under the ACSA, and it has never let us down. If a spoke needs fuel, that's the J4's to arrange, not ours."
       },
       "vendors": {
         "vendorE": "Port Fuel Haulers came by last week asking for work.",
@@ -869,6 +895,18 @@
         "spokeCSite"
       ],
       "person": "park"
+    },
+    "acsaPartner": {
+      "present": true,
+      "name": "Partner force",
+      "island": "hub",
+      "stock": {
+        "fuel": 4000
+      },
+      "unitPriceCents": {
+        "fuel": 500
+      },
+      "reliability": 0.97
     }
   },
   "events": [
