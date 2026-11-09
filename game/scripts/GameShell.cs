@@ -78,7 +78,6 @@ public partial class GameShell : Control
         {
             var data = ScenarioBoardData.Load(scenarios[(int)index].ScenarioPath);
             Map.ShowScenario(data);
-            GetNode<Label>("%BoardCaption").Text = data.Title;
             session.LoadScenario(scenarios[(int)index].ScenarioPath);
             ShowPrepChoices();
             SetReplays(FindReplays(scenarios[(int)index].ScenarioPath));
@@ -87,7 +86,6 @@ public partial class GameShell : Control
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or
             KeyNotFoundException or InvalidOperationException or FormatException)
         {
-            if (Map.Data is null) GetNode<Label>("%BoardCaption").Text = "Scenario could not be displayed.";
             RefreshDisplay($"Cannot load scenario: {error.Message}");
         }
     }
@@ -146,7 +144,7 @@ public partial class GameShell : Control
         shop.Value = Math.Min(strip?.ShopHoursQueued ?? 0, capacity);
         shop.TooltipText = strip is null ? "Load a scenario." : $"Queued work spans {strip.QueueDays} days at current shop capacity.";
         var cash = GetNode<ProgressBar>("%CashGauge");
-        GetNode<Label>("%CashLabel").Text = strip is null ? "Cash: —" : $"Cash: {DeskUi.Money(strip.CashCents)} of {DeskUi.Money(strip.CashFullCents)}";
+        GetNode<Label>("%CashLabel").Text = strip is null ? "Cash: —" : $"Cash: {DeskUi.WholeDollars(strip.CashCents)} of {DeskUi.WholeDollars(strip.CashFullCents)}";
         cash.MaxValue = Math.Max(1, strip?.CashFullCents ?? 0);
         cash.Value = strip?.CashCents ?? 0;
         cash.TooltipText = "Cash on hand relative to the full balance.";

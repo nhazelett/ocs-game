@@ -2,6 +2,7 @@ using Godot;
 using LinesOfSupport.Sim;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Data;
+using LinesOfSupport.Sim.Views;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
 
 namespace LinesOfSupport.Game.Tests;
@@ -39,8 +40,12 @@ public partial class ChromeSmokeTest : Node
             var cash = shell.GetNode<ProgressBar>("%CashGauge");
             Require(cash.Value == strip.CashCents && cash.MaxValue == strip.CashFullCents && cash.Value == cash.MaxValue,
                 "The authored full balance fills the cash gauge using exact Sim values.");
-            Require(shell.GetNode<Label>("%CashLabel").Text.Contains($"{DeskUi.Money(strip.CashCents)} of {DeskUi.Money(strip.CashFullCents)}"), "Visible wording explains the cash comparison.");
+            var cashLabel = shell.GetNode<Label>("%CashLabel");
+            Require(cashLabel.Text == "Cash: $50,000 of $50,000", "The day-one cash comparison uses readable whole dollars.");
+            var caption = shell.GetNode<Label>("%BoardCaption");
+            Require(shell.SelectedCapability is null && !caption.Visible && caption.Text == "", "A fresh deployment has no invented selected capability.");
             await Capture("day1");
+            Require(cashLabel.GetLineCount() == 1, "The whole-dollar cash line fits one line at the default viewport.");
             Require(shell.GetNode<Button>("%NextDay").GetGlobalRect().End.X <= GetViewport().GetVisibleRect().End.X,
                 "Longer top-strip wording leaves Next day on screen.");
             Require(shell.Session.StateHash == hash, "Rendering the new chrome changes no simulation state.");
@@ -56,8 +61,30 @@ public partial class ChromeSmokeTest : Node
                 && shell.Session.StateHash == expected.StateHash(), "Later mornings name the completed day without changing advance behavior.");
             while (!shell.Session.View!.Finished) Step(shell);
             Require(shell.GetNode<Label>("%DayCounter").Text == "Day 30 complete", "Finished deployment keeps the final-day wording.");
+            DeveloperWorkspace(shell); Scenario(shell, "spoke-b"); Replay(shell); Step(shell, 10);
+            shell.DeveloperToggle.ButtonPressed = false;
+            Require(shell.Session.View!.Day == 11 && shell.SelectedCapability is null && !caption.Visible,
+                "Replaying a new deployment clears the old map selection.");
+            var selectionHash = shell.Session.StateHash;
+            shell.NavigateBoardItem(new BoardItem("", 11, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.SiteCapability, "spokeBSite.power", "", []));
+            Require(caption.Visible && caption.Text == "Selected: Power at Spoke B", "The map caption names the actual selected capability.");
+            await Capture("day11");
+            Require(cashLabel.GetLineCount() == 1 && cash.Value == shell.Session.View.TopStrip().CashCents,
+                "Day eleven keeps cash on one line while the gauge retains exact cents.");
+            Require(shell.Session.StateHash == selectionHash, "Map selection and rendering change no Sim state.");
+            var targetPicker = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions").FindChildren("*", "OptionButton", true, false).OfType<OptionButton>()
+                .Single(p => Enumerable.Range(0, p.ItemCount).Any(i => p.GetItemMetadata(i).AsString() == "hubSite.fuel"));
+            Pick(targetPicker, "hubSite.fuel");
+            var partner = Enumerable.Range(0, shell.VendorInput.ItemCount).Single(i => shell.VendorInput.GetItemMetadata(i).AsString() == "partnerForce");
+            Require(shell.CurrentActionEditor!.Vendors.Single(v => v.Id == "partnerForce").Name == "the partner force"
+                && shell.VendorInput.GetItemText(partner).StartsWith("The partner force")
+                && shell.EstablishVendorButtons["partnerForce"].Text.StartsWith("The partner force"),
+                "Market and Directory capitalise the partner list label while retaining the authored noun in Sim.");
+            Require(shell.Session.StateHash == selectionHash, "Vendor label formatting changes no Sim state.");
+            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.SelectedCapability is null && !caption.Visible && caption.Text == "", "Continue starts with no stale map selection.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            GD.Print("CHROME_SMOKE_PASS: normal preparation/morning, actual queue/cash, layout and unchanged Sim actions."); GetTree().Quit();
+            GD.Print("CHROME_SMOKE_PASS: normal preparation/morning, whole-dollar cash on one line, actual map selection and reset, capitalised partner labels and unchanged Sim actions."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"CHROME_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
         finally { if (Directory.Exists(temporary)) Directory.Delete(temporary, true); }
