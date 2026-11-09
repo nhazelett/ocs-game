@@ -83,6 +83,8 @@ public partial class PlainNamesSmokeTest : Node
 
     private void InspectForms(GameShell shell, HashSet<string> forbidden)
     {
+        var contacts = Enumerable.Range(0, shell.PersonContactInput.ItemCount).Select(i => shell.PersonContactInput.GetItemMetadata(i).AsString()).ToArray();
+        foreach (var contact in contacts) { Pick(shell.PersonContactInput, contact); InspectPanels(shell, forbidden); }
         foreach (var vendor in shell.EstablishVendorButtons.Keys.ToArray())
         {
             shell.EstablishVendorButtons[vendor].EmitSignal(Button.SignalName.Pressed);

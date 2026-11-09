@@ -32,6 +32,7 @@ public partial class GameShell
     private void ResetDeskSelection()
     {
         ResetOpening();
+        ResetVisits();
         BoardDetailsToggle.ButtonPressed = false;
         SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
         boardFocus.Text = "";
@@ -109,6 +110,7 @@ public partial class GameShell
             case BoardLinkKind.Work:
                 tabs.CurrentTab = 5; RenderLedgerContext(session.View);
                 linkedLedger.AddChild(DeskUi.Label(item.Text)); break;
+            case BoardLinkKind.Person: FocusPerson(item); break;
             case BoardLinkKind.Island:
             case BoardLinkKind.Event:
                 tabs.CurrentTab = 0; boardFocus.Text = item.Text; break;
@@ -169,6 +171,7 @@ public partial class GameShell
         {
             count++;
             var board = session.View!.MorningBoard();
+            if (HasPeopleNews(session.View!, board)) { reason = "someone has news for you"; break; }
             if (board.Lead is not null) { reason = "the next priority item is ready"; break; }
         }
         if (session.View?.Finished == true) reason = "scenario complete";
