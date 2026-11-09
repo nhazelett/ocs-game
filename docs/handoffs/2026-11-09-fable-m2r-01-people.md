@@ -8,8 +8,8 @@ Expected look of this build and why: no change on screen yet. The game still sho
 ## Changed
 - Schema: top-level `people[]`; cards take `person` and `message` (`submittedBy` only when there is no person); `actors.sco/fm/commander.person`; events take `from`.
 - Sim: `PersonData`, bundle checks (unknown references, wrong actor role, vendorRep without vendor, duplicate ids, a card with neither person nor submitter); `PersonView`; `BoardItem.Person`; `RequirementEditorView.Title/Person/Message`; `SessionView.People/Person/CardPerson/CardTitle/CommitmentPerson/RecordPerson/ScoContact/FinanceContact/Commander/OutgoingCco`. ADR-0006 addendum.
-- Casts: spoke-b (12 people) and spoke-b-90 (9). Names are invented. Unit names follow the design doc (3 CES, LRS fuels flight) pending Nick's open question 5 in docs/design/opening-and-guidance.md 11.
-- Backlog: M2R-01 implemented; new Fable row M2R-06 (plain names in Sim text) and Codex row M2R-18 (validate.py mirror).
+- Casts: spoke-b (12 people) and spoke-b-90 (9). Names are invented. Unit names follow the design doc (3 CES, LRS fuels flight) which Nick kept for now (design doc 12, answer 5; PR 95).
+- Backlog: M2R-01 implemented; new Fable row M2R-07 (plain names in Sim text) and Codex row M2R-18 (validate.py mirror).
 
 ## Why
 docs/design/opening-and-guidance.md R2 and R6: work arrives from people; no identifiers on screen.
@@ -18,9 +18,11 @@ docs/design/opening-and-guidance.md R2 and R6: work arrives from people; no iden
 `dotnet test src/LinesOfSupport.sln` 361 Sim and 120 Harness pass (18 new PeopleTests); every golden byte-identical (people are not in the state hash); `validate.py`, `provenance.py`, `conflicts.py`, tools pytest pass; harness `validate` passes for spoke-b, spoke-b-90, sustainment.
 
 ## Unresolved
-- Event and record text still carries speaker prefixes and ids ("Spoke B first sergeant: ...", "Ratification of uc1 ... from om1"). Left alone so goldens stay identical; M2R-06 does the text pass.
+- Event and record text still carries speaker prefixes and ids ("Spoke B first sergeant: ...", "Ratification of uc1 ... from om1"). Left alone so goldens stay identical; M2R-07 does the text pass.
 - Sustainment has no cast yet; it still uses `submittedBy`, which stays valid.
 - FOR-NICK has two rows numbered 4 (Codex's M3-12 upload question and the playtest verdict). Left as is; the playtest row is the one the backlog cites.
 
 ## Next
 M2R-02 (turnover and briefing data), stacked on this branch.
+
+Note added after PR 95 (Nick's answers) appeared mid-run: PR 95 adds its own M2R-06 (Spoke B fuel through the J4), so the plain-names row here is M2R-07. R9 (no bullets) is met by the cast's lines, which are prose. The J4/ACSA manager will need a person; the role list has no `j4` yet. Add it with M2R-04's `engageJ4` (schema enum and the bundle role list).
