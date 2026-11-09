@@ -81,20 +81,20 @@ Day 13
 Day 14
   ACTION    Termination of Coastal Provisions water at Spoke C started.
   ACTION    Termination of Coastal Provisions food service at Spoke C started.
-  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
-  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
+  EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
   END       Coastal Provisions water at Spoke C terminated; performance ends day 14.
   END       Coastal Provisions food service at Spoke C terminated; performance ends day 14.
   DONE      CE small buys: none worked today (no hours left); 2 waiting, 5 went on cards.
 Day 15
-  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 4 worked today (2 h of shop time, 4 on cards).
   END       Coastal Provisions water at Spoke C ended.
   END       Coastal Provisions food service at Spoke C ended.
 Day 16
   ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
-  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 17
@@ -112,7 +112,7 @@ Day 19
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
 Day 20
   ACTION    Coordinated with the Hub unit for 1170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
-  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   END       Harbor Equipment Co power at Spoke B ended.
@@ -141,7 +141,7 @@ Day 25
   OBLIGATE  Third Island Water Works food service at Spoke C has incurred $116,160 against $114,998 obligated: the UCA obligation cap of 50% of NTE is reached. The vendor stops work in 3 days if this stands.
   UCA-DUE   Third Island Water Works food service at Spoke C is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 26
-  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 27. A coordination is not a contract.
   UCA       Third Island Water Works submitted a qualifying proposal for food service at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
@@ -202,7 +202,7 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days.".
+      [avoidable] Partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
   #1 spokeBSite.power days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
   #2 spokeBSite.lodging days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
@@ -215,4 +215,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.925)
 
-State hash de9018ee4b0a719da14173437bb91761f78911791a8e369876bdaec0abe15673
+State hash 0fb6873e858ade799794a0020e719d4941b91974b01a15b0d741738499a068ec

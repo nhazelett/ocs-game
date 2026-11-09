@@ -63,14 +63,14 @@ Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
 Day 14
-  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
-  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
+  EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 15
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
 Day 16
-  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 17
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -80,13 +80,13 @@ Day 17
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
 Day 18
-  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Meridian Site Services billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 20
-  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 21
@@ -172,4 +172,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash f7b8af193b9bf21621bf172a5f4d7ab57f1bd7989488e5cf74954c11a6b68d74
+State hash f0787b5ea5ea0fbc1eba2aa86b939c14b17d20ddc65a3941e732fee31bff83e4

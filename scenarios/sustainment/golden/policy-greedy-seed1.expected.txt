@@ -56,7 +56,7 @@ Day 9
   COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 day(s) later.
   COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 7, reported 2 day(s) later.
 Day 10
-  EVENT     SFC Duarte rotates home. Inbox: "S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training."
+  EVENT     SFC Duarte rotates home. S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training.
   COR       SFC Duarte rotates home. An untrained relief takes over as COR on Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      BPA call awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 60. Obligated $11,880.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -76,7 +76,7 @@ Day 13
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
   COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 13.
 Day 14
-  EVENT     Higher HQ declines to extend the BPAs. Inbox: "Regional contracting office: the equipment and food BPAs will not be extended past day 20. Calls already placed run to their end; anything after needs another vehicle."
+  EVENT     Higher HQ declines to extend the BPAs. Regional contracting office: the equipment and food BPAs will not be extended past day 20. Calls already placed run to their end; anything after needs another vehicle.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
@@ -108,7 +108,7 @@ Day 21
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 22
-  EVENT     Spoke C grows by 60. Inbox: "Spoke C: an aviation detachment of 60 arrives day 30 to stay."
+  EVENT     Spoke C grows by 60. Spoke C: an aviation detachment of 60 arrives day 30 to stay.
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       North Island Telecom comms backhaul at Spoke A ended.
@@ -202,9 +202,9 @@ Day 35
   COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke A missed its delivery on day 35.
   FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $1,108,490 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
-  EVENT     The partner force needs its water back. Inbox: "Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days."
+  EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
   WITHDRAWN Partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
-  EVENT     Weather stops the Second Island barge. Inbox: "Harbor master: no barge movements to Second Island for the next three days."
+  EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Island Provisions food service at Spoke B ended.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 day(s) later.
@@ -241,7 +241,7 @@ Day 42
 Day 43
   DONE      CE small buys: 10 worked today (5 h of shop time).
 Day 44
-  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  EVENT     The new fiscal year's funding is held up. Comptroller: the new fiscal year's O&M release is held up at higher headquarters.
   FUNDING   Comptroller: the O&M line from day 46 ($3,000,000) will not be released on day 46 as planned; expect it on day 55.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 45
@@ -589,4 +589,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.71)
 
-State hash cb0cf5e954d05d6943c7d360aaace95019ad0fe35dacabf5833130ea2e2326d1
+State hash d796ce44d93d2739eaf854c5f36f4f7dab964f20a93a1a1900f4b3bbb1f05dba

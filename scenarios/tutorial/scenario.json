@@ -671,7 +671,7 @@
   "events": [
     {
       "id": "mentorDay1",
-      "label": "Your mentor on the cash box",
+      "label": "Capt Mills on the cash box",
       "window": {
         "earliestDay": 1,
         "latestDay": 1
@@ -688,7 +688,7 @@
     },
     {
       "id": "mentorDay2",
-      "label": "Your mentor on agreements",
+      "label": "Capt Mills on agreements",
       "window": {
         "earliestDay": 2,
         "latestDay": 2
@@ -705,7 +705,7 @@
     },
     {
       "id": "mentorDay3",
-      "label": "Your mentor's last note",
+      "label": "Capt Mills's last note",
       "window": {
         "earliestDay": 3,
         "latestDay": 3

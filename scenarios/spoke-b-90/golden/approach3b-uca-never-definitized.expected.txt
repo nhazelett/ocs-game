@@ -44,21 +44,21 @@ Day 10
 Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
-  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 14
-  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   END       The other unit's fuel at Spoke B ended.
 Day 15
-  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
-  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -127,7 +127,7 @@ Day 42
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
-  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
@@ -181,7 +181,7 @@ Day 66
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
-  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
@@ -279,4 +279,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.835)
 
-State hash 4c6147514914286f4aca81ee89f2941d89b762ff1a142213e7a5382e9d581ae6
+State hash 7cc5cbecf03981d823b0b21d6c5d7bf42b612f0c8986ef6509f1bb4bf41ff38d

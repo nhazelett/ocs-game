@@ -47,22 +47,22 @@ Day 10
 Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
-  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 13. A coordination is not a contract.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 14
-  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   END       The other unit's fuel at Spoke B ended.
 Day 15
-  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
   ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
-  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   EXTERNAL  The external office awarded the external contract's power at Spoke B to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from the O&M line good through day 75. The contractor mobilizes for 30 days; performance starts day 47, ends day 106.
@@ -136,7 +136,7 @@ Day 42
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
-  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on the external contract's power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
@@ -189,7 +189,7 @@ Day 66
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
-  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
@@ -278,4 +278,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.911)
 
-State hash 02ddfd00df66a64b9d3d494dfdeb0252bfd64fb13fc4d7a63faee68ae16ed1dd
+State hash 942d2ac271fc55f3480102d625f73cf41228a906479197ffcab8d6c22f6b0e80

@@ -609,7 +609,7 @@
           "kind": "inbox"
         }
       ],
-      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan.",
+      "playerVisibleAs": "Second increment of 80 personnel lands day 20, as in the plan.",
       "from": "hale"
     },
     {
@@ -635,7 +635,7 @@
           "days": 2
         }
       ],
-      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days.",
+      "playerVisibleAs": "Tempo is up here and we need our truck and crew back. Last run in two days.",
       "from": "bell"
     },
     {
@@ -664,7 +664,7 @@
           "value": "vendorE"
         }
       ],
-      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?",
+      "playerVisibleAs": "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?",
       "from": "hale"
     },
     {
@@ -727,7 +727,7 @@
           "note": "The FY-end trap (SPEC 5): om1 expires day 75; om2 was planned for day 76."
         }
       ],
-      "playerVisibleAs": "Comptroller: the new fiscal year's O&M release is held up at higher headquarters.",
+      "playerVisibleAs": "The new fiscal year's O&M release is held up at higher headquarters.",
       "from": "nair"
     },
     {

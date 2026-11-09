@@ -924,7 +924,7 @@
           "kind": "inbox"
         }
       ],
-      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan.",
+      "playerVisibleAs": "Second increment of 80 personnel lands day 20, as in the plan.",
       "from": "hale"
     },
     {
@@ -950,7 +950,7 @@
           "days": 2
         }
       ],
-      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days.",
+      "playerVisibleAs": "Tempo is up here and we need our truck and crew back. Last run in two days.",
       "from": "bell"
     },
     {
@@ -979,7 +979,7 @@
           "value": "vendorE"
         }
       ],
-      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?",
+      "playerVisibleAs": "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?",
       "from": "hale"
     },
     {
@@ -1068,7 +1068,7 @@
           }
         }
       ],
-      "playerVisibleAs": "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message.",
+      "playerVisibleAs": "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message.",
       "from": "lin"
     }
   ],

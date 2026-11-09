@@ -1273,7 +1273,7 @@
           },
           "playerVisibleAs": {
             "type": "string",
-            "description": "Inbox text when it fires, if any"
+            "description": "What the player is told when it fires, if anything. With from: that person's own words, no speaker prefix (shown in quotes after the label). Without from: a notice that names its own source (\"Harbor master: ...\") (M2R-24)"
           },
           "from": {
             "$ref": "#/$defs/id",
