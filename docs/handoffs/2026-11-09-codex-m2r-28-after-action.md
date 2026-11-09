@@ -32,4 +32,4 @@ The pre-existing M2R-26 implementation and blocker-report uploads remain denied 
 
 ## Next
 
-Publish this item as an ordinary PR against main, then Fable reviews it and repeats its pre-gate walk after M2R-26 and M2R-28 land. Nick's M2R-23 cold playtest remains the gate. No other unimplemented Codex row is currently unblocked. No PR was merged, no main push or force-push was made, and no shared branch was deleted.
+Opened ordinary [PR 130](https://github.com/nhazelett/ocs-game/pull/130) against main with the implementation, two plain screenshots and this handoff. Its published tree exactly matches the locally validated tree. GitHub reports it mergeable with no conflicts or review comments; CI is running (provenance already passed at the first check). Session outcome: one PR opened, zero PRs fixed, no new FOR-NICK entry. Fable reviews it and repeats its pre-gate walk after M2R-26 and M2R-28 land. Nick's M2R-23 cold playtest remains the gate. No other unimplemented Codex row is currently unblocked. No PR was merged, no main push or force-push was made, and no shared branch was deleted.
