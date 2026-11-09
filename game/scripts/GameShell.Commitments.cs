@@ -35,7 +35,7 @@ public partial class GameShell
             var row = new VBoxContainer(); commitmentRows.AddChild(row);
             var site = view!.Scenario.Sites.Single(s => s.Id == commitment.SiteId).Name;
             var kind = commitment.Kind == CommitmentKind.Handshake ? "Handshake" : "Out-of-scope work";
-            row.AddChild(DeskUi.Label($"{kind} · {site} · {commitment.Id}\nDecision: {commitment.Decision}" + (commitment.DecidedDay is { } day ? $" on day {day}" : "")));
+            row.AddChild(DeskUi.Label($"{kind} · {view.NameOf(commitment.Id)}\nDecision: {commitment.Decision}" + (commitment.DecidedDay is { } day ? $" on day {day}" : "")));
             var record = view.Records.FirstOrDefault(r => r.Id == commitment.CauseId && view.Known(r));
             if (record is not null) row.AddChild(DeskUi.Label(record.Text));
             if (commitment.Kind == CommitmentKind.OutOfScope) row.AddChild(DeskUi.Label($"Invoice: {DeskUi.Money(commitment.AmountCents)}"));

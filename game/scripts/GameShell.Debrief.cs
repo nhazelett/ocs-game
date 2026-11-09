@@ -39,7 +39,7 @@ public partial class GameShell
         for (var day = 1; day <= report.DaysPlayed; day++) grid.AddChild(new Label { Text = $"Day {day}", CustomMinimumSize = new Vector2(62, 0) });
         foreach (var band in report.Timeline)
         {
-            grid.AddChild(new Label { Text = $"{band.SiteId} · {band.Label}" });
+            grid.AddChild(new Label { Text = $"{view.NameOf(band.SiteId)} · {band.Label}" });
             foreach (var value in band.PermilleByDay)
             {
                 var cell = new Label { Text = value < 0 ? "—" : $"{value / 10m:0.#}%" };
@@ -57,9 +57,15 @@ public partial class GameShell
         {
             DeskUi.Clear(timeline);
             foreach (var item in report.Events.Where(e => knownIds.Contains(e.RecordId) && (day == 0 || e.Day == day)))
-                timeline.AddChild(DeskUi.Label($"Day {item.Day} · {item.Kind} · {item.Subject}\n{item.Text}\nRecord {item.RecordId}"));
+            {
+                var label = DeskUi.Label($"Day {item.Day} · {Words(item.Kind)} · {view.NameOf(item.Subject)}\n{item.Text}");
+                label.SetMeta("event_record", item.RecordId); timeline.AddChild(label);
+            }
             foreach (var decision in report.Decisions.Where(d => knownIds.Contains(d.RecordId) && (day == 0 || d.Day == day)))
-                timeline.AddChild(DeskUi.Label($"Day {decision.Day} · {(decision.Rejected ? "Rejected decision" : "Decision")} · {decision.RecordId}\n{decision.Text}\nKnown then: {string.Join(", ", decision.Known.Select(k => k.IslandId + " " + k.Tier))}"));
+            {
+                var label = DeskUi.Label($"Day {decision.Day} · {(decision.Rejected ? "Rejected decision" : "Decision")}\n{decision.Text}\nKnown then: {string.Join(", ", decision.Known.Select(k => view.NameOf(k.IslandId) + " " + k.Tier))}");
+                label.SetMeta("decision_record", decision.RecordId); timeline.AddChild(label);
+            }
             if (timeline.GetChildCount() == 0) timeline.AddChild(DeskUi.Label("No events or decisions for this day."));
         }
         dayPicker.ItemSelected += ShowDay; ShowDay(0);
@@ -67,7 +73,7 @@ public partial class GameShell
         foreach (var gap in report.Gaps)
         {
             var detail = new VBoxContainer { Visible = false };
-            var button = DeskUi.Button($"Gap {gap.Index} · {gap.SiteId} · {gap.Label}\nDays {gap.StartDay}–{gap.EndDay} · {gap.Tag} · lowest {gap.LowestPermille / 10m:0.#}% · {gap.DownDays} down days", () =>
+            var button = DeskUi.Button($"Gap {gap.Index} · {view.NameOf(gap.SiteId)} · {gap.Label}\nDays {gap.StartDay}–{gap.EndDay} · {gap.Tag} · lowest {gap.LowestPermille / 10m:0.#}% · {gap.DownDays} down days", () =>
             {
                 if (detail.GetChildCount() == 0)
                 {
@@ -86,7 +92,7 @@ public partial class GameShell
         }
         debriefPanel.AddChild(DeskUi.Label("Unauthorized commitments and decisions"));
         foreach (var commitment in report.Commitments)
-            debriefPanel.AddChild(DeskUi.Label($"{commitment.Id} · {commitment.Kind} · opened day {commitment.OpenedDay}\n{commitment.Text}\nDecision: {commitment.Decision} · day {commitment.DecidedDay?.ToString() ?? "—"} · walked off {commitment.WalkedOff} · inquiry drawn {commitment.InquiryDrawn}"));
+            debriefPanel.AddChild(DeskUi.Label($"{view.NameOf(commitment.Id)} · {Words(commitment.Kind)} · opened day {commitment.OpenedDay}\n{commitment.Text}\nDecision: {commitment.Decision} · day {commitment.DecidedDay?.ToString() ?? "—"} · walked off {commitment.WalkedOff} · inquiry drawn {commitment.InquiryDrawn}"));
         if (report.Commitments.Count == 0) debriefPanel.AddChild(DeskUi.Label("No unauthorized commitments."));
         GetNode<TabContainer>("%DeskTabs").CurrentTab = 8;
     }
@@ -99,20 +105,23 @@ public partial class GameShell
         GapFactorKind.AcsaWithdrawn => "ACSA support withdrawn",
         GapFactorKind.HostNationWithdrawn => "Host nation support withdrawn",
         GapFactorKind.LiftDelay => "Transport delayed",
-        _ => kind.ToString()
+        _ => Words(kind)
     };
 
     private static void AddCauseTrace(VBoxContainer parent, SessionView view, IReadOnlyList<string> roots)
     {
         var records = view.Records.Where(view.Known).ToDictionary(r => r.Id, StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
-        void Visit(string id, string? child)
+        void Visit(string id, int depth)
         {
-            if (!seen.Add(id)) { parent.AddChild(DeskUi.Label($"{child ?? "Root"} ← {id} (shown above)")); return; }
-            if (!records.TryGetValue(id, out var record)) { parent.AddChild(DeskUi.Label($"Record {id} (unavailable)")); return; }
-            parent.AddChild(DeskUi.Label($"{(child is null ? "Root" : child)} ← {id} · day {record.Day} · {record.Kind}\n{record.Text}"));
-            foreach (var cause in record.CausedBy) Visit(cause, id);
+            if (!seen.Add(id)) { parent.AddChild(DeskUi.Label("This cause is shown above.")); return; }
+            if (!records.TryGetValue(id, out var record)) { parent.AddChild(DeskUi.Label("An earlier cause was not reported to the shop.")); return; }
+            var label = DeskUi.Label($"{(depth == 0 ? "Evidence" : "Because")} · day {record.Day} · {Words(record.Kind)}\n{record.Text}");
+            label.SetMeta("cause_record", id); label.SetMeta("cause_depth", depth);
+            var indent = new MarginContainer(); indent.AddThemeConstantOverride("margin_left", Math.Min(depth, 8) * 12);
+            indent.AddChild(label); parent.AddChild(indent);
+            foreach (var cause in record.CausedBy) Visit(cause, depth + 1);
         }
-        foreach (var id in roots) Visit(id, null);
+        foreach (var id in roots) Visit(id, 0);
     }
 }

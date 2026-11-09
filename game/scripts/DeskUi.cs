@@ -30,5 +30,7 @@ internal static class DeskUi
         foreach (var child in parent.GetChildren()) { parent.RemoveChild(child); child.QueueFree(); }
     }
 
+    internal static string QueueClause(int hours) => hours > 0 ? $", not counting the {hours} hours already queued" : "";
+
     internal static string Money(long cents) => "$" + (cents / 100m).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
 }
