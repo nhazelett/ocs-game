@@ -125,7 +125,7 @@ public partial class GameShell
         var button = DeskUi.Button(text, () => SendAction(action)); button.Disabled = view.Finished || !preview.Accepted;
         button.SetMeta("visit", key); host.AddChild(button); VisitButtons[key] = button;
         static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
-        host.AddChild(DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop hours. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}, before the {preview.QueueAheadHours} hours already queued."));
+        host.AddChild(DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop hours. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}."));
         if (preview.HardStops.Count > 0)
         {
             var stops = DeskUi.Label(string.Join("\n\n", preview.HardStops)); stops.Modulate = new Color(1, .55f, .45f); host.AddChild(stops);

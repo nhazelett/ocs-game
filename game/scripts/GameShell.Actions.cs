@@ -169,7 +169,7 @@ public partial class GameShell
         {
             AwardPreview = view.Preview(PendingAward);
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
-            previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.\n\nIt would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. There are {AwardPreview.QueueAheadHours} hours already queued. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}, before allowing for that queue.";
+            previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.\n\nIt would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
             previewStops.Text = string.Join("\n\n", AwardPreview.HardStops);
             previewGaps.Text = string.Join("\n\n", AwardPreview.SoftGaps);
             previewStops.Visible = AwardPreview.HardStops.Count > 0;

@@ -110,7 +110,7 @@ public partial class SchematicMap : Node2D
                 Text((from + to) / 2 + shift + new Vector2(0, -12), label + (closed ? $" · closed through day {state!.ClosedThroughDay}" : ""), 440, 25, color);
             }
         }
-        foreach (var island in Data.Islands) DrawIsland(islands[island.Id], island.IsHub, island.Name);
+        foreach (var island in Data.Islands) DrawIsland(islands[island.Id], island);
         foreach (var site in Data.Sites) DrawSite(sites[site.Id], site);
         DrawMovement(); DrawSetTransform(Vector2.Zero);
     }
