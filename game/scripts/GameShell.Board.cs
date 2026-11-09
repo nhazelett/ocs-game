@@ -32,6 +32,7 @@ public partial class GameShell
     private void ResetDeskSelection()
     {
         ResetOpening();
+        debriefHash = null;
         ResetVisits();
         BoardDetailsToggle.ButtonPressed = false;
         SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
