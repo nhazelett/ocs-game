@@ -1,0 +1,188 @@
+{
+  "scenario": "sustainment",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 1 plus a cure notice to Second Island Fuel the morning after its slips reach the inbox (pi2, day 24; FAR 49.402-3).",
+  "prepChoices": [],
+  "actions": [
+    {
+      "kind": "reviewFiles",
+      "day": 1
+    },
+    {
+      "kind": "definitize",
+      "day": 4,
+      "arrangement": "cLodging",
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "definitize",
+      "day": 4,
+      "arrangement": "aPower",
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "designateCor",
+      "day": 10,
+      "arrangement": "bFuel",
+      "cor": "corPark"
+    },
+    {
+      "kind": "designateCor",
+      "day": 10,
+      "arrangement": "hubWaste",
+      "cor": "corPark"
+    },
+    {
+      "kind": "award",
+      "day": 12,
+      "id": "bGensNext",
+      "instrument": "bpaCall",
+      "vendor": "harborEquipment",
+      "vehicle": "bosBpa",
+      "site": "spokeBSite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "maintenance"
+      ],
+      "quantity": 330,
+      "startDay": 31,
+      "durationDays": 30,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "kind": "award",
+      "day": 12,
+      "id": "bFoodNext",
+      "instrument": "bpaCall",
+      "vendor": "islandProvisions",
+      "vehicle": "foodBpa",
+      "site": "spokeBSite",
+      "capability": "food",
+      "lines": [
+        "service",
+        "operator"
+      ],
+      "quantity": 900,
+      "startDay": 36,
+      "durationDays": 25,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "kind": "award",
+      "day": 14,
+      "id": "comms",
+      "instrument": "purchaseOrder",
+      "vendor": "northTelecom",
+      "card": "req0201",
+      "quantity": 3,
+      "startDay": 22,
+      "durationDays": 39,
+      "fundingLine": "om1",
+      "cor": "corMensah"
+    },
+    {
+      "kind": "award",
+      "day": 14,
+      "id": "trucks",
+      "instrument": "purchaseOrder",
+      "vendor": "hubMotors",
+      "card": "req0205",
+      "quantity": 14,
+      "startDay": 25,
+      "durationDays": 36,
+      "fundingLine": "om1",
+      "cor": "corPark"
+    },
+    {
+      "kind": "award",
+      "day": 15,
+      "id": "forklifts",
+      "instrument": "purchaseOrder",
+      "vendor": "harborEquipment",
+      "card": "req0209",
+      "quantity": 3,
+      "startDay": 28,
+      "durationDays": 33,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "kind": "award",
+      "day": 16,
+      "id": "beds",
+      "instrument": "purchaseOrder",
+      "vendor": "secondCamp",
+      "card": "req0213",
+      "quantity": 270,
+      "startDay": 32,
+      "durationDays": 29,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "kind": "award",
+      "day": 17,
+      "id": "aFuelNext",
+      "instrument": "idiqOrder",
+      "vendor": "portFuel",
+      "vehicle": "fuelIdiq",
+      "site": "spokeASite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "quantity": 700,
+      "startDay": 41,
+      "durationDays": 20,
+      "fundingLine": "om1",
+      "cor": "corMensah"
+    },
+    {
+      "kind": "award",
+      "day": 17,
+      "id": "cFuelNext",
+      "instrument": "purchaseOrder",
+      "vendor": "portFuel",
+      "site": "spokeCSite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "quantity": 650,
+      "startDay": 41,
+      "durationDays": 20,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "kind": "cureNotice",
+      "day": 24,
+      "issue": "pi2"
+    },
+    {
+      "kind": "award",
+      "day": 36,
+      "id": "aWaterNext",
+      "instrument": "purchaseOrder",
+      "vendor": "northWater",
+      "site": "spokeASite",
+      "capability": "water",
+      "lines": [
+        "supply",
+        "operator",
+        "maintenance"
+      ],
+      "quantity": 3500,
+      "startDay": 40,
+      "durationDays": 21,
+      "fundingLine": "om1",
+      "cor": "corMensah"
+    }
+  ]
+}

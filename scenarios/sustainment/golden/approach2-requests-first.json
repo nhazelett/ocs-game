@@ -1,0 +1,61 @@
+{
+  "scenario": "sustainment",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "The trap: answer each new request the day it arrives, as a UCA, and never open the inherited files. The past-due UCA surfaces when higher HQ asks, the BPAs run out, and om1 expires under the undefinitized UCAs.",
+  "prepChoices": [],
+  "actions": [
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "comms",
+      "instrument": "uca",
+      "vendor": "northTelecom",
+      "card": "req0201",
+      "quantity": 3,
+      "startDay": 22,
+      "durationDays": 39,
+      "fundingLine": "om1",
+      "cor": "corMensah"
+    },
+    {
+      "kind": "award",
+      "day": 5,
+      "id": "trucks",
+      "instrument": "uca",
+      "vendor": "hubMotors",
+      "card": "req0205",
+      "quantity": 14,
+      "startDay": 25,
+      "durationDays": 36,
+      "fundingLine": "om1",
+      "cor": "corMensah"
+    },
+    {
+      "kind": "award",
+      "day": 9,
+      "id": "forklifts",
+      "instrument": "uca",
+      "vendor": "harborEquipment",
+      "card": "req0209",
+      "quantity": 3,
+      "startDay": 28,
+      "durationDays": 33,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "kind": "award",
+      "day": 13,
+      "id": "beds",
+      "instrument": "uca",
+      "vendor": "secondCamp",
+      "card": "req0213",
+      "quantity": 270,
+      "startDay": 32,
+      "durationDays": 29,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    }
+  ]
+}

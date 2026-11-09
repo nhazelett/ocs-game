@@ -105,9 +105,19 @@ public sealed class TextbookPolicy : IPolicy
                 if (v.KnowledgeTier(island) is "assumed" or "estimated" && !v.SurveyPending(island))
                     actions.Add(new SurveyAction { Island = island });
 
+        // Inherited clocks first (M3-07): definitize every inherited UCA the files show with its proposal in hand. Until
+        // the file review is done and those definitizations are queued, a new requirement that is not needed for
+        // weeks waits, because the shop's queue runs in order and the clocks in the files are already running.
+        var clocksFirst = v.InheritedFiles().Any(f => f.InReview) || InheritedUcasToDefinitize(v).Any();
+        foreach (var a in InheritedUcasToDefinitize(v))
+            // Definitization obligates what the line can cover and the rest waits on money, so any current line will do.
+            if (Helpers.Funding(v, 1, a.CapabilityId) is { } dl && _done.Add($"def:{a.Id}"))
+                actions.Add(new DefinitizeAction { Arrangement = a.Id, FundingLine = dl.Id });
+
         foreach (var card in v.Cards.Where(c => c.SubmittedDay <= v.Day))
         {
             var cap = v.Rules.Model.Capabilities.First(c => c.Id == card.CapabilityId);
+            if (clocksFirst && card.RequestedStartDay - v.Day > 14) continue;
             // 1. Complete the scope before buying anything.
             foreach (var line in cap.Lines.Where(l => !card.Lines.GetValueOrDefault(l.Id)))
                 if (_done.Add($"line:{card.Id}:{line.Id}"))
@@ -203,6 +213,17 @@ public sealed class TextbookPolicy : IPolicy
             if (replaced) { _done.Add(key); continue; }
             var vendor = v.Scenario.Vendors.First(x => x.Id == a.VendorId);
             var offer = vendor.Offers.First(o => o.Capability == a.CapabilityId);
+            // Support the office cannot buy again on the open market (a partner's ACSA stock, a vehicle-only vendor):
+            // the follow-on goes to the cheapest vendor that offers the same lines and has the room.
+            if (vendor.VehicleOnly)
+            {
+                var qtyNeed = Math.Max(1, a.QuantityMilli / 1000);
+                var alt = Helpers.Vendors(v, a.CapabilityId, a.Lines)
+                    .Where(x => !x.Vendor.VehicleOnly && Helpers.HasCapacity(v, x.Vendor, a.CapabilityId, qtyNeed))
+                    .OrderBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id).FirstOrDefault();
+                if (alt.Vendor is null) { _done.Add(key); continue; }
+                (vendor, offer) = alt;
+            }
             // Overlap a day when a new vendor takes over; the incumbent simply continues the day after.
             var start = Math.Max(v.Day + 1, a.EndDay + 1);
             var days = siteEnd - start + 1;
@@ -277,6 +298,11 @@ public sealed class TextbookPolicy : IPolicy
         }
         return actions;
     }
+
+    /// <summary>Inherited UCAs (M3-16) the player can see, with a qualifying proposal and no definitization started.</summary>
+    private static IEnumerable<Arrangement> InheritedUcasToDefinitize(SessionView v)
+        => v.Arrangements.Where(a => a.CreatedDay == 0 && !v.ProblemHidden(a) && a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended
+                                     && a.Uca is { ProposalReceived: true, Definitized: false, DefinitizationInWork: false });
 }
 
 internal static class Helpers

@@ -18,6 +18,9 @@ public sealed partial class Session
     private readonly Dictionary<string, int> _reviewedDay = new(StringComparer.Ordinal);
     // Day each hidden problem came to light, by review or by an inquiry, with the record that showed it.
     private readonly Dictionary<string, (int Day, string RecordId, bool ByReview)> _revealed = new(StringComparer.Ordinal);
+    /// <summary>The delivery record (permille) each file review found, so the debrief quotes what the review showed
+    /// even after a later drop or cure moved the vendor's reliability (M3-22).</summary>
+    private readonly Dictionary<string, int> _reviewedReliability = new(StringComparer.Ordinal);
 
     private const string HostNationInstrumentId = "hostNation";
 
@@ -29,6 +32,8 @@ public sealed partial class Session
     }
 
     /// <summary>True while an inherited arrangement's problem has not come to light (M3-17).</summary>
+    internal int ReliabilityShownByReview(Arrangement a) => _reviewedReliability.GetValueOrDefault(a.Id, a.ReliabilityPermille);
+
     internal bool ProblemHidden(Arrangement a) => _hiddenProblems.Contains(a.Id) && !_revealed.ContainsKey(a.Id);
 
     /// <summary>True when the hidden problem had not come to light by the end of the given day.</summary>
@@ -109,6 +114,7 @@ public sealed partial class Session
         {
             var a = _arrangements.First(x => x.Id == id);
             _reviewedDay[id] = day;
+            _reviewedReliability[id] = a.ReliabilityPermille;
             var rec = AddRecord(day, RecordKind.Knowledge, id, $"File review of {id}: {Findings(a, day)}", [causeId]);
             if (_hiddenProblems.Contains(id)) _revealed.TryAdd(id, (day, rec, true));
         }
