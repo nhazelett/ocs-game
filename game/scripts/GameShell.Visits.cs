@@ -133,6 +133,21 @@ public partial class GameShell
         if (preview.SoftGaps.Count > 0) host.AddChild(DeskUi.Label(string.Join("\n\n", preview.SoftGaps)));
     }
 
+    private void OpenJ4FuelVisit(string site)
+    {
+        if (session.View is not { Finished: false } view) return;
+        visitContact = "j4"; j4Site = site; j4Quantity = null;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+        PeopleToggle.ButtonPressed = true; RefreshVisits(view, view.MorningBoard());
+        var quantity = J4QuantityInput;
+        Callable.From(() =>
+        {
+            if (quantity is null || !GodotObject.IsInstanceValid(quantity) || !quantity.IsInsideTree()) return;
+            ((ScrollContainer)visitsPanel.GetParent().GetParent()).EnsureControlVisible(quantity);
+            quantity.GetLineEdit().GrabFocus();
+        }).CallDeferred();
+    }
+
     private void RenderJ4Visit(SessionView view)
     {
         if (j4Site is null && SelectedCard is { } card) j4Site = view.RequirementEditor(card)?.SiteId;

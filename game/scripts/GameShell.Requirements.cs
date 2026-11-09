@@ -43,6 +43,20 @@ public partial class GameShell
             var label = DeskUi.Label($"{dependency.Label}: {Words(dependency.Coverage).ToLowerInvariant()}" +
                 (dependency.CoveredBy.Count > 0 ? $" · {string.Join(", ", dependency.CoveredBy.Select(view.ArrangementName))}" : ""));
             label.SetMeta("dependency", dependency.CapabilityId); linkedRequirement.AddChild(label);
+            if (dependency.UsualOwner is { } owner)
+            {
+                var responsibility = DeskUi.Label($"{dependency.Label} is usually {owner.TrimEnd('.')}. " +
+                    (dependency.OwnerEngaged ? "The usual owner is engaged." : "The usual owner has not been engaged."));
+                responsibility.SetMeta("dependency_owner", dependency.CapabilityId);
+                responsibility.SetMeta("owner_engaged", dependency.OwnerEngaged); linkedRequirement.AddChild(responsibility);
+            }
+            if (dependency.CapabilityId == "fuel" && dependency.Coverage == "none" && !dependency.OwnerEngaged
+                && view.Scenario.Actors.AcsaPartner is not null)
+            {
+                var ask = DeskUi.Button("Ask the J4 about fuel for " + card.SiteName, () => OpenJ4FuelVisit(card.SiteId));
+                ask.SetMeta("dependency_visit", dependency.CapabilityId); ask.Disabled = view.Finished;
+                linkedRequirement.AddChild(ask);
+            }
         }
     }
 }
