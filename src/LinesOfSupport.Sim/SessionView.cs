@@ -28,6 +28,28 @@ public sealed class SessionView
     public IReadOnlyList<VehicleData> Vehicles => _s.Vehicles;
     /// <summary>Unauthorized commitments (SPEC 4.5): handshakes and out-of-scope work, with the decision on each.</summary>
     public IReadOnlyList<CommitmentState> Commitments => _s.Commitments;
+
+    // People (M2R-01, docs/design/opening-and-guidance.md 5). Show DisplayName and Unit, never Id.
+    /// <summary>The scenario's cast, in scenario order. Empty for a scenario without one.</summary>
+    public IReadOnlyList<PersonView> People => _s.BuildPeople();
+    /// <summary>One person by people[] id, or null.</summary>
+    public PersonView? Person(string id) => _s.BuildPerson(id);
+    /// <summary>The person who brought a requirement card, or null when the card names only a free-text submitter.</summary>
+    public PersonView? CardPerson(CardState card) => _s.BuildPerson(card.PersonId);
+    /// <summary>A card's name on screen: what and where ("Power for Spoke B").</summary>
+    public string CardTitle(CardState card) => _s.CardTitle(card);
+    /// <summary>Who an unauthorized commitment comes to the desk through: the vendor's rep when the cast has one.</summary>
+    public PersonView? CommitmentPerson(CommitmentState commitment) => _s.VendorRep(commitment.VendorId);
+    /// <summary>Who the player hears a record from (the same rule as <see cref="Views.BoardItem.Person"/>), or null.</summary>
+    public PersonView? RecordPerson(CauseRecord record) => _s.RecordPerson(record);
+    /// <summary>The SCO staff officer the shop deals with, or null when the scenario names none.</summary>
+    public PersonView? ScoContact => _s.BuildPerson(_s.Scenario.Actors.Sco.Person);
+    /// <summary>The finance officer, or null.</summary>
+    public PersonView? FinanceContact => _s.BuildPerson(_s.Scenario.Actors.Fm.Person);
+    /// <summary>The site commander, or null.</summary>
+    public PersonView? Commander => _s.BuildPerson(_s.Scenario.Actors.Commander.Person);
+    /// <summary>The outgoing CCO who hands over the shop, or null.</summary>
+    public PersonView? OutgoingCco => _s.BuildPerson(_s.Scenario.People.FirstOrDefault(p => p.Role == "outgoingCco")?.Id);
     /// <summary>Sites whose commander lost confidence in contracting (a refused handshake). Their shop work waits behind
     /// other sites' on days the shop is short (M2-14).</summary>
     public IReadOnlyCollection<string> LostConfidenceSites => _s.LostConfidenceSites;

@@ -30,6 +30,9 @@ public sealed record ScenarioFile
     /// <summary>Contracting officer's representatives the units have nominated (M3-04). Empty means the scenario does not
     /// model COR reporting: every vendor failure is seen the day it happens, as before.</summary>
     public List<CorData> Cors { get; init; } = [];
+    /// <summary>The cast (M2R-01): the people who bring work, hand over the shop, answer questions and run the money. Ids
+    /// are for references only and never shown; views show rank, name and unit.</summary>
+    public List<PersonData> People { get; init; } = [];
     public ShopData Shop { get; init; } = new();
     public ActorsData Actors { get; init; } = new();
     public List<EventData> Events { get; init; } = [];
@@ -37,6 +40,24 @@ public sealed record ScenarioFile
     public List<VariationData> Variation { get; init; } = [];
     public List<PassCriterionData> PassCriteria { get; init; } = [];
     public List<string> ModelAssumptions { get; init; } = [];
+}
+
+/// <summary>One person in the scenario's cast (M2R-01, docs/design/opening-and-guidance.md 5). Role is one of customer,
+/// outgoingCco, scoStaff, finance, commander, vendorRep. Lines are short things this person says at moments the game
+/// uses (keys such as "greeting", "farewell"); content, not rules.</summary>
+public sealed record PersonData
+{
+    public string Id { get; init; } = "";
+    public string Name { get; init; } = "";
+    public string Rank { get; init; } = "";
+    public string Unit { get; init; } = "";
+    public string Role { get; init; } = "";
+    public string? Portrait { get; init; }
+    /// <summary>vendorRep only: the vendor this person works for.</summary>
+    public string? Vendor { get; init; }
+    /// <summary>Where the person is posted, when it matters (a customer at a spoke).</summary>
+    public string? Site { get; init; }
+    public Dictionary<string, string> Lines { get; init; } = [];
 }
 
 public sealed record IslandData
@@ -96,7 +117,12 @@ public sealed record RequirementCardData
     public int DurationDays { get; init; }
     public string? QuantityHint { get; init; }
     public Dictionary<string, bool> Lines { get; init; } = [];
+    /// <summary>Free-text submitter, used only when the card names no person.</summary>
     public string SubmittedBy { get; init; } = "";
+    /// <summary>The person who brings the requirement (M2R-01): a people[] id.</summary>
+    public string? Person { get; init; }
+    /// <summary>What that person says when they bring it, in their words.</summary>
+    public string? Message { get; init; }
     public bool FlaggedEnduring { get; init; }
 }
 
@@ -230,10 +256,22 @@ public sealed record ScoData
     public string Responsiveness { get; init; } = "medium";
     public bool OffersJointBoardsUnprompted { get; init; }
     public List<string> KnownVehicles { get; init; } = [];
+    /// <summary>The SCO staff officer the shop deals with (M2R-01): a people[] id with role scoStaff.</summary>
+    public string? Person { get; init; }
 }
 
-public sealed record FmData { public int CertificationLagDays { get; init; } }
-public sealed record CommanderData { public List<string> PriorityOrder { get; init; } = []; }
+public sealed record FmData
+{
+    public int CertificationLagDays { get; init; }
+    /// <summary>The finance officer (M2R-01): a people[] id with role finance.</summary>
+    public string? Person { get; init; }
+}
+public sealed record CommanderData
+{
+    public List<string> PriorityOrder { get; init; } = [];
+    /// <summary>The site commander (M2R-01): a people[] id with role commander.</summary>
+    public string? Person { get; init; }
+}
 /// <summary>A host nation support agreement (M3-06). Capacity is units per day the host nation provides per capability under
 /// the agreement, shared by every request on the same days; price is the shop's cost share per unit per day (0 when the
 /// host nation bears it). Sites empty means the agreement covers every site.</summary>
@@ -327,6 +365,8 @@ public sealed record EventData
     public List<string> FollowOns { get; init; } = [];
     public bool Fixed { get; init; }
     public string? PlayerVisibleAs { get; init; }
+    /// <summary>Who the player hears it from (M2R-01): a people[] id. Absent: no one in particular (weather, a notice).</summary>
+    public string? From { get; init; }
 }
 
 public sealed record VariationData

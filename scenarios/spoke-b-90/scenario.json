@@ -127,7 +127,8 @@
         "operator": false,
         "maintenance": false
       },
-      "submittedBy": "Spoke B advance team",
+      "person": "ruiz",
+      "message": "Advance team at Spoke B needs power by day 7. I wrote it up as six sixty-kilowatt generators.",
       "flaggedEnduring": false
     }
   ],
@@ -358,6 +359,114 @@
       "quality": "fair"
     }
   ],
+  "people": [
+    {
+      "id": "whitfield",
+      "name": "Sam Whitfield",
+      "rank": "Capt",
+      "unit": "Contracting",
+      "role": "outgoingCco",
+      "portrait": "whitfield",
+      "lines": {
+        "greeting": "Welcome to the island. I fly out in three days, so let's get you the keys.",
+        "farewell": "Spoke B opens in a week and nobody's bought them power yet. CE's outside."
+      }
+    },
+    {
+      "id": "ruiz",
+      "name": "Ana Ruiz",
+      "rank": "Capt",
+      "unit": "3 CES",
+      "role": "customer",
+      "site": "spokeBSite",
+      "portrait": "ruiz",
+      "lines": {
+        "greeting": "I'm the engineer for the spokes. I'll be in your doorway a lot."
+      }
+    },
+    {
+      "id": "hale",
+      "name": "Tom Hale",
+      "rank": "MSgt",
+      "unit": "Spoke B detachment",
+      "role": "customer",
+      "site": "spokeBSite",
+      "portrait": "hale",
+      "lines": {
+        "greeting": "First sergeant out at Spoke B. If my people need something, you'll hear it from me."
+      }
+    },
+    {
+      "id": "bell",
+      "name": "Marcus Bell",
+      "rank": "TSgt",
+      "unit": "LRS fuels flight",
+      "role": "customer",
+      "site": "hubSite",
+      "portrait": "bell",
+      "lines": {
+        "greeting": "Fuels. We can lend a truck now and then, not for long."
+      }
+    },
+    {
+      "id": "park",
+      "name": "Daniel Park",
+      "rank": "Lt Col",
+      "unit": "Hub commander",
+      "role": "commander",
+      "site": "hubSite",
+      "portrait": "park",
+      "lines": {
+        "greeting": "The hub comes first, then Spoke B. That's the order if we run short."
+      }
+    },
+    {
+      "id": "cole",
+      "name": "Erin Cole",
+      "rank": "Maj",
+      "unit": "SCO staff, reachback",
+      "role": "scoStaff",
+      "portrait": "cole",
+      "lines": {
+        "greeting": "Send questions to the SCO box. We answer with what the rules say, not what you should do."
+      }
+    },
+    {
+      "id": "nair",
+      "name": "Priya Nair",
+      "rank": "Capt",
+      "unit": "Comptroller",
+      "role": "finance",
+      "portrait": "nair",
+      "lines": {
+        "greeting": "Funding questions come to me. Certification takes a day once you send it."
+      }
+    },
+    {
+      "id": "delgado",
+      "name": "Rosa Delgado",
+      "rank": "Ms.",
+      "unit": "Island Power Rentals",
+      "role": "vendorRep",
+      "vendor": "vendorA",
+      "portrait": "delgado",
+      "lines": {
+        "greeting": "We rent generators on the main island. Barge to the spokes, of course."
+      }
+    },
+    {
+      "id": "mensah",
+      "name": "Kofi Mensah",
+      "rank": "Mr.",
+      "unit": "Port Fuel Haulers",
+      "role": "vendorRep",
+      "vendor": "vendorE",
+      "portrait": "mensah",
+      "lines": {
+        "greeting": "We haul fuel anywhere the barge goes. Happy to get on your list."
+      }
+    }
+  ],
   "shop": {
     "people": 2,
     "systemOnlineDay": 12,
@@ -371,16 +480,19 @@
   "actors": {
     "sco": {
       "responsiveness": "medium",
-      "offersJointBoardsUnprompted": false
+      "offersJointBoardsUnprompted": false,
+      "person": "cole"
     },
     "fm": {
-      "certificationLagDays": 1
+      "certificationLagDays": 1,
+      "person": "nair"
     },
     "commander": {
       "priorityOrder": [
         "hubSite",
         "spokeBSite"
-      ]
+      ],
+      "person": "park"
     },
     "externalSupport": {
       "provider": "Theater base support contractor",
@@ -416,7 +528,8 @@
           "kind": "inbox"
         }
       ],
-      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+      "playerVisibleAs": "Spoke B: second increment of 80 personnel lands day 20, as in the plan.",
+      "from": "hale"
     },
     {
       "id": "hubFuelsWithdraw",
@@ -441,7 +554,8 @@
           "days": 2
         }
       ],
-      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+      "playerVisibleAs": "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days.",
+      "from": "bell"
     },
     {
       "id": "unitHandshake",
@@ -469,7 +583,8 @@
           "value": "vendorE"
         }
       ],
-      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+      "playerVisibleAs": "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?",
+      "from": "hale"
     },
     {
       "id": "bargeWeather",
@@ -531,7 +646,8 @@
           "note": "The FY-end trap (SPEC 5): om1 expires day 75; om2 was planned for day 76."
         }
       ],
-      "playerVisibleAs": "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+      "playerVisibleAs": "Comptroller: the new fiscal year's O&M release is held up at higher headquarters.",
+      "from": "nair"
     },
     {
       "id": "corRotates",
