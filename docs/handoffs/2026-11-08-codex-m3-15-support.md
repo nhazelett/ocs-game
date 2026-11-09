@@ -18,7 +18,7 @@ Schema-valid reference mistakes should fail the tools check before they reach th
 
 ## Validated how
 
-.NET 8 Release solution build/tests and Godot 4.6.1 Game build pass. All 72 Python validator tests pass; four scenario folders validate; provenance and conflict-marker checks pass. Existing native DebriefSmokeTest and new SupportSmokeTest pass; expanded evidence is unchanged and read-only. Screenshot rendered and visually inspected.
+.NET 8 Release solution build and all 536 tests (415 Sim, 121 Harness) pass, as does the Godot 4.6.1 Game build. All 72 Python validator tests pass; four scenario folders validate; provenance and conflict-marker checks pass. Existing native DebriefSmokeTest and new SupportSmokeTest pass; expanded evidence is unchanged and read-only. Merged main including PR 112, reran Debrief/Support/Lead/Morning and regenerated the inspected screenshot on the integrated branch.
 
 ## Unresolved
 
