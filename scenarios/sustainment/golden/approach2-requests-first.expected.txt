@@ -209,7 +209,7 @@ Day 35
   FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $1,395,510 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
   EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
-  WITHDRAWN Partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
+  WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Island Provisions food service at Spoke B ended.
@@ -542,7 +542,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #11 spokeASite.water days 28-28, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Water depends on power, which was short. (see #7)
   #12 spokeASite.water days 42-60, lowest 0%, 19 day(s) down: AVOIDABLE
-      [avoidable] The ACSA order for water at Spoke A was withdrawn by Partner force on day 36 (last day of support 38) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.
+      [avoidable] The ACSA order for water at Spoke A was withdrawn by the partner force on day 36 (last day of support 38) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.
       [unforeseeable] Water depends on power, which was short. (see #8)
       [avoidable] No funding line with money could pay for water on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [avoidable] Water depends on power, which was short. (see #9)
@@ -605,7 +605,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Port Fuel Haulers fuel at Spoke C supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 450 gal a day fell short of 630 a day. Still short 7 days after they arrived: the notice left time to resize.
   #34 spokeCSite.fuel days 45-60, lowest 0%, 15 day(s) down: AVOIDABLE
-      [avoidable] Nobody owned fuel at Spoke C. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 600 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke C. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 600 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #35 spokeCSite.lodging days 30-60, lowest 0%, 13 day(s) down: AVOIDABLE
       [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Nothing before the notice showed it coming.
@@ -626,4 +626,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 6399000)
   [not met] Mission output at least 88% (mission.output = 0.681)
 
-State hash ea1abd50abcc2b9183ce76bea7be537b41c1823b3d1ed51f271833b5c4264409
+State hash 0fe1b48730e587e78a525df93fdcee02d0a215e56d72cd03de7377d61a44aaf9

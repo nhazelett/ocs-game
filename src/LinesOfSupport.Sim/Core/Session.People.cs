@@ -62,7 +62,7 @@ public sealed partial class Session
         var req = J4Request(siteId, capId);
         string text; List<string> ids = [];
         if (req is null)
-            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {partner.Name} had {stock:#,0} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
+            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {PartnerName} had {stock:#,0} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
         else
         {
             var (asked, start, id) = req.Value;
@@ -156,8 +156,8 @@ public sealed partial class Session
         if (!_capData.ContainsKey(j.Capability)) { stops.Add("no such capability"); return stops; }
         var what = CapLabel(j.Capability).ToLowerInvariant();
         if (Partner is not { } partner) { stops.Add($"there is no ACSA partner here, so the J4 has no ACSA order to add {SiteName(j.Site)} to"); return stops; }
-        if (!partner.Stock.TryGetValue(j.Capability, out var stock) || stock <= 0) { stops.Add($"{partner.Name} has no {what} to spare under the ACSA"); return stops; }
-        if (Withdrawn(j.Capability)) stops.Add($"{partner.Name} has withdrawn its {what} support: its own needs come first");
+        if (!partner.Stock.TryGetValue(j.Capability, out var stock) || stock <= 0) { stops.Add($"{PartnerName} has no {what} to spare under the ACSA"); return stops; }
+        if (Withdrawn(j.Capability)) stops.Add($"{PartnerName} has withdrawn its {what} support: its own needs come first");
         if (j.Quantity <= 0) stops.Add("quantity must be positive");
         if (j.DurationDays is <= 0) stops.Add("duration must be positive");
         var (start, end) = J4Window(j, day);
@@ -166,7 +166,7 @@ public sealed partial class Session
                                                   .Select(w => (EngageJ4Action)((VisitPayload)w.Payload!).Extra!)
                                                   .Where(o => o.Capability == j.Capability).Sum(o => o.Quantity * 1000));
         if (j.Quantity * 1000 + committed > Fixed.Milli(stock))
-            stops.Add($"{partner.Name} can spare {stock:0} {Cap(j.Capability).Unit} a day of {what} and {committed / 1000} is already spoken for");
+            stops.Add($"{PartnerName} can spare {stock:0} {Cap(j.Capability).Unit} a day of {what} and {committed / 1000} is already spoken for");
         return stops;
     }
 
@@ -413,7 +413,7 @@ public sealed partial class Session
             CreatedDay = day, CauseId = cause, StartDay = start, EndDay = Math.Min(end, LastDay),
         });
         AddRecord(day, RecordKind.Visit, j.Id,
-            $"The J4's ACSA manager is adding {SiteName(j.Site)} to the {cap.Label.ToLowerInvariant()} order with {partner.Name}: {j.Quantity} {cap.Unit} a day from day {start}. The reimbursement is the J4's, not the shop's. {partner.Name} can cut it back when its own needs rise.", [cause]);
+            $"The J4's ACSA manager is adding {SiteName(j.Site)} to the {cap.Label.ToLowerInvariant()} order with {PartnerName}: {j.Quantity} {cap.Unit} a day from day {start}. The reimbursement is the J4's, not the shop's. {Upper(PartnerName)} can cut it back when its own needs rise.", [cause]);
     }
 
     // ------------------------------------------------------------------ views

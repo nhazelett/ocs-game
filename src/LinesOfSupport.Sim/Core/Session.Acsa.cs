@@ -58,14 +58,14 @@ public sealed partial class Session
         if (!_capData.ContainsKey(capId)) return Fail($"capability {capId} does not exist");
         if (Partner is not { } partner) return Fail("no partner force with an ACSA is present in this scenario");
         if (!partner.Stock.TryGetValue(capId, out var stock) || stock <= 0)
-            return Fail($"{partner.Name} has no {CapLabel(capId).ToLowerInvariant()} to spare under the ACSA");
-        if (Withdrawn(capId)) stops.Add($"{partner.Name} has withdrawn its {CapLabel(capId).ToLowerInvariant()} support: its own needs come first");
+            return Fail($"{PartnerName} has no {CapLabel(capId).ToLowerInvariant()} to spare under the ACSA");
+        if (Withdrawn(capId)) stops.Add($"{PartnerName} has withdrawn its {CapLabel(capId).ToLowerInvariant()} support: its own needs come first");
         if (o.Quantity <= 0) stops.Add("quantity must be positive");
         if (o.DurationDays <= 0) stops.Add("duration must be positive");
         var start = Math.Max(o.StartDay ?? Day, Day);
         var committed = AcsaCommittedMilli(capId, start, start + Math.Max(1, o.DurationDays) - 1);
         if (o.Quantity * 1000 + committed > Fixed.Milli(stock))
-            stops.Add($"{partner.Name} can spare {stock:0} {Cap(capId).Unit}/day of {CapLabel(capId).ToLowerInvariant()} and {committed / 1000} is already ordered");
+            stops.Add($"{PartnerName} can spare {stock:0} {Cap(capId).Unit}/day of {CapLabel(capId).ToLowerInvariant()} and {committed / 1000} is already ordered");
         var lines = Cap(capId).Lines.Where(l => l.Kind != "supplies").Select(l => l.Id).ToList();
         var daily = o.Quantity * partner.UnitPriceCents.GetValueOrDefault(capId);
         var total = daily * Math.Max(0, o.DurationDays);
@@ -119,7 +119,7 @@ public sealed partial class Session
             CreatedDay = day, CardId = o.Card, CauseId = causeId, StartDay = start, EndDay = start + o.DurationDays - 1,
         });
         AddRecord(day, RecordKind.WorkDone, o.Id,
-            $"ACSA order for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} placed with {partner.Name}; support starts day {start}, ends day {start + o.DurationDays - 1}. Reimbursement of {Money(p.TotalCents)} obligated from {NameOf(line.Id)}. The partner can withdraw it when its own needs rise.", [causeId]);
+            $"ACSA order for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} placed with {PartnerName}; support starts day {start}, ends day {start + o.DurationDays - 1}. Reimbursement of {Money(p.TotalCents)} obligated from {NameOf(line.Id)}. The partner can withdraw it when its own needs rise.", [causeId]);
     }
 
     /// <summary>Event effect acsa.withdraw: the partner ends its support for a capability (null: everything) after a notice.</summary>
@@ -144,10 +144,10 @@ public sealed partial class Session
                 else tail = $" {Money(back)} of reimbursement is released; {NameOf(fl.Id)} has expired, so it lapses.";
             }
             AddRecord(day, RecordKind.Withdrawal, a.Id,
-                $"{PartnerName} withdrew the ACSA order ({CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)}); last day of support {a.EndDay}. An ACSA order is support the partner can spare, not a contract it must perform.{tail}", [cause, a.CauseId]);
+                $"{Upper(PartnerName)} withdrew the ACSA order ({CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)}); last day of support {a.EndDay}. An ACSA order is support the partner can spare, not a contract it must perform.{tail}", [cause, a.CauseId]);
         }
         if (running.Count == 0)
-            AddRecord(day, RecordKind.Event, "acsa", $"{PartnerName} withdrew {what} under the ACSA; no orders were running.", [cause]);
+            AddRecord(day, RecordKind.Event, "acsa", $"{Upper(PartnerName)} withdrew {what} under the ACSA; no orders were running.", [cause]);
     }
 
     internal ActionPreview BuildAcsaPreview(AcsaOrderAction o)
@@ -166,7 +166,7 @@ public sealed partial class Session
         var startMax = Math.Max(o.StartDay ?? 0, Done(inst.ShopDays.Max) + 1 + inst.StartLagDays.Max);
         var cap = Cap(capId);
         var site = SiteData(siteId);
-        var gaps = new List<string> { $"{PartnerName} can withdraw this support when its own needs rise: an ACSA order is not a contract." };
+        var gaps = new List<string> { $"{Upper(PartnerName)} can withdraw this support when its own needs rise: an ACSA order is not a contract." };
         foreach (var l in cap.Lines.Where(l => l.Kind == "supplies"))
             if (GapIfOff(cap, l) is { } g) gaps.Add(g);
         var peak = (PeakDemandMilli(siteId, capId, Math.Min(startMin, LastDay), Math.Min(startMax + Math.Max(1, o.DurationDays) - 1, LastDay)) + 999) / 1000;

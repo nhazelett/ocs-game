@@ -1115,7 +1115,7 @@
             },
             "name": {
               "type": "string",
-              "description": "Generic partner name shown to the player (no real nation is named)"
+              "description": "Generic partner name shown to the player (no real nation is named), written as it reads mid-sentence (\"the partner force\"); the Sim capitalises it where it starts a sentence (M2R-29)"
             },
             "island": {
               "$ref": "#/$defs/id",

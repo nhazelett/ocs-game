@@ -396,7 +396,7 @@ public sealed partial class Session
         var parts = new List<string>();
         var span = played == 1 ? "Over one day" : $"Over {DebriefWords.Number(played)} days";
         if (gaps.Count == 0)
-            return new DebriefSummary(from, $"{span}, no site ran short of anything.", null);
+            return new DebriefSummary(from, $"{span}, no site ran short of anything.", null, []);
         parts.Add(score.MissionOutput switch
         {
             >= 0.98 => $"{span}, every site had what it needed nearly every day.",
@@ -411,9 +411,10 @@ public sealed partial class Session
                        .First();
         var when = lead.EndDay > lead.StartDay ? $"days {lead.StartDay} to {lead.EndDay}" : $"day {lead.StartDay}";
         parts.Add($"The gap that mattered most was {Lower(lead.Label)} at {SiteName(lead.SiteId)}, {when}.");
-        var own = lead.Factors.Where(f => f.DependsOnGap is null).OrderByDescending(f => f.Tag).ThenBy(f => f.FirstDay).Take(2).ToList();
+        var own = lead.Factors.Select((f, i) => (F: f, I: i)).Where(x => x.F.DependsOnGap is null)
+                      .OrderByDescending(x => x.F.Tag).ThenBy(x => x.F.FirstDay).Take(2).ToList();
         if (own.Count == 0) parts.Add("Nothing on record explains it; nobody could have seen it coming.");
-        parts.AddRange(own.Select(f => f.Text.Trim()));
+        parts.AddRange(own.Select(x => x.F.Text.Trim()));
 
         // Gaps that went down with the lead, directly or through another knock-on.
         var with = new SortedSet<int>();
@@ -463,7 +464,7 @@ public sealed partial class Session
                 parts.Add($"There were {DebriefWords.Number(rest.Count)} more gaps: {JoinAnd(kinds)}.");
             }
         }
-        return new DebriefSummary(from, string.Join(" ", parts), lead.Index);
+        return new DebriefSummary(from, string.Join(" ", parts), lead.Index, own.Select(x => x.I).ToList());
     }
 
     private static string JoinAnd(IReadOnlyList<string> items) => items.Count switch

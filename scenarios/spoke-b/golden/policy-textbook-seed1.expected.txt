@@ -28,7 +28,7 @@ Day 1
   ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 days.
   ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2640 gal/day for 10 days (Potable water supply); $10,560 paid on the spot.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated $10,560.
-  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with Partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. Partner force can cut it back when its own needs rise.
+  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      Survey team dispatched to Third Island; findings due day 3.
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
@@ -52,7 +52,7 @@ Day 5
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 21 waiting.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  START     Fuel at Spoke B from Partner force began, 1287 gal/day.
+  START     Fuel at Spoke B from the partner force began, 1287 gal/day.
   CONFUSED  Execution confusion on Coastal Provisions water at Spoke C: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 6
   DONE      Undefinitized contract action awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 41. UCA issued with NTE $229,997; obligations capped at 50% of NTE until a qualifying proposal.
@@ -202,7 +202,7 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
+      [avoidable] The partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
   #1 spokeBSite.power days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
   #2 spokeBSite.lodging days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
@@ -215,4 +215,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.925)
 
-State hash 947b6bc72a649287797625bdef51a76887cbe273d988feada6a0d7b955bf0f6b
+State hash b986a39602dfc9856467c34eff94aadcfac35d238b6c8b43a68db7b4456de8cc

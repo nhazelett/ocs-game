@@ -156,7 +156,7 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-16, lowest 0%, 7 day(s) down: AVOIDABLE
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.power days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Meridian Site Services power at Spoke B did not start until day 17.
       [avoidable] Power depends on fuel, which was short. (see #0)

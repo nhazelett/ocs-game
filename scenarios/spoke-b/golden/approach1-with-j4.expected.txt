@@ -16,7 +16,7 @@ Before day 1
 Day 1
   ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1300 gal a day.
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
-  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with Partner force: 1300 gal a day from day 5. The reimbursement is the J4's, not the shop's. Partner force can cut it back when its own needs rise.
+  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1300 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   ACTION    The request for water for Spoke C: Plant operators switched on.
@@ -35,7 +35,7 @@ Day 4
 Day 5
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
-  START     Fuel at Spoke B from Partner force began, 1300 gal/day.
+  START     Fuel at Spoke B from the partner force began, 1300 gal/day.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
   FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
 Day 6
@@ -161,7 +161,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 19-19, lowest 0%, 1 day(s) down: DISCOVERABLE
-      [discoverable] Partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
+      [discoverable] The partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
   #1 spokeBSite.power days 19-30, lowest 0%, 1 day(s) down: AVOIDABLE
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
@@ -175,4 +175,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.877)
 
-State hash 9bccb8b2908a7fc35d534b9e34bfec4fe4afe407853609d963c18f066dce6687
+State hash 2d9828df98800a4cc1f2d8f86d3178c75cb7757cfcfe9017c0e88a9a05cb2ccc

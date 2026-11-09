@@ -285,7 +285,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 17-90, lowest 0%, 61 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
       [avoidable] Second Island Fuel fuel at Spoke B was left unresolved and the vendor walked off on day 36.

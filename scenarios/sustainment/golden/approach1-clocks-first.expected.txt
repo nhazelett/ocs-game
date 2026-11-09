@@ -248,7 +248,7 @@ Day 35
 Day 36
   ACTION    Written purchase order started with North Island Water Works: Water at Spoke A, 3500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
   EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
-  WITHDRAWN Partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
+  WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Island Provisions food service at Spoke B ended.
@@ -1064,4 +1064,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [not met] Mission output at least 88% (mission.output = 0.877)
 
-State hash cd01b9a39e4d0e3da239871d58d1abf45e052b52703a68c1d256f4c2e6ad5681
+State hash 0ef00bc20c283ea28b4567cac04a082b550b3bfb9c9c580f1a643a1f08ba2180

@@ -256,7 +256,7 @@ Day 35
   FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $494,320 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
   EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
-  WITHDRAWN Partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
+  WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: none worked today (no hours left); 4 waiting, 7 went on cards.
   END       Island Provisions food service at Spoke B ended.
@@ -768,4 +768,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.916)
 
-State hash d22149cac2928e10f92d59d173980f562cf533acdd5a00278a610253f6ed52d7
+State hash 8480a930b31ecb8aacbb1b443a6aa58a35cbc556ffd7c588be18210d864ae512
