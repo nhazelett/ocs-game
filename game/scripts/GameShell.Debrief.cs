@@ -96,6 +96,9 @@ public partial class GameShell
         GapFactorKind.FundingLapse => "Funding lapse",
         GapFactorKind.PopulationJump => "Unplanned population arrival",
         GapFactorKind.PriorityDeferred => "Shop work deferred after lost confidence",
+        GapFactorKind.AcsaWithdrawn => "ACSA support withdrawn",
+        GapFactorKind.HostNationWithdrawn => "Host nation support withdrawn",
+        GapFactorKind.LiftDelay => "Transport delayed",
         _ => kind.ToString()
     };
 
