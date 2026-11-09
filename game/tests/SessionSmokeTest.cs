@@ -13,6 +13,7 @@ public partial class SessionSmokeTest : Node
         {
             var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
             AddChild(shell);
+            DeskSmokeSupport.DeveloperWorkspace(shell);
             var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
             var spoke = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == "spoke-b");
             picker.Select(spoke);

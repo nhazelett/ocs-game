@@ -1,5 +1,7 @@
 # LinesOfSupport.Game
 
+Cold launch opens the title with **New game** and **Continue**. New game offers **Spoke B** and the tutorial when its scenario is installed; preparation follows. Continue resumes the autosave without opening a file dialog. **Menu** returns to the title. The **Developer tools** toggle is off on every launch; opting in exposes the scenario catalog, approach replay and saved-file loader, plus a title-screen shortcut to the testing workspace. Turning it off closes the file dialog. The older panel descriptions below refer to that workspace while M2R's remaining opening/map revisions are built.
+
 M1-05 shell for **OCS: Lines of Support**. Requires the **.NET 8 SDK** and **Godot 4.6 .NET** (tested with 4.6.1). The standard Godot download without .NET cannot run these C# scripts. No art, add-ons, export templates or Python packages are needed to open and run the game project.
 
 From the repository root:

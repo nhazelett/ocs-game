@@ -84,7 +84,19 @@ public sealed record CapabilityTile(string SiteId, string CapabilityId, string L
 
 /// <summary>The morning board: what changed overnight, sorted alerts first, plus the capability tiles and the top strip.</summary>
 /// <param name="Items">Items from the last AdvanceDay, Alert then Warning then Info, in record order within a severity. Empty on day 1.</param>
-public sealed record MorningBoardView(int Day, TopStripView Strip, IReadOnlyList<BoardItem> Items, IReadOnlyList<CapabilityTile> Tiles);
+/// <param name="Lead">The one thing the day leads with (M2R-05), or null on a quiet day.</param>
+public sealed record MorningBoardView(int Day, TopStripView Strip, IReadOnlyList<BoardItem> Items, IReadOnlyList<CapabilityTile> Tiles,
+    LeadItem? Lead = null);
+
+/// <summary>Why an item leads the day, in the order the fixed rule tries them (design doc 6.3).</summary>
+public enum LeadKind { Decision, Overdue, Alert, Clock }
+
+/// <summary>The one decision in front (M2R-05, R5). Text is a fact in prose, never advice (R4); open LinkKind/LinkId to act.</summary>
+/// <param name="Person">Who it comes from, when someone does.</param>
+/// <param name="DueDay">The day the clock or requirement is due, when there is one.</param>
+/// <param name="RecordId">For an Alert, the board record it repeats.</param>
+public sealed record LeadItem(LeadKind Kind, string Text, BoardLinkKind LinkKind, string LinkId, PersonView? Person, int? DueDay,
+    string? RecordId = null);
 
 // ------------------------------------------------------------------ requirement editor (OCS seat)
 

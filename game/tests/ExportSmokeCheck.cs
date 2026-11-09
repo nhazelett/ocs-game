@@ -11,6 +11,7 @@ internal static class ExportSmokeCheck
         try
         {
             Require(!OS.HasFeature("editor"), "Run this check with the exported executable.");
+            DeskSmokeSupport.DeveloperWorkspace(shell);
             var catalog = ScenarioCatalog.Discover(GamePaths.ScenarioRoot);
             Require(catalog.All(x => !x.Name.StartsWith("_", StringComparison.Ordinal)), "Development scenarios are not packaged.");
             Require(catalog.Any(x => x.Name == "spoke-b-90"), "Packaged 90-day Spoke B is present.");

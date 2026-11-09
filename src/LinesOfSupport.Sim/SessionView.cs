@@ -48,6 +48,10 @@ public sealed class SessionView
     public PersonView? FinanceContact => _s.BuildPerson(_s.Scenario.Actors.Fm.Person);
     /// <summary>The site commander, or null.</summary>
     public PersonView? Commander => _s.BuildPerson(_s.Scenario.Actors.Commander.Person);
+    /// <summary>The opening turnover (M2R-02): briefing, then the shop, inherited contracts, vendor list and money as four
+    /// paragraphs in the outgoing CCO's voice, with the same facts as rows. Built from the handover, so hidden problems stay
+    /// hidden. Meant for day 1; it reads the shop as it stands.</summary>
+    public TurnoverView Turnover() => _s.BuildTurnover();
     /// <summary>The outgoing CCO who hands over the shop, or null.</summary>
     public PersonView? OutgoingCco => _s.BuildPerson(_s.Scenario.People.FirstOrDefault(p => p.Role == "outgoingCco")?.Id);
     /// <summary>Sites whose commander lost confidence in contracting (a refused handshake). Their shop work waits behind
