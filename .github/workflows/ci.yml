@@ -93,6 +93,8 @@ jobs:
           grep -Fq 'FRONT_DOOR_SMOKE_PASS:' "$RUNNER_TEMP/godot-front.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/TurnoverSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-turnover.log"
           grep -Fq 'TURNOVER_SMOKE_PASS:' "$RUNNER_TEMP/godot-turnover.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/LeadSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-lead.log"
+          grep -Fq 'LEAD_SMOKE_PASS:' "$RUNNER_TEMP/godot-lead.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PeopleSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-people.log"
           grep -Fq 'PEOPLE_SMOKE_PASS:' "$RUNNER_TEMP/godot-people.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/MarketSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-market.log"
