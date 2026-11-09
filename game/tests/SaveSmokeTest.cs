@@ -121,6 +121,7 @@ public partial class SaveSmokeTest : Node
         var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
         shell.AutosavePathOverride = path;
         AddChild(shell);
+        DeveloperWorkspace(shell);
         return shell;
     }
 }

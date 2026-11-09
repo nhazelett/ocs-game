@@ -14,6 +14,7 @@ public partial class PrepSmokeTest : Node
         try
         {
             var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>(); AddChild(shell);
+            DeveloperWorkspace(shell);
             var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
             var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == "spoke-b");
             picker.Select(index); picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);

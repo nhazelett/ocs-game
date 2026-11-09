@@ -81,11 +81,14 @@ public partial class GameShell
             GetNode<OptionButton>("%ScenarioPicker").Select(index);
             SetReplays(replayPaths);
             GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
-            RefreshDisplay($"Resumed {Path.GetFileName(path)}. Your saved decisions are applied; future days are yours to play.");
+            RefreshDisplay(DeveloperTools ? $"Resumed {Path.GetFileName(path)}. Your saved decisions are applied; future days are yours to play." : "Your saved deployment is ready. Pick up where you left off.");
+            ShowGameSurface();
         }
         catch (Exception error)
         {
-            RefreshDisplay($"Cannot load save: {error.Message}");
+            var message = DeveloperTools ? $"Cannot load save: {error.Message}" : "We couldn't continue your saved deployment. Your current game is unchanged.";
+            RefreshDisplay(message);
+            if (AtFrontDoor) frontMessage.Text = message;
         }
     }
 
