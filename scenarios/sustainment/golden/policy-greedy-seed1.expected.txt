@@ -13,7 +13,7 @@ Before day 1
   START     Inherited: Fuel at Spoke C from Port Fuel Haulers (IDIQ order), days -19 to 40.
   START     Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   START     Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
-  START     Inherited: Water at Spoke A from Partner force (ACSA) (acquisition and cross-servicing agreement order), days -9 to 50.
+  START     Inherited: Water at Spoke A from the partner force (acquisition and cross-servicing agreement order), days -9 to 50.
   START     Inherited: Comms backhaul at Spoke A from North Island Telecom (written purchase order), days -9 to 21.
   START     Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (government purchase card), days -5 to 24.
   START     Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (written purchase order), days -2 to 27.
@@ -223,7 +223,7 @@ Day 38
   SHORT     Material handling equipment at Spoke C down to 0%: supply 2 unit-days against demand 2; fuel at 0%.
 Day 39
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Partner force (ACSA) water at Spoke A ended.
+  END       The partner force water at Spoke A ended.
   OK        Comms backhaul at Spoke A restored to 100%.
   OK        Fuel at Spoke C restored to 100%.
   SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 unit-days against demand 2.
@@ -589,4 +589,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.71)
 
-State hash 1fc90052b66a8a6f16a06d64999bdccbfeadaec3cbc0c726a3fa379b1795e5aa
+State hash 1e5b2b8be2131dc605705084f57f0906ccba656af82c85eef4afb1f1bfa534ab

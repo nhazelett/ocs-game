@@ -74,7 +74,7 @@ public partial class GameShell
         Contact("meeting", "Staff meeting", view.Commander);
         Contact("sco", "SCO staff", view.ScoContact);
         if (view.Scenario.Actors.AcsaPartner is not null) Contact("j4", "J4 / ACSA manager", null);
-        foreach (var rep in view.VendorReps) Contact("vendor:" + rep.Id, rep.VendorName ?? "Vendor", rep);
+        foreach (var rep in view.VendorReps) Contact("vendor:" + rep.Id, DeskUi.ListLabel(rep.VendorName ?? "Vendor"), rep);
         PersonContactInput = AddPick(visitsForm, "Who would you like to reach?", contacts, visitContact, id => { visitContact = id; RefreshVisits(session.View, session.View?.MorningBoard()); });
         visitContact = Picked(PersonContactInput);
         var person = contactPeople.TryGetValue(visitContact ?? "", out var personId) && personId is not null ? view.Person(personId) : null;

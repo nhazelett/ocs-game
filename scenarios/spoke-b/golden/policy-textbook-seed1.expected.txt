@@ -6,7 +6,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM; pull existing vehicles with scope and ceilings from reach-back; bring vendor lists and vetting from reach-back; bring templates and a manual contracting kit; stand up GPC accounts and cardholder limits (14 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
@@ -128,7 +128,7 @@ Day 21
 Day 22
   ACTION    Definitization of Meridian Site Services power at Spoke B started; to be funded from the O&M line.
   DONE      CE small buys: none worked today (no hours left); 2 waiting, 5 went on cards.
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 23
   DONE      CE small buys: none worked today (no hours left); 4 waiting, 5 went on cards.
   START     Water at Spoke C from Coastal Provisions began, 720 gal/day.
@@ -215,4 +215,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.925)
 
-State hash b986a39602dfc9856467c34eff94aadcfac35d238b6c8b43a68db7b4456de8cc
+State hash c3488cb524eb5fba816f8b7b967d299ec6e40b151e1dd62b8afe089ff057ad9a

@@ -40,8 +40,8 @@ public partial class SessionSmokeTest : Node
             var strip = expected.View.TopStrip();
             Require(shell.GetNode<ProgressBar>("%CashGauge").MaxValue == strip.CashFullCents, "Cash maximum comes from TopStrip.");
             Require(shell.GetNode<ProgressBar>("%ShopHoursGauge").MaxValue == strip.ShopHoursPerDay, "Shop maximum comes from TopStrip.");
-            Require(shell.GetNode<Label>("%DayCounter").Text == "Day 11 (next)", "Day label honors the Sim's next-day convention.");
-            Require(shell.GetNode<Label>("%InboxDay").Text.Contains("Day 10 results"), "Inbox names the day just played.");
+            Require(shell.GetNode<Label>("%DayCounter").Text == "Morning of day 11", "Day label names the actual morning without advancing it.");
+            Require(shell.GetNode<Label>("%InboxDay").Text == "What happened on day 10", "Inbox names the day just played.");
             var inbox = shell.GetNode<RichTextLabel>("%InboxRecords");
             Require(!inbox.BbcodeEnabled, "Record text cannot become markup.");
             foreach (var record in expected.View.MorningBoard().Items)

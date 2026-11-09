@@ -23,6 +23,13 @@ public class DebriefSummaryTests
         }
     }
 
+    /// <summary>Each scenario's turnover paragraphs, from a fresh session as the player reads them.</summary>
+    private static readonly Dictionary<string, string[]> Turnovers = Scenarios.ToDictionary(sc => sc, sc =>
+    {
+        var t = Session.Create(Repo.Load(sc), 1).View.Turnover();
+        return t.Sections.Select(x => x.Text).ToArray();
+    });
+
     private static GapView? FirstFuelGapAtSpokeB(DebriefView d)
         => d.Gaps.Where(g => g.SiteId == "spokeBSite" && g.CapabilityId == "fuel").OrderBy(g => g.StartDay).FirstOrDefault();
 
@@ -108,17 +115,23 @@ public class DebriefSummaryTests
     {
         // M2R-29: "and Partner force had 4,000 gal a day to spare" read as a misprint. The partner is written as it reads
         // mid-sentence and capitalised only where it starts one.
-        var midSentenceCapital = new Regex(@"[a-z,;:] Partner force\b(?! \(ACSA\))");
+        // M2R-31: the vendor behind the inherited ACSA fuel row follows the same rule, so no "Partner force (ACSA)" label
+        // and no doubled parenthetical ("Partner force (ACSA) (acquisition and cross-servicing agreement order)").
+        var midSentenceCapital = new Regex(@"[a-z,;:] Partner force\b");
         var startsLower = new Regex(@"(^|[.!?] )the partner force\b");
+        var doubledParens = new Regex(@"\([^()]*\) \(");
         foreach (var (run, s) in AllRuns())
         {
             var texts = s.Records.Select(r => r.Text)
                          .Concat(s.View.Debrief().Gaps.SelectMany(g => g.Factors).Select(f => f.Text))
-                         .Append(s.View.Debrief().Summary?.Text ?? "");
+                         .Append(s.View.Debrief().Summary?.Text ?? "")
+                         .Concat(Turnovers[run.Split('/')[0]]);
             foreach (var t in texts)
             {
                 Assert.False(midSentenceCapital.IsMatch(t), $"{run}: {t}");
                 Assert.False(startsLower.IsMatch(t), $"{run}: {t}");
+                Assert.False(t.Contains("Partner force (ACSA)", StringComparison.Ordinal), $"{run}: {t}");
+                Assert.False(doubledParens.IsMatch(t), $"{run}: {t}");
             }
         }
     }

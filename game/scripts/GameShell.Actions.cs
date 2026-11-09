@@ -113,7 +113,7 @@ public partial class GameShell
         var target = targets.Single(t => t.Id == awardTarget);
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
-        vendorInput = AddPick(awardPanel, "Who could provide it?", new[] { new Pick("", "Choose a supplier…") }.Concat(editor.Vendors.Select(v => new Pick(v.Id, v.Name + (v.Standing is null ? "" : $" · {v.Standing}")))).ToArray(), awardVendor, id =>
+        vendorInput = AddPick(awardPanel, "Who could provide it?", new[] { new Pick("", "Choose a supplier…") }.Concat(editor.Vendors.Select(v => new Pick(v.Id, DeskUi.ListLabel(v.Name) + (v.Standing is null ? "" : $" · {v.Standing}")))).ToArray(), awardVendor, id =>
         { awardVendor = id; awardInstrument = awardVehicle = awardCor = null; RefreshActionDesk(session.View); });
         awardVendor = Picked(vendorInput);
         if (string.IsNullOrEmpty(awardVendor))

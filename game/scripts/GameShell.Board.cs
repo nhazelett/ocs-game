@@ -65,6 +65,8 @@ public partial class GameShell
             button.ToggleMode = true; button.ButtonPressed = SelectedCapability == key;
             button.SetMeta("capability", key); morningTiles.AddChild(button);
         }
+        var caption = GetNode<Label>("%BoardCaption");
+        caption.Text = ""; caption.Visible = false;
         if (view is not null && SelectedCapability is { } selected)
         {
             var tile = board?.Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == selected);
@@ -74,6 +76,7 @@ public partial class GameShell
                 var day = Math.Min(view.Day, view.LastDay);
                 var population = view.Population(tile.SiteId, day);
                 var planned = view.PlannedPopulation(tile.SiteId, day);
+                caption.Text = $"Selected: {tile.Label} at {name}"; caption.Visible = true;
                 boardFocus.Text = $"Selected: {tile.Label} at {name} · {StatusWords(tile.Status)} · {tile.TodayPermille / 10m:0.#}%\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
             }
         }

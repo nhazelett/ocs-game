@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    Ordered a site survey of Second Island.
   ACTION    The request for power for Spoke B: Generator fuel supply switched on.
@@ -104,7 +104,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -125,7 +125,7 @@ Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
@@ -197,7 +197,7 @@ Day 73
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $146,871 never obligated can no longer pay for anything new.
@@ -227,7 +227,7 @@ Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 87
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 88
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 89
@@ -259,4 +259,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.933)
 
-State hash 35f60cc87cf5fe5d356ea89fe818dec88c4e9074ccbab0dfe238d8eb583eefea
+State hash 9e78e01a7694def7b137e14a5b862284bf359057177a769fbca92528e660b44c

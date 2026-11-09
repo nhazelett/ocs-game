@@ -37,7 +37,7 @@ public partial class SaveSmokeTest : Node
             Require(shell.Session.View is null && !shell.ContinueSaveButton.Disabled, "Fresh shell offers Continue saved game before deployment.");
             shell.ContinueSaveButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && !shell.Session.IsReplay, "Restart restores the exact Sim state and gives control to the player.");
-            Require(shell.GetNode<Label>("%DayCounter").Text == "Day 10 (next)", "Saved morning is shown without advancing it.");
+                Require(shell.GetNode<Label>("%DayCounter").Text == "Morning of day 10", "Saved morning is shown without advancing it.");
             Require(shell.GetNode<ProgressBar>("%CashGauge").Value == expected.View.CashCents, "Restart restores cash.");
             var map = shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
             var status = expected.View.MorningBoard().Tiles.Where(t => t.SiteId == "spokeBSite").MinBy(t => t.TodayPermille)!.Status;

@@ -1,6 +1,5 @@
 using Godot;
 using System.Text.Json;
-using System.Globalization;
 
 namespace LinesOfSupport.Game;
 
@@ -15,6 +14,7 @@ public partial class GameShell : Control
 
     public override void _Ready()
     {
+        BuildReadableChrome();
         GetNode<Label>("%GameTitle").Text = ProjectSettings.GetSetting("application/config/name").AsString();
         GetNode<Button>("%NextDay").Pressed += OnNextDay;
         GetNode<Button>("%ReplayButton").Pressed += OnReplay;
@@ -78,7 +78,6 @@ public partial class GameShell : Control
         {
             var data = ScenarioBoardData.Load(scenarios[(int)index].ScenarioPath);
             Map.ShowScenario(data);
-            GetNode<Label>("%BoardCaption").Text = data.Title;
             session.LoadScenario(scenarios[(int)index].ScenarioPath);
             ShowPrepChoices();
             SetReplays(FindReplays(scenarios[(int)index].ScenarioPath));
@@ -87,7 +86,6 @@ public partial class GameShell : Control
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or
             KeyNotFoundException or InvalidOperationException or FormatException)
         {
-            if (Map.Data is null) GetNode<Label>("%BoardCaption").Text = "Scenario could not be displayed.";
             RefreshDisplay($"Cannot load scenario: {error.Message}");
         }
     }
@@ -133,17 +131,20 @@ public partial class GameShell : Control
         var strip = view?.TopStrip();
         var board = view?.MorningBoard();
         displayStatus = status; displayStatusDeveloperOnly = developerOnly; RefreshBuildStatus();
-        GetNode<Label>("%DayCounter").Text = strip is null ? "No scenario" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Day {strip.Day} (next)";
+        GetNode<Label>("%DayCounter").Text = strip is null ? "No deployment" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Morning of day {strip.Day}";
         GetNode<Button>("%NextDay").Disabled = view is null || view.Finished;
         GetNode<Button>("%Continue").Disabled = view is null || view.Finished;
         var shop = GetNode<ProgressBar>("%ShopHoursGauge");
         var capacity = strip?.ShopHoursPerDay ?? 0;
-        GetNode<Label>("%ShopHoursLabel").Text = strip is null ? "Shop: —" : $"Shop: {strip.ShopHoursQueued} h queued / {capacity} h/day";
+        var hours = capacity == 1 ? "hour" : "hours";
+        GetNode<Label>("%ShopHoursLabel").Text = strip is null ? "Shop time: —" : strip.ShopHoursQueued == 0
+            ? $"{capacity:0.#} shop {hours} a day, none spoken for"
+            : $"{strip.ShopHoursQueued:0.#} of {capacity:0.#} {hours} spoken for";
         shop.MaxValue = Math.Max(1, capacity);
         shop.Value = Math.Min(strip?.ShopHoursQueued ?? 0, capacity);
         shop.TooltipText = strip is null ? "Load a scenario." : $"Queued work spans {strip.QueueDays} days at current shop capacity.";
         var cash = GetNode<ProgressBar>("%CashGauge");
-        GetNode<Label>("%CashLabel").Text = strip is null ? "Cash: —" : $"Cash: ${(strip.CashCents / 100m).ToString("N2", CultureInfo.InvariantCulture)}";
+        GetNode<Label>("%CashLabel").Text = strip is null ? "Cash: —" : $"Cash: {DeskUi.WholeDollars(strip.CashCents)} of {DeskUi.WholeDollars(strip.CashFullCents)}";
         cash.MaxValue = Math.Max(1, strip?.CashFullCents ?? 0);
         cash.Value = strip?.CashCents ?? 0;
         cash.TooltipText = "Cash on hand relative to the full balance.";
@@ -161,7 +162,7 @@ public partial class GameShell : Control
         Map.ShowConfidence(view?.LostConfidenceSites ?? []);
         Map.ShowCapabilities(board?.Tiles ?? []);
         Map.ShowMapDay(view?.MapDay());
-        GetNode<Label>("%InboxDay").Text = view is null ? "No scenario loaded" : $"Day {session.CompletedDay} results · next day {(view.Finished ? "complete" : view.Day.ToString())}";
+        GetNode<Label>("%InboxDay").Text = view is null ? "No deployment started" : session.CompletedDay == 0 ? "Your first morning" : $"What happened on day {session.CompletedDay}";
         var records = (board?.Items ?? []).Where(r => DeveloperTools || r.Category != LinesOfSupport.Sim.Views.BoardCategory.Request || r.LinkKind != LinesOfSupport.Sim.Views.BoardLinkKind.Card).ToArray();
         GetNode<RichTextLabel>("%InboxRecords").Text = records.Length == 0 ? "No other news for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
         GetNode<OptionButton>("%ReplayPicker").Disabled = replays.Length == 0;
