@@ -43,7 +43,7 @@ public class RulesTests
         // Harbor Equipment does not offer operators, and the BPA's scope does not include them either.
         var r = s.Apply(new AwardAction { Id = "x", Instrument = "bpaCall", Vendor = "vendorC", Vehicle = "bosBpa", Site = "spokeBSite", Capability = "power", Lines = ["generation", "operator"], Quantity = 300, DurationDays = 30, FundingLine = "om1" });
         Assert.False(r.Accepted);
-        Assert.Contains(r.HardStops, h => h.Contains("outside bosBpa's scope"));
+        Assert.Contains(r.HardStops, h => h.Contains("BPA's scope"));
     }
 
     [Fact]

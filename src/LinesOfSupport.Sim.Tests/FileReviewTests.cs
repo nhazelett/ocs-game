@@ -234,7 +234,7 @@ public class FileReviewTests
             if (review) ReviewAll(s);
             RunTo(s, 91);
             return s.View.Debrief().Gaps.SelectMany(g => g.Factors)
-                     .FirstOrDefault(f => f.Kind == GapFactorKind.VendorFailure && f.Text.StartsWith("oldFuel", StringComparison.Ordinal));
+                     .FirstOrDefault(f => f.Kind == GapFactorKind.VendorFailure && f.Text.StartsWith(s.View.ArrangementName("oldFuel"), StringComparison.Ordinal));
         }
         var unreviewed = Factor(review: false);
         Assert.NotNull(unreviewed);
@@ -254,7 +254,7 @@ public class FileReviewTests
         var s = Session.Create(Variant(Unreliable, visibleRow), 3);
         RunTo(s, 91);
         var f = s.View.Debrief().Gaps.SelectMany(g => g.Factors)
-                 .First(x => x.Kind == GapFactorKind.VendorFailure && x.Text.StartsWith("oldFuel", StringComparison.Ordinal));
+                 .First(x => x.Kind == GapFactorKind.VendorFailure && x.Text.StartsWith(s.View.ArrangementName("oldFuel"), StringComparison.Ordinal));
         Assert.Equal(GapTag.Unforeseeable, f.Tag);
     }
 

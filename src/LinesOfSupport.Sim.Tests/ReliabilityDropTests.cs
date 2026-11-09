@@ -138,7 +138,7 @@ public class ReliabilityDropTests
             var s = Session.Create(Bundle.Value, seed);
             while (!s.Finished) s.AdvanceDay();
             if (!Fired(s)) continue;
-            foreach (var f in s.View.Debrief().Gaps.SelectMany(g => g.Factors).Where(f => f.Kind == GapFactorKind.VendorFailure && f.Text.StartsWith("bFuel", StringComparison.Ordinal) && f.FirstDay > DropDay))
+            foreach (var f in s.View.Debrief().Gaps.SelectMany(g => g.Factors).Where(f => f.Kind == GapFactorKind.VendorFailure && f.Text.StartsWith(s.View.ArrangementName("bFuel"), StringComparison.Ordinal) && f.FirstDay > DropDay))
             {
                 if (f.Tag == GapTag.Avoidable) avoidable ??= f;
                 if (f.Tag == GapTag.Unforeseeable && !s.View.PerformanceIssues.Any(i => i.ArrangementId == "bFuel" && i.OpenedDay < DropDay)) unforeseeable ??= f;

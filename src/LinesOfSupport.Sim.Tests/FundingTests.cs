@@ -58,7 +58,7 @@ public class FundingTests
             Assert.False(om2.UsableOn(76));
             Assert.Contains(s.Records, r => r.Kind == RecordKind.Funding && r.Day == 75 && r.Text.StartsWith("No funding line has money usable from day 76"));
             PlayTo(s, om2.AvailableDay);
-            Assert.Contains(s.Records, r => r.Kind == RecordKind.Funding && r.Day == om2.AvailableDay - 1 && r.Text.StartsWith("Comptroller released funding line om2"));
+            Assert.Contains(s.Records, r => r.Kind == RecordKind.Funding && r.Day == om2.AvailableDay - 1 && r.Text.StartsWith("Comptroller released the O&M line from day"));
             releases.Add(om2.AvailableDay);
             notices.Add(late.Day);
         }
@@ -99,10 +99,10 @@ public class FundingTests
     {
         var s = Session.Create(Repo.Load("spoke-b-90"), 1);
         Assert.True(s.View.Preview(PowerPo()).Accepted, string.Join("; ", s.View.Preview(PowerPo()).HardStops));
-        Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("om2 is not usable on day 1"));
+        Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("is not usable on day 1"));
         PlayTo(s, 77);
-        Assert.Contains(s.View.Preview(PowerPo()).HardStops, h => h.Contains("om1 is not usable on day 77"));
-        Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("om2 is not usable on day 77"));
+        Assert.Contains(s.View.Preview(PowerPo()).HardStops, h => h.Contains("the O&M line good through day 75 is not usable on day 77"));
+        Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("the O&M line from day 76 is not usable on day 77"));
         Assert.False(s.Apply(PowerPo()).Accepted);
         var option = s.View.ActionEditor("spokeBSite", "power")!.Funding.Single(f => f.Id == "om2");
         Assert.False(option.UsableToday);
@@ -123,15 +123,15 @@ public class FundingTests
         Assert.True(applied.Accepted, applied.Message);
         PlayTo(s, 91);
         var rejected = s.Records.Single(r => r.Kind == RecordKind.Rejected && r.Subject == "po");
-        Assert.Contains("funding line om1 expired with day 75", rejected.Text);
+        Assert.Contains("expired with day 75", rejected.Text);
         Assert.DoesNotContain(s.Arrangements, a => a.Id == "po");
 
         var gap = s.View.Debrief().Gaps.Single(g => g.SiteId == "spokeBSite" && g.CapabilityId == "power" && g.StartDay <= 76 && g.EndDay >= 77);
         var lapse = gap.Factors.Single(f => f.Kind == GapFactorKind.FundingLapse);
         Assert.Equal(GapTag.Avoidable, lapse.Tag);
-        Assert.Contains("om1 reached its fiscal-year end with day 75", lapse.Text);
+        Assert.Contains("The O&M line good through day 75 reached its fiscal-year end with day 75", lapse.Text);
         Assert.Contains("late (the comptroller warned on day", lapse.Text);
-        Assert.Contains("po reached award with no money to pay for it", lapse.Text);
+        Assert.Contains("Meridian Site Services power at Spoke B reached award with no money to pay for it", lapse.Text);
         Assert.Contains(rejected.Id, lapse.RecordIds);
     }
 
@@ -145,7 +145,7 @@ public class FundingTests
         var lapse = gap.Factors.Single(f => f.Kind == GapFactorKind.FundingLapse);
         Assert.Equal(GapTag.Unforeseeable, lapse.Tag);
         Assert.Contains("days 1 to 9", lapse.Text);
-        Assert.Contains("om1 was released day 10", lapse.Text);
+        Assert.Contains("line was released day 10", lapse.Text);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class FundingTests
         var s = Session.Create(b, 1);
         Assert.True(s.View.Preview(FuelPo()).Accepted, string.Join("; ", s.View.Preview(FuelPo()).HardStops));
         var stops = s.View.Preview(PowerPo()).HardStops;
-        Assert.Contains(stops, h => h.Contains("funding line om1 is certified for fuel only, not power"));
+        Assert.Contains(stops, h => h.Contains("is certified for fuel only, not power"));
         Assert.False(s.Apply(PowerPo()).Accepted);
         Assert.False(s.View.ActionEditor("spokeBSite", "power")!.Funding.Single().PaysForThis);
         Assert.True(s.View.ActionEditor("hubSite", "fuel")!.Funding.Single().PaysForThis);

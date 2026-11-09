@@ -43,13 +43,13 @@ public sealed partial class Session
         AcsaCheck Fail(string why) => new([.. stops, why], null, null, null, null, [], 0, 0);
         if (!Rules.Instruments.TryGetValue(AcsaInstrument, out var inst)) return Fail("acsa is not in the rules");
         if (string.IsNullOrWhiteSpace(o.Id)) stops.Add("an order needs an id");
-        else if (IdInUse(o.Id)) stops.Add($"id {o.Id} is already used");
+        else if (IdInUse(o.Id)) stops.Add($"id {NameOf(o.Id)} is already used");
         CardState? card = null;
         if (o.Card is not null)
         {
             card = _cards.FirstOrDefault(c => c.Id == o.Card);
-            if (card is null) return Fail($"card {o.Card} does not exist");
-            if (Day < card.SubmittedDay) return Fail($"card {o.Card} has not been submitted yet");
+            if (card is null) return Fail($"{CardName(o.Card)} does not exist");
+            if (Day < card.SubmittedDay) return Fail($"{CardName(o.Card)} has not been submitted yet");
         }
         var siteId = o.Site ?? card?.SiteId;
         var capId = o.Capability ?? card?.CapabilityId;
@@ -73,8 +73,8 @@ public sealed partial class Session
         if (line is null) stops.Add("an ACSA order needs a funding line for the reimbursement");
         else
         {
-            if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
-            else if (line.RemainingCents < total) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left for {Money(total)}");
+            if (!line.UsableOn(Day)) stops.Add($"{NameOf(line.Id)} is not usable on day {Day}");
+            else if (line.RemainingCents < total) stops.Add($"{NameOf(line.Id)} has {Money(line.RemainingCents)} left for {Money(total)}");
             stops.AddRange(FundingStops(line, capId, o.StartDay, o.DurationDays));
         }
         return new AcsaCheck(stops, inst, card, siteId, capId, lines, daily, total);
@@ -89,8 +89,8 @@ public sealed partial class Session
         var lag = _rngAcsa.NextInt(inst.StartLagDays);
         var capId = chk.CapabilityId!;
         var rec = AddRecord(Day, RecordKind.Action, o.Id,
-            $"ACSA order {o.Id} to {PartnerName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; reimbursable {Money(chk.TotalCents)} from {o.FundingLine}; {shopDays} shop day(s).", []);
-        AddWork(WorkKind.AcsaOrder, $"ACSA order {o.Id}", Hours(shopDays, inst.RequiresSystemOrManual), Day + Scenario.Actors.Fm.CertificationLagDays,
+            $"ACSA order to {PartnerName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; reimbursable {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}; {shopDays} shop day(s).", []);
+        AddWork(WorkKind.AcsaOrder, $"ACSA order for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual), Day + Scenario.Actors.Fm.CertificationLagDays,
                 new AcsaPayload(o, chk.SiteId!, capId, chk.Lines, chk.DailyCents, chk.TotalCents, lag), rec);
         return ActionResult.Ok("in work");
     }
@@ -103,7 +103,7 @@ public sealed partial class Session
             : !line.UsableOn(day) || line.RemainingCents < p.TotalCents ? FundingShortReason(line, p.TotalCents, day) : null;
         if (refusal is not null)
         {
-            var rej = AddRecord(day, RecordKind.Rejected, o.Id, $"ACSA order {o.Id} could not be placed on day {day}: {refusal}.", [causeId]);
+            var rej = AddRecord(day, RecordKind.Rejected, o.Id, $"ACSA order for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} could not be placed on day {day}: {refusal}.", [causeId]);
             if (!Withdrawn(p.CapabilityId)) _fundingRejections.Add((o.Id, p.SiteId, p.CapabilityId, day, rej));
             return;
         }
@@ -119,7 +119,7 @@ public sealed partial class Session
             CreatedDay = day, CardId = o.Card, CauseId = causeId, StartDay = start, EndDay = start + o.DurationDays - 1,
         });
         AddRecord(day, RecordKind.WorkDone, o.Id,
-            $"ACSA order {o.Id} placed with {partner.Name}; support starts day {start}, ends day {start + o.DurationDays - 1}. Reimbursement of {Money(p.TotalCents)} obligated from {line.Id}. The partner can withdraw it when its own needs rise.", [causeId]);
+            $"ACSA order for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} placed with {partner.Name}; support starts day {start}, ends day {start + o.DurationDays - 1}. Reimbursement of {Money(p.TotalCents)} obligated from {NameOf(line.Id)}. The partner can withdraw it when its own needs rise.", [causeId]);
     }
 
     /// <summary>Event effect acsa.withdraw: the partner ends its support for a capability (null: everything) after a notice.</summary>
@@ -140,11 +140,11 @@ public sealed partial class Session
             if (back > 0 && _funding.FirstOrDefault(f => f.Id == a.FundingLineId) is { } fl)
             {
                 a.ObligatedCents -= back;
-                if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} of reimbursement returns to {fl.Id}."; }
-                else tail = $" {Money(back)} of reimbursement is released; {fl.Id} has expired, so it lapses.";
+                if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} of reimbursement returns to {NameOf(fl.Id)}."; }
+                else tail = $" {Money(back)} of reimbursement is released; {NameOf(fl.Id)} has expired, so it lapses.";
             }
             AddRecord(day, RecordKind.Withdrawal, a.Id,
-                $"{PartnerName} withdrew ACSA order {a.Id} ({CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)}); last day of support {a.EndDay}. An ACSA order is support the partner can spare, not a contract it must perform.{tail}", [cause, a.CauseId]);
+                $"{PartnerName} withdrew the ACSA order ({CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)}); last day of support {a.EndDay}. An ACSA order is support the partner can spare, not a contract it must perform.{tail}", [cause, a.CauseId]);
         }
         if (running.Count == 0)
             AddRecord(day, RecordKind.Event, "acsa", $"{PartnerName} withdrew {what} under the ACSA; no orders were running.", [cause]);

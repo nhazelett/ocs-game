@@ -42,7 +42,7 @@ public sealed partial class Session
             if (a.Status is not (ArrangementStatus.Active or ArrangementStatus.Pending or ArrangementStatus.Suspended))
             {
                 i.Outcome = CureOutcome.Cured;
-                AddRecord(d, RecordKind.Compliance, i.Id, $"Cure period on {i.Id} ended; {a.Id} was no longer running.", [i.CauseId]);
+                AddRecord(d, RecordKind.Compliance, i.Id, $"Cure period on {NameOf(i.Id)} ended; {NameOf(a.Id)} was no longer running.", [i.CauseId]);
                 continue;
             }
             var lateFailures = _records.Count(r => r.Kind == RecordKind.VendorFailure && r.Subject == a.Id && r.Day > i.CureNoticeDay && r.Day <= d);
@@ -51,14 +51,14 @@ public sealed partial class Session
                 i.Outcome = CureOutcome.Cured;
                 a.ReliabilityPermille = Math.Max(a.ReliabilityPermille, Perf.CuredReliabilityPermille);
                 AddRecord(d, RecordKind.Compliance, i.Id,
-                    $"{vendor} cured {i.Id}: the cure period ended with a corrective plan in place ({lateFailures} failure day(s) during the period). Performance is back to standard.", [i.CauseId]);
+                    $"{vendor} cured {NameOf(i.Id)}: the cure period ended with a corrective plan in place ({lateFailures} failure day(s) during the period). Performance is back to standard.", [i.CauseId]);
             }
             else
             {
                 i.Outcome = CureOutcome.Default;
                 a.ReliabilityPermille = Math.Max(500, a.ReliabilityPermille - Perf.DefaultReliabilityDropPermille);
                 AddRecord(d, RecordKind.Compliance, i.Id,
-                    $"{vendor} did not cure {i.Id} and is in default. Performance keeps slipping; the contracting officer may terminate {a.Id} for default.", [i.CauseId]);
+                    $"{vendor} did not cure {NameOf(i.Id)} and is in default. Performance keeps slipping; the contracting officer may terminate {NameOf(a.Id)} for default.", [i.CauseId]);
             }
         }
     }
@@ -73,7 +73,7 @@ public sealed partial class Session
         var issueId = $"pi{_issues.Count + 1}";
         var vendor = VendorData(a.VendorId)?.Name ?? "The vendor";
         var rec = AddRecord(d, RecordKind.Inbox, issueId,
-            $"Performance issue {issueId}: {vendor} under-delivered on {a.Id} on days {string.Join(" and ", days)}{seenBy}. Decision: issue a cure notice ({Perf.CureNoticeShopHours} shop hours, then a {Perf.CureDays}-day cure period), re-source while it keeps running, or terminate.",
+            $"Performance issue: {vendor} under-delivered on {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)} on days {string.Join(" and ", days)}{seenBy}. Decision: issue a cure notice ({Perf.CureNoticeShopHours} shop hours, then a {Perf.CureDays}-day cure period), re-source while it keeps running, or terminate.",
             [.. causes, a.CauseId]);
         _issues.Add(new PerformanceIssueState
         {
@@ -85,15 +85,15 @@ public sealed partial class Session
     private ActionResult ApplyCureNotice(CureNoticeAction c)
     {
         var i = _issues.FirstOrDefault(x => x.Id == c.Issue);
-        if (i is null) return ActionResult.Stop($"performance issue {c.Issue} does not exist");
-        if (i.CureNoticeDay is not null) return ActionResult.Stop($"a cure notice on {i.Id} was already issued on day {i.CureNoticeDay}");
+        if (i is null) return ActionResult.Stop($"{NameOf(c.Issue)} does not exist");
+        if (i.CureNoticeDay is not null) return ActionResult.Stop($"a cure notice on {NameOf(i.Id)} was already issued on day {i.CureNoticeDay}");
         if (_work.Any(w => w.CompletedDay is null && w.Kind == WorkKind.CureNotice && (string?)w.Payload == i.Id))
-            return ActionResult.Stop($"a cure notice on {i.Id} is already in work");
+            return ActionResult.Stop($"a cure notice on {NameOf(i.Id)} is already in work");
         var a = _arrangements.First(x => x.Id == i.ArrangementId);
         if (a.Status is not (ArrangementStatus.Active or ArrangementStatus.Suspended))
-            return ActionResult.Stop($"{a.Id} is not running");
-        var rec = AddRecord(Day, RecordKind.Action, i.Id, $"Cure notice on {i.Id} ({a.Id}) started: {Perf.CureNoticeShopHours} shop hours.", [i.CauseId]);
-        AddWork(WorkKind.CureNotice, $"Cure notice {i.Id}", Fixed.Milli(Perf.CureNoticeShopHours), Day, i.Id, rec);
+            return ActionResult.Stop($"{NameOf(a.Id)} is not running");
+        var rec = AddRecord(Day, RecordKind.Action, i.Id, $"Cure notice on {NameOf(i.Id)} started: {Perf.CureNoticeShopHours} shop hours.", [i.CauseId]);
+        AddWork(WorkKind.CureNotice, $"Cure notice {NameOf(i.Id)}", Fixed.Milli(Perf.CureNoticeShopHours), Day, i.Id, rec);
         return ActionResult.Ok("in work");
     }
 
@@ -103,7 +103,7 @@ public sealed partial class Session
         i.CureNoticeDay = day;
         i.CureEndsDay = day + Perf.CureDays;
         AddRecord(day, RecordKind.WorkDone, i.Id,
-            $"Cure notice on {i.Id} delivered to {VendorData(i.VendorId)?.Name ?? "the vendor"}: {Perf.CureDays} days to cure, ending day {i.CureEndsDay}.", [causeId]);
+            $"Cure notice on {NameOf(i.Id)} delivered to {VendorData(i.VendorId)?.Name ?? "the vendor"}: {Perf.CureDays} days to cure, ending day {i.CureEndsDay}.", [causeId]);
     }
 
     /// <summary>What the player did about an issue, read back from the record: cure notice, terminate or re-source.</summary>
@@ -118,7 +118,7 @@ public sealed partial class Session
             parts.Add("terminated");
         var replacement = _arrangements.FirstOrDefault(x => x.Id != a.Id && x.SiteId == i.SiteId && x.CapabilityId == i.CapabilityId
                                                              && x.CreatedDay >= i.OpenedDay && !x.IsCoordination && x.Status != ArrangementStatus.Declined);
-        if (replacement is not null) parts.Add($"re-sourced ({replacement.Id})");
+        if (replacement is not null) parts.Add($"re-sourced ({NameOf(replacement.Id)})");
         return parts.Count == 0 ? "no decision" : string.Join("; ", parts);
     }
 }

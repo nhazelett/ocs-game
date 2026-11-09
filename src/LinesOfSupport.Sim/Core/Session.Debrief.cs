@@ -12,7 +12,7 @@ public sealed partial class Session
 
     private string IssueNote(string arrangementId)
         => _issues.LastOrDefault(i => i.ArrangementId == arrangementId) is { } i
-            ? $" Performance issue {i.Id} opened day {i.OpenedDay}; decision: {IssueDecision(i)}."
+            ? $" {Upper(NameOf(i.Id))} opened day {i.OpenedDay}; decision: {IssueDecision(i)}."
             : "";
 
     /// <summary>Capability levels by day, index 0 = day 1; -1 where the site was not open.</summary>
@@ -85,7 +85,7 @@ public sealed partial class Session
                 if (w is null) continue;
                 any = true;
                 yield return ($"coord|{co.Id}", new GapFactor(GapFactorKind.CoordinationWithdrawn, GapTag.Avoidable, d,
-                    $"Coordination {co.Id} was withdrawn on day {w.Day} and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.", [w.Id, co.CauseId]));
+                    $"The coordination for {Lower(CapLabel(co.CapabilityId))} at {SiteName(co.SiteId)} was withdrawn on day {w.Day} and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.", [w.Id, co.CauseId]));
             }
             foreach (var ac in _arrangements.Where(a => a.Instrument == AcsaInstrument && a.SiteId == siteId && a.CapabilityId == capId && a.EndDay < d && a.EndDay >= lastContractEnd))
             {
@@ -93,7 +93,7 @@ public sealed partial class Session
                 if (w is null) continue;
                 any = true;
                 yield return ($"acsa|{ac.Id}", new GapFactor(GapFactorKind.AcsaWithdrawn, GapTag.Avoidable, d,
-                    $"ACSA order {ac.Id} was withdrawn by {PartnerName} on day {w.Day} (last day of support {ac.EndDay}) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.", [w.Id, ac.CauseId]));
+                    $"The ACSA order for {Lower(CapLabel(ac.CapabilityId))} at {SiteName(ac.SiteId)} was withdrawn by {PartnerName} on day {w.Day} (last day of support {ac.EndDay}) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.", [w.Id, ac.CauseId]));
             }
             foreach (var hn in _arrangements.Where(a => a.Instrument == HostNationInstrument && a.SiteId == siteId && Supplies(a, capId) && a.EndDay < d && a.EndDay >= lastContractEnd))
             {
@@ -104,9 +104,9 @@ public sealed partial class Session
                 // so a backup was there to be found.
                 yield return ($"hn|{hn.Id}", hn.CreatedDay > 0
                     ? new GapFactor(GapFactorKind.HostNationWithdrawn, GapTag.Avoidable, d,
-                        $"Host nation support request {hn.Id} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. Host nation support rests on an agreement the host nation can withdraw.", [w.Id, hn.CauseId])
+                        $"The host nation support request for {Lower(CapLabel(hn.CapabilityId))} at {SiteName(hn.SiteId)} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. Host nation support rests on an agreement the host nation can withdraw.", [w.Id, hn.CauseId])
                     : new GapFactor(GapFactorKind.HostNationWithdrawn, GapTag.Discoverable, d,
-                        $"Inherited host nation support {hn.Id} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.", [w.Id]));
+                        $"Inherited host nation support for {Lower(CapLabel(hn.CapabilityId))} at {SiteName(hn.SiteId)} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.", [w.Id]));
             }
             foreach (var c in _commitments.Where(c => c.Kind == CommitmentKind.Handshake && c.SiteId == siteId && c.CapabilityId == capId))
             {
@@ -117,20 +117,20 @@ public sealed partial class Session
                     any = true;
                     var w = _records.FirstOrDefault(r => r.Kind == RecordKind.Withdrawal && r.Subject == c.Id);
                     yield return ($"hs|{c.Id}", new GapFactor(GapFactorKind.HandshakeLost, GapTag.Avoidable, d,
-                        $"Handshake {c.Id} was left {(c.Decision == CommitmentDecision.Parked ? "parked" : "unresolved")} and the vendor walked off on day {arr.EndDay + 1}.", w is null ? [c.CauseId] : [w.Id, c.CauseId]));
+                        $"{Upper(NameOf(c.Id))} was left {(c.Decision == CommitmentDecision.Parked ? "parked" : "unresolved")} and the vendor walked off on day {arr.EndDay + 1}.", w is null ? [c.CauseId] : [w.Id, c.CauseId]));
                 }
                 else if (c.Decision == CommitmentDecision.Refused)
                 {
                     any = true;
                     yield return ($"hs|{c.Id}", new GapFactor(GapFactorKind.HandshakeLost, GapTag.Avoidable, d,
-                        $"Handshake {c.Id} was refused on day {c.DecidedDay} with nothing in its place.", [c.CauseId]));
+                        $"{Upper(NameOf(c.Id))} was refused on day {c.DecidedDay} with nothing in its place.", [c.CauseId]));
                 }
             }
             foreach (var decl in _arrangements.Where(a => a.Status == ArrangementStatus.Declined && a.SiteId == siteId && a.CapabilityId == capId && a.CreatedDay < d))
             {
                 any = true;
                 yield return ($"bpa|{decl.Id}", new GapFactor(GapFactorKind.BpaDeclined, GapTag.Unforeseeable, d,
-                    $"BPA call {decl.Id} was declined on day {decl.CreatedDay}. A BPA is not binding; any call can be declined.", [decl.CauseId]));
+                    $"The BPA call for {Lower(CapLabel(decl.CapabilityId))} at {SiteName(decl.SiteId)} was declined on day {decl.CreatedDay}. A BPA is not binding; any call can be declined.", [decl.CauseId]));
             }
             // A capability that brings this one with it (power's fuel supply line) but was bought without that line.
             foreach (var other in _arrangements.Where(a => a.SiteId == siteId && ActiveOn(a, d) && !a.IsCoordination && !a.Unauthorized))
@@ -140,9 +140,9 @@ public sealed partial class Session
                 if (supplyLine is null || other.Lines.Contains(supplyLine.Id)) continue;
                 any = true;
                 var card = other.CardId is null ? null : _cards.FirstOrDefault(c => c.Id == other.CardId);
-                var where = card is null ? "" : $" Requirement {card.Id}'s dependency checklist showed {cap.Label.ToLowerInvariant()} uncovered from day {card.SubmittedDay}.";
+                var where = card is null ? "" : $" The dependency checklist on {CardName(card.Id)} showed {cap.Label.ToLowerInvariant()} uncovered from day {card.SubmittedDay}.";
                 yield return ($"line|{other.Id}", new GapFactor(GapFactorKind.MissingSupplyLine, GapTag.Avoidable, d,
-                    $"{other.Id} ({oc.Label.ToLowerInvariant()}) was bought without its {(supplyLine.Label ?? supplyLine.Id).ToLowerInvariant()} line, and nothing else supplied {cap.Label.ToLowerInvariant()}.{where}", [other.CauseId]));
+                    $"{Upper(NameOf(other.Id))} was bought without its {(supplyLine.Label ?? supplyLine.Id).ToLowerInvariant()} line, and nothing else supplied {cap.Label.ToLowerInvariant()}.{where}", [other.CauseId]));
             }
             foreach (var card in _cards.Where(c => c.SiteId == siteId && c.CapabilityId == capId && c.SubmittedDay <= d && c.RequestedStartDay <= d))
             {
@@ -151,10 +151,10 @@ public sealed partial class Session
                                          .OrderBy(a => a.StartDay).FirstOrDefault();
                 var ended = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && a.Status != ArrangementStatus.Declined && a.EndDay < d)
                                          .OrderByDescending(a => a.EndDay).FirstOrDefault();
-                var tail = (ended is null ? "" : $" The last arrangement supplying it, {ended.Id}, ended on day {ended.EndDay}.")
-                           + (later is null ? "" : $" {later.Id} did not start until day {later.StartDay}.{ExternalNote(later)}");
+                var tail = (ended is null ? "" : $" The last arrangement supplying it, {NameOf(ended.Id)}, ended on day {ended.EndDay}.")
+                           + (later is null ? "" : $" {NameOf(later.Id)} did not start until day {later.StartDay}.{ExternalNote(later)}");
                 yield return ($"card|{card.Id}|{ended?.Id}", new GapFactor(GapFactorKind.Uncovered, GapTag.Avoidable, d,
-                    $"Requirement {card.Id} (submitted day {card.SubmittedDay}, needed from day {card.RequestedStartDay}) had nothing supplying it from day {d}.{tail}",
+                    $"{Upper(CardName(card.Id))} (submitted day {card.SubmittedDay}, needed from day {card.RequestedStartDay}) had nothing supplying it from day {d}.{tail}",
                     later is null ? (ended is null ? [] : [ended.CauseId]) : [later.CauseId]));
             }
             foreach (var tf in TransitionFactors(siteId, capId, d))
@@ -193,9 +193,9 @@ public sealed partial class Session
                 ids.AddRange(closures.Select(c => c.Id));
                 yield return ($"island|{a.Id}|{(surveyed is { } s0 && s0 <= d)}", surveyed is { } sd && sd <= d
                     ? new GapFactor(GapFactorKind.OffIslandDependency, GapTag.Avoidable, d,
-                        $"{a.Id} supplies {cap.Label.ToLowerInvariant()} from {from}, so deliveries to {islandName} wait on the surface link schedule. The survey on day {sd} showed that dependency.{weather}", ids)
+                        $"{Upper(NameOf(a.Id))} supplies {cap.Label.ToLowerInvariant()} from {from}, so deliveries to {islandName} wait on the surface link schedule. The survey on day {sd} showed that dependency.{weather}", ids)
                     : new GapFactor(GapFactorKind.OffIslandDependency, GapTag.Discoverable, d,
-                        $"{a.Id} supplies {cap.Label.ToLowerInvariant()} from {from}, so deliveries to {islandName} wait on the surface link schedule. A survey of {islandName} would have shown that dependency; a buffer or an on-island source would have covered it.{weather}", ids));
+                        $"{Upper(NameOf(a.Id))} supplies {cap.Label.ToLowerInvariant()} from {from}, so deliveries to {islandName} wait on the surface link schedule. A survey of {islandName} would have shown that dependency; a buffer or an on-island source would have covered it.{weather}", ids));
             }
 
         var demand = DemandMilli(site, capId, d);
@@ -247,20 +247,20 @@ public sealed partial class Session
                             && HiddenNote(a.Id, d, $"its real delivery record ({ReliabilityShownByReview(a) / 10}% on time, not the {reported / 10}% reported at handover)") is { } hn)
                         {
                             yield return ($"fail|{a.Id}|hidden|{hn.Tag}", new GapFactor(GapFactorKind.VendorFailure, hn.Tag, d,
-                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
+                                $"{Upper(NameOf(a.Id))} failed on day {d} with full operator and maintenance coverage.{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
                                 hn.RecordId is null ? [r.Id] : [r.Id, hn.RecordId]));
                             break;
                         }
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
-                                $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
+                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
+                                $"{Upper(NameOf(a.Id))} failed on day {d} with full operator and maintenance coverage.{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:
                         yield return ($"conf|{a.Id}", new GapFactor(GapFactorKind.ExecutionConfusion, GapTag.Avoidable, d,
-                            $"{a.Id} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.", [r.Id, a.CauseId]));
+                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.", [r.Id, a.CauseId]));
                         break;
                 }
             }
@@ -270,7 +270,7 @@ public sealed partial class Session
                 // supplementary buy that would have covered it was the player's to make (M3-06).
                 var ev = _records.Last(r => r.Kind == RecordKind.VendorCapacity && r.Subject == a.Id && r.Day <= d);
                 yield return ($"capacity|{a.Id}", new GapFactor(GapFactorKind.VendorCapacity, GapTag.Avoidable, d,
-                    $"{a.Id} is an IDIQ order above what {VendorData(a.VendorId)?.Name ?? "the vendor"} could supply (capacity event, day {ev.Day}). The contract was binding, but binding does not add capacity; the order preview showed the capacity left, and a second source or a supplementary buy would have covered the rest.",
+                    $"{Upper(NameOf(a.Id))} is an IDIQ order above what {VendorData(a.VendorId)?.Name ?? "the vendor"} could supply (capacity event, day {ev.Day}). The contract was binding, but binding does not add capacity; the order preview showed the capacity left, and a second source or a supplementary buy would have covered the rest.",
                     [ev.Id, a.CauseId]));
             }
             if (a.Uca is not null && _records.LastOrDefault(r => r.Subject == a.Id && r.Day <= d && r.Kind is RecordKind.UcaStopWork or RecordKind.UcaResumed) is { Kind: RecordKind.UcaStopWork } stop)
@@ -284,7 +284,7 @@ public sealed partial class Session
                 var ids = overdue is null ? new List<string> { stop.Id, a.CauseId } : [stop.Id, overdue.Id];
                 if (hidden?.RecordId is { } found) ids.Add(found);
                 yield return ($"stop|{a.Id}", new GapFactor(GapFactorKind.StopWork, hidden?.Tag ?? GapTag.Avoidable, d,
-                    $"{a.Id} stopped work on day {stop.Day}: {why}.{hidden?.Note}", ids));
+                    $"{Upper(NameOf(a.Id))} stopped work on day {stop.Day}: {why}.{hidden?.Note}", ids));
             }
         }
     }

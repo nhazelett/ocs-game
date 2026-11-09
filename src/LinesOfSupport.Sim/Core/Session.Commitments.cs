@@ -55,7 +55,7 @@ public sealed partial class Session
         _arrangements.Add(arr);
         _unauthorized++;
         var rec = AddRecord(day, RecordKind.Compliance, id,
-            $"Unauthorized commitment {id}: the {SiteName(siteId)} unit arranged {CapLabel(capId)} directly with {vendor.Name}. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.", [cause]);
+            $"Unauthorized commitment: the {SiteName(siteId)} unit arranged {Lower(CapLabel(capId))} directly with {vendor.Name}. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.", [cause]);
         _commitments.Add(new CommitmentState
         {
             Id = id, Kind = CommitmentKind.Handshake, ArrangementId = id, SiteId = siteId, CapabilityId = capId, VendorId = vendorId,
@@ -75,7 +75,7 @@ public sealed partial class Session
         _outOfScope++;
         var vendor = VendorData(arr.VendorId);
         var rec = AddRecord(day, RecordKind.Compliance, id,
-            $"Out-of-scope work {id}: {vendor?.Name ?? "the vendor"} billed {Money(amountCents)} for work outside {arr.Id}'s scope, done on a unit member's say-so. Decision: deny payment or ratify.", [cause, arr.CauseId]);
+            $"Out-of-scope work: {vendor?.Name ?? "the vendor"} billed {Money(amountCents)} for work outside the scope of its {Lower(CapLabel(arr.CapabilityId))} contract at {SiteName(arr.SiteId)}, done on a unit member's say-so. Decision: deny payment or ratify.", [cause, arr.CauseId]);
         _commitments.Add(new CommitmentState
         {
             Id = id, Kind = CommitmentKind.OutOfScope, ArrangementId = arr.Id, SiteId = siteId, CapabilityId = capId, VendorId = arr.VendorId,
@@ -89,11 +89,11 @@ public sealed partial class Session
     {
         var c = _commitments.FirstOrDefault(x => x.Id == r.Commitment);
         if (c is null) return ActionResult.Stop($"commitment {r.Commitment} does not exist");
-        if (!c.Unresolved) return ActionResult.Stop($"{c.Id} is already {c.Decision.ToString().ToLowerInvariant()}");
+        if (!c.Unresolved) return ActionResult.Stop($"{NameOf(c.Id)} is already {c.Decision.ToString().ToLowerInvariant()}");
         var allowed = c.Kind == CommitmentKind.Handshake ? new[] { "ratify", "park", "refuse" } : ["ratify", "deny"];
-        if (!allowed.Contains(r.Choice)) return ActionResult.Stop($"{r.Choice} is not a choice for {c.Id}; choose {string.Join(", ", allowed)}");
-        if (r.FundingLine is not null && !_funding.Any(f => f.Id == r.FundingLine)) return ActionResult.Stop($"funding line {r.FundingLine} does not exist");
-        if (c.Decision == CommitmentDecision.Parked && r.Choice == "park") return ActionResult.Stop($"{c.Id} is already parked");
+        if (!allowed.Contains(r.Choice)) return ActionResult.Stop($"{r.Choice} is not a choice for {NameOf(c.Id)}; choose {string.Join(", ", allowed)}");
+        if (r.FundingLine is not null && !_funding.Any(f => f.Id == r.FundingLine)) return ActionResult.Stop($"{NameOf(r.FundingLine)} does not exist");
+        if (c.Decision == CommitmentDecision.Parked && r.Choice == "park") return ActionResult.Stop($"{NameOf(c.Id)} is already parked");
 
         var arr = _arrangements.First(a => a.Id == c.ArrangementId);
         var vendor = VendorData(c.VendorId)?.Name ?? "the vendor";
@@ -105,15 +105,15 @@ public sealed partial class Session
                 c.DecidedDay = Day;
                 c.FundingLineId = r.FundingLine;
                 var rec = AddRecord(Day, RecordKind.Action, c.Id,
-                    $"Ratification of {c.Id} started: {Rules.Model.Work.RatificationShopDays} shop day(s). {vendor} is told it will be paid.", [c.CauseId]);
-                AddWork(WorkKind.Ratification, $"Ratify {c.Id}", Fixed.Milli(Rules.Model.Work.RatificationShopDays * Rules.Model.HoursPerPersonPerDay), Day, c.Id, rec);
+                    $"Ratification of {NameOf(c.Id)} started: {Rules.Model.Work.RatificationShopDays} shop day(s). {vendor} is told it will be paid.", [c.CauseId]);
+                AddWork(WorkKind.Ratification, $"Ratify {NameOf(c.Id)}", Fixed.Milli(Rules.Model.Work.RatificationShopDays * Rules.Model.HoursPerPersonPerDay), Day, c.Id, rec);
                 return ActionResult.Ok("ratification in work");
             }
             case "park":
             {
                 c.Decision = CommitmentDecision.Parked;
                 c.DecidedDay = Day;
-                var rec = AddRecord(Day, RecordKind.Action, c.Id, $"{c.Id} parked: {vendor} keeps delivering unpaid.", [c.CauseId]);
+                var rec = AddRecord(Day, RecordKind.Action, c.Id, $"{Upper(NameOf(c.Id))} parked: {vendor} keeps delivering unpaid.", [c.CauseId]);
                 var habit = ShiftHabit(c.SiteId, Uc.HabitRiseParkOrRefusePermille, "the handshake was parked", rec);
                 if (habit.Length > 0) AddRecord(Day, RecordKind.Compliance, c.SiteId, habit.Trim(), [rec]);
                 return ActionResult.Ok("parked");
@@ -129,7 +129,7 @@ public sealed partial class Session
                 }
                 _confidenceHits++;
                 var rec = AddRecord(Day, RecordKind.ArrangementEnd, c.Id,
-                    $"{c.Id} refused: {vendor} stops at once and {CapLabel(c.CapabilityId).ToLowerInvariant()} at {SiteName(c.SiteId)} has no source from it. The site commander's confidence in contracting drops.", [c.CauseId]);
+                    $"{Upper(NameOf(c.Id))} refused: {vendor} stops at once and {CapLabel(c.CapabilityId).ToLowerInvariant()} at {SiteName(c.SiteId)} has no source from it. The site commander's confidence in contracting drops.", [c.CauseId]);
                 LoseConfidence(c.SiteId, rec);
                 var habit = ShiftHabit(c.SiteId, Uc.HabitRiseParkOrRefusePermille, "the handshake was refused with nothing in its place", rec);
                 if (habit.Length > 0) AddRecord(Day, RecordKind.Compliance, c.SiteId, habit.Trim(), [rec]);
@@ -140,8 +140,8 @@ public sealed partial class Session
                 c.Decision = CommitmentDecision.Denied;
                 c.DecidedDay = Day;
                 _outOfScopeDenied++;
-                var rec = AddRecord(Day, RecordKind.Action, c.Id, $"Payment for {c.Id} denied: {Money(c.AmountCents)} of work outside {arr.Id}'s scope.", [c.CauseId]);
-                AddWork(WorkKind.Denial, $"Deny {c.Id}", Fixed.Milli(Uc.OutOfScopeDenyShopHours), Day, c.Id, rec);
+                var rec = AddRecord(Day, RecordKind.Action, c.Id, $"Payment for {NameOf(c.Id)} denied: {Money(c.AmountCents)} of work outside {NameOf(arr.Id)}'s scope.", [c.CauseId]);
+                AddWork(WorkKind.Denial, $"Deny {NameOf(c.Id)}", Fixed.Milli(Uc.OutOfScopeDenyShopHours), Day, c.Id, rec);
                 return ActionResult.Ok("denied");
             }
         }
@@ -184,11 +184,11 @@ public sealed partial class Session
         arr.ObligatedCents += add;
         if (c.Kind == CommitmentKind.OutOfScope) arr.IncurredCents += c.AmountCents;
         var funded = need <= 0 ? "nothing owed"
-            : add == need ? $"{Money(add)} obligated from {line!.Id}"
+            : add == need ? $"{Money(add)} obligated from {NameOf(line!.Id)}"
             : line is null ? $"no usable funding line; {Money(need)} still owed"
-            : $"{Money(add)} of {Money(need)} obligated from {line.Id}; the rest is still owed";
+            : $"{Money(add)} of {Money(need)} obligated from {NameOf(line.Id)}; the rest is still owed";
         c.Decision = CommitmentDecision.Ratified;
-        var rec = AddRecord(day, RecordKind.Compliance, c.Id, $"Ratification of {c.Id} completed: {funded}.{tail}", [causeId]);
+        var rec = AddRecord(day, RecordKind.Compliance, c.Id, $"Ratification of {NameOf(c.Id)} completed: {funded}.{tail}", [causeId]);
 
         var habit = c.Kind == CommitmentKind.OutOfScope
             ? ShiftHabit(c.SiteId, Uc.HabitRiseOutOfScopeRatifyPermille, "out-of-scope work was paid", rec)
@@ -221,7 +221,7 @@ public sealed partial class Session
                     var after = declines ? "It will decline work from this office from now on."
                                          : $"It will quote this office {Uc.WalkOffMarkupPermille / 10}% higher from now on.";
                     var rec = AddRecord(d, RecordKind.Withdrawal, c.Id,
-                        $"{vendor.Name} walked off {c.Id} after {open} days of unpaid delivery. {CapLabel(c.CapabilityId)} at {SiteName(c.SiteId)} loses that source today. {after}", [c.CauseId]);
+                        $"{vendor.Name} walked off {NameOf(c.Id)} after {open} days of unpaid delivery. {CapLabel(c.CapabilityId)} at {SiteName(c.SiteId)} loses that source today. {after}", [c.CauseId]);
                     _standing[vendor.Id] = new VendorStanding { DeclinesWork = declines, MarkupPermille = declines ? 0 : Uc.WalkOffMarkupPermille, CauseId = rec };
                 }
             }
@@ -230,15 +230,15 @@ public sealed partial class Session
                 c.InquiryDrawn = true;
                 _hhqInquiries++;
                 var text = c.Kind == CommitmentKind.Handshake
-                    ? $"Higher HQ asked why unauthorized commitment {c.Id} has gone {open} days without ratification."
+                    ? $"Higher HQ asked why {NameOf(c.Id)} has gone {open} days without ratification."
                     : $"{VendorData(c.VendorId)?.Name ?? "The vendor"} filed a claim for {Money(c.AmountCents)} of out-of-scope work ({c.Id}) after {open} days with no answer; higher HQ asked for the file.";
                 var rec = AddRecord(d, RecordKind.Compliance, c.Id, $"{text} A response is now shop work ({Uc.ParkedInquiryResponseHours} hours).", [c.CauseId]);
-                AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {c.Id}", Fixed.Milli(Uc.ParkedInquiryResponseHours), d, c.Id, rec);
+                AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {NameOf(c.Id)}", Fixed.Milli(Uc.ParkedInquiryResponseHours), d, c.Id, rec);
             }
             if (c.Kind == CommitmentKind.Handshake && !c.LongOpenCounted && open >= Uc.HabitLongOpenDays)
             {
                 c.LongOpenCounted = true;
-                var habit = ShiftHabit(c.SiteId, Uc.HabitRiseLongOpenPermille, $"{c.Id} has been open {open} days", c.CauseId);
+                var habit = ShiftHabit(c.SiteId, Uc.HabitRiseLongOpenPermille, $"{Upper(NameOf(c.Id))} has been open {open} days", c.CauseId);
                 if (habit.Length > 0) AddRecord(d, RecordKind.Compliance, c.SiteId, habit.Trim(), [c.CauseId]);
             }
         }

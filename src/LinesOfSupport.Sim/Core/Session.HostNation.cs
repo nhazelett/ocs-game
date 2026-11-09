@@ -57,13 +57,13 @@ public sealed partial class Session
         HostNationCheck Fail(string why) => new([.. stops, why], null, null, null, null, [], 0, 0);
         if (!Rules.Instruments.TryGetValue(HostNationInstrument, out var inst)) return Fail("hostNation is not in the rules");
         if (string.IsNullOrWhiteSpace(o.Id)) stops.Add("a request needs an id");
-        else if (IdInUse(o.Id)) stops.Add($"id {o.Id} is already used");
+        else if (IdInUse(o.Id)) stops.Add($"id {NameOf(o.Id)} is already used");
         CardState? card = null;
         if (o.Card is not null)
         {
             card = _cards.FirstOrDefault(c => c.Id == o.Card);
-            if (card is null) return Fail($"card {o.Card} does not exist");
-            if (Day < card.SubmittedDay) return Fail($"card {o.Card} has not been submitted yet");
+            if (card is null) return Fail($"{CardName(o.Card)} does not exist");
+            if (Day < card.SubmittedDay) return Fail($"{CardName(o.Card)} has not been submitted yet");
         }
         var siteId = o.Site ?? card?.SiteId;
         var capId = o.Capability ?? card?.CapabilityId;
@@ -92,8 +92,8 @@ public sealed partial class Session
             if (line is null) stops.Add("the shop's cost share needs a funding line");
             else
             {
-                if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
-                else if (line.RemainingCents < total) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left for {Money(total)}");
+                if (!line.UsableOn(Day)) stops.Add($"{NameOf(line.Id)} is not usable on day {Day}");
+                else if (line.RemainingCents < total) stops.Add($"{NameOf(line.Id)} has {Money(line.RemainingCents)} left for {Money(total)}");
                 stops.AddRange(FundingStops(line, capId, o.StartDay, o.DurationDays));
             }
         }
@@ -108,12 +108,12 @@ public sealed partial class Session
         var shopDays = _rngHostNation.NextInt(inst.ShopDays);
         var lag = _rngHostNation.NextInt(inst.StartLagDays);
         var capId = chk.CapabilityId!;
-        var cost = chk.TotalCents > 0 ? $"cost share {Money(chk.TotalCents)} from {o.FundingLine}" : "no cost to the shop";
+        var cost = chk.TotalCents > 0 ? $"cost share {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}" : "no cost to the shop";
         var rec = AddRecord(Day, RecordKind.Action, o.Id,
-            $"Host nation support request {o.Id} to {HostNationName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; {cost}; {shopDays} shop day(s).", []);
+            $"Host nation support request to {HostNationName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; {cost}; {shopDays} shop day(s).", []);
         // A request with no cost share does not wait for FM to certify funds.
         var lagFm = chk.TotalCents > 0 ? Scenario.Actors.Fm.CertificationLagDays : 0;
-        AddWork(WorkKind.HostNationRequest, $"Host nation support request {o.Id}", Hours(shopDays, inst.RequiresSystemOrManual), Day + lagFm,
+        AddWork(WorkKind.HostNationRequest, $"Host nation support request for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual), Day + lagFm,
                 new HostNationPayload(o, chk.SiteId!, capId, chk.Lines, chk.DailyCents, chk.TotalCents, lag), rec);
         return ActionResult.Ok("in work");
     }
@@ -126,7 +126,7 @@ public sealed partial class Session
             : line is not null && (!line.UsableOn(day) || line.RemainingCents < p.TotalCents) ? FundingShortReason(line, p.TotalCents, day) : null;
         if (refusal is not null)
         {
-            var rej = AddRecord(day, RecordKind.Rejected, o.Id, $"Host nation support request {o.Id} could not be placed on day {day}: {refusal}.", [causeId]);
+            var rej = AddRecord(day, RecordKind.Rejected, o.Id, $"Host nation support request for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} could not be placed on day {day}: {refusal}.", [causeId]);
             if (!HnWithdrawn(p.CapabilityId)) _fundingRejections.Add((o.Id, p.SiteId, p.CapabilityId, day, rej));
             return;
         }
@@ -141,9 +141,9 @@ public sealed partial class Session
             ObligatedCents = p.TotalCents, FundingLineId = line?.Id, ReliabilityPermille = Fixed.Permille(hn.Reliability ?? 0.9),
             CreatedDay = day, CardId = o.Card, CauseId = causeId, StartDay = start, EndDay = start + o.DurationDays - 1,
         });
-        var money = line is null ? "No cost to the shop." : $"Cost share of {Money(p.TotalCents)} obligated from {line.Id}.";
+        var money = line is null ? "No cost to the shop." : $"Cost share of {Money(p.TotalCents)} obligated from {NameOf(line.Id)}.";
         AddRecord(day, RecordKind.WorkDone, o.Id,
-            $"Host nation support request {o.Id} accepted by {hn.Name}; support starts day {start}, ends day {start + o.DurationDays - 1}. {money} The host nation can withdraw it.", [causeId]);
+            $"Host nation support request for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} accepted by {hn.Name}; support starts day {start}, ends day {start + o.DurationDays - 1}. {money} The host nation can withdraw it.", [causeId]);
     }
 
     /// <summary>Event effect hostNation.withdraw: the host nation ends its support for a capability (null: everything) after a
@@ -167,10 +167,10 @@ public sealed partial class Session
             if (back > 0 && _funding.FirstOrDefault(f => f.Id == a.FundingLineId) is { } fl)
             {
                 a.ObligatedCents -= back;
-                if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} of cost share returns to {fl.Id}."; }
-                else tail = $" {Money(back)} of cost share is released; {fl.Id} has expired, so it lapses.";
+                if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} of cost share returns to {NameOf(fl.Id)}."; }
+                else tail = $" {Money(back)} of cost share is released; {NameOf(fl.Id)} has expired, so it lapses.";
             }
-            var whose = a.CreatedDay > 0 ? $"host nation support request {a.Id}" : $"inherited host nation support {a.Id}";
+            var whose = a.CreatedDay > 0 ? $"host nation support for {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)}" : $"inherited host nation support for {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)}";
             AddRecord(day, RecordKind.Withdrawal, a.Id,
                 $"{HostNationName} withdrew {whose} ({CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)}); last day of support {a.EndDay}. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.{tail}", [cause, a.CauseId]);
         }

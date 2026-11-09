@@ -68,7 +68,7 @@ public sealed partial class Session
         var dot = subject.IndexOf('.');
         if (dot > 0 && Scenario.Sites.Any(s => s.Id == subject[..dot]) && _capData.ContainsKey(subject[(dot + 1)..]))
             return (BoardLinkKind.SiteCapability, subject);
-        if (_work.Any(w => w.Label == subject || (w.Payload as string) == subject)) return (BoardLinkKind.Work, subject);
+        if (_work.Any(w => w.SubjectId == subject)) return (BoardLinkKind.Work, subject);
         return (BoardLinkKind.None, subject);
     }
 
@@ -335,7 +335,7 @@ public sealed partial class Session
             if (a.Quantity * 1000 > free)
                 gaps.Add($"{vendor.Name} has about {free / 1000} {Rate(cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
             if (Idiq(a.Vehicle) is { GuaranteeUnorderedCents: > 0 } q)
-                gaps.Add($"{Money(Math.Min(chk.TotalCents, Math.Max(0, q.GuaranteeUnorderedCents - PendingOrderCents(q.VehicleId))))} of this order comes from {q.VehicleId}'s minimum guarantee, already obligated.");
+                gaps.Add($"{Money(Math.Min(chk.TotalCents, Math.Max(0, q.GuaranteeUnorderedCents - PendingOrderCents(q.VehicleId))))} of this order comes from {NameOf(q.VehicleId)}'s minimum guarantee, already obligated.");
         }
         if (a.Instrument == "uca")
         {

@@ -187,7 +187,7 @@ public sealed partial class Session
         if (used > Scenario.PrepDays)
             throw new InvalidDataException($"prep choices use {used} prep-days; the scenario allows {Scenario.PrepDays}");
         if (prep.Count > 0)
-            AddRecord(0, RecordKind.Action, "prep", $"Pre-deployment: {string.Join(", ", prep)} ({used} of {Scenario.PrepDays} prep-days).", []);
+            AddRecord(0, RecordKind.Action, "prep", $"Pre-deployment: {string.Join("; ", prep.Select(id => Lower(Rules.PrepChoices.First(c => c.Id == id).Label)))} ({used} of {Scenario.PrepDays} prep-days).", []);
     }
 
     internal void PrepSetGpcDay(int day) => _gpcAvailableDay = _gpcAvailableDay is null ? day : Math.Min(_gpcAvailableDay.Value, day);
@@ -340,7 +340,7 @@ public sealed partial class Session
         _arrangements.Add(arr);
         var noticeNote = a.NoticeDays is { } n and > 0 && a.Instrument != HostNationInstrumentId ? $" Termination needs {n} days' notice." : "";
         // The handover record is what an inherited arrangement traces back to in cause chains (M3-07).
-        arr.CauseId = AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.{ucaNote}{noticeNote}", []);
+        arr.CauseId = AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name}{(a.Instrument == HostNationInstrumentId ? "" : $" ({InstrumentLabel(a.Instrument)})")}, days {a.StartDay} to {a.EndDay}.{ucaNote}{noticeNote}", []);
     }
 
     // ------------------------------------------------------------------ hashing and export

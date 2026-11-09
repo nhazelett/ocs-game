@@ -99,7 +99,7 @@ public class CorTests
             var shortfall = cs.History[f.Day - opens] < 1000;
             Assert.Equal(shortfall, reports.Any(r => r.FailureDay == f.Day));
         }
-        Assert.Contains(s.Records, r => r.Kind == RecordKind.CorReport && r.Text.StartsWith("Unit report from Spoke B") && r.Text.Contains("gens has no COR"));
+        Assert.Contains(s.Records, r => r.Kind == RecordKind.CorReport && r.Text.StartsWith("Unit report from Spoke B") && r.Text.Contains("That contract has no COR"));
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public class CorTests
         Assert.False(mid.Apply(new DesignateCorAction { Arrangement = "gens", Cor = "nobody" }).Accepted);
         Assert.True(mid.Apply(new DesignateCorAction { Arrangement = "gens", Cor = "corOkafor" }).Accepted);
         Assert.Equal("corOkafor", gens.CorId);
-        Assert.Contains(mid.Records, r => r.Kind == RecordKind.Action && r.Text.StartsWith("SGT Okafor designated COR on gens, replacing SSG Reyes"));
+        Assert.Contains(mid.Records, r => r.Kind == RecordKind.Action && r.Text.StartsWith("SGT Okafor designated COR on Harbor Equipment Co power at Spoke B, replacing SSG Reyes"));
     }
 
     [Fact]

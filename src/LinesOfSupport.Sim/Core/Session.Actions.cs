@@ -95,7 +95,7 @@ public sealed partial class Session
         var item = new WorkItem
         {
             Id = $"w{++_workSeq}", Kind = kind, Label = label, HoursTotalMilli = hoursMilli, HoursRemainingMilli = hoursMilli,
-            WaitUntilDay = waitUntil, CreatedDay = Day, Payload = payload, CauseId = causeId,
+            WaitUntilDay = waitUntil, CreatedDay = Day, Payload = payload, CauseId = causeId, SubjectId = WorkSubject(payload),
         };
         _work.Add(item);
         return item;
@@ -121,11 +121,11 @@ public sealed partial class Session
     private ActionResult ApplySetLine(SetLineAction s)
     {
         var card = _cards.FirstOrDefault(c => c.Id == s.Card);
-        if (card is null) return ActionResult.Stop($"card {s.Card} does not exist");
-        if (Day < card.SubmittedDay) return ActionResult.Stop($"card {s.Card} has not been submitted yet");
+        if (card is null) return ActionResult.Stop($"{CardName(s.Card)} does not exist");
+        if (Day < card.SubmittedDay) return ActionResult.Stop($"{CardName(s.Card)} has not been submitted yet");
         if (!Cap(card.CapabilityId).Lines.Any(l => l.Id == s.Line)) return ActionResult.Stop($"{s.Line} is not a {card.CapabilityId} line");
         card.Lines[s.Line] = s.On;
-        AddRecord(Day, RecordKind.Action, s.Card, $"Requirement {s.Card}: {LineLabel(card.CapabilityId, s.Line)} switched {(s.On ? "on" : "off")}.", []);
+        AddRecord(Day, RecordKind.Action, s.Card, $"{Upper(CardName(s.Card))}: {LineLabel(card.CapabilityId, s.Line)} switched {(s.On ? "on" : "off")}.", []);
         return ActionResult.Ok("line set");
     }
 
@@ -139,7 +139,7 @@ public sealed partial class Session
         var stops = new List<string>();
         if (string.IsNullOrWhiteSpace(a.Id)) stops.Add("an award needs an id");
         else if (_arrangements.Any(x => x.Id == a.Id) || _work.Any(w => w.Payload is AwardPayload p && p.Action.Id == a.Id))
-            stops.Add($"id {a.Id} is already used");
+            stops.Add($"id {NameOf(a.Id)} is already used");
         if (!Rules.Instruments.TryGetValue(a.Instrument, out var inst)) return AwardCheck.Fail($"instrument {a.Instrument} is not in the rules");
         if (!AwardableInM0.Contains(a.Instrument)) return AwardCheck.Fail($"{inst.Label} is not implemented in this build");
 
@@ -147,8 +147,8 @@ public sealed partial class Session
         if (a.Card is not null)
         {
             card = _cards.FirstOrDefault(c => c.Id == a.Card);
-            if (card is null) return AwardCheck.Fail($"card {a.Card} does not exist");
-            if (Day < card.SubmittedDay) return AwardCheck.Fail($"card {a.Card} has not been submitted yet");
+            if (card is null) return AwardCheck.Fail($"{CardName(a.Card)} does not exist");
+            if (Day < card.SubmittedDay) return AwardCheck.Fail($"{CardName(a.Card)} has not been submitted yet");
         }
         var siteId = a.Site ?? card?.SiteId;
         var capId = a.Capability ?? card?.CapabilityId;
@@ -231,30 +231,30 @@ public sealed partial class Session
             case "bpaCall":
                 var veh = _vehicles.FirstOrDefault(v => v.Id == a.Vehicle);
                 if (veh is null) { stops.Add("a BPA call needs a BPA vehicle"); break; }
-                if (veh.Kind != "bpa") stops.Add($"{veh.Id} is not a BPA");
-                if (!veh.VisibleOnDay1) stops.Add($"{veh.Id} is not known to this shop");
-                if (veh.Vendor != vendor.Id) stops.Add($"{veh.Id} is with a different vendor");
-                if (Day > veh.OrderingPeriodEndDay) stops.Add($"{veh.Id}'s ordering period ended on day {veh.OrderingPeriodEndDay}");
-                foreach (var l in lines) if (!veh.ScopeTags.Contains(l)) stops.Add($"{LineLabel(capId, l)} is outside {veh.Id}'s scope");
-                if (veh.CallLimitCents is { } lim && total > lim) stops.Add($"{Money(total)} exceeds {veh.Id}'s call limit of {Money(lim)}");
+                if (veh.Kind != "bpa") stops.Add($"{NameOf(veh.Id)} is not a BPA");
+                if (!veh.VisibleOnDay1) stops.Add($"{NameOf(veh.Id)} is not known to this shop");
+                if (veh.Vendor != vendor.Id) stops.Add($"{NameOf(veh.Id)} is with a different vendor");
+                if (Day > veh.OrderingPeriodEndDay) stops.Add($"{NameOf(veh.Id)}'s ordering period ended on day {veh.OrderingPeriodEndDay}");
+                foreach (var l in lines) if (!veh.ScopeTags.Contains(l)) stops.Add($"{LineLabel(capId, l)} is outside {NameOf(veh.Id)}'s scope");
+                if (veh.CallLimitCents is { } lim && total > lim) stops.Add($"{Money(total)} exceeds {NameOf(veh.Id)}'s call limit of {Money(lim)}");
                 if (veh.PlaceOfPerformance.Count > 0 && !veh.PlaceOfPerformance.Contains(SiteData(siteId).Island))
-                    stops.Add($"{SiteName(siteId)} is outside {veh.Id}'s place of performance");
+                    stops.Add($"{SiteName(siteId)} is outside {NameOf(veh.Id)}'s place of performance");
                 break;
             case "idiqOrder":
             {
                 var idv = _vehicles.FirstOrDefault(v => v.Id == a.Vehicle);
                 if (idv is null) { stops.Add("an IDIQ order needs an IDIQ vehicle"); break; }
-                if (idv.Kind != "idiq") { stops.Add($"{idv.Id} is not an IDIQ"); break; }
-                if (!idv.VisibleOnDay1) stops.Add($"{idv.Id} is not known to this shop");
-                if (idv.Vendor != vendor.Id) stops.Add($"{idv.Id} is with a different vendor");
-                if (Day > idv.OrderingPeriodEndDay) stops.Add($"{idv.Id}'s ordering period ended on day {idv.OrderingPeriodEndDay}");
-                foreach (var l in lines) if (!idv.ScopeTags.Contains(l)) stops.Add($"{LineLabel(capId, l)} is outside {idv.Id}'s scope");
+                if (idv.Kind != "idiq") { stops.Add($"{NameOf(idv.Id)} is not an IDIQ"); break; }
+                if (!idv.VisibleOnDay1) stops.Add($"{NameOf(idv.Id)} is not known to this shop");
+                if (idv.Vendor != vendor.Id) stops.Add($"{NameOf(idv.Id)} is with a different vendor");
+                if (Day > idv.OrderingPeriodEndDay) stops.Add($"{NameOf(idv.Id)}'s ordering period ended on day {idv.OrderingPeriodEndDay}");
+                foreach (var l in lines) if (!idv.ScopeTags.Contains(l)) stops.Add($"{LineLabel(capId, l)} is outside {NameOf(idv.Id)}'s scope");
                 if (idv.PlaceOfPerformance.Count > 0 && !idv.PlaceOfPerformance.Contains(SiteData(siteId).Island))
-                    stops.Add($"{SiteName(siteId)} is outside {idv.Id}'s place of performance");
+                    stops.Add($"{SiteName(siteId)} is outside {NameOf(idv.Id)}'s place of performance");
                 var idq = Idiq(idv.Id)!;
                 var pending = PendingOrderCents(idv.Id);
                 if (idq.CeilingCents is { } ceiling && idq.OrderedCents + pending + total > ceiling)
-                    stops.Add($"{Money(total)} would bring orders on {idv.Id} to {Money(idq.OrderedCents + pending + total)}, over its ceiling of {Money(ceiling)}");
+                    stops.Add($"{Money(total)} would bring orders on {NameOf(idv.Id)} to {Money(idq.OrderedCents + pending + total)}, over its ceiling of {Money(ceiling)}");
                 fromGuarantee = Math.Min(total, Math.Max(0, idq.GuaranteeUnorderedCents - pending));
                 break;
             }
@@ -265,9 +265,9 @@ public sealed partial class Session
             var line = _funding.FirstOrDefault(f => f.Id == a.FundingLine);
             if (need == 0 && a.FundingLine is null && a.Instrument == "idiqOrder") { } // paid in full from the IDIQ's minimum guarantee
             else if (line is null) stops.Add("a written action needs a funding line");
-            else if (!line.UsableOn(Day)) stops.Add($"funding line {line.Id} is not usable on day {Day}");
-            else if (a.Instrument != "uca" && line.RemainingCents < need) stops.Add($"funding line {line.Id} has {Money(line.RemainingCents)} left");
-            else if (a.Instrument == "uca" && line.RemainingCents <= 0) stops.Add($"funding line {line.Id} is empty");
+            else if (!line.UsableOn(Day)) stops.Add($"{NameOf(line.Id)} is not usable on day {Day}");
+            else if (a.Instrument != "uca" && line.RemainingCents < need) stops.Add($"{NameOf(line.Id)} has {Money(line.RemainingCents)} left");
+            else if (a.Instrument == "uca" && line.RemainingCents <= 0) stops.Add($"{NameOf(line.Id)} is empty");
             if (line is not null) stops.AddRange(FundingStops(line, capId, a.StartDay, a.DurationDays));
         }
         if (a.Cor is not null) stops.AddRange(CorStops(a.Cor, inst));
@@ -314,7 +314,7 @@ public sealed partial class Session
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
                     $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}", []);
-                AddWork(WorkKind.Award, $"{inst.Label} {a.Id}", Hours(shopDays, inst.RequiresSystemOrManual), wait, payload, rec);
+                AddWork(WorkKind.Award, $"{inst.Label} with {vendor.Name} for {Lower(CapLabel(capId))} at {SiteName(siteId)}", Hours(shopDays, inst.RequiresSystemOrManual), wait, payload, rec);
                 return ActionResult.Ok("in work");
             }
         }
@@ -336,7 +336,7 @@ public sealed partial class Session
                     Id = a.Id, Instrument = a.Instrument, VendorId = a.Vendor, VehicleId = a.Vehicle, SiteId = p.SiteId, CapabilityId = p.CapabilityId,
                     Lines = p.Lines, SupplierIslandId = p.SupplierIsland, Status = ArrangementStatus.Declined, CreatedDay = day, CardId = a.Card, CauseId = causeId,
                 });
-                AddRecord(day, RecordKind.Declined, a.Id, $"{VendorData(a.Vendor)!.Name} declined BPA call {a.Id}. A BPA is not binding; the vendor may decline any call.", [causeId]);
+                AddRecord(day, RecordKind.Declined, a.Id, $"{VendorData(a.Vendor)!.Name} declined the BPA call for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)}. A BPA is not binding; the vendor may decline any call.", [causeId]);
                 return;
             }
         }
@@ -350,7 +350,7 @@ public sealed partial class Session
             var line = _funding.FirstOrDefault(f => f.Id == a.FundingLine);
             if (need > 0 && (line is null || !line.UsableOn(day) || line.RemainingCents < need))
             {
-                var rej = AddRecord(day, RecordKind.Rejected, a.Id, $"{inst.Label} {a.Id} could not be awarded on day {day}: {FundingShortReason(line, need, day)}.", [causeId]);
+                var rej = AddRecord(day, RecordKind.Rejected, a.Id, $"{inst.Label} with {VendorData(a.Vendor)?.Name ?? "the vendor"} for {Lower(CapLabel(p.CapabilityId))} at {SiteName(p.SiteId)} could not be awarded on day {day}: {FundingShortReason(line, need, day)}.", [causeId]);
                 _fundingRejections.Add((a.Id, p.SiteId, p.CapabilityId, day, rej));
                 return;
             }
@@ -391,9 +391,9 @@ public sealed partial class Session
         var tail = arr.Uca is { } u
             ? $" UCA issued with NTE {Money(u.NteCents)}; obligations capped at {Rules.Uca.ObligationCapBeforeProposal * 100:0}% of NTE until a qualifying proposal."
             : fromGuarantee > 0
-                ? $" Obligated {Money(obligated)}, {Money(fromGuarantee)} of it from {a.Vehicle}'s minimum guarantee."
+                ? $" Obligated {Money(obligated)}, {Money(fromGuarantee)} of it from {NameOf(a.Vehicle)}'s minimum guarantee."
                 : $" Obligated {Money(obligated)}.";
-        AddRecord(day, RecordKind.WorkDone, a.Id, $"{inst.Label} {a.Id} awarded to {VendorData(a.Vendor)!.Name}; performance starts day {arr.StartDay}, ends day {arr.EndDay}.{tail}", [causeId]);
+        AddRecord(day, RecordKind.WorkDone, a.Id, $"{inst.Label} awarded to {VendorData(a.Vendor)!.Name} for {Lower(CapLabel(arr.CapabilityId))} at {SiteName(arr.SiteId)}; performance starts day {arr.StartDay}, ends day {arr.EndDay}.{tail}", [causeId]);
     }
 
     private void ScheduleReplenish()
@@ -434,15 +434,15 @@ public sealed partial class Session
     private ActionResult ApplyDefinitize(DefinitizeAction d)
     {
         var arr = _arrangements.FirstOrDefault(x => x.Id == d.Arrangement);
-        if (arr?.Uca is not { } u) return ActionResult.Stop($"{d.Arrangement} is not a UCA");
-        if (u.Definitized) return ActionResult.Stop($"{d.Arrangement} is already definitized");
-        if (u.DefinitizationInWork) return ActionResult.Stop($"definitization of {d.Arrangement} is already in work");
+        if (arr?.Uca is not { } u) return ActionResult.Stop($"{NameOf(d.Arrangement)} is not a UCA");
+        if (u.Definitized) return ActionResult.Stop($"{NameOf(d.Arrangement)} is already definitized");
+        if (u.DefinitizationInWork) return ActionResult.Stop($"definitization of {NameOf(d.Arrangement)} is already in work");
         if (!u.ProposalReceived) return ActionResult.Stop($"{VendorData(arr.VendorId)!.Name} has not submitted a qualifying proposal yet");
-        if (_funding.FirstOrDefault(f => f.Id == d.FundingLine) is not { } dl) return ActionResult.Stop($"funding line {d.FundingLine} does not exist");
+        if (_funding.FirstOrDefault(f => f.Id == d.FundingLine) is not { } dl) return ActionResult.Stop($"{NameOf(d.FundingLine)} does not exist");
         if (!dl.Pays(arr.CapabilityId)) return ActionResult.Stop([.. FundingStops(dl, arr.CapabilityId, null, 0)]);
         u.DefinitizationInWork = true;
-        var rec = AddRecord(Day, RecordKind.Action, d.Arrangement, $"Definitization of {d.Arrangement} started; to be funded from {d.FundingLine}.", []);
-        AddWork(WorkKind.Definitize, $"Definitize {d.Arrangement}", Hours(_rngWork.NextInt(Rules.Uca.DefinitizationShopDays), true), Day, d, rec);
+        var rec = AddRecord(Day, RecordKind.Action, d.Arrangement, $"Definitization of {NameOf(d.Arrangement)} started; to be funded from {NameOf(d.FundingLine)}.", []);
+        AddWork(WorkKind.Definitize, $"Definitize {NameOf(d.Arrangement)}", Hours(_rngWork.NextInt(Rules.Uca.DefinitizationShopDays), true), Day, d, rec);
         return ActionResult.Ok("definitization in work");
     }
 
@@ -451,15 +451,15 @@ public sealed partial class Session
     private ActionResult ApplyTerminate(TerminateAction t)
     {
         var arr = _arrangements.FirstOrDefault(x => x.Id == t.Arrangement);
-        if (arr is null) return ActionResult.Stop($"{t.Arrangement} does not exist");
-        if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return ActionResult.Stop($"{t.Arrangement} is not running");
+        if (arr is null) return ActionResult.Stop($"{NameOf(t.Arrangement)} does not exist");
+        if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return ActionResult.Stop($"{NameOf(t.Arrangement)} is not running");
         if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == t.Arrangement))
-            return ActionResult.Stop($"termination of {t.Arrangement} is already in work");
-        if (t.WithNotice && arr.NoticeDays is not > 0) return ActionResult.Stop($"{t.Arrangement} has no termination notice clause");
+            return ActionResult.Stop($"termination of {NameOf(t.Arrangement)} is already in work");
+        if (t.WithNotice && arr.NoticeDays is not > 0) return ActionResult.Stop($"{NameOf(t.Arrangement)} has no termination notice clause");
         var rec = AddRecord(Day, RecordKind.Action, t.Arrangement,
-            t.WithNotice ? $"Termination of {t.Arrangement} with {arr.NoticeDays} days' notice started." : $"Termination of {t.Arrangement} started.", []);
+            t.WithNotice ? $"Termination of {NameOf(t.Arrangement)} with {arr.NoticeDays} days' notice started." : $"Termination of {NameOf(t.Arrangement)} started.", []);
         var hours = arr.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true);
-        var w = AddWork(WorkKind.Terminate, $"Terminate {t.Arrangement}", hours, Day, t.Arrangement, rec);
+        var w = AddWork(WorkKind.Terminate, $"Terminate {NameOf(t.Arrangement)}", hours, Day, t.Arrangement, rec);
         if (t.WithNotice) _noticeTerminations.Add(w.Id);
         return ActionResult.Ok("termination in work");
     }
@@ -496,15 +496,15 @@ public sealed partial class Session
                 var add = line.UsableOn(day) ? Math.Min(need, line.RemainingCents) : 0;
                 arr.ObligatedCents += add;
                 line.ObligatedCents += add;
-                var funded = add == need ? $"fully funded from {line.Id}" : $"{Money(add)} of {Money(need)} funded from {line.Id}; the rest waits on money";
+                var funded = add == need ? $"fully funded from {NameOf(line.Id)}" : $"{Money(add)} of {Money(need)} funded from {NameOf(line.Id)}; the rest waits on money";
                 AddRecord(day, RecordKind.Definitized, arr.Id,
-                    $"{arr.Id} definitized at {Money(arr.Uca.QuotedTotalCents)}; obligation caps lifted; {funded}.", [w.CauseId]);
+                    $"{Upper(NameOf(arr.Id))} definitized at {Money(arr.Uca.QuotedTotalCents)}; obligation caps lifted; {funded}.", [w.CauseId]);
                 break;
             }
             case WorkKind.Ratification:
                 _ratifications++;
                 if (!CompleteRatification((string)w.Payload!, day, w.CauseId))
-                    AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {(string)w.Payload!} completed.", [w.CauseId]);
+                    AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {NameOf((string)w.Payload!)} completed.", [w.CauseId]);
                 break;
             case WorkKind.GpcProgram:
                 CompleteGpcProgram(day, w.CauseId);
@@ -535,13 +535,13 @@ public sealed partial class Session
                 CompleteFileReview((List<string>)w.Payload!, day, w.CauseId);
                 break;
             case WorkKind.Denial:
-                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);
+                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {NameOf((string)w.Payload!)} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);
                 break;
             case WorkKind.PaymentRework:
-                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Payment error on {(string)w.Payload!} corrected.", [w.CauseId]);
+                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Payment error on {NameOf((string)w.Payload!)} corrected.", [w.CauseId]);
                 break;
             case WorkKind.HhqResponse:
-                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Response to higher HQ on {(string)w.Payload!} sent.", [w.CauseId]);
+                AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Response to higher HQ on {NameOf((string)w.Payload!)} sent.", [w.CauseId]);
                 break;
             case WorkKind.Terminate:
             {
@@ -565,12 +565,12 @@ public sealed partial class Session
                     if (back > 0)
                     {
                         arr.ObligatedCents = keep;
-                        if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} deobligated back to {fl.Id}."; }
-                        else tail = $" {Money(back)} deobligated; {fl.Id} has expired, so the money lapses.";
+                        if (fl.UsableOn(day)) { fl.ObligatedCents -= back; tail = $" {Money(back)} deobligated back to {NameOf(fl.Id)}."; }
+                        else tail = $" {Money(back)} deobligated; {NameOf(fl.Id)} has expired, so the money lapses.";
                     }
                 }
                 var end = AddRecord(day, RecordKind.ArrangementEnd, arr.Id,
-                    $"{arr.Id} terminated{(notice > 0 ? $" with {notice} days' notice" : "")}; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
+                    $"{Upper(NameOf(arr.Id))} terminated{(notice > 0 ? $" with {notice} days' notice" : "")}; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
                 if (notice == 0) FileClaimIfOwed(arr, plannedEnd, day, end);
                 break;
             }

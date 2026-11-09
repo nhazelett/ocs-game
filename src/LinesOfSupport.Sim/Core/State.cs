@@ -126,6 +126,9 @@ public sealed class WorkItem
     public int? CompletedDay { get; set; }
     public object? Payload { get; init; }
     public string CauseId { get; init; } = "";
+    /// <summary>The id of what this work is for (the award, order, request, vehicle or arrangement), for matching and
+    /// links. Label is the plain-language name a player sees (M2R-07) and is never matched on.</summary>
+    public string? SubjectId { get; init; }
 }
 
 public sealed class FundingLineState

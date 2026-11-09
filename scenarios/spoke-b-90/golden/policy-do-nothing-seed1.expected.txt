@@ -3,8 +3,8 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 
 TIMELINE
 Before day 1
-  START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
 Day 1
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
@@ -22,28 +22,28 @@ Day 7
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 8
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
-  COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
 Day 10
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Fuel at Spoke B down to 16%: fuel on hand ran out.
 Day 13
-  COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
+  COMPLY    The Spoke B unit's habit of going around contracting rises (Port Fuel Haulers fuel at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 15
-  WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  WITHDRAWN Port Fuel Haulers walked off Port Fuel Haulers fuel at Spoke B after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
@@ -52,21 +52,21 @@ Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
 Day 18
-  COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
+  COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 5 waiting.
 Day 19
-  DONE      Response to higher HQ on uc1 sent.
+  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
   DONE      CE small buys: 11 worked today (5.5 h of shop time).
 Day 20
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 21
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
-  COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 22
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     uc2 began: Fuel at Spoke B from Second Island Fuel, 700 gal/day.
-  FAIL      uc2 missed today's delivery (no on-site storage line).
+  START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
 Day 23
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
@@ -75,53 +75,53 @@ Day 24
 Day 25
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 26
-  COMPLY    The Spoke B unit's habit of going around contracting rises (uc2 has been open 5 days).
+  COMPLY    The Spoke B unit's habit of going around contracting rises (Second Island Fuel fuel at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 27
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 28
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 20%).
-  COMPLY    Unauthorized commitment uc3: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 29
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     uc3 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began, 468 kW/day.
   SHORT     Power at Spoke B degraded to 59%: fuel at 59%.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 31
-  COMPLY    Higher HQ asked why unauthorized commitment uc2 has gone 10 days without ratification. A response is now shop work (24 hours).
+  COMPLY    Higher HQ asked why Second Island Fuel fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 32
-  DONE      Response to higher HQ on uc2 sent.
+  DONE      Response to higher HQ on Second Island Fuel fuel at Spoke B sent.
   DONE      CE small buys: 12 worked today (6 h of shop time).
 Day 33
-  COMPLY    The Spoke B unit's habit of going around contracting rises (uc3 has been open 5 days).
+  COMPLY    The Spoke B unit's habit of going around contracting rises (Harbor Equipment Co power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      uc2 missed today's delivery (no on-site storage line).
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 36
-  WITHDRAWN Second Island Fuel walked off uc2 after 15 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+  WITHDRAWN Second Island Fuel walked off Second Island Fuel fuel at Spoke B after 15 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 38
-  WITHDRAWN Harbor Equipment Co walked off uc3 after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
-  COMPLY    Higher HQ asked why unauthorized commitment uc3 has gone 10 days without ratification. A response is now shop work (24 hours).
+  WITHDRAWN Harbor Equipment Co walked off Harbor Equipment Co power at Spoke B after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
+  COMPLY    Higher HQ asked why Harbor Equipment Co power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 39
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
-  COMPLY    Unauthorized commitment uc4: the Spoke B unit arranged Power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
-  DONE      Response to higher HQ on uc3 sent.
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
   DONE      CE small buys: 12 worked today (6 h of shop time).
 Day 40
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     uc4 began: Power at Spoke B from Island Power Rentals, 468 kW/day.
+  START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
 Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
@@ -131,32 +131,32 @@ Day 43
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
-  COMPLY    The Spoke B unit's habit of going around contracting rises (uc4 has been open 5 days).
+  COMPLY    The Spoke B unit's habit of going around contracting rises (Island Power Rentals power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 46
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 47
-  WITHDRAWN Island Power Rentals walked off uc4 after 8 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
+  WITHDRAWN Island Power Rentals walked off Island Power Rentals power at Spoke B after 8 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 48
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 40%).
-  COMPLY    Unauthorized commitment uc5: the Spoke B unit arranged Power directly with Meridian Site Services. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  COMPLY    Unauthorized commitment: the Spoke B unit arranged power directly with Meridian Site Services. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 49
-  COMPLY    Higher HQ asked why unauthorized commitment uc4 has gone 10 days without ratification. A response is now shop work (24 hours).
+  COMPLY    Higher HQ asked why Island Power Rentals power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
-  START     uc5 began: Power at Spoke B from Meridian Site Services, 468 kW/day.
+  START     Power at Spoke B from Meridian Site Services began, 468 kW/day.
 Day 50
-  DONE      Response to higher HQ on uc4 sent.
+  DONE      Response to higher HQ on Island Power Rentals power at Spoke B sent.
   DONE      CE small buys: 12 worked today (6 h of shop time).
 Day 51
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 52
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 53
-  COMPLY    The Spoke B unit's habit of going around contracting rises (uc5 has been open 5 days).
+  COMPLY    The Spoke B unit's habit of going around contracting rises (Meridian Site Services power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -167,10 +167,10 @@ Day 56
 Day 57
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 58
-  COMPLY    Higher HQ asked why unauthorized commitment uc5 has gone 10 days without ratification. A response is now shop work (24 hours).
+  COMPLY    Higher HQ asked why Meridian Site Services power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 59
-  DONE      Response to higher HQ on uc5 sent.
+  DONE      Response to higher HQ on Meridian Site Services power at Spoke B sent.
   DONE      CE small buys: 12 worked today (6 h of shop time).
 Day 60
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -179,20 +179,20 @@ Day 61
 Day 62
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 63
-  WITHDRAWN Meridian Site Services walked off uc5 after 15 days of unpaid delivery. Power at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  WITHDRAWN Meridian Site Services walked off Meridian Site Services power at Spoke B after 15 days of unpaid delivery. Power at Spoke B loses that source today. It will quote this office 25% higher from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 64
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 65
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $900,000 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $900,000 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
-  FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -208,8 +208,8 @@ Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Funding line om1 reached its fiscal-year end with day 75: $900,000 never obligated can no longer pay for anything new.
-  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $900,000 never obligated can no longer pay for anything new.
+  FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 77
@@ -228,7 +228,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -275,38 +275,38 @@ GAPS AND WHY (each traced back through its causes)
   Day 29: Power at Spoke B degraded to 59%: fuel at 59%.
       <- day 23: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   Day 35: Fuel at Spoke B down to 0%: fuel on hand ran out.
-      <- day 35: uc2 missed today's delivery (no on-site storage line).
+      <- day 35: Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
           <- day 21: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
               <- day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
-              <- day 8: Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+              <- day 8: Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
                   <- day 8: Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   Day 35: Power at Spoke B down to 0%: fuel at 0%.
       <- day 35: Fuel at Spoke B down to 0%: fuel on hand ran out.
-          <- day 35: uc2 missed today's delivery (no on-site storage line).
+          <- day 35: Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
               <- day 21: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
                   <- day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
-                  <- day 8: Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+                  <- day 8: Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 12-12, lowest 16%, 1 day(s) down: DISCOVERABLE
-      [discoverable] uc1 supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
+      [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 17-90, lowest 0%, 62 day(s) down: AVOIDABLE
-      [avoidable] Handshake uc1 was left unresolved and the vendor walked off on day 15.
+      [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] uc2 failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
-      [avoidable] Handshake uc2 was left unresolved and the vendor walked off on day 36.
-      [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Second Island Fuel fuel at Spoke B was left unresolved and the vendor walked off on day 36.
+      [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
   #2 spokeBSite.power days 7-90, lowest 0%, 78 day(s) down: AVOIDABLE
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 7. uc3 did not start until day 29.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Harbor Equipment Co power at Spoke B did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] Handshake uc3 was left unresolved and the vendor walked off on day 38.
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 38. The last arrangement supplying it, uc3, ended on day 37. uc4 did not start until day 40.
-      [avoidable] Handshake uc4 was left unresolved and the vendor walked off on day 47.
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 47. The last arrangement supplying it, uc4, ended on day 46. uc5 did not start until day 49.
-      [avoidable] Handshake uc5 was left unresolved and the vendor walked off on day 63.
-      [avoidable] Requirement req0007 (submitted day 1, needed from day 7) had nothing supplying it from day 63. The last arrangement supplying it, uc5, ended on day 62.
-      [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). om1 reached its fiscal-year end with day 75. om2 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [avoidable] Harbor Equipment Co power at Spoke B was left unresolved and the vendor walked off on day 38.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 38. The last arrangement supplying it, Harbor Equipment Co power at Spoke B, ended on day 37. Island Power Rentals power at Spoke B did not start until day 40.
+      [avoidable] Island Power Rentals power at Spoke B was left unresolved and the vendor walked off on day 47.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 47. The last arrangement supplying it, Island Power Rentals power at Spoke B, ended on day 46. Meridian Site Services power at Spoke B did not start until day 49.
+      [avoidable] Meridian Site Services power at Spoke B was left unresolved and the vendor walked off on day 63.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 63. The last arrangement supplying it, Meridian Site Services power at Spoke B, ended on day 62.
+      [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 78)
@@ -314,4 +314,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.65)
 
-State hash ac6cd8cca3ddd0597e75c7b095a0becce37ee4f6698a7d8a19ba7007b21e3788
+State hash 5df60c924287a3460d2cd8bd88b3c441bc5d5b55a9b4164003a9111138b9ec40

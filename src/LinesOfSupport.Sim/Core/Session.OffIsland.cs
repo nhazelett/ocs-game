@@ -55,7 +55,7 @@ public sealed partial class Session
         var port = IslandData(VendorData(arr.VendorId!)!.Island).Name;
         var bump = mode == "airlift" ? " Higher-priority cargo can bump it." : "";
         AddRecord(day, RecordKind.Event, arr.Id,
-            $"{arr.Id} ships by {mode} to {port}: due about day {arr.StartDay}, then customs on arrival.{bump}", [causeId]);
+            $"{Upper(NameOf(arr.Id))} ships by {mode} to {port}: due about day {arr.StartDay}, then customs on arrival.{bump}", [causeId]);
     }
 
     /// <summary>On the day an off-island shipment is due: an airlift bump, then one customs roll. Either moves the
@@ -74,7 +74,7 @@ public sealed partial class Session
             sh.Bumps++;
             Shift(delay);
             sh.DelayRecords.Add(AddRecord(d, RecordKind.Event, a.Id,
-                $"Airlift cargo for {a.Id} was bumped by higher-priority cargo; next lift puts it at {port} about day {a.StartDay}. Strategic lift is a coordination, not a contract.", [a.CauseId]));
+                $"Airlift cargo for {NameOf(a.Id)} was bumped by higher-priority cargo; next lift puts it at {port} about day {a.StartDay}. Strategic lift is a coordination, not a contract.", [a.CauseId]));
             return;
         }
         if (sh.CustomsDone) return;
@@ -84,7 +84,7 @@ public sealed partial class Session
         sh.CustomsHeld = true;
         Shift(hold);
         sh.DelayRecords.Add(AddRecord(d, RecordKind.Event, a.Id,
-            $"Customs at {port} is holding the cargo for {a.Id}; release expected day {a.StartDay}.", [a.CauseId]));
+            $"Customs at {port} is holding the cargo for {NameOf(a.Id)}; release expected day {a.StartDay}.", [a.CauseId]));
     }
 
     /// <summary>Debrief: a gap day that falls after an off-island shipment was due and before it actually arrived.</summary>
