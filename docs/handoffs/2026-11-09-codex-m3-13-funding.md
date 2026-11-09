@@ -28,7 +28,7 @@ Shell git pull was attempted and failed because git/gh has no credentials. Conne
 
 ## Unresolved
 
-M3-12 publication remains pending Nick's approval under existing FOR-NICK #4; no new technical question. An unparameterized create_tree call was rejected by automatic approval review before any file payload was supplied, citing unspecified upload contents/authorization and the older M3-12 blocker. The concrete M3-13 payload and PR are prepared separately for the authorized repository. Publication status is recorded in the session's final response; no remote CI is claimed until publication succeeds.
+M3-12 publication remains pending Nick's approval under existing FOR-NICK #4; no new technical question. An unparameterized create_tree call was rejected by automatic approval review before any file payload was supplied, citing unspecified upload contents/authorization and the older M3-12 blocker. The concrete M3-13 payload was then accepted after verifying the standing job through user_message_read. Opened ordinary PR 89 from codex/M3-13 with the actual main parent and base tree, using an expected-head, non-force update. No new publication blocker or FOR-NICK row was created. GitHub CI is pending at handoff.
 
 ## Next
 
