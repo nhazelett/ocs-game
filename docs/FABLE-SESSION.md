@@ -17,6 +17,11 @@ Every Fable session follows this, whether Nick started it in chat or the hourly 
 5. **Merge pass** again (section 3), then the next item. Repeat until the backlog has nothing unblocked for Fable or the session's budget is spent.
 6. If Fable's backlog is empty, add the next items from SPEC 11's milestone plan (Fable's lane only), then continue.
 
+## 2b. Reviewing the game as a player (added after the M2 gate, 8 Nov 2026)
+- A game PR (anything under `game/`) is reviewed by opening its screenshots (`docs/handoffs/images/*.png`, plain PNG, under 400 KB, not LFS). No screenshot of what changed: comment and do not merge.
+- Before any milestone with a player-facing surface is called ready for Nick, write down what a first-time player sees in the first two minutes, from the screenshots, in the milestone review. If you cannot, it is not ready.
+- While M2R is open, no new Sim routes or scenarios start (docs/design/opening-and-guidance.md 9). Fable's items are the M2R rows.
+
 ## 3. Merge pass (after every completed task, and at session start)
 
 In a scheduled run this is a review pass: apply the rules below, and instead of merging leave a PR comment `Fable review: ready to merge` (or what blocks it). In a chat session with Nick, merge.
