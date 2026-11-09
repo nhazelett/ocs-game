@@ -23,6 +23,8 @@ public partial class GameShell
         var card = cards.Single(c => c!.CardId == SelectedCard)!;
         linkedRequirement.AddChild(DeskUi.Label($"{card.CardId} · {card.SiteName} · {card.CapabilityLabel}\nPeak demand: {card.PeakDemandUnits} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
         if (session.IsReplay) linkedRequirement.AddChild(DeskUi.Label("Changing a line takes control and stops future replay actions."));
+        var market = DeskUi.Button("Go to market", () => GoToMarket(card.CardId));
+        market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished; linkedRequirement.AddChild(market);
         foreach (var line in card.Lines)
         {
             var toggle = new CheckBox { Text = line.Label, ButtonPressed = line.On, Disabled = view!.Finished,
