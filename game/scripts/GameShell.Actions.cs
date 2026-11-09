@@ -29,6 +29,7 @@ public partial class GameShell
     internal OptionButton VehicleInput => vehicleInput;
     internal SpinBox QuantityInput => quantityInput;
     internal SpinBox DurationInput => durationInput;
+    internal SpinBox StartInput => startInput;
     internal Button AwardButton => awardButton;
 
     private void BuildActionDesk()

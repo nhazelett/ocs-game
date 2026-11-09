@@ -97,6 +97,7 @@ public partial class CorSmokeTest : Node
             Require(reportSeen && hiddenSeen && rotationSeen, "Replay covers reports, hidden failures and rotation.");
             Require(shell.Session.StateHash == LinesOfSupport.Sim.Replay.Run(bundle, log).StateHash(), "Reporting displays leave the authored replay unchanged.");
             foreach (var button in shell.DebriefPanel.GetChildren().OfType<Button>().Where(b => b.HasMeta("gap"))) button.EmitSignal(Button.SignalName.Pressed);
+            foreach (var trace in shell.DebriefPanel.FindChildren("*", "Button", true, false).OfType<Button>().Where(b => b.HasMeta("gap_trace")).ToArray()) trace.EmitSignal(Button.SignalName.Pressed);
             var debriefText = shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Select(l => l.Text).ToArray();
             var final = shell.Session.View!;
             foreach (var hidden in final.Records.Where(r => !final.Known(r)))

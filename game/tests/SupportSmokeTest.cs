@@ -16,9 +16,10 @@ public partial class SupportSmokeTest : Node
             var gap = shell.DisplayedDebrief!.Gaps.First(g => g.Factors.Any(f => f.Kind == GapFactorKind.AcsaWithdrawn));
             var button = shell.DebriefPanel.GetChildren().OfType<Button>()
                 .Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index);
-            button.EmitSignal(Button.SignalName.Pressed);
+            var detail = shell.DebriefPanel.GetChildren().OfType<VBoxContainer>().Single(v => v.HasMeta("gap_detail") && v.GetMeta("gap_detail").AsInt32() == gap.Index);
+            if (!detail.Visible) button.EmitSignal(Button.SignalName.Pressed);
             var evidence = shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>()
-                .Single(l => l.Text.StartsWith("ACSA support withdrawn"));
+                .Single(l => l.Text.StartsWith(DebriefWords.Factor(GapFactorKind.AcsaWithdrawn)));
             Require(evidence.Text.Contains(gap.Factors.Single(f => f.Kind == GapFactorKind.AcsaWithdrawn).Text),
                 "Readable support label preserves actual Sim evidence.");
             shell.DeveloperToggle.ButtonPressed = false;

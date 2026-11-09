@@ -75,7 +75,7 @@ public partial class FundingSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash(), "Ninety-day funding inspection leaves the run unchanged.");
             var gap = shell.DisplayedDebrief!.Gaps.First(g => g.Factors.Any(f => f.Kind == GapFactorKind.FundingLapse));
             shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index).EmitSignal(Button.SignalName.Pressed);
-            Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.StartsWith("Funding lapse ·")), "Expanded debrief uses a readable funding label.");
+            Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.StartsWith(DebriefWords.Factor(GapFactorKind.FundingLapse))), "Expanded debrief uses a readable funding label.");
 
             // A temporary data fixture tests purpose restrictions without changing authored scenarios.
             var data = JsonNode.Parse(File.ReadAllText(Path.Combine(bundle.Directory, "scenario.json")))!;

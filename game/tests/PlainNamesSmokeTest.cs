@@ -118,6 +118,7 @@ public partial class PlainNamesSmokeTest : Node
             .Concat(view.Rules.Model.Capabilities.SelectMany(c => c.Lines).Select(l => l.Id))
             .Where(id => id.Any(char.IsDigit) || Regex.IsMatch(id, "[a-z][A-Z]")).Distinct().OrderByDescending(id => id.Length).ToArray();
         var pattern = ids.Length == 0 ? null : new Regex(@"(?<![\w-])(?:" + string.Join("|", ids.Select(Regex.Escape)) + @")(?![\w-])");
+        foreach (var trace in shell.DebriefPanel.FindChildren("*", "Button", true, false).OfType<Button>().Where(b => b.HasMeta("gap_trace")).ToArray()) trace.EmitSignal(Button.SignalName.Pressed);
         var tabs = shell.GetNode<TabContainer>("%DeskTabs");
         foreach (var gap in shell.DebriefPanel.GetChildren().OfType<Button>().Where(b => b.HasMeta("gap")))
         {

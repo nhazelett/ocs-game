@@ -39,7 +39,7 @@ public partial class ConfidenceSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash(), "Presentation leaves final state unchanged.");
             var gap = shell.DisplayedDebrief!.Gaps.First(g => g.Factors.Any(f => f.Kind == GapFactorKind.PriorityDeferred));
             shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index).EmitSignal(Button.SignalName.Pressed);
-            Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains("Shop work deferred after lost confidence")), "Expanded debrief uses the readable factor label.");
+            Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains(DebriefWords.Factor(GapFactorKind.PriorityDeferred))), "Expanded debrief uses the readable factor label.");
             Scenario(shell, "spoke-b");
             Require(map.LostConfidenceSites.Count == 0 && shell.MorningTiles.GetChildren().OfType<Button>().All(b => !b.Text.Contains("confidence lost")), "A new game clears all confidence marks.");
             GD.Print("CONFIDENCE_SMOKE_PASS: site marks, Compliance inbox, debrief label and reset with unchanged Sim."); GetTree().Quit();
