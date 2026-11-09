@@ -74,6 +74,9 @@ public partial class DebriefSmokeTest : Node
             await CheckOpening(shell);
             Require(shell.DebriefSummaryText.Text.Contains("Nobody owned fuel at Spoke B"), "The after-action leads with the player's unowned fuel.");
             Require(shell.DisplayedDebrief!.Summary!.Quoted.Count > 0, "Approach 1 exercises evidence already quoted in the paragraph.");
+            var lead = shell.DisplayedDebrief.Gaps.Single(g => g.Index == shell.DisplayedDebrief.Summary.LeadGap);
+            Require(lead.Factors.Any(f => f.Tag == lead.Tag) && lead.Factors.Any(f => f.Tag != lead.Tag),
+                "Approach 1 exercises both repeated and different lead-factor tags.");
             await Capture("--screenshot");
             CheckRecord(shell);
             var hash = shell.Session.StateHash;
@@ -116,7 +119,7 @@ public partial class DebriefSmokeTest : Node
             Require(shell.DisplayedDebrief!.Summary!.From is null && shell.DebriefSpeaker.Text == "After the deployment"
                 && !shell.DebriefPanel.FindChildren("*", "PersonPortrait", true, false).Any(), "A cast-free deployment uses a neutral attribution.");
             shell.QueueFree(); shell = null; await Frames();
-            GD.Print("DEBRIEF_SMOKE_PASS: by-hand approach 1, exact speaker/summary/lead, full-width layout, full record, one known snapshot per day, verbatim events, quoted evidence once with complete traces, no-gap and cast-free completions, saved finish and read-only rendering."); GetTree().Quit();
+            GD.Print("DEBRIEF_SMOKE_PASS: by-hand approach 1, exact speaker/summary/lead, full-width layout, full record, one known snapshot per day, verbatim events, quoted evidence and lead tag once with complete traces, no-gap and cast-free completions, saved finish and read-only rendering."); GetTree().Quit();
         }
         catch (Exception error) { shell?.QueueFree(); GD.PushError($"DEBRIEF_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
         finally { if (Directory.Exists(temporary)) Directory.Delete(temporary, true); }
@@ -140,10 +143,11 @@ public partial class DebriefSmokeTest : Node
             {
                 var factor = gap.Factors[i];
                 var label = factors.Single(l => l.GetMeta("factor_index").AsInt32() == i);
-                var tagLine = $"{DebriefWords.Factor(factor.Kind)}. {DebriefWords.TagMeaning(factor.Tag)}";
+                var tagLine = $"{DebriefWords.Factor(factor.Kind)}." +
+                    (gap.Index == report.Summary.LeadGap && factor.Tag == gap.Tag ? "" : " " + DebriefWords.TagMeaning(factor.Tag));
                 if (gap.Index == report.Summary.LeadGap && report.Summary.Quoted.Contains(i))
                 {
-                    Require(label.Text == tagLine && shell.DebriefSummaryText.Text.Contains(factor.Text), "Quoted lead factors show only their tag line; their evidence stays verbatim in the paragraph.");
+                    Require(label.Text == tagLine && shell.DebriefSummaryText.Text.Contains(factor.Text), "Quoted lead factors keep their kind and only a different tag; their evidence stays verbatim in the paragraph.");
                     Require(!Labels(detail).Any(l => l.Text.Contains(factor.Text)), "The lead evidence does not repeat the paragraph's quoted sentence.");
                 }
                 else
