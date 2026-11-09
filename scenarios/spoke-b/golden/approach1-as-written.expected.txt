@@ -19,7 +19,7 @@ Day 1
 Day 2
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day.
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -55,7 +55,7 @@ Day 11
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 12
-  ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop day(s). Port Fuel Haulers is told it will be paid.
+  ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $56,160 obligated from the O&M line. Port Fuel Haulers keeps delivering; deliveries after day 19 are owed and not obligated until a contract covers the need.
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
@@ -121,10 +121,10 @@ Day 24
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   SHORT     Lodging at Spoke B degraded to 76%: power at 76%.
 Day 25
-  COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
 Day 26
-  DONE      Response to higher HQ on the handshake with Harbor Equipment Co for power at Spoke B sent.
+  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 15 worked today (7.5 h of shop time).
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
@@ -222,7 +222,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 15-19, lowest 0%, 4 day(s) down: DISCOVERABLE
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
@@ -249,4 +249,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash fd5df2805e47fd709688836431ecb77cf19eb89f6a49de02ca4b0c734a0a4d04
+State hash 281b5e0013fe84cbc3cee80e4af2827e3a5b0b63b473487d7cc7ae8a1d33efa2

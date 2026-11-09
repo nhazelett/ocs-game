@@ -68,7 +68,85 @@ public sealed record DebriefView(
     IReadOnlyList<CapabilityBand> Timeline, IReadOnlyList<TimelineEvent> Events,
     IReadOnlyList<DecisionEntry> Decisions, IReadOnlyList<GapView> Gaps,
     ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments,
-    IReadOnlyList<ClaimLine>? Claims = null);
+    IReadOnlyList<ClaimLine>? Claims = null, DebriefSummary? Summary = null);
+
+/// <summary>The debrief's opening paragraph in a person's words (M2R-27, R9): the SCO's staff, else the commander; null
+/// From when the cast has neither. Text is prose, no lists or labels. LeadGap indexes Gaps for the gap the paragraph is about
+/// (null when there were no gaps), so the game can open that gap's evidence under it.</summary>
+public sealed record DebriefSummary(PersonView? From, string Text, int? LeadGap);
+
+/// <summary>Plain words for the debrief's labels (M2R-27), so no enum name reaches the screen split into words.</summary>
+public static class DebriefWords
+{
+    /// <summary>A short label for what contributed to a gap.</summary>
+    public static string Factor(GapFactorKind kind) => kind switch
+    {
+        GapFactorKind.Dependency => "Went down with another gap",
+        GapFactorKind.MissingSupplyLine => "A supply line was left off",
+        GapFactorKind.Uncovered => "Nothing covered it",
+        GapFactorKind.CoordinationWithdrawn => "A coordination fell through",
+        GapFactorKind.HandshakeLost => "A handshake fell through",
+        GapFactorKind.OffIslandDependency => "It came across the water",
+        GapFactorKind.DemandAboveSupply => "Bought too small for the demand",
+        GapFactorKind.VendorFailure => "The vendor fell down",
+        GapFactorKind.StopWork => "Work stopped on an overdue contract",
+        GapFactorKind.ExecutionConfusion => "Confusion on the ground",
+        GapFactorKind.BpaDeclined => "The vendor turned down a BPA call",
+        GapFactorKind.PriorityDeferred => "Put off for something else",
+        GapFactorKind.PopulationJump => "More people arrived",
+        GapFactorKind.VendorCapacity => "The vendor ran out of capacity",
+        GapFactorKind.FundingLapse => "No money to pay for it",
+        GapFactorKind.AcsaWithdrawn => "The partner pulled its support",
+        GapFactorKind.HostNationWithdrawn => "The host nation pulled its support",
+        GapFactorKind.LiftDelay => "Held up in the airlift or customs",
+        GapFactorKind.TransitionGap => "A hand-off left a gap",
+        GapFactorKind.OwnerNotEngaged => "Nobody owned it",
+        _ => "Another cause",
+    };
+
+    /// <summary>What a tag means, in one sentence (SPEC 4).</summary>
+    public static string TagMeaning(GapTag tag) => tag switch
+    {
+        GapTag.Avoidable => "Avoidable: what you needed to know was in front of you.",
+        GapTag.Discoverable => "Discoverable: you could have found it out, at a cost.",
+        _ => "Unforeseeable: nobody could have known.",
+    };
+
+    private static readonly string[] SmallNumbers =
+        ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+
+    private static readonly string[] Tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+
+    /// <summary>A number as a person would say it: words up to ninety-nine, digits above.</summary>
+    public static string Number(int n) => n switch
+    {
+        >= 0 and < 13 => SmallNumbers[n],
+        >= 13 and < 20 => n switch { 13 => "thirteen", 15 => "fifteen", 18 => "eighteen", _ => SmallNumbers[n - 10] + "teen" },
+        >= 20 and < 100 => n % 10 == 0 ? Tens[n / 10] : $"{Tens[n / 10]}-{SmallNumbers[n % 10]}",
+        _ => n.ToString(System.Globalization.CultureInfo.InvariantCulture),
+    };
+
+    /// <summary>A timeline entry's kind (TimelineEvent.Kind) as a word or two.</summary>
+    public static string TimelineKind(string kind) => kind switch
+    {
+        "Event" => "News",
+        "Withdrawal" => "Support withdrawn",
+        "UcaOverdue" => "Contract overdue",
+        "UcaStopWork" => "Work stopped",
+        "UcaResumed" => "Work resumed",
+        "Compliance" => "Compliance",
+        "Declined" => "Turned down",
+        "Definitized" => "Contract definitized",
+        "ArrangementStart" => "Started",
+        "ArrangementEnd" => "Ended",
+        "Knowledge" => "Learned",
+        "UcaProposal" => "Proposal in",
+        "VendorCapacity" => "Vendor at capacity",
+        "Funding" => "Money",
+        "Transition" => "Hand-off",
+        _ => "Update",
+    };
+}
 
 /// <summary>A vendor claim after a termination without the contract's notice (M3-19): filed day, amount, settled day
 /// (null while the shop has not settled it) and the filing record's text.</summary>

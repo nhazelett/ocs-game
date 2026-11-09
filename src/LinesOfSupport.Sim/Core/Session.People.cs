@@ -62,7 +62,7 @@ public sealed partial class Session
         var req = J4Request(siteId, capId);
         string text; List<string> ids = [];
         if (req is null)
-            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {partner.Name} had {stock:0} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
+            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {partner.Name} had {stock:#,0} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
         else
         {
             var (asked, start, id) = req.Value;

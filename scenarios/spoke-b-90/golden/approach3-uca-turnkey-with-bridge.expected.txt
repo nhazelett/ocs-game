@@ -17,7 +17,7 @@ Day 1
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
@@ -58,9 +58,9 @@ Day 15
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
-  ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
+  ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
-  DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -127,7 +127,7 @@ Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -211,7 +211,7 @@ Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 80
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): Meridian Site Services power at Spoke B had equipment down on day 76, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): Meridian Site Services power at Spoke B had equipment down on day 76, reported 4 days later.
 Day 81
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 62%: fuel on hand ran out; no arrangement supplies fuel.
@@ -222,7 +222,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -259,19 +259,19 @@ UNAUTHORIZED COMMITMENTS (SPEC 4.5)
 GAPS AND WHY (each traced back through its causes)
   Day 76: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
       <- day 76: Meridian Site Services power at Spoke B had equipment down.
-          <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day(s).
+          <- day 2: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 1 day.
   Day 77: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 81: Fuel at Spoke B degraded to 62%: fuel on hand ran out; no arrangement supplies fuel.
   Day 82: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 81-90, lowest 0%, 9 day(s) down: AVOIDABLE
-      [avoidable] No funding line with money could pay for fuel on day 81 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] No funding line with money could pay for fuel on day 81 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 days late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.power days 76-90, lowest 0%, 14 day(s) down: AVOIDABLE
       [unforeseeable] Meridian Site Services power at Spoke B failed on day 76 with full operator and maintenance coverage. The COR reported it on day 80.
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 77. The last arrangement supplying it, Meridian Site Services power at Spoke B, ended on day 76.
-      [avoidable] No funding line with money could pay for power on day 77 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for power on day 77 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 days late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [avoidable] Power depends on fuel, which was short. (see #0)
 
 PASS CRITERIA
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.878)
 
-State hash d85ddbff6746b9b1b91af292030f9f8627a24e4dd7380706a86f0764d34ff906
+State hash b0979bcaaab65e2dca090e2d112a3f86d3a0dfae439000dd4151e7d98fad84e7

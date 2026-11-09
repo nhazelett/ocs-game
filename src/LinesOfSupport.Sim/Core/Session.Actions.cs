@@ -310,7 +310,7 @@ public sealed partial class Session
                 {
                     var lag = _rngWork.NextInt(Rules.Uca.ApprovalLagDays);
                     wait += lag;
-                    approval = $" Approval request routed through the SCO; answer expected in {lag} day(s).";
+                    approval = $" Approval request routed through the SCO; answer expected in {Plural(lag, "day")}.";
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
                     $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}", []);

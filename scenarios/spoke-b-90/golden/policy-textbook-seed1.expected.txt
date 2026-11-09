@@ -13,7 +13,7 @@ Day 1
   ACTION    Ordered a site survey of Second Island.
   ACTION    The request for power for Spoke B: Operators switched on.
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 days.
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
   VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with Partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. Partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
@@ -57,9 +57,9 @@ Day 15
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 16
-  ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
+  ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
-  DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 17
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -135,10 +135,10 @@ Day 43
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 45
-  ACTION    SGT Okafor designated COR on Meridian Site Services power at Spoke B, replacing SSG Reyes's relief (fair: reports 2 day(s) late, about 80% of problems).
+  ACTION    SGT Okafor designated COR on Meridian Site Services power at Spoke B, replacing SSG Reyes's relief (fair: reports 2 days late, about 80% of problems).
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 46
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -229,7 +229,7 @@ Day 83
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 84
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 86
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash 12ab44bef8c5484c0d63dbbd966df2177f4d7e96df9d4db9dad0d3c4006ebc37
+State hash f63ee238ae3ed48762ed4693386af01e0bea0f3086e11a9b41ebab7b95b955f1

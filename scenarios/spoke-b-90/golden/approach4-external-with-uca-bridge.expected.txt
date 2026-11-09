@@ -17,8 +17,8 @@ Day 1
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 35 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $370,125. Approval request routed through the SCO; answer expected in 1 day(s).
-  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 35 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $370,125. Approval request routed through the SCO; answer expected in 1 day.
+  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop days to prepare, then the SCO and the external office.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
@@ -60,9 +60,9 @@ Day 15
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
-  ACTION    Payment for the handshake with Harbor Equipment Co for power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
+  ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
-  DONE      Denial of payment for the handshake with Harbor Equipment Co for power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
+  DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   EXTERNAL  The external office awarded the external contract's power at Spoke B to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from the O&M line good through day 75. The contractor mobilizes for 30 days; performance starts day 47, ends day 106.
 Day 17
@@ -130,7 +130,7 @@ Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B, the external contract's power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B, the external contract's power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -220,7 +220,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -259,4 +259,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.933)
 
-State hash bdfea3b4e6bca322675954d4d26552318dbceea3dbe796eafa9198bbca485923
+State hash 35f60cc87cf5fe5d356ea89fe818dec88c4e9074ccbab0dfe238d8eb583eefea

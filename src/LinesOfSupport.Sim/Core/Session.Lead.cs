@@ -42,7 +42,7 @@ public sealed partial class Session
         {
             var vendor = i.VendorId is null ? "A contractor" : VendorData(i.VendorId)?.Name ?? "A contractor";
             return new LeadItem(LeadKind.Decision,
-                $"{vendor} has fallen short on {CapLabel(i.CapabilityId).ToLowerInvariant()} at {SiteName(i.SiteId)} on {i.FailureDays.Count} day(s).",
+                $"{vendor} has fallen short on {CapLabel(i.CapabilityId).ToLowerInvariant()} at {SiteName(i.SiteId)} on {Plural(i.FailureDays.Count, "day")}.",
                 BoardLinkKind.Arrangement, i.ArrangementId, VendorRep(i.VendorId), null);
         }
         // In scenario order, so the author decides who is first through the door.

@@ -19,7 +19,7 @@ public class PlainNamesTests
             .Concat(sc.Islands.Select(x => x.Id)).Concat(sc.FundingLines.Select(x => x.Id)).Concat(sc.InheritedArrangements.Select(x => x.Id))
             .Concat(sc.Vehicles.Select(x => x.Id)).Concat(sc.Events.Select(x => x.Id)).Concat(sc.TransportLinks.Select(x => x.Id))
             .Concat(sc.People.Select(x => x.Id)).Concat(s.Rules.Instruments.Keys).Concat(s.Rules.PrepChoices.Select(x => x.Id))
-            .Concat(s.Arrangements.Select(a => a.Id)).Concat(s.PerformanceIssues.Select(i => i.Id))
+            .Concat(s.Arrangements.Select(a => a.Id)).Concat(s.PerformanceIssues.Select(i => i.Id)).Concat(s.Commitments.Select(c => c.Id))
             .Where(id => Regex.IsMatch(id, "[0-9]|[a-z][A-Z]")).Distinct().OrderByDescending(id => id.Length).ToList();
         return new Regex(@"\b(" + string.Join("|", ids.Select(Regex.Escape)) + @")\b");
     }
@@ -37,6 +37,7 @@ public class PlainNamesTests
         foreach (var e in d.Commitments) yield return ("debrief commitment", e.Text);
         foreach (var e in d.Claims ?? []) yield return ("debrief claim", e.Text);
         foreach (var e in d.Timeline) yield return ("debrief band", e.Label);
+        if (d.Summary is { } sum) yield return ("debrief summary", sum.Text);
         foreach (var r in s.Records) yield return ($"record {r.Kind}", r.Text);
         foreach (var w in s.Work) yield return ("work label", w.Label);
         foreach (var a in s.AppliedActions)

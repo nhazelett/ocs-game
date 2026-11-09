@@ -89,7 +89,7 @@ public sealed partial class Session
         var lag = _rngAcsa.NextInt(inst.StartLagDays);
         var capId = chk.CapabilityId!;
         var rec = AddRecord(Day, RecordKind.Action, o.Id,
-            $"ACSA order to {PartnerName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; reimbursable {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}; {shopDays} shop day(s).", []);
+            $"ACSA order to {PartnerName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; reimbursable {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}; {Plural(shopDays, "shop day")}.", []);
         AddWork(WorkKind.AcsaOrder, $"ACSA order for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual), Day + Scenario.Actors.Fm.CertificationLagDays,
                 new AcsaPayload(o, chk.SiteId!, capId, chk.Lines, chk.DailyCents, chk.TotalCents, lag), rec);
         return ActionResult.Ok("in work");

@@ -19,12 +19,12 @@ Day 1
   ACTION    The request for power for Spoke B: Generator fuel supply switched on.
   ACTION    The request for power for Spoke B: Operators switched on.
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 2 days.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 day(s).
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 days.
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
@@ -106,11 +106,11 @@ Day 26
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 28
-  COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
 Day 29
   UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
-  DONE      Response to higher HQ on the handshake with Meridian Site Services for power at Spoke B sent.
+  DONE      Response to higher HQ on the extra work Meridian Site Services did on power at Spoke B sent.
   DONE      CE small buys: 15 worked today (7.5 h of shop time).
   SHORT     Food service at Spoke C degraded to 71%: food service on hand ran out.
 Day 30
@@ -156,7 +156,7 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-16, lowest 0%, 7 day(s) down: AVOIDABLE
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.power days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Meridian Site Services power at Spoke B did not start until day 17.
       [avoidable] Power depends on fuel, which was short. (see #0)
@@ -172,4 +172,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash f0787b5ea5ea0fbc1eba2aa86b939c14b17d20ddc65a3941e732fee31bff83e4
+State hash 9f57499fcebf56a4fab81f7c53e756e4605f3970132a0fea8d95a2c96eba2001

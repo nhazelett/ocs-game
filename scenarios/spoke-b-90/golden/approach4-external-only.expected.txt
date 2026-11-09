@@ -12,7 +12,7 @@ Day 1
   ACTION    The request for power for Spoke B: Generator fuel supply switched on.
   ACTION    The request for power for Spoke B: Operators switched on.
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
-  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
+  ACTION    External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop days to prepare, then the SCO and the external office.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   EXTERNAL  The external support request for power at Spoke B went through the SCO to the external office. Approval usually takes 10 to 20 days; the contractor then mobilizes before anything arrives.
@@ -116,7 +116,7 @@ Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on the external contract's power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on the external contract's power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -154,7 +154,7 @@ Day 58
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 59
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 55, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 55, reported 4 days later.
 Day 60
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 61
@@ -181,7 +181,7 @@ Day 68
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 65, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 65, reported 4 days later.
 Day 70
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 71
@@ -214,7 +214,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -255,19 +255,19 @@ GAPS AND WHY (each traced back through its causes)
   Day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
   Day 55: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
       <- day 55: The external contract's power at Spoke B had equipment down.
-          <- day 1: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
+          <- day 1: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop days to prepare, then the SCO and the external office.
   Day 65: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
       <- day 65: The external contract's power at Spoke B had equipment down.
-          <- day 1: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
+          <- day 1: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop days to prepare, then the SCO and the external office.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 12-12, lowest 16%, 1 day(s) down: DISCOVERABLE
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 17-45, lowest 0%, 29 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #2 spokeBSite.power days 7-45, lowest 0%, 39 day(s) down: AVOIDABLE
-      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. the external contract's power at Spoke B did not start until day 46. the external contract's power at Spoke B is an external support contract: requested day 1, submitted day 2, awarded day 15 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
+      [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. The external contract's power at Spoke B did not start until day 46. The external contract's power at Spoke B is an external support contract: requested day 1, submitted day 2, awarded day 15 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
   #3 spokeBSite.power days 55-55, lowest 50%, 0 day(s) down: UNFORESEEABLE
@@ -281,4 +281,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.789)
 
-State hash 9fd3064487349f5e2379205cfbffcdd884d34f704120920f6ef9d9016d1e61a3
+State hash e564496194b4215863d5dc55c7c6ec57a6ab3377ec2c42dbae2636289f4f8589

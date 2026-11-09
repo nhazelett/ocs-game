@@ -105,7 +105,7 @@ public sealed partial class Session
                 c.DecidedDay = Day;
                 c.FundingLineId = r.FundingLine;
                 var rec = AddRecord(Day, RecordKind.Action, c.Id,
-                    $"Ratification of {NameOf(c.Id)} started: {Rules.Model.Work.RatificationShopDays} shop day(s). {vendor} is told it will be paid.", [c.CauseId]);
+                    $"Ratification of {NameOf(c.Id)} started: {Plural(Rules.Model.Work.RatificationShopDays, "shop day")}. {vendor} is told it will be paid.", [c.CauseId]);
                 AddWork(WorkKind.Ratification, $"Ratify {NameOf(c.Id)}", Fixed.Milli(Rules.Model.Work.RatificationShopDays * Rules.Model.HoursPerPersonPerDay), Day, c.Id, rec);
                 return ActionResult.Ok("ratification in work");
             }
@@ -231,7 +231,7 @@ public sealed partial class Session
                 _hhqInquiries++;
                 var text = c.Kind == CommitmentKind.Handshake
                     ? $"Higher HQ asked why {NameOf(c.Id)} has gone {open} days without ratification."
-                    : $"{VendorData(c.VendorId)?.Name ?? "The vendor"} filed a claim for {Money(c.AmountCents)} of out-of-scope work ({c.Id}) after {open} days with no answer; higher HQ asked for the file.";
+                    : $"{VendorData(c.VendorId)?.Name ?? "The vendor"} filed a claim for {Money(c.AmountCents)} of out-of-scope work after {open} days with no answer; higher HQ asked for the file.";
                 var rec = AddRecord(d, RecordKind.Compliance, c.Id, $"{text} A response is now shop work ({Uc.ParkedInquiryResponseHours} hours).", [c.CauseId]);
                 AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {NameOf(c.Id)}", Fixed.Milli(Uc.ParkedInquiryResponseHours), d, c.Id, rec);
             }

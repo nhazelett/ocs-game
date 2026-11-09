@@ -36,7 +36,7 @@ Day 11
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
-  ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop day(s). Port Fuel Haulers is told it will be paid.
+  ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $56,160 obligated from the O&M line good through day 75. Port Fuel Haulers keeps delivering; deliveries after day 19 are owed and not obligated until a contract covers the need.
   DONE      CE small buys: none worked today (no hours left); 5 waiting.
   START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
@@ -77,10 +77,10 @@ Day 23
 Day 24
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 25
-  COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 26
-  DONE      Response to higher HQ on the handshake with Harbor Equipment Co for power at Spoke B sent.
+  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 12 worked today (6 h of shop time).
 Day 27
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -140,7 +140,7 @@ Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
-  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Harbor Equipment Co power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  COR       SSG Reyes rotates home. An untrained relief takes over as COR on Harbor Equipment Co power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
@@ -158,7 +158,7 @@ Day 48
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 49
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 45, reported 4 day(s) later.
+  COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 45, reported 4 days later.
 Day 50
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -265,7 +265,7 @@ Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
+  FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
@@ -368,7 +368,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 15-19, lowest 0%, 4 day(s) down: DISCOVERABLE
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
@@ -401,7 +401,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Power depends on fuel, which was short. (see #6)
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 67. The last arrangement supplying it, Harbor Equipment Co power at Spoke B, ended on day 66.
       [discoverable] Power depends on fuel, which was short. (see #7)
-      [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
+      [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 days late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
       [discoverable] Power depends on fuel, which was short. (see #8)
 
 PASS CRITERIA
@@ -410,4 +410,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.76)
 
-State hash 7e24a419e273984b4272b6d53aeaa0db0251cfca4dfe598edb29dc8301d61c64
+State hash ff84f922596015ed745c394660a42fda96c8a8f5935c2945256b6b05a38a2cc3
