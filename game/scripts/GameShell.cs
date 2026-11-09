@@ -92,6 +92,7 @@ public partial class GameShell : Control
 
     private void OnNextDay()
     {
+        if (ReadingTurnover) return;
         var advanced = AdvanceAndAutosave();
         RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.");
     }

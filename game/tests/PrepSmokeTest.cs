@@ -39,10 +39,11 @@ public partial class PrepSmokeTest : Node
             var expected = Session.Create(bundle, 1, [chosen.Id]);
             shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "Deploy applies exactly the selected prep through Session.Create.");
+            FinishOpening(shell);
             Step(shell); expected.AdvanceDay();
             Require(shell.Session.StateHash == expected.StateHash(), "First day preserves the selected preparation's actual effects.");
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);
-            Require(shell.Session.View is null && shell.PrepChoices.Values.All(c => !c.ButtonPressed), "Scenario reload clears picks and returns to prep.");
+            Require(shell.Session.View is null && prep.Options.All(o => shell.PrepChoices[o.Id].ButtonPressed == o.Default), "Scenario reload returns to authored prep defaults.");
             Replay(shell);
             var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach1-as-written.json"));
             Require(shell.Session.StateHash == LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 0).StateHash(), "Replay starts with its own recorded prep.");

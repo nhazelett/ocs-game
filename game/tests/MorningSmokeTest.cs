@@ -60,7 +60,7 @@ public partial class MorningSmokeTest : Node
             var quiet = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
             quiet.ScenarioRootOverride = temporary; AddChild(quiet);
             DeveloperWorkspace(quiet);
-            quiet.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+            DeployWithoutPrep(quiet);
             quiet.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
             Require(quiet.Session.CompletedDay == 7, "A quiet scenario stops after exactly seven days.");
             GD.Print("MORNING_SMOKE_PASS: alert-first board, linked targets, event stop and seven-day limit.");

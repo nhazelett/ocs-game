@@ -12,38 +12,46 @@ public partial class GameShell
 
     private void BuildPrepDesk()
     {
+        var pages = BuildOpeningSurface();
         prepPanel = new VBoxContainer { Name = "PrepScreen" };
-        GetNode<TabContainer>("%DeskTabs").GetNode<Control>("Board").AddChild(prepPanel);
+        pages.AddChild(prepPanel);
         prepPanel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
         prepPanel.AddThemeConstantOverride("separation", 10);
+        BuildTurnoverPage(pages);
     }
 
     private void ShowPrepChoices()
     {
         DeskUi.Clear(prepPanel); PrepChoices.Clear();
         if (session.Prep is not { } prep) return;
-        prepPanel.AddChild(DeskUi.Label($"Pre-deployment · {prep.ScenarioTitle}\nChoose preparations within {prep.BudgetDays} prep days. All choices together cost {prep.AllChoicesDays} days. You may deploy without spending them all."));
+        prepPanel.AddChild(DeskUi.Label(prep.From?.WithUnit ?? "Before you leave"));
+        var intro = DeskUi.Label(prep.Intro ?? $"You have {prep.BudgetDays} days before you leave. Choose what you want to put in place before you go.");
+        intro.AddThemeFontSizeOverride("font_size", 22); prepPanel.AddChild(intro);
         prepCheckLabel = DeskUi.Label(); prepPanel.AddChild(prepCheckLabel);
-        StartGameButton = DeskUi.Button("Deploy · start day 1", StartPreparedGame); prepPanel.AddChild(StartGameButton);
+        StartGameButton = DeskUi.Button("I'm ready to leave", StartPreparedGame);
         var scroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
         var choices = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
         choices.AddThemeConstantOverride("separation", 12);
         prepPanel.AddChild(scroll); scroll.AddChild(choices);
         foreach (var choice in prep.Options)
         {
-            var toggle = new CheckBox { Text = $"{choice.Label} · {choice.PrepDays} prep days", AutowrapMode = TextServer.AutowrapMode.WordSmart };
+            var toggle = new CheckBox { Text = $"{choice.Says ?? choice.Label} ({choice.PrepDays} {(choice.PrepDays == 1 ? "day" : "days")})", ButtonPressed = choice.Default,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart };
             PrepChoices.Add(choice.Id, toggle); choices.AddChild(toggle);
-            foreach (var effect in choice.Effects)
-                choices.AddChild(DeskUi.Label($"With: {effect.With}\nWithout: {effect.Without}" + (effect.HasEffect ? "" : "\nRecorded only; not modeled in this build.")));
+            toggle.TooltipText = string.Join("\n\n", choice.Effects.Select(effect => effect.With + " " + effect.Without +
+                (effect.HasEffect ? "" : " This preparation is recorded in your debrief; it has no modeled effect yet.")));
             toggle.Toggled += _ => UpdatePrepCheck();
         }
+        var buttons = new HBoxContainer(); prepPanel.AddChild(buttons);
+        buttons.AddChild(DeskUi.Button("Back", ShowFrontDoor)); buttons.AddChild(StartGameButton);
+        StartGameButton.CustomMinimumSize = new Vector2(220, 46); StartGameButton.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         UpdatePrepCheck();
     }
 
     private void UpdatePrepCheck()
     {
         var check = session.CheckPrep(ChosenPrep);
-        prepCheckLabel.Text = $"{check.UsedDays} / {check.BudgetDays} prep days selected" + (check.Accepted ? "" : "\n" + string.Join("\n", check.Stops));
+        prepCheckLabel.Text = $"You've planned {check.UsedDays} of your {check.BudgetDays} days." + (check.Accepted ? " You can leave days unused." : "\n" + string.Join("\n", check.Stops));
         prepCheckLabel.Modulate = check.Accepted ? Colors.White : new Color(1, .45f, .4f);
         StartGameButton.Disabled = !check.Accepted;
     }
@@ -55,6 +63,7 @@ public partial class GameShell
         if (StartGameButton.Disabled) return;
         session.StartScenario(ChosenPrep);
         TryAutosave();
+        BeginTurnover();
         RefreshDisplay(DeveloperTools ? "Seed 1 · preparations applied. Next day plays day 1." : "Your preparations are in place. You're ready for your first day.");
     }
 
@@ -63,12 +72,12 @@ public partial class GameShell
         var preparing = session.Prep is not null;
         var tabs = GetNode<TabContainer>("%DeskTabs");
         prepPanel.Visible = preparing;
-        tabs.GetNode<Control>("Board/MorningBoard").Visible = !preparing;
         for (var i = 1; i < tabs.GetTabCount(); i++) tabs.SetTabDisabled(i, preparing);
         if (preparing)
         {
             tabs.CurrentTab = 0;
             GetNode<Label>("%DayCounter").Text = "Pre-deployment";
         }
+        RefreshOpeningVisibility();
     }
 }
