@@ -13,10 +13,11 @@ public sealed partial class Session
     public IReadOnlyList<PerformanceIssueState> PerformanceIssues => _issues;
     private PerformanceRulesData Perf => Rules.Performance;
 
-    /// <summary>Contracts with written terms awarded by this office. Cash and card buys, handshakes, coordinations
-    /// and inherited host-nation support have no default clause to cure under.</summary>
+    /// <summary>Contracts with written terms, awarded by this office or inherited from the last rotation (M3-18: the
+    /// office now administers them). Cash and card buys, handshakes, coordinations and host-nation support have no
+    /// default clause to cure under; nor does a partner's ACSA support (M3-06).</summary>
     private bool Curable(Arrangement a)
-        => a.CreatedDay > 0 && !a.IsCoordination && !a.Unauthorized
+        => !a.IsCoordination && !a.Unauthorized && a.Instrument != AcsaInstrument
            && Rules.Instruments.TryGetValue(a.Instrument, out var inst) && inst.WrittenTerms;
 
     private void PerformanceChecks(int d, Dictionary<string, Today> today)

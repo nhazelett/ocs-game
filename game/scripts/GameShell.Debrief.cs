@@ -52,12 +52,13 @@ public partial class GameShell
         for (var day = 1; day <= report.LastDay; day++) dayPicker.AddItem($"Day {day}");
         debriefPanel.AddChild(dayPicker);
         var timeline = new VBoxContainer(); debriefPanel.AddChild(timeline);
+        var knownIds = view.Records.Where(view.Known).Select(r => r.Id).ToHashSet(StringComparer.Ordinal);
         void ShowDay(long day)
         {
             DeskUi.Clear(timeline);
-            foreach (var item in report.Events.Where(e => day == 0 || e.Day == day))
+            foreach (var item in report.Events.Where(e => knownIds.Contains(e.RecordId) && (day == 0 || e.Day == day)))
                 timeline.AddChild(DeskUi.Label($"Day {item.Day} · {item.Kind} · {item.Subject}\n{item.Text}\nRecord {item.RecordId}"));
-            foreach (var decision in report.Decisions.Where(d => day == 0 || d.Day == day))
+            foreach (var decision in report.Decisions.Where(d => knownIds.Contains(d.RecordId) && (day == 0 || d.Day == day)))
                 timeline.AddChild(DeskUi.Label($"Day {decision.Day} · {(decision.Rejected ? "Rejected decision" : "Decision")} · {decision.RecordId}\n{decision.Text}\nKnown then: {string.Join(", ", decision.Known.Select(k => k.IslandId + " " + k.Tier))}"));
             if (timeline.GetChildCount() == 0) timeline.AddChild(DeskUi.Label("No events or decisions for this day."));
         }
@@ -92,6 +93,7 @@ public partial class GameShell
 
     internal static string GapFactorLabel(GapFactorKind kind) => kind switch
     {
+        GapFactorKind.FundingLapse => "Funding lapse",
         GapFactorKind.PopulationJump => "Unplanned population arrival",
         GapFactorKind.PriorityDeferred => "Shop work deferred after lost confidence",
         _ => kind.ToString()
@@ -99,7 +101,7 @@ public partial class GameShell
 
     private static void AddCauseTrace(VBoxContainer parent, SessionView view, IReadOnlyList<string> roots)
     {
-        var records = view.Records.ToDictionary(r => r.Id, StringComparer.Ordinal);
+        var records = view.Records.Where(view.Known).ToDictionary(r => r.Id, StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         void Visit(string id, string? child)
         {

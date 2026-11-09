@@ -46,6 +46,19 @@ public sealed class Arrangement
     public bool MobilizationCharged { get; set; }
     /// <summary>The COR designated on this arrangement, or null for none (M3-04).</summary>
     public string? CorId { get; set; }
+    /// <summary>Days of termination notice the contract requires, or null for none (inherited noticeDays, M3-19).</summary>
+    public int? NoticeDays { get; init; }
+}
+
+/// <summary>A vendor's claim after a termination that skipped the contract's notice (M3-19). Filed when the
+/// termination is done; settled when the shop works it, charged to the arrangement's funding line.</summary>
+public sealed class ClaimState
+{
+    public required string ArrangementId { get; init; }
+    public int FiledDay { get; init; }
+    public long AmountCents { get; init; }
+    public int? SettledDay { get; set; }
+    public string FiledRecordId { get; init; } = "";
 }
 
 /// <summary>A COR on the roster (M3-04). When the COR rotates home, the relief keeps the designations at a lower quality.</summary>
@@ -69,6 +82,9 @@ public sealed class UcaState
 {
     public long NteCents { get; init; }
     public long QuotedTotalCents { get; init; }
+    /// <summary>An inherited UCA's obligations from before day 1 (M3-16). They count toward the NTE caps, the 50%
+    /// definitization trigger and the definitized price, but not toward this game's obligated cost.</summary>
+    public long PriorObligatedCents { get; init; }
     public int IssuedDay { get; init; }
     public int QualifyingProposalDay { get; init; }
     public bool ProposalReceived { get; set; }
@@ -94,7 +110,7 @@ public sealed class CapabilityState
     public string? OpenShortfallCause { get; set; }
 }
 
-public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice }
+public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, ExternalSupportRequest, AcsaOrder, HostNationRequest, FileReview, ClaimSettlement }
 
 public sealed class WorkItem
 {
@@ -223,6 +239,84 @@ public enum RecordKind
     Funding,
     /// <summary>A vendor failure reported to the office: by the COR with lag and fidelity set by quality, or by the unit (M3-04).</summary>
     CorReport,
+    /// <summary>An external support request moving through the SCO and the external office: submitted, approved and
+    /// awarded, or refused (M3-05).</summary>
+    ExternalSupport,
+    /// <summary>A transition plan's clock: a projected gap flagged, the cut-over started, or the handoff done clean or with a
+    /// gap (M3-05).</summary>
+    Transition,
+}
+
+public enum TransitionOutcome { Open, Clean, Gap }
+
+/// <summary>
+/// A transition plan (M3-05): outgoing arrangement to incoming arrangement or external support request, at one site and
+/// capability. Resolved the day after the outgoing's last day: Clean when the incoming is delivering then (stopped work
+/// and failures aside, it is running), Gap when it is not.
+/// </summary>
+public sealed class TransitionState
+{
+    public required string Id { get; init; }
+    public required string OutgoingId { get; init; }
+    public required string IncomingId { get; init; }
+    public required string SiteId { get; init; }
+    public required string CapabilityId { get; init; }
+    public int OverlapDays { get; init; }
+    /// <summary>"incomingDelivering" or "onDay".</summary>
+    public required string Handoff { get; init; }
+    public int? CutoverDay { get; init; }
+    /// <summary>"cco" or "ocs": the seat that owns a gap if one opens.</summary>
+    public required string Owner { get; init; }
+    public int PlannedDay { get; init; }
+    /// <summary>Consecutive days, up to today, the incoming delivered at full.</summary>
+    public int FullDays { get; set; }
+    /// <summary>Days the outgoing and the incoming were both running.</summary>
+    public int BothRunningDays { get; set; }
+    public int? CutoverStartedDay { get; set; }
+    public string? WarningRecordId { get; set; }
+    public int? WarningDay { get; set; }
+    public TransitionOutcome Outcome { get; set; } = TransitionOutcome.Open;
+    public int? ResolvedDay { get; set; }
+    public string? ResolvedRecordId { get; set; }
+    public string CauseId { get; init; } = "";
+}
+
+public enum ExternalSupportStatus { Preparing, InApproval, Awarded, Refused }
+
+/// <summary>
+/// An external support request (M3-05, SPEC 4.1): prepared by the shop, approved by the SCO and higher, awarded by an
+/// external office, then mobilized. On award it becomes the arrangement with the same id (instrument
+/// "externalSupport"). The approval lag and mobilization are drawn when the request is made; the player sees the
+/// approval day only once the request is submitted, and the start day only once it is awarded.
+/// </summary>
+public sealed class ExternalSupportState
+{
+    public required string Id { get; init; }
+    public required string SiteId { get; init; }
+    public required string CapabilityId { get; init; }
+    public required List<string> Lines { get; init; }
+    public long QuantityMilli { get; init; }
+    public int DurationDays { get; init; }
+    public int? RequestedStartDay { get; init; }
+    public required string FundingLineId { get; init; }
+    public string? CardId { get; init; }
+    public string? CorId { get; init; }
+    public long DailyCostCents { get; init; }
+    public long MobilizationCents { get; init; }
+    public long TotalCents { get; init; }
+    public int ReliabilityPermille { get; init; }
+    public int RequestedDay { get; init; }
+    public int ApprovalLagDays { get; init; }
+    public int MobilizationDays { get; init; }
+    public ExternalSupportStatus Status { get; set; } = ExternalSupportStatus.Preparing;
+    public int? SubmittedDay { get; set; }
+    /// <summary>The day the external office answers: submitted day plus the approval lag.</summary>
+    public int? ApprovalDay { get; set; }
+    public int? AwardedDay { get; set; }
+    /// <summary>First day of performance, known once awarded.</summary>
+    public int? StartDay { get; set; }
+    public string? RefusedReason { get; set; }
+    public string CauseId { get; init; } = "";
 }
 
 /// <summary>An IDIQ the shop can order from (M3-06): ceiling, minimum guarantee and what has been ordered so far.

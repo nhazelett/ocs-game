@@ -31,6 +31,11 @@ public sealed partial class Session
             EstablishIdiqAction e => ApplyEstablishIdiq(e),
             CureNoticeAction c => ApplyCureNotice(c),
             DesignateCorAction c => ApplyDesignateCor(c),
+            RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
+            AcsaOrderAction o => ApplyAcsaOrder(o),
+            HostNationRequestAction h => ApplyHostNationRequest(h),
+            PlanTransitionAction p => ApplyPlanTransition(p),
+            ReviewFilesAction r => ApplyReviewFiles(r),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _applied.Add(action);
@@ -56,6 +61,11 @@ public sealed partial class Session
         EstablishIdiqAction e => $"establish IDIQ {e.Id}",
         CureNoticeAction c => $"cure notice {c.Issue}",
         DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
+        RequestExternalSupportAction r => $"external support request {r.Id}",
+        AcsaOrderAction o => $"ACSA order {o.Id}",
+        HostNationRequestAction h => $"host nation support request {h.Id}",
+        PlanTransitionAction p => $"transition plan {p.Id}",
+        ReviewFilesAction => "file review",
         _ => a.GetType().Name,
     };
 
@@ -247,6 +257,7 @@ public sealed partial class Session
             if (line is not null) stops.AddRange(FundingStops(line, capId, a.StartDay, a.DurationDays));
         }
         if (a.Cor is not null) stops.AddRange(CorStops(a.Cor, inst));
+        stops.AddRange(OffIslandStops(a, vendor, capId));
         return new AwardCheck(stops, inst, card, vendor, offer, siteId, capId, lines, daily, mob, total);
     }
 
@@ -258,8 +269,9 @@ public sealed partial class Session
         var siteId = chk.SiteId!; var capId = chk.CapabilityId!; var lines = chk.Lines;
         long daily = chk.DailyCents, mob = chk.MobilizationCents, total = chk.TotalCents;
 
-        var lead = offer.LeadTimeDays;
         var startLag = _rngWork.NextInt(inst.StartLagDays);
+        // Off-island goods add strategic lift to the vendor's lead time, drawn after the work stream so local awards are unchanged.
+        var lead = offer.LeadTimeDays + (vendor.OffIsland ? DrawLift(a.Lift!) : 0);
         var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead, Fixed.Permille(vendor.Reliability), StockIsland(vendor, capId));
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
         var lineText = string.Join(", ", lines.Select(l => LineLabel(capId, l)));
@@ -361,6 +373,7 @@ public sealed partial class Session
             };
         }
         _arrangements.Add(arr);
+        if (a.Lift is not null && VendorData(a.Vendor) is { OffIsland: true }) RegisterShipment(arr, a.Lift, day, causeId);
         var tail = arr.Uca is { } u
             ? $" UCA issued with NTE {Money(u.NteCents)}; obligations capped at {Rules.Uca.ObligationCapBeforeProposal * 100:0}% of NTE until a qualifying proposal."
             : fromGuarantee > 0
@@ -428,9 +441,12 @@ public sealed partial class Session
         if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return ActionResult.Stop($"{t.Arrangement} is not running");
         if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == t.Arrangement))
             return ActionResult.Stop($"termination of {t.Arrangement} is already in work");
-        var rec = AddRecord(Day, RecordKind.Action, t.Arrangement, $"Termination of {t.Arrangement} started.", []);
+        if (t.WithNotice && arr.NoticeDays is not > 0) return ActionResult.Stop($"{t.Arrangement} has no termination notice clause");
+        var rec = AddRecord(Day, RecordKind.Action, t.Arrangement,
+            t.WithNotice ? $"Termination of {t.Arrangement} with {arr.NoticeDays} days' notice started." : $"Termination of {t.Arrangement} started.", []);
         var hours = arr.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true);
-        AddWork(WorkKind.Terminate, $"Terminate {t.Arrangement}", hours, Day, t.Arrangement, rec);
+        var w = AddWork(WorkKind.Terminate, $"Terminate {t.Arrangement}", hours, Day, t.Arrangement, rec);
+        if (t.WithNotice) _noticeTerminations.Add(w.Id);
         return ActionResult.Ok("termination in work");
     }
 
@@ -462,7 +478,7 @@ public sealed partial class Session
                 // The definitization modification obligates the definitized price with money current today.
                 // Definitizing never creates money: if the line cannot cover it, the remainder waits on funding.
                 var line = _funding.First(f => f.Id == d.FundingLine);
-                var need = Math.Max(0, arr.Uca.QuotedTotalCents - arr.ObligatedCents);
+                var need = Math.Max(0, arr.Uca.QuotedTotalCents - arr.ObligatedCents - arr.Uca.PriorObligatedCents);
                 var add = line.UsableOn(day) ? Math.Min(need, line.RemainingCents) : 0;
                 arr.ObligatedCents += add;
                 line.ObligatedCents += add;
@@ -483,6 +499,21 @@ public sealed partial class Session
                 if (w.Payload is EstablishIdiqAction idiqAction) CompleteEstablishIdiq(idiqAction, day, w.CauseId);
                 else CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
                 break;
+            case WorkKind.AcsaOrder:
+                CompleteAcsaOrder((AcsaPayload)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.HostNationRequest:
+                CompleteHostNationRequest((HostNationPayload)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.ExternalSupportRequest:
+                CompleteExternalRequestWork((string)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.ClaimSettlement:
+                SettleClaim((string)w.Payload!, day, w.CauseId);
+                break;
+            case WorkKind.FileReview:
+                CompleteFileReview((List<string>)w.Payload!, day, w.CauseId);
+                break;
             case WorkKind.Denial:
                 AddRecord(day, RecordKind.WorkDone, (string)w.Payload!, $"Denial of payment for {(string)w.Payload!} sent to the vendor: work outside the contract was not ordered by a contracting officer.", [w.CauseId]);
                 break;
@@ -495,8 +526,10 @@ public sealed partial class Session
             case WorkKind.Terminate:
             {
                 var arr = _arrangements.First(x => x.Id == (string)w.Payload!);
-                arr.EndDay = Math.Min(arr.EndDay, day);
-                if (arr.Status == ArrangementStatus.Pending) arr.Status = ArrangementStatus.Ended;
+                var plannedEnd = arr.EndDay;
+                var notice = _noticeTerminations.Contains(w.Id) ? arr.NoticeDays ?? 0 : 0;
+                arr.EndDay = Math.Min(arr.EndDay, day + notice);
+                if (arr.Status == ArrangementStatus.Pending && (notice == 0 || arr.EndDay < arr.StartDay)) arr.Status = ArrangementStatus.Ended;
                 // Deobligate the unperformed portion of a fully obligated award. It returns to its line only while
                 // the line is still current; otherwise it lapses. UCAs obligate as they go, so nothing comes back.
                 var tail = "";
@@ -516,7 +549,9 @@ public sealed partial class Session
                         else tail = $" {Money(back)} deobligated; {fl.Id} has expired, so the money lapses.";
                     }
                 }
-                AddRecord(day, RecordKind.ArrangementEnd, arr.Id, $"{arr.Id} terminated; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
+                var end = AddRecord(day, RecordKind.ArrangementEnd, arr.Id,
+                    $"{arr.Id} terminated{(notice > 0 ? $" with {notice} days' notice" : "")}; performance ends day {arr.EndDay}.{tail}", [w.CauseId]);
+                if (notice == 0) FileClaimIfOwed(arr, plannedEnd, day, end);
                 break;
             }
         }

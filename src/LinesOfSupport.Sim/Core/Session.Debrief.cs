@@ -69,6 +69,8 @@ public sealed partial class Session
                 [df.RecordId, df.RefusalRecordId]));
         }
 
+        foreach (var lf in LiftDelayFactors(siteId, capId, d)) yield return lf;
+
         var contributors = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && ActiveOn(a, d)).ToList();
         if (contributors.Count == 0)
         {
@@ -84,6 +86,27 @@ public sealed partial class Session
                 any = true;
                 yield return ($"coord|{co.Id}", new GapFactor(GapFactorKind.CoordinationWithdrawn, GapTag.Avoidable, d,
                     $"Coordination {co.Id} was withdrawn on day {w.Day} and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.", [w.Id, co.CauseId]));
+            }
+            foreach (var ac in _arrangements.Where(a => a.Instrument == AcsaInstrument && a.SiteId == siteId && a.CapabilityId == capId && a.EndDay < d && a.EndDay >= lastContractEnd))
+            {
+                var w = _records.FirstOrDefault(r => r.Kind == RecordKind.Withdrawal && r.Subject == ac.Id);
+                if (w is null) continue;
+                any = true;
+                yield return ($"acsa|{ac.Id}", new GapFactor(GapFactorKind.AcsaWithdrawn, GapTag.Avoidable, d,
+                    $"ACSA order {ac.Id} was withdrawn by {PartnerName} on day {w.Day} (last day of support {ac.EndDay}) and nothing contractual was in place behind it. A partner spares support when it can; its own needs come first.", [w.Id, ac.CauseId]));
+            }
+            foreach (var hn in _arrangements.Where(a => a.Instrument == HostNationInstrument && a.SiteId == siteId && Supplies(a, capId) && a.EndDay < d && a.EndDay >= lastContractEnd))
+            {
+                var w = _records.FirstOrDefault(r => r.Kind == RecordKind.Withdrawal && r.Subject == hn.Id);
+                if (w is null) continue;
+                any = true;
+                // Support the player asked for is the player's choice; support the force arrived with was withdrawable from day 1,
+                // so a backup was there to be found.
+                yield return ($"hn|{hn.Id}", hn.CreatedDay > 0
+                    ? new GapFactor(GapFactorKind.HostNationWithdrawn, GapTag.Avoidable, d,
+                        $"Host nation support request {hn.Id} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. Host nation support rests on an agreement the host nation can withdraw.", [w.Id, hn.CauseId])
+                    : new GapFactor(GapFactorKind.HostNationWithdrawn, GapTag.Discoverable, d,
+                        $"Inherited host nation support {hn.Id} was withdrawn by {HostNationName} on day {w.Day} (last day of support {hn.EndDay}) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.", [w.Id]));
             }
             foreach (var c in _commitments.Where(c => c.Kind == CommitmentKind.Handshake && c.SiteId == siteId && c.CapabilityId == capId))
             {
@@ -129,10 +152,15 @@ public sealed partial class Session
                 var ended = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && a.Status != ArrangementStatus.Declined && a.EndDay < d)
                                          .OrderByDescending(a => a.EndDay).FirstOrDefault();
                 var tail = (ended is null ? "" : $" The last arrangement supplying it, {ended.Id}, ended on day {ended.EndDay}.")
-                           + (later is null ? "" : $" {later.Id} did not start until day {later.StartDay}.");
+                           + (later is null ? "" : $" {later.Id} did not start until day {later.StartDay}.{ExternalNote(later)}");
                 yield return ($"card|{card.Id}|{ended?.Id}", new GapFactor(GapFactorKind.Uncovered, GapTag.Avoidable, d,
                     $"Requirement {card.Id} (submitted day {card.SubmittedDay}, needed from day {card.RequestedStartDay}) had nothing supplying it from day {d}.{tail}",
                     later is null ? (ended is null ? [] : [ended.CauseId]) : [later.CauseId]));
+            }
+            foreach (var tf in TransitionFactors(siteId, capId, d))
+            {
+                any = true;
+                yield return tf;
             }
             if (FundingLapseFactor(siteId, capId, d) is { } lapse)
             {
@@ -205,11 +233,29 @@ public sealed partial class Session
                     case RecordKind.VendorFailure:
                     {
                         var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
+                        // Slips that opened a performance issue, then an authored drop the player's action would have
+                        // prevented (M3-18).
+                        if (missing.Count == 0 && DropFactor(a, d, r.Id) is { } drop)
+                        {
+                            yield return ($"fail|{a.Id}|drop", new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
+                                $"{drop.Text}{CorNote(a, d)}{IssueNote(a.Id)}", drop.Ids));
+                            break;
+                        }
+                        // An inherited vendor whose real delivery record the handover overstated (M3-17): the failure was in
+                        // its file, so it is discoverable until the file is reviewed and avoidable after.
+                        if (missing.Count == 0 && _reportedReliability.TryGetValue(a.Id, out var reported)
+                            && HiddenNote(a.Id, d, $"its real delivery record ({a.ReliabilityPermille / 10}% on time, not the {reported / 10}% reported at handover)") is { } hn)
+                        {
+                            yield return ($"fail|{a.Id}|hidden|{hn.Tag}", new GapFactor(GapFactorKind.VendorFailure, hn.Tag, d,
+                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
+                                hn.RecordId is null ? [r.Id] : [r.Id, hn.RecordId]));
+                            break;
+                        }
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
                                 $"{a.Id} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
+                                $"{a.Id} failed on day {d} with full operator and maintenance coverage.{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:
@@ -233,8 +279,12 @@ public sealed partial class Session
                 var why = overdue is null
                     ? "incurred costs went past what could be obligated (the UCA obligation cap or the money on the line)"
                     : $"incurred costs went past the obligation cap; it had been past due for definitization since day {overdue.Day}";
-                yield return ($"stop|{a.Id}", new GapFactor(GapFactorKind.StopWork, GapTag.Avoidable, d,
-                    $"{a.Id} stopped work on day {stop.Day}: {why}.", overdue is null ? [stop.Id, a.CauseId] : [stop.Id, overdue.Id]));
+                // A hidden inherited UCA (M3-17): discoverable while its clock was unfound on the stop day, avoidable once found.
+                var hidden = HiddenNote(a.Id, stop.Day, "its definitization clock");
+                var ids = overdue is null ? new List<string> { stop.Id, a.CauseId } : [stop.Id, overdue.Id];
+                if (hidden?.RecordId is { } found) ids.Add(found);
+                yield return ($"stop|{a.Id}", new GapFactor(GapFactorKind.StopWork, hidden?.Tag ?? GapTag.Avoidable, d,
+                    $"{a.Id} stopped work on day {stop.Day}: {why}.{hidden?.Note}", ids));
             }
         }
     }
@@ -294,7 +344,7 @@ public sealed partial class Session
         {
             RecordKind.Event, RecordKind.Withdrawal, RecordKind.UcaOverdue, RecordKind.UcaStopWork, RecordKind.UcaResumed,
             RecordKind.Compliance, RecordKind.Declined, RecordKind.Definitized, RecordKind.ArrangementStart, RecordKind.ArrangementEnd,
-            RecordKind.Knowledge, RecordKind.UcaProposal, RecordKind.VendorCapacity, RecordKind.Funding,
+            RecordKind.Knowledge, RecordKind.UcaProposal, RecordKind.VendorCapacity, RecordKind.Funding, RecordKind.Transition,
         };
         var events = _records.Where(r => annotate.Contains(r.Kind) && r.Day >= 1)
                              .Select(r => new TimelineEvent(r.Day, r.Kind.ToString(), r.Subject, r.Text, r.Id)).ToList();
@@ -313,12 +363,15 @@ public sealed partial class Session
             D("mission.output"), D("mission.sortieGeneration"), D("mission.throughput"), D("mission.endurance"), D("mission.resilience"),
             L("cost.obligatedCents"), L("cost.incurredCents"), L("cost.unobligatedIncurredCents"),
             I("compliance.unauthorizedCommitments"), I("compliance.ucaOverdue"), I("compliance.hhqInquiries"), I("info.surveys"), I("shop.hoursWorked"),
-            gaps.Count, gaps.Count(g => g.Tag == GapTag.Avoidable), gaps.Count(g => g.Tag == GapTag.Discoverable), gaps.Count(g => g.Tag == GapTag.Unforeseeable));
+            gaps.Count, gaps.Count(g => g.Tag == GapTag.Avoidable), gaps.Count(g => g.Tag == GapTag.Discoverable), gaps.Count(g => g.Tag == GapTag.Unforeseeable),
+            _claims.Count, _claims.Sum(c => c.AmountCents));
 
         var commitments = _commitments.Select(c => new CommitmentLine(
             c.Id, c.Kind == CommitmentKind.Handshake ? "handshake" : "outOfScope", c.OpenedDay, c.Decision.ToString().ToLowerInvariant(),
             c.DecidedDay, c.WalkedOff, c.InquiryDrawn, _records.FirstOrDefault(r => r.Id == c.CauseId)?.Text ?? "")).ToList();
 
-        return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments);
+        var claims = _claims.Select(c => new ClaimLine(c.ArrangementId, c.FiledDay, c.AmountCents, c.SettledDay,
+                                                       _records.First(r => r.Id == c.FiledRecordId).Text)).ToList();
+        return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims);
     }
 }

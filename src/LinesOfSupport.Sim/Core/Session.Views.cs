@@ -45,6 +45,8 @@ public sealed partial class Session
         RecordKind.Event => (BoardCategory.Event, BoardSeverity.Warning),
         RecordKind.Funding => (BoardCategory.Report, BoardSeverity.Warning),
         RecordKind.CorReport => (BoardCategory.Report, BoardSeverity.Warning),
+        RecordKind.ExternalSupport => (BoardCategory.HigherHq, BoardSeverity.Info),
+        RecordKind.Transition => (BoardCategory.Delivery, BoardSeverity.Warning),
         RecordKind.WorkDone or RecordKind.Knowledge or RecordKind.Definitized or RecordKind.Obligation or RecordKind.Cash
             => (BoardCategory.Report, BoardSeverity.Info),
         _ => null, // Action and Rejected are the player's own daytime acts, already seen when made.
@@ -72,8 +74,9 @@ public sealed partial class Session
         {
             var r = _records[i];
             if (Classify(r.Kind) is not var (cat, sev)) continue;
-            // A failure on a contract watched through COR reports is not news until the report arrives (M3-04).
-            if (r.Kind == RecordKind.VendorFailure && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } fa && !Observed(fa)) continue;
+            // A failure on a contract watched through COR reports is not news until the report arrives (M3-04); a hidden
+            // inherited UCA's clock is not news until its file is reviewed (M3-17).
+            if (!RecordKnown(r)) continue;
             if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
             var (lk, lid) = Link(r.Subject);
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy));
@@ -219,7 +222,10 @@ public sealed partial class Session
             .Where(v => v.VisibleOnDay1 && vendors.Any(o => o.Id == v.Vendor))
             .Select(v => new VehicleOption(v.Id, v.Kind, v.Vendor, v.ScopeTags, v.CallLimitCents, v.OrderingPeriodEndDay,
                                            v.PlaceOfPerformance, Day <= v.OrderingPeriodEndDay,
-                                           Idiq(v.Id)?.CeilingCents, Idiq(v.Id)?.OrderedCents, Idiq(v.Id)?.GuaranteeUnorderedCents))
+                                           // An inherited order with a hidden problem keeps the vehicle's terms out of view (M3-17).
+                                           IdiqTermsHidden(v.Id) ? null : Idiq(v.Id)?.CeilingCents,
+                                           IdiqTermsHidden(v.Id) ? null : Idiq(v.Id)?.OrderedCents,
+                                           IdiqTermsHidden(v.Id) ? null : Idiq(v.Id)?.GuaranteeUnorderedCents))
             .ToList();
 
         var funding = _funding.Select(f =>
@@ -253,8 +259,9 @@ public sealed partial class Session
         }
         var minDone = Completion(inst.ShopDays.Min, Rules.Uca.ApprovalLagDays.Min);
         var maxDone = Completion(inst.ShopDays.Max, Rules.Uca.ApprovalLagDays.Max);
-        var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays);
-        var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays);
+        var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
+        var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
+        var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
         var hMin = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
         var hMax = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
 
@@ -295,6 +302,10 @@ public sealed partial class Session
             var after = Fixed.Permille(Rules.Uca.ObligationCapAfterProposal) / 10;
             gaps.Add($"Obligations capped at {before}% of the NTE until the qualifying proposal and {after}% after; definitization is due within {Rules.Uca.DefinitizeWithinDays} days and takes shop time.");
         }
+        if (vendor.OffIsland && a.Lift is { } liftMode)
+            gaps.Add(liftMode == "airlift"
+                ? $"Comes by airlift to {IslandData(vendor.Island).Name}: {Lift.AirliftQueueDays.Min} to {Lift.AirliftQueueDays.Max} days in the queue, higher-priority cargo can bump it, and customs can hold it on arrival."
+                : $"Comes by sealift to {IslandData(vendor.Island).Name}: {Lift.SealiftTransitDays.Min} to {Lift.SealiftTransitDays.Max} days in transit, and customs can hold it on arrival.");
         if (vendor.Island != site.Island)
             gaps.Add($"Supplied from {IslandData(vendor.Island).Name}: deliveries depend on the transport links to {IslandData(site.Island).Name}.");
         else if (StockIsland(vendor, capId) is var stock && stock != site.Island && TierOn(site.Island, Day) == "surveyed")

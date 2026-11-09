@@ -15,6 +15,14 @@ public enum GapFactorKind
     PopulationJump, VendorCapacity,
     /// <summary>No funding line with money could pay for the capability that day (M3-03): an expiry, a late replacement, or money spent.</summary>
     FundingLapse,
+    /// <summary>The partner withdrew an ACSA order and nothing contractual was behind it (M3-06).</summary>
+    AcsaWithdrawn,
+    /// <summary>The host nation withdrew support (requested or inherited) and nothing contractual was behind it (M3-06).</summary>
+    HostNationWithdrawn,
+    /// <summary>An off-island delivery was bumped from the airlift or held in customs past its due day (M3-06).</summary>
+    LiftDelay,
+    /// <summary>A transition plan's outgoing arrangement ended before the incoming one was delivering (M3-05).</summary>
+    TransitionGap,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>
@@ -46,7 +54,8 @@ public sealed record ScorecardView(
     double MissionOutput, double SortieGeneration, double Throughput, double Endurance, double Resilience,
     long ObligatedCents, long IncurredCents, long UnobligatedIncurredCents,
     int UnauthorizedCommitments, int UcaOverdue, int HhqInquiries, int Surveys, int ShopHoursWorked,
-    int GapCount, int AvoidableGaps, int DiscoverableGaps, int UnforeseeableGaps);
+    int GapCount, int AvoidableGaps, int DiscoverableGaps, int UnforeseeableGaps,
+    int Claims = 0, long ClaimCents = 0);
 
 /// <summary>An unauthorized commitment and how it was decided (ADR-0007).</summary>
 public sealed record CommitmentLine(string Id, string Kind, int OpenedDay, string Decision, int? DecidedDay, bool WalkedOff, bool InquiryDrawn, string Text);
@@ -56,4 +65,9 @@ public sealed record DebriefView(
     string ScenarioTitle, int DaysPlayed, int LastDay,
     IReadOnlyList<CapabilityBand> Timeline, IReadOnlyList<TimelineEvent> Events,
     IReadOnlyList<DecisionEntry> Decisions, IReadOnlyList<GapView> Gaps,
-    ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments);
+    ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments,
+    IReadOnlyList<ClaimLine>? Claims = null);
+
+/// <summary>A vendor claim after a termination without the contract's notice (M3-19): filed day, amount, settled day
+/// (null while the shop has not settled it) and the filing record's text.</summary>
+public sealed record ClaimLine(string ArrangementId, int FiledDay, long AmountCents, int? SettledDay, string Text);

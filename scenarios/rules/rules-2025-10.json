@@ -725,5 +725,42 @@
     "noCorLagDays": 3,
     "reliefQuality": "poor",
     "sourceUrl": "https://www.acquisition.gov/dfars/201.602-2-responsibilities."
+  },
+  "lift": {
+    "airliftQueueDays": {
+      "min": 7,
+      "max": 14
+    },
+    "airliftBumpChance": 0.2,
+    "airliftBumpDelayDays": {
+      "min": 3,
+      "max": 7
+    },
+    "airliftMaxBumps": 2,
+    "sealiftTransitDays": {
+      "min": 30,
+      "max": 45
+    },
+    "customsHoldChance": 0.25,
+    "customsHoldDays": {
+      "min": 2,
+      "max": 6
+    },
+    "notes": "SPEC 4.1: airlift queue 7 to 14 days by priority and bumpable by higher-priority cargo; sealift 30 to 45; customs on arrival. Placeholder chances, tuned in playtest (Q2 pattern)."
+  },
+  "transition": {
+    "defaultOverlapDays": 2,
+    "warnDays": 5,
+    "notes": "SPEC 2 and 4 transition plan (backlog M3-05): days of verified full delivery by the incoming arrangement before the cut-over, and how many days before the outgoing ends the planner flags a projected gap. Placeholders, tuned in playtest."
+  },
+  "fileReview": {
+    "hoursPerArrangement": 4,
+    "notes": "Reviewing an inherited contract file at a rotation (backlog M3-17): half a person-day per file to read the contract, its modifications, the obligation record and the delivery record. Placeholder, tuned in playtest."
+  },
+  "claims": {
+    "settleShopHours": 16,
+    "settlementDays": 10,
+    "notes": "FAR 49 termination settlement (backlog M3-19): a contract terminated without the notice its terms require draws a vendor claim, settled at this many days of its daily cost (capped at the days cut short) after two person-days of shop work. Placeholders, tuned in playtest.",
+    "sourceUrl": "https://www.acquisition.gov/far/part-49"
   }
 }

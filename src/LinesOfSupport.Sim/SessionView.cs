@@ -46,11 +46,34 @@ public sealed class SessionView
     public string CorSummary(CorState cor) => _s.CorSummary(cor);
     /// <summary>Lag and report odds for a COR's current quality (rules cor.qualities).</summary>
     public CorQualityData CorQuality(CorState cor) => _s.CorQuality(cor);
-    /// <summary>False for a VendorFailure record the office has not been told about (it waits for a COR or unit report,
-    /// which is a CorReport record). The morning board already leaves those out; record lists shown to the player
-    /// should too. Every other record is known when written.</summary>
-    public bool Known(CauseRecord record)
-        => record.Kind != RecordKind.VendorFailure || _s.Arrangements.FirstOrDefault(a => a.Id == record.Subject) is not { } a || _s.Observed(a);
+    /// <summary>False for a record the office has not been told about yet: a VendorFailure waiting for a COR or unit
+    /// report, which is a CorReport record (M3-04), or a hidden inherited UCA's UcaOverdue or UcaProposal notice until its
+    /// file is reviewed or higher HQ asks about it (M3-17). Known as of today, so a record can become known later. The
+    /// morning board already leaves these out; record lists shown to the player should too.</summary>
+    public bool Known(CauseRecord record) => _s.RecordKnown(record);
+
+    /// <summary>True while an inherited arrangement carries a problem the handover did not mention and nobody has found
+    /// (M3-17). While true, show it as an ordinary contract: no UCA clocks or state (its <c>Uca</c> is not the player's to
+    /// see), <see cref="ShownReliabilityPermille"/> rather than <c>ReliabilityPermille</c>, and for an IDIQ order no
+    /// vehicle ceiling or ordered value (<see cref="IdiqTermsHidden"/>).</summary>
+    public bool ProblemHidden(Arrangement arrangement) => _s.ProblemHidden(arrangement);
+
+    /// <summary>The delivery record the office believes, permille: the handover's reported reliability while a hidden
+    /// problem is unfound, else the true one (M3-17).</summary>
+    public int ShownReliabilityPermille(Arrangement arrangement) => _s.ShownReliability(arrangement);
+
+    /// <summary>True while an inherited order with a hidden problem keeps this IDIQ's ceiling and ordered value out of
+    /// view (M3-17). <see cref="ActionEditor"/> already nulls them in its VehicleOption; read <see cref="Idiqs"/> through
+    /// this.</summary>
+    public bool IdiqTermsHidden(string vehicleId) => _s.IdiqTermsHidden(vehicleId);
+
+    /// <summary>Inherited contract files the shop can review, with the day each was reviewed (M3-17). Host nation support
+    /// has no file of the shop's and is not listed.</summary>
+    public IReadOnlyList<InheritedFileView> InheritedFiles() => _s.BuildInheritedFiles();
+
+    /// <summary>What a file review would take (M3-17): hard stops, shop hours (min and max equal) and in
+    /// EarliestStartMin/Max the day the findings would come in, ignoring the queue ahead. Changes nothing.</summary>
+    public ActionPreview PreviewReviewFiles(ReviewFilesAction review) => _s.BuildReviewFilesPreview(review);
     public IReadOnlyDictionary<string, double> Metrics => _s.Metrics;
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;
@@ -106,6 +129,48 @@ public sealed class SessionView
     /// (in TotalCents) and in EarliestStartMin/Max the first day orders could be placed. Changes nothing.</summary>
     public ActionPreview PreviewEstablish(EstablishIdiqAction idiq) => _s.BuildEstablishIdiqPreview(idiq);
 
+    /// <summary>What an external support request would take (M3-05): the same hard stops Apply would give, the soft gaps,
+    /// its estimated cost (obligated by the external office at award) and in EarliestStartMin/Max the first day of
+    /// performance at the best and worst roll. Changes nothing and draws no random numbers.</summary>
+    public ActionPreview PreviewExternalSupport(RequestExternalSupportAction request) => _s.BuildExternalSupportPreview(request);
+
+    /// <summary>External support requests made this game and where each stands (M3-05).</summary>
+    public IReadOnlyList<ExternalSupportRequestView> ExternalSupportRequests() => _s.BuildExternalSupportRequests();
+
+    /// <summary>The external support contract the OCS seat can request, or null when the scenario has none.</summary>
+    public ExternalSupportData? ExternalSupport => _s.Scenario.Actors.ExternalSupport;
+
+    /// <summary>What an ACSA order would take (M3-06): hard stops, soft gaps, reimbursable cost and the first day of support
+    /// at the best and worst roll. Changes nothing and draws no random numbers.</summary>
+    public ActionPreview PreviewAcsa(AcsaOrderAction order) => _s.BuildAcsaPreview(order);
+
+    /// <summary>The partner force with an ACSA, or null when none is present.</summary>
+    public AcsaPartnerData? AcsaPartner => _s.Scenario.Actors.AcsaPartner is { Present: true } p ? p : null;
+
+    /// <summary>Capabilities the partner has withdrawn its ACSA support for; "*" means all.</summary>
+    public IReadOnlyCollection<string> AcsaWithdrawn => _s.AcsaWithdrawn;
+
+    /// <summary>What a host nation support request would take (M3-06): hard stops, soft gaps, the shop's cost share and the
+    /// first day of support at the best and worst roll. Changes nothing and draws no random numbers.</summary>
+    public ActionPreview PreviewHostNation(HostNationRequestAction request) => _s.BuildHostNationPreview(request);
+
+    /// <summary>The host nation support agreement, or null when none exists.</summary>
+    public HostNationData? HostNation => _s.Scenario.Actors.HostNation is { AgreementExists: true } h ? h : null;
+
+    /// <summary>Capabilities the host nation has withdrawn support for; "*" means all.</summary>
+    public IReadOnlyCollection<string> HostNationWithdrawn => _s.HostNationWithdrawn;
+
+    /// <summary>Transition plans made this game and where each stands (M3-05): the timeline of both arrangements, the
+    /// projected incoming start, overlap so far, and the soft gaps the planner highlights today.</summary>
+    public IReadOnlyList<TransitionView> Transitions() => _s.BuildTransitions();
+
+    /// <summary>What a transition plan would be if made today (M3-05): the same hard stops Apply would give, and the
+    /// projection and soft gaps it would show. Changes nothing and draws no random numbers.</summary>
+    public TransitionPreview PreviewTransition(PlanTransitionAction plan) => _s.BuildTransitionPreview(plan);
+
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;
+
+    /// <summary>Vendor claims filed after terminations that skipped a contract's notice, settled or not (M3-19).</summary>
+    public IReadOnlyList<ClaimState> Claims => _s.Claims;
 }

@@ -97,6 +97,9 @@ public sealed class TextbookPolicy : IPolicy
                 Commitment = c.Id, Choice = c.Kind == CommitmentKind.Handshake ? "ratify" : "deny",
                 FundingLine = v.Funding.Where(f => f.UsableOn(v.Day) && f.RemainingCents > 0 && f.Pays(c.CapabilityId)).Select(f => f.Id).FirstOrDefault(),
             });
+        // Read the inherited contract files on day 1, before the clocks in them run on (M3-17).
+        if (v.Day == 1 && v.InheritedFiles().Any(f => f.ReviewedDay is null && !f.InReview))
+            actions.Add(new ReviewFilesAction());
         if (v.Day == 1)
             foreach (var island in v.Scenario.Sites.Select(s => s.Island).Distinct())
                 if (v.KnowledgeTier(island) is "assumed" or "estimated" && !v.SurveyPending(island))

@@ -18,6 +18,8 @@ public static class Events
         "contract.absent",           // target: site.capability; true when no contract (or pending award) supplies it
         "contract.present",          // target: site.capability; true when an active contract (not a handshake or coordination) supplies it
         "arrangement.active",        // target: arrangement id
+        "arrangement.noCureNotice",  // target: arrangement id; true while no cure notice on it is delivered or in work (M3-18)
+        "arrangement.notReplaced",   // target: arrangement id; true while nothing awarded this game for its site and capability is delivering (M3-18)
     };
 
     public static readonly IReadOnlySet<string> KnownEffects = new HashSet<string>(StringComparer.Ordinal)
@@ -29,6 +31,9 @@ public static class Events
         "site.populationJump",           // target: site id; fraction: share added; days or daysRange: notice before arrival
         "funding.late",                  // target: funding line id; days or daysRange: delay to its release (M3-03)
         "cor.rotates",                   // target: COR id; an untrained relief takes over its designations (M3-04)
+        "acsa.withdraw",                 // target: capability id, or absent for all; days or daysRange: notice (M3-06)
+        "hostNation.withdraw",           // target: capability id, or absent for all; days or daysRange: notice, else rules hostNation.withdrawalNoticeDays (M3-06)
+        "vendor.reliabilityDrop",        // target: inherited arrangement id; value: its reliability from the event day, 0..1 (M3-18)
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -80,6 +85,10 @@ public static class Events
             }
             case "arrangement.active":
                 return s.Arrangements.Any(a => a.Id == p.Target && a.Status == ArrangementStatus.Active);
+            case "arrangement.noCureNotice":
+                return !s.CureNoticeIssued(p.Target ?? "");
+            case "arrangement.notReplaced":
+                return !s.ReplacementDelivering(p.Target ?? "");
             default:
                 throw new InvalidDataException($"predicate kind {p.Kind} is not implemented");
         }
@@ -123,6 +132,18 @@ public static class Events
             case "cor.rotates":
                 s.RotateCor(e.Target ?? throw new InvalidDataException("cor.rotates needs a COR"), day, cause);
                 break;
+            case "acsa.withdraw":
+                s.WithdrawAcsa(e.Target, day, s.EffectDays(ev, index, 0), cause);
+                break;
+            case "hostNation.withdraw":
+                s.WithdrawHostNation(e.Target, day, s.EffectDays(ev, index, -1), cause);
+                break;
+            case "vendor.reliabilityDrop":
+            {
+                var to = e.Value is { ValueKind: JsonValueKind.Number } v ? v.GetDouble() : throw new InvalidDataException("vendor.reliabilityDrop needs a reliability value");
+                s.ReliabilityDrop(e.Target ?? throw new InvalidDataException("vendor.reliabilityDrop needs an arrangement"), Fixed.Permille(to), day, cause);
+                break;
+            }
             case "inbox":
                 break;
             default:

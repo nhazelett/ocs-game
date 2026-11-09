@@ -161,6 +161,7 @@ public sealed class ScenarioBundle
         foreach (var v in s.Vendors)
         {
             Need(islands.Contains(v.Island), $"vendor {v.Id} island not found");
+            foreach (var m in v.Lift) Need(m is "airlift" or "sealift", $"vendor {v.Id} lift mode {m} is not airlift or sealift");
             foreach (var o in v.Offers)
             {
                 var cap = Rules.Model.Capabilities.FirstOrDefault(c => c.Id == o.Capability);
@@ -184,20 +185,52 @@ public sealed class ScenarioBundle
         Need(cors.Count == s.Cors.Count, "COR ids must be unique");
         foreach (var c in s.Cors) Need(Rules.Cor.Qualities.ContainsKey(c.Quality), $"COR {c.Id} quality {c.Quality} not in rules cor.qualities");
         Need(Rules.Cor.Qualities.ContainsKey(Rules.Cor.ReliefQuality), $"rules cor.reliefQuality {Rules.Cor.ReliefQuality} not in cor.qualities");
+        Need(Rules.FileReview.HoursPerArrangement >= 0, "rules fileReview.hoursPerArrangement must not be negative");
+        Need(Rules.Claims.SettleShopHours >= 0 && Rules.Claims.SettlementDays >= 0, "rules claims values must not be negative");
         foreach (var a in s.InheritedArrangements)
         {
             if (a.Cor is not null) Need(cors.Contains(a.Cor), $"arrangement {a.Id} COR {a.Cor} not found");
             Need(Rules.Instruments.ContainsKey(a.Instrument), $"arrangement {a.Id} instrument {a.Instrument} not in rules");
             Need(vendors.Contains(a.Vendor), $"arrangement {a.Id} vendor not found");
             Need(sites.Contains(a.Site), $"arrangement {a.Id} site not found");
+            Need(a.StartDay <= a.EndDay, $"arrangement {a.Id} ends before it starts");
+            if (a.Quantity is { } q) Need(q > 0, $"arrangement {a.Id} quantity must be positive");
+            if (a.DailyCostCents is { } dc) Need(dc >= 0, $"arrangement {a.Id} dailyCostCents must not be negative");
+            if (a.FundingLine is not null) Need(s.FundingLines.Any(f => f.Id == a.FundingLine), $"arrangement {a.Id} funding line {a.FundingLine} not found");
+            if (a.ObligatedCents is > 0) Need(a.FundingLine is not null, $"arrangement {a.Id} has obligatedCents but no fundingLine");
+            if (a.NoticeDays is { } nd) Need(nd >= 0, $"arrangement {a.Id} noticeDays must not be negative");
+            if (a.ReportedReliability is { } rr)
+            {
+                Need(rr is >= 0 and <= 1, $"arrangement {a.Id} reportedReliability must be between 0 and 1");
+                Need(!a.VisibleProblem, $"arrangement {a.Id} has reportedReliability but visibleProblem is not false");
+            }
+            if (!a.VisibleProblem) Need(a.Instrument != "hostNation", $"arrangement {a.Id}: host nation support has no contract file to review, so its problem cannot be hidden");
+            if (a.UcaState is { } u)
+            {
+                Need(a.Instrument == "uca", $"arrangement {a.Id} has ucaState but instrument {a.Instrument}");
+                Need(u.NteCents > 0 && u.ObligatedCents <= u.NteCents, $"arrangement {a.Id} ucaState obligatedCents must be within a positive nteCents");
+                Need(u.QualifyingProposalDay is null || u.QualifyingProposalDay >= u.IssuedDay, $"arrangement {a.Id} qualifying proposal before the UCA was issued");
+                Need(u.Definitized || a.FundingLine is not null, $"arrangement {a.Id}: an undefinitized UCA needs a fundingLine to obligate from");
+            }
         }
         foreach (var e in s.Events)
         {
-            foreach (var p in e.Preconditions) Need(Events.KnownPredicates.Contains(p.Kind), $"event {e.Id}: predicate kind {p.Kind} is not implemented");
+            foreach (var p in e.Preconditions)
+            {
+                Need(Events.KnownPredicates.Contains(p.Kind), $"event {e.Id}: predicate kind {p.Kind} is not implemented");
+                if (p.Kind is "arrangement.noCureNotice" or "arrangement.notReplaced")
+                    Need(s.InheritedArrangements.Any(a => a.Id == p.Target), $"event {e.Id}: {p.Kind} target {p.Target} is not an inherited arrangement");
+            }
             foreach (var f in e.Effects)
             {
                 Need(Events.KnownEffects.Contains(f.Kind), $"event {e.Id}: effect kind {f.Kind} is not implemented");
                 if (f.DaysRange is { } r) Need(r.Min <= r.Max, $"event {e.Id}: {f.Kind} daysRange max is below min");
+                if (f.Kind == "vendor.reliabilityDrop")
+                {
+                    Need(s.InheritedArrangements.Any(a => a.Id == f.Target), $"event {e.Id}: vendor.reliabilityDrop target {f.Target} is not an inherited arrangement");
+                    Need(f.Value is { ValueKind: System.Text.Json.JsonValueKind.Number } rv && rv.GetDouble() is >= 0 and <= 1,
+                         $"event {e.Id}: vendor.reliabilityDrop value must be a reliability between 0 and 1");
+                }
                 if (f.ForecastDays is not null) Need(f.Kind == "link.closed", $"event {e.Id}: forecastDays applies only to link.closed");
                 if (f.Kind == "site.populationJump")
                 {
@@ -212,6 +245,41 @@ public sealed class ScenarioBundle
                     Need(s.FundingLines.Any(l => l.Id == f.Target), $"event {e.Id}: funding.late funding line {f.Target} not found");
                     Need(f.Days is > 0 || f.DaysRange is { Max: > 0 }, $"event {e.Id}: funding.late needs a positive days or daysRange");
                 }
+            }
+        }
+        if (s.Actors.AcsaPartner is { } partner)
+        {
+            if (partner.Island is { } pi) Need(islands.Contains(pi), $"acsaPartner island {pi} not found");
+            foreach (var c in partner.Stock.Keys) Need(caps.Contains(c), $"acsaPartner stock capability {c} not in rules");
+            foreach (var c in partner.UnitPriceCents.Keys) Need(partner.Stock.ContainsKey(c), $"acsaPartner price for {c} has no stock");
+            if (partner.Present) Need(Rules.Instruments.ContainsKey("acsa"), "acsaPartner needs the acsa instrument in rules");
+        }
+        foreach (var e in s.Events)
+            foreach (var f in e.Effects.Where(f => f.Kind == "acsa.withdraw"))
+                Need(f.Target is null || caps.Contains(f.Target), $"event {e.Id}: acsa.withdraw capability {f.Target} not in rules");
+        if (s.Actors.HostNation is { } hn)
+        {
+            if (hn.Island is { } hi) Need(islands.Contains(hi), $"hostNation island {hi} not found");
+            foreach (var c in hn.Capacity.Keys) Need(caps.Contains(c), $"hostNation capacity capability {c} not in rules");
+            foreach (var c in hn.UnitPriceCents.Keys) Need(hn.Capacity.ContainsKey(c), $"hostNation price for {c} has no capacity");
+            foreach (var site in hn.Sites) Need(s.Sites.Any(x => x.Id == site), $"hostNation site {site} not found");
+            if (hn.AgreementExists) Need(Rules.Instruments.ContainsKey("hostNation"), "hostNation agreement needs the hostNation instrument in rules");
+        }
+        foreach (var e in s.Events)
+            foreach (var f in e.Effects.Where(f => f.Kind == "hostNation.withdraw"))
+                Need(f.Target is null || caps.Contains(f.Target), $"event {e.Id}: hostNation.withdraw capability {f.Target} not in rules");
+        if (s.Actors.ExternalSupport is { } ext)
+        {
+            Need(Rules.Instruments.ContainsKey("externalSupport"), "actors.externalSupport needs the externalSupport instrument in rules");
+            Need(ext.Offers.Select(o => o.Capability).Distinct().Count() == ext.Offers.Count, "actors.externalSupport offers must name each capability once");
+            foreach (var o in ext.Offers)
+            {
+                var cap = Rules.Model.Capabilities.FirstOrDefault(c => c.Id == o.Capability);
+                Need(cap is not null, $"external support capability {o.Capability} not in rules");
+                foreach (var line in o.Lines)
+                    Need(cap!.Lines.Any(l => l.Id == line), $"external support line {line} is not a {o.Capability} line");
+                Need(cap!.Lines.Any(l => l.Kind == "core" && o.Lines.Contains(l.Id)), $"external support {o.Capability} must offer the core line");
+                foreach (var site in o.Sites) Need(sites.Contains(site), $"external support {o.Capability} site {site} not found");
             }
         }
         foreach (var c in Rules.PrepChoices)

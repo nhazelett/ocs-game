@@ -431,6 +431,17 @@
             "type": "boolean",
             "default": false,
             "description": "Reachable only through its vehicles (no open-market award)"
+          },
+          "lift": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "airlift",
+                "sealift"
+              ]
+            },
+            "uniqueItems": true,
+            "description": "Off-island (stateside or regional) supplier: strategic lift modes it ships by to its island, the port of entry (M3-06). Absent or empty means a local vendor"
           }
         }
       }
@@ -554,10 +565,11 @@
           "noticeDays": {
             "type": "integer",
             "minimum": 0,
-            "description": "Termination notice required; a claim event fires if not given"
+            "description": "Termination notice the contract requires (M3-19): a terminate action withNotice ends performance this many days after the termination is done; without notice it ends at once and the vendor files a claim (rules claims). Ignored on host nation support"
           },
           "ucaState": {
             "type": "object",
+            "description": "An inherited UCA's state (M3-16): obligatedCents is what was obligated before day 1 and counts toward the NTE caps and the definitization trigger; issuedDay may be zero or negative.",
             "additionalProperties": false,
             "required": [
               "nteCents",
@@ -586,6 +598,11 @@
               },
               "definitized": {
                 "type": "boolean"
+              },
+              "quotedTotalCents": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "The price definitization settles at; absent means the daily cost over the whole period of performance (M3-16)"
               }
             }
           },
@@ -595,7 +612,32 @@
           "visibleProblem": {
             "type": "boolean",
             "default": true,
-            "description": "False for the inherited problems nobody noticed (past-due UCA, ceiling nearly hit)"
+            "description": "False for the inherited problems nobody noticed (past-due UCA, ceiling nearly hit, a vendor's real delivery record): kept out of the views until a file review (reviewFiles action) or, for a past-due UCA, a higher-HQ inquiry finds them (M3-17). Not allowed on host nation support, which has no contract file to review"
+          },
+          "reportedReliability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The delivery record the handover reported, shown instead of the vendor's true reliability until the file is reviewed (M3-17). Only with visibleProblem false"
+          },
+          "quantity": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Units per day; absent means the vendor's capacity for the capability (M3-16)"
+          },
+          "dailyCostCents": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Cost per day of performance; absent means quantity times the vendor's unit price, zero for host nation support (M3-16)"
+          },
+          "obligatedCents": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Obligated for performance from day 1 on and already counted against fundingLine; a UCA's earlier obligations go in ucaState.obligatedCents (M3-16)"
+          },
+          "fundingLine": {
+            "$ref": "#/$defs/id",
+            "description": "The funding line the arrangement is funded from; an undefinitized UCA obligates from it as it incurs (M3-16)"
           }
         }
       }
@@ -811,7 +853,39 @@
             "reliability": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "default": 0.9
+            },
+            "name": {
+              "type": "string",
+              "description": "Generic host nation name shown to the player (no real nation is named)"
+            },
+            "island": {
+              "$ref": "#/$defs/id",
+              "description": "Island the host nation supplies from; absent means the requesting site's island"
+            },
+            "capacity": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0
+              },
+              "description": "Capability id to units per day the agreement provides, shared by every host nation support request on the same days (M3-06). Inherited hostNation arrangements are not counted against it"
+            },
+            "unitPriceCents": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "description": "Capability id to the shop's cost share per unit per day; absent or 0 means no cost to the shop and no funding line"
+            },
+            "sites": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "description": "Sites the agreement covers; empty or absent means every site"
             }
           }
         },
@@ -831,7 +905,98 @@
                 "type": "number",
                 "minimum": 0
               },
-              "description": "Capability id to units available"
+              "description": "Capability id to units per day the partner can spare, shared by every ACSA order on the same days (a daily ceiling, not a depleting pool; docs/assumptions.md)"
+            },
+            "name": {
+              "type": "string",
+              "description": "Generic partner name shown to the player (no real nation is named)"
+            },
+            "island": {
+              "$ref": "#/$defs/id",
+              "description": "Island the partner supplies from; absent means the ordering site's island"
+            },
+            "unitPriceCents": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "description": "Capability id to reimbursable price per unit per day"
+            },
+            "reliability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.97
+            }
+          }
+        },
+        "externalSupport": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "offers"
+          ],
+          "description": "The external support contract the OCS seat can request through the SCO (M3-05, SPEC 4.1). Absent: none exists. Price is a scenario parameter; no real program is named (docs/assumptions.md).",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "description": "Generic provider name shown to the player"
+            },
+            "offers": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "capability",
+                  "lines",
+                  "capacityPerDay",
+                  "unitPriceCents"
+                ],
+                "properties": {
+                  "capability": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "lines": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "description": "Lines the contractor provides; a request must include the core, operator and maintenance ones (self-managed)"
+                  },
+                  "capacityPerDay": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "unitPriceCents": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Price per unit per day"
+                  },
+                  "mobilizationFraction": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0,
+                    "description": "Mobilization as a fraction of the task order's base cost"
+                  },
+                  "reliability": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "default": 0.97
+                  },
+                  "sites": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/id"
+                    },
+                    "description": "Site ids the contract can cover; empty or absent means any"
+                  }
+                }
+              }
             }
           }
         }

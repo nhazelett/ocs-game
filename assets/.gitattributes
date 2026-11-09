@@ -1,0 +1,5 @@
+# Small generated kit artifacts are stored directly in Git.
+# Other asset families retain the repository's Git LFS defaults.
+kit/*.glb -filter -diff -merge -text
+diorama/*.glb -filter -diff -merge -text
+diorama/*.png -filter -diff -merge -text

@@ -22,7 +22,7 @@ public sealed partial class Session
     public int LastDay => Scenario.Days;
     public bool Finished => Day > LastDay;
 
-    private readonly DeterministicRandom _rngWork, _rngVendor, _rngEvents, _rngAggregate, _rngUca, _rngUnauthorized, _rngPerformance, _rngCor;
+    private readonly DeterministicRandom _rngWork, _rngVendor, _rngEvents, _rngAggregate, _rngUca, _rngUnauthorized, _rngPerformance, _rngCor, _rngExternal, _rngAcsa, _rngHostNation, _rngLift;
     private readonly List<CapabilityState> _caps = [];
     private readonly List<Arrangement> _arrangements = [];
     private readonly List<WorkItem> _work = [];
@@ -86,6 +86,10 @@ public sealed partial class Session
         _rngUnauthorized = DeterministicRandom.ForStream(seed, "unauthorized");
         _rngPerformance = DeterministicRandom.ForStream(seed, "performance");
         _rngCor = DeterministicRandom.ForStream(seed, "cor");
+        _rngExternal = DeterministicRandom.ForStream(seed, "external");
+        _rngAcsa = DeterministicRandom.ForStream(seed, "acsa");
+        _rngHostNation = DeterministicRandom.ForStream(seed, "hostNation");
+        _rngLift = DeterministicRandom.ForStream(seed, "lift");
 
         _capData = Rules.Model.Capabilities.ToDictionary(c => c.Id, StringComparer.Ordinal);
         foreach (var c in Rules.Model.Capabilities) _demandPerPersonMilli[c.Id] = Fixed.Milli(c.DemandPerPersonPerDay);
@@ -297,19 +301,45 @@ public sealed partial class Session
     {
         var vendor = VendorData(a.Vendor)!;
         var offer = vendor.Offers.FirstOrDefault(o => o.Capability == a.Capability);
-        var qty = offer is null ? 0 : Fixed.Milli(offer.CapacityPerDay);
+        var qty = a.Quantity is { } q ? Fixed.Milli(q) : offer is null ? 0 : Fixed.Milli(offer.CapacityPerDay);
+        var daily = a.DailyCostCents
+                    // Host-nation support is reimbursed outside the shop's funding lines (assumptions.md), so it bills nothing here.
+                    ?? (offer is null || a.Instrument == "hostNation" ? 0 : qty * offer.UnitPriceCents / 1000);
         var arr = new Arrangement
         {
             Id = a.Id, Instrument = a.Instrument, VendorId = a.Vendor, VehicleId = a.Vehicle, SiteId = a.Site,
             CapabilityId = a.Capability, Lines = [.. a.Lines], SupplierIslandId = StockIsland(vendor, a.Capability), QuantityMilli = qty,
-            // Host-nation support is reimbursed outside the shop's funding lines (assumptions.md), so it bills nothing here.
-            DailyCostCents = offer is null || a.Instrument == "hostNation" ? 0 : qty * offer.UnitPriceCents / 1000,
+            DailyCostCents = daily,
             ReliabilityPermille = Fixed.Permille(vendor.Reliability), CreatedDay = 0,
             StartDay = a.StartDay, EndDay = a.EndDay, Status = a.StartDay <= 1 ? ArrangementStatus.Active : ArrangementStatus.Pending,
-            CorId = a.Cor,
+            CorId = a.Cor, FundingLineId = a.FundingLine, ObligatedCents = a.ObligatedCents ?? 0, NoticeDays = a.NoticeDays,
+            // Mobilization happened under the last rotation.
+            MobilizationCharged = a.StartDay < 1,
         };
+        if (a.ObligatedCents is > 0 && _funding.FirstOrDefault(f => f.Id == a.FundingLine) is { } line) line.ObligatedCents += a.ObligatedCents.Value;
+        // Supply lines (power's fuel supply) sized as for an award, from day 1.
+        foreach (var lineId in a.Lines)
+            if (Cap(a.Capability).Lines.FirstOrDefault(l => l.Id == lineId) is { Kind: "supplies", Supplies: { } target } && CapState(a.Site, target) is not null && a.Quantity is not null)
+                arr.SuppliedQuantityMilli[target] = Fixed.MulPermille(PeakDemandMilli(a.Site, target, Math.Max(1, a.StartDay), Math.Min(a.EndDay, LastDay)), Rules.Model.SupplyLineSizingPermille);
+        RegisterHidden(a);
+        var ucaNote = "";
+        if (a.UcaState is { } us)
+        {
+            var proposal = us.QualifyingProposalDay ?? us.IssuedDay + _rngUca.NextInt(vendor.QualifyingProposalLagDays ?? Rules.Uca.QualifyingProposalLagDays);
+            arr.Uca = new UcaState
+            {
+                NteCents = us.NteCents, QuotedTotalCents = us.QuotedTotalCents ?? daily * (a.EndDay - a.StartDay + 1),
+                IssuedDay = us.IssuedDay, QualifyingProposalDay = proposal, ProposalReceived = proposal < 1,
+                Definitized = us.Definitized, PriorObligatedCents = us.ObligatedCents,
+            };
+            var due = us.IssuedDay + Rules.Uca.DefinitizeWithinDays;
+            // A hidden UCA shows as an ordinary contract until its file is reviewed (M3-17).
+            ucaNote = !a.VisibleProblem ? "" : us.Definitized ? " UCA, definitized."
+                : $" UCA issued day {us.IssuedDay}, NTE {Money(us.NteCents)}, {Money(us.ObligatedCents)} obligated before day 1; definitization due by day {due} or at {Rules.Uca.DefinitizeAtObligatedFraction * 100:0}% of NTE obligated{(proposal < 1 ? "; qualifying proposal in hand" : "")}.";
+        }
         _arrangements.Add(arr);
-        AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.", []);
+        var noticeNote = a.NoticeDays is { } n and > 0 && a.Instrument != HostNationInstrumentId ? $" Termination needs {n} days' notice." : "";
+        AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.{ucaNote}{noticeNote}", []);
     }
 
     // ------------------------------------------------------------------ hashing and export

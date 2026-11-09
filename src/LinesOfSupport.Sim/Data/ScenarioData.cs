@@ -126,6 +126,10 @@ public sealed record VendorData
     public string InfoTier { get; init; } = "estimated";
     public IntRange? QualifyingProposalLagDays { get; init; }
     public bool VehicleOnly { get; init; }
+    /// <summary>Off-island (stateside or regional) supplier (M3-06): goods come by strategic lift to the port of entry,
+    /// which is Island. Lift lists the modes it ships by ("airlift", "sealift"); empty means a local vendor.</summary>
+    public List<string> Lift { get; init; } = [];
+    public bool OffIsland => Lift.Count > 0;
 }
 
 public sealed record VehicleData
@@ -150,6 +154,8 @@ public sealed record UcaStateData
     public int IssuedDay { get; init; }
     public int? QualifyingProposalDay { get; init; }
     public bool Definitized { get; init; }
+    /// <summary>The price definitization settles at (M3-16); null means the daily cost over the whole period of performance.</summary>
+    public long? QuotedTotalCents { get; init; }
 }
 
 public sealed record InheritedArrangementData
@@ -166,8 +172,22 @@ public sealed record InheritedArrangementData
     public int? NoticeDays { get; init; }
     public UcaStateData? UcaState { get; init; }
     public string? Cor { get; init; }
+    /// <summary>False for an inherited problem the handover did not mention (M3-17): a UCA's overdue clock, an IDIQ's
+    /// ceiling and ordered value, or (with ReportedReliability) the vendor's real delivery record stay out of the views
+    /// until a file review finds them.</summary>
     public bool VisibleProblem { get; init; } = true;
-    // Not in schema v0 for inherited arrangements: quantity defaults to the vendor's capacity for the capability.
+    /// <summary>The delivery record the handover reported, 0 to 1, when it differs from the vendor's true reliability
+    /// (M3-17). Only on a row whose VisibleProblem is false.</summary>
+    public double? ReportedReliability { get; init; }
+    /// <summary>Units per day (M3-16); null means the vendor's capacity for the capability.</summary>
+    public double? Quantity { get; init; }
+    /// <summary>Cost per day of performance (M3-16); null means quantity times the vendor's unit price (zero for host nation support).</summary>
+    public long? DailyCostCents { get; init; }
+    /// <summary>Obligated for performance from day 1 on, already counted against FundingLine (M3-16). For a UCA, money
+    /// obligated before day 1 is ucaState.obligatedCents instead.</summary>
+    public long? ObligatedCents { get; init; }
+    /// <summary>The line the arrangement is funded from (M3-16); a UCA obligates as it incurs from this line.</summary>
+    public string? FundingLine { get; init; }
 }
 
 /// <summary>A nominated COR (DFARS 201.602-2): who watches a contract's performance for the government (M3-04).</summary>
@@ -214,8 +234,53 @@ public sealed record ScoData
 
 public sealed record FmData { public int CertificationLagDays { get; init; } }
 public sealed record CommanderData { public List<string> PriorityOrder { get; init; } = []; }
-public sealed record HostNationData { public bool AgreementExists { get; init; } public double? Reliability { get; init; } }
-public sealed record AcsaPartnerData { public bool Present { get; init; } public Dictionary<string, double> Stock { get; init; } = []; }
+/// <summary>A host nation support agreement (M3-06). Capacity is units per day the host nation provides per capability under
+/// the agreement, shared by every request on the same days; price is the shop's cost share per unit per day (0 when the
+/// host nation bears it). Sites empty means the agreement covers every site.</summary>
+public sealed record HostNationData
+{
+    public bool AgreementExists { get; init; }
+    public double? Reliability { get; init; }
+    public string Name { get; init; } = "the host nation";
+    public string? Island { get; init; }
+    public Dictionary<string, double> Capacity { get; init; } = [];
+    public Dictionary<string, long> UnitPriceCents { get; init; } = [];
+    public List<string> Sites { get; init; } = [];
+}
+/// <summary>A partner military with an ACSA (M3-06). Stock is units per day it can spare per capability, shared by all
+/// orders on the same days; price is reimbursable per unit per day.</summary>
+public sealed record AcsaPartnerData
+{
+    public bool Present { get; init; }
+    public string Name { get; init; } = "the partner force";
+    public string? Island { get; init; }
+    public Dictionary<string, double> Stock { get; init; } = [];
+    public Dictionary<string, long> UnitPriceCents { get; init; } = [];
+    public double Reliability { get; init; } = 0.97;
+}
+
+/// <summary>One capability an external support contract can provide (M3-05). Price is a scenario parameter
+/// (docs/assumptions.md): unit price per unit-day, mobilization as a fraction of the task order's base cost.</summary>
+public sealed record ExternalSupportOfferData
+{
+    public string Capability { get; init; } = "";
+    /// <summary>Lines the contractor provides; a request must include the core, operator and maintenance ones.</summary>
+    public List<string> Lines { get; init; } = [];
+    public double CapacityPerDay { get; init; }
+    public long UnitPriceCents { get; init; }
+    public double MobilizationFraction { get; init; }
+    public double Reliability { get; init; } = 0.97;
+    /// <summary>Site ids the contract can cover; empty means any.</summary>
+    public List<string> Sites { get; init; } = [];
+}
+
+/// <summary>The external support contract the OCS seat can request through the SCO (M3-05). Absent: none exists.</summary>
+public sealed record ExternalSupportData
+{
+    /// <summary>Generic provider name; no real program is named in content (docs/assumptions.md).</summary>
+    public string Provider { get; init; } = "External support contractor";
+    public List<ExternalSupportOfferData> Offers { get; init; } = [];
+}
 
 public sealed record ActorsData
 {
@@ -224,6 +289,7 @@ public sealed record ActorsData
     public CommanderData Commander { get; init; } = new();
     public HostNationData? HostNation { get; init; }
     public AcsaPartnerData? AcsaPartner { get; init; }
+    public ExternalSupportData? ExternalSupport { get; init; }
 }
 
 public sealed record EventWindow(int EarliestDay, int LatestDay);
@@ -300,6 +366,49 @@ public sealed record RulesFile
     public UnauthorizedRulesData Unauthorized { get; init; } = new();
     public PerformanceRulesData Performance { get; init; } = new();
     public CorRulesData Cor { get; init; } = new();
+    public LiftRulesData Lift { get; init; } = new();
+    public TransitionRulesData Transition { get; init; } = new();
+    public FileReviewRulesData FileReview { get; init; } = new();
+    public ClaimRulesData Claims { get; init; } = new();
+}
+
+/// <summary>Vendor claims after a termination without the contract's notice (M3-19, FAR 49): shop hours to settle,
+/// and the settlement as days of the arrangement's daily cost, capped at the days cut short.</summary>
+public sealed record ClaimRulesData
+{
+    public double SettleShopHours { get; init; } = 16;
+    public int SettlementDays { get; init; } = 10;
+    public string? Notes { get; init; }
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>Reviewing inherited contract files (M3-17): shop hours per file. The findings are ready when the work is.</summary>
+public sealed record FileReviewRulesData
+{
+    public double HoursPerArrangement { get; init; } = 4;
+    public string? Notes { get; init; }
+}
+
+/// <summary>Transition plans (M3-05, SPEC 2 and 4): the overlap a plan asks for when it does not say, and how many days
+/// before the outgoing arrangement ends the planner flags a projected gap on the morning board.</summary>
+public sealed record TransitionRulesData
+{
+    public int DefaultOverlapDays { get; init; } = 2;
+    public int WarnDays { get; init; } = 5;
+    public string? Notes { get; init; }
+}
+
+/// <summary>Strategic lift for off-island sourcing (M3-06, SPEC 4.1 "Stateside or off-island sourcing"): an airlift queue
+/// that higher-priority cargo can bump, sealift transit, and a customs hold chance on arrival at the port of entry.</summary>
+public sealed record LiftRulesData
+{
+    public IntRange AirliftQueueDays { get; init; } = new(7, 14);
+    public double AirliftBumpChance { get; init; } = 0.2;
+    public IntRange AirliftBumpDelayDays { get; init; } = new(3, 7);
+    public int AirliftMaxBumps { get; init; } = 2;
+    public IntRange SealiftTransitDays { get; init; } = new(30, 45);
+    public double CustomsHoldChance { get; init; } = 0.25;
+    public IntRange CustomsHoldDays { get; init; } = new(2, 6);
 }
 
 /// <summary>COR report lag and fidelity by quality (M3-04, DFARS 201.602-2). Permille values are 0 to 1000.</summary>

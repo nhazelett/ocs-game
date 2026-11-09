@@ -694,6 +694,103 @@
           "type": "string"
         }
       }
+    },
+    "lift": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Strategic lift for off-island sourcing (SPEC 4.1; backlog M3-06): airlift queue and bumping, sealift transit, customs hold on arrival at the port of entry.",
+      "properties": {
+        "airliftQueueDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "airliftBumpChance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "airliftBumpDelayDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "airliftMaxBumps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sealiftTransitDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "customsHoldChance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "customsHoldDays": {
+          "$ref": "#/$defs/intRange"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Transition plans between arrangements (SPEC 2 and 4; backlog M3-05): the default overlap and how far ahead the planner flags a gap.",
+      "properties": {
+        "defaultOverlapDays": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Days the incoming arrangement must deliver at full before the outgoing one is cut over, when a plan does not say."
+        },
+        "warnDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The planner flags a projected gap on the morning board once the outgoing arrangement ends within this many days."
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "fileReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Reviewing the inherited contract files (backlog M3-17): what it costs the shop. The findings come in when the work is done.",
+      "properties": {
+        "hoursPerArrangement": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Shop hours per inherited contract file reviewed."
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Vendor claims after a termination without the contract's notice (backlog M3-19, FAR 49).",
+      "properties": {
+        "settleShopHours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Shop hours to settle one claim."
+        },
+        "settlementDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The settlement in days of the arrangement's daily cost, capped at the days of performance cut short."
+        },
+        "notes": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        }
+      }
     }
   },
   "$defs": {

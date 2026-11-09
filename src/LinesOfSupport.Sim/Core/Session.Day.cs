@@ -9,7 +9,7 @@ public sealed partial class Session
         public string? FailureRecord, ConfusionRecord, CapacityRecord;
     }
 
-    /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, lifecycle, supply, money, score.</summary>
+    /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, external support awards, lifecycle, supply, transition plans, money, score.</summary>
     public void AdvanceDay()
     {
         if (Finished) throw new InvalidOperationException("the scenario has ended");
@@ -22,6 +22,7 @@ public sealed partial class Session
         UcaClocks(d);
         CommitmentClocks(d);
         DoShopWork(d);
+        ExternalSupportClocks(d);
         if (_cashReplenishDay == d)
         {
             _cash = _cashInitial;
@@ -34,6 +35,7 @@ public sealed partial class Session
         PerformanceChecks(d, today);
         ResolveCapabilities(d, today);
         CorReporting(d, today);
+        TransitionClocks(d, today);
         Settle(d, today);
         Score(d);
         FundingClocks(d);
@@ -164,6 +166,7 @@ public sealed partial class Session
             {
                 _hhqInquiries++;
                 var rec = AddRecord(d, RecordKind.Compliance, a.Id, $"Higher HQ asked why {a.Id} is past due for definitization. A response is now shop work.", []);
+                RevealByInquiry(a, d, rec);
                 AddWork(WorkKind.HhqResponse, $"Respond to HHQ on {a.Id}", Fixed.Milli(Rules.Model.Work.HhqInquiryResponseHours), d, a.Id, rec);
             }
         }
@@ -197,10 +200,11 @@ public sealed partial class Session
     {
         foreach (var a in _arrangements)
         {
+            if (a.Status == ArrangementStatus.Pending && a.StartDay == d && _shipments.TryGetValue(a.Id, out var sh)) ArrivalChecks(a, sh, d);
             if (a.Status == ArrangementStatus.Pending && a.StartDay <= d && a.EndDay >= d)
             {
                 a.Status = ArrangementStatus.Active;
-                var who = a.VendorId is null ? "the other unit" : VendorData(a.VendorId)!.Name;
+                var who = SupplierName(a);
                 AddRecord(d, RecordKind.ArrangementStart, a.Id, $"{a.Id} began: {CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} from {who}, {a.QuantityMilli / 1000} {Cap(a.CapabilityId).Unit}/day.", [a.CauseId]);
             }
             if (a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay < d)
@@ -407,9 +411,10 @@ public sealed partial class Session
         var capPm = u.ProposalReceived ? Fixed.Permille(Rules.Uca.ObligationCapAfterProposal) : Fixed.Permille(Rules.Uca.ObligationCapBeforeProposal);
         var ceiling = u.Definitized ? u.QuotedTotalCents : Fixed.MulPermille(u.NteCents, capPm);
         var need = a.IncurredCents - a.ObligatedCents;
+        var toward = a.ObligatedCents + u.PriorObligatedCents;
         if (need > 0)
         {
-            var room = Math.Max(0, ceiling - a.ObligatedCents);
+            var room = Math.Max(0, ceiling - toward);
             var line = _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
             var money = line is not null && line.UsableOn(d) ? line.RemainingCents : 0;
             var add = Math.Min(need, Math.Min(room, money));
@@ -425,7 +430,7 @@ public sealed partial class Session
             u.UnpaidDays++;
             if (u.UnpaidDays == 1)
             {
-                var capBinding = !u.Definitized && a.ObligatedCents >= ceiling;
+                var capBinding = !u.Definitized && a.ObligatedCents + u.PriorObligatedCents >= ceiling;
                 var fl = _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
                 var why = capBinding ? $"the UCA obligation cap of {capPm / 10}% of NTE is reached"
                     : fl is null ? "it has no funding line"
@@ -451,7 +456,7 @@ public sealed partial class Session
         }
         if (!u.Definitized && !u.Overdue)
         {
-            var obligatedPm = Fixed.Ratio(a.ObligatedCents, u.NteCents);
+            var obligatedPm = Fixed.Ratio(a.ObligatedCents + u.PriorObligatedCents, u.NteCents);
             if (obligatedPm >= Fixed.Permille(Rules.Uca.DefinitizeAtObligatedFraction) || d >= u.IssuedDay + Rules.Uca.DefinitizeWithinDays)
             {
                 u.Overdue = true;
@@ -548,6 +553,13 @@ public sealed partial class Session
                 m[$"{k}.minPercent"] = c.MinPermille / 10;
             }
             foreach (var site in Scenario.Sites) m[$"site.{site.Id}.unitHabitPermille"] = Habit(site.Id);
+            // Only when a plan exists, so games without one keep their state hash (M3-05).
+            if (_transitions.Count > 0)
+            {
+                m["transitions.planned"] = _transitions.Count;
+                m["transitions.clean"] = _transitions.Count(t => t.Outcome == TransitionOutcome.Clean);
+                m["transitions.gap"] = _transitions.Count(t => t.Outcome == TransitionOutcome.Gap);
+            }
             return m;
         }
     }
