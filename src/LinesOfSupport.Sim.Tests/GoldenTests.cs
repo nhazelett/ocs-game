@@ -9,7 +9,7 @@ namespace LinesOfSupport.Sim.Tests;
 /// </summary>
 public class GoldenTests
 {
-    private static readonly string[] Scenarios = ["spoke-b", "spoke-b-90"];
+    private static readonly string[] Scenarios = ["spoke-b", "spoke-b-90", "sustainment"];
 
     public static IEnumerable<object[]> ApproachLogs()
         => Scenarios.SelectMany(sc => Directory.GetFiles(Path.Combine(Repo.Scenario(sc), "golden"), "approach*.json")
