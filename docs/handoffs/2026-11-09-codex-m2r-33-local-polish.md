@@ -6,7 +6,7 @@ Inspected plain PNGs, 1280 by 800: [day 1](images/2026-11-09-codex-m2r-33-day1.p
 
 ## PRs reviewed this session
 
-Codex PRs 132 and 133: CI successful (runs 42681440594 and 42695232945), mergeable/clean; Fable's comments mark both ready. No inline review threads or requested fixes. The comments' nonblocking follow-ups are implemented locally as M2R-32 and M2R-33. PRs opened: none. PRs fixed in place: none needed. Two open Codex PRs, below the explicit five-PR limit.
+Codex PRs 132 and 133: CI successful (runs 42681440594 and 42695232945), mergeable/clean; Fable's comments mark both ready. No inline review threads or requested fixes. The comments' nonblocking follow-ups are implemented locally as M2R-32 and M2R-33. PRs opened: [136](https://github.com/nhazelett/ocs-game/pull/136) (M2R-32) and [137](https://github.com/nhazelett/ocs-game/pull/137) (M2R-33). PRs fixed in place: none needed. Four open Codex PRs after publication, below the explicit five-PR limit.
 
 Read CODEX-SESSION and CODEX-KICKOFF, required SPEC sections, ADR-0001 to ADR-0003, DISSENT, opening-and-guidance, latest Fable and Codex handoffs, QUESTIONS, FOR-NICK and decided objections. No unanswered Codex question or objection response. M3 remains paused and stale “implemented” statuses are not new work.
 
@@ -16,7 +16,7 @@ The map caption is populated only from a valid selected site-capability tile, pr
 
 ChromeSmokeTest covers the one-line initial and day-11 cash label, actual selection, deployment/replay/Continue resets, partner supplier and Directory labels, and unchanged Sim state. Updated existing Board and Ledger assertions for the new display behavior. Only M2R-33's backlog Status cell changes on this task branch, plus the new FOR-NICK escalation.
 
-M2R-32 is separately complete and tested on local codex/M2R-32: a matching lead-factor tag is not repeated, different tags and all evidence traces remain. Its screenshot and handoff are in that worktree.
+M2R-32 is separately complete and tested in PR 136: a matching lead-factor tag is not repeated, different tags and all evidence traces remain. Its screenshot and handoff are in that worktree.
 
 ## Why
 
@@ -38,4 +38,6 @@ Earlier automatic review denied the M2R-32 screenshot upload and M2R-33 remote c
 
 ## Next
 
-Publish the tested M2R-32 and M2R-33 results as independent ordinary PRs against main, each stacked on reviewed PR 135. Preserve remote branch history, with no force update. Record the resulting PR links and CI status below. Fable reviews and merges at Nick's check-in; Nick's cold playtest is M2R-23. No other unimplemented Codex item is unblocked. No PR merge, main push or shared-branch deletion.
+Published ordinary PRs against main: [136, M2R-32](https://github.com/nhazelett/ocs-game/pull/136), and [137, M2R-33](https://github.com/nhazelett/ocs-game/pull/137). Both are mergeable and independently stacked on reviewed PR 135. Published trees match the locally validated files, with only approval/status/handoff documentation updated afterward. All three inspected PNGs and both task handoffs are uploaded. FOR-NICK #7 is answered and no publication blocker remains.
+
+GitHub checks: [PR 136](https://github.com/nhazelett/ocs-game/pull/136/checks), [PR 137](https://github.com/nhazelett/ocs-game/pull/137/checks). Fable reviews and merges at Nick's check-in; Nick's cold playtest is M2R-23. No other unimplemented Codex item is unblocked. Four open Codex PRs, below the five-PR limit. No PR merged, no main or force update pushed, and no shared branch deleted.
