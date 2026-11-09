@@ -19,7 +19,9 @@ public sealed partial class Session
     /// <summary>Joins phrases that may hold their own commas or "and" with semicolons, so the list stays readable.</summary>
     private static string JoinGroups(IReadOnlyList<string> parts) =>
         parts.Count > 1 && parts.Any(x => x.Contains(',') || x.Contains(" and "))
-            ? $"{string.Join("; ", parts.Take(parts.Count - 1))}; and {parts[^1]}"
+            ? parts.Count == 2
+                ? $"{parts[0]}, and {parts[1]}"
+                : $"{string.Join("; ", parts.Take(parts.Count - 1))}; and {parts[^1]}"
             : Join(parts);
 
     private static string Para(string? remark, IEnumerable<string> sentences) =>
@@ -35,13 +37,21 @@ public sealed partial class Session
 
     private static string FundType(string type) => type switch { "OM" => "O&M", _ => type };
 
-    private static string ConfidencePhrase(string tier) => tier switch
+    // What the shop knows about a vendor, said once for everyone at that tier (M2R-19): one sentence per tier, in the order
+    // the outgoing CCO would vouch for them, instead of the same phrase after every name.
+    private static readonly string[] ConfidenceOrder = ["observed", "surveyed", "estimated", "assumed"];
+
+    private static string ConfidenceSentence(string tier, IReadOnlyList<string> names) => tier switch
     {
-        "observed" => "I've seen their work myself",
-        "surveyed" => "someone's been out to look at them",
-        "estimated" => "I've talked to them, but their prices are estimates",
-        _ => "they're a name on a list; I've never called them",
+        "observed" => $"I've seen the work of {Join(names)} myself.",
+        "surveyed" => $"Someone's been out to look at {Join(names)}.",
+        "estimated" => $"I've talked to {Join(names)}, but the prices are estimates.",
+        _ => names.Count == 1
+            ? $"{names[0]} is just a name on a list; I've never called them."
+            : $"{Join(names)} are just names on a list; I've never called them.",
     };
+
+    private static string Tier(string infoTier) => ConfidenceOrder.Contains(infoTier) ? infoTier : "assumed";
 
     internal TurnoverView BuildTurnover()
     {
@@ -58,7 +68,9 @@ public sealed partial class Session
             _people == 1 ? $"It's just you, {hours} hours a day." : $"There are {Number(_people)} of you, {hours} hours a day between you.",
             _systemOnlineDay <= 1
                 ? "The contract-writing system is up."
-                : $"The contract-writing system is down until about day {_systemOnlineDay}, so everything's manual until then.",
+                : _systemOnlineDay > LastDay
+                    ? "The contract-writing system won't be up for weeks, so everything's manual."
+                    : $"The contract-writing system is down until about day {_systemOnlineDay}, so everything's manual until then.",
             _payingAgentDay is { } pa
                 ? (pa <= 1 ? $"The paying agent has {Money(_cash)} in cash for SF 44 buys."
                            : $"The paying agent starts on day {pa} with {Money(_cash)} in cash for SF 44 buys.")
@@ -90,12 +102,21 @@ public sealed partial class Session
         var vendors = Scenario.Vendors.Where(v => !v.VehicleOnly).Select(v => new TurnoverVendor(
             v.Id, v.Name, IslandName(v.Island), v.Offers.Select(o => CapLabel(o.Capability)).Distinct().ToList(), v.InfoTier, v.Vetted,
             remarks.Vendors.TryGetValue(v.Id, out var r) ? r : null)).ToList();
+        // Where they are first (the map is how the player finds them), then what the shop knows, then the remarks.
         var vendorSentences = new List<string>();
-        foreach (var v in vendors)
+        foreach (var island in vendors.GroupBy(v => v.IslandName))
         {
-            vendorSentences.Add($"{v.Name} on {v.IslandName} for {Join(v.CapabilityLabels.Select(c => c.ToLowerInvariant()).ToList())}: {ConfidencePhrase(v.Confidence)}.");
-            if (v.Remark is not null) vendorSentences.Add(v.Remark);
+            var groups = island.GroupBy(v => Join(v.CapabilityLabels.Select(c => c.ToLowerInvariant()).ToList()))
+                               .Select(g => $"{Join(g.Select(v => v.Name).ToList())} for {g.Key}").ToList();
+            vendorSentences.Add($"On {island.Key} there's {JoinGroups(groups)}.");
         }
+        foreach (var tier in ConfidenceOrder)
+        {
+            var names = vendors.Where(v => Tier(v.Confidence) == tier).Select(v => v.Name).ToList();
+            if (names.Count > 0) vendorSentences.Add(ConfidenceSentence(tier, names));
+        }
+        foreach (var v in vendors)
+            if (v.Remark is not null) vendorSentences.Add(v.Remark);
         var unvetted = vendors.Where(v => !v.Vetted).Select(v => v.Name).ToList();
         if (unvetted.Count > 0) vendorSentences.Add($"{Join(unvetted)} {(unvetted.Count == 1 ? "isn't" : "aren't")} vetted yet.");
 

@@ -56,6 +56,39 @@ public class TurnoverTests
         Assert.Equal(b.Scenario.FundingLines.Count, t.Money.Count);
     }
 
+    /// <summary>M2R-19 (pre-gate review, 9 Nov 2026): the turnover says each thing once. No sentence repeats inside a
+    /// paragraph, each vendor is placed on its island once, and what the shop knows is one sentence per tier, not a phrase
+    /// after every name.</summary>
+    [Theory]
+    [MemberData(nameof(AllScenarios))]
+    public void The_turnover_says_each_thing_once(string id)
+    {
+        var t = Turnover(id);
+        foreach (var sec in t.Sections)
+        {
+            var sentences = Regex.Split(sec.Text, @"(?<=[.;])\s+").Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
+            Assert.True(sentences.Count == sentences.Distinct().Count(), $"{id} {sec.Kind} repeats a sentence: \"{sec.Text}\"");
+        }
+        var vendors = t.Text(TurnoverSectionKind.Vendors);
+        foreach (var phrase in new[] { "seen the work of", "been out to look at", "the prices are estimates", "on a list" })
+            Assert.True(Regex.Matches(vendors, Regex.Escape(phrase)).Count <= 1, $"{id}: \"{phrase}\" said more than once");
+        foreach (var v in t.Vendors)
+            Assert.Contains(v.Name, vendors);
+        foreach (var island in t.Vendors.Select(v => v.IslandName).Distinct())
+            Assert.Equal(1, Regex.Matches(vendors, $"On {Regex.Escape(island)} there's").Count);
+    }
+
+    [Fact]
+    public void The_tutorial_shop_and_money_do_not_restate_the_facts()
+    {
+        var t = Turnover("tutorial");
+        var shop = t.Text(TurnoverSectionKind.Shop);
+        Assert.Equal(1, Regex.Matches(shop, "contract-writing system").Count);
+        Assert.Contains("won't be up for weeks", shop); // the system comes up after the tutorial's last day
+        Assert.DoesNotContain("about day 25", shop);
+        Assert.Equal(1, Regex.Matches(t.Text(TurnoverSectionKind.Money), "O&M").Count);
+    }
+
     [Theory]
     [InlineData("spoke-b")]
     [InlineData("spoke-b-90")]
