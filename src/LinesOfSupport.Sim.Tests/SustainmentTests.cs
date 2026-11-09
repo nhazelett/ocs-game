@@ -65,6 +65,20 @@ public class SustainmentTests
         Assert.True(passed >= 10, $"textbook met every pass criterion on {passed} of 20 seeds");
     }
 
+    [Fact]
+    public void The_debrief_quotes_the_delivery_record_the_file_review_found()
+    {
+        // M3-22: the review on day 3 found 88%; bFuel later drops to 60% (approach 1) or cures to 98% (approach 3).
+        foreach (var name in new[] { "approach1-clocks-first", "approach3-cure-bfuel" })
+        {
+            var s = Replay.Run(Repo.Load("sustainment"), InputLog.Load(Path.Combine(Repo.Scenario("sustainment"), "golden", $"{name}.json")));
+            var text = SessionReport.ToText(s, name);
+            Assert.Contains("real delivery record (88% on time, not the 97% reported at handover)", text);
+            Assert.DoesNotContain("real delivery record (60%", text);
+            Assert.DoesNotContain("real delivery record (98%", text);
+        }
+    }
+
     [Theory]
     [InlineData("do-nothing", 3)]
     [InlineData("greedy", 3)]

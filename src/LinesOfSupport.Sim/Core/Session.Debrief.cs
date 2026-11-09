@@ -244,7 +244,7 @@ public sealed partial class Session
                         // An inherited vendor whose real delivery record the handover overstated (M3-17): the failure was in
                         // its file, so it is discoverable until the file is reviewed and avoidable after.
                         if (missing.Count == 0 && _reportedReliability.TryGetValue(a.Id, out var reported)
-                            && HiddenNote(a.Id, d, $"its real delivery record ({a.ReliabilityPermille / 10}% on time, not the {reported / 10}% reported at handover)") is { } hn)
+                            && HiddenNote(a.Id, d, $"its real delivery record ({ReliabilityShownByReview(a) / 10}% on time, not the {reported / 10}% reported at handover)") is { } hn)
                         {
                             yield return ($"fail|{a.Id}|hidden|{hn.Tag}", new GapFactor(GapFactorKind.VendorFailure, hn.Tag, d,
                                 $"{a.Id} failed on day {d} with full operator and maintenance coverage.{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
