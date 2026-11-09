@@ -83,11 +83,15 @@ public partial class GameShell
         button.SetMeta("gap", gap.Index); parent.AddChild(button); parent.AddChild(detail);
         detail.AddChild(DeskUi.Label($"At its lowest, {gap.LowestPermille / 10m:0.#}% of the need was met. " +
             (gap.DownDays == 0 ? "It never went completely down." : $"It was completely down for {DebriefWords.Number(gap.DownDays)} {(gap.DownDays == 1 ? "day" : "days")}.")));
-        foreach (var factor in gap.Factors)
+        for (var factorIndex = 0; factorIndex < gap.Factors.Count; factorIndex++)
         {
+            var factor = gap.Factors[factorIndex];
+            var quoted = report.Summary is { } summary && gap.Index == summary.LeadGap && summary.Quoted.Contains(factorIndex);
             var dependency = factor.DependsOnGap is { } index && report.Gaps.FirstOrDefault(g => g.Index == index) is { } other
                 ? $"\nWent down with {other.Label.ToLowerInvariant()} at {view.NameOf(other.SiteId)}, days {other.StartDay}–{other.EndDay}." : "";
-            detail.AddChild(DeskUi.Label($"{DebriefWords.Factor(factor.Kind)}. {DebriefWords.TagMeaning(factor.Tag)}\n{factor.Text}" + dependency));
+            var label = DeskUi.Label($"{DebriefWords.Factor(factor.Kind)}. {DebriefWords.TagMeaning(factor.Tag)}" +
+                (quoted ? "" : $"\n{factor.Text}" + dependency));
+            label.SetMeta("factor_index", factorIndex); detail.AddChild(label);
         }
         var trace = new VBoxContainer { Visible = false };
         var traceButton = DeskUi.Button("Trace the evidence", () =>
