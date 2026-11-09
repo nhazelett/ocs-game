@@ -14,6 +14,7 @@ public partial class PeopleSmokeTest : Node
             var shell = scene.Instantiate<GameShell>(); shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json"); AddChild(shell);
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+            FinishOpening(shell);
             var view = shell.Session.View!; var hash = shell.Session.StateHash;
             var requests = view.Cards.Select(c => view.RequirementEditor(c.Id)).Where(r => r is not null).ToArray();
             Require(requests.Length > 0 && requests.All(r => r!.Person is not null && r.Message is not null), "Actual scenario supplies customer identities and messages.");
