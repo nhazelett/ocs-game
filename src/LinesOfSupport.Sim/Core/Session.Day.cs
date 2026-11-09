@@ -15,6 +15,8 @@ public sealed partial class Session
         if (Finished) throw new InvalidOperationException("the scenario has ended");
         var d = Day;
         _overnightFrom = _records.Count;
+        _dayRuns.Clear();
+        _dayHeld.Clear();
 
         FireEvents(d);
         UnitHabits(d);
@@ -322,15 +324,20 @@ public sealed partial class Session
                     if (cap.Delivery == "consumable" && a.SupplierIslandId != site.Island)
                     {
                         a.InTransitMilli += q;
-                        if (SurfaceDeliveryRuns(a.SupplierIslandId, site.Island, d, out var closed))
+                        if (SurfaceDeliveryRuns(a.SupplierIslandId, site.Island, d, out var closed, out var used))
                         {
+                            _dayRuns.Add((a.Id, capId, site.Id, used ?? "", a.InTransitMilli));
                             supply += a.InTransitMilli;
                             a.InTransitMilli = 0;
                         }
-                        else if (closed is not null)
+                        else
                         {
-                            offIslandBlocked = true;
-                            if (_linkClosureCause.TryGetValue(closed, out var lc) && !causes.Contains(lc)) causes.Add(lc);
+                            _dayHeld.Add((a.Id, capId, site.Id, closed, a.InTransitMilli));
+                            if (closed is not null)
+                            {
+                                offIslandBlocked = true;
+                                if (_linkClosureCause.TryGetValue(closed, out var lc) && !causes.Contains(lc)) causes.Add(lc);
+                            }
                         }
                     }
                     else supply += q;
