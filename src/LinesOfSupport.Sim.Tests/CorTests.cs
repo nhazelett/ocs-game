@@ -196,7 +196,8 @@ public class CorTests
     public void The_textbook_names_the_best_COR_and_redesignates_when_the_relief_takes_over()
     {
         var s = Replay.Run(Repo.Load("spoke-b-90"), 1, PolicyCatalog.Create("textbook"));
-        var written = s.Arrangements.Where(a => a.CreatedDay > 0 && s.Rules.Instruments[a.Instrument].WrittenTerms && a.Status != ArrangementStatus.Declined).ToList();
+        // An ACSA line the J4 adds is the partner's support, not a contract this office administers: no COR (M2R-06).
+        var written = s.Arrangements.Where(a => a.CreatedDay > 0 && s.Rules.Instruments[a.Instrument].WrittenTerms && a.Instrument != "acsa" && a.Status != ArrangementStatus.Declined).ToList();
         Assert.NotEmpty(written);
         Assert.All(written, a => Assert.NotNull(a.CorId));
         var rotated = s.Cors.Single(c => c.Id == "corReyes").RotatedDay!.Value;

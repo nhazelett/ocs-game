@@ -42,6 +42,8 @@ public class SmallBuyTests
         // Fill the queue: the day-1 textbook awards plus surveys leave no hours for a while.
         foreach (var a in PolicyCatalog.Create("textbook").Decide(s.View).Where(a => a is not StandUpGpcProgramAction)) s.Apply(a);
         s.Apply(new AwardAction { Id = "big", Instrument = "purchaseOrder", Vendor = "vendorA", Site = "spokeBSite", Capability = "power", Lines = ["generation", "maintenance"], Quantity = 300, DurationDays = 30, FundingLine = "om1" });
+        // The textbook hands fuel to the J4 now (M2R-06), so one more written buy keeps the queue full.
+        s.Apply(new AwardAction { Id = "big2", Instrument = "purchaseOrder", Vendor = "vendorE", Site = "spokeBSite", Capability = "fuel", Lines = ["delivery"], Quantity = 500, DurationDays = 20, FundingLine = "om1" });
         var complained = false;
         for (var d = 0; d < 8 && !complained; d++)
         {

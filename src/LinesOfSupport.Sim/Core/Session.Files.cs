@@ -69,7 +69,10 @@ public sealed partial class Session
 
     /// <summary>Inherited contract files the shop can review: everything inherited except host nation support.</summary>
     private IEnumerable<Arrangement> ReviewableFiles()
-        => _arrangements.Where(a => a.CreatedDay == 0 && a.Instrument != HostNationInstrumentId && Scenario.InheritedArrangements.Any(i => i.Id == a.Id));
+        // Host nation support and an ACSA line are someone else's paper (the agreement, the J4's order), not this office's
+        // contract files.
+        => _arrangements.Where(a => a.CreatedDay == 0 && a.Instrument != HostNationInstrumentId && a.Instrument != AcsaInstrument
+                                    && Scenario.InheritedArrangements.Any(i => i.Id == a.Id));
 
     private bool ReviewInWork(string id)
         => _work.Any(w => w.Kind == WorkKind.FileReview && w.CompletedDay is null && w.Payload is List<string> ids && ids.Contains(id));

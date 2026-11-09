@@ -89,7 +89,7 @@ public class RulesTests
         var s = Session.Create(bundle, 1);
         Assert.True(s.Apply(new AwardAction { Id = "u", Instrument = "uca", Vendor = "vendorB", Site = "spokeBSite", Capability = "power", Lines = ["generation", "fuelSupply", "operator", "maintenance"], Quantity = 470, DurationDays = 60, FundingLine = "om1" }).Accepted);
         // Drain the line with a large written purchase so little is left for the UCA's mobilization.
-        Assert.True(s.Apply(new AwardAction { Id = "drain", Instrument = "purchaseOrder", Vendor = "vendorE", Site = "hubSite", Capability = "fuel", Quantity = 4000, DurationDays = 49, FundingLine = "om1" }).Accepted);
+        Assert.True(s.Apply(new AwardAction { Id = "drain", Instrument = "purchaseOrder", Vendor = "vendorE", Site = "hubSite", Capability = "fuel", Quantity = 3000, DurationDays = 49, FundingLine = "om1" }).Accepted);
         AdvanceTo(s, 31);
         Assert.Contains(s.Records, r => r.Kind == RecordKind.UcaStopWork && r.Subject == "u");
     }
