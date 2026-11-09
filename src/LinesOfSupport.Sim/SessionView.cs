@@ -100,6 +100,11 @@ public sealed class SessionView
     public long CashCents => _s.CashCents;
     public bool SystemOnline => _s.Day >= _s.SystemOnlineDay;
     public bool GpcAvailable => _s.GpcAvailableDay is { } g && _s.Day >= g;
+    public int? GpcAvailableDay => _s.GpcAvailableDay;
+    /// <summary>Customer small-buy stream state (design doc 6.1).</summary>
+    public bool SmallBuysHeld => _s.SmallBuysHeld;
+    public int SmallBuyBacklog => _s.SmallBuyBacklog;
+    public int? GpcProgramDay => _s.GpcProgramDay;
     public bool PayingAgentAvailable => _s.PayingAgentDay is { } p && _s.Day >= p;
 
     public string KnowledgeTier(string islandId) => _s.Knowledge.First(k => k.IslandId == islandId).Tier;

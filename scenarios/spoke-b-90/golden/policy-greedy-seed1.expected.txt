@@ -7,134 +7,263 @@ Before day 1
   START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 324 kW/day for 60 days (Generation equipment); quoted $44,712.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   DONE      BPA call g-req0007 awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $44,712.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 3
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 4
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 5
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 6
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     g-req0007 began: Power at Spoke B from Harbor Equipment Co, 324 kW/day.
+Day 8
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 9
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 10
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 11
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
 Day 13
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside g-req0007's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 88%: fuel on hand ran out.
   SHORT     Power at Spoke B degraded to 88%: fuel at 88%.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 17
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 18
   WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 19
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 20
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 21
   COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 22
   DONE      Response to higher HQ on uc1 sent.
+  DONE      CE small buys: 12 worked today (6 h of shop time).
+Day 23
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 24
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 26
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
   COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on oos1 sent.
+  DONE      CE small buys: 12 worked today (6 h of shop time).
 Day 27
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     uc2 began: Fuel at Spoke B from Second Island Fuel, 700 gal/day.
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
 Day 28
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 29
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 30
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 31
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc2 has been open 5 days).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 28 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 32
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 33
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 30 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
   INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on g-req0007 on days 28 and 30 (unit reports; no COR). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
+Day 34
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 35
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 36
   COMPLY    Higher HQ asked why unauthorized commitment uc2 has gone 10 days without ratification. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 37
   DONE      Response to higher HQ on uc2 sent.
+  DONE      CE small buys: 12 worked today (6 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
   FAIL      uc2 missed today's delivery (no on-site storage line).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 38
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
+Day 39
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 40
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 37 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 41
   WITHDRAWN Second Island Fuel walked off uc2 after 15 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 Day 42
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 43
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 45
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 42 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 46
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 47
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 48
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 49
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 50
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 51
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 52
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 53
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 50 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 54
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 51 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 55
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
   COR       Unit report from Spoke B: power fell short on day 52 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 56
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 57
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 58
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 55 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
+Day 59
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 60
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 57 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 61
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
+Day 62
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 63
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 64
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 61 and the unit blames Harbor Equipment Co (g-req0007), reported 3 day(s) later. g-req0007 has no COR, so nobody was checking its deliveries for the government.
 Day 65
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $855,288 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 66
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 67
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   END       g-req0007 ended.
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 69
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 70
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 71
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 72
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 73
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 20%).
   COMPLY    Unauthorized commitment uc3: the Spoke B unit arranged Power directly with Harbor Equipment Co. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 74
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     uc3 began: Power at Spoke B from Harbor Equipment Co, 468 kW/day.
 Day 75
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Funding line om1 reached its fiscal-year end with day 75: $855,288 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+Day 76
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 77
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 78
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc3 has been open 5 days).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc3 had equipment down (no maintenance and repair line, no operators line).
+Day 79
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 80
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 81
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 82
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 83
   WITHDRAWN Harbor Equipment Co walked off uc3 after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   COMPLY    Higher HQ asked why unauthorized commitment uc3 has gone 10 days without ratification. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 84
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
   COMPLY    Unauthorized commitment uc4: the Spoke B unit arranged Power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on uc3 sent.
+  DONE      CE small buys: 12 worked today (6 h of shop time).
   FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     uc4 began: Power at Spoke B from Island Power Rentals, 468 kW/day.
 Day 86
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc4 had equipment down (no maintenance and repair line, no operators line).
+Day 87
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 88
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 89
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc4 has been open 5 days).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 90
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -149,7 +278,7 @@ SCORECARD
   Mission output 68% (sortie generation 58%, throughput 58%, endurance 100%, resilience 52%)
   Obligated $44,712; incurred $161,610; incurred but not obligated $116,898
   Unauthorized commitments 4; UCAs past due 0; HHQ inquiries 4
-  Surveys 0; shop hours worked 110; payment errors 0; execution-confusion days 0; vendor failures 13; declined BPA calls 0
+  Surveys 0; shop hours worked 371; payment errors 0; execution-confusion days 0; vendor failures 13; declined BPA calls 0
   spokeBSite.power: 78 day(s) down, 1 degraded, lowest 0%
   spokeBSite.fuel: 65 day(s) down, 14 degraded, lowest 0%
 
@@ -215,4 +344,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.675)
 
-State hash bcf03a9ec34b9e36b173491b4a530c26eb39b9c5bf9dcd58463f077fa6ce4449
+State hash 6fd77896048948b83b748c28d979f9008d167895ea5b13a9435d5a83c9963903

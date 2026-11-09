@@ -30,6 +30,8 @@ public sealed partial class Session
             EstablishBpaAction e => ApplyEstablishBpa(e),
             EstablishIdiqAction e => ApplyEstablishIdiq(e),
             CureNoticeAction c => ApplyCureNotice(c),
+            HoldSmallBuysAction h => ApplyHoldSmallBuys(h),
+            StandUpGpcProgramAction => ApplyStandUpGpcProgram(),
             DesignateCorAction c => ApplyDesignateCor(c),
             RequestExternalSupportAction r => ApplyRequestExternalSupport(r),
             AcsaOrderAction o => ApplyAcsaOrder(o),
@@ -60,6 +62,8 @@ public sealed partial class Session
         EstablishBpaAction e => $"establish BPA {e.Id}",
         EstablishIdiqAction e => $"establish IDIQ {e.Id}",
         CureNoticeAction c => $"cure notice {c.Issue}",
+        HoldSmallBuysAction h => h.Hold ? "hold small buys" : "release small buys",
+        StandUpGpcProgramAction => "stand up GPC program",
         DesignateCorAction c => $"designate COR {c.Cor} on {c.Arrangement}",
         RequestExternalSupportAction r => $"external support request {r.Id}",
         AcsaOrderAction o => $"ACSA order {o.Id}",
@@ -491,6 +495,9 @@ public sealed partial class Session
                 _ratifications++;
                 if (!CompleteRatification((string)w.Payload!, day, w.CauseId))
                     AddRecord(day, RecordKind.Compliance, (string)w.Payload!, $"Ratification package for {(string)w.Payload!} completed.", [w.CauseId]);
+                break;
+            case WorkKind.GpcProgram:
+                CompleteGpcProgram(day, w.CauseId);
                 break;
             case WorkKind.CureNotice:
                 CompleteCureNotice((string)w.Payload!, day, w.CauseId);

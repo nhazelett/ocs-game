@@ -15,26 +15,37 @@ Before day 1
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 324 kW/day for 60 days (Generation equipment); quoted $44,712.
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 1800 gal/day for 60 days (Potable water supply); quoted $43,200.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   DONE      BPA call g-req0007 awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $44,712.
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 3
   ACTION    Written purchase order started with Coastal Provisions: Food service at Spoke C, 360 meals/day for 30 days (Meal service); quoted $97,200.
+  DONE      CE small buys: none worked today (no hours left); 8 waiting.
 Day 4
   DONE      Written purchase order g-req0012 awarded to Coastal Provisions; performance starts day 6, ends day 65. Obligated $43,200.
+  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 12 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
+  DONE      CE small buys: none worked today (no hours left); 12 waiting.
 Day 5
   DONE      Written purchase order g-req0014 awarded to Coastal Provisions; performance starts day 12, ends day 41. Obligated $97,200.
+  DONE      CE small buys: 16 worked today (8 h of shop time); 1 still waiting.
 Day 6
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     g-req0012 began: Water at Spoke C from Coastal Provisions, 1800 gal/day.
 Day 7
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     g-req0007 began: Power at Spoke B from Harbor Equipment Co, 324 kW/day.
 Day 8
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
 Day 9
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
   INBOX     Performance issue pi1: Coastal Provisions under-delivered on g-req0012 on days 8 and 9. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: water at 0%.
 Day 10
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
@@ -43,19 +54,24 @@ Day 10
 Day 11
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 12
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     g-req0014 began: Food service at Spoke C from Coastal Provisions, 360 meals/day.
   START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
 Day 13
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside g-req0007's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      g-req0014 missed today's delivery (no food service staff line).
   SHORT     Fuel at Spoke B degraded to 88%: fuel on hand ran out.
   SHORT     Power at Spoke B degraded to 88%: fuel at 88%.
@@ -65,6 +81,7 @@ Day 15
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
   FAIL      g-req0014 missed today's delivery (no food service staff line).
   INBOX     Performance issue pi2: Coastal Provisions under-delivered on g-req0014 on days 15 and 16. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
@@ -74,45 +91,59 @@ Day 16
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: water at 0%.
 Day 17
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
 Day 18
   WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Water at Spoke C degraded to 75%: water on hand ran out.
 Day 19
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Food service at Spoke C degraded to 75%: water at 75%.
 Day 20
   EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 21
   COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 7 waiting.
   FAIL      g-req0014 missed today's delivery (no food service staff line).
   SHORT     Food service at Spoke C down to 18%: food service on hand ran out; water at 75%.
 Day 22
   DONE      Response to higher HQ on uc1 sent.
+  DONE      CE small buys: 14 worked today (7 h of shop time).
 Day 23
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Food service at Spoke C degraded to 75%: water at 75%.
 Day 24
+  DONE      CE small buys: 8 worked today (4 h of shop time).
   SHORT     Food service at Spoke C down to 47%: food service on hand ran out; water at 53%.
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 7 waiting.
 Day 26
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
   COMPLY    Unauthorized commitment uc2: the Spoke B unit arranged Fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on oos1 sent.
+  DONE      CE small buys: 15 worked today (7.5 h of shop time).
   SHORT     Food service at Spoke C degraded to 53%: water at 53%.
 Day 27
+  DONE      CE small buys: 8 worked today (4 h of shop time).
   START     uc2 began: Fuel at Spoke B from Second Island Fuel, 700 gal/day.
   FAIL      g-req0012 missed today's delivery (no maintenance line, no plant operators line).
   FAIL      uc2 missed today's delivery (no on-site storage line).
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: food service on hand ran out; water at 0%.
 Day 28
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      g-req0014 missed today's delivery (no food service staff line).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   SHORT     Water at Spoke C degraded to 53%: water on hand ran out.
 Day 29
+  DONE      CE small buys: 8 worked today (4 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
 Day 30
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      g-req0007 had equipment down (no maintenance and repair line, no operators line).
   INBOX     Performance issue pi3: Harbor Equipment Co under-delivered on g-req0007 on days 29 and 30. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   SHORT     Food service at Spoke C degraded to 53%: water at 53%.
@@ -139,7 +170,7 @@ SCORECARD
   Mission output 70% (sortie generation 78%, throughput 78%, endurance 70%, resilience 38%)
   Obligated $185,112; incurred $148,635; incurred but not obligated $51,190
   Unauthorized commitments 2; UCAs past due 0; HHQ inquiries 2
-  Surveys 0; shop hours worked 104; payment errors 0; execution-confusion days 0; vendor failures 12; declined BPA calls 0
+  Surveys 0; shop hours worked 199; payment errors 0; execution-confusion days 0; vendor failures 12; declined BPA calls 0
   spokeBSite.power: 18 day(s) down, 1 degraded, lowest 0%
   spokeBSite.fuel: 15 day(s) down, 4 degraded, lowest 0%
   spokeBSite.lodging: 18 day(s) down, 1 degraded, lowest 0%
@@ -263,4 +294,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.7)
 
-State hash 374f7a0d51f951286ed97069fb3cf68493898ecd5ef61c7c1b4286215f828cad
+State hash 2d864e24b050a556ddd91fc7296fd28829eb2616ac32b33ad16e9cdc149a2212

@@ -19,7 +19,9 @@ public sealed partial class Session
             _cash, _cashInitial, _cashReplenishDay,
             _funding.Where(f => f.UsableOn(Day)).Sum(f => Math.Max(0, f.RemainingCents)),
             Day >= _systemOnlineDay, _systemOnlineDay,
-            _payingAgentDay is { } p && Day >= p, _gpcAvailableDay is { } g && Day >= g);
+            _payingAgentDay is { } p && Day >= p, _gpcAvailableDay is { } g && Day >= g,
+            _smallBuysToday, CeilHours(_smallBuyHoursTodayMilli), _smallBuyBacklog, _smallBuysHeld,
+            _gpcProgramDay is not null ? "running" : GpcProgramInWork ? "standing up" : "none");
     }
 
     // ------------------------------------------------------------------ morning board
@@ -55,6 +57,7 @@ public sealed partial class Session
     private (BoardLinkKind, string) Link(string subject)
     {
         if (subject == "cash") return (BoardLinkKind.Cash, subject);
+        if (subject is "smallBuys" or "gpcProgram") return (BoardLinkKind.SmallBuys, subject);
         if (subject == "funding" || _funding.Any(f => f.Id == subject)) return (BoardLinkKind.Funding, subject);
         if (subject.StartsWith("survey ", StringComparison.Ordinal)) return (BoardLinkKind.Island, subject[7..]);
         if (_arrangements.Any(a => a.Id == subject)) return (BoardLinkKind.Arrangement, subject);
