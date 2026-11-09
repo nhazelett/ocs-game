@@ -89,7 +89,9 @@ public partial class GameShell
             var quoted = report.Summary is { } summary && gap.Index == summary.LeadGap && summary.Quoted.Contains(factorIndex);
             var dependency = factor.DependsOnGap is { } index && report.Gaps.FirstOrDefault(g => g.Index == index) is { } other
                 ? $"\nWent down with {other.Label.ToLowerInvariant()} at {view.NameOf(other.SiteId)}, days {other.StartDay}–{other.EndDay}." : "";
-            var label = DeskUi.Label($"{DebriefWords.Factor(factor.Kind)}. {DebriefWords.TagMeaning(factor.Tag)}" +
+            var tag = gap.Index == report.Summary?.LeadGap && factor.Tag == gap.Tag
+                ? "" : " " + DebriefWords.TagMeaning(factor.Tag);
+            var label = DeskUi.Label($"{DebriefWords.Factor(factor.Kind)}." + tag +
                 (quoted ? "" : $"\n{factor.Text}" + dependency));
             label.SetMeta("factor_index", factorIndex); detail.AddChild(label);
         }
