@@ -58,7 +58,7 @@ public partial class GameShell
     private void AddArrangementActions(VBoxContainer parent, Arrangement arrangement, SessionView view)
     {
         if (arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return;
-        var terminate = DeskUi.Button("Terminate " + arrangement.Id, () => SendAction(new TerminateAction { Day = session.View!.Day, Arrangement = arrangement.Id }));
+        var terminate = DeskUi.Button("Terminate " + view.ArrangementName(arrangement.Id), () => SendAction(new TerminateAction { Day = session.View!.Day, Arrangement = arrangement.Id }));
         terminate.Disabled = view.Finished || view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
         parent.AddChild(terminate); terminations.Add(arrangement.Id, terminate);
         if (arrangement.Uca is { } uca)
@@ -66,8 +66,8 @@ public partial class GameShell
         if (arrangement.Uca is not { ProposalReceived: true, Definitized: false, DefinitizationInWork: false }) return;
         var funding = view.ActionEditor(arrangement.SiteId, arrangement.CapabilityId)!.Funding;
         var selected = funding.FirstOrDefault(f => f.UsableToday)?.Id;
-        AddPick(parent, "Definitization funding", funding.Select(f => new Pick(f.Id, $"{f.Id} · {DeskUi.Money(f.RemainingCents)}", f.UsableToday ? null : "Not usable today")).ToArray(), selected, id => selected = id);
-        var button = DeskUi.Button("Definitize " + arrangement.Id, () =>
+        AddPick(parent, "Definitization funding", funding.Select(f => new Pick(f.Id, $"{view.FundingName(f.Id)} · {DeskUi.Money(f.RemainingCents)}", f.UsableToday ? null : "Not usable today")).ToArray(), selected, id => selected = id);
+        var button = DeskUi.Button("Definitize " + view.ArrangementName(arrangement.Id), () =>
         {
             if (selected is not null) SendAction(new DefinitizeAction { Day = session.View!.Day, Arrangement = arrangement.Id, FundingLine = selected });
         });

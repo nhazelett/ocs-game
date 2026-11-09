@@ -77,10 +77,10 @@ public partial class GameShell
         panel.AddChild(picker); return picker;
     }
 
-    private static string? FundingBlock(FundingOption funding, int day)
+    private static string? FundingBlock(SessionView view, FundingOption funding, int day)
     {
         var reasons = new List<string>();
-        if (!funding.PaysForThis) reasons.Add($"Certified for {string.Join(", ", funding.Capabilities ?? [])} only");
+        if (!funding.PaysForThis) reasons.Add($"Certified for {string.Join(", ", (funding.Capabilities ?? []).Select(id => CapabilityName(view, id).ToLowerInvariant()))} only");
         if (!funding.UsableToday) reasons.Add(day < funding.AvailableDay
             ? $"Available day {funding.AvailableDay}" : $"Expired after day {funding.ExpiresDay}");
         return reasons.Count == 0 ? null : string.Join("; ", reasons);
@@ -130,9 +130,9 @@ public partial class GameShell
             return;
         }
         var vehicles = new[] { new Pick("", "No vehicle") }.Concat(editor.Vehicles.Where(v => v.VendorId == awardVendor)
-            .Select(v => new Pick(v.Id, v.Id + " · " + v.Kind, v.OpenToday ? null : $"Ordering ended day {v.OrderingPeriodEndDay}"))).ToArray();
+            .Select(v => new Pick(v.Id, view.VehicleName(v.Id), v.OpenToday ? null : $"Ordering ended day {v.OrderingPeriodEndDay}"))).ToArray();
         vehicleInput = AddPick(awardPanel, "Vehicle", vehicles, awardVehicle, id => { awardVehicle = id; RefreshActionDesk(session.View); }); awardVehicle = Picked(vehicleInput);
-        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{f.Id} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", FundingBlock(f, view.Day))).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
+        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{view.FundingName(f.Id)} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", FundingBlock(view, f, view.Day))).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
         awardFunding = Picked(fundingInput);
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {

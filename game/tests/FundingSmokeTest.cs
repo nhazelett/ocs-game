@@ -50,7 +50,7 @@ public partial class FundingSmokeTest : Node
                     {
                         Require(shell.SelectedFunding == item.LinkId, "Notice selects its actual funding line.");
                         var selected = ledger.GetChildren().OfType<Label>().Single(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == item.LinkId);
-                        Require(selected.Text.StartsWith("Selected funding line: " + item.LinkId), "Linked line has a visible selection marker.");
+                        Require(selected.Text.StartsWith("Selected funding line: " + view.FundingName(item.LinkId)), "Linked line has a visible selection marker.");
                         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                         Require(selected.HasFocus(), "Linked line receives keyboard focus after layout.");
                     }

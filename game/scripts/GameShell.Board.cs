@@ -136,8 +136,8 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("Funding lines"));
         foreach (var funding in view.Funding)
         {
-            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{funding.Id} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
-            var purpose = funding.Capabilities.Count == 0 ? "any" : string.Join(", ", funding.Capabilities);
+            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{view.FundingName(funding.Id)} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
+            var purpose = funding.Capabilities.Count == 0 ? "any" : string.Join(", ", funding.Capabilities.Select(id => CapabilityName(view, id).ToLowerInvariant()));
             row.Text += $"\nPurpose: {purpose}";
             if (funding.AvailableDay > funding.PlannedAvailableDay)
                 row.Text += $"\nRelease: planned day {funding.PlannedAvailableDay}, now day {funding.AvailableDay}";
@@ -148,7 +148,7 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("Arrangements"));
         foreach (var arrangement in view.Arrangements)
         {
-            var button = DeskUi.Button($"{arrangement.Id} · {arrangement.Status}\nObligated {DeskUi.Money(arrangement.ObligatedCents)} · incurred {DeskUi.Money(arrangement.IncurredCents)}\nUnobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
+            var button = DeskUi.Button($"{view.ArrangementName(arrangement.Id)} · {arrangement.Status}\nObligated {DeskUi.Money(arrangement.ObligatedCents)} · incurred {DeskUi.Money(arrangement.IncurredCents)}\nUnobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
             {
                 SelectedArrangement = arrangement.Id; SelectedFunding = null; RenderLedgerContext(session.View);
             });

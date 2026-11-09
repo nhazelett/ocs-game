@@ -16,12 +16,12 @@ public partial class GameShell
         if (cards.Length == 0) { linkedRequirement.AddChild(DeskUi.Label("No submitted requirements are available.")); return; }
         if (!cards.Any(c => c!.CardId == SelectedCard)) SelectedCard = cards[0]!.CardId;
         var picker = new OptionButton { Name = "RequirementPicker", SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
-        foreach (var option in cards) picker.AddItem($"{option!.CardId} · {option.SiteName} · {option.CapabilityLabel}");
+        foreach (var option in cards) picker.AddItem($"{option!.Title} · {option.Person?.DisplayName ?? option.SubmittedBy}");
         picker.Select(Array.FindIndex(cards, c => c!.CardId == SelectedCard));
         picker.ItemSelected += index => { SelectedCard = cards[(int)index]!.CardId; RenderRequirementContext(session.View); };
         linkedRequirement.AddChild(picker);
         var card = cards.Single(c => c!.CardId == SelectedCard)!;
-        linkedRequirement.AddChild(DeskUi.Label($"{card.CardId} · {card.SiteName} · {card.CapabilityLabel}\nPeak demand: {card.PeakDemandUnits} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
+        linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {card.PeakDemandUnits} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
         if (session.IsReplay) linkedRequirement.AddChild(DeskUi.Label("Changing a line takes control and stops future replay actions."));
         var market = DeskUi.Button("Go to market", () => GoToMarket(card.CardId));
         market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished; linkedRequirement.AddChild(market);
@@ -40,8 +40,8 @@ public partial class GameShell
         linkedRequirement.AddChild(DeskUi.Label("Dependency checklist"));
         foreach (var dependency in card.Dependencies)
         {
-            var label = DeskUi.Label($"{dependency.Label}: {dependency.Coverage.Replace("inRequirement", "in requirement")}" +
-                (dependency.CoveredBy.Count > 0 ? $" · {string.Join(", ", dependency.CoveredBy)}" : ""));
+            var label = DeskUi.Label($"{dependency.Label}: {Words(dependency.Coverage).ToLowerInvariant()}" +
+                (dependency.CoveredBy.Count > 0 ? $" · {string.Join(", ", dependency.CoveredBy.Select(view.ArrangementName))}" : ""));
             label.SetMeta("dependency", dependency.CapabilityId); linkedRequirement.AddChild(label);
         }
     }

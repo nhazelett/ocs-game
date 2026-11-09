@@ -26,13 +26,13 @@ public partial class DebriefSmokeTest : Node
             }
             static IEnumerable<Label> Labels(Node node) => node.GetChildren().SelectMany(child => (child is Label label ? new[] { label } : Enumerable.Empty<Label>()).Concat(Labels(child)));
             var text = string.Join("\n", Labels(shell.DebriefPanel).Select(l => l.Text));
-            foreach (var item in expected.Events) Require(text.Contains(item.Text) && text.Contains(item.RecordId), "Timeline retains Sim event text and record IDs.");
+            foreach (var item in expected.Events) Require(text.Contains(item.Text) && Labels(shell.DebriefPanel).Any(l => l.HasMeta("event_record") && l.GetMeta("event_record").AsString() == item.RecordId), "Timeline retains Sim event text and internal record links.");
             foreach (var gap in expected.Gaps)
             {
                 foreach (var factor in gap.Factors) Require(text.Contains(factor.Text), "Evidence text is displayed verbatim.");
-                foreach (var id in gap.ShortfallRecordIds) Require(text.Contains(id), "Each shortfall cause chain is available.");
+                foreach (var id in gap.ShortfallRecordIds) Require(Labels(shell.DebriefPanel).Any(l => l.HasMeta("cause_record") && l.GetMeta("cause_record").AsString() == id), "Each shortfall cause chain is available through its internal link.");
             }
-            foreach (var commitment in expected.Commitments) Require(text.Contains(commitment.Id) && text.Contains(commitment.Decision), "Commitment decisions are displayed.");
+            foreach (var commitment in expected.Commitments) Require(text.Contains(shell.Session.View.NameOf(commitment.Id)) && text.Contains(commitment.Decision), "Commitment decisions are displayed.");
             Require(shell.Session.StateHash == hash, "Rendering and expanding the debrief are read-only.");
             Scenario(shell, "_stub");
             Require(shell.DisplayedDebrief is null, "Changing scenarios clears the completed debrief.");

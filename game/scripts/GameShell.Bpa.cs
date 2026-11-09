@@ -74,7 +74,7 @@ public partial class GameShell
         }
         foreach (var vehicle in AwardTargets(view).Select(t => view.ActionEditor(t.Site, t.Capability, t.Card)!).SelectMany(e => e.Vehicles).DistinctBy(v => v.Id))
         {
-            var label = DeskUi.Label($"{vehicle.Id} · {vehicle.Kind} · {vehicle.VendorId}\nScope: {string.Join(", ", vehicle.ScopeLines)}\nCall limit: {(vehicle.CallLimitCents is { } limit ? DeskUi.Money(limit) : "not specified")}\nOrdering through day {vehicle.OrderingPeriodEndDay} · {(vehicle.OpenToday ? "open today" : "closed")}\nPlace of performance: {string.Join(", ", vehicle.PlaceOfPerformance)}");
+            var label = DeskUi.Label($"{view.VehicleName(vehicle.Id)}\nScope: {string.Join(", ", vehicle.ScopeLines.Select(id => ScopeLineName(view, id)))}\nCall limit: {(vehicle.CallLimitCents is { } limit ? DeskUi.Money(limit) : "not specified")}\nOrdering through day {vehicle.OrderingPeriodEndDay} · {(vehicle.OpenToday ? "open today" : "closed")}\nPlace of performance: {string.Join(", ", vehicle.PlaceOfPerformance.Select(view.NameOf))}");
             label.SetMeta("vehicle", vehicle.Id); knownVehicles.AddChild(label);
         }
         foreach (var work in view.Work.Where(w => w.Kind == WorkKind.EstablishVehicle && w.CompletedDay is null))
@@ -99,7 +99,7 @@ public partial class GameShell
         bpaForm.AddChild(DeskUi.Label("Scope lines offered by this vendor"));
         foreach (var line in selected.Vendor.Lines)
         {
-            var input = new CheckBox { Text = line, ButtonPressed = bpaScope.Contains(line) };
+            var input = new CheckBox { Text = ScopeLineName(view, line), ButtonPressed = bpaScope.Contains(line) };
             input.Toggled += on => { if (on) bpaScope.Add(line); else bpaScope.Remove(line); UpdateEstablishPreview(); };
             BpaScopeInputs.Add(line, input); bpaForm.AddChild(input);
         }

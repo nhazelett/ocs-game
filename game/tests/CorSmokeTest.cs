@@ -102,12 +102,12 @@ public partial class CorSmokeTest : Node
             foreach (var hidden in final.Records.Where(r => !final.Known(r)))
             {
                 Require(!debriefText.Any(t => t.Contains(hidden.Text)), "Debrief timeline and expanded cause lists also filter unreported raw records.");
-                Require(!debriefText.Any(t => t.Contains($"Record {hidden.Id}\n")), "Hidden raw failure is not listed as a timeline event.");
+                Require(!shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.HasMeta("event_record") && l.GetMeta("event_record").AsString() == hidden.Id), "Hidden raw failure is not listed as a timeline event.");
             }
             var knownEvents = shell.DisplayedDebrief!.Events.Where(e => final.Records.Any(r => r.Id == e.RecordId && final.Known(r))).ToArray();
             Require(knownEvents.Length > 0, "Fixture has known annotated events.");
             foreach (var item in knownEvents)
-                Require(debriefText.Any(t => t.Contains(item.Text) && t.Contains($"Record {item.RecordId}")), "Every known event selected by Sim remains in the debrief timeline.");
+                Require(debriefText.Any(t => t.Contains(item.Text)) && shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.HasMeta("event_record") && l.GetMeta("event_record").AsString() == item.RecordId), "Every known event selected by Sim remains in the debrief timeline.");
             Require(shell.CorDesignations.Values.All(c => c.Submit.Disabled), "Finished games offer no enabled designation action.");
             Scenario(shell, "spoke-b");
             Require(shell.CorInput is null && shell.PendingAward!.Cor is null && shell.CorDesignations.Count == 0, "Scenario switch clears the COR controls and field.");
