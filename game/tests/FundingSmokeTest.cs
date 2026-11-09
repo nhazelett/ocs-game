@@ -98,6 +98,7 @@ public partial class FundingSmokeTest : Node
             var before = purposeShell.Session.StateHash;
             var targets = purposeShell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions/AwardEditor").FindChildren("*", "OptionButton", true, false).OfType<OptionButton>().First();
             Pick(targets, "hubSite.fuel");
+            ChoosePreviewFixture(purposeShell);
             var right = Index(purposeShell.FundingInput, "om1");
             Require(!purposeShell.FundingInput.IsItemDisabled(right) && purposeShell.FundingInput.GetItemTooltip(right) == "", "Changing capability re-enables purpose-matching funds and clears the reason.");
             Require(purposeShell.Session.StateHash == before, "Purpose editing changes presentation only.");
