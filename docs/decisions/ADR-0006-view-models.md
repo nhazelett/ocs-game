@@ -103,3 +103,6 @@ Every string the Sim makes for a player (record text, work labels, hard stops, s
 
 ## Addendum, 2026-11-09 (M2R-06): the owner on the checklist
 `RequirementDependency` gains trailing `UsualOwner` (the supplied capability's rules text, null when the office buys it) and `OwnerEngaged` (an ACSA line covers it at the site on some day of the card's window, or a J4 request for it is in work). `RequirementLine` gains trailing `UsualOwner` for a supplies line. The editor can show, next to an empty fuel line, whose door to knock on before buying it; `engageJ4` is the action (M2R-04), and the turnover's contracts paragraph names the partner's line. The turnover vendor list no longer includes vehicle-only vendors (the host nation's utilities, the partner force): those are in the contracts paragraph, not names you call. `GapFactorKind.OwnerNotEngaged` (appended).
+
+## Addendum, 2026-11-09 (M2R-20): site news comes from someone
+`BoardItem.Person` (and so `RecordPerson` and an Alert lead's `Person`) is no longer null for a site-capability item: it is the person on the earliest card for that capability at that site, else the first customer or commander the cast places at the site, else null. No new fields; nothing in the state hash; every golden unchanged.
