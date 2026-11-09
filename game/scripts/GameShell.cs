@@ -94,6 +94,7 @@ public partial class GameShell : Control
     {
         if (ReadingTurnover) return;
         var advanced = AdvanceAndAutosave();
+        if (advanced && session.View?.Finished == false) FocusNewMorning();
         RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.");
     }
 

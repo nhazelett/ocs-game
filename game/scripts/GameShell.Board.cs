@@ -20,12 +20,11 @@ public partial class GameShell
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
         var board = DeskUi.Panel(tabs.GetNode<Control>("Board"), "MorningBoard");
-        morningHeading = DeskUi.Label(); board.AddChild(morningHeading);
-        boardFocus = DeskUi.Label(); board.AddChild(boardFocus);
-        board.AddChild(DeskUi.Label("Overnight changes · choose a linked item to inspect it"));
-        morningItems = new VBoxContainer { Name = "Items" }; board.AddChild(morningItems);
-        board.AddChild(DeskUi.Label("Site capabilities"));
-        morningTiles = new VBoxContainer { Name = "Tiles" }; board.AddChild(morningTiles);
+        BuildLead(board);
+        morningHeading = DeskUi.Label(); boardDetails.AddChild(morningHeading);
+        boardFocus = DeskUi.Label(); boardDetails.AddChild(boardFocus);
+        morningItems = new VBoxContainer { Name = "Items" }; boardDetails.AddChild(morningItems);
+        morningTiles = new VBoxContainer { Name = "Tiles" }; boardDetails.AddChild(morningTiles);
         linkedRequirement = DeskUi.Panel(tabs.GetNode<Control>("Requirements"), "RequirementContext");
         linkedLedger = DeskUi.Panel(tabs.GetNode<Control>("Ledger"), "LedgerContext");
     }
@@ -33,6 +32,7 @@ public partial class GameShell
     private void ResetDeskSelection()
     {
         ResetOpening();
+        BoardDetailsToggle.ButtonPressed = false;
         SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
         boardFocus.Text = "";
         Map.SelectSite(null);
@@ -44,6 +44,7 @@ public partial class GameShell
     private void RefreshMorningDesk(SessionView? view, MorningBoardView? board)
     {
         DeskUi.Clear(morningItems); DeskUi.Clear(morningTiles);
+        RefreshLead(view, board);
         morningHeading.Text = board is null ? "No scenario loaded" :
             $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {board.Items.Count(x => x.Severity == BoardSeverity.Alert)} alerts · {board.Items.Count(x => x.Category == BoardCategory.Request)} requests";
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
@@ -58,7 +59,7 @@ public partial class GameShell
         {
             var key = tile.SiteId + "." + tile.CapabilityId;
             var name = view!.Scenario.Sites.Single(s => s.Id == tile.SiteId).Name;
-            var button = DeskUi.Button($"{name} · {tile.Label}: {tile.TodayPermille / 10m:0.#}% · {tile.Status}{(view.LostConfidenceSites.Contains(tile.SiteId) ? " · commander confidence lost" : "")}", () => SelectCapability(key));
+            var button = DeskUi.Button($"{name} · {tile.Label}: {tile.TodayPermille / 10m:0.#}% · {StatusWords(tile.Status)}{(view.LostConfidenceSites.Contains(tile.SiteId) ? " · commander confidence lost" : "")}", () => SelectCapability(key));
             button.ToggleMode = true; button.ButtonPressed = SelectedCapability == key;
             button.SetMeta("capability", key); morningTiles.AddChild(button);
         }
@@ -71,7 +72,7 @@ public partial class GameShell
                 var day = Math.Min(view.Day, view.LastDay);
                 var population = view.Population(tile.SiteId, day);
                 var planned = view.PlannedPopulation(tile.SiteId, day);
-                boardFocus.Text = $"Selected: {tile.Label} at {name} · {tile.Status} · {tile.TodayPermille / 10m:0.#}%\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
+                boardFocus.Text = $"Selected: {tile.Label} at {name} · {StatusWords(tile.Status)} · {tile.TodayPermille / 10m:0.#}%\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
             }
         }
         RenderRequirementContext(view);
@@ -116,6 +117,7 @@ public partial class GameShell
 
     private void SelectCapability(string key)
     {
+        BoardDetailsToggle.ButtonPressed = true;
         if (session.View is not { } view) return;
         var tile = view.MorningBoard().Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == key);
         if (tile is null) return;
@@ -162,15 +164,15 @@ public partial class GameShell
     {
         if (ReadingTurnover) return;
         var count = 0;
-        var reason = "seven-day limit";
-        while (count < 7 && AdvanceAndAutosave())
+        var reason = "deployment complete";
+        while (AdvanceAndAutosave())
         {
             count++;
             var board = session.View!.MorningBoard();
-            if (board.Items.Any(i => i.Severity == BoardSeverity.Alert || i.Category == BoardCategory.Request))
-            { reason = "an alert or request arrived"; break; }
+            if (board.Lead is not null) { reason = "the next priority item is ready"; break; }
         }
         if (session.View?.Finished == true) reason = "scenario complete";
+        else if (count > 0) FocusNewMorning();
         RefreshDisplay($"Continued {count} days: {reason}. Results through day {session.CompletedDay}.");
     }
 }
