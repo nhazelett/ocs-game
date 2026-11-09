@@ -23,6 +23,8 @@ public enum GapFactorKind
     LiftDelay,
     /// <summary>A transition plan's outgoing arrangement ended before the incoming one was delivering (M3-05).</summary>
     TransitionGap,
+    /// <summary>The capability has a usual owner (fuel: the J4 through the ACSA partner) who was never engaged, or engaged too late, and no stopgap was bought (M2R-06, R10).</summary>
+    OwnerNotEngaged,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>

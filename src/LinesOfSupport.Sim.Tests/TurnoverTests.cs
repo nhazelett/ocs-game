@@ -51,7 +51,8 @@ public class TurnoverTests
         if (t.Briefing is { } br)
             foreach (var x in new[] { br.Title, br.Situation, br.Due }) Prose(b.Scenario, x, $"{id} briefing");
         Assert.Equal(b.Scenario.InheritedArrangements.Count, t.Contracts.Count);
-        Assert.Equal(b.Scenario.Vendors.Count, t.Vendors.Count);
+        // Vehicle-only vendors (host nation utilities, the partner force) are in the contracts paragraph, not the vendor list (M2R-06).
+        Assert.Equal(b.Scenario.Vendors.Count(v => !v.VehicleOnly), t.Vendors.Count);
         Assert.Equal(b.Scenario.FundingLines.Count, t.Money.Count);
     }
 

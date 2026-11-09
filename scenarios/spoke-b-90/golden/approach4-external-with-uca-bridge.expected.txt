@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: systemAccess, cashAndPayingAgent (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acsa), days 1 to 400.
 Day 1
   ACTION    Ordered a site survey of Second Island.
   ACTION    Requirement req0007: Generator fuel supply switched on.
@@ -104,6 +104,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -124,6 +125,7 @@ Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
@@ -160,18 +162,14 @@ Day 57
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 58
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      extPower had equipment down.
-  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 59
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  OK        Power at Spoke B restored to 100%.
 Day 60
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 61
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 62
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): extPower had equipment down on day 58, reported 4 day(s) later.
 Day 63
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 64
@@ -199,6 +197,7 @@ Day 73
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Funding line om1 reached its fiscal-year end with day 75: $146,871 never obligated can no longer pay for anything new.
@@ -209,18 +208,14 @@ Day 77
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      extPower had equipment down.
-  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  OK        Power at Spoke B restored to 100%.
 Day 80
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 81
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 82
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): extPower had equipment down on day 78, reported 4 day(s) later.
 Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
@@ -232,6 +227,7 @@ Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 87
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      hubFuelPoint missed today's delivery.
 Day 88
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 89
@@ -244,38 +240,23 @@ CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 Hub Power                 ..........................................................................................
 Hub Fuel                  ..........................................................................................
-Spoke B Power                   ...................................................5...................5............
+Spoke B Power                   ....................................................................................
 Spoke B Fuel                    ....................................................................................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 93% (sortie generation 99%, throughput 99%, endurance 100%, resilience 55%)
+  Mission output 93% (sortie generation 100%, throughput 100%, endurance 100%, resilience 55%)
   Obligated $753,129; incurred $670,409; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 373; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
-  spokeBSite.power: 0 day(s) down, 2 degraded, lowest 50%
+  Surveys 1; shop hours worked 373; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on gens, $2,400. Decision: denied on day 16.
-
-GAPS AND WHY (each traced back through its causes)
-  Day 58: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 58: extPower had equipment down.
-          <- day 2: External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
-  Day 78: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 78: extPower had equipment down.
-          <- day 2: External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
-
-GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
-  #0 spokeBSite.power days 58-58, lowest 50%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] extPower failed on day 58 with full operator and maintenance coverage. The COR reported it on day 62.
-  #1 spokeBSite.power days 78-78, lowest 50%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] extPower failed on day 78 with full operator and maintenance coverage. The COR reported it on day 82.
 
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 90% (mission.output = 0.929)
+  [met] Mission output at least 90% (mission.output = 0.933)
 
-State hash d7885825170aa5f46ed386d27f9c7eb080b644b03bcc0bb65d309bfad8b36275
+State hash e12406bff3f76a22a9e22b56029f4b19b02b2318c5eb6165ff8791930ed82b00

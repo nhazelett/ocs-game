@@ -173,9 +173,10 @@ public class ReliabilityDropTests
     [Fact]
     public void Shipped_scenarios_have_no_contract_the_change_makes_curable()
     {
-        // Their inherited rows are host nation support (no written terms), so the goldens hold unchanged.
+        // Their inherited rows are host nation support and the J4's ACSA fuel line (M2R-06), neither a contract this office
+        // could cure, so the goldens hold unchanged.
         foreach (var id in new[] { "spoke-b", "spoke-b-90" })
-            Assert.All(Session.Create(Repo.Load(id), 1).Arrangements, a => Assert.Equal("hostNation", a.Instrument));
+            Assert.All(Session.Create(Repo.Load(id), 1).Arrangements, a => Assert.Contains(a.Instrument, new[] { "hostNation", "acsa" }));
     }
 
     [Theory]

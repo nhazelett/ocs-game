@@ -1,0 +1,94 @@
+{
+  "scenario": "spoke-b",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "note": "Approach 1 with the J4 engaged (SPEC 5, M2R-06): the same BPA call for six generators, but on day 1 the player asks the J4 to add Spoke B to the ACSA fuel order with the partner force. Fuel crosses on the barge from day 5, so there is no day 10 outage and no handshake; the weather closure (days 16 to 18) still costs a day, which is the barge dependency a survey would have shown. Spoke C as in the other approaches.",
+  "prepChoices": [],
+  "actions": [
+    {
+      "kind": "engageJ4",
+      "day": 1,
+      "id": "j4fuel",
+      "site": "spokeBSite",
+      "capability": "fuel",
+      "quantity": 1300
+    },
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "gens",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "card": "req0007",
+      "quantity": 360,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "setLine",
+      "day": 2,
+      "card": "req0012",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "setLine",
+      "day": 2,
+      "card": "req0012",
+      "line": "maintenance",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "waterPlant",
+      "instrument": "uca",
+      "vendor": "vendorF",
+      "card": "req0012",
+      "quantity": 2640,
+      "startDay": 5,
+      "durationDays": 60,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 2,
+      "id": "waterBridge",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorG",
+      "site": "spokeCSite",
+      "capability": "water",
+      "lines": [
+        "supply"
+      ],
+      "quantity": 2640,
+      "startDay": 5,
+      "durationDays": 12,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "setLine",
+      "day": 3,
+      "card": "req0014",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 3,
+      "id": "food-c",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorF",
+      "card": "req0014",
+      "lines": [
+        "service",
+        "operator"
+      ],
+      "quantity": 480,
+      "durationDays": 28,
+      "fundingLine": "om1"
+    }
+  ]
+}

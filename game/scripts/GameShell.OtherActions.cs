@@ -18,7 +18,7 @@ public partial class GameShell
     private void BuildOtherActions()
     {
         boardActions = new VBoxContainer { Name = "SupportActions" };
-        GetNode<TabContainer>("%DeskTabs").GetNode("Board/MorningBoard/Contents").AddChild(boardActions);
+        boardDetails.AddChild(boardActions);
     }
 
     private void RefreshBoardActions(SessionView? view)

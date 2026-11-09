@@ -161,7 +161,7 @@ public class GoingToPeopleTests
         Assert.True(s.Apply(new MeetVendorAction { Vendor = "vendorE" }).Accepted);
         s.AdvanceDay();
         var rep = Visits(s).Last();
-        Assert.StartsWith("Met Mr. Kofi Mensah of Port Fuel Haulers. They offer fuel, up to 4000 gal a day at $5 each, on a day's notice.", rep.Text);
+        Assert.StartsWith("Met Mr. Kofi Mensah of Port Fuel Haulers. They offer fuel, up to 4000 gal a day at $6 each, on a day's notice.", rep.Text);
         Assert.Equal("Mr. Kofi Mensah", s.View.RecordPerson(rep)!.DisplayName);
         Assert.Contains(s.View.VendorReps, p => p.Name == "Kofi Mensah");
     }
@@ -217,7 +217,15 @@ public class GoingToPeopleTests
     [Fact]
     public void Without_a_partner_the_J4_has_nothing_to_add_the_site_to()
     {
-        var s = Session.Create(Repo.Load("spoke-b"), 1);
+        // Spoke B ships with a partner (M2R-06); strip it, and the hub fuel point it supplies, for this one.
+        var root = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Path.Combine(Repo.Scenario("spoke-b"), "scenario.json")))!;
+        root["actors"]!.AsObject().Remove("acsaPartner");
+        foreach (var a in root["inheritedArrangements"]!.AsArray())
+            if ((string?)a!["id"] == "hubFuelPoint") { a["instrument"] = "hostNation"; a["vendor"] = "hubUtilities"; a.AsObject().Remove("quantity"); a.AsObject().Remove("dailyCostCents"); a.AsObject().Remove("obligatedCents"); }
+        var dir = Path.Combine(Path.GetTempPath(), $"los-nopartner-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(dir);
+        File.WriteAllText(Path.Combine(dir, "scenario.json"), root.ToJsonString());
+        var s = Session.Create(ScenarioBundle.Load(dir, Path.Combine(Repo.Root, "scenarios", "rules")), 1);
         var r = s.Apply(new EngageJ4Action { Id = "j4", Site = "spokeBSite", Capability = "fuel", Quantity = 100 });
         Assert.False(r.Accepted);
         Assert.Contains("no ACSA partner", r.HardStops[0]);

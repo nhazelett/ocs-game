@@ -173,7 +173,8 @@ public sealed partial class Session
         var from = Math.Max(card.RequestedStartDay, 1);
         var to = Math.Min(from + Math.Max(1, card.DurationDays) - 1, LastDay);
         var lines = cap.Lines.Select(l => new RequirementLine(
-            l.Id, l.Label ?? l.Id, l.Kind, card.Lines.TryGetValue(l.Id, out var on) && on, l.Supplies, GapIfOff(cap, l))).ToList();
+            l.Id, l.Label ?? l.Id, l.Kind, card.Lines.TryGetValue(l.Id, out var on) && on, l.Supplies, GapIfOff(cap, l),
+            l.Supplies is { } sup && _capData.TryGetValue(sup, out var supCap) ? supCap.UsualOwner : null)).ToList();
         var deps = cap.DependsOn.Select(dep =>
         {
             var inCard = cap.Lines.Any(l => l.Kind == "supplies" && l.Supplies == dep && card.Lines.TryGetValue(l.Id, out var on) && on);
@@ -182,7 +183,7 @@ public sealed partial class Session
                                                     && a.StartDay <= to && a.EndDay >= from)
                                         .Select(a => a.Id).ToList();
             var coverage = inCard ? "inRequirement" : covering.Count > 0 ? "arranged" : "none";
-            return new RequirementDependency(dep, CapLabel(dep), coverage, covering);
+            return new RequirementDependency(dep, CapLabel(dep), coverage, covering, Cap(dep).UsualOwner, OwnerEngaged(site.Id, dep, from, to));
         }).ToList();
         var tied = _arrangements.Where(a => a.CardId == card.Id && a.Status != ArrangementStatus.Declined).Select(a => a.Id).ToList();
         var person = BuildPerson(card.PersonId);
