@@ -29,6 +29,7 @@ public partial class GameShell : Control
         BuildBpaDesk();
         BuildPrepDesk();
         BuildSaveControls();
+        BuildMapControls();
         BuildFrontDoor();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
@@ -76,7 +77,7 @@ public partial class GameShell : Control
         {
             var data = ScenarioBoardData.Load(scenarios[(int)index].ScenarioPath);
             Map.ShowScenario(data);
-            GetNode<Label>("%BoardCaption").Text = data.Title + " · schematic layout, not geographic positions";
+            GetNode<Label>("%BoardCaption").Text = data.Title;
             session.LoadScenario(scenarios[(int)index].ScenarioPath);
             ShowPrepChoices();
             SetReplays(FindReplays(scenarios[(int)index].ScenarioPath));
@@ -145,6 +146,8 @@ public partial class GameShell : Control
         }
         Map.ShowConditions(conditions);
         Map.ShowConfidence(view?.LostConfidenceSites ?? []);
+        Map.ShowCapabilities(board?.Tiles ?? []);
+        Map.ShowMapDay(view?.MapDay());
         GetNode<Label>("%InboxDay").Text = view is null ? "No scenario loaded" : $"Day {session.CompletedDay} results · next day {(view.Finished ? "complete" : view.Day.ToString())}";
         var records = (board?.Items ?? []).Where(r => DeveloperTools || r.Category != LinesOfSupport.Sim.Views.BoardCategory.Request || r.LinkKind != LinesOfSupport.Sim.Views.BoardLinkKind.Card).ToArray();
         GetNode<RichTextLabel>("%InboxRecords").Text = records.Length == 0 ? "No other news for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
