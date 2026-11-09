@@ -1,5 +1,7 @@
 Blender (bpy) asset scripts and validators. Nothing here runs at game runtime.
 
+M2R-18: scenario validation checks unique people, optional vendor/site references, card/event senders and the actor's required role. It preserves legacy `submittedBy` when no cast exists. Optional turnover/prep blocks follow the published M2R-02 contract: outgoing-CCO sender, remarks naming the right kind of inherited contract/vendor/funding line, known prep choices and defaults within budget. Stale turnover remarks fail authoring validation even though Sim tolerates them in stripped test fixtures. Run `python3 -m unittest discover -s tools/validate -p test_people.py`.
+
 M3-11 update: Blender 4.3.2 has now generated and validated all 22 committed kit meshes. The M0 sections below record the earlier fallback experiments. Current generation, the Spoke B diorama and Godot screenshot commands are in [bpy/README.md](bpy/README.md).
 
 ## Unresolved merge markers

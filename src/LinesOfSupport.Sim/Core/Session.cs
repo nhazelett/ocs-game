@@ -280,9 +280,12 @@ public sealed partial class Session
     internal static int Weekday(int day) => ((day - 1) % 7) + 1;
 
     /// <summary>True when a surface link between the two islands runs and is open on this day.</summary>
-    internal bool SurfaceDeliveryRuns(string fromIsland, string toIsland, int day, out string? closedLink)
+    internal bool SurfaceDeliveryRuns(string fromIsland, string toIsland, int day, out string? closedLink) => SurfaceDeliveryRuns(fromIsland, toIsland, day, out closedLink, out _);
+
+    internal bool SurfaceDeliveryRuns(string fromIsland, string toIsland, int day, out string? closedLink, out string? usedLink)
     {
         closedLink = null;
+        usedLink = null;
         if (fromIsland == toIsland) return true;
         foreach (var l in Scenario.TransportLinks)
         {
@@ -292,6 +295,7 @@ public sealed partial class Session
             var scheduled = l.ScheduleDays.Count == 0 || l.ScheduleDays.Contains(Weekday(day));
             if (!scheduled) continue;
             if (!LinkOpen(l.Id, day)) { closedLink = l.Id; continue; }
+            usedLink = l.Id;
             return true;
         }
         return false;

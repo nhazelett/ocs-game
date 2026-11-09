@@ -19,7 +19,7 @@ public partial class GameShell
 
     private void BuildFrontDoor()
     {
-        frontDoor = new PanelContainer { Name = "FrontDoor" };
+        frontDoor = new PanelContainer { Name = "FrontDoor", ZIndex = 15 };
         var background = new StyleBoxFlat { BgColor = new Color("111f29") };
         frontDoor.AddThemeStyleboxOverride("panel", background);
         AddChild(frontDoor); frontDoor.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -58,6 +58,7 @@ public partial class GameShell
     private void ShowFrontDoor()
     {
         frontDoor.Show(); GetNode<Control>("Margin").Hide(); menuButton?.Hide();
+        openingSurface.Hide();
         frontMessage.Text = "Take over the contracting shop. Keep the deployment supported as the days unfold.";
         DeskUi.Clear(frontChoices);
         NewGameButton = FrontButton("New game", ShowNewGames); frontChoices.AddChild(NewGameButton);
@@ -93,6 +94,7 @@ public partial class GameShell
     private void ShowGameSurface()
     {
         frontDoor.Hide(); GetNode<Control>("Margin").Show(); menuButton.Show(); RefreshDeveloperAccess();
+        RefreshOpeningVisibility();
         if (session.Prep is not null) StartGameButton.GrabFocus();
         else if (!GetNode<Button>("%NextDay").Disabled) GetNode<Button>("%NextDay").GrabFocus();
     }

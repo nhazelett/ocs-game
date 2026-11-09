@@ -32,8 +32,21 @@ internal static class DeskSmokeSupport
         var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
         var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == name);
         picker.Select(index); picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);
-        shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+        DeployWithoutPrep(shell);
         ChoosePreviewFixture(shell);
+    }
+
+    internal static void DeployWithoutPrep(GameShell shell)
+    {
+        foreach (var choice in shell.PrepChoices.Values) choice.ButtonPressed = false;
+        shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+        FinishOpening(shell);
+    }
+
+    internal static void FinishOpening(GameShell shell)
+    {
+        for (var i = 0; i < 8 && shell.ReadingTurnover; i++) shell.TurnoverNext.EmitSignal(Button.SignalName.Pressed);
+        Require(!shell.ReadingTurnover, "Turnover finishes through its real Continue controls.");
     }
 
     internal static void ChoosePreviewFixture(GameShell shell)

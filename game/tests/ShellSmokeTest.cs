@@ -12,7 +12,7 @@ public partial class ShellSmokeTest : Node
             var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
             AddChild(shell);
             DeskSmokeSupport.DeveloperWorkspace(shell);
-            shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+            DeskSmokeSupport.DeployWithoutPrep(shell);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
             var expected = new[] { "Board", "Requirements", "Actions", "Directory", "Vehicles", "Ledger", "Inbox", "Reports", "Debrief" };
