@@ -37,6 +37,7 @@ public partial class BoardSmokeTest : Node
             var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
             shell.ScenarioRootOverride = root;
             AddChild(shell);
+            DeskSmokeSupport.DeveloperWorkspace(shell);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             var map = shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
             Require(map.Data?.Id == "first", "The initial _stub is displayed.");

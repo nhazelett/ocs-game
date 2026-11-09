@@ -13,10 +13,17 @@ namespace LinesOfSupport.Sim.Views;
 public sealed record PrepEffectLine(string With, string Without, bool HasEffect);
 
 /// <summary>A prep choice: what it costs in prep days and what it changes.</summary>
-public sealed record PrepOption(string Id, string Label, int PrepDays, IReadOnlyList<PrepEffectLine> Effects);
+/// <param name="Says">What the person sending the prep message says about it (M2R-02); null when the scenario wrote nothing.</param>
+/// <param name="Default">Shown preselected (scenario prepBriefing.defaults; they fit the budget).</param>
+public sealed record PrepOption(string Id, string Label, int PrepDays, IReadOnlyList<PrepEffectLine> Effects,
+    string? Says = null, bool Default = false);
 
 /// <summary>The prep screen: the budget and every choice. The choices together cost more than the budget.</summary>
-public sealed record PrepView(string ScenarioTitle, int BudgetDays, int AllChoicesDays, IReadOnlyList<PrepOption> Options);
+/// <param name="From">Who sends the prep message (M2R-02), or null.</param>
+/// <param name="Intro">Their opening, e.g. "You have fourteen days before wheels up."</param>
+/// <param name="Defaults">The preselected picks, in rules order; empty when the scenario names none.</param>
+public sealed record PrepView(string ScenarioTitle, int BudgetDays, int AllChoicesDays, IReadOnlyList<PrepOption> Options,
+    PersonView? From = null, string? Intro = null, IReadOnlyList<string>? Defaults = null);
 
 /// <summary>Whether a set of picks can start a game. Stops use the same wording Session.Create would throw.</summary>
 public sealed record PrepCheck(bool Accepted, int UsedDays, int BudgetDays, IReadOnlyList<string> Stops);
@@ -52,8 +59,16 @@ public static class PrepScreen
                 _ => new($"{e.Kind}: recorded for the debrief.", "Not recorded.", false),
             };
         }
-        var options = bundle.Rules.PrepChoices.Select(c => new PrepOption(c.Id, c.Label, c.PrepDays, c.Effects.Select(Line).ToList())).ToList();
-        return new PrepView(bundle.Scenario.Title, bundle.Scenario.PrepDays, options.Sum(o => o.PrepDays), options);
+        var pb = bundle.Scenario.PrepBriefing;
+        var options = bundle.Rules.PrepChoices.Select(c => new PrepOption(c.Id, c.Label, c.PrepDays, c.Effects.Select(Line).ToList(),
+            pb is not null && pb.Choices.TryGetValue(c.Id, out var says) ? says : null,
+            pb?.Defaults.Contains(c.Id) ?? false)).ToList();
+        PersonView? from = null;
+        if (pb is not null && bundle.Scenario.People.FirstOrDefault(p => p.Id == pb.From) is { } p)
+            from = new PersonView(p.Id, p.Name, p.Rank, p.Unit, p.Role, p.Portrait, p.Lines,
+                p.Vendor is null ? null : bundle.Scenario.Vendors.FirstOrDefault(v => v.Id == p.Vendor)?.Name);
+        return new PrepView(bundle.Scenario.Title, bundle.Scenario.PrepDays, options.Sum(o => o.PrepDays), options,
+            from, pb?.Intro, options.Where(o => o.Default).Select(o => o.Id).ToList());
     }
 
     public static PrepCheck Check(ScenarioBundle bundle, IEnumerable<string> picks)

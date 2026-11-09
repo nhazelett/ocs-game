@@ -798,6 +798,114 @@
         }
       }
     },
+    "briefing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "situation",
+        "due"
+      ],
+      "description": "The opening (M2R-02): who you are, where you are, what is due. Prose in a voice, no bullets (R9).",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "One line, e.g. 'First seventy-two hours on the main island'"
+        },
+        "situation": {
+          "type": "string"
+        },
+        "due": {
+          "type": "string"
+        }
+      }
+    },
+    "turnover": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from"
+      ],
+      "description": "What the outgoing CCO says at the turnover (M2R-02, design doc 3.2). Section remarks open each paragraph; per-item remarks follow that item. What the outgoing CCO believes: never name a hidden problem (M3-17).",
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/id",
+          "description": "people[] id with role outgoingCco"
+        },
+        "shop": {
+          "type": "string"
+        },
+        "contracts": {
+          "type": "string"
+        },
+        "vendorList": {
+          "type": "string"
+        },
+        "money": {
+          "type": "string"
+        },
+        "remarks": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "arrangements": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Inherited arrangement id to remark"
+            },
+            "vendors": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Vendor id to remark"
+            },
+            "fundingLines": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Funding line id to remark"
+            }
+          }
+        }
+      }
+    },
+    "prepBriefing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from",
+        "intro"
+      ],
+      "description": "The pre-deployment window as a message from a person (M2R-02, design doc 3.1).",
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/id",
+          "description": "people[] id of who sends it"
+        },
+        "intro": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Rules prep choice id to what this person says about it"
+        },
+        "defaults": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true,
+          "description": "Prep choice ids shown preselected; must fit prepDays"
+        }
+      }
+    },
     "shop": {
       "type": "object",
       "additionalProperties": false,

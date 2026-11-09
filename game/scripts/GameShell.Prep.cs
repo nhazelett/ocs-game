@@ -55,7 +55,7 @@ public partial class GameShell
         if (StartGameButton.Disabled) return;
         session.StartScenario(ChosenPrep);
         TryAutosave();
-        RefreshDisplay("Seed 1 · preparations applied. Next day plays day 1.");
+        RefreshDisplay(DeveloperTools ? "Seed 1 · preparations applied. Next day plays day 1." : "Your preparations are in place. You're ready for your first day.");
     }
 
     private void RefreshPrepVisibility()

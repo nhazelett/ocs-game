@@ -210,6 +210,23 @@ public sealed class ScenarioBundle
         NeedPerson(s.Actors.Fm.Person, "actors.fm", "finance");
         NeedPerson(s.Actors.Commander.Person, "actors.commander", "commander");
 
+        // Turnover and prep briefing (M2R-02).
+        if (s.Turnover is { } t)
+        {
+            NeedPerson(t.From, "turnover.from", "outgoingCco");
+            // A remark whose item is absent is never shown, so it is not a load error: derived fixtures (the game's quiet
+            // smoke scenario) strip inherited arrangements and keep the rest. tools/validate/validate.py flags such
+            // remarks for authors (M2R-18).
+        }
+        if (s.PrepBriefing is { } pb)
+        {
+            Need(people.ContainsKey(pb.From), $"prepBriefing.from person {pb.From} not found");
+            foreach (var k in pb.Choices.Keys.Concat(pb.Defaults))
+                Need(Rules.PrepChoices.Any(c => c.Id == k), $"prepBriefing choice {k} is not in rules {Rules.RulesVersion}");
+            var used = pb.Defaults.Distinct().Sum(k => Rules.PrepChoices.FirstOrDefault(c => c.Id == k)?.PrepDays ?? 0);
+            Need(used <= s.PrepDays, $"prepBriefing.defaults use {used} prep-days; the scenario allows {s.PrepDays}");
+        }
+
         var cors = s.Cors.Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
         Need(cors.Count == s.Cors.Count, "COR ids must be unique");
         foreach (var c in s.Cors) Need(Rules.Cor.Qualities.ContainsKey(c.Quality), $"COR {c.Id} quality {c.Quality} not in rules cor.qualities");
