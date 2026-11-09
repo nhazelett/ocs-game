@@ -28,7 +28,7 @@ public partial class FrontDoorSmokeTest : Node
             shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(!shell.AtFrontDoor && shell.Session.Prep is not null && shell.Session.View is null, "New game opens Spoke B preparations before play.");
             Require(!shell.GetNode<OptionButton>("%ScenarioPicker").IsVisibleInTree() && !shell.GetNode<Button>("%ReplayButton").IsVisibleInTree() && !shell.LoadSaveButton.IsVisibleInTree(), "Test controls remain hidden during normal play.");
-            shell.StartGameButton.EmitSignal(Button.SignalName.Pressed); Step(shell);
+            shell.StartGameButton.EmitSignal(Button.SignalName.Pressed); FinishOpening(shell); Step(shell);
             var hash = shell.Session.StateHash;
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
             Require(!shell.ContinueGameButton.Disabled, "A deployment saved through normal play enables Continue.");

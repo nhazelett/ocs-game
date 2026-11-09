@@ -32,6 +32,7 @@ public partial class GameShell
 
     private void ResetDeskSelection()
     {
+        ResetOpening();
         SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
         boardFocus.Text = "";
         Map.SelectSite(null);
@@ -159,6 +160,7 @@ public partial class GameShell
 
     private void OnContinue()
     {
+        if (ReadingTurnover) return;
         var count = 0;
         var reason = "seven-day limit";
         while (count < 7 && AdvanceAndAutosave())

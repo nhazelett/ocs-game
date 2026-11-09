@@ -15,7 +15,7 @@ public partial class MarketSmokeTest : Node
         {
             using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
             var shell = scene.Instantiate<GameShell>(); shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json"); AddChild(shell);
-            shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+            shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell);
             var hash = shell.Session.StateHash;
             var card = shell.Session.View!.Cards.First(c => shell.Session.View.RequirementEditor(c.Id)?.CapabilityId == "power");
             shell.NavigateBoardItem(new LinesOfSupport.Sim.Views.BoardItem("", 1, LinesOfSupport.Sim.Views.BoardCategory.Request, LinesOfSupport.Sim.Views.BoardSeverity.Info, LinesOfSupport.Sim.Views.BoardLinkKind.Card, card.Id, "", []));
