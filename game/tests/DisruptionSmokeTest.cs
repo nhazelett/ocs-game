@@ -47,7 +47,7 @@ public partial class DisruptionSmokeTest : Node
             while (!shell.Session.View!.Finished) Step(shell);
             var gap = shell.DisplayedDebrief!.Gaps.First(g => g.Factors.Any(f => f.Kind == GapFactorKind.PopulationJump));
             shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index).EmitSignal(Button.SignalName.Pressed);
-            Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains("Unplanned population arrival")), "Expanded gap uses the readable PopulationJump label.");
+            Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains(DebriefWords.Factor(GapFactorKind.PopulationJump))), "Expanded gap uses the readable PopulationJump label.");
             GD.Print("DISRUPTION_SMOKE_PASS: ferry forecast, arrival notice, refreshed actual/planned population and gap label."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"DISRUPTION_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
