@@ -27,7 +27,7 @@ public partial class GameShell
         foreach (var request in requests)
         {
             var card = new PanelContainer();
-            card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("1b2a32"), ContentMarginLeft = 14,
+            card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 14,
                 ContentMarginRight = 14, ContentMarginTop = 14, ContentMarginBottom = 14, CornerRadiusTopLeft = 5,
                 CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 });
             customerMessages.AddChild(card);
@@ -38,7 +38,7 @@ public partial class GameShell
             var words = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; words.AddThemeConstantOverride("separation", 10); row.AddChild(words);
             words.AddChild(DeskUi.Label(request.Person?.WithUnit ?? request.SubmittedBy));
             words.AddChild(DeskUi.Label(request.Message ?? "A request is waiting for you."));
-            var when = DeskUi.Label($"Arrived on day {request.SubmittedDay}."); when.Modulate = new Color("a6bcc4"); words.AddChild(when);
+            var when = DeskUi.Label($"Arrived on day {request.SubmittedDay}."); when.SelfModulate = Colors.White; words.AddChild(when);
             var open = DeskUi.Button("Open", () => NavigateBoardItem(new BoardItem("", request.SubmittedDay, BoardCategory.Request,
                 BoardSeverity.Info, BoardLinkKind.Card, request.CardId, "", [], request.Person)));
             open.TooltipText = request.Title.Length > 0 ? request.Title : "Open the requirement";

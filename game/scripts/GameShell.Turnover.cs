@@ -20,7 +20,7 @@ public partial class GameShell
     private Control BuildOpeningSurface()
     {
         openingSurface = new PanelContainer { Name = "Opening", ZIndex = 10 };
-        openingSurface.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("111f29"),
+        openingSurface.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("e9e3d8"),
             ContentMarginLeft = 70, ContentMarginRight = 70, ContentMarginTop = 70, ContentMarginBottom = 50 });
         AddChild(openingSurface); openingSurface.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var pages = new Control(); openingSurface.AddChild(pages); return pages;

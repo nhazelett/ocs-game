@@ -17,14 +17,15 @@ public partial class GameShell
     private void BuildLead(VBoxContainer board)
     {
         var card = new PanelContainer();
-        card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("1b2a32"), ContentMarginLeft = 18,
+        card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 18,
             ContentMarginRight = 18, ContentMarginTop = 18, ContentMarginBottom = 18, CornerRadiusTopLeft = 5,
             CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 });
         board.AddChild(card);
         var body = new VBoxContainer(); body.AddThemeConstantOverride("separation", 16); card.AddChild(body);
-        leadSpeaker = DeskUi.Label(); leadSpeaker.Modulate = new Color("bdd0d6"); body.AddChild(leadSpeaker);
-        leadWords = DeskUi.Label(); leadWords.AddThemeFontSizeOverride("font_size", 24); body.AddChild(leadWords);
+        leadSpeaker = DeskUi.Label(); leadSpeaker.SelfModulate = Colors.White; body.AddChild(leadSpeaker);
+        leadWords = DeskUi.Label(); leadWords.ThemeTypeVariation="TabletopHeading"; leadWords.AddThemeFontSizeOverride("font_size", 24); body.AddChild(leadWords);
         LeadOpen = DeskUi.Button("Open", OpenLead); LeadOpen.CustomMinimumSize = new Vector2(0, 44); body.AddChild(LeadOpen);
+        LeadOpen.ThemeTypeVariation="TabletopPrimary";
         BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
         BoardDetailsToggle.Toggled += open => boardDetails.Visible = open;
         board.AddChild(BoardDetailsToggle);

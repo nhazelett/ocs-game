@@ -34,7 +34,7 @@ public partial class GameShell
             if (!line.On && line.GapIfOff is not null)
             {
                 var gap = DeskUi.Label(line.GapIfOff); gap.SetMeta("gap_line", line.Id);
-                gap.AddThemeColorOverride("font_color", new Color(1, .75f, .25f)); linkedRequirement.AddChild(gap);
+                gap.AddThemeColorOverride("font_color", TabletopTheme.Warning); linkedRequirement.AddChild(gap);
             }
         }
         linkedRequirement.AddChild(DeskUi.Label("Dependency checklist"));

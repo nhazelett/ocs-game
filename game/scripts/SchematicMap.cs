@@ -8,6 +8,7 @@ internal enum SiteCondition { Unknown, NotOpen, Full, Degraded, Down }
 // Layout, camera and animation are presentation-only. MapDay supplies movement facts.
 public partial class SchematicMap : Node2D
 {
+    private Font MapFont => (Owner as Control)?.GetThemeDefaultFont() ?? ThemeDB.FallbackFont;
     internal ScenarioBoardData? Data { get; private set; }
     internal string? SelectedSite { get; private set; }
     internal IReadOnlyDictionary<string, SiteCondition> Conditions { get; private set; } = new Dictionary<string, SiteCondition>();
@@ -92,10 +93,10 @@ public partial class SchematicMap : Node2D
     }
     public override void _Draw()
     {
-        DrawRect(new Rect2(Vector2.Zero, GetViewportRect().Size), new Color("153b50")); if (Data is null) return;
+        DrawRect(new Rect2(Vector2.Zero, GetViewportRect().Size), new Color("8eafb2")); if (Data is null) return;
         DrawSetTransform(offset, 0, Vector2.One * zoom);
         for (var y = 70; y < worldSize.Y; y += 95) for (var x = 35; x < worldSize.X; x += 120)
-            DrawArc(new Vector2(x, y), 15, .12f, 1.2f, 8, new Color("215166"), 2, true);
+            DrawArc(new Vector2(x, y), 15, .12f, 1.2f, 8, new Color("80a3a4"), 2, true);
         foreach (var group in Data.Links.GroupBy(l => string.CompareOrdinal(l.From, l.To) <= 0 ? (l.From, l.To) : (l.To, l.From)))
         {
             var links = group.ToArray();
@@ -104,7 +105,7 @@ public partial class SchematicMap : Node2D
                 var link = links[i]; var from = islands[link.From]; var to = islands[link.To];
                 var shift = (islands[group.Key.Item2] - islands[group.Key.Item1]).Normalized().Orthogonal() * ((i - (links.Length - 1) / 2f) * 62);
                 var state = Day?.Links.FirstOrDefault(l => l.FromIslandId == link.From && l.ToIslandId == link.To && l.Mode == link.Mode);
-                var closed = state?.Open == false; var color = new Color(closed ? "ef967c" : "86b3c2");
+                var closed = state?.Open == false; var color = new Color(closed ? "9f4937" : "486c70");
                 DrawDashedLine(from + shift, to + shift, color, 3, 15, true);
                 var label = link.Mode switch { "aircraft" or "airlift" => "Air route", "barge" or "sealift" => "Barge route", _ => "Transport route" };
                 Text((from + to) / 2 + shift + new Vector2(0, -12), label + (closed ? $" · closed through day {state!.ClosedThroughDay}" : ""), 440, 25, color);
@@ -125,13 +126,13 @@ public partial class SchematicMap : Node2D
             var point = progress < .72f ? from.Lerp(port, progress / .72f) : port.Lerp(site, (progress - .72f) / .28f);
             DrawVehicle(point, progress >= .72f ? "truck" : run.Mode, new Color("e5c578"));
             var label = Tiles.FirstOrDefault(t => t.CapabilityId == run.CapabilityId)?.Label ?? "Supplies";
-            Text(point + new Vector2(0, 60), $"{label} · {run.Quantity:N0} {run.Unit}", 440, 24, new Color("fff0c1"));
+            Text(point + new Vector2(0, 60), $"{label} · {run.Quantity:N0} {run.Unit}", 440, 24, new Color("343d4b"));
         }
         foreach (var held in Day.Held.GroupBy(h => h.FromIslandId))
         {
             if (!islands.TryGetValue(held.Key, out var point)) continue;
             point += new Vector2(180, 130); Box(point, new Vector2(38, 28), new Color("dbb874"));
-            Text(point + new Vector2(0, 56), "Cargo waiting", 270, 23, new Color("fff0c1"));
+            Text(point + new Vector2(0, 56), "Cargo waiting", 270, 23, new Color("343d4b"));
         }
         foreach (var shipment in Day.Shipments)
         {
@@ -140,11 +141,11 @@ public partial class SchematicMap : Node2D
             // Transit is not an arrival. The icon never travels into the destination site.
             var drift = shipment.CustomsHeld ? 0 : Math.Min(animationSeconds, 5) * 9;
             DrawVehicle(point + new Vector2(drift, 0), shipment.Mode, new Color("b7d4de"));
-            Text(point + new Vector2(0, 58), shipment.CustomsHeld ? "Held in customs" : $"On its way · due day {shipment.ArrivalDay}", 400, 23, new Color("d7e8ee"));
+            Text(point + new Vector2(0, 58), shipment.CustomsHeld ? "Held in customs" : $"On its way · due day {shipment.ArrivalDay}", 400, 23, new Color("343d4b"));
         }
     }
     private void Text(Vector2 baseline, string text, float width, int size, Color color)
-        => DrawString(ThemeDB.FallbackFont, baseline - new Vector2(width / 2, 0), text, HorizontalAlignment.Center, width, size, color);
+        => DrawString(MapFont, baseline - new Vector2(width / 2, 0), text, HorizontalAlignment.Center, width, size, color);
     private void Box(Vector2 p, Vector2 size, Color color)
     {
         DrawRect(new Rect2(p - size / 2 + new Vector2(5, 7), size), new Color(0, 0, 0, .22f));

@@ -29,6 +29,7 @@ public partial class GameShell
         intro.AddThemeFontSizeOverride("font_size", 22); prepPanel.AddChild(intro);
         prepCheckLabel = DeskUi.Label(); prepPanel.AddChild(prepCheckLabel);
         StartGameButton = DeskUi.Button("I'm ready to leave", StartPreparedGame);
+        StartGameButton.ThemeTypeVariation="TabletopPrimary";
         var scroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
         var choices = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
         choices.AddThemeConstantOverride("separation", 12);
@@ -52,7 +53,7 @@ public partial class GameShell
     {
         var check = session.CheckPrep(ChosenPrep);
         prepCheckLabel.Text = $"You've planned {check.UsedDays} of your {check.BudgetDays} days." + (check.Accepted ? " You can leave days unused." : "\n" + string.Join("\n", check.Stops));
-        prepCheckLabel.Modulate = check.Accepted ? Colors.White : new Color(1, .45f, .4f);
+        prepCheckLabel.AddThemeColorOverride("font_color", check.Accepted ? TabletopTheme.Ink : TabletopTheme.Alert);
         StartGameButton.Disabled = !check.Accepted;
     }
 

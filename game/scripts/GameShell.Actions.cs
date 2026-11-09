@@ -150,8 +150,8 @@ public partial class GameShell
         startInput = AddNumber("Requested start day", start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
         durationInput = AddNumber("Duration (days)", duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
-        previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", new Color(1, .4f, .4f)); previewPanel.AddChild(previewStops);
-        previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", new Color(1, .75f, .25f)); previewPanel.AddChild(previewGaps);
+        previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
+        previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
         if (session.IsReplay) awardFooter.AddChild(DeskUi.Label("Awarding takes control and stops future replay actions."));
         UpdateAwardPreview();
     }

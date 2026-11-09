@@ -124,7 +124,7 @@ public partial class GameShell
             foreach (var value in band.PermilleByDay)
             {
                 var cell = new Label { Text = value < 0 ? "—" : $"{value / 10m:0.#}%" };
-                cell.Modulate = value < 0 ? Colors.Gray : new Color(1, .55f, .45f).Lerp(new Color(.55f, 1, .65f), Math.Clamp(value / 1000f, 0, 1));
+                cell.AddThemeColorOverride("font_color",value < 0 ? TabletopTheme.Muted : TabletopTheme.Alert.Lerp(TabletopTheme.Success, Math.Clamp(value / 1000f, 0, 1)));
                 grid.AddChild(cell);
             }
         }

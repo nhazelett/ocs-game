@@ -10,10 +10,10 @@ public partial class PersonPortrait : Control
     public override void _Draw()
     {
         var width = Size.X; var height = Size.Y;
-        DrawStyleBox(new StyleBoxFlat { BgColor = new Color("263e49"), CornerRadiusTopLeft = 6, CornerRadiusTopRight = 6,
+        DrawStyleBox(new StyleBoxFlat { BgColor = new Color("d4c9b4"), CornerRadiusTopLeft = 6, CornerRadiusTopRight = 6,
             CornerRadiusBottomLeft = 6, CornerRadiusBottomRight = 6 }, new Rect2(Vector2.Zero, Size));
-        DrawCircle(new Vector2(width * .5f, height * .34f), width * .18f, new Color("b7cbd0"));
+        DrawCircle(new Vector2(width * .5f, height * .34f), width * .18f, new Color("b8aa95"));
         DrawColoredPolygon([new(width * .15f, height * .9f), new(width * .24f, height * .66f), new(width * .4f, height * .59f),
-            new(width * .6f, height * .59f), new(width * .76f, height * .66f), new(width * .85f, height * .9f)], new Color("8caab5"));
+            new(width * .6f, height * .59f), new(width * .76f, height * .66f), new(width * .85f, height * .9f)], new Color("6f8071"));
     }
 }
