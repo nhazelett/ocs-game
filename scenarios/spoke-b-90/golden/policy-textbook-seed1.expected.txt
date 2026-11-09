@@ -15,7 +15,7 @@ Day 1
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 days.
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
-  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with Partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. Partner force can cut it back when its own needs rise.
+  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 2
@@ -31,7 +31,7 @@ Day 5
   DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
   DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 4 worked today (2 h of shop time); 17 still waiting.
-  START     Fuel at Spoke B from Partner force began, 1287 gal/day.
+  START     Fuel at Spoke B from the partner force began, 1287 gal/day.
 Day 6
   DONE      CE small buys: 18 worked today (9 h of shop time, 3 on cards).
 Day 7
@@ -270,7 +270,7 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
+      [avoidable] The partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
   #1 spokeBSite.power days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
 
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash f63ee238ae3ed48762ed4693386af01e0bea0f3086e11a9b41ebab7b95b955f1
+State hash f83777e32ed15b4c601832a4112c42b1441c847985704fd498bc6e999aa4e024

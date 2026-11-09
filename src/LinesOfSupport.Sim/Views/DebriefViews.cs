@@ -72,8 +72,14 @@ public sealed record DebriefView(
 
 /// <summary>The debrief's opening paragraph in a person's words (M2R-27, R9): the SCO's staff, else the commander; null
 /// From when the cast has neither. Text is prose, no lists or labels. LeadGap indexes Gaps for the gap the paragraph is about
-/// (null when there were no gaps), so the game can open that gap's evidence under it.</summary>
-public sealed record DebriefSummary(PersonView? From, string Text, int? LeadGap);
+/// (null when there were no gaps), so the game can open that gap's evidence under it. Quoted (M2R-29) indexes that gap's
+/// Factors for the factors whose text the paragraph already says word for word, in the order said, so the evidence under it
+/// can show those by their tag line alone and the player reads each sentence once; empty when there is no lead gap.</summary>
+public sealed record DebriefSummary(PersonView? From, string Text, int? LeadGap, IReadOnlyList<int>? Quoted = null)
+{
+    /// <summary>Never null: an empty list when the paragraph quoted nothing.</summary>
+    public IReadOnlyList<int> Quoted { get; init; } = Quoted ?? [];
+}
 
 /// <summary>Plain words for the debrief's labels (M2R-27), so no enum name reaches the screen split into words.</summary>
 public static class DebriefWords

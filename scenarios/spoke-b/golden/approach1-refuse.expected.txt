@@ -186,7 +186,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-23, lowest 0%, 14 day(s) down: AVOIDABLE
       [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
-      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Port Fuel Haulers fuel at Spoke B was refused on day 12 with nothing in its place.
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.power days 10-30, lowest 0%, 16 day(s) down: AVOIDABLE

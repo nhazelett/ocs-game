@@ -72,6 +72,58 @@ public class DebriefSummaryTests
     }
 
     [Fact]
+    public void Quoted_names_exactly_the_factors_the_paragraph_says()
+    {
+        // M2R-29: the evidence under the paragraph shows a quoted factor by its tag line alone, so Quoted must be exactly the
+        // lead gap's factors whose text the paragraph carries, in the order it says them, and nothing it does not say.
+        var quotedSomewhere = false;
+        foreach (var (run, s) in AllRuns())
+        {
+            var d = s.View.Debrief();
+            var sum = d.Summary!;
+            if (sum.LeadGap is null) { Assert.Empty(sum.Quoted); continue; }
+            var lead = d.Gaps[sum.LeadGap.Value];
+            Assert.Equal(sum.Quoted.Distinct().Count(), sum.Quoted.Count);
+            var at = -1;
+            foreach (var i in sum.Quoted)
+            {
+                Assert.InRange(i, 0, lead.Factors.Count - 1);
+                var pos = sum.Text.IndexOf(lead.Factors[i].Text.Trim(), StringComparison.Ordinal);
+                Assert.True(pos > at, $"{run}: factor {i} not said, or out of order");
+                at = pos;
+                quotedSomewhere = true;
+            }
+            for (var i = 0; i < lead.Factors.Count; i++)
+            {
+                var t = lead.Factors[i].Text.Trim();
+                if (sum.Quoted.Contains(i) || t.Length == 0 || sum.Quoted.Any(q => lead.Factors[q].Text.Trim() == t)) continue;
+                Assert.False(sum.Text.Contains(t, StringComparison.Ordinal), $"{run}: factor {i} is said but not marked quoted");
+            }
+        }
+        Assert.True(quotedSomewhere);
+    }
+
+    [Fact]
+    public void The_partner_force_reads_as_a_noun_mid_sentence()
+    {
+        // M2R-29: "and Partner force had 4,000 gal a day to spare" read as a misprint. The partner is written as it reads
+        // mid-sentence and capitalised only where it starts one.
+        var midSentenceCapital = new Regex(@"[a-z,;:] Partner force\b(?! \(ACSA\))");
+        var startsLower = new Regex(@"(^|[.!?] )the partner force\b");
+        foreach (var (run, s) in AllRuns())
+        {
+            var texts = s.Records.Select(r => r.Text)
+                         .Concat(s.View.Debrief().Gaps.SelectMany(g => g.Factors).Select(f => f.Text))
+                         .Append(s.View.Debrief().Summary?.Text ?? "");
+            foreach (var t in texts)
+            {
+                Assert.False(midSentenceCapital.IsMatch(t), $"{run}: {t}");
+                Assert.False(startsLower.IsMatch(t), $"{run}: {t}");
+            }
+        }
+    }
+
+    [Fact]
     public void No_sim_text_counts_in_day_s()
     {
         foreach (var (run, s) in AllRuns())

@@ -1055,7 +1055,7 @@
     },
     "acsaPartner": {
       "present": true,
-      "name": "Partner force",
+      "name": "the partner force",
       "island": "north",
       "stock": {
         "water": 6000,

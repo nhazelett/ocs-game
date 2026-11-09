@@ -898,7 +898,7 @@
     },
     "acsaPartner": {
       "present": true,
-      "name": "Partner force",
+      "name": "the partner force",
       "island": "hub",
       "stock": {
         "fuel": 4000
