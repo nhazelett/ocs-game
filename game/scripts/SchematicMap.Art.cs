@@ -4,8 +4,6 @@ namespace LinesOfSupport.Game;
 
 public partial class SchematicMap
 {
-    private readonly StyleBoxFlat yardStyle = new() { BgColor = new Color("b5ae8d"), CornerRadiusTopLeft = 10,
-        CornerRadiusTopRight = 10, CornerRadiusBottomLeft = 10, CornerRadiusBottomRight = 10 };
     private void DrawIsland(Vector2 point, bool hub, string name)
     {
         var shape = new Vector2[14];
@@ -28,7 +26,7 @@ public partial class SchematicMap
     private void DrawSite(Vector2 point, BoardSite site)
     {
         var condition = Conditions.GetValueOrDefault(site.Id, SiteCondition.Unknown);
-        DrawStyleBox(yardStyle, new Rect2(point - new Vector2(142, 93), new Vector2(284, 186)));
+        DrawRect(new Rect2(point - new Vector2(142, 93), new Vector2(284, 186)), new Color("b5ae8d"));
         if (SelectedSite == site.Id) DrawRect(new Rect2(point - new Vector2(148, 99), new Vector2(296, 198)), new Color("fff2c6"), false, 4);
         var tiles = Tiles.Where(t => t.SiteId == site.Id).ToArray();
         for (var i = 0; i < tiles.Length; i++)
