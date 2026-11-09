@@ -73,7 +73,9 @@ public partial class DebriefSmokeTest : Node
             Require(!shell.DeveloperToggle.ButtonPressed && !shell.Session.IsReplay, "The by-hand path needs neither files nor developer tools.");
             await CheckOpening(shell);
             Require(shell.DebriefSummaryText.Text.Contains("Nobody owned fuel at Spoke B"), "The after-action leads with the player's unowned fuel.");
+            Require(shell.DisplayedDebrief!.Summary!.Quoted.Count > 0, "Approach 1 exercises evidence already quoted in the paragraph.");
             await Capture("--screenshot");
+            CheckRecord(shell);
             var hash = shell.Session.StateHash;
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash && shell.DisplayedDebrief?.Summary?.Text == expected.View.Debrief().Summary?.Text, "Continue restores the completed deployment and its summary.");
@@ -114,7 +116,7 @@ public partial class DebriefSmokeTest : Node
             Require(shell.DisplayedDebrief!.Summary!.From is null && shell.DebriefSpeaker.Text == "After the deployment"
                 && !shell.DebriefPanel.FindChildren("*", "PersonPortrait", true, false).Any(), "A cast-free deployment uses a neutral attribution.");
             shell.QueueFree(); shell = null; await Frames();
-            GD.Print("DEBRIEF_SMOKE_PASS: by-hand approach 1, exact speaker/summary/lead, full-width layout, full record, one known snapshot per day, verbatim events/evidence, no-gap and cast-free completions, saved finish and read-only rendering."); GetTree().Quit();
+            GD.Print("DEBRIEF_SMOKE_PASS: by-hand approach 1, exact speaker/summary/lead, full-width layout, full record, one known snapshot per day, verbatim events, quoted evidence once with complete traces, no-gap and cast-free completions, saved finish and read-only rendering."); GetTree().Quit();
         }
         catch (Exception error) { shell?.QueueFree(); GD.PushError($"DEBRIEF_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
         finally { if (Directory.Exists(temporary)) Directory.Delete(temporary, true); }
@@ -131,7 +133,22 @@ public partial class DebriefSmokeTest : Node
         foreach (var gap in report.Gaps)
         {
             Require(Buttons(shell.DebriefPanel).Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index).Text.Contains(DebriefWords.TagMeaning(gap.Tag)), "Gap tags use the contract's plain meaning.");
-            foreach (var factor in gap.Factors) Require(Labels(shell.DebriefPanel).Any(l => l.Text.Contains(factor.Text) && l.Text.StartsWith(DebriefWords.Factor(factor.Kind))), "Each factor retains Sim's exact evidence and plain label.");
+            var detail = shell.DebriefPanel.GetChildren().OfType<VBoxContainer>().Single(v => v.HasMeta("gap_detail") && v.GetMeta("gap_detail").AsInt32() == gap.Index);
+            var factors = Labels(detail).Where(l => l.HasMeta("factor_index")).ToArray();
+            Require(factors.Length == gap.Factors.Count, "Every factor keeps its own evidence row.");
+            for (var i = 0; i < gap.Factors.Count; i++)
+            {
+                var factor = gap.Factors[i];
+                var label = factors.Single(l => l.GetMeta("factor_index").AsInt32() == i);
+                var tagLine = $"{DebriefWords.Factor(factor.Kind)}. {DebriefWords.TagMeaning(factor.Tag)}";
+                if (gap.Index == report.Summary.LeadGap && report.Summary.Quoted.Contains(i))
+                {
+                    Require(label.Text == tagLine && shell.DebriefSummaryText.Text.Contains(factor.Text), "Quoted lead factors show only their tag line; their evidence stays verbatim in the paragraph.");
+                    Require(!Labels(detail).Any(l => l.Text.Contains(factor.Text)), "The lead evidence does not repeat the paragraph's quoted sentence.");
+                }
+                else
+                    Require(label.Text.StartsWith(tagLine + "\n" + factor.Text), "Unquoted factors and every other gap retain their full exact evidence.");
+            }
         }
         await Frames();
         var tabs = shell.GetNode<TabContainer>("%DeskTabs"); var area = shell.GetNode<Control>("Margin/Layout/WorkArea");
@@ -155,8 +172,9 @@ public partial class DebriefSmokeTest : Node
         var snapshots = labels.Where(l => l.HasMeta("known_day")).ToArray();
         Require(snapshots.Length == report.Decisions.Where(d => view.Records.Any(r => r.Id == d.RecordId && view.Known(r))).Select(d => d.Day).Distinct().Count()
             && snapshots.Select(l => l.GetMeta("known_day").AsInt32()).Distinct().Count() == snapshots.Length, "Known then appears once per decision day, including days with several decisions.");
-        foreach (var id in report.Gaps.SelectMany(g => g.ShortfallRecordIds).Where(id => view.Records.Any(r => r.Id == id && view.Known(r))))
-            Require(labels.Any(l => l.HasMeta("cause_record") && l.GetMeta("cause_record").AsString() == id), "Every known shortfall trace remains available.");
+        foreach (var id in report.Gaps.SelectMany(g => g.Factors.SelectMany(f => f.RecordIds).Concat(g.ShortfallRecordIds)).Distinct()
+            .Where(id => view.Records.Any(r => r.Id == id && view.Known(r))))
+            Require(labels.Any(l => l.HasMeta("cause_record") && l.GetMeta("cause_record").AsString() == id), "Every known factor and shortfall trace remains available, including factors quoted in the paragraph.");
         foreach (var commitment in report.Commitments) Require(labels.Any(l => l.Text.Contains(view.NameOf(commitment.Id)) && l.Text.Contains(commitment.Decision)), "Commitment names and decisions remain in the record.");
         Require(!Buttons(shell.DebriefPanel).Any(b => System.Text.RegularExpressions.Regex.IsMatch(b.Text, @"\bGap \d")), "No internal gap index reaches the player.");
         var picker = shell.DebriefFullRecord.FindChildren("*", "OptionButton", true, false).OfType<OptionButton>().Single();
