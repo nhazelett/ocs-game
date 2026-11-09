@@ -33,6 +33,16 @@ internal static class DeskSmokeSupport
         var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == name);
         picker.Select(index); picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);
         shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
+        ChoosePreviewFixture(shell);
+    }
+
+    internal static void ChoosePreviewFixture(GameShell shell)
+    {
+        // Older rule-binding checks need an assembled preview. Select explicitly through the new UI.
+        var editor = shell.CurrentActionEditor;
+        if (editor?.Vendors.FirstOrDefault(v => !v.VehicleOnly) is not { } vendor) return;
+        Pick(shell.VendorInput, vendor.Id);
+        if (editor.Instruments.FirstOrDefault(i => i.UnavailableReason is null) is { } instrument) Pick(shell.InstrumentInput, instrument.Id);
     }
 
     internal static void Replay(GameShell shell, string name = "approach1 as written")
@@ -40,6 +50,7 @@ internal static class DeskSmokeSupport
         var picker = shell.GetNode<OptionButton>("%ReplayPicker");
         picker.Select(Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == name));
         shell.GetNode<Button>("%ReplayButton").EmitSignal(Button.SignalName.Pressed);
+        ChoosePreviewFixture(shell);
     }
 
     internal static void Step(GameShell shell, int days = 1)

@@ -20,6 +20,7 @@ public partial class GameShell : Control
         GetNode<Button>("%ReplayButton").Pressed += OnReplay;
         GetNode<Button>("%Continue").Pressed += OnContinue;
         BuildMorningDesk();
+        BuildPeopleDesk();
         BuildCommitmentDesk();
         BuildPerformanceDesk();
         BuildActionDesk();
@@ -144,11 +145,12 @@ public partial class GameShell : Control
         Map.ShowConditions(conditions);
         Map.ShowConfidence(view?.LostConfidenceSites ?? []);
         GetNode<Label>("%InboxDay").Text = view is null ? "No scenario loaded" : $"Day {session.CompletedDay} results · next day {(view.Finished ? "complete" : view.Day.ToString())}";
-        var records = board?.Items ?? [];
-        GetNode<RichTextLabel>("%InboxRecords").Text = records.Count == 0 ? "No records for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
+        var records = (board?.Items ?? []).Where(r => DeveloperTools || r.Category != LinesOfSupport.Sim.Views.BoardCategory.Request || r.LinkKind != LinesOfSupport.Sim.Views.BoardLinkKind.Card).ToArray();
+        GetNode<RichTextLabel>("%InboxRecords").Text = records.Length == 0 ? "No other news for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
         GetNode<OptionButton>("%ReplayPicker").Disabled = replays.Length == 0;
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
         RefreshMorningDesk(view, board);
+        RefreshPeople(view);
         RefreshCommitments(view);
         RefreshPerformance(view);
         RefreshActionDesk(view);
