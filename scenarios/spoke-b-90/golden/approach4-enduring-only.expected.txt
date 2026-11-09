@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    The request for power for Spoke B: Generator fuel supply switched on.
   ACTION    The request for power for Spoke B: Operators switched on.
@@ -118,7 +118,7 @@ Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 46
@@ -139,7 +139,7 @@ Day 53
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 55
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 56
@@ -274,4 +274,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.8)
 
-State hash 93208f213f0812f3e185cbe2c7ebf839a89138992d42018450c8acea1084aadb
+State hash 672a113680a731b546017ceb07be8a38ae3cd721dca72d7963be553abe77da94

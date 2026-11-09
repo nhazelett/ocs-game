@@ -4,7 +4,7 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 324 kW/day for 60 days (Generation equipment); quoted $44,712.
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -101,7 +101,7 @@ Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
@@ -227,7 +227,7 @@ Day 76
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 77
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 78
   COMPLY    The Spoke B unit's habit of going around contracting rises (Harbor Equipment Co power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -351,4 +351,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.672)
 
-State hash 5022b2da5e7b7db48b39e36448589d4f97cbbda20000cebb4c07622e1582f967
+State hash 10c08105b828cb7cd479e5769433621928ce1038805efd12e212315bca15c424

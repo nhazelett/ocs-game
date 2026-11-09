@@ -6,7 +6,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM; pull existing vehicles with scope and ceilings from reach-back; bring vendor lists and vetting from reach-back; bring templates and a manual contracting kit; stand up GPC accounts and cardholder limits (14 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
   ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1287 gal a day.
@@ -94,7 +94,7 @@ Day 25
   EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 26. A coordination is not a contract.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 26
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 27
@@ -108,7 +108,7 @@ Day 30
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 31
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 32
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 33
@@ -156,10 +156,10 @@ Day 52
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 53
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 54
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 55
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 56
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash f83777e32ed15b4c601832a4112c42b1441c847985704fd498bc6e999aa4e024
+State hash 5c4de98b8ac5bc8c5f55807757dd4d3097cb8560df8cf30162fc98fc0c3ecc74

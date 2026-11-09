@@ -5,7 +5,7 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -93,7 +93,7 @@ Day 29
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
@@ -224,7 +224,7 @@ Day 68
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 70
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -410,4 +410,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.76)
 
-State hash a09406c175f4d402447674e3d141b16d0ae32bde90169ebca2b276d38be049ca
+State hash 242e8ef2fb7034dcc736a884d32e72c9bb6414163c75bd46008c65d77d53bc00

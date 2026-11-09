@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
@@ -232,4 +232,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.831)
 
-State hash ace3ccea55653a25da05caad2b952f3a9fb243810d7d7d254d0ee0b818627a9d
+State hash 1a6c35650cdffc71aa0937d50946f5af83beb7fb5bee15bd29494a1a3c4703ca

@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
@@ -100,7 +100,7 @@ Day 20
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -114,7 +114,7 @@ Day 24
   DONE      CE small buys: none worked today (no hours left); 22 waiting.
 Day 25
   DONE      CE small buys: 29 worked today (14.5 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
   SHORT     Food service at Spoke C degraded to 85%: food service on hand ran out.
@@ -170,4 +170,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.915)
 
-State hash 8d445d27baa4fff72c62de5e87ffe70aef86091a950de5b757c29b18b4749992
+State hash 3fe6467d2ded22b294b07ab7aa9c5deca4cf57808dc32d222f3cb9335ea93125

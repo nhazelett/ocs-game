@@ -368,7 +368,8 @@
             "$ref": "#/$defs/id"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Shown to the player mid-sentence and in records: a firm's name as written (\"Harbor Equipment Co\"), or for a vendor that is not a firm, as it reads mid-sentence (\"the partner force\"), never a label with a parenthetical; the Sim capitalises it where it starts a sentence (M2R-31)"
           },
           "island": {
             "$ref": "#/$defs/id"

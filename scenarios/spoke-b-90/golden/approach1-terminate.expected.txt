@@ -5,7 +5,7 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -94,7 +94,7 @@ Day 29
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
@@ -201,7 +201,7 @@ Day 65
   FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $813,204 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
   OK        Fuel at Spoke B restored to 100%.
 Day 67
@@ -376,4 +376,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.716)
 
-State hash e211a2bb3dc28bf60be8cc95f90ed5ec1a4f199038490e88aca26cc8d8e44ce6
+State hash 841fb96e5da1d878110009317d857432e590b5c3008d12fc35ca12945709a908

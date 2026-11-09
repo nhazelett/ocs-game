@@ -92,7 +92,7 @@ public sealed partial class Session
                             .Select(sg => $"{Join(sg.Select(a => CapLabel(a.Capability).ToLowerInvariant()).ToList())} at {SiteName(sg.Key)}")
                             .ToList();
             var through = grp.Key.EndDay >= LastDay ? "for the whole deployment" : $"through day {grp.Key.EndDay}";
-            contractSentences.Add($"{VendorData(grp.Key.Vendor)?.Name ?? grp.Key.Vendor} has {JoinGroups(bySite)}, {through}.");
+            contractSentences.Add($"{Upper(VendorData(grp.Key.Vendor)?.Name ?? grp.Key.Vendor)} has {JoinGroups(bySite)}, {through}.");
             foreach (var a in grp)
                 if (remarks.Arrangements.TryGetValue(a.Id, out var rem)) contractSentences.Add(rem);
         }

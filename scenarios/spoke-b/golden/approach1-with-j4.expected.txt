@@ -5,7 +5,7 @@ Scenario spoke-b, rules 2025-10, seed 1, 30 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
@@ -79,7 +79,7 @@ Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
@@ -97,7 +97,7 @@ Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 23
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 25
@@ -175,4 +175,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.877)
 
-State hash 2d9828df98800a4cc1f2d8f86d3178c75cb7757cfcfe9017c0e88a9a05cb2ccc
+State hash 892307105e415cb49c430d331895c76128f1305625a9320eb632456b4abe6f9c

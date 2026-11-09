@@ -4,7 +4,7 @@
 - Reviewed PR 132 (Codex M2R-26) and PR 133 (Codex M2R-30) as a first-time player from their PNGs and a fresh Godot run: both "Fable review: ready to merge" (PR comments).
 - Fourth pre-gate walk on main plus PRs 132 and 133, from screenshots taken this run (`docs/handoffs/images/2026-11-09-fable-walk4-*.png`), written up in docs/reviews/2026-11-09-m2r-pre-gate.md. Checks 1, 3 and 4 pass on screen; check 2 is Nick's to play.
 - Ready call: M2R is ready for the gate (M2R-23) once PRs 132 and 133 merge. This PR carries both (base main), so merging it alone lands all three.
-- New rows from the walk, none holding the gate: M2R-31 (Fable, the inherited partner row reads as a noun), M2R-32 (Codex, the lead gap's tag said once), M2R-33 (Codex, map caption and cash line).
+- New rows from the walk, none holding the gate: M2R-31 (Fable, the inherited partner row reads as a noun), M2R-32 (Codex, the lead gap's tag said once), M2R-33 (Codex, map caption, cash line and list labels).
 - FOR-NICK #6 recorded on main from Codex's unpublished handoff branch (approval refusal for a docs-only handoff PR), with Fable's recommendation.
 
 ## PRs reviewed this session

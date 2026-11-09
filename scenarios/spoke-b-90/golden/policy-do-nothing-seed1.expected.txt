@@ -4,7 +4,7 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
@@ -124,7 +124,7 @@ Day 40
   START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
 Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 43
@@ -156,7 +156,7 @@ Day 51
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 52
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 53
   COMPLY    The Spoke B unit's habit of going around contracting rises (Meridian Site Services power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -309,4 +309,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash 90135cc38f90486f909e738ae53af0c4d333d9c04308a25d6dd021963493e098
+State hash f4fa85b3ee17f4159cb6aaf07ebea6c195482871d90e74880b70c7f86afc7d4e

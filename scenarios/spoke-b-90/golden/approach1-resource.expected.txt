@@ -5,7 +5,7 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -94,7 +94,7 @@ Day 29
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
 Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
@@ -190,7 +190,7 @@ Day 56
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
 Day 57
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 53, reported 4 days later.
@@ -429,4 +429,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.826)
 
-State hash db4e61fb17b5bfc9d798d88c31f3c5baf61c0199f1614a0a9dc8275e898011af
+State hash 765dd077d98b73fac627215333316edbb6089e926dd0ffe865eac8b68be1f9a4

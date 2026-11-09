@@ -4,7 +4,7 @@ Scenario spoke-b, rules 2025-10, seed 1, 30 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
+  START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
@@ -183,4 +183,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash b8843c44919a86c0ac41739cb39bce5a7c00ef98b974530e94a3047ce3afaf19
+State hash 922eb77b89018e5d4069a99d309d9d9585d62548bc19d3a55bd5bfdcef436ff2
