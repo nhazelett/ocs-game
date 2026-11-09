@@ -1,6 +1,6 @@
 # Fable session workflow
 
-Every Fable session follows this, whether Nick started it in chat or the hourly schedule did (hourly since 8 Nov 2026; tasks have been finishing inside 30 minutes). Scheduled runs start with no memory of earlier conversations: this file, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: keep moving unless truly stalled on a decision only he can make. Codex runs on its own schedule following `docs/CODEX-SESSION.md`.
+Every Fable session follows this, whether Nick started it in chat or the schedule did (every three hours as of 9 Nov 2026, hourly before; tasks have been finishing inside 30 minutes). Scheduled runs start with no memory of earlier conversations: this file, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: keep moving unless truly stalled on a decision only he can make. Codex runs on its own schedule following `docs/CODEX-SESSION.md`.
 
 **Merges happen at check-ins (Nick, 8 Nov 2026, FOR-NICK #1).** Scheduled runs cannot merge: the unattended permission check refuses merges as "Merge Without Review". So a scheduled run never attempts a merge. It reviews open PRs (section 3) and records its verdict as a PR comment, builds and opens PRs, and stacks. When Nick messages Fable in chat, that session does the merge pass: rerun tests on the combined tree, check balance if the Sim or a scenario changed, merge in order.
 
