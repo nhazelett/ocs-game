@@ -32,5 +32,9 @@ internal static class DeskUi
 
     internal static string QueueClause(int hours) => hours > 0 ? $", not counting the {hours} hours already queued" : "";
 
+    internal static string ListLabel(string name) => name.Length == 0 ? name : char.ToUpperInvariant(name[0]) + name[1..];
+
+    internal static string WholeDollars(long cents) => "$" + (cents / 100m).ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+
     internal static string Money(long cents) => "$" + (cents / 100m).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
 }

@@ -46,7 +46,7 @@ public partial class BoardSmokeTest : Node
             picker.Select(second);
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, second);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            Require(map.Data?.Id == "second" && shell.GetNode<Label>("%BoardCaption").Text.Contains("Second map"), "Picker switches the displayed map.");
+            Require(map.Data?.Id == "second" && map.Data.Title == "Second map" && !shell.GetNode<Label>("%BoardCaption").Visible, "Picker switches the displayed map without inventing a capability selection.");
             var invalid = catalog.Select(x => x.Name).ToList().IndexOf("invalid");
             picker.Select(invalid);
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, invalid);

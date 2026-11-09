@@ -77,7 +77,6 @@ public partial class GameShell
             saveError = null;
             ResetDeskSelection();
             Map.ShowScenario(data);
-            GetNode<Label>("%BoardCaption").Text = data!.Title;
             GetNode<OptionButton>("%ScenarioPicker").Select(index);
             SetReplays(replayPaths);
             GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;

@@ -49,7 +49,7 @@ public partial class LedgerSmokeTest : Node
             var offers = shell.Session.View!.ActionEditor("spokeBSite", "power")!.Vendors;
             var directory = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Directory/BpaDirectory").GetChild(0).GetNode("Vendors/Contents");
             foreach (var vendor in offers)
-                Require(directory.GetChildren().OfType<Button>().Any(b => b.Text.Contains(vendor.Name) && (vendor.Standing is null || b.Text.Contains(vendor.Standing))), "Directory preserves Sim vendor standing.");
+                Require(directory.GetChildren().OfType<Button>().Any(b => b.Text.Contains(vendor.Name, StringComparison.OrdinalIgnoreCase) && (vendor.Standing is null || b.Text.Contains(vendor.Standing))), "Directory preserves Sim vendor standing.");
             GD.Print("LEDGER_SMOKE_PASS: 90-day costs, coordination, funding expiry, vendor standing and pure bindings."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"LEDGER_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
