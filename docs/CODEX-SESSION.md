@@ -22,6 +22,11 @@ Standing authorization (Nick, 8 Nov 2026): Codex opens ordinary (non-draft) pull
 5. Open the PR with the template (fill the Objections section, "none" is fine). Update only your own item's Status cell in `backlog/BACKLOG.md`; leave the status line at the top to Fable (every stacked PR editing that one line was the main source of merge conflicts). Do not wait for the merge: merges happen when Nick checks in with Fable in chat (FOR-NICK #1), so expect your PRs to stack. At ten open PRs, stop new work and spend the session on the fix pass.
 6. Next item. Repeat until you reach ten open PRs, the backlog has nothing unblocked for Codex, or the session's budget is spent.
 
+## 2c. Game PRs after the M2 gate (8 Nov 2026)
+- Every PR touching `game/` includes at least one screenshot of what changed, committed as a plain PNG under 400 KB in `docs/handoffs/images/` (that folder is excluded from LFS). Fable cannot open LFS files; a game PR without a plain screenshot is not merged.
+- Work M2R rows in order (M2R-10 first). No player-visible id strings. No control a player can reach that loads a file, replays a log or picks a seed, except behind the developer toggle.
+- Read docs/design/opening-and-guidance.md before the first M2R item.
+
 ## 3. Lanes (from `docs/CODEX-KICKOFF.md` and `docs/DISSENT.md`)
 - Your components: `src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, Codex handoff notes. PRs that stay inside them merge on green CI.
 - Fable's components: `src/LinesOfSupport.Sim*`, `scenarios/`, `docs/SPEC.md`, `docs/decisions/`. Touch them only when a backlog item says so; those PRs get a design review, not a CI-only merge.
