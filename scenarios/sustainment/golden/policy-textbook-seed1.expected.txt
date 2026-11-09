@@ -616,7 +616,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #15 spokeASite.comms days 52-52, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Comms backhaul depends on power, which was short. (see #9)
   #16 spokeBSite.fuel days 26-26, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 26 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (60% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (poor) did not report it.
+      [avoidable] bFuel failed on day 26 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (poor) did not report it.
   #17 spokeBSite.power days 15-15, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] bGens failed (first on day 15) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 17.
   #18 spokeBSite.power days 26-26, lowest 56%, 0 day(s) down: AVOIDABLE

@@ -601,7 +601,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #18 spokeASite.comms days 54-54, lowest 68%, 0 day(s) down: AVOIDABLE
       [avoidable] comms failed (first on day 54) and had no maintenance line; its failure odds were higher every day it ran. Performance issue pi3 opened day 44; decision: no decision.
   #19 spokeBSite.fuel days 32-33, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 32 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (98% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 34. Performance issue pi2 opened day 23; decision: cure notice day 24, cured.
+      [avoidable] bFuel failed on day 32 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 34. Performance issue pi2 opened day 23; decision: cure notice day 24, cured.
   #20 spokeBSite.power days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] bGens failed (first on day 27) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 29.
   #21 spokeBSite.power days 29-29, lowest 64%, 0 day(s) down: AVOIDABLE
