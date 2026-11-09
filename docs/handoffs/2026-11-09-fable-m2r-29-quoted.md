@@ -5,7 +5,7 @@ Expected look of this build and why: the game looks as it does on main (or with 
 ## PRs reviewed this session
 - PR 130 (Codex M2R-28, the debrief as an after-action): Fable review: ready to merge. In lane, all checks green, two plain PNGs. As a first-time player the finished game now opens on Maj Erin Cole and the lesson is on screen without scrolling. Found two things for follow-up rows (below), neither blocking.
 - PR 129 (Fable backlog status): already marked ready to merge last run; unchanged since. This PR is stacked on it.
-- Merge order at the check-in: 129, then this PR (131 or the next number; it carries 129), then 130 with its M2R-28 status cell resolved to Done.
+- Merge order at the check-in: 129, then PR 131 (this one; it carries 129), then 130 with its M2R-28 status cell resolved to Done.
 
 ## Changed
 - `DebriefSummary.Quoted` (ADR-0006 M2R-29 addendum): which of the lead gap's factors the paragraph already says word for word, so the game can show them once.
