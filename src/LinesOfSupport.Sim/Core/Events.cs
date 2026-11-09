@@ -34,6 +34,7 @@ public static class Events
         "acsa.withdraw",                 // target: capability id, or absent for all; days or daysRange: notice (M3-06)
         "hostNation.withdraw",           // target: capability id, or absent for all; days or daysRange: notice, else rules hostNation.withdrawalNoticeDays (M3-06)
         "vendor.reliabilityDrop",        // target: inherited arrangement id; value: its reliability from the event day, 0..1 (M3-18)
+        "vendor.declinesCalls",          // target: vendor id; days: every BPA call to it that reaches award in that window is declined (M2R-08)
         "inbox",                         // message only (playerVisibleAs)
     };
 
@@ -144,6 +145,9 @@ public static class Events
                 s.ReliabilityDrop(e.Target ?? throw new InvalidDataException("vendor.reliabilityDrop needs an arrangement"), Fixed.Permille(to), day, cause);
                 break;
             }
+            case "vendor.declinesCalls":
+                s.DeclineCalls(e.Target ?? throw new InvalidDataException("vendor.declinesCalls needs a vendor"), day, s.EffectDays(ev, index, 1));
+                break;
             case "inbox":
                 break;
             default:

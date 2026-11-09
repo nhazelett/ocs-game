@@ -1,0 +1,70 @@
+{
+  "scenario": "tutorial",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "prepChoices": [
+    "gpcAccounts",
+    "cashAndPayingAgent",
+    "systemAccess"
+  ],
+  "note": "The taught path: water on the card from Island Mart (Harbor Bottling takes only cash, and the cash box is small); the forklift as a call on the Harbor Equipment BPA, which Harbor turns down, then a card buy from Coastal Rentals; waste as a written purchase order with a COR, in time for the host nation pulling its trucks.",
+  "actions": [
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "water",
+      "instrument": "gpc",
+      "vendor": "islandMart",
+      "card": "tutWater",
+      "quantity": 4500,
+      "startDay": 2,
+      "durationDays": 7,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 4,
+      "id": "forkliftCall",
+      "instrument": "bpaCall",
+      "vendor": "harborEquipment",
+      "card": "tutForklift",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "vehicle": "equipBpa"
+    },
+    {
+      "kind": "setLine",
+      "day": 6,
+      "card": "tutForklift",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 6,
+      "id": "forklifts",
+      "instrument": "gpc",
+      "vendor": "coastalRentals",
+      "card": "tutForklift",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 9,
+      "id": "waste",
+      "instrument": "purchaseOrder",
+      "vendor": "sanitation",
+      "card": "tutWaste",
+      "quantity": 3600,
+      "startDay": 13,
+      "durationDays": 8,
+      "fundingLine": "om1",
+      "cor": "corPratt"
+    }
+  ]
+}

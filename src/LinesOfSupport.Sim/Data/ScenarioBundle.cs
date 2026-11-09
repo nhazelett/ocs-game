@@ -271,6 +271,8 @@ public sealed class ScenarioBundle
             {
                 Need(Events.KnownEffects.Contains(f.Kind), $"event {e.Id}: effect kind {f.Kind} is not implemented");
                 if (f.DaysRange is { } r) Need(r.Min <= r.Max, $"event {e.Id}: {f.Kind} daysRange max is below min");
+                if (f.Kind == "vendor.declinesCalls")
+                    Need(s.Vendors.Any(v => v.Id == f.Target), $"event {e.Id}: vendor.declinesCalls target {f.Target} is not a vendor");
                 if (f.Kind == "vendor.reliabilityDrop")
                 {
                     Need(s.InheritedArrangements.Any(a => a.Id == f.Target), $"event {e.Id}: vendor.reliabilityDrop target {f.Target} is not an inherited arrangement");

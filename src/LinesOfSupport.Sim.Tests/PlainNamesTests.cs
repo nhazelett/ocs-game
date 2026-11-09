@@ -9,7 +9,7 @@ namespace LinesOfSupport.Sim.Tests;
 /// scenario; records, morning boards and leads, debrief text and the previews of every action played.</summary>
 public class PlainNamesTests
 {
-    public static IEnumerable<object[]> Scenarios() => [["spoke-b"], ["spoke-b-90"], ["sustainment"]];
+    public static IEnumerable<object[]> Scenarios() => [["spoke-b"], ["spoke-b-90"], ["sustainment"], ["tutorial"]];
 
     /// <summary>Identifier-shaped ids (a digit or an inner capital) from the scenario, the rules and the session's own arrangements.</summary>
     private static Regex Ids(Session s)

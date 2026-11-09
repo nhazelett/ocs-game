@@ -328,7 +328,8 @@ public sealed partial class Session
         {
             var c = Rules.AggregateRates.BpaCallDeclineBase;
             var pm = Fixed.Decay(Fixed.Permille(c.Start), Fixed.Permille(c.Floor), (int)Math.Round(c.HalfLifeDays), day);
-            if (_rngAggregate.Roll(pm))
+            // A vendor that has said it will turn calls down (event vendor.declinesCalls) does so without a roll.
+            if (DeclinesCalls(a.Vendor, day) || _rngAggregate.Roll(pm))
             {
                 _bpaDeclines++;
                 _arrangements.Add(new Arrangement

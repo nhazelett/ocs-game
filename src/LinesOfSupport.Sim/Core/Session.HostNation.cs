@@ -172,10 +172,10 @@ public sealed partial class Session
             }
             var whose = a.CreatedDay > 0 ? $"host nation support for {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)}" : $"inherited host nation support for {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)}";
             AddRecord(day, RecordKind.Withdrawal, a.Id,
-                $"{HostNationName} withdrew {whose} ({CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)}); last day of support {a.EndDay}. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.{tail}", [cause, a.CauseId]);
+                $"{Upper(HostNationName)} withdrew {whose}; last day of support {a.EndDay}. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.{tail}", [cause, a.CauseId]);
         }
         if (running.Count == 0)
-            AddRecord(day, RecordKind.Event, "hostNation", $"{HostNationName} withdrew {what} under the host nation support agreement; none was running.", [cause]);
+            AddRecord(day, RecordKind.Event, "hostNation", $"{Upper(HostNationName)} withdrew {what} under the host nation support agreement; none was running.", [cause]);
     }
 
     internal ActionPreview BuildHostNationPreview(HostNationRequestAction o)

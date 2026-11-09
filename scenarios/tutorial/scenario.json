@@ -1,0 +1,834 @@
+{
+  "schemaVersion": 0,
+  "id": "tutorial",
+  "title": "Week one at the hub",
+  "summary": "Tutorial. The hub island only, 20 days, 300 personnel, already open with the basics running. Three requests arrive on days 1, 4 and 9: bottled water while the water point is down in a heat advisory, a forklift rental after the host nation takes its forklift back, and a waste contract when the host nation pulls its honey trucks. Each teaches one instrument: a card or cash buy (who takes which, and cash on hand), a BPA call the vendor turns down (a BPA is not a promise), and a written purchase order with a COR (a service needs terms). The outgoing contracting officer stays three days as the mentor.",
+  "rulesVersion": "2025-10",
+  "days": 20,
+  "prepDays": 14,
+  "defaultSeed": 1,
+  "tutorial": true,
+  "islands": [
+    {
+      "id": "hub",
+      "name": "Main Island",
+      "isHub": true,
+      "grid": true,
+      "fuelPoint": true,
+      "waterSource": "municipal",
+      "infoTier": "observed"
+    }
+  ],
+  "transportLinks": [],
+  "sites": [
+    {
+      "id": "hubSite",
+      "name": "Hub",
+      "island": "hub",
+      "opensDay": 1,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 0,
+          "count": 300
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "power",
+          "bufferDays": 0,
+          "initialArrangements": [
+            "hubGrid"
+          ]
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 5,
+          "initialBufferDays": 5,
+          "initialArrangements": [
+            "hubFuelPoint"
+          ]
+        },
+        {
+          "id": "water",
+          "bufferDays": 2,
+          "initialBufferDays": 2,
+          "initialArrangements": [
+            "hubWaterPoint"
+          ]
+        },
+        {
+          "id": "lodging",
+          "bufferDays": 0,
+          "initialArrangements": [
+            "hubBilleting"
+          ]
+        },
+        {
+          "id": "food",
+          "bufferDays": 3,
+          "initialBufferDays": 3,
+          "initialArrangements": [
+            "hubDining"
+          ]
+        },
+        {
+          "id": "waste",
+          "bufferDays": 0,
+          "initialArrangements": [
+            "hubHoneyTrucks"
+          ]
+        },
+        {
+          "id": "mhe",
+          "bufferDays": 0,
+          "initialArrangements": [
+            "hubForklift"
+          ]
+        }
+      ]
+    }
+  ],
+  "requirementCards": [
+    {
+      "id": "tutWater",
+      "site": "hubSite",
+      "capability": "water",
+      "submittedDay": 1,
+      "requestedStartDay": 2,
+      "durationDays": 7,
+      "quantityHint": "Bottled water, 4,500 gal a day",
+      "lines": {
+        "supply": true,
+        "operator": false,
+        "maintenance": false
+      },
+      "person": "ortiz",
+      "message": "There's a heat advisory on and the base water point is down for repairs until day 9. We need bottled water from tomorrow, about forty-five hundred gallons a day.",
+      "flaggedEnduring": false
+    },
+    {
+      "id": "tutForklift",
+      "site": "hubSite",
+      "capability": "mhe",
+      "submittedDay": 4,
+      "requestedStartDay": 8,
+      "durationDays": 13,
+      "quantityHint": "3 forklifts",
+      "lines": {
+        "equipment": true,
+        "operator": false,
+        "maintenance": true
+      },
+      "person": "dunn",
+      "message": "The host nation wants its forklift back after day 7 and the warehouse can't move pallets by hand. Three forklifts from day 8, through the end of the month.",
+      "flaggedEnduring": false
+    },
+    {
+      "id": "tutWaste",
+      "site": "hubSite",
+      "capability": "waste",
+      "submittedDay": 9,
+      "requestedStartDay": 13,
+      "durationDays": 8,
+      "quantityHint": "Waste removal, 3,600 gal a day",
+      "lines": {
+        "removal": true
+      },
+      "person": "ruizT",
+      "message": "The host nation is pulling its honey trucks after day 12. We need somebody pumping the latrines from day 13, every day.",
+      "flaggedEnduring": false
+    }
+  ],
+  "vendors": [
+    {
+      "id": "hubUtilities",
+      "name": "Main Island Utilities (host nation)",
+      "island": "hub",
+      "vehicleOnly": true,
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 2000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        },
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 3000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        },
+        {
+          "capability": "water",
+          "lines": [
+            "supply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 8000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        },
+        {
+          "capability": "waste",
+          "lines": [
+            "removal"
+          ],
+          "capacityPerDay": 6000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        },
+        {
+          "capability": "mhe",
+          "lines": [
+            "equipment",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 3,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        }
+      ],
+      "reliability": 0.99,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed"
+    },
+    {
+      "id": "campServices",
+      "name": "Island Camp Services",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "lodging",
+          "lines": [
+            "shelter",
+            "maintenance"
+          ],
+          "capacityPerDay": 400,
+          "leadTimeDays": 3,
+          "unitPriceCents": 2500
+        },
+        {
+          "capability": "food",
+          "lines": [
+            "service",
+            "operator"
+          ],
+          "capacityPerDay": 1200,
+          "leadTimeDays": 3,
+          "unitPriceCents": 900
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed"
+    },
+    {
+      "id": "islandMart",
+      "name": "Island Mart",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "water",
+          "lines": [
+            "supply"
+          ],
+          "capacityPerDay": 6000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 30
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": true,
+      "gpcSurchargeFraction": 0.03,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed"
+    },
+    {
+      "id": "harborBottling",
+      "name": "Harbor Bottling",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "water",
+          "lines": [
+            "supply"
+          ],
+          "capacityPerDay": 5000,
+          "leadTimeDays": 1,
+          "unitPriceCents": 25
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": false,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "harborEquipment",
+      "name": "Harbor Equipment Co",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "mhe",
+          "lines": [
+            "equipment",
+            "maintenance"
+          ],
+          "capacityPerDay": 5,
+          "leadTimeDays": 1,
+          "unitPriceCents": 18000
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "surveyed"
+    },
+    {
+      "id": "coastalRentals",
+      "name": "Coastal Rentals",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "mhe",
+          "lines": [
+            "equipment",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 4,
+          "leadTimeDays": 0,
+          "unitPriceCents": 22000
+        }
+      ],
+      "reliability": 0.94,
+      "acceptsGpc": true,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "sanitation",
+      "name": "Main Island Sanitation",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "waste",
+          "lines": [
+            "removal"
+          ],
+          "capacityPerDay": 6000,
+          "leadTimeDays": 1,
+          "unitPriceCents": 4
+        }
+      ],
+      "reliability": 0.96,
+      "acceptsGpc": false,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "estimated"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "campBpa",
+      "kind": "bpa",
+      "vendor": "campServices",
+      "scopeTags": [
+        "shelter",
+        "maintenance",
+        "service",
+        "operator"
+      ],
+      "callLimitCents": 25000000,
+      "orderingPeriodEndDay": 120,
+      "placeOfPerformance": [],
+      "visibleOnDay1": true
+    },
+    {
+      "id": "equipBpa",
+      "kind": "bpa",
+      "vendor": "harborEquipment",
+      "scopeTags": [
+        "equipment",
+        "maintenance"
+      ],
+      "callLimitCents": 2500000,
+      "orderingPeriodEndDay": 120,
+      "placeOfPerformance": [],
+      "visibleOnDay1": true
+    }
+  ],
+  "inheritedArrangements": [
+    {
+      "id": "hubGrid",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "hubFuelPoint",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "hubWaterPoint",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "water",
+      "lines": [
+        "supply",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": 9,
+      "endDay": 400
+    },
+    {
+      "id": "hubHoneyTrucks",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "waste",
+      "lines": [
+        "removal"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "hubForklift",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "mhe",
+      "lines": [
+        "equipment",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "hubBilleting",
+      "instrument": "bpaCall",
+      "vendor": "campServices",
+      "vehicle": "campBpa",
+      "site": "hubSite",
+      "capability": "lodging",
+      "lines": [
+        "shelter",
+        "maintenance"
+      ],
+      "startDay": -20,
+      "endDay": 40,
+      "quantity": 300,
+      "dailyCostCents": 750000,
+      "obligatedCents": 30000000,
+      "fundingLine": "om1",
+      "cor": "corLane"
+    },
+    {
+      "id": "hubDining",
+      "instrument": "bpaCall",
+      "vendor": "campServices",
+      "vehicle": "campBpa",
+      "site": "hubSite",
+      "capability": "food",
+      "lines": [
+        "service",
+        "operator"
+      ],
+      "startDay": -20,
+      "endDay": 40,
+      "quantity": 900,
+      "dailyCostCents": 810000,
+      "obligatedCents": 32400000,
+      "fundingLine": "om1",
+      "cor": "corLane"
+    }
+  ],
+  "fundingLines": [
+    {
+      "id": "om1",
+      "type": "OM",
+      "amountCents": 120000000,
+      "availableDay": 1,
+      "expiresDay": 90
+    }
+  ],
+  "cors": [
+    {
+      "id": "corLane",
+      "name": "SSgt Lane",
+      "unit": "3 FSS",
+      "quality": "good"
+    },
+    {
+      "id": "corPratt",
+      "name": "TSgt Pratt",
+      "unit": "3 CES",
+      "quality": "fair"
+    }
+  ],
+  "people": [
+    {
+      "id": "mills",
+      "name": "Jordan Mills",
+      "rank": "Capt",
+      "unit": "Contracting",
+      "role": "outgoingCco",
+      "portrait": "mills",
+      "lines": {
+        "greeting": "Welcome in. I'm here three more days, so ask me anything while I'm still around.",
+        "farewell": "Ortiz from FSS is outside about water. Something that small goes on the card or in cash; check who takes which before you pick."
+      }
+    },
+    {
+      "id": "ortiz",
+      "name": "Carla Ortiz",
+      "rank": "MSgt",
+      "unit": "3 FSS",
+      "role": "customer",
+      "site": "hubSite",
+      "portrait": "ortiz",
+      "lines": {
+        "greeting": "Services. Lodging, dining, and right now, water."
+      }
+    },
+    {
+      "id": "dunn",
+      "name": "Ray Dunn",
+      "rank": "SMSgt",
+      "unit": "LRS",
+      "role": "customer",
+      "site": "hubSite",
+      "portrait": "dunn",
+      "lines": {
+        "greeting": "I run the warehouse. If it comes on a pallet, it goes through me."
+      }
+    },
+    {
+      "id": "ruizT",
+      "name": "Ana Ruiz",
+      "rank": "Capt",
+      "unit": "3 CES",
+      "role": "customer",
+      "site": "hubSite",
+      "portrait": "ruiz",
+      "lines": {
+        "greeting": "Engineers. Anything that pumps, powers or plugs in."
+      }
+    },
+    {
+      "id": "ward",
+      "name": "Helen Ward",
+      "rank": "Col",
+      "unit": "Hub commander",
+      "role": "commander",
+      "site": "hubSite",
+      "portrait": "ward",
+      "lines": {
+        "greeting": "Keep the hub running. That's the whole job this week."
+      }
+    },
+    {
+      "id": "cole",
+      "name": "Erin Cole",
+      "rank": "Maj",
+      "unit": "SCO staff, reachback",
+      "role": "scoStaff",
+      "portrait": "cole",
+      "lines": {
+        "greeting": "Send questions to the SCO box. In your first week we'll tell you what we'd do, too."
+      }
+    },
+    {
+      "id": "nair",
+      "name": "Priya Nair",
+      "rank": "Capt",
+      "unit": "Comptroller",
+      "role": "finance",
+      "portrait": "nair",
+      "lines": {
+        "greeting": "Funding questions come to me. Certification takes a day once you send it."
+      }
+    },
+    {
+      "id": "reyna",
+      "name": "Tomas Reyna",
+      "rank": "Mr.",
+      "unit": "Harbor Equipment Co",
+      "role": "vendorRep",
+      "vendor": "harborEquipment",
+      "portrait": "reyna",
+      "lines": {
+        "greeting": "Forklifts, loaders, light towers. Call us off the agreement any time."
+      }
+    }
+  ],
+  "briefing": {
+    "title": "Your first week at the hub",
+    "situation": "You're the contracting officer for the hub on the main island, three hundred people, already open. The host nation runs the power, the fuel point, the water point and the honey trucks; billeting and dining run on a blanket purchase agreement the last rotation set up.",
+    "due": "Nothing is on fire yet. Requests will come to you as the week goes, and the outgoing contracting officer is here for your first three days."
+  },
+  "turnover": {
+    "from": "mills",
+    "shop": "Here's the shop. Two of us, sixteen hours a day between us, and the contract-writing system won't be up while you're here, so everything is on paper.",
+    "contracts": "Most of what keeps the hub running is the host nation's. Billeting and dining are calls on our camp BPA.",
+    "vendorList": "These are the vendors I've used, and a couple I know by name.",
+    "money": "Last, the money. There's enough; the cash box is the thing to watch.",
+    "remarks": {
+      "arrangements": {
+        "hubWaterPoint": "The water point's been down since last week; the host nation says day 9."
+      },
+      "vendors": {
+        "harborEquipment": "We have a BPA with Harbor Equipment for forklifts and the like. They've always answered.",
+        "islandMart": "Island Mart takes the card. Harbor Bottling is cash only."
+      },
+      "fundingLines": {
+        "om1": "One O&M line, good past the end of the month."
+      }
+    }
+  },
+  "prepBriefing": {
+    "from": "cole",
+    "intro": "You have fourteen days before wheels up. Here's what you can get done from here. You can't do all of it, so pick what you'll miss least on the ground.",
+    "choices": {
+      "gpcAccounts": "Purchase cards take about five days to set up from home. Out there, they take weeks.",
+      "cashAndPayingAgent": "Finance can line up a paying agent and cash for you now, or you can find them when you land.",
+      "systemAccess": "Get your contract-writing system account started now and it may be working when you arrive.",
+      "templatesAndKit": "Bring templates and a paper kit, and the manual work goes faster until the system's up."
+    },
+    "defaults": [
+      "gpcAccounts",
+      "cashAndPayingAgent",
+      "systemAccess"
+    ]
+  },
+  "shop": {
+    "people": 2,
+    "systemOnlineDay": 25,
+    "cashOnHandCents": 1500000,
+    "cashReplenishLagDays": 5,
+    "gpcAvailableDay": 1,
+    "gpcSinglePurchaseCents": 2000000,
+    "gpcMonthlyCents": 4000000,
+    "payingAgentAvailableDay": 1
+  },
+  "actors": {
+    "sco": {
+      "responsiveness": "high",
+      "offersJointBoardsUnprompted": false,
+      "person": "cole"
+    },
+    "fm": {
+      "certificationLagDays": 1,
+      "person": "nair"
+    },
+    "commander": {
+      "priorityOrder": [
+        "hubSite"
+      ],
+      "person": "ward"
+    }
+  },
+  "events": [
+    {
+      "id": "mentorDay1",
+      "label": "Your mentor on the cash box",
+      "window": {
+        "earliestDay": 1,
+        "latestDay": 1
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "inbox"
+        }
+      ],
+      "from": "mills",
+      "playerVisibleAs": "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+    },
+    {
+      "id": "mentorDay2",
+      "label": "Your mentor on agreements",
+      "window": {
+        "earliestDay": 2,
+        "latestDay": 2
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "inbox"
+        }
+      ],
+      "from": "mills",
+      "playerVisibleAs": "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+    },
+    {
+      "id": "mentorDay3",
+      "label": "Your mentor's last note",
+      "window": {
+        "earliestDay": 3,
+        "latestDay": 3
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "inbox"
+        }
+      ],
+      "from": "mills",
+      "playerVisibleAs": "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
+    },
+    {
+      "id": "forkliftBack",
+      "label": "The host nation takes its forklift back",
+      "window": {
+        "earliestDay": 3,
+        "latestDay": 3
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "hostNation.withdraw",
+          "target": "mhe",
+          "days": 5
+        }
+      ],
+      "playerVisibleAs": "Main Island Utilities: our forklift goes back to the port after day 7."
+    },
+    {
+      "id": "forkliftsOut",
+      "label": "Harbor Equipment Co is short of forklifts this week",
+      "window": {
+        "earliestDay": 4,
+        "latestDay": 4
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "vendor.declinesCalls",
+          "target": "harborEquipment",
+          "days": 5
+        }
+      ]
+    },
+    {
+      "id": "honeyTrucksBack",
+      "label": "The host nation pulls its honey trucks",
+      "window": {
+        "earliestDay": 8,
+        "latestDay": 8
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "hostNation.withdraw",
+          "target": "waste",
+          "days": 5
+        }
+      ],
+      "playerVisibleAs": "Main Island Utilities: we need our honey trucks back after day 12."
+    }
+  ],
+  "fixedSituations": [
+    "tutWater",
+    "tutForklift",
+    "tutWaste",
+    "mentorDay1",
+    "mentorDay2",
+    "mentorDay3",
+    "forkliftBack",
+    "forkliftsOut",
+    "honeyTrucksBack"
+  ],
+  "variation": [],
+  "passCriteria": [
+    {
+      "id": "waterUp",
+      "label": "Hub water never out more than one day",
+      "metric": "site.hubSite.water.downDays",
+      "comparator": "<=",
+      "value": 1
+    },
+    {
+      "id": "mheUp",
+      "label": "Forklifts never out more than one day",
+      "metric": "site.hubSite.mhe.downDays",
+      "comparator": "<=",
+      "value": 1
+    },
+    {
+      "id": "wasteUp",
+      "label": "Waste removal never out",
+      "metric": "site.hubSite.waste.downDays",
+      "comparator": "<=",
+      "value": 0
+    },
+    {
+      "id": "noUc",
+      "label": "No unauthorized commitments",
+      "metric": "compliance.unauthorizedCommitments",
+      "comparator": "==",
+      "value": 0
+    },
+    {
+      "id": "mission",
+      "label": "Mission output at least 95%",
+      "metric": "mission.output",
+      "comparator": ">=",
+      "value": 0.95
+    }
+  ],
+  "modelAssumptions": [
+    "One island, so nothing waits on a barge.",
+    "The water point is down until day 9; bottled water covers the gap, and food service needs water.",
+    "Harbor Equipment Co turns down every call that reaches award on days 4 to 8; the call is not binding, so nothing is owed.",
+    "The contract-writing system is not up during the scenario, so written contracts are manual and payments can go wrong."
+  ]
+}

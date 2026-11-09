@@ -80,6 +80,11 @@ public sealed partial class Session
         _ => id,
     };
 
+    // Event vendor.declinesCalls (M2R-08): a BPA vendor turns down every call that reaches award through this day.
+    private readonly Dictionary<string, int> _declinesCallsThrough = new(StringComparer.Ordinal);
+    internal void DeclineCalls(string vendorId, int day, int days) => _declinesCallsThrough[vendorId] = day + Math.Max(1, days) - 1;
+    private bool DeclinesCalls(string? vendorId, int day) => vendorId is not null && _declinesCallsThrough.TryGetValue(vendorId, out var through) && day <= through;
+
     /// <summary>The id a work item is for, from its payload (WorkItem.SubjectId).</summary>
     private static string? WorkSubject(object? payload) => payload switch
     {

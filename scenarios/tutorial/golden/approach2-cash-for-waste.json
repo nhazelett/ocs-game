@@ -1,0 +1,69 @@
+{
+  "scenario": "tutorial",
+  "rulesVersion": "2025-10",
+  "seed": 1,
+  "prepChoices": [
+    "gpcAccounts",
+    "cashAndPayingAgent",
+    "systemAccess"
+  ],
+  "note": "The trap: waste paid for on SF 44 cash buys because it was faster. No written terms and no COR; the unit and the vendor argue about what was ordered.",
+  "actions": [
+    {
+      "kind": "award",
+      "day": 1,
+      "id": "water",
+      "instrument": "gpc",
+      "vendor": "islandMart",
+      "card": "tutWater",
+      "quantity": 4500,
+      "startDay": 2,
+      "durationDays": 7,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 4,
+      "id": "forkliftCall",
+      "instrument": "bpaCall",
+      "vendor": "harborEquipment",
+      "card": "tutForklift",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "vehicle": "equipBpa"
+    },
+    {
+      "kind": "setLine",
+      "day": 6,
+      "card": "tutForklift",
+      "line": "operator",
+      "on": true
+    },
+    {
+      "kind": "award",
+      "day": 6,
+      "id": "forklifts",
+      "instrument": "gpc",
+      "vendor": "coastalRentals",
+      "card": "tutForklift",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1"
+    },
+    {
+      "kind": "award",
+      "day": 9,
+      "id": "waste",
+      "instrument": "sf44",
+      "vendor": "sanitation",
+      "card": "tutWaste",
+      "quantity": 3600,
+      "startDay": 13,
+      "durationDays": 8,
+      "fundingLine": "om1"
+    }
+  ]
+}

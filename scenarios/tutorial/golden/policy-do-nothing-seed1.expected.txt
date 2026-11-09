@@ -1,0 +1,125 @@
+Week one at the hub / policy do-nothing
+Scenario tutorial, rules 2025-10, seed 1, 20 days.
+
+TIMELINE
+Before day 1
+  START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Water at Hub from Main Island Utilities (host nation), days 9 to 400.
+  START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Material handling equipment at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Lodging at Hub from Island Camp Services (BPA call), days -20 to 40.
+  START     Inherited: Food service at Hub from Island Camp Services (BPA call), days -20 to 40.
+Day 1
+  EVENT     Your mentor on the cash box. Inbox: "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 2
+  EVENT     Your mentor on agreements. Inbox: "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 3
+  EVENT     Your mentor's last note. Inbox: "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
+  EVENT     The host nation takes its forklift back. Inbox: "Main Island Utilities: our forklift goes back to the port after day 7."
+  WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  SHORT     Water at Hub down to 0%: water on hand ran out; no arrangement supplies water.
+  SHORT     Food service at Hub down to 0%: water at 0%.
+Day 4
+  EVENT     Harbor Equipment Co is short of forklifts this week
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 5
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 6
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 7
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  PAYERR    Payment error on Island Camp Services food service at Hub's invoice (manual contract, no contract-writing system yet). Rework costs the shop 8 hours.
+Day 8
+  EVENT     The host nation pulls its honey trucks. Inbox: "Main Island Utilities: we need our honey trucks back after day 12."
+  WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
+  DONE      Payment error on Island Camp Services food service at Hub corrected.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  END       Main Island Utilities (host nation) material handling equipment at Hub ended.
+  SHORT     Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
+Day 9
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
+  OK        Water at Hub restored to 100%.
+  OK        Food service at Hub restored to 100%.
+Day 10
+  DONE      CE small buys: 3 worked today (1.5 h of shop time).
+Day 11
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 12
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  FAIL      Island Camp Services food service at Hub missed today's delivery.
+  COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 12.
+Day 13
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  END       Main Island Utilities (host nation) waste removal at Hub ended.
+  SHORT     Waste removal at Hub down to 0%: no arrangement supplies waste removal.
+Day 14
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 15
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 16
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+  FAIL      Island Camp Services food service at Hub missed today's delivery.
+  COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 16.
+Day 17
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 18
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 19
+  DONE      CE small buys: 2 worked today (1 h of shop time).
+Day 20
+  DONE      CE small buys: 3 worked today (1.5 h of shop time).
+
+CAPABILITY BY DAY (percent; . = 100, blank = site not open)
+                              0    1    1    2
+                          12345678901234567890
+Hub Power                 ....................
+Hub Fuel                  ....................
+Hub Water                 ..XXXXXX............
+Hub Lodging               ....................
+Hub Food service          ..XXXXXX............
+Hub Waste removal         ............XXXXXXXX
+Hub Material handling equ .......XXXXXXXXXXXXX
+  key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
+
+SCORECARD
+  Mission output 79% (sortie generation 100%, throughput 35%, endurance 80%, resilience 100%)
+  Obligated $624,000; incurred $312,000; incurred but not obligated $0
+  Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
+  Surveys 0; shop hours worked 29; payment errors 1; execution-confusion days 0; vendor failures 2; declined BPA calls 0
+  hubSite.water: 6 day(s) down, 0 degraded, lowest 0%
+  hubSite.food: 6 day(s) down, 0 degraded, lowest 0%
+  hubSite.waste: 8 day(s) down, 0 degraded, lowest 0%
+  hubSite.mhe: 13 day(s) down, 0 degraded, lowest 0%
+
+GAPS AND WHY (each traced back through its causes)
+  Day 3: Water at Hub down to 0%: water on hand ran out; no arrangement supplies water.
+  Day 3: Food service at Hub down to 0%: water at 0%.
+      <- day 3: Water at Hub down to 0%: water on hand ran out; no arrangement supplies water.
+  Day 8: Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
+  Day 13: Waste removal at Hub down to 0%: no arrangement supplies waste removal.
+
+GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
+  #0 hubSite.water days 3-8, lowest 0%, 6 day(s) down: AVOIDABLE
+      [avoidable] The request for water for Hub (submitted day 1, needed from day 2) had nothing supplying it from day 3. Main Island Utilities (host nation) water at Hub did not start until day 9.
+  #1 hubSite.food days 3-8, lowest 0%, 6 day(s) down: AVOIDABLE
+      [avoidable] Food service depends on water, which was short. (see #0)
+  #2 hubSite.waste days 13-20, lowest 0%, 8 day(s) down: AVOIDABLE
+      [discoverable] Inherited host nation support for waste removal at Hub was withdrawn by the host nation on day 8 (last day of support 12) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
+      [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12.
+  #3 hubSite.mhe days 8-20, lowest 0%, 13 day(s) down: AVOIDABLE
+      [discoverable] Inherited host nation support for material handling equipment at Hub was withdrawn by the host nation on day 3 (last day of support 7) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
+      [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7.
+
+PASS CRITERIA
+  [not met] Hub water never out more than one day (site.hubSite.water.downDays = 6)
+  [not met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 13)
+  [not met] Waste removal never out (site.hubSite.waste.downDays = 8)
+  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
+  [not met] Mission output at least 95% (mission.output = 0.787)
+
+State hash fe1b020382de2eeeac6cae4abe13eb6e46e6fdd2c3b3faee90a7c402589b97ef
