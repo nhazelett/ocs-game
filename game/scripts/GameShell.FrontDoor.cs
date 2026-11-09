@@ -10,6 +10,7 @@ public partial class GameShell
     private Button menuButton = null!;
     internal CheckBox DeveloperToggle { get; private set; } = null!;
     internal Button DeveloperWorkspaceButton { get; private set; } = null!;
+    internal Button ArtStudiesButton { get; private set; } = null!;
     internal Button NewGameButton { get; private set; } = null!;
     internal Button ContinueGameButton { get; private set; } = null!;
     internal Button SpokeBGameButton { get; private set; } = null!;
@@ -34,6 +35,12 @@ public partial class GameShell
         frontMessage.CustomMinimumSize = new Vector2(500, 0); column.AddChild(frontMessage);
         frontChoices = new VBoxContainer(); frontChoices.AddThemeConstantOverride("separation", 12); column.AddChild(frontChoices);
         DeveloperWorkspaceButton = FrontButton("Open developer workspace", ShowGameSurface); column.AddChild(DeveloperWorkspaceButton);
+        ArtStudiesButton = FrontButton("ART-01 · compare art directions", () =>
+        {
+            var study = new Art.ArtDirections { ZIndex = 50 };
+            study.ExitStudy = study.QueueFree; AddChild(study); study.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+        });
+        column.AddChild(ArtStudiesButton);
         var chrome = new HBoxContainer { Name = "Navigation", ZIndex = 20 };
         AddChild(chrome); chrome.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
         chrome.OffsetLeft = -310; chrome.OffsetRight = -20; chrome.OffsetTop = 16; chrome.OffsetBottom = 48;
@@ -104,6 +111,7 @@ public partial class GameShell
         var board = GetNode<VBoxContainer>("Margin/Layout/WorkArea/BoardPanel/BoardLayout");
         foreach (var name in new[] { "ScenarioRow", "ReplayRow", "SaveRow" }) board.GetNode<Control>(name).Visible = DeveloperTools;
         DeveloperWorkspaceButton.Visible = DeveloperTools && AtFrontDoor;
+        ArtStudiesButton.Visible = DeveloperTools && AtFrontDoor && OS.HasFeature("editor");
         if (!DeveloperTools) SaveFilePicker.Hide();
         RefreshBuildStatus();
     }
