@@ -11,7 +11,7 @@ public partial class GameShell
     private sealed record Pick(string Id, string Text, string? Block = null);
     private VBoxContainer awardPanel = null!;
     private VBoxContainer previewPanel = null!, awardFooter = null!;
-    private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding;
+    private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor;
     private long? quantity;
     private int? start, duration;
     private int awardSequence = 1;
@@ -23,6 +23,8 @@ public partial class GameShell
     internal ActionPreview? AwardPreview { get; private set; }
     internal ActionEditorView? CurrentActionEditor { get; private set; }
     internal OptionButton InstrumentInput => instrumentInput;
+    internal OptionButton FundingInput => fundingInput;
+    internal OptionButton? CorInput { get; private set; }
     internal OptionButton VendorInput => vendorInput;
     internal OptionButton VehicleInput => vehicleInput;
     internal SpinBox QuantityInput => quantityInput;
@@ -44,7 +46,7 @@ public partial class GameShell
     }
     private void ResetAwardForm()
     {
-        awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = null;
+        awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = awardCor = null;
         quantity = null; start = duration = null; awardSequence = 1;
     }
 
@@ -75,6 +77,15 @@ public partial class GameShell
         panel.AddChild(picker); return picker;
     }
 
+    private static string? FundingBlock(FundingOption funding, int day)
+    {
+        var reasons = new List<string>();
+        if (!funding.PaysForThis) reasons.Add($"Certified for {string.Join(", ", funding.Capabilities ?? [])} only");
+        if (!funding.UsableToday) reasons.Add(day < funding.AvailableDay
+            ? $"Available day {funding.AvailableDay}" : $"Expired after day {funding.ExpiresDay}");
+        return reasons.Count == 0 ? null : string.Join("; ", reasons);
+    }
+
     private static string? Picked(OptionButton picker) => picker.ItemCount == 0 ? null : picker.GetItemMetadata(picker.Selected).AsString();
     private SpinBox AddNumber(string label, double value, double max, Action<double> changed)
     {
@@ -86,7 +97,7 @@ public partial class GameShell
     private void RefreshActionDesk(SessionView? view)
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
-        PendingAward = null; AwardPreview = null; CurrentActionEditor = null;
+        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CorInput = null;
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         var targets = AwardTargets(view);
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
@@ -102,8 +113,15 @@ public partial class GameShell
         var vehicles = new[] { new Pick("", "No vehicle") }.Concat(editor.Vehicles.Where(v => v.VendorId == awardVendor)
             .Select(v => new Pick(v.Id, v.Id + " · " + v.Kind, v.OpenToday ? null : $"Ordering ended day {v.OrderingPeriodEndDay}"))).ToArray();
         vehicleInput = AddPick(awardPanel, "Vehicle", vehicles, awardVehicle, id => { awardVehicle = id; RefreshActionDesk(session.View); }); awardVehicle = Picked(vehicleInput);
-        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{f.Id} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", f.UsableToday ? null : "Not usable today")).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
+        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{f.Id} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", FundingBlock(f, view.Day))).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
         awardFunding = Picked(fundingInput);
+        if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
+        {
+            var cors = new[] { new Pick("", "None") }.Concat(view.Cors.Select(c => new Pick(c.Id, CorText(view, c)))).ToArray();
+            CorInput = AddPick(awardPanel, "COR", cors, awardCor, id => { awardCor = id; UpdateAwardPreview(); });
+            awardCor = Picked(CorInput);
+        }
+        else awardCor = null;
         var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
         quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);
         duration ??= Math.Max(1, requirement?.DurationDays ?? view.LastDay);
@@ -132,6 +150,7 @@ public partial class GameShell
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
             Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = awardFunding,
+            Cor = string.IsNullOrEmpty(awardCor) ? null : awardCor,
             Quantity = quantity ?? 1, StartDay = start, DurationDays = duration ?? 1 };
         try
         {

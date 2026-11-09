@@ -29,11 +29,11 @@ public partial class GameShell
             var row = new VBoxContainer(); row.SetMeta("issue", issue.Id); performanceRows.AddChild(row);
             var site = view.Scenario.Sites.Single(s => s.Id == issue.SiteId).Name;
             row.AddChild(DeskUi.Label($"{issue.Id} · {site} · {issue.CapabilityId} · {issue.ArrangementId}\nDecision: {view.PerformanceDecision(issue)}"));
-            var record = view.Records.FirstOrDefault(r => r.Id == issue.CauseId);
+            var record = view.Records.FirstOrDefault(r => r.Id == issue.CauseId && view.Known(r));
             if (record is not null) row.AddChild(DeskUi.Label(record.Text));
             if (issue.CureEndsDay is { } end)
                 row.AddChild(DeskUi.Label($"Cure period ends day {end} · outcome: {issue.Outcome}"));
-            foreach (var outcome in view.Records.Where(r => r.Subject == issue.Id && r.Kind is RecordKind.Compliance or RecordKind.WorkDone))
+            foreach (var outcome in view.Records.Where(view.Known).Where(r => r.Subject == issue.Id && r.Kind is RecordKind.Compliance or RecordKind.WorkDone))
                 row.AddChild(DeskUi.Label($"Day {outcome.Day} · {outcome.Text}"));
             var arrangement = view.Arrangements.Single(a => a.Id == issue.ArrangementId);
             var running = arrangement.Status is ArrangementStatus.Active or ArrangementStatus.Suspended;
