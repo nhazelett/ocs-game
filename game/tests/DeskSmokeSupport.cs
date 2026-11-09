@@ -11,10 +11,20 @@ internal static class DeskSmokeSupport
 
     internal static GameShell Shell(Node parent)
     {
-        var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
+        using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
+        var shell = scene.Instantiate<GameShell>();
         parent.AddChild(shell);
+        DeveloperWorkspace(shell);
         Scenario(shell, "spoke-b");
         return shell;
+    }
+
+    internal static void DeveloperWorkspace(GameShell shell)
+    {
+        // Automated play must never overwrite the player's deployment.
+        shell.AutosavePathOverride ??= Path.Combine(Path.GetTempPath(), "ocs-smoke-" + System.Environment.ProcessId, Guid.NewGuid() + ".json");
+        shell.DeveloperToggle.ButtonPressed = true;
+        shell.DeveloperWorkspaceButton.EmitSignal(Button.SignalName.Pressed);
     }
 
     internal static void Scenario(GameShell shell, string name)

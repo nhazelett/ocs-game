@@ -28,6 +28,7 @@ public partial class GameShell : Control
         BuildBpaDesk();
         BuildPrepDesk();
         BuildSaveControls();
+        BuildFrontDoor();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -78,7 +79,7 @@ public partial class GameShell : Control
             session.LoadScenario(scenarios[(int)index].ScenarioPath);
             ShowPrepChoices();
             SetReplays(FindReplays(scenarios[(int)index].ScenarioPath));
-            RefreshDisplay("Choose pre-deployment preparations, then Deploy. Replay uses its own recorded preparations.");
+            RefreshDisplay(DeveloperTools ? "Choose pre-deployment preparations, then Deploy. Replay uses its own recorded preparations." : "Choose your preparations before you deploy.");
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or
             KeyNotFoundException or InvalidOperationException or FormatException)
