@@ -81,3 +81,17 @@ Order: M3-16, M3-17, M3-18, then M3-07. Each is gate-safe under FOR-NICK #3 (Sim
 - Balance cost is in the chains, not the code (SPEC 9 risk 4): the 200-seed batch and the five-seed spread are the acceptance test, and the first numbers above will move.
 - Inherited state touches the replay of every scenario. M3-16's acceptance keeps every existing golden byte-identical.
 - The file review overlaps with the survey as an information investment; the debrief has to keep the two distinct (island facts versus contract facts).
+
+## 8. As built (9 Nov 2026, `scenarios/sustainment/`)
+
+Changes from the plan above, each first-pass and reversible:
+
+- **Fifteen inherited arrangements, not eleven.** The Sim scores every capability a site lists from day 1, so a new request for a capability nobody supplies yet would be down from day 1 whatever the player did. The four trap cards are instead follow-ons to short inherited buys (`aComms` to day 21, `hubTransport` to day 24, `cMhe` to day 27, `bLodging` to day 31), each submitted about 20 days before it is needed. The trap is the same: answering each the day it arrives puts it in the shop's queue ahead of the clocks.
+- **Two BPAs, not one.** `bosBpa` (Harbor Equipment, generators and MHE) and `foodBpa` (Island Provisions); both ordering periods end day 20, and calls placed before then still run.
+- **cLodging is due day 8** (issued day -172), so the higher HQ inquiry lands day 13 unless it is definitized first; a file review on day 1 and a definitization started by day 4 beat it.
+- **Chain timing:** COR rotation day 10, BPA notice day 14, bFuel slip day 20 (fixed, with the M3-18 preconditions), Spoke C growth notice day 22 for day 30, partner dry spell window days 28 to 36, barge closure window days 33 to 40 (two days' forecast to a surveyed island), om2 late 5 to 9 days with the notice between days 38 and 44.
+- **Money:** om1 $3.3M to day 45, om2 $3.0M planned day 46. A player who switches bFuel to a hub vendor has too little om1 left to replace the partner's water on day 36 (approach 4): the fiscal-year trap working as intended.
+- **Textbook policy** learned two generic habits: definitize every inherited UCA the file review shows with its proposal in hand, and hold a new requirement that is not needed for more than 14 days until those definitizations are queued; and a follow-on to support bought through a vehicle-only source (a partner's ACSA) goes to the cheapest open-market vendor with the lines. Neither touches spoke-b or spoke-b-90 (their goldens are unchanged).
+- **Sim fix:** an inherited arrangement now traces back to its handover record (`CauseId`), so cause chains end there and the crash run's no-cause invariant holds for inherited rows.
+
+First 200-seed spread (harness `batch sustainment --seeds 200`), mission output min / median / max: do-nothing 0.545 / 0.561 / 0.573, greedy 0.663 / 0.700 / 0.715, textbook 0.887 / 0.910 / 0.924. Textbook draws no HHQ inquiry and leaves no unobligated incurred cost on any seed; greedy and do-nothing draw two inquiries each. Goldens: approach 1 clocks first 88%, approach 2 requests first (the trap) 68%, approach 3 clocks first plus a cure notice on bFuel 90%, approach 4 re-source bFuel with notice 90%.

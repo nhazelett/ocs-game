@@ -339,7 +339,8 @@ public sealed partial class Session
         }
         _arrangements.Add(arr);
         var noticeNote = a.NoticeDays is { } n and > 0 && a.Instrument != HostNationInstrumentId ? $" Termination needs {n} days' notice." : "";
-        AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.{ucaNote}{noticeNote}", []);
+        // The handover record is what an inherited arrangement traces back to in cause chains (M3-07).
+        arr.CauseId = AddRecord(0, RecordKind.ArrangementStart, a.Id, $"Inherited: {CapLabel(a.Capability)} at {SiteName(a.Site)} from {vendor.Name} ({a.Instrument}), days {a.StartDay} to {a.EndDay}.{ucaNote}{noticeNote}", []);
     }
 
     // ------------------------------------------------------------------ hashing and export

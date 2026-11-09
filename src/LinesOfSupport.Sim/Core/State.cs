@@ -38,7 +38,7 @@ public sealed class Arrangement
     public ArrangementStatus Status { get; set; } = ArrangementStatus.Pending;
     public string? CardId { get; init; }
     public int CreatedDay { get; init; }
-    public string CauseId { get; init; } = "";
+    public string CauseId { get; internal set; } = "";
     /// <summary>Consumable supply from off-island waiting for the next surface link run.</summary>
     public long InTransitMilli { get; set; }
     public UcaState? Uca { get; set; }

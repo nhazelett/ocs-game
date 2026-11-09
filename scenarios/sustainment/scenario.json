@@ -1,0 +1,1331 @@
+{
+  "schemaVersion": 0,
+  "id": "sustainment",
+  "title": "Sustainment: everything is already running",
+  "summary": "Skeleton 3 (scenarios/SKELETONS.md). Day 90 of an operation: a hub and three spokes, fifteen inherited arrangements and the clocks inside them. Two UCAs (one past due and hidden in its file), a BPA whose ordering period ends day 20, an IDIQ near its ceiling, a fuel vendor whose real delivery record is worse than the handover said, a partner that can withdraw its water, and the fiscal year ending day 45 with the new money late. New unit requests arrive while the clocks run.",
+  "rulesVersion": "2025-10",
+  "days": 60,
+  "prepDays": 0,
+  "defaultSeed": 1,
+  "islands": [
+    {
+      "id": "hub",
+      "name": "Main Island",
+      "isHub": true,
+      "grid": true,
+      "fuelPoint": true,
+      "waterSource": "municipal",
+      "infoTier": "observed"
+    },
+    {
+      "id": "north",
+      "name": "North Island",
+      "isHub": false,
+      "grid": false,
+      "fuelPoint": false,
+      "waterSource": "none",
+      "infoTier": "estimated"
+    },
+    {
+      "id": "second",
+      "name": "Second Island",
+      "isHub": false,
+      "grid": false,
+      "fuelPoint": false,
+      "waterSource": "none",
+      "infoTier": "estimated"
+    },
+    {
+      "id": "third",
+      "name": "Third Island",
+      "isHub": false,
+      "grid": false,
+      "fuelPoint": false,
+      "waterSource": "none",
+      "infoTier": "assumed"
+    }
+  ],
+  "transportLinks": [
+    {
+      "id": "northFerry",
+      "from": "hub",
+      "to": "north",
+      "mode": "barge",
+      "capacityPerTrip": 300,
+      "scheduleDays": [
+        1,
+        3,
+        5
+      ],
+      "weatherSensitive": true
+    },
+    {
+      "id": "secondBarge",
+      "from": "hub",
+      "to": "second",
+      "mode": "barge",
+      "capacityPerTrip": 200,
+      "scheduleDays": [
+        3,
+        6
+      ],
+      "weatherSensitive": true
+    },
+    {
+      "id": "thirdLanding",
+      "from": "hub",
+      "to": "third",
+      "mode": "barge",
+      "capacityPerTrip": 150,
+      "scheduleDays": [
+        4
+      ],
+      "weatherSensitive": true
+    },
+    {
+      "id": "thirdAir",
+      "from": "hub",
+      "to": "third",
+      "mode": "aircraft",
+      "capacityPerTrip": 5,
+      "scheduleDays": [],
+      "weatherSensitive": true
+    }
+  ],
+  "sites": [
+    {
+      "id": "hubSite",
+      "name": "Hub",
+      "island": "hub",
+      "opensDay": 1,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 0,
+          "count": 650
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "power",
+          "bufferDays": 0,
+          "initialArrangements": [
+            "hubGrid"
+          ]
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 5,
+          "initialBufferDays": 5,
+          "initialArrangements": [
+            "hubFuelPoint"
+          ]
+        },
+        {
+          "id": "transport",
+          "initialArrangements": [
+            "hubTransport"
+          ]
+        },
+        {
+          "id": "waste",
+          "initialArrangements": [
+            "hubWaste"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spokeASite",
+      "name": "Spoke A",
+      "island": "north",
+      "opensDay": 1,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 0,
+          "count": 220
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "power",
+          "bufferDays": 0,
+          "critical": true,
+          "initialArrangements": [
+            "aPower"
+          ]
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 5,
+          "initialBufferDays": 4,
+          "critical": true,
+          "initialArrangements": [
+            "aFuel"
+          ]
+        },
+        {
+          "id": "water",
+          "bufferDays": 3,
+          "initialBufferDays": 3,
+          "initialArrangements": [
+            "aWater"
+          ]
+        },
+        {
+          "id": "comms",
+          "initialArrangements": [
+            "aComms"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spokeBSite",
+      "name": "Spoke B",
+      "island": "second",
+      "opensDay": 1,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 0,
+          "count": 260
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "power",
+          "bufferDays": 0,
+          "critical": true,
+          "initialArrangements": [
+            "bGens"
+          ]
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 5,
+          "initialBufferDays": 4,
+          "critical": true,
+          "initialArrangements": [
+            "bFuel"
+          ]
+        },
+        {
+          "id": "food",
+          "bufferDays": 6,
+          "initialBufferDays": 5,
+          "initialArrangements": [
+            "bFood"
+          ]
+        },
+        {
+          "id": "lodging",
+          "initialArrangements": [
+            "bLodging"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spokeCSite",
+      "name": "Spoke C",
+      "island": "third",
+      "opensDay": 1,
+      "tempo": 1.0,
+      "population": [
+        {
+          "day": 0,
+          "count": 150
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "lodging",
+          "initialArrangements": [
+            "cLodging"
+          ]
+        },
+        {
+          "id": "fuel",
+          "bufferDays": 7,
+          "initialBufferDays": 6,
+          "initialArrangements": [
+            "cFuel"
+          ]
+        },
+        {
+          "id": "mhe",
+          "initialArrangements": [
+            "cMhe"
+          ]
+        }
+      ]
+    }
+  ],
+  "requirementCards": [
+    {
+      "id": "req0201",
+      "site": "spokeASite",
+      "capability": "comms",
+      "submittedDay": 2,
+      "requestedStartDay": 22,
+      "durationDays": 39,
+      "quantityHint": "3 satellite terminals with service",
+      "lines": {
+        "backhaul": true,
+        "maintenance": false
+      },
+      "submittedBy": "Spoke A signal detachment",
+      "flaggedEnduring": true
+    },
+    {
+      "id": "req0205",
+      "site": "hubSite",
+      "capability": "transport",
+      "submittedDay": 5,
+      "requestedStartDay": 25,
+      "durationDays": 36,
+      "quantityHint": "14 light trucks with drivers",
+      "lines": {
+        "vehicles": true,
+        "operator": true,
+        "maintenance": false
+      },
+      "submittedBy": "Hub motor pool",
+      "flaggedEnduring": true
+    },
+    {
+      "id": "req0209",
+      "site": "spokeCSite",
+      "capability": "mhe",
+      "submittedDay": 9,
+      "requestedStartDay": 28,
+      "durationDays": 33,
+      "quantityHint": "2 rough-terrain forklifts",
+      "lines": {
+        "equipment": true,
+        "operator": false,
+        "maintenance": false
+      },
+      "submittedBy": "Spoke C supply section",
+      "flaggedEnduring": false
+    },
+    {
+      "id": "req0213",
+      "site": "spokeBSite",
+      "capability": "lodging",
+      "submittedDay": 13,
+      "requestedStartDay": 32,
+      "durationDays": 29,
+      "quantityHint": "Keep the 260 beds; add a tent row",
+      "lines": {
+        "shelter": true,
+        "maintenance": false
+      },
+      "submittedBy": "Spoke B mayor cell",
+      "flaggedEnduring": true
+    }
+  ],
+  "vendors": [
+    {
+      "id": "hubUtilities",
+      "name": "Main Island Utilities (host nation)",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 5000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        },
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 12000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 0
+        }
+      ],
+      "reliability": 1.0,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed",
+      "vehicleOnly": true
+    },
+    {
+      "id": "partnerForce",
+      "name": "Partner force (ACSA)",
+      "island": "north",
+      "offers": [
+        {
+          "capability": "water",
+          "lines": [
+            "supply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 6000,
+          "leadTimeDays": 0,
+          "unitPriceCents": 20
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed",
+      "vehicleOnly": true
+    },
+    {
+      "id": "northPower",
+      "name": "North Island Power and Light",
+      "island": "north",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "fuelSupply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 600,
+          "leadTimeDays": 9,
+          "unitPriceCents": 900,
+          "mobilizationFraction": 0.3
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated",
+      "qualifyingProposalLagDays": {
+        "min": 10,
+        "max": 16
+      }
+    },
+    {
+      "id": "harborEquipment",
+      "name": "Harbor Equipment Co",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "maintenance"
+          ],
+          "capacityPerDay": 900,
+          "leadTimeDays": 2,
+          "unitPriceCents": 230
+        },
+        {
+          "capability": "mhe",
+          "lines": [
+            "equipment",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 10,
+          "leadTimeDays": 3,
+          "unitPriceCents": 18000
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "surveyed"
+    },
+    {
+      "id": "islandProvisions",
+      "name": "Island Provisions",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "food",
+          "lines": [
+            "service",
+            "operator"
+          ],
+          "capacityPerDay": 2500,
+          "leadTimeDays": 3,
+          "unitPriceCents": 1100
+        }
+      ],
+      "reliability": 0.96,
+      "acceptsGpc": false,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "portFuel",
+      "name": "Port Fuel Haulers",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 5000,
+          "leadTimeDays": 1,
+          "unitPriceCents": 450
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "secondFuel",
+      "name": "Second Island Fuel",
+      "island": "second",
+      "offers": [
+        {
+          "capability": "fuel",
+          "lines": [
+            "delivery",
+            "storage"
+          ],
+          "capacityPerDay": 1200,
+          "leadTimeDays": 1,
+          "unitPriceCents": 700
+        }
+      ],
+      "reliability": 0.88,
+      "acceptsGpc": false,
+      "acceptsCash": true,
+      "vetted": false,
+      "infoTier": "assumed"
+    },
+    {
+      "id": "northWater",
+      "name": "North Island Water Works",
+      "island": "north",
+      "offers": [
+        {
+          "capability": "water",
+          "lines": [
+            "supply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 5000,
+          "leadTimeDays": 4,
+          "unitPriceCents": 35
+        }
+      ],
+      "reliability": 0.94,
+      "acceptsGpc": false,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "assumed"
+    },
+    {
+      "id": "thirdShelter",
+      "name": "Third Island Camp Services",
+      "island": "third",
+      "offers": [
+        {
+          "capability": "lodging",
+          "lines": [
+            "shelter",
+            "maintenance"
+          ],
+          "capacityPerDay": 400,
+          "leadTimeDays": 6,
+          "unitPriceCents": 4000
+        }
+      ],
+      "reliability": 0.96,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "assumed",
+      "qualifyingProposalLagDays": {
+        "min": 14,
+        "max": 20
+      }
+    },
+    {
+      "id": "secondCamp",
+      "name": "Second Island Camp Services",
+      "island": "second",
+      "offers": [
+        {
+          "capability": "lodging",
+          "lines": [
+            "shelter",
+            "maintenance"
+          ],
+          "capacityPerDay": 400,
+          "leadTimeDays": 5,
+          "unitPriceCents": 3200
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "hubWasteCo",
+      "name": "Main Island Sanitation",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "waste",
+          "lines": [
+            "removal"
+          ],
+          "capacityPerDay": 12000,
+          "leadTimeDays": 2,
+          "unitPriceCents": 9
+        }
+      ],
+      "reliability": 0.96,
+      "acceptsGpc": true,
+      "acceptsCash": true,
+      "vetted": true,
+      "infoTier": "observed"
+    },
+    {
+      "id": "northTelecom",
+      "name": "North Island Telecom",
+      "island": "north",
+      "offers": [
+        {
+          "capability": "comms",
+          "lines": [
+            "backhaul",
+            "maintenance"
+          ],
+          "capacityPerDay": 10,
+          "leadTimeDays": 5,
+          "unitPriceCents": 30000
+        }
+      ],
+      "reliability": 0.97,
+      "acceptsGpc": false,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
+      "id": "hubMotors",
+      "name": "Main Island Motor Pool Rentals",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "transport",
+          "lines": [
+            "vehicles",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 40,
+          "leadTimeDays": 3,
+          "unitPriceCents": 16000
+        }
+      ],
+      "reliability": 0.96,
+      "acceptsGpc": true,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "observed"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "bosBpa",
+      "kind": "bpa",
+      "vendor": "harborEquipment",
+      "scopeTags": [
+        "generation",
+        "maintenance",
+        "equipment",
+        "operator"
+      ],
+      "callLimitCents": 25000000,
+      "orderingPeriodEndDay": 20,
+      "placeOfPerformance": [],
+      "visibleOnDay1": true
+    },
+    {
+      "id": "foodBpa",
+      "kind": "bpa",
+      "vendor": "islandProvisions",
+      "scopeTags": [
+        "service",
+        "operator"
+      ],
+      "callLimitCents": 40000000,
+      "orderingPeriodEndDay": 20,
+      "placeOfPerformance": [],
+      "visibleOnDay1": true
+    },
+    {
+      "id": "fuelIdiq",
+      "kind": "idiq",
+      "vendor": "portFuel",
+      "scopeTags": [
+        "delivery",
+        "storage"
+      ],
+      "ceilingCents": 500000000,
+      "obligatedCents": 425000000,
+      "orderingPeriodEndDay": 365,
+      "placeOfPerformance": [],
+      "visibleOnDay1": true
+    }
+  ],
+  "inheritedArrangements": [
+    {
+      "id": "hubGrid",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "hubFuelPoint",
+      "instrument": "hostNation",
+      "vendor": "hubUtilities",
+      "site": "hubSite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "startDay": 1,
+      "endDay": 400
+    },
+    {
+      "id": "aPower",
+      "instrument": "uca",
+      "vendor": "northPower",
+      "site": "spokeASite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "fuelSupply",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": -49,
+      "endDay": 70,
+      "quantity": 290,
+      "dailyCostCents": 261000,
+      "fundingLine": "om1",
+      "cor": "corMensah",
+      "ucaState": {
+        "nteCents": 34000000,
+        "obligatedCents": 13000000,
+        "issuedDay": -140,
+        "qualifyingProposalDay": -10,
+        "definitized": false,
+        "quotedTotalCents": 31300000
+      }
+    },
+    {
+      "id": "cLodging",
+      "instrument": "uca",
+      "vendor": "thirdShelter",
+      "site": "spokeCSite",
+      "capability": "lodging",
+      "lines": [
+        "shelter",
+        "maintenance"
+      ],
+      "startDay": -119,
+      "endDay": 60,
+      "quantity": 160,
+      "dailyCostCents": 640000,
+      "fundingLine": "om1",
+      "cor": "corOyelaran",
+      "visibleProblem": false,
+      "ucaState": {
+        "nteCents": 120000000,
+        "obligatedCents": 52000000,
+        "issuedDay": -172,
+        "qualifyingProposalDay": -60,
+        "definitized": false,
+        "quotedTotalCents": 114000000
+      }
+    },
+    {
+      "id": "bGens",
+      "instrument": "bpaCall",
+      "vendor": "harborEquipment",
+      "vehicle": "bosBpa",
+      "site": "spokeBSite",
+      "capability": "power",
+      "lines": [
+        "generation",
+        "maintenance"
+      ],
+      "startDay": -29,
+      "endDay": 30,
+      "quantity": 400,
+      "dailyCostCents": 92000,
+      "obligatedCents": 2760000,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "id": "bFood",
+      "instrument": "bpaCall",
+      "vendor": "islandProvisions",
+      "vehicle": "foodBpa",
+      "site": "spokeBSite",
+      "capability": "food",
+      "lines": [
+        "service",
+        "operator"
+      ],
+      "startDay": -24,
+      "endDay": 35,
+      "quantity": 1000,
+      "dailyCostCents": 1100000,
+      "obligatedCents": 38500000,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "id": "aFuel",
+      "instrument": "idiqOrder",
+      "vendor": "portFuel",
+      "vehicle": "fuelIdiq",
+      "site": "spokeASite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "startDay": -19,
+      "endDay": 40,
+      "quantity": 800,
+      "dailyCostCents": 360000,
+      "obligatedCents": 14400000,
+      "fundingLine": "om1",
+      "cor": "corMensah",
+      "visibleProblem": false
+    },
+    {
+      "id": "cFuel",
+      "instrument": "idiqOrder",
+      "vendor": "portFuel",
+      "vehicle": "fuelIdiq",
+      "site": "spokeCSite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "startDay": -19,
+      "endDay": 40,
+      "quantity": 600,
+      "dailyCostCents": 270000,
+      "obligatedCents": 10800000,
+      "fundingLine": "om1",
+      "cor": "corMensah",
+      "visibleProblem": false
+    },
+    {
+      "id": "bFuel",
+      "instrument": "purchaseOrder",
+      "vendor": "secondFuel",
+      "site": "spokeBSite",
+      "capability": "fuel",
+      "lines": [
+        "delivery",
+        "storage"
+      ],
+      "startDay": -39,
+      "endDay": 60,
+      "quantity": 1000,
+      "dailyCostCents": 700000,
+      "obligatedCents": 42000000,
+      "fundingLine": "om1",
+      "cor": "corDuarte",
+      "noticeDays": 15,
+      "visibleProblem": false,
+      "reportedReliability": 0.97
+    },
+    {
+      "id": "hubWaste",
+      "instrument": "purchaseOrder",
+      "vendor": "hubWasteCo",
+      "site": "hubSite",
+      "capability": "waste",
+      "lines": [
+        "removal"
+      ],
+      "startDay": -14,
+      "endDay": 75,
+      "quantity": 8000,
+      "dailyCostCents": 72000,
+      "obligatedCents": 4320000,
+      "fundingLine": "om1",
+      "cor": "corDuarte"
+    },
+    {
+      "id": "aWater",
+      "instrument": "acsa",
+      "vendor": "partnerForce",
+      "site": "spokeASite",
+      "capability": "water",
+      "lines": [
+        "supply",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": -9,
+      "endDay": 50,
+      "quantity": 3500,
+      "dailyCostCents": 70000,
+      "obligatedCents": 3500000,
+      "fundingLine": "om1"
+    },
+    {
+      "id": "aComms",
+      "instrument": "purchaseOrder",
+      "vendor": "northTelecom",
+      "site": "spokeASite",
+      "capability": "comms",
+      "lines": [
+        "backhaul",
+        "maintenance"
+      ],
+      "startDay": -9,
+      "endDay": 21,
+      "quantity": 3,
+      "dailyCostCents": 90000,
+      "obligatedCents": 1890000,
+      "fundingLine": "om1",
+      "cor": "corMensah"
+    },
+    {
+      "id": "hubTransport",
+      "instrument": "gpc",
+      "vendor": "hubMotors",
+      "site": "hubSite",
+      "capability": "transport",
+      "lines": [
+        "vehicles",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": -5,
+      "endDay": 24,
+      "quantity": 14,
+      "dailyCostCents": 224000,
+      "obligatedCents": 5376000,
+      "fundingLine": "om1"
+    },
+    {
+      "id": "cMhe",
+      "instrument": "purchaseOrder",
+      "vendor": "harborEquipment",
+      "site": "spokeCSite",
+      "capability": "mhe",
+      "lines": [
+        "equipment",
+        "operator",
+        "maintenance"
+      ],
+      "startDay": -2,
+      "endDay": 27,
+      "quantity": 2,
+      "dailyCostCents": 36000,
+      "obligatedCents": 972000,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    },
+    {
+      "id": "bLodging",
+      "instrument": "purchaseOrder",
+      "vendor": "secondCamp",
+      "site": "spokeBSite",
+      "capability": "lodging",
+      "lines": [
+        "shelter",
+        "maintenance"
+      ],
+      "startDay": -28,
+      "endDay": 31,
+      "quantity": 270,
+      "dailyCostCents": 864000,
+      "obligatedCents": 26784000,
+      "fundingLine": "om1",
+      "cor": "corOyelaran"
+    }
+  ],
+  "fundingLines": [
+    {
+      "id": "om1",
+      "type": "OM",
+      "amountCents": 330000000,
+      "availableDay": 1,
+      "expiresDay": 45
+    },
+    {
+      "id": "om2",
+      "type": "OM",
+      "amountCents": 300000000,
+      "availableDay": 46,
+      "expiresDay": 400
+    }
+  ],
+  "cors": [
+    {
+      "id": "corMensah",
+      "name": "SSG Mensah",
+      "unit": "Spoke A detachment",
+      "quality": "good"
+    },
+    {
+      "id": "corOyelaran",
+      "name": "SGT Oyelaran",
+      "unit": "Spoke C supply section",
+      "quality": "fair"
+    },
+    {
+      "id": "corDuarte",
+      "name": "SFC Duarte",
+      "unit": "Hub sustainment cell",
+      "quality": "fair"
+    },
+    {
+      "id": "corPark",
+      "name": "SSG Park",
+      "unit": "Hub sustainment cell",
+      "quality": "fair"
+    }
+  ],
+  "shop": {
+    "people": 3,
+    "systemOnlineDay": 0,
+    "cashOnHandCents": 5000000,
+    "cashReplenishLagDays": 5,
+    "gpcAvailableDay": 0,
+    "gpcSinglePurchaseCents": 4000000,
+    "gpcMonthlyCents": 15000000,
+    "payingAgentAvailableDay": 0
+  },
+  "actors": {
+    "sco": {
+      "responsiveness": "medium",
+      "offersJointBoardsUnprompted": false
+    },
+    "fm": {
+      "certificationLagDays": 1
+    },
+    "commander": {
+      "priorityOrder": [
+        "hubSite",
+        "spokeBSite",
+        "spokeASite",
+        "spokeCSite"
+      ]
+    },
+    "acsaPartner": {
+      "present": true,
+      "name": "Partner force",
+      "island": "north",
+      "stock": {
+        "water": 6000,
+        "fuel": 600
+      },
+      "unitPriceCents": {
+        "water": 20,
+        "fuel": 500
+      },
+      "reliability": 0.97
+    },
+    "hostNation": {
+      "agreementExists": true,
+      "name": "Host nation",
+      "island": "hub",
+      "reliability": 0.92,
+      "capacity": {
+        "water": 8000,
+        "fuel": 1500
+      },
+      "unitPriceCents": {
+        "water": 10,
+        "fuel": 300
+      }
+    },
+    "externalSupport": {
+      "provider": "Theater base support contractor",
+      "offers": [
+        {
+          "capability": "power",
+          "lines": [
+            "generation",
+            "fuelSupply",
+            "operator",
+            "maintenance"
+          ],
+          "capacityPerDay": 2000,
+          "unitPriceCents": 1100,
+          "mobilizationFraction": 0.2,
+          "reliability": 0.98
+        },
+        {
+          "capability": "food",
+          "lines": [
+            "service",
+            "operator"
+          ],
+          "capacityPerDay": 3000,
+          "unitPriceCents": 1300,
+          "mobilizationFraction": 0.1,
+          "reliability": 0.98
+        },
+        {
+          "capability": "lodging",
+          "lines": [
+            "shelter",
+            "maintenance"
+          ],
+          "capacityPerDay": 600,
+          "unitPriceCents": 4500,
+          "mobilizationFraction": 0.2,
+          "reliability": 0.98
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "id": "corRotates",
+      "label": "SFC Duarte rotates home",
+      "window": {
+        "earliestDay": 10,
+        "latestDay": 10
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "cor.rotates",
+          "target": "corDuarte",
+          "note": "Chain 1: report quality on bFuel and hubWaste drops until the player designates another COR."
+        }
+      ],
+      "playerVisibleAs": "S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training."
+    },
+    {
+      "id": "bpaNotExtended",
+      "label": "Higher HQ declines to extend the BPAs",
+      "window": {
+        "earliestDay": 14,
+        "latestDay": 14
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "inbox",
+          "note": "Chain 2: bosBpa and foodBpa ordering periods end day 20; calls already placed run to their end."
+        }
+      ],
+      "playerVisibleAs": "Regional contracting office: the equipment and food BPAs will not be extended past day 20. Calls already placed run to their end; anything after needs another vehicle."
+    },
+    {
+      "id": "bFuelSlips",
+      "label": "Second Island Fuel falls behind",
+      "window": {
+        "earliestDay": 20,
+        "latestDay": 20
+      },
+      "fixed": true,
+      "preconditions": [
+        {
+          "kind": "arrangement.noCureNotice",
+          "target": "bFuel"
+        },
+        {
+          "kind": "arrangement.notReplaced",
+          "target": "bFuel"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "vendor.reliabilityDrop",
+          "target": "bFuel",
+          "value": 0.6,
+          "note": "Chain 3: unless a cure notice went out or a replacement is delivering."
+        }
+      ]
+    },
+    {
+      "id": "fyFundingLate",
+      "label": "The new fiscal year's funding is held up",
+      "window": {
+        "earliestDay": 38,
+        "latestDay": 44
+      },
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "funding.late",
+          "target": "om2",
+          "daysRange": {
+            "min": 5,
+            "max": 9
+          },
+          "note": "Chain 5: om1 expires day 45; om2 was planned for day 46."
+        }
+      ],
+      "playerVisibleAs": "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+    },
+    {
+      "id": "partnerDrySpell",
+      "label": "The partner force needs its water back",
+      "window": {
+        "earliestDay": 28,
+        "latestDay": 36
+      },
+      "preconditions": [
+        {
+          "kind": "arrangement.active",
+          "target": "aWater"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "acsa.withdraw",
+          "target": "water",
+          "days": 3,
+          "note": "Chain 6."
+        }
+      ],
+      "playerVisibleAs": "Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days."
+    },
+    {
+      "id": "spokeCGrows",
+      "label": "Spoke C grows by 60",
+      "window": {
+        "earliestDay": 22,
+        "latestDay": 22
+      },
+      "fixed": true,
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "site.populationJump",
+          "target": "spokeCSite",
+          "fraction": 0.4,
+          "days": 8,
+          "note": "Chain 7."
+        }
+      ],
+      "playerVisibleAs": "Spoke C: an aviation detachment of 60 arrives day 30 to stay."
+    },
+    {
+      "id": "secondBargeWeather",
+      "label": "Weather stops the Second Island barge",
+      "window": {
+        "earliestDay": 33,
+        "latestDay": 40
+      },
+      "preconditions": [],
+      "effects": [
+        {
+          "kind": "link.closed",
+          "target": "secondBarge",
+          "days": 3,
+          "forecastDays": 2,
+          "note": "Chain 8."
+        }
+      ],
+      "playerVisibleAs": "Harbor master: no barge movements to Second Island for the next three days."
+    }
+  ],
+  "fixedSituations": [
+    "corRotates",
+    "bpaNotExtended",
+    "bFuelSlips",
+    "spokeCGrows",
+    "req0201",
+    "req0205",
+    "req0209",
+    "req0213"
+  ],
+  "variation": [],
+  "passCriteria": [
+    {
+      "id": "aPowerUp",
+      "label": "Spoke A power never down more than two days",
+      "metric": "site.spokeASite.power.downDays",
+      "comparator": "<=",
+      "value": 2
+    },
+    {
+      "id": "bFuelUp",
+      "label": "Spoke B fuel never out more than two days",
+      "metric": "site.spokeBSite.fuel.downDays",
+      "comparator": "<=",
+      "value": 2
+    },
+    {
+      "id": "noHhq",
+      "label": "No UCA past due when higher HQ asks",
+      "metric": "compliance.hhqInquiries",
+      "comparator": "==",
+      "value": 0
+    },
+    {
+      "id": "noUnpaid",
+      "label": "No unobligated incurred cost at the end",
+      "metric": "cost.unobligatedIncurredCents",
+      "comparator": "==",
+      "value": 0
+    },
+    {
+      "id": "mission",
+      "label": "Mission output at least 88%",
+      "metric": "mission.output",
+      "comparator": ">=",
+      "value": 0.88
+    }
+  ],
+  "modelAssumptions": [
+    "Day 1 is day 90 of the operation: every inherited arrangement started under the last rotation; its obligations and its UCA clocks count from then.",
+    "Every site runs at tempo 1.0: demand is people times the per-person rate.",
+    "The hub's power and fuel are host nation support and never fail, so the lessons stay at the spokes and in the files.",
+    "bFuel: the handover reported a 0.97 delivery record; the real one is 0.88 and drops to 0.6 on day 20 unless a cure notice went out or a replacement is delivering. Its terms need 15 days' notice to terminate.",
+    "cLodging was past due for definitization before day 1 (issued day -172, due day 8); nobody noticed. Only a file review shows it before higher HQ does.",
+    "fuelIdiq has $750,000 of ceiling left: one more 30-day order for one spoke fits, two do not. The file review shows the ceiling.",
+    "The partner force's water is support it can spare, not a contract: it withdraws it in a dry spell between days 28 and 36 with three days' notice.",
+    "Fiscal year money: om1 expires day 45; om2 is planned for day 46 and released 5 to 9 days late. Nothing can be obligated in between.",
+    "The four new requests follow on from short buys that end days 21 to 31; each is real, and none is urgent the day it arrives."
+  ]
+}

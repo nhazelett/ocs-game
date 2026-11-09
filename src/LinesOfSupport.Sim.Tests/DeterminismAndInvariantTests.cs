@@ -134,6 +134,7 @@ public class BalanceTests
     [Theory]
     [InlineData("spoke-b")]
     [InlineData("spoke-b-90")]
+    [InlineData("sustainment")]
     public void Textbook_beats_greedy_beats_do_nothing(string scenario)
     {
         var bundle = Repo.Load(scenario);
