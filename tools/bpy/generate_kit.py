@@ -1,7 +1,7 @@
-"""Generate the M0 kit. Run with Blender 4.4+ --background --factory-startup.
+"""Generate the kit. Proven with Blender 4.3.2 --background --factory-startup.
 
 Example: blender --background --factory-startup --python tools/bpy/generate_kit.py -- --scale 1
-Blender execution is unverified on the M0-10 authoring machine; see tools/README.md.
+M3-11 replaces the M0 primitive fallback; see tools/bpy/README.md.
 """
 import argparse
 import json

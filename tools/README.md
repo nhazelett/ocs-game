@@ -1,5 +1,7 @@
 Blender (bpy) asset scripts and validators. Nothing here runs at game runtime.
 
+M3-11 update: Blender 4.3.2 has now generated and validated all 22 committed kit meshes. The M0 sections below record the earlier fallback experiments. Current generation, the Spoke B diorama and Godot screenshot commands are in [bpy/README.md](bpy/README.md).
+
 ## Unresolved merge markers
 
 `python3 tools/validate/conflicts.py` checks tracked text for lines beginning with `<<<<<<< ` or `>>>>>>> `, or a line exactly `=======`. It reports the path and line and exits unsuccessfully when a marker remains. Binary files and untracked build output are ignored; BOM-encoded UTF-16/32 text is checked. The existing CI `test` job runs this before .NET build/test, so it also gates tag exports without adding another required status name. Tests use temporary Git repositories: `python3 -m unittest discover -s tools/validate -p test_conflicts.py`.
