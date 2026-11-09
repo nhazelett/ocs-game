@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    Ordered a site survey of Second Island.
   ACTION    The request for power for Spoke B: Generator fuel supply switched on.
@@ -107,6 +107,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -129,6 +130,7 @@ Day 41
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Meridian Site Services power at Spoke B ended.
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
   TRANSIT   The hand-off of power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 41 and The external contract's power at Spoke B is not expected before day 47. Power at Spoke B has nothing behind it. Gap owner: CCO seat.
 Day 43
@@ -190,18 +192,14 @@ Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The external contract's power at Spoke B had equipment down.
-  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  OK        Power at Spoke B restored to 100%.
 Day 70
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 71
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 72
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): the external contract's power at Spoke B had equipment down on day 68, reported 4 day(s) later.
 Day 73
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 74
@@ -218,6 +216,7 @@ Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 80
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 81
@@ -237,11 +236,8 @@ Day 87
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 88
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The external contract's power at Spoke B had equipment down.
-  SHORT     Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
 Day 89
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  OK        Power at Spoke B restored to 100%.
 Day 90
   DONE      CE small buys: 6 worked today (3 h of shop time).
 
@@ -250,7 +246,7 @@ CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 Hub Power                 ..........................................................................................
 Hub Fuel                  ..........................................................................................
-Spoke B Power                   ...................................XXXXX.....................5...................5..
+Spoke B Power                   ...................................XXXXX............................................
 Spoke B Fuel                    ....................................................................................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
@@ -258,20 +254,14 @@ SCORECARD
   Mission output 91% (sortie generation 97%, throughput 97%, endurance 100%, resilience 53%)
   Obligated $647,379; incurred $564,659; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 373; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
-  spokeBSite.power: 5 day(s) down, 2 degraded, lowest 0%
+  Surveys 1; shop hours worked 373; payment errors 0; execution-confusion days 0; vendor failures 3; declined BPA calls 0
+  spokeBSite.power: 5 day(s) down, 0 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on gens, $2,400. Decision: denied on day 16.
 
 GAPS AND WHY (each traced back through its causes)
   Day 42: Power at Spoke B down to 0%: no arrangement supplies power.
-  Day 68: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 68: The external contract's power at Spoke B had equipment down.
-          <- day 2: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
-  Day 88: Power at Spoke B degraded to 50%: supply 235 kW against demand 468.
-      <- day 88: The external contract's power at Spoke B had equipment down.
-          <- day 2: External support request started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from the O&M line good through day 75; 2 shop day(s) to prepare, then the SCO and the external office.
 
 TRANSITIONS (planned handoffs between arrangements)
   bridgeToUca (day 6): gens to turnkey at spokeBSite.power, cut-over after 2 full day(s); clean, 3 day(s) of overlap, resolved day 20.
@@ -281,15 +271,11 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #0 spokeBSite.power days 42-46, lowest 0%, 5 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 42. The last arrangement supplying it, Meridian Site Services power at Spoke B, ended on day 41. the external contract's power at Spoke B did not start until day 47. the external contract's power at Spoke B is an external support contract: requested day 2, submitted day 3, awarded day 16 after 13 days in approval, then 30 days of mobilization. It is the enduring answer, not the first-week one; a bridge was needed until it arrived.
       [avoidable] The hand-off from Meridian Site Services power at Spoke B to the external contract's power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 41 before the external contract's power at Spoke B was delivering. the external contract's power at Spoke B started day 47. The transition planner flagged it on day 36; a bridge or an earlier start would have covered it. Gap owner: CCO seat.
-  #1 spokeBSite.power days 68-68, lowest 50%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] The external contract's power at Spoke B failed on day 68 with full operator and maintenance coverage. The COR reported it on day 72.
-  #2 spokeBSite.power days 88-88, lowest 50%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] The external contract's power at Spoke B failed on day 88 with full operator and maintenance coverage. Its report was still on the way (due day 92) when the game ended.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 5)
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 90% (mission.output = 0.908)
+  [met] Mission output at least 90% (mission.output = 0.911)
 
-State hash c55ce794dd9728acc5eb3c5443164c151287b82288d45d34653172c77526face
+State hash 02ddfd00df66a64b9d3d494dfdeb0252bfd64fb13fc4d7a63faee68ae16ed1dd

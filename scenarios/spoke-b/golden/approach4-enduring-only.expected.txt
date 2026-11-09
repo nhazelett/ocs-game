@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
   START     Inherited: Lodging at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Food service at Hub from Main Island Utilities (host nation), days 1 to 400.
   START     Inherited: Waste removal at Hub from Main Island Utilities (host nation), days 1 to 400.
@@ -52,24 +52,16 @@ Day 8
   DONE      CE small buys: 27 worked today (13.5 h of shop time).
 Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
-  INBOX     Performance issue: Coastal Provisions under-delivered on water at Spoke C on days 9 and 11. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
-  SHORT     Water at Spoke C degraded to 86%: water on hand ran out.
-  SHORT     Food service at Spoke C degraded to 86%: water at 86%.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
-  OK        Water at Spoke C restored to 100%.
-  OK        Food service at Spoke C restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
@@ -110,6 +102,7 @@ Day 25
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 28
@@ -135,9 +128,9 @@ Spoke B Power                   XXXXXXXXXX..............
 Spoke B Fuel                    ...XXXXXXX..............
 Spoke B Lodging                 XXXXXXXXXX..............
 Spoke B Waste removal           ........................
-Spoke C Water                 .......7..................
+Spoke C Water                 ..........................
 Spoke C Lodging               ..........................
-Spoke C Food service          .......7................55
+Spoke C Food service          ........................55
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
@@ -145,12 +138,11 @@ SCORECARD
   Mission output 80% (sortie generation 88%, throughput 88%, endurance 87%, resilience 40%)
   Obligated $522,720; incurred $469,920; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 197; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
+  Surveys 0; shop hours worked 197; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
   spokeBSite.power: 10 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 7 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 10 day(s) down, 0 degraded, lowest 0%
-  spokeCSite.water: 0 day(s) down, 1 degraded, lowest 86%
-  spokeCSite.food: 0 day(s) down, 3 degraded, lowest 71%
+  spokeCSite.food: 0 day(s) down, 2 degraded, lowest 71%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 18): out-of-scope work on turnkey, $2,400. Decision: open; drew an HHQ inquiry.
@@ -160,32 +152,17 @@ GAPS AND WHY (each traced back through its causes)
   Day 7: Lodging at Spoke B down to 0%: power at 0%.
       <- day 7: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 10: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
-  Day 12: Water at Spoke C degraded to 86%: water on hand ran out.
-      <- day 12: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
-          <- day 2: Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
-  Day 12: Food service at Spoke C degraded to 86%: water at 86%.
-      <- day 12: Water at Spoke C degraded to 86%: water on hand ran out.
-          <- day 12: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
-              <- day 2: Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
   Day 29: Food service at Spoke C degraded to 71%: food service on hand ran out.
-
-PERFORMANCE ISSUES (FAR 49.402-3)
-  pi1 (day 11): waterBridge at spokeCSite.water, failed days 9, 11. Decision: no decision.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-16, lowest 0%, 7 day(s) down: AVOIDABLE
-      [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.power days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Meridian Site Services power at Spoke B did not start until day 17.
       [avoidable] Power depends on fuel, which was short. (see #0)
   #2 spokeBSite.lodging days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #1)
-  #3 spokeCSite.water days 12-12, lowest 86%, 0 day(s) down: AVOIDABLE
-      [avoidable] Coastal Provisions water at Spoke C failed (first on day 12) and had no plant operators or maintenance line; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 11; decision: no decision.
-  #4 spokeCSite.food days 12-12, lowest 86%, 0 day(s) down: AVOIDABLE
-      [avoidable] Food service depends on water, which was short. (see #3)
-      [avoidable] The request for food service for Spoke C (submitted day 3, needed from day 12) had nothing supplying it from day 12. Third Island Water Works food service at Spoke C did not start until day 13.
-  #5 spokeCSite.food days 29-30, lowest 71%, 0 day(s) down: UNFORESEEABLE
+  #3 spokeCSite.food days 29-30, lowest 71%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
 
 PASS CRITERIA
@@ -193,6 +170,6 @@ PASS CRITERIA
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
   [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [not met] Mission output at least 90% (mission.output = 0.802)
+  [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash 0773ac2a899af819761defd6c7720fb328251634b41aaded928a597b040867b3
+State hash f7b8af193b9bf21621bf172a5f4d7ab57f1bd7989488e5cf74954c11a6b68d74

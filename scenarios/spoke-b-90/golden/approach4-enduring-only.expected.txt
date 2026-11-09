@@ -7,7 +7,7 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM (5 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    The request for power for Spoke B: Generator fuel supply switched on.
   ACTION    The request for power for Spoke B: Operators switched on.
@@ -118,6 +118,7 @@ Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on Meridian Site Services power at Spoke B (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 45
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 46
@@ -138,6 +139,7 @@ Day 53
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 55
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 56
@@ -235,7 +237,7 @@ SCORECARD
   Mission output 80% (sortie generation 79%, throughput 79%, endurance 100%, resilience 52%)
   Obligated $523,463; incurred $542,850; incurred but not obligated $19,388
   Unauthorized commitments 0; UCAs past due 1; HHQ inquiries 2
-  Surveys 0; shop hours worked 317; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  Surveys 0; shop hours worked 317; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
   spokeBSite.power: 37 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 29 day(s) down, 0 degraded, lowest 0%
 
@@ -252,11 +254,11 @@ GAPS AND WHY (each traced back through its causes)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-16, lowest 0%, 7 day(s) down: AVOIDABLE
-      [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.fuel days 69-90, lowest 0%, 22 day(s) down: AVOIDABLE
       [avoidable] Meridian Site Services power at Spoke B stopped work on day 63: incurred costs went past the obligation cap; it had been past due for definitization since day 36.
       [avoidable] No funding line with money could pay for fuel on day 77 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
-      [avoidable] Nothing supplied fuel at Spoke B; the site and its population were in the plan from day 1.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #2 spokeBSite.power days 7-16, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Meridian Site Services power at Spoke B did not start until day 17.
       [avoidable] Power depends on fuel, which was short. (see #0)
@@ -272,4 +274,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.8)
 
-State hash 6be2609991dd19862b27fe5861ca9a444b8f309a25b6ed4250b7fed6a3c04a9e
+State hash 25de9a11cb755c331702141c69450abbbf5a5804766183df7b89b27424cc73d4

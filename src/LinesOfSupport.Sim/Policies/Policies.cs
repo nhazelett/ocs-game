@@ -69,6 +69,8 @@ public sealed class TextbookPolicy : IPolicy
     public string Name => "textbook";
     private readonly HashSet<string> _done = [];
     private readonly HashSet<string> _bridges = [];
+    /// <summary>Site:capability pairs handed to their usual owner (the J4); the office leaves those supply lines off its own buys.</summary>
+    private readonly HashSet<string> _owned = [];
 
     public IEnumerable<string> PrepChoices(ScenarioBundle bundle)
     {
@@ -102,6 +104,21 @@ public sealed class TextbookPolicy : IPolicy
         // Read the inherited contract files on day 1, before the clocks in them run on (M3-17).
         if (v.Day == 1 && v.InheritedFiles().Any(f => f.ReviewedDay is null && !f.InReview))
             actions.Add(new ReviewFilesAction());
+        // Day 1: anything with a usual owner other than this office (fuel: the J4 through the ACSA partner) goes to that owner
+        // first (design doc R10, M2R-06). One request per site and capability, sized to the site's peak demand over the game,
+        // for every site that lists the capability and arrived with nothing covering it. The office buys it only as a stopgap.
+        if (v.Day == 1 && v.AcsaPartner is { } partner)
+            foreach (var site in v.Scenario.Sites)
+                foreach (var sc in site.Capabilities)
+                {
+                    var capData = v.Rules.Model.Capabilities.FirstOrDefault(c => c.Id == sc.Id);
+                    if (capData?.UsualOwner is null || !partner.Stock.TryGetValue(sc.Id, out var stock) || stock <= 0) continue;
+                    if (sc.InitialArrangements.Count > 0 || !_done.Add($"j4:{site.Id}:{sc.Id}")) continue;
+                    var opens = Math.Max(1, site.OpensDay);
+                    var peak = Math.Max(1, v.PeakDemandUnits(site.Id, sc.Id, opens, v.LastDay));
+                    _owned.Add($"{site.Id}:{sc.Id}");
+                    actions.Add(new EngageJ4Action { Id = $"t-j4-{site.Id}-{sc.Id}", Site = site.Id, Capability = sc.Id, Quantity = peak + peak / 10 });
+                }
         if (v.Day == 1)
             foreach (var island in v.Scenario.Sites.Select(s => s.Island).Distinct())
                 if (v.KnowledgeTier(island) is "assumed" or "estimated" && !v.SurveyPending(island))
@@ -120,24 +137,26 @@ public sealed class TextbookPolicy : IPolicy
         {
             var cap = v.Rules.Model.Capabilities.First(c => c.Id == card.CapabilityId);
             if (clocksFirst && card.RequestedStartDay - v.Day > 14) continue;
-            // 1. Complete the scope before buying anything.
-            foreach (var line in cap.Lines.Where(l => !card.Lines.GetValueOrDefault(l.Id)))
+            // 1. Complete the scope before buying anything. A supplies line whose capability the usual owner is providing
+            //    (the J4's fuel) stays off: the office does not buy what the J4 is already bringing.
+            bool Owned(CapabilityLineData l) => l.Kind == "supplies" && l.Supplies is { } t && _owned.Contains($"{card.SiteId}:{t}");
+            foreach (var line in cap.Lines.Where(l => !card.Lines.GetValueOrDefault(l.Id) && !Owned(l)))
                 if (_done.Add($"line:{card.Id}:{line.Id}"))
                     actions.Add(new SetLineAction { Card = card.Id, Line = line.Id, On = true });
-            var allLines = cap.Lines.Select(l => l.Id).ToList();
+            var allLines = cap.Lines.Where(l => !Owned(l)).Select(l => l.Id).ToList();
             var periodEnd = card.RequestedStartDay + card.DurationDays - 1;
             var peak = Math.Max(1, v.PeakDemandUnits(card.SiteId, card.CapabilityId, card.RequestedStartDay, periodEnd));
             var sized = peak + peak / 10;
 
             // 2. Enduring: a turnkey vendor offering every line, started now.
             var enduringId = $"t-{card.Id}-enduring";
+            // Only vendors this office can actually buy from (not reachable only through someone else's vehicle,
+            // such as host-nation support) with room for the quantity.
+            var turnkey = Helpers.Vendors(v, card.CapabilityId, allLines)
+                .Where(x => !x.Vendor.VehicleOnly && Helpers.HasCapacity(v, x.Vendor, card.CapabilityId, sized))
+                .OrderBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id).FirstOrDefault();
             if (_done.Add($"enduring:{card.Id}"))
             {
-                // Only vendors this office can actually buy from (not reachable only through someone else's vehicle,
-                // such as host-nation support) with room for the quantity.
-                var turnkey = Helpers.Vendors(v, card.CapabilityId, allLines)
-                    .Where(x => !x.Vendor.VehicleOnly && Helpers.HasCapacity(v, x.Vendor, card.CapabilityId, sized))
-                    .OrderBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id).FirstOrDefault();
                 if (turnkey.Vendor is not null)
                 {
                     var total = sized * turnkey.Offer.UnitPriceCents * card.DurationDays;
@@ -156,7 +175,9 @@ public sealed class TextbookPolicy : IPolicy
             // 3. Bridge when the need starts before a turnkey vendor could: core line now, plus each supplied capability
             //    from the site's own island where possible.
             var enduringStart = v.Arrangements.FirstOrDefault(a => a.Id == enduringId)?.StartDay;
-            var turnkeyLead = Helpers.Vendors(v, card.CapabilityId, allLines).Select(x => x.Offer.LeadTimeDays).DefaultIfEmpty(99).Min();
+            // The bridge covers the lead of the vendor actually chosen for the enduring award, not the fastest on paper.
+            var turnkeyLead = turnkey.Offer?.LeadTimeDays
+                              ?? Helpers.Vendors(v, card.CapabilityId, allLines).Select(x => x.Offer.LeadTimeDays).DefaultIfEmpty(99).Min();
             var urgent = card.RequestedStartDay - v.Day < turnkeyLead + 6;
             if (urgent && _done.Add($"bridge:{card.Id}"))
             {
@@ -169,7 +190,7 @@ public sealed class TextbookPolicy : IPolicy
                     _bridges.Add($"t-{card.Id}-bridge");
                     actions.Add(bridge with { Id = $"t-{card.Id}-bridge", Card = card.Id, Lines = core, StartDay = card.RequestedStartDay });
                 }
-                foreach (var supplies in cap.Lines.Where(l => l.Kind == "supplies" && l.Supplies is not null))
+                foreach (var supplies in cap.Lines.Where(l => l.Kind == "supplies" && l.Supplies is not null && !Owned(l)))
                 {
                     var target = supplies.Supplies!;
                     if (!v.Capabilities.Any(c => c.SiteId == card.SiteId && c.CapabilityId == target)) continue;

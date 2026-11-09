@@ -6,16 +6,16 @@ TIMELINE
 Before day 1
   ACTION    Pre-deployment: request contract-writing system access and location data setup; arrange cash and a paying agent with FM; pull existing vehicles with scope and ceilings from reach-back; bring vendor lists and vetting from reach-back; bring templates and a manual contracting kit; stand up GPC accounts and cardholder limits (14 of 14 prep-days).
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
+  ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1287 gal a day.
   ACTION    Ordered a site survey of Second Island.
-  ACTION    The request for power for Spoke B: Generator fuel supply switched on.
   ACTION    The request for power for Spoke B: Operators switched on.
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
-  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
+  ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
-  ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke B, 1170 gal/day for 13 days (Fuel delivery); quoted $68,445.
+  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with Partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. Partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 2
@@ -23,20 +23,19 @@ Day 2
   DONE      CE small buys: none worked today (no hours left); 8 waiting.
 Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
-  DONE      Written purchase order awarded to Port Fuel Haulers for fuel at Spoke B; performance starts day 6, ends day 18. Obligated $68,445.
   COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 12 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
   DONE      CE small buys: none worked today (no hours left); 12 waiting.
 Day 4
   DONE      CE small buys: none worked today (no hours left); 16 waiting.
 Day 5
-  DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
-  DONE      CE small buys: none worked today (no hours left); 21 waiting.
-Day 6
   DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
-  DONE      CE small buys: 24 worked today (12 h of shop time); 1 still waiting.
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
+  DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 4 worked today (2 h of shop time); 17 still waiting.
+  START     Fuel at Spoke B from Partner force began, 1287 gal/day.
+Day 6
+  DONE      CE small buys: 18 worked today (9 h of shop time, 3 on cards).
 Day 7
-  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
   START     Power at Spoke B from Harbor Equipment Co began, 514 kW/day.
 Day 8
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -69,14 +68,17 @@ Day 18
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 19
   ACTION    Termination of Harbor Equipment Co power at Spoke B started.
-  ACTION    Termination of Port Fuel Haulers fuel at Spoke B started.
   END       Harbor Equipment Co power at Spoke B terminated; performance ends day 19.
-  END       Port Fuel Haulers fuel at Spoke B terminated; performance ends day 18.
-  DONE      CE small buys: none worked today (no hours left); 2 waiting, 4 went on cards.
-  END       Port Fuel Haulers fuel at Spoke B ended.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 20
-  DONE      CE small buys: 4 worked today (2 h of shop time, 4 on cards).
+  ACTION    Coordinated with the Hub unit for 1170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   END       Harbor Equipment Co power at Spoke B ended.
+  START     Fuel at Spoke B from the other unit began, 1170 gal/day.
+  OK        Fuel at Spoke B restored to 100%.
+  OK        Power at Spoke B restored to 100%.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -87,14 +89,17 @@ Day 23
   DONE      CE small buys: none worked today (no hours left); 4 waiting, 4 went on cards.
 Day 24
   DEFINITZD Meridian Site Services power at Spoke B definitized at $693,900; obligation caps lifted; fully funded from the O&M line good through day 75.
-  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 6 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
-  DONE      CE small buys: none worked today (no hours left); 6 waiting, 4 went on cards.
+  DONE      CE small buys: 6 worked today (3 h of shop time, 4 on cards).
 Day 25
-  DONE      CE small buys: 8 worked today (4 h of shop time, 4 on cards).
+  EVENT     Hub fuels flight pulls its support. Inbox: "Hub fuels flight: tempo is up here and we need our truck and crew back. Last run in two days."
+  WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 26. A coordination is not a contract.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 26
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 27
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  END       The other unit's fuel at Spoke B ended.
 Day 28
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 29
@@ -103,6 +108,7 @@ Day 30
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 31
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 32
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 33
@@ -150,8 +156,10 @@ Day 52
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 53
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 54
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 55
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 56
@@ -166,21 +174,17 @@ Day 60
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 61
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      Meridian Site Services power at Spoke B had equipment down.
-  SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
 Day 62
-  ACTION    Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 14 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $107,940.
+  ACTION    Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 14 days (Generation equipment, Operators, Maintenance and repair); quoted $107,940.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  OK        Power at Spoke B restored to 100%.
 Day 63
   DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 77, ends day 90. Obligated $107,940.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  COR       COR report (SGT Okafor): Meridian Site Services power at Spoke B had equipment down on day 61, reported 2 day(s) later.
 Day 64
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 65
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $14,346 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $82,791 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 67
@@ -203,7 +207,7 @@ Day 74
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 75
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $14,346 never obligated can no longer pay for anything new.
+  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $82,791 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -219,14 +223,10 @@ Day 80
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 81
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      Meridian Site Services power at Spoke B had equipment down.
-  SHORT     Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
 Day 82
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  OK        Power at Spoke B restored to 100%.
 Day 83
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  COR       COR report (SGT Okafor): Meridian Site Services power at Spoke B had equipment down on day 81, reported 2 day(s) later.
 Day 84
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 day(s) later than planned.
@@ -248,38 +248,36 @@ CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 Hub Power                 ..........................................................................................
 Hub Fuel                  ..........................................................................................
-Spoke B Power                   ......................................................5...................5.........
-Spoke B Fuel                    ....................................................................................
+Spoke B Power                   ............X.......................................................................
+Spoke B Fuel                    ............X.......................................................................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 93% (sortie generation 99%, throughput 99%, endurance 100%, resilience 53%)
-  Obligated $885,654; incurred $885,654; incurred but not obligated $0
+  Mission output 93% (sortie generation 99%, throughput 99%, endurance 100%, resilience 55%)
+  Obligated $817,209; incurred $817,209; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 251; payment errors 0; execution-confusion days 0; vendor failures 2; declined BPA calls 0
-  spokeBSite.power: 0 day(s) down, 2 degraded, lowest 54%
+  Surveys 1; shop hours worked 227; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
+  spokeBSite.power: 1 day(s) down, 0 degraded, lowest 0%
+  spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on t-req0007-bridge, $2,400. Decision: denied on day 16.
 
 GAPS AND WHY (each traced back through its causes)
-  Day 61: Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
-      <- day 61: Meridian Site Services power at Spoke B had equipment down.
-          <- day 1: Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $693,900. Approval request routed through the SCO; answer expected in 2 day(s).
-  Day 81: Power at Spoke B degraded to 54%: supply 257 kW against demand 468.
-      <- day 81: Meridian Site Services power at Spoke B had equipment down.
-          <- day 62: Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 14 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $107,940.
+  Day 19: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 19: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 19: Fuel at Spoke B down to 0%: fuel on hand ran out.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
-  #0 spokeBSite.power days 61-61, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Meridian Site Services power at Spoke B failed on day 61 with full operator and maintenance coverage. The COR reported it on day 63.
-  #1 spokeBSite.power days 81-81, lowest 54%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Meridian Site Services power at Spoke B failed on day 81 with full operator and maintenance coverage. The COR reported it on day 83.
+  #0 spokeBSite.fuel days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
+      [avoidable] Partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency. On day 16: Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days.".
+  #1 spokeBSite.power days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
+      [avoidable] Power depends on fuel, which was short. (see #0)
 
 PASS CRITERIA
-  [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 0)
-  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 1)
+  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 1)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 90% (mission.output = 0.926)
+  [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash 69519826c8afee4a870cb112c6c6ad2c3fd44a4d3076aa858115e90f66ddfe53
+State hash 67f977d4023b798208717c3667aef197517adb47ae8663904cfd5efb31f755b9

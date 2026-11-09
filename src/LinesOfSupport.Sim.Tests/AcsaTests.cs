@@ -17,12 +17,29 @@ public class AcsaTests
         root["actors"]!["acsaPartner"] = JsonNode.Parse($$"""
             {"present":true,"name":"Coalition logistics battalion","island":"spokeB","stock":{"fuel":1500},"unitPriceCents":{"fuel":{{Price}}},"reliability":1.0}
             """);
+        // The shipped hub fuel point is the J4's ACSA line with the hub partner (M2R-06); these tests are about a different
+        // partner's own limits, so the hub point goes back to host nation support and leaves the stock to the orders here.
+        foreach (var a in root["inheritedArrangements"]!.AsArray())
+            if ((string?)a!["id"] == "hubFuelPoint") { a["instrument"] = "hostNation"; a["vendor"] = "hubUtilities"; a.AsObject().Remove("quantity"); a.AsObject().Remove("dailyCostCents"); a.AsObject().Remove("obligatedCents"); }
         if (withdrawDay is { } d)
             root["events"]!.AsArray().Add(JsonNode.Parse($$"""
                 {"id":"partnerTempo","label":"The partner's own operations surge","window":{"earliestDay":{{d}},"latestDay":{{d}}},"preconditions":[],"effects":[{"kind":"acsa.withdraw","target":"fuel","days":2}]}
                 """));
         more?.Invoke(root);
         var dir = Path.Combine(Path.GetTempPath(), $"los-acsa-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(dir);
+        File.WriteAllText(Path.Combine(dir, "scenario.json"), root.ToJsonString());
+        return ScenarioBundle.Load(dir, Path.Combine(Repo.Root, "scenarios", "rules"));
+    }
+
+    /// <summary>spoke-b-90 with no partner at all (the shipped one is stripped with the hub fuel line it supplies).</summary>
+    private static ScenarioBundle WithoutPartner()
+    {
+        var root = JsonNode.Parse(File.ReadAllText(Path.Combine(Repo.Scenario("spoke-b-90"), "scenario.json")))!;
+        root["actors"]!.AsObject().Remove("acsaPartner");
+        foreach (var a in root["inheritedArrangements"]!.AsArray())
+            if ((string?)a!["id"] == "hubFuelPoint") { a["instrument"] = "hostNation"; a["vendor"] = "hubUtilities"; a.AsObject().Remove("quantity"); a.AsObject().Remove("dailyCostCents"); a.AsObject().Remove("obligatedCents"); }
+        var dir = Path.Combine(Path.GetTempPath(), $"los-noacsa-{Guid.NewGuid():N}");
         Directory.CreateDirectory(dir);
         File.WriteAllText(Path.Combine(dir, "scenario.json"), root.ToJsonString());
         return ScenarioBundle.Load(dir, Path.Combine(Repo.Root, "scenarios", "rules"));
@@ -73,7 +90,7 @@ public class AcsaTests
         Assert.Contains(Stops(Order(line: "om2")), h => h.Contains("not usable on day 1"));
         Assert.Contains(Stops(Order(line: "")), h => h.Contains("needs a funding line"));
         Assert.Contains(Stops(Order(days: 0)), h => h.Contains("duration must be positive"));
-        Assert.Contains(Session.Create(Repo.Load("spoke-b-90"), 1).View.PreviewAcsa(Order()).HardStops, h => h.Contains("no partner force"));
+        Assert.Contains(Session.Create(WithoutPartner(), 1).View.PreviewAcsa(Order()).HardStops, h => h.Contains("no partner force"));
         Assert.Equal(hash, s.StateHash());
         var refused = s.Apply(Order(qty: 1600));
         Assert.False(refused.Accepted);

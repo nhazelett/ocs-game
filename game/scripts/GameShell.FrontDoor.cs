@@ -105,5 +105,6 @@ public partial class GameShell
         foreach (var name in new[] { "ScenarioRow", "ReplayRow", "SaveRow" }) board.GetNode<Control>(name).Visible = DeveloperTools;
         DeveloperWorkspaceButton.Visible = DeveloperTools && AtFrontDoor;
         if (!DeveloperTools) SaveFilePicker.Hide();
+        RefreshBuildStatus();
     }
 }

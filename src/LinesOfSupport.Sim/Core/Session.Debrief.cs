@@ -167,6 +167,11 @@ public sealed partial class Session
                 any = true;
                 yield return lapse;
             }
+            if (OwnerFactor(siteId, capId, d) is { } owner)
+            {
+                any = true;
+                yield return owner;
+            }
             if (!any)
                 yield return ("uncovered", new GapFactor(GapFactorKind.Uncovered, GapTag.Avoidable, d,
                     $"Nothing supplied {cap.Label.ToLowerInvariant()} at {site.Name}; the site and its population were in the plan from day 1.", []));

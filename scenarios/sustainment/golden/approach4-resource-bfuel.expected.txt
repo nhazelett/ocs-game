@@ -20,27 +20,26 @@ Before day 1
   START     Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (written purchase order), days -2 to 27.
   START     Inherited: Lodging at Spoke B from Second Island Camp Services (written purchase order), days -28 to 31.
 Day 1
-  ACTION    Ordered a review of the inherited contract files: North Island Power and Light power at Spoke A, Third Island Camp Services lodging at Spoke C, Harbor Equipment Co power at Spoke B, Island Provisions food service at Spoke B, Port Fuel Haulers fuel at Spoke A, Port Fuel Haulers fuel at Spoke C, Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub, Partner force (ACSA) water at Spoke A, North Island Telecom comms backhaul at Spoke A, Main Island Motor Pool Rentals ground transport at Hub, Harbor Equipment Co material handling equipment at Spoke C, Second Island Camp Services lodging at Spoke B.
+  ACTION    Ordered a review of the inherited contract files: North Island Power and Light power at Spoke A, Third Island Camp Services lodging at Spoke C, Harbor Equipment Co power at Spoke B, Island Provisions food service at Spoke B, Port Fuel Haulers fuel at Spoke A, Port Fuel Haulers fuel at Spoke C, Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub, North Island Telecom comms backhaul at Spoke A, Main Island Motor Pool Rentals ground transport at Hub, Harbor Equipment Co material handling equipment at Spoke C, Second Island Camp Services lodging at Spoke B.
   DONE      CE small buys: none worked today (no hours left); 8 waiting.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 2
-  DONE      CE small buys: none worked today (no hours left); 17 waiting.
-  CONFUSED  Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
-  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
-Day 3
   SURVEY    File review: power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70, funded from the O&M line good through day 45; UCA issued day -140, NTE $340,000, 39% obligated; definitization due by day 40; qualifying proposal in hand; delivery record 97% on time; nothing the handover did not mention.
-  SURVEY    File review: lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60, funded from the O&M line good through day 45; UCA issued day -172, NTE $1,200,000, 44% obligated; definitization due by day 8; qualifying proposal in hand; delivery record 96% on time.
+  SURVEY    File review: lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60, funded from the O&M line good through day 45; UCA issued day -172, NTE $1,200,000, 43% obligated; definitization due by day 8; qualifying proposal in hand; delivery record 96% on time.
   SURVEY    File review: power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30, funded from the O&M line good through day 45; delivery record 95% on time; nothing the handover did not mention.
   SURVEY    File review: food service at Spoke B from Island Provisions (BPA call), days -24 to 35, funded from the O&M line good through day 45; delivery record 96% on time; nothing the handover did not mention.
   SURVEY    File review: fuel at Spoke A from Port Fuel Haulers (IDIQ order), days -19 to 40, funded from the O&M line good through day 45; The Port Fuel Haulers IDIQ ceiling $5,000,000, $4,250,000 ordered (85%), $750,000 left to order; delivery record 95% on time.
   SURVEY    File review: fuel at Spoke C from Port Fuel Haulers (IDIQ order), days -19 to 40, funded from the O&M line good through day 45; The Port Fuel Haulers IDIQ ceiling $5,000,000, $4,250,000 ordered (85%), $750,000 left to order; delivery record 95% on time.
   SURVEY    File review: fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60, funded from the O&M line good through day 45; delivery record 88% on time, not the 97% reported at handover.
   SURVEY    File review: waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75, funded from the O&M line good through day 45; delivery record 96% on time; nothing the handover did not mention.
-  SURVEY    File review: water at Spoke A from Partner force (ACSA) (acquisition and cross-servicing agreement order), days -9 to 50, funded from the O&M line good through day 45; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review: comms backhaul at Spoke A from North Island Telecom (written purchase order), days -9 to 21, funded from the O&M line good through day 45; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review: ground transport at Hub from Main Island Motor Pool Rentals (government purchase card), days -5 to 24, funded from the O&M line good through day 45; delivery record 96% on time; nothing the handover did not mention.
   SURVEY    File review: material handling equipment at Spoke C from Harbor Equipment Co (written purchase order), days -2 to 27, funded from the O&M line good through day 45; delivery record 95% on time; nothing the handover did not mention.
   SURVEY    File review: lodging at Spoke B from Second Island Camp Services (written purchase order), days -28 to 31, funded from the O&M line good through day 45; delivery record 95% on time; nothing the handover did not mention.
+  DONE      CE small buys: none worked today (no hours left); 17 waiting.
+  CONFUSED  Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+Day 3
   DONE      CE small buys: 26 worked today (13 h of shop time).
   OK        Ground transport at Hub restored to 100%.
   COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 1, reported 2 day(s) later.
@@ -402,7 +401,7 @@ SCORECARD
   Mission output 90% (sortie generation 97%, throughput 97%, endurance 87%, resilience 66%)
   Obligated $3,282,885; incurred $2,810,485; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 567; payment errors 0; execution-confusion days 1; vendor failures 37; declined BPA calls 0
+  Surveys 0; shop hours worked 563; payment errors 0; execution-confusion days 1; vendor failures 37; declined BPA calls 0
   hubSite.transport: 0 day(s) down, 3 degraded, lowest 53%
   hubSite.waste: 0 day(s) down, 4 degraded, lowest 51%
   spokeASite.power: 0 day(s) down, 3 degraded, lowest 54%
@@ -670,4 +669,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.895)
 
-State hash 4f6c559d7e7c72d7e1ac292fd2161ef8fb7ce23e228d1b69cf9588c3705617d0
+State hash ac6cbce1998b7f96473fa3ad1a16687df88640f7722d427888d114c00917357d

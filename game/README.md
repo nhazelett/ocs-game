@@ -31,7 +31,7 @@ Choose an **Approach**, click **Replay**, then use **Next day** to step its auth
 
 The Board tab shows the Sim's morning items in alert-first order and its capability tiles. Linked items open their requirement, select their capability/site on the map, or select the matching arrangement in Ledger. The initial requirement/ledger destinations show real read-only context; their full editor/panel work follows in M2-03/M2-05. Items without a Sim link remain plain information. Event/island links focus their existing board text; cash/work links focus their ledger context.
 
-**Continue** plays up to seven days, stopping after the first day with an Alert or Request, or at scenario completion. It uses the same day/replay path as Next day. Its tooltip states this behavior; it does not auto-decide requests. `MorningSmokeTest.tscn` verifies the stopping rule, a seven-day quiet fixture and the three primary link destinations. A day-11 screenshot is in the M2-01 handoff.
+**Continue** now advances to the next Sim-projected lead or scenario completion (M2R-13), replacing the earlier seven-day/alert limit. It uses the same day/replay path as Next day. Its tooltip states this behavior; it does not auto-decide requests. `MorningSmokeTest.tscn` verifies the stopping rule, a seven-day quiet fixture and the three primary link destinations. A day-11 screenshot is in the M2-01 handoff.
 
 ## Runtime smoke check
 
@@ -103,3 +103,5 @@ Continue saved game resumes that autosave. Load opens a filesystem chooser for a
 M2R-16 adds **Go to market** on a requirement. The market starts with no supplier selected; choose who, then how to arrange support. Exploring terms only previews the existing Sim quote, stops and gaps. **Arrange support** sends that exact action. Changing requirements resets the choices. Wider names and the illustrated map remain separate M2R items.
 
 M2R-11 shows full-screen preparation using the authored speaker, wording and defaults. Deployment opens four turnover paragraphs in order, with Back/Continue and daily controls withheld until the outgoing CCO finishes. It then focuses the first customer message in Inbox; Open reaches the card. Loading an existing save or developer replay uses its recorded state. Native rule-binding fixtures explicitly choose no prep when comparing a no-prep reference.
+
+M2R-13 puts the Sim's lead item first on Board. **Other updates and sites** expands the remaining work. **Open** reaches the actual requirement, site, funding/contract context or Inbox decision controls. Daily advance collapses the detail list; Continue stops at the next Lead from Sim, with no automatic decisions.

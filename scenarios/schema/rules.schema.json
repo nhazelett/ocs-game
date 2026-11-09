@@ -262,6 +262,10 @@
                 },
                 "description": "Capability ids whose coverage gates this one's effective supply (e.g. power depends on fuel)"
               },
+              "usualOwner": {
+                "type": "string",
+                "description": "Who normally arranges this capability for a deployed site, in plain words for the dependency checklist (design doc R10; fuel: the J4 through the ACSA partner or DLA Energy). Absent: the contracting office buys it."
+              },
               "delivery": {
                 "enum": [
                   "continuous",

@@ -720,6 +720,8 @@ public sealed record CapabilityData
     public List<string> DependsOn { get; init; } = [];
     public string Delivery { get; init; } = "continuous";
     public List<CapabilityLineData> Lines { get; init; } = [];
+    /// <summary>Who normally arranges this for a deployed site (R10), shown on the dependency checklist; null: the contracting office.</summary>
+    public string? UsualOwner { get; init; }
 }
 
 public sealed record MissionWeightsData(double SortieGeneration, double Throughput, double Endurance, double Resilience);

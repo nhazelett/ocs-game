@@ -517,7 +517,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Port Fuel Haulers fuel at Spoke C supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 450 gal a day fell short of 630 a day. Still short 7 days after they arrived: the notice left time to resize.
   #24 spokeCSite.fuel days 45-60, lowest 0%, 15 day(s) down: AVOIDABLE
-      [avoidable] Nothing supplied fuel at Spoke C; the site and its population were in the plan from day 1.
+      [avoidable] Nobody owned fuel at Spoke C. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 600 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 day(s) late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #25 spokeCSite.lodging days 30-60, lowest 0%, 13 day(s) down: AVOIDABLE
       [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Nothing before the notice showed it coming.

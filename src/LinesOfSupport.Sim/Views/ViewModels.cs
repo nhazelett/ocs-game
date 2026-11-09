@@ -106,13 +106,17 @@ public sealed record LeadItem(LeadKind Kind, string Text, BoardLinkKind LinkKind
 /// <param name="Kind">From rules: core, supplies, operator or maintenance.</param>
 /// <param name="Supplies">For a "supplies" line, the capability it brings with it (power's fuelSupply supplies fuel).</param>
 /// <param name="GapIfOff">The consequence of leaving this line off, stated as a fact; null for core lines.</param>
-public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff);
+/// <param name="UsualOwner">For a supplies line: who normally arranges the supplied capability (R10), so the player knows whose door to knock on before buying it; null when the office buys it.</param>
+public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff, string? UsualOwner = null);
 
 /// <summary>A capability this one depends on at the same site, and whether the player has it covered.</summary>
 /// <param name="Coverage">"inRequirement" (a supplies line on this card is on), "arranged" (an arrangement at the site covers it),
 /// or "none".</param>
 /// <param name="CoveredBy">Arrangement ids at the site covering it, if any.</param>
-public sealed record RequirementDependency(string CapabilityId, string Label, string Coverage, IReadOnlyList<string> CoveredBy);
+/// <param name="UsualOwner">Who normally arranges this capability (R10): fuel is the J4's through the ACSA partner or DLA Energy. Null when the office buys it.</param>
+/// <param name="OwnerEngaged">True when an ACSA line (inherited, ordered, or through the J4) covers it at the site in the card's window, or a J4 request for it is in work.</param>
+public sealed record RequirementDependency(string CapabilityId, string Label, string Coverage, IReadOnlyList<string> CoveredBy,
+    string? UsualOwner = null, bool OwnerEngaged = false);
 
 /// <summary>The requirement editor's view of one card: what it asks for, its lines, and what it depends on.</summary>
 /// <param name="PeakDemandUnits">Peak daily demand for the capability at the site over the card's window, from population.</param>

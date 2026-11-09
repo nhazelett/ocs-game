@@ -447,7 +447,8 @@
             "label": "On-site storage",
             "kind": "maintenance"
           }
-        ]
+        ],
+        "usualOwner": "the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it"
       },
       {
         "id": "water",

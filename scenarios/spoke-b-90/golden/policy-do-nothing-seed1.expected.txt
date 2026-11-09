@@ -4,7 +4,7 @@ Scenario spoke-b-90, rules 2025-10, seed 1, 90 days.
 TIMELINE
 Before day 1
   START     Inherited: Power at Hub from Main Island Utilities (host nation), days 1 to 400.
-  START     Inherited: Fuel at Hub from Main Island Utilities (host nation), days 1 to 400.
+  START     Inherited: Fuel at Hub from Partner force (ACSA) (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
@@ -102,14 +102,14 @@ Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
-  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
-  SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 36
   WITHDRAWN Second Island Fuel walked off Second Island Fuel fuel at Spoke B after 15 days of unpaid delivery. Fuel at Spoke B loses that source today. It will decline work from this office from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
 Day 38
   WITHDRAWN Harbor Equipment Co walked off Harbor Equipment Co power at Spoke B after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   COMPLY    Higher HQ asked why Harbor Equipment Co power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
@@ -124,6 +124,7 @@ Day 40
   START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
 Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 43
@@ -155,6 +156,7 @@ Day 51
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 52
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Partner force (ACSA) fuel at Hub missed today's delivery.
 Day 53
   COMPLY    The Spoke B unit's habit of going around contracting rises (Meridian Site Services power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -247,17 +249,17 @@ CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 Hub Power                 ..........................................................................................
 Hub Fuel                  ..........................................................................................
-Spoke B Power                   XXXXXXXXXXXXXXXXXXXXXX555555XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-Spoke B Fuel                    .....1....2XXXXX555555555555XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Spoke B Power                   XXXXXXXXXXXXXXXXXXXXXX5555555XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Spoke B Fuel                    .....1....2XXXXX5555555555555XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
   Mission output 65% (sortie generation 54%, throughput 54%, endurance 100%, resilience 52%)
-  Obligated $0; incurred $216,348; incurred but not obligated $216,348
+  Obligated $0; incurred $226,878; incurred but not obligated $226,878
   Unauthorized commitments 5; UCAs past due 0; HHQ inquiries 5
-  Surveys 0; shop hours worked 381; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 0
-  spokeBSite.power: 78 day(s) down, 6 degraded, lowest 0%
-  spokeBSite.fuel: 63 day(s) down, 12 degraded, lowest 0%
+  Surveys 0; shop hours worked 381; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 0
+  spokeBSite.power: 77 day(s) down, 7 degraded, lowest 0%
+  spokeBSite.fuel: 62 day(s) down, 13 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   uc1 (day 8): handshake with Port Fuel Haulers for spokeBSite.fuel. Decision: open; vendor walked off; drew an HHQ inquiry.
@@ -274,32 +276,25 @@ GAPS AND WHY (each traced back through its causes)
   Day 23: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   Day 29: Power at Spoke B degraded to 59%: fuel at 59%.
       <- day 23: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
-  Day 35: Fuel at Spoke B down to 0%: fuel on hand ran out.
-      <- day 35: Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
-          <- day 21: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
-              <- day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
-              <- day 8: Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
-                  <- day 8: Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
-  Day 35: Power at Spoke B down to 0%: fuel at 0%.
-      <- day 35: Fuel at Spoke B down to 0%: fuel on hand ran out.
-          <- day 35: Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
-              <- day 21: With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
-                  <- day 17: Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
-                  <- day 8: Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  Day 36: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+  Day 36: Power at Spoke B down to 0%: fuel at 0%.
+      <- day 36: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 12-12, lowest 16%, 1 day(s) down: DISCOVERABLE
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
-  #1 spokeBSite.fuel days 17-90, lowest 0%, 62 day(s) down: AVOIDABLE
+  #1 spokeBSite.fuel days 17-90, lowest 0%, 61 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
+      [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and Partner force had 4000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
       [avoidable] Second Island Fuel fuel at Spoke B was left unresolved and the vendor walked off on day 36.
       [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
-  #2 spokeBSite.power days 7-90, lowest 0%, 78 day(s) down: AVOIDABLE
+  #2 spokeBSite.power days 7-90, lowest 0%, 77 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Harbor Equipment Co power at Spoke B did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 37) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
       [avoidable] Harbor Equipment Co power at Spoke B was left unresolved and the vendor walked off on day 38.
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 38. The last arrangement supplying it, Harbor Equipment Co power at Spoke B, ended on day 37. Island Power Rentals power at Spoke B did not start until day 40.
       [avoidable] Island Power Rentals power at Spoke B was left unresolved and the vendor walked off on day 47.
@@ -309,9 +304,9 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] No funding line with money could pay for power on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 day(s) late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 78)
-  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 63)
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 77)
+  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 62)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
-  [not met] Mission output at least 90% (mission.output = 0.65)
+  [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash 5df60c924287a3460d2cd8bd88b3c441bc5d5b55a9b4164003a9111138b9ec40
+State hash 4b5264cd1f2eaf183ac6c79d723db14c3e4f023c33851f1159d1a567b6c29129
