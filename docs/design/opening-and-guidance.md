@@ -1,6 +1,6 @@
 # Opening and guidance: the M2 gate redesign
 
-Status: Accepted by Fable from Nick's playtest answers, 8 Nov 2026. Nick reviews the first-five-minutes script (section 4) in chat.
+Status: Accepted. Nick reviewed the first-five-minutes script and answered the open questions in chat on 8 Nov 2026 (section 12).
 
 ## 0. Why this exists
 
@@ -38,6 +38,10 @@ R7. **Decisions are visible on the map.** The map is the main view. A delivery i
 
 R8. **It teaches itself.** No instructor is assumed. The tutorial plus in-world guidance must carry a first-time player to the debrief.
 
+R9. **Game text reads like a person wrote it.** No bullet lists, no headers, no bold labels in anything a player reads in the game. The turnover is four short paragraphs in the outgoing CCO's voice, not four cards of bullets. Nick: "we don't want the game looking like AI format, and bullet points highlight it."
+
+R10. **Fuel is not the CCO's buy.** Bulk fuel comes through the ACSA manager (J4) or DLA Energy, so the CCO's move on a fuel dependency is to get the J4 engaged, through the OCS seat. The local fuel vendor stays in the market as the expensive stopgap (a purchase order or SF 44 delivery while the ACSA line is set up), and a turnkey power vendor may bring its own fuel. A CCO who sees fuel uncovered and does nothing still owns the gap.
+
 ## 3. The opening
 
 Three screens, each a person talking, each short. Everything they say is drawn from scenario data the Sim already has.
@@ -68,8 +72,8 @@ Spoke B scenario, no tutorial.
 1. Title. "New game" (Spoke B, or the tutorial), "Continue". Nothing else.
 2. Before you leave: three choices preselected within the budget, one sentence each. Continue.
 3. Turnover, four cards, about ninety seconds to read. The outgoing CCO's last line: "Spoke B opens in a week and nobody's bought them power yet. CE's outside."
-4. The map. Capt Ruiz, 3 CES: "Advance team at Spoke B needs power by day 7. I wrote it up as six sixty-kilowatt generators." The requirement opens as a card with the generator line on and the fuel, operator and maintenance lines off, and the dependency checklist shows fuel uncovered.
-5. The player's first decision is whether to take the requirement as written. Either way they then go to the market and see three ways to get generators, with cost, shop time and earliest start. Awarding something is the end of the first five minutes.
+4. The map. Capt Ruiz, 3 CES: "Advance team at Spoke B needs power by day 7. I wrote it up as six sixty-kilowatt generators." The requirement opens as a card with the generator line on and the fuel, operator and maintenance lines off, and the dependency checklist shows fuel uncovered, with "J4 (ACSA)" as the usual owner of that line.
+5. The player's first decision is whether to take the requirement as written. Either way they then go to the market and see three ways to get generators, with cost, shop time and earliest start. Awarding something is the end of the first five minutes. Getting the J4 to put Spoke B on the ACSA fuel order is a separate action the player may or may not take; the day 10 story turns on it.
 6. Day 2 or 3, the first visible consequence: the survey comes back (if ordered), or the fuel question lands when a tutorial mentor or the dependency checklist makes it unavoidable. By day 10 the player has seen the game answer a decision they made.
 
 What the player should feel at minute five: "I know what I have, I know what's due, and I just did something about it."
@@ -102,6 +106,10 @@ Actions with a shop-hour cost that return facts:
 - **Ask the SCO.** Reachback: a question from a short list about a rule, a vehicle or a route; returns a fact a few days later. In the tutorial the answer may include a direction; in scenarios it never does.
 - **Meet a vendor.** When a vendor comes by: add them to the directory with a confidence level, or hear about an old contract (an inherited claim or unpaid invoice).
 
+### 6.2a Fuel through the J4
+
+Spoke B's fuel moves from a thing the CCO buys to a thing the CCO gets someone to own. The hub's fuel is an ACSA line (partner stock, barge delivery); `engageJ4` (OCS seat, or the CCO through the OCS seat) asks the ACSA manager to add a site and a daily quantity, with a lag and the partner's stock as the ceiling. The dependency checklist names the usual owner of each line (fuel: J4 ACSA or DLA Energy; operators: the unit or the vendor). The local fuel vendors stay as the stopgap at a stopgap price. The SPEC 5 approach stories are rewritten on this basis: approach 1's day 10 gap is "nobody owned the fuel" (avoidable: the checklist named the owner on day 1); the day 16 barge gap is unchanged because the ACSA fuel still crosses by barge; approach 2's fix is the J4 call plus the bridge, or a turnkey vendor that brings its own fuel.
+
 ### 6.3 One decision in front
 
 `MorningBoardView` gains `Lead`: the single item the day leads with, chosen by a fixed rule (an unresolved inbox decision, then a requirement past its start with nothing covering it, then an alert, then the nearest clock). The game shows it large; the rest of the board is behind it. No new Sim state.
@@ -121,7 +129,7 @@ In priority order. Each one is a backlog row; each ships with a screenshot Fable
 
 ## 8. The tutorial
 
-Skeleton 2 (hub, 20 days, three requirements) with the outgoing CCO staying three days as the mentor. The mentor directs (R4 allows it here): "Open that. See the fuel line? That's the one people forget." Each of the three requirements teaches one instrument as the skeleton already says. The mentor leaves on day 4 and the player finishes the twenty days alone. Nick's one-sentence lesson test applies at the end.
+Skeleton 2 (hub, 20 days, three requirements) with the outgoing CCO staying three days as the mentor (Nick's call, 8 Nov 2026). The mentor directs (R4 allows it here): "Open that. See the fuel line? That's the one people forget." Each of the three requirements teaches one instrument as the skeleton already says. The mentor leaves on day 4 and the player finishes the twenty days alone. Nick's one-sentence lesson test applies at the end.
 
 ## 9. Process changes
 
@@ -143,3 +151,13 @@ M3-07 and the remaining Sim routes resume after M2R.
 3. CE's small buys: is "four a day, three hours" the right order of magnitude for a 300-person hub in week one?
 4. The staff meeting as a weekly recurring action you have to get into: does that match how it felt?
 5. Which real unit names should appear (3 CES, FSS, SFS, LRS as written), and any you want kept out?
+
+## 12. Nick's answers to section 11 (8 Nov 2026)
+
+1. The script is fine. Game text must not look like AI format; no bullet points in the game (R9).
+2. The outgoing CCO is the tutorial mentor.
+3. Four CE small buys a day, about three hours, is fine for a 300-person hub in week one.
+4. The staff meeting as a weekly thing you get yourself into, with requirements visible before submission: yes.
+5. Unit names (3 CES, FSS, SFS, LRS) stay for now; in a joint environment, especially Army-led, they would change. Evolve later.
+6. Added by Nick: fuel is usually ACSA, handled by OCS and the J4, not the CCO; a CCO who ignores fuel can still be punished; the goal is to get the ACSA manager involved (R10, 6.2a). Fable's addition: DLA Energy is the other bulk source, and the local fuel vendor stays as the stopgap.
+
