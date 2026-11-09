@@ -33,6 +33,12 @@ public sealed record ScenarioFile
     /// <summary>The cast (M2R-01): the people who bring work, hand over the shop, answer questions and run the money. Ids
     /// are for references only and never shown; views show rank, name and unit.</summary>
     public List<PersonData> People { get; init; } = [];
+    /// <summary>The scenario's opening (M2R-02): who you are, where, what is due. Prose, in a voice (R9).</summary>
+    public BriefingData? Briefing { get; init; }
+    /// <summary>What the outgoing CCO says at the turnover (M2R-02): one remark per section and per item.</summary>
+    public TurnoverData? Turnover { get; init; }
+    /// <summary>The pre-deployment window in a person's voice (M2R-02).</summary>
+    public PrepBriefingData? PrepBriefing { get; init; }
     public ShopData Shop { get; init; } = new();
     public ActorsData Actors { get; init; } = new();
     public List<EventData> Events { get; init; } = [];
@@ -58,6 +64,48 @@ public sealed record PersonData
     /// <summary>Where the person is posted, when it matters (a customer at a spoke).</summary>
     public string? Site { get; init; }
     public Dictionary<string, string> Lines { get; init; } = [];
+}
+
+/// <summary>The scenario's opening lines (M2R-02): a title line, the situation and what is due, each a sentence or two.</summary>
+public sealed record BriefingData
+{
+    public string Title { get; init; } = "";
+    public string Situation { get; init; } = "";
+    public string Due { get; init; } = "";
+}
+
+/// <summary>Per-item remarks at the turnover, keyed by inherited arrangement, vendor and funding line id.</summary>
+public sealed record TurnoverRemarksData
+{
+    public Dictionary<string, string> Arrangements { get; init; } = [];
+    public Dictionary<string, string> Vendors { get; init; } = [];
+    public Dictionary<string, string> FundingLines { get; init; } = [];
+}
+
+/// <summary>What the outgoing CCO says at the turnover (M2R-02, design doc 3.2). Each section remark opens that section's
+/// paragraph; the facts that follow come from the Sim. Remarks are what the outgoing CCO believes, so a hidden problem
+/// (M3-17) must not be named here.</summary>
+public sealed record TurnoverData
+{
+    /// <summary>people[] id with role outgoingCco.</summary>
+    public string From { get; init; } = "";
+    public string? Shop { get; init; }
+    public string? Contracts { get; init; }
+    public string? VendorList { get; init; }
+    public string? Money { get; init; }
+    public TurnoverRemarksData Remarks { get; init; } = new();
+}
+
+/// <summary>The prep screen in a person's voice (M2R-02, design doc 3.1).</summary>
+public sealed record PrepBriefingData
+{
+    /// <summary>people[] id of who sends the message.</summary>
+    public string From { get; init; } = "";
+    public string Intro { get; init; } = "";
+    /// <summary>Prep choice id to what that person says about it.</summary>
+    public Dictionary<string, string> Choices { get; init; } = [];
+    /// <summary>The picks shown preselected; must fit the prep budget.</summary>
+    public List<string> Defaults { get; init; } = [];
 }
 
 public sealed record IslandData

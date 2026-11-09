@@ -467,6 +467,49 @@
       }
     }
   ],
+  "briefing": {
+    "title": "Your first morning on the main island",
+    "situation": "You're the contracting officer for the hub on the main island, six hundred people, and the small sites going in on the outer islands. Spoke B on Second Island has no grid and no fuel point, and the only way there is a barge twice a week.",
+    "due": "Spoke B opens on day 7 with a hundred and eighty people, and a second group lands on day 20."
+  },
+  "turnover": {
+    "from": "whitfield",
+    "shop": "Here's the shop. It isn't much.",
+    "contracts": "Everything we have runs through the host nation, and it's all at the hub.",
+    "vendorList": "Here's who I've used. Half of these I've never called.",
+    "money": "Last, the money.",
+    "remarks": {
+      "arrangements": {
+        "hubFuelPoint": "The host nation fuel point at the hub has never let us down."
+      },
+      "vendors": {
+        "vendorE": "Port Fuel Haulers came by last week asking for work.",
+        "vendorA": "Island Power Rentals quoted me once and I never followed up."
+      },
+      "fundingLines": {
+        "om1": "The new fiscal year's money is supposed to come the day after that first line ends."
+      }
+    }
+  },
+  "prepBriefing": {
+    "from": "cole",
+    "intro": "You have fourteen days before wheels up. Here's what you can get done from here. You can't do all of it, so pick what you'll miss least on the ground.",
+    "choices": {
+      "gpcAccounts": "Purchase cards take about five days to set up from home. Out there, they take weeks.",
+      "cashAndPayingAgent": "Finance can line up a paying agent and cash for you now, or you can find them when you land.",
+      "systemAccess": "Get your contract-writing system account started now and it may be working when you arrive.",
+      "pullVehicles": "We can pull the agreements already in place over there, with their scope and ceilings.",
+      "vendorLists": "I can send you our vendor lists and whatever vetting we have.",
+      "templatesAndKit": "Bring templates and a paper kit, and the manual work goes faster until the system's up.",
+      "warrantOrThreshold": "If you think you'll need a bigger warrant, ask now; it doesn't get faster from the field.",
+      "partnerAgreements": "One day to confirm what the partner and host nation agreements actually cover."
+    },
+    "defaults": [
+      "gpcAccounts",
+      "cashAndPayingAgent",
+      "systemAccess"
+    ]
+  },
   "shop": {
     "people": 2,
     "systemOnlineDay": 12,

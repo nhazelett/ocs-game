@@ -210,6 +210,25 @@ public sealed class ScenarioBundle
         NeedPerson(s.Actors.Fm.Person, "actors.fm", "finance");
         NeedPerson(s.Actors.Commander.Person, "actors.commander", "commander");
 
+        // Turnover and prep briefing (M2R-02).
+        if (s.Turnover is { } t)
+        {
+            NeedPerson(t.From, "turnover.from", "outgoingCco");
+            foreach (var k in t.Remarks.Arrangements.Keys)
+                Need(s.InheritedArrangements.Any(a => a.Id == k), $"turnover remark for arrangement {k}: no such inherited arrangement");
+            foreach (var k in t.Remarks.Vendors.Keys) Need(vendors.Contains(k), $"turnover remark for vendor {k}: no such vendor");
+            foreach (var k in t.Remarks.FundingLines.Keys)
+                Need(s.FundingLines.Any(f => f.Id == k), $"turnover remark for funding line {k}: no such funding line");
+        }
+        if (s.PrepBriefing is { } pb)
+        {
+            Need(people.ContainsKey(pb.From), $"prepBriefing.from person {pb.From} not found");
+            foreach (var k in pb.Choices.Keys.Concat(pb.Defaults))
+                Need(Rules.PrepChoices.Any(c => c.Id == k), $"prepBriefing choice {k} is not in rules {Rules.RulesVersion}");
+            var used = pb.Defaults.Distinct().Sum(k => Rules.PrepChoices.FirstOrDefault(c => c.Id == k)?.PrepDays ?? 0);
+            Need(used <= s.PrepDays, $"prepBriefing.defaults use {used} prep-days; the scenario allows {s.PrepDays}");
+        }
+
         var cors = s.Cors.Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
         Need(cors.Count == s.Cors.Count, "COR ids must be unique");
         foreach (var c in s.Cors) Need(Rules.Cor.Qualities.ContainsKey(c.Quality), $"COR {c.Id} quality {c.Quality} not in rules cor.qualities");
