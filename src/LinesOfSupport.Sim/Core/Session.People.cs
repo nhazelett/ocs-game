@@ -390,7 +390,7 @@ public sealed partial class Session
         if (Partner is { } p && p.Stock.TryGetValue("fuel", out var stock) && stock > 0 && !Withdrawn("fuel"))
         {
             var from = p.Island is { } i ? $" on {IslandData(i).Name}" : "";
-            return $"{bulk} Here the partner is {p.Name}{from}, which can spare {stock:0} {unit} a day; the J4 adds a site to the order when you ask through the OCS seat. A local fuel vendor is the stopgap, at the vendor's price.";
+            return $"{bulk} Here the partner is {p.Name}{from}, which can spare {stock:0} {unit} a day; the J4 can add a site to that order. A local fuel vendor is the stopgap, at the vendor's price.";
         }
         return $"{bulk} There is no ACSA fuel here right now, so a local fuel vendor is the stopgap, at the vendor's price, until DLA Energy is set up.";
     }
@@ -418,8 +418,8 @@ public sealed partial class Session
             .Select(id => Scenario.Vehicles.FirstOrDefault(v => v.Id == id)).Where(v => v is not null)
             .Select(v => $"a {VehicleKindText(v!.Kind)} with {VendorData(v.Vendor)?.Name ?? "a vendor"}").ToList();
         return known.Count == 0
-            ? "We don't know of a contract vehicle that covers your area. Anything you need, you contract for."
-            : $"You can order from {string.Join(" and ", known)}. Check the scope before you place an order against it.";
+            ? "We don't know of a contract vehicle that covers your area."
+            : $"You can order from {string.Join(" and ", known)}, within each one's scope.";
     }
 
     private static string VehicleKindText(string kind) => kind switch
