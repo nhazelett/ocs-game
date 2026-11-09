@@ -8,6 +8,9 @@ namespace LinesOfSupport.Sim.Core;
 // overdue state, an IDIQ's ceiling and ordered value, the vendor's real delivery record (reportedReliability shown
 // instead). The Sim runs on the true state throughout; only what the player is shown is gated. A file review finds
 // the problem; a higher-HQ inquiry about a past-due UCA finds that one the hard way.
+/// <summary>How a hidden inherited problem came to light: the file review, higher HQ's inquiry, or the vendor (M2R-04).</summary>
+internal enum RevealSource { Review, Inquiry, Vendor }
+
 public sealed partial class Session
 {
     // Inherited arrangements whose problem the handover did not mention.
@@ -17,7 +20,7 @@ public sealed partial class Session
     // Day each inherited file was reviewed.
     private readonly Dictionary<string, int> _reviewedDay = new(StringComparer.Ordinal);
     // Day each hidden problem came to light, by review or by an inquiry, with the record that showed it.
-    private readonly Dictionary<string, (int Day, string RecordId, bool ByReview)> _revealed = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, (int Day, string RecordId, RevealSource Source)> _revealed = new(StringComparer.Ordinal);
     /// <summary>The delivery record (permille) each file review found, so the debrief quotes what the review showed
     /// even after a later drop or cure moved the vendor's reliability (M3-22).</summary>
     private readonly Dictionary<string, int> _reviewedReliability = new(StringComparer.Ordinal);
@@ -116,7 +119,7 @@ public sealed partial class Session
             _reviewedDay[id] = day;
             _reviewedReliability[id] = a.ReliabilityPermille;
             var rec = AddRecord(day, RecordKind.Knowledge, id, $"File review of {id}: {Findings(a, day)}", [causeId]);
-            if (_hiddenProblems.Contains(id)) _revealed.TryAdd(id, (day, rec, true));
+            if (_hiddenProblems.Contains(id)) _revealed.TryAdd(id, (day, rec, RevealSource.Review));
         }
     }
 
@@ -154,7 +157,7 @@ public sealed partial class Session
     /// <summary>A higher-HQ inquiry about a past-due UCA brings a hidden one to light (M3-17).</summary>
     private void RevealByInquiry(Arrangement a, int day, string recordId)
     {
-        if (_hiddenProblems.Contains(a.Id)) _revealed.TryAdd(a.Id, (day, recordId, false));
+        if (_hiddenProblems.Contains(a.Id)) _revealed.TryAdd(a.Id, (day, recordId, RevealSource.Inquiry));
     }
 
     /// <summary>Debrief wording for a factor on an inherited arrangement with a hidden problem, or null when it had none.
@@ -165,9 +168,12 @@ public sealed partial class Session
         if (HiddenOn(arrangementId, day))
             return (GapTag.Discoverable, $" The handover did not mention {what}; a review of the inherited files would have shown it.", null);
         var r = _revealed[arrangementId];
-        return (GapTag.Avoidable, r.ByReview
-            ? $" The file review on day {r.Day} showed {what}."
-            : $" Higher HQ's inquiry on day {r.Day} brought {what} to light.", r.RecordId);
+        return (GapTag.Avoidable, r.Source switch
+        {
+            RevealSource.Review => $" The file review on day {r.Day} showed {what}.",
+            RevealSource.Vendor => $" The vendor raised it when you met them on day {r.Day}, which showed {what}.",
+            _ => $" Higher HQ's inquiry on day {r.Day} brought {what} to light.",
+        }, r.RecordId);
     }
 
     internal ActionPreview BuildReviewFilesPreview(ReviewFilesAction r)
