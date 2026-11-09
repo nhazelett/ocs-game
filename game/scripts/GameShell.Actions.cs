@@ -77,10 +77,10 @@ public partial class GameShell
         panel.AddChild(picker); return picker;
     }
 
-    private static string? FundingBlock(FundingOption funding, int day)
+    private static string? FundingBlock(SessionView view, FundingOption funding, int day)
     {
         var reasons = new List<string>();
-        if (!funding.PaysForThis) reasons.Add($"Certified for {string.Join(", ", funding.Capabilities ?? [])} only");
+        if (!funding.PaysForThis) reasons.Add($"Certified for {string.Join(", ", (funding.Capabilities ?? []).Select(id => CapabilityName(view, id).ToLowerInvariant()))} only");
         if (!funding.UsableToday) reasons.Add(day < funding.AvailableDay
             ? $"Available day {funding.AvailableDay}" : $"Expired after day {funding.ExpiresDay}");
         return reasons.Count == 0 ? null : string.Join("; ", reasons);
@@ -130,9 +130,9 @@ public partial class GameShell
             return;
         }
         var vehicles = new[] { new Pick("", "No vehicle") }.Concat(editor.Vehicles.Where(v => v.VendorId == awardVendor)
-            .Select(v => new Pick(v.Id, v.Id + " · " + v.Kind, v.OpenToday ? null : $"Ordering ended day {v.OrderingPeriodEndDay}"))).ToArray();
+            .Select(v => new Pick(v.Id, view.VehicleName(v.Id), v.OpenToday ? null : $"Ordering ended day {v.OrderingPeriodEndDay}"))).ToArray();
         vehicleInput = AddPick(awardPanel, "Vehicle", vehicles, awardVehicle, id => { awardVehicle = id; RefreshActionDesk(session.View); }); awardVehicle = Picked(vehicleInput);
-        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{f.Id} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", FundingBlock(f, view.Day))).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
+        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{view.FundingName(f.Id)} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", FundingBlock(view, f, view.Day))).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
         awardFunding = Picked(fundingInput);
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {
@@ -169,7 +169,7 @@ public partial class GameShell
         {
             AwardPreview = view.Preview(PendingAward);
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
-            previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.\n\nIt would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. There are {AwardPreview.QueueAheadHours} hours already queued. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}, before allowing for that queue.";
+            previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.\n\nIt would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
             previewStops.Text = string.Join("\n\n", AwardPreview.HardStops);
             previewGaps.Text = string.Join("\n\n", AwardPreview.SoftGaps);
             previewStops.Visible = AwardPreview.HardStops.Count > 0;

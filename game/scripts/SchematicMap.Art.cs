@@ -4,46 +4,48 @@ namespace LinesOfSupport.Game;
 
 public partial class SchematicMap
 {
-    private void DrawIsland(Vector2 point, bool hub, string name)
+    private void DrawIsland(Vector2 point, BoardIsland island)
     {
+        var layouts = Data!.Sites.Where(s => s.Island == island.Id).Select(s => SiteLayout(s.Id)).ToArray();
+        var extent = new Vector2(layouts.Select(l => l.IslandRadius.X).DefaultIfEmpty(225).Max(), layouts.Select(l => l.IslandRadius.Y).DefaultIfEmpty(180).Max());
         var shape = new Vector2[14];
         for (var i = 0; i < shape.Length; i++)
         {
             var angle = Mathf.Tau * i / shape.Length; var radius = i % 3 == 0 ? 225 : i % 3 == 1 ? 210 : 190;
-            shape[i] = point + new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius * .8f);
+            shape[i] = point + new Vector2(Mathf.Cos(angle) * radius / 225 * extent.X, Mathf.Sin(angle) * radius / 225 * extent.Y);
         }
         DrawColoredPolygon(shape.Select(p => point + (p - point) * 1.12f + new Vector2(5, 12)).ToArray(), new Color("236477"));
         DrawColoredPolygon(shape.Select(p => p + new Vector2(6, 12)).ToArray(), new Color("0d3041")); DrawColoredPolygon(shape, new Color("c6b98e"));
-        DrawColoredPolygon(shape.Select(p => point + (p - point) * .86f).ToArray(), new Color(hub ? "82967c" : "96a080"));
+        DrawColoredPolygon(shape.Select(p => point + (p - point) * .86f).ToArray(), new Color(island.IsHub ? "82967c" : "96a080"));
         for (var i = 0; i < 8; i++)
         {
             var angle = i * 1.9f; var p = point + new Vector2(Mathf.Cos(angle) * 165, Mathf.Sin(angle) * 120);
             DrawCircle(p + new Vector2(4, 5), 13, new Color("617967")); DrawCircle(p, 12, new Color("71896c"));
         }
         DrawRect(new Rect2(point + new Vector2(-180, 112), new Vector2(75, 17)), new Color("9b8b69"));
-        Text(point + new Vector2(0, -205), name, 520, 34, new Color("eef1d9"));
+        Text(point + new Vector2(0, -extent.Y - 25), island.Name, 520, 34, new Color("eef1d9"));
     }
     private void DrawSite(Vector2 point, BoardSite site)
     {
         var condition = Conditions.GetValueOrDefault(site.Id, SiteCondition.Unknown);
-        DrawRect(new Rect2(point - new Vector2(142, 93), new Vector2(284, 186)), new Color("b5ae8d"));
-        if (SelectedSite == site.Id) DrawRect(new Rect2(point - new Vector2(148, 99), new Vector2(296, 198)), new Color("fff2c6"), false, 4);
-        var tiles = Tiles.Where(t => t.SiteId == site.Id).ToArray();
-        for (var i = 0; i < tiles.Length; i++)
+        var layout = SiteLayout(site.Id);
+        DrawRect(new Rect2(point + layout.Bounds.Position, layout.Bounds.Size), new Color("b5ae8d"));
+        if (SelectedSite == site.Id) DrawRect(new Rect2(point + layout.Bounds.Position - Vector2.One * 6, layout.Bounds.Size + Vector2.One * 12), new Color("fff2c6"), false, 4);
+        foreach (var cell in layout.Tiles)
         {
-            var tile = tiles[i]; var p = point + new Vector2((i % 3 - 1) * 90, -45 + (i / 3) * 98);
+            var tile = cell.Tile; var p = point + cell.Symbol;
             var live = tile.Status is "ok" or "degraded";
             DrawEquipment(p, tile.CapabilityId, new Color(tile.Status == "notOpen" ? "87958d" : tile.Status == "down" ? "576969" : "ddd9bc"), live);
             var color = new Color(tile.Status == "down" ? "a53531" : tile.Status == "degraded" ? "85572b" : "263b37");
-            var label = tile.Label switch { "Food service" => "Food", "Waste removal" => "Waste", "Ground transport" => "Transport", _ => tile.Label };
-            Text(p + new Vector2(0, 42), label, 100, 18, color);
-            Text(p + new Vector2(0, 65), tile.Status == "notOpen" ? "—" : $"{tile.TodayPermille / 10m:0.#}%", 90, 19, color);
+            for (var line = 0; line < cell.LabelLines.Count; line++)
+                Text(point + new Vector2(cell.Symbol.X, cell.LabelY + line * 22), cell.LabelLines[line], cell.Bounds.Size.X - 12, 18, color);
+            Text(point + new Vector2(cell.Symbol.X, cell.PercentY), tile.Status == "notOpen" ? "—" : $"{tile.TodayPermille / 10m:0.#}%", cell.Bounds.Size.X - 12, 19, color);
             if (KnownChanges.Any(c => c.SiteId == site.Id && c.CapabilityId == tile.CapabilityId)) DrawArc(p, 35, 0, Mathf.Tau, 32, new Color(tile.Status == "down" ? "ef8d72" : "e6e8af"), 3, true);
         }
-        if (tiles.Length == 0) DrawEquipment(point, "lodging", new Color("899a8e"), false);
-        Text(point + new Vector2(0, 150), site.Name, 400, 32, new Color("f4eed6"));
+        if (layout.Tiles.Count == 0) DrawEquipment(point, "lodging", new Color("899a8e"), false);
+        Text(point + new Vector2(0, layout.NameY), site.Name, 400, 32, new Color("f4eed6"));
         var state = condition switch { SiteCondition.NotOpen => $"Opens day {site.OpensDay}", SiteCondition.Full => "Supported", SiteCondition.Degraded => "Partly supported", SiteCondition.Down => "Support interrupted", _ => $"Opens day {site.OpensDay}" };
-        Text(point + new Vector2(0, 183), state + (LostConfidenceSites.Contains(site.Id) ? " · confidence lost" : ""), 450, 23, new Color("e0e3cf"));
+        Text(point + new Vector2(0, layout.StateY), state + (LostConfidenceSites.Contains(site.Id) ? " · confidence lost" : ""), 450, 23, new Color("e0e3cf"));
     }
     private void DrawEquipment(Vector2 p, string capability, Color color, bool live)
     {

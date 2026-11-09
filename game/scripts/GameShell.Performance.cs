@@ -28,7 +28,7 @@ public partial class GameShell
         {
             var row = new VBoxContainer(); row.SetMeta("issue", issue.Id); performanceRows.AddChild(row);
             var site = view.Scenario.Sites.Single(s => s.Id == issue.SiteId).Name;
-            row.AddChild(DeskUi.Label($"{issue.Id} · {site} · {issue.CapabilityId} · {issue.ArrangementId}\nDecision: {view.PerformanceDecision(issue)}"));
+            row.AddChild(DeskUi.Label($"{view.NameOf(issue.Id)}\nDecision: {view.PerformanceDecision(issue)}"));
             var record = view.Records.FirstOrDefault(r => r.Id == issue.CauseId && view.Known(r));
             if (record is not null) row.AddChild(DeskUi.Label(record.Text));
             if (issue.CureEndsDay is { } end)

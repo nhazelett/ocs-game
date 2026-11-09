@@ -32,6 +32,8 @@ public partial class MarketSmokeTest : Node
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             var preview = expected.View.Preview(candidate);
             Require(preview.Accepted && shell.AwardPreview!.TotalCents == preview.TotalCents && shell.AwardPreview.HardStops.SequenceEqual(preview.HardStops) && shell.AwardPreview.SoftGaps.SequenceEqual(preview.SoftGaps), "Market preserves exact Sim quote and all warnings.");
+            var quote = shell.GetNode("Margin").FindChildren("*", "Label", true, false).OfType<Label>().Single(l => l.Text.StartsWith("This would cost "));
+            Require(preview.QueueAheadHours == 0 && !quote.Text.Contains("queued") && !quote.Text.Contains("queue"), "An empty award queue adds no queue clause.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshot");
             if (shot >= 0)
             {
@@ -41,6 +43,10 @@ public partial class MarketSmokeTest : Node
             Require(expected.Apply(candidate).Accepted, "Real fixture accepts the chosen terms.");
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "Arrange support sends exactly the previewed action.");
+            var queuedHours = shell.AwardPreview!.QueueAheadHours;
+            quote = shell.GetNode("Margin").FindChildren("*", "Label", true, false).OfType<Label>().Single(l => l.Text.StartsWith("This would cost "));
+            Require(queuedHours > 0 && quote.Text.Contains($", not counting the {queuedHours} hours already queued.")
+                && !quote.Text.Contains("before allowing"), "A queued award states exactly the Sim's pending hours in ordinary prose.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("MARKET_SMOKE_PASS: requirement entry, explicit who/then-how, pure exact quote/warnings and exact award."); GetTree().Quit();
         }
