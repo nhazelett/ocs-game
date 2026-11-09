@@ -46,6 +46,7 @@ jobs:
           pip install --quiet jsonschema
           python3 -m unittest discover -s tools/validate -p test_validate.py
           python3 -m unittest discover -s tools/validate -p test_people.py
+          python3 -m unittest discover -s tools/validate -p test_support.py
           python3 tools/validate/validate.py
 
   provenance:
@@ -114,6 +115,8 @@ jobs:
           grep -Fq 'ACTION_SMOKE_PASS:' "$RUNNER_TEMP/godot-action.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/DebriefSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-debrief.log"
           grep -Fq 'DEBRIEF_SMOKE_PASS:' "$RUNNER_TEMP/godot-debrief.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/SupportSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-support.log"
+          grep -Fq 'SUPPORT_SMOKE_PASS:' "$RUNNER_TEMP/godot-support.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/OtherActionsSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-other.log"
           grep -Fq 'OTHER_ACTIONS_SMOKE_PASS:' "$RUNNER_TEMP/godot-other.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/BpaSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-bpa.log"

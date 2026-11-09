@@ -49,6 +49,8 @@ def cross_checks(sc, rules):
         if r["requestedStartDay"] < r["submittedDay"]: errs.append(f"card {r['id']}: requested start before submission")
     for v in sc["vendors"]:
         if v["island"] not in islands: errs.append(f"vendor {v['id']}: island {v['island']} not found")
+        for mode in v.get("lift", []):
+            if mode not in {"airlift", "sealift"}: errs.append(f"vendor {v['id']}: lift mode {mode} is not airlift or sealift")
         for o in v["offers"]:
             if o["capability"] not in caps: errs.append(f"vendor {v['id']}: capability {o['capability']} not in rules")
             source = o.get("sourceIsland")
@@ -152,6 +154,8 @@ def cross_checks(sc, rules):
                 errs.append(f"event {e['id']}: link.closed link {effect.get('target')} not found")
             if kind == "cor.rotates" and effect.get("target") not in cors:
                 errs.append(f"event {e['id']}: cor.rotates COR {effect.get('target')} not found")
+            if kind in {"acsa.withdraw", "hostNation.withdraw"} and effect.get("target") is not None and effect["target"] not in caps:
+                errs.append(f"event {e['id']}: {kind} capability {effect['target']} not in rules")
             if kind == "funding.late":
                 if effect.get("target") not in ids("fundingLines"):
                     errs.append(f"event {e['id']}: funding.late funding line {effect.get('target')} not found")
@@ -164,6 +168,39 @@ def cross_checks(sc, rules):
                     errs.append(f"event {e['id']}: site.populationJump needs a positive fraction")
         for f in e.get("followOns", []):
             if f not in event_ids: errs.append(f"event {e['id']}: follow-on {f} not found")
+    # M3-15 mirrors ScenarioBundle's support-provider references. Delivery rules stay in Sim.
+    for actor, quantity, present, instrument in (("acsaPartner", "stock", "present", "acsa"),
+                                                  ("hostNation", "capacity", "agreementExists", "hostNation")):
+        provider = sc["actors"].get(actor)
+        if provider is None: continue
+        island = provider.get("island")
+        if island is not None and island not in islands: errs.append(f"{actor} island {island} not found")
+        quantities = provider.get(quantity, {})
+        for capability in quantities:
+            if capability not in caps: errs.append(f"{actor} {quantity} capability {capability} not in rules")
+        for capability in provider.get("unitPriceCents", {}):
+            if capability not in quantities: errs.append(f"{actor} price for {capability} has no {quantity}")
+        for site in provider.get("sites", []):
+            if site not in sites: errs.append(f"{actor} site {site} not found")
+        if provider.get(present, False) and instrument not in instruments:
+            errs.append(f"{actor} needs the {instrument} instrument in rules")
+    external = sc["actors"].get("externalSupport")
+    if external is not None:
+        if "externalSupport" not in instruments: errs.append("actors.externalSupport needs the externalSupport instrument in rules")
+        offers = external.get("offers", [])
+        if len({o["capability"] for o in offers}) != len(offers):
+            errs.append("actors.externalSupport offers must name each capability once")
+        for offer in offers:
+            capability = offer["capability"]; cap = cap_data.get(capability)
+            if cap is None: errs.append(f"external support capability {capability} not in rules")
+            else:
+                lines = {line["id"]: line for line in cap["lines"]}
+                for line in offer["lines"]:
+                    if line not in lines: errs.append(f"external support line {line} is not a {capability} line")
+                if not any(lines.get(line, {}).get("kind") == "core" for line in offer["lines"]):
+                    errs.append(f"external support {capability} must offer the core line")
+            for site in offer.get("sites", []):
+                if site not in sites: errs.append(f"external support {capability} site {site} not found")
     all_ids = islands | sites | vendors | vehicles | event_ids | ids("requirementCards")
     for f in sc["fixedSituations"]:
         if f not in all_ids: errs.append(f"fixedSituations: {f} not found")
