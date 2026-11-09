@@ -762,5 +762,17 @@
     "settlementDays": 10,
     "notes": "FAR 49 termination settlement (backlog M3-19): a contract terminated without the notice its terms require draws a vendor claim, settled at this many days of its daily cost (capped at the days cut short) after two person-days of shop work. Placeholders, tuned in playtest.",
     "sourceUrl": "https://www.acquisition.gov/far/part-49"
+  },
+  "smallBuys": {
+    "buysPerPersonPerDayMilli": 7,
+    "hoursEachMilli": 500,
+    "complainAfterHeldDays": 3,
+    "customerUnit": "CE",
+    "sourceUrl": "https://www.acquisition.gov/far/part-13"
+  },
+  "gpcProgram": {
+    "standUpShopHours": 40,
+    "divertedPermille": 800,
+    "sourceUrl": "https://www.acquisition.gov/far/13.301"
   }
 }

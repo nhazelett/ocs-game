@@ -88,6 +88,8 @@ public sealed class TextbookPolicy : IPolicy
         var actions = new List<PlayerAction>();
         // Unauthorized commitments: ratify a handshake at once (the vendor delivered in good faith and the need is
         // real); deny payment for out-of-scope work under an active contract.
+        // Day 1: if purchase cards exist, start the card program so CE's small buys leave the shop (design doc 6.1).
+        if (v.Day == 1 && v.GpcAvailableDay is not null && _done.Add("gpcProgram")) actions.Add(new StandUpGpcProgramAction());
         // A contracted vendor that under-delivers gets a cure notice the morning the issue arrives.
         foreach (var i in v.PerformanceIssues.Where(i => i.CureNoticeDay is null && i.Outcome == CureOutcome.None))
             if (_done.Add($"cure:{i.Id}")) actions.Add(new CureNoticeAction { Issue = i.Id });

@@ -43,10 +43,16 @@ public sealed record PersonView(
 /// <param name="SystemOnlineDay">Day the system comes online.</param>
 /// <param name="PayingAgentAvailable">SF 44 cash buys possible today.</param>
 /// <param name="GpcAvailable">Purchase card buys possible today.</param>
+/// <param name="SmallBuysToday">Customer small buys that arrived on the day just played (after any on cards).</param>
+/// <param name="SmallBuyHoursToday">Shop hours the small buys took on the day just played, rounded up.</param>
+/// <param name="SmallBuyBacklog">Small buys waiting (held, or more than a day's hours).</param>
+/// <param name="GpcProgram">"none", "standing up" or "running" (design doc 6.1).</param>
 public sealed record TopStripView(
     int Day, int LastDay, int ShopPeople, int ShopHoursPerDay, int ShopHoursQueued, int QueueDays,
     long CashCents, long CashFullCents, int? CashReplenishDay, long FundsUsableCents,
-    bool SystemOnline, int SystemOnlineDay, bool PayingAgentAvailable, bool GpcAvailable);
+    bool SystemOnline, int SystemOnlineDay, bool PayingAgentAvailable, bool GpcAvailable,
+    int SmallBuysToday = 0, int SmallBuyHoursToday = 0, int SmallBuyBacklog = 0, bool SmallBuysHeld = false,
+    string GpcProgram = "none");
 
 // ------------------------------------------------------------------ morning board
 
@@ -58,7 +64,7 @@ public enum BoardSeverity { Info, Warning, Alert }
 
 /// <summary>What a board item links to, so the desk can open the right panel.</summary>
 /// <summary>Funding (M3-03): LinkId is a funding line id, or "funding" for the shop's funding as a whole; open the ledger.</summary>
-public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Event, Cash, Work, Funding }
+public enum BoardLinkKind { None, Arrangement, Card, SiteCapability, Island, Event, Cash, Work, Funding, SmallBuys }
 
 /// <summary>One thing that changed overnight.</summary>
 /// <param name="RecordId">The cause record this item shows; follow CausedBy for the chain.</param>
