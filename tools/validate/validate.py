@@ -66,6 +66,61 @@ def cross_checks(sc, rules):
         if v["vendor"] not in vendors: errs.append(f"vehicle {v['id']}: vendor {v['vendor']} not found")
         for isl in v.get("placeOfPerformance", []):
             if isl not in islands: errs.append(f"vehicle {v['id']}: island {isl} not found")
+    # Mirror ScenarioBundle's M2R-01 people references; optional cast preserves legacy scenarios.
+    people = {}
+    roles = {"customer", "outgoingCco", "scoStaff", "finance", "commander", "vendorRep"}
+    for person in sc.get("people", []):
+        person_id = person["id"]
+        if person_id in people: errs.append(f"person id {person_id} is not unique")
+        else: people[person_id] = person
+        if person["role"] not in roles: errs.append(f"person {person_id}: role {person['role']} not recognized")
+        if not person["name"]: errs.append(f"person {person_id} has no name")
+        vendor = person.get("vendor")
+        if vendor is not None and vendor not in vendors:
+            errs.append(f"person {person_id}: vendor {vendor} not found")
+        if person["role"] == "vendorRep" and vendor is None:
+            errs.append(f"person {person_id} is a vendorRep with no vendor")
+        site = person.get("site")
+        if site is not None and site not in sites:
+            errs.append(f"person {person_id}: site {site} not found")
+    for card in sc["requirementCards"]:
+        person = card.get("person")
+        if person is not None and person not in people:
+            errs.append(f"card {card['id']}: person {person} not found")
+        if person is None and not card.get("submittedBy", ""):
+            errs.append(f"card {card['id']} names neither a person nor submittedBy")
+    for event in sc["events"]:
+        speaker = event.get("from")
+        if speaker is not None and speaker not in people:
+            errs.append(f"event {event['id']}: from {speaker} not found")
+    for actor, role in (("sco", "scoStaff"), ("fm", "finance"), ("commander", "commander")):
+        person_id = sc["actors"][actor].get("person")
+        if person_id is None: continue
+        person = people.get(person_id)
+        if person is None: errs.append(f"actors.{actor}: person {person_id} not found")
+        elif person["role"] != role:
+            errs.append(f"actors.{actor}: person {person_id} must have role {role}, has {person['role']}")
+    # M2R-02's optional blocks use the published turnover/prep contract (PR 97).
+    turnover = sc.get("turnover")
+    if turnover is not None:
+        person_id = turnover.get("from", "")
+        person = people.get(person_id)
+        if person is None: errs.append(f"turnover.from: person {person_id} not found")
+        elif person["role"] != "outgoingCco":
+            errs.append(f"turnover.from: person {person_id} must have role outgoingCco, has {person['role']}")
+        for group, known in (("arrangements", ids("inheritedArrangements")), ("vendors", vendors), ("fundingLines", ids("fundingLines"))):
+            for item in turnover.get("remarks", {}).get(group, {}):
+                if item not in known: errs.append(f"turnover.remarks.{group}: {item} not found")
+    prep = sc.get("prepBriefing")
+    if prep is not None:
+        person_id = prep.get("from", "")
+        if person_id not in people: errs.append(f"prepBriefing.from: person {person_id} not found")
+        choices = {c["id"]: c for c in rules.get("prepChoices", [])}
+        for choice in list(prep.get("choices", {})) + prep.get("defaults", []):
+            if choice not in choices: errs.append(f"prepBriefing choice {choice} is not in rules {rules['rulesVersion']}")
+        used = sum(choices[choice]["prepDays"] for choice in set(prep.get("defaults", [])) if choice in choices)
+        if used > sc["prepDays"]:
+            errs.append(f"prepBriefing.defaults use {used} prep-days; the scenario allows {sc['prepDays']}")
     cors = ids("cors")
     if len(cors) != len(sc.get("cors", [])): errs.append("COR ids must be unique")
     cor_rules = rules.get("cor", {})
