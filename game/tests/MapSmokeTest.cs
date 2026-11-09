@@ -10,7 +10,11 @@ public partial class MapSmokeTest : Node
     {
         try
         {
-            var shell = Shell(this); shell.DeveloperToggle.ButtonPressed = false;
+            using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
+            var shell = scene.Instantiate<GameShell>();
+            shell.AutosavePathOverride = Path.Combine(Path.GetTempPath(), "ocs-map-" + Guid.NewGuid().ToString("N") + ".json");
+            AddChild(shell); shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
+            shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell);
             shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
             var map = shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -66,6 +70,7 @@ public partial class MapSmokeTest : Node
             map.ShowMapDay(actual with { Changes = [.. actual.Changes, new MapChange("hubSite", "power", "vendorFailure", 0, null, "unreported-test", false)] });
             Require(map.KnownChanges.All(c => c.RecordId != "unreported-test"), "An explicitly unreported change is never drawn.");
             map.ShowMapDay(actual);
+            File.Delete(shell.AutosavePath);
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("MAP_SMOKE_PASS: illustrated tiles, camera/site input, exact runs/closures/cargo, known filtering and pure animation."); GetTree().Quit();
         }
