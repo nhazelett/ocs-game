@@ -13,57 +13,214 @@ Day 1
   ACTION    Requirement req0007: Operators switched on.
   ACTION    Requirement req0007: Maintenance and repair switched on.
   ACTION    Undefinitized contract action started with Meridian Site Services: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair); quoted $634,500. Approval request routed through the SCO; answer expected in 2 day(s).
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 2
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 3
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 4
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 5
   DONE      Undefinitized contract action turnkey awarded to Meridian Site Services; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 8 worked today (4 h of shop time); 1 still waiting.
+Day 6
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
+Day 8
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 9
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 10
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
+Day 11
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 12
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 13
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 15
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 17
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     turnkey began: Power at Spoke B from Meridian Site Services, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 18
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Meridian Site Services billed $2,400 for work outside turnkey's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 19
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 20
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal on turnkey. Obligation cap rises to 75% of NTE; definitization can start.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 22
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 23
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 24
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 25
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 26
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 27
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 28
   COMPLY    Meridian Site Services filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 29
   DONE      Response to higher HQ on oos1 sent.
+  DONE      CE small buys: 12 worked today (6 h of shop time).
+Day 30
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 31
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 32
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 33
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 34
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 35
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 36
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   UCA-DUE   turnkey is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
+Day 37
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 38
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 39
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 40
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 41
   COMPLY    Higher HQ asked why turnkey is past due for definitization. A response is now shop work.
   DONE      Response to higher HQ on turnkey sent.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 42
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 43
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on turnkey (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 45
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 46
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 47
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 48
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 49
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 50
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 51
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 52
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 53
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 54
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 55
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 56
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 57
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 58
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 59
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 60
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 61
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OBLIGATE  turnkey has incurred $528,750 against $523,463 obligated: the UCA obligation cap of 75% of NTE is reached. The vendor stops work in 3 days if this stands.
+Day 62
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 63
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   STOPWORK  Meridian Site Services stopped work on turnkey: costs incurred are not obligated.
 Day 64
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Power at Spoke B down to 0%: turnkey stopped work (unpaid UCA); supply 0 kW against demand 468.
 Day 65
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $376,538 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 66
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 67
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: turnkey stopped work (unpaid UCA); fuel on hand ran out.
+Day 70
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 71
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 72
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 73
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 74
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Funding line om1 reached its fiscal-year end with day 75: $376,538 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+Day 76
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 77
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   END       turnkey ended.
+Day 78
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 79
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 80
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 81
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 82
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 83
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+Day 85
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 86
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 87
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 88
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 89
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 90
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -78,7 +235,7 @@ SCORECARD
   Mission output 80% (sortie generation 79%, throughput 79%, endurance 100%, resilience 52%)
   Obligated $523,463; incurred $542,850; incurred but not obligated $19,388
   Unauthorized commitments 0; UCAs past due 1; HHQ inquiries 2
-  Surveys 0; shop hours worked 56; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
+  Surveys 0; shop hours worked 317; payment errors 0; execution-confusion days 0; vendor failures 0; declined BPA calls 0
   spokeBSite.power: 37 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 29 day(s) down, 0 degraded, lowest 0%
 
@@ -115,4 +272,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.8)
 
-State hash 47f0cb0fd5724c215d4f86286a2fe00ea434928abf5437906c99c485896829ed
+State hash 8a28f2846f409b56c0737f1fe44e88c61a5889883affc3ae90ee7fcb467b4179

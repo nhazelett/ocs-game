@@ -19,13 +19,16 @@ Before day 1
   START     Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (purchaseOrder), days -2 to 27.
   START     Inherited: Lodging at Spoke B from Second Island Camp Services (purchaseOrder), days -28 to 31.
 Day 1
+  ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
   ACTION    Ordered a review of the inherited contract files: aPower, cLodging, bGens, bFood, aFuel, cFuel, bFuel, hubWaste, aWater, aComms, hubTransport, cMhe, bLodging.
   ACTION    Ordered a site survey of North Island.
   ACTION    Ordered a site survey of Second Island.
   ACTION    Ordered a site survey of Third Island.
   ACTION    Definitization of aPower started; to be funded from om1.
+  DONE      CE small buys: none worked today (no hours left); 8 waiting.
   FAIL      bFuel missed today's delivery.
 Day 2
+  DONE      CE small buys: none worked today (no hours left); 17 waiting.
   CONFUSED  Execution confusion on hubTransport: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
 Day 3
@@ -45,10 +48,13 @@ Day 3
   DONE      Survey team dispatched to North Island; findings due day 5.
   DONE      Survey team dispatched to Second Island; findings due day 5.
   DONE      Survey team dispatched to Third Island; findings due day 5.
+  DONE      CE small buys: none worked today (no hours left); 26 waiting.
   OK        Ground transport at Hub restored to 100%.
   COR       COR report (SFC Duarte): bFuel missed its delivery on day 1, reported 2 day(s) later.
 Day 4
   ACTION    Definitization of cLodging started; to be funded from om1.
+  COMPLY    CE went to the commander: 35 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
+  DONE      CE small buys: none worked today (no hours left); 35 waiting.
 Day 5
   ACTION    Requirement req0201: Maintenance switched on.
   ACTION    Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits, Maintenance); quoted $35,100. Approval request routed through the SCO; answer expected in 1 day(s).
@@ -58,34 +64,45 @@ Day 5
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Second Island Fuel, Second Island Camp Services.
   SURVEY    Survey of Third Island returned: no grid power; no fuel point; water: none; barge to Main Island 1x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Third Island Camp Services.
   DEFINITZD aPower definitized at $313,000; obligation caps lifted; fully funded from om1.
+  DONE      CE small buys: none worked today (no hours left); 44 waiting.
 Day 6
+  DONE      CE small buys: none worked today (no hours left); 53 waiting.
   FAIL      cFuel missed today's delivery.
   COR       COR report (SSG Mensah): cFuel missed its delivery on day 6.
 Day 7
   ACTION    Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits, Maintenance); quoted $35,100.
   DEFINITZD cLodging definitized at $1,140,000; obligation caps lifted; fully funded from om1.
+  DONE      CE small buys: none worked today (no hours left); 62 waiting.
   FAIL      bFuel missed today's delivery.
   FAIL      bLodging had equipment down.
   SHORT     Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
 Day 8
   DONE      Undefinitized contract action t-req0201-enduring awarded to North Island Telecom; performance starts day 22, ends day 60. UCA issued with NTE $38,610; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      Written purchase order t-req0205-enduring awarded to Main Island Motor Pool Rentals; performance starts day 25, ends day 60. Obligated $80,640.
+  DONE      CE small buys: none worked today (no hours left); 71 waiting.
   OK        Lodging at Spoke B restored to 100%.
 Day 9
   ACTION    Requirement req0209: Operators switched on.
   ACTION    Requirement req0209: Maintenance switched on.
   ACTION    Undefinitized contract action started with Harbor Equipment Co: Material handling equipment at Spoke C, 2 unit-days/day for 33 days (MHE equipment, Operators, Maintenance); quoted $11,880. Approval request routed through the SCO; answer expected in 2 day(s).
   DONE      Written purchase order aComms-next awarded to North Island Telecom; performance starts day 22, ends day 60. Obligated $35,100.
+  DONE      CE small buys: none worked today (no hours left); 80 waiting.
   COR       COR report (SFC Duarte): bFuel missed its delivery on day 7, reported 2 day(s) later.
   COR       COR report (SGT Oyelaran): bLodging had equipment down on day 7, reported 2 day(s) later.
 Day 10
   EVENT     SFC Duarte rotates home. Inbox: "S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training."
   COR       SFC Duarte rotates home. An untrained relief takes over as COR on bFuel, hubWaste (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
+  DONE      CE small buys: none worked today (no hours left); 89 waiting.
   FAIL      bFuel missed today's delivery.
+Day 11
+  DONE      CE small buys: 48 worked today (24 h of shop time, 7 on cards); 43 still waiting.
 Day 12
   DONE      Undefinitized contract action t-req0209-enduring awarded to Harbor Equipment Co; performance starts day 28, ends day 60. UCA issued with NTE $13,068; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 16 worked today (8 h of shop time, 7 on cards); 29 still waiting.
 Day 13
   ACTION    Requirement req0213: Maintenance switched on.
+  DONE      CE small buys: 31 worked today (15.5 h of shop time, 7 on cards).
   FAIL      aPower had equipment down.
   FAIL      bFood missed today's delivery.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
@@ -95,11 +112,13 @@ Day 13
 Day 14
   ACTION    Coordinated with the Hub unit for 3300 gal/day of Water to Spoke A. Not a contract; they can withdraw it.
   EVENT     Higher HQ declines to extend the BPAs. Inbox: "Regional contracting office: the equipment and food BPAs will not be extended past day 20. Calls already placed run to their end; anything after needs another vehicle."
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   START     t-coord-spokeASite-water-14 began: Water at Spoke A from the other unit, 3300 gal/day.
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 15
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bGens had equipment down (no operators line).
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
@@ -108,28 +127,35 @@ Day 15
 Day 16
   ACTION    Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
 Day 17
   ACTION    Written purchase order started with Second Island Camp Services: Lodging at Spoke B, 270 beds/day for 29 days (Shelters or CHUs, Maintenance); quoted $250,560.
   DONE      Written purchase order bGens-next awarded to Harbor Equipment Co; performance starts day 31, ends day 60. Obligated $27,600.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   START     t-coord-spokeBSite-food-16 began: Food service at Spoke B from the other unit, 780 meals/day.
   FAIL      t-coord-spokeASite-water-14 missed today's delivery.
   COR       COR report (SGT Oyelaran): bGens had equipment down on day 15, reported 2 day(s) later.
 Day 18
   DONE      Written purchase order bLodging-next awarded to Second Island Camp Services; performance starts day 32, ends day 60. Obligated $250,560.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 19
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
 Day 20
   ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Spoke C, 2 unit-days/day for 7 days (MHE equipment); quoted $2,520.
   EVENT     Second Island Fuel falls behind
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 21
   DONE      BPA call t-req0209-bridge awarded to Harbor Equipment Co; performance starts day 28, ends day 34. Obligated $2,520.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
 Day 22
   EVENT     Spoke C grows by 60. Inbox: "Spoke C: an aviation detachment of 60 arrives day 30 to stay."
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       aComms ended.
   START     t-req0201-enduring began: Comms backhaul at Spoke A from North Island Telecom, 3 links/day.
   START     aComms-next began: Comms backhaul at Spoke A from North Island Telecom, 3 links/day.
@@ -137,17 +163,21 @@ Day 22
 Day 23
   ACTION    SF 44 cash purchase to Harbor Equipment Co: Material handling equipment at Spoke C, 1 unit-days/day for 37 days (MHE equipment); $6,660 paid on the spot.
   DONE      SF 44 cash purchase t-resize-spokeCSite-mhe-23 awarded to Harbor Equipment Co; performance starts day 27, ends day 63. Obligated $6,660.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 19, reported 4 day(s) later.
 Day 24
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
 Day 25
   UCA       North Island Telecom submitted a qualifying proposal on t-req0201-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       hubTransport ended.
   START     t-req0205-enduring began: Ground transport at Hub from Main Island Motor Pool Rentals, 14 vehicle-days/day.
   FAIL      bFuel missed today's delivery.
 Day 26
   ACTION    Definitization of t-req0201-enduring started; to be funded from om1.
   ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke C, 630 gal/day for 20 days (Fuel delivery, On-site storage); quoted $56,700.
+  DONE      CE small buys: none worked today (no hours left); 2 waiting, 6 went on cards.
   FAIL      cLodging had equipment down.
   FAIL      bFuel missed today's delivery.
   FAIL      t-req0205-enduring had equipment down.
@@ -162,6 +192,7 @@ Day 26
 Day 27
   ACTION    Coordinated with the Hub unit for 780 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
+  DONE      CE small buys: none worked today (no hours left); 4 waiting, 7 went on cards.
   START     t-resize-spokeCSite-mhe-23 began: Material handling equipment at Spoke C from Harbor Equipment Co, 1 unit-days/day.
   OK        Ground transport at Hub restored to 100%.
   OK        Fuel at Spoke B restored to 100%.
@@ -172,6 +203,7 @@ Day 27
 Day 28
   DEFINITZD t-req0201-enduring definitized at $35,100; obligation caps lifted; fully funded from om1.
   DONE      Written purchase order cFuel-next awarded to Port Fuel Haulers; performance starts day 41, ends day 60. Obligated $56,700.
+  DONE      CE small buys: 6 worked today (3 h of shop time, 7 on cards).
   END       cMhe ended.
   START     t-req0209-enduring began: Material handling equipment at Spoke C from Harbor Equipment Co, 2 unit-days/day.
   START     t-req0209-bridge began: Material handling equipment at Spoke C from Harbor Equipment Co, 2 unit-days/day.
@@ -186,6 +218,7 @@ Day 28
   COR       COR report (SGT Oyelaran): cLodging had equipment down on day 26, reported 2 day(s) later.
 Day 29
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   START     t-coord-spokeBSite-food-29 began: Food service at Spoke B from the other unit, 780 meals/day.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
@@ -194,31 +227,39 @@ Day 29
 Day 30
   ACTION    Termination of t-req0209-bridge started.
   END       t-req0209-bridge terminated; performance ends day 30. $1,440 deobligated back to om1.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      hubWaste had equipment down.
   FAIL      t-coord-spokeASite-water-14 missed today's delivery.
   SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
   COR       COR report (SGT Oyelaran): bGens had equipment down on day 28, reported 2 day(s) later.
 Day 31
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       bGens ended.
   START     bGens-next began: Power at Spoke B from Harbor Equipment Co, 400 kW/day.
   END       t-req0209-bridge ended.
   FAIL      t-coord-spokeASite-water-14 missed today's delivery.
   OK        Waste removal at Hub restored to 100%.
 Day 32
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       bLodging ended.
   START     bLodging-next began: Lodging at Spoke B from Second Island Camp Services, 270 beds/day.
+Day 33
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
 Day 34
   SURVEY    Forecast from your Second Island survey contacts: Weather stops the Second Island barge. No secondBarge sailings days 36 to 38.
   UCA       Harbor Equipment Co submitted a qualifying proposal on t-req0209-enduring. Obligation cap rises to 75% of NTE; definitization can start.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 35
   ACTION    Definitization of t-req0209-enduring started; to be funded from om1.
+  DONE      CE small buys: none worked today (no hours left); 2 waiting, 8 went on cards.
   FAIL      bFood missed today's delivery.
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 45, $494,320 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
   EVENT     The partner force needs its water back. Inbox: "Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days."
   WITHDRAWN Partner force withdrew ACSA order aWater (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to om1.
   EVENT     Weather stops the Second Island barge. Inbox: "Harbor master: no barge movements to Second Island for the next three days."
+  DONE      CE small buys: none worked today (no hours left); 4 waiting, 7 went on cards.
   END       bFood ended.
   FAIL      aFuel missed today's delivery.
   FAIL      t-req0205-enduring had equipment down.
@@ -235,6 +276,7 @@ Day 36
 Day 37
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
   DEFINITZD t-req0209-enduring definitized at $11,880; obligation caps lifted; fully funded from om1.
+  DONE      CE small buys: 6 worked today (3 h of shop time, 7 on cards).
   START     t-coord-spokeBSite-food-37 began: Food service at Spoke B from the other unit, 780 meals/day.
   FAIL      bFuel missed today's delivery.
   OK        Ground transport at Hub restored to 100%.
@@ -243,6 +285,7 @@ Day 37
   OK        Food service at Spoke B restored to 100%.
   COR       COR report (SGT Oyelaran): bFood missed its delivery on day 35, reported 2 day(s) later.
 Day 38
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      bFuel missed today's delivery.
   FAIL      bGens-next had equipment down (no operators line).
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
@@ -255,6 +298,7 @@ Day 38
 Day 39
   ACTION    Cure notice on pi1 (bGens-next) started: 4 shop hours.
   DONE      Cure notice on pi1 delivered to Harbor Equipment Co: 10 days to cure, ending day 49.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       aWater ended.
   FAIL      t-coord-spokeBSite-food-27 missed today's delivery.
   OK        Power at Spoke B restored to 100%.
@@ -263,24 +307,30 @@ Day 39
   OK        Fuel at Spoke C restored to 100%.
   OK        Material handling equipment at Spoke C restored to 100%.
 Day 40
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      bFuel missed today's delivery.
   FAIL      t-coord-spokeBSite-food-27 missed today's delivery.
 Day 41
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       aFuel ended.
   END       cFuel ended.
   START     cFuel-next began: Fuel at Spoke C from Port Fuel Haulers, 630 gal/day.
 Day 42
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
   COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 38, reported 4 day(s) later.
 Day 43
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      bFuel missed today's delivery.
   FAIL      t-coord-spokeBSite-food-27 missed today's delivery.
   FAIL      t-coord-spokeBSite-food-29 missed today's delivery.
 Day 44
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($3,000,000) will not be released on day 46 as planned; expect it on day 55.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
 Day 45
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
   SHORT     Fuel at Spoke C degraded to 66%: fuel on hand ran out.
   SHORT     Material handling equipment at Spoke C degraded to 66%: fuel at 66%.
@@ -288,6 +338,7 @@ Day 45
   FUNDING   No funding line has money usable from day 46: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 55.
 Day 46
   ACTION    Coordinated with the Hub unit for 630 gal/day of Fuel to Spoke C. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      aPower had equipment down.
   FAIL      bFuel missed today's delivery.
   FAIL      t-req0205-enduring had equipment down.
@@ -301,6 +352,7 @@ Day 46
   COR       COR report (SSG Mensah): t-req0205-enduring had equipment down on day 46.
 Day 47
   ACTION    Coordinated with the Hub unit for 3300 gal/day of Water to Spoke A. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   START     t-coord-spokeCSite-fuel-46 began: Fuel at Spoke C from the other unit, 630 gal/day.
   START     t-coord-spokeASite-water-47 began: Water at Spoke A from the other unit, 3300 gal/day.
   FAIL      bGens-next had equipment down (no operators line).
@@ -317,27 +369,32 @@ Day 47
   COR       COR report (SSG Mensah): bGens-next had equipment down on day 47.
 Day 48
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   START     t-coord-spokeBSite-food-48 began: Food service at Spoke B from the other unit, 780 meals/day.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
 Day 49
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      t-resize-spokeCSite-mhe-23 had equipment down (no maintenance line, no operators line).
   FAIL      t-coord-spokeBSite-food-37 missed today's delivery.
   FAIL      t-coord-spokeASite-water-47 missed today's delivery.
   COMPLY    Harbor Equipment Co cured pi1: the cure period ended with a corrective plan in place (1 failure day(s) during the period). Performance is back to standard.
 Day 50
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      t-resize-spokeCSite-mhe-23 had equipment down (no maintenance line, no operators line).
   FAIL      cFuel-next missed today's delivery.
   FAIL      t-coord-spokeASite-water-47 missed today's delivery.
   COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 46, reported 4 day(s) later.
   COR       COR report (SSG Mensah): cFuel-next missed its delivery on day 50.
 Day 51
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      t-req0205-enduring had equipment down.
   FAIL      t-coord-spokeBSite-food-27 missed today's delivery.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
   COR       COR report (SSG Mensah): t-req0205-enduring had equipment down on day 51.
 Day 52
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      aPower had equipment down.
   FAIL      bFuel missed today's delivery.
   FAIL      t-resize-spokeCSite-mhe-23 had equipment down (no maintenance line, no operators line).
@@ -351,6 +408,7 @@ Day 52
 Day 53
   ACTION    Coordinated with the Hub unit for 3300 gal/day of Water to Spoke A. Not a contract; they can withdraw it.
   ACTION    Coordinated with the Hub unit for 630 gal/day of Fuel to Spoke C. Not a contract; they can withdraw it.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   START     t-coord-spokeCSite-fuel-53 began: Fuel at Spoke C from the other unit, 630 gal/day.
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
@@ -358,22 +416,29 @@ Day 53
   OK        Fuel at Spoke C restored to 100%.
   OK        Material handling equipment at Spoke C restored to 100%.
 Day 54
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   START     t-coord-spokeASite-water-53 began: Water at Spoke A from the other unit, 3300 gal/day.
   FAIL      bFuel missed today's delivery.
   FAIL      t-coord-spokeBSite-food-48 missed today's delivery.
   FUNDING   Comptroller released funding line om2: $3,000,000 usable from day 55, 9 day(s) later than planned.
+Day 55
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 56
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   COR       COR report (SFC Duarte's relief): bFuel missed its delivery on day 52, reported 4 day(s) later.
 Day 57
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
   FAIL      hubWaste had equipment down.
   FAIL      t-coord-spokeBSite-fuel-27 missed today's delivery.
   FAIL      t-coord-spokeBSite-food-27 missed today's delivery.
   SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
 Day 58
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
   OK        Waste removal at Hub restored to 100%.
 Day 59
+  DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      bFuel missed today's delivery.
   FAIL      t-req0201-enduring had equipment down.
   FAIL      cFuel-next missed today's delivery.
@@ -381,6 +446,7 @@ Day 59
   COR       COR report (SSG Mensah): t-req0201-enduring had equipment down on day 59.
   COR       COR report (SSG Mensah): cFuel-next missed its delivery on day 59.
 Day 60
+  DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      bFuel missed today's delivery.
   CONFUSED  Execution confusion on t-resize-spokeCSite-mhe-23: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
   FAIL      t-coord-spokeBSite-fuel-27 missed today's delivery.
@@ -409,7 +475,7 @@ SCORECARD
   Mission output 92% (sortie generation 97%, throughput 97%, endurance 95%, resilience 65%)
   Obligated $2,819,940; incurred $2,550,000; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 3; shop hours worked 380; payment errors 0; execution-confusion days 2; vendor failures 71; declined BPA calls 0
+  Surveys 3; shop hours worked 514; payment errors 0; execution-confusion days 2; vendor failures 71; declined BPA calls 0
   hubSite.transport: 0 day(s) down, 5 degraded, lowest 53%
   hubSite.waste: 0 day(s) down, 2 degraded, lowest 51%
   spokeASite.power: 0 day(s) down, 3 degraded, lowest 54%
@@ -703,4 +769,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.916)
 
-State hash f5b148580c1d8ce7dd636d587a82aad6baae03fede7982ecba8fc88f51bb890c
+State hash f21af62dcc5899c0a7b20609401dd2ed74dbdec946c4264beecbfc1ce2578996

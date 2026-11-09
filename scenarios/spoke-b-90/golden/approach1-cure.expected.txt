@@ -8,143 +8,275 @@ Before day 1
   START     Inherited: Fuel at Hub from Main Island Utilities (host nation) (hostNation), days 1 to 400.
 Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   DONE      BPA call gens awarded to Harbor Equipment Co; performance starts day 7, ends day 66. Obligated $49,680.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 3
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 4
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 5
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 6
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     gens began: Power at Spoke B from Harbor Equipment Co, 360 kW/day.
+Day 8
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 9
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 10
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 11
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
   ACTION    Ratification of uc1 started: 2 shop day(s). Port Fuel Haulers is told it will be paid.
   COMPLY    Ratification of uc1 completed: $42,120 obligated from om1. Port Fuel Haulers keeps delivering; deliveries after day 19 are owed and not obligated until a contract covers the need.
+  DONE      CE small buys: none worked today (no hours left); 5 waiting.
   START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
 Day 13
+  DONE      CE small buys: 11 worked today (5.5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
   COMPLY    Out-of-scope work oos1: Harbor Equipment Co billed $2,400 for work outside gens's scope, done on a unit member's say-so. Decision: deny payment or ratify.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 88%: fuel on hand ran out.
   SHORT     Power at Spoke B degraded to 88%: fuel at 88%.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
+Day 17
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 18
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 19
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 20
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 21
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 22
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 23
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 24
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work (oos1) after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 6 waiting.
 Day 26
   DONE      Response to higher HQ on oos1 sent.
+  DONE      CE small buys: 12 worked today (6 h of shop time).
+Day 27
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 28
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 29
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 30
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 31
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 32
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 33
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   COR       COR report (SSG Reyes): gens had equipment down on day 33.
 Day 34
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 35
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 36
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 37
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   COR       COR report (SSG Reyes): gens had equipment down on day 37.
 Day 38
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+Day 39
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 40
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 41
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   COR       COR report (SSG Reyes): gens had equipment down on day 41.
 Day 42
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   COR       COR report (SSG Reyes): gens had equipment down on day 42.
   INBOX     Performance issue pi1: Harbor Equipment Co under-delivered on gens on days 41 and 42 (COR SSG Reyes). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 43
   ACTION    Cure notice on pi1 (gens) started: 4 shop hours.
   DONE      Cure notice on pi1 delivered to Harbor Equipment Co: 10 days to cure, ending day 53.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on gens (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 45
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 46
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 47
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 48
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 49
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 50
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
 Day 51
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 52
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 53
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COMPLY    Harbor Equipment Co cured pi1: the cure period ended with a corrective plan in place (1 failure day(s) during the period). Performance is back to standard.
 Day 54
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   FAIL      uc1 missed today's delivery (no on-site storage line).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   COR       COR report (SSG Reyes's relief): gens had equipment down on day 50, reported 4 day(s) later.
 Day 55
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
 Day 56
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 57
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      gens had equipment down (no maintenance and repair line, no operators line).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 180 kW against demand 468; fuel at 0%.
 Day 58
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       COR report (SSG Reyes's relief): gens had equipment down on day 54, reported 4 day(s) later.
 Day 59
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   COR       COR report (SSG Reyes's relief): gens had equipment down on day 55, reported 4 day(s) later.
+Day 60
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+Day 61
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 62
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 63
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 64
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 65
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $808,200 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 67
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   END       gens ended.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
 Day 69
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 70
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 50%: fuel on hand ran out.
 Day 71
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 72
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 73
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
+Day 74
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
   FUNDING   Funding line om1 reached its fiscal-year end with day 75: $808,200 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
 Day 76
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 77
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 78
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
+Day 79
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 80
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
+Day 81
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 82
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 83
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
 Day 85
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 86
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 87
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 88
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      uc1 missed today's delivery (no on-site storage line).
+Day 89
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 90
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -159,7 +291,7 @@ SCORECARD
   Mission output 76% (sortie generation 73%, throughput 73%, endurance 100%, resilience 52%)
   Obligated $91,800; incurred $465,615; incurred but not obligated $373,815
   Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 58; payment errors 0; execution-confusion days 1; vendor failures 20; declined BPA calls 0
+  Surveys 0; shop hours worked 319; payment errors 0; execution-confusion days 1; vendor failures 20; declined BPA calls 0
   spokeBSite.power: 42 day(s) down, 37 degraded, lowest 0%
   spokeBSite.fuel: 15 day(s) down, 2 degraded, lowest 0%
 
@@ -256,4 +388,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.762)
 
-State hash a9f8d430d43a80af897f4793ffd3a940cdf862d31e2accdf25af587c62a4b49b
+State hash 742808bd28415e439c3b86cdc025020abdb37a7ccb5e59155ab3242ff234c1e6

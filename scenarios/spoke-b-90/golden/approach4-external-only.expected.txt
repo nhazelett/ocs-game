@@ -13,52 +13,212 @@ Day 1
   ACTION    Requirement req0007: Operators switched on.
   ACTION    Requirement req0007: Maintenance and repair switched on.
   ACTION    External support request extPower started: Power at Spoke B, 470 kW/day for 60 days (Generation equipment, Generator fuel supply, Operators, Maintenance and repair), estimated $372,240 from om1; 2 shop day(s) to prepare, then the SCO and the external office.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
   EXTERNAL  External support request extPower submitted through the SCO to the external office. Approval usually takes 10 to 20 days; the contractor then mobilizes before anything arrives.
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
+Day 3
+  DONE      CE small buys: 8 worked today (4 h of shop time).
+Day 4
+  DONE      CE small buys: 4 worked today (2 h of shop time).
+Day 5
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 6
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 8
   EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment uc1: the Spoke B unit arranged Fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     uc1 began: Fuel at Spoke B from Port Fuel Haulers, 1170 gal/day.
 Day 10
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   CONFUSED  Execution confusion on uc1: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+Day 11
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Fuel at Spoke B down to 16%: fuel on hand ran out.
 Day 13
   COMPLY    The Spoke B unit's habit of going around contracting rises (uc1 has been open 5 days).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
 Day 14
   EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 15
   WITHDRAWN Port Fuel Haulers walked off uc1 after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   EXTERNAL  The external office awarded extPower to Theater base support contractor after 13 days in approval: Power at Spoke B, 470 kW/day. Obligated $372,240 from om1. The contractor mobilizes for 30 days; performance starts day 46, ends day 105.
 Day 16
   EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 17
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
 Day 18
   COMPLY    Higher HQ asked why unauthorized commitment uc1 has gone 10 days without ratification. A response is now shop work (24 hours).
+  DONE      CE small buys: none worked today (no hours left); 5 waiting.
 Day 19
   DONE      Response to higher HQ on uc1 sent.
+  DONE      CE small buys: 11 worked today (5.5 h of shop time).
+Day 20
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 21
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 22
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 23
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 24
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 25
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 26
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 27
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 28
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 29
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 30
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 31
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 32
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 33
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 34
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 35
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 36
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 37
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 38
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 39
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 40
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 41
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 42
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 43
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
   EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on extPower (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 45
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 46
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     extPower began: Power at Spoke B from Theater base support contractor, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
+Day 47
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 48
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 49
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 50
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 51
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 52
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 53
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 54
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 55
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 56
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 57
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 58
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 59
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 60
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+Day 61
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 62
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 63
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 64
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 65
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller: funding line om1 reaches its fiscal-year end with day 75, $527,760 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+Day 66
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 67
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
   EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: funding line om2 ($900,000) will not be released on day 76 as planned; expect it on day 85.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 69
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 70
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 71
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 72
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 73
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 74
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Funding line om1 reached its fiscal-year end with day 75: $527,760 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: om2, expected day 85.
+Day 76
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 77
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 78
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 79
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 80
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 81
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 82
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 83
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller released funding line om2: $900,000 usable from day 85, 9 day(s) later than planned.
+Day 85
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 86
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 87
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 88
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 89
+  DONE      CE small buys: 6 worked today (3 h of shop time).
+Day 90
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6    6    7    7    8    8    9
@@ -73,7 +233,7 @@ SCORECARD
   Mission output 79% (sortie generation 78%, throughput 78%, endurance 100%, resilience 52%)
   Obligated $372,240; incurred $326,280; incurred but not obligated $31,590
   Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 40; payment errors 0; execution-confusion days 1; vendor failures 0; declined BPA calls 0
+  Surveys 0; shop hours worked 301; payment errors 0; execution-confusion days 1; vendor failures 0; declined BPA calls 0
   spokeBSite.power: 39 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 30 day(s) down, 0 degraded, lowest 0%
 
@@ -102,4 +262,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.793)
 
-State hash 1554938f8c5082612fcf62342339418adc5224d535eca5f50650eaef4abef331
+State hash 8d5f4f6643157967a084d6fe5319907ae40aafa2b6ac3d7d62ce7d84e6e7dd3d

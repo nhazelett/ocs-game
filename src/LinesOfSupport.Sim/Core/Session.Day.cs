@@ -22,6 +22,7 @@ public sealed partial class Session
         UcaClocks(d);
         CommitmentClocks(d);
         DoShopWork(d);
+        SmallBuys(d);
         ExternalSupportClocks(d);
         if (_cashReplenishDay == d)
         {
@@ -177,7 +178,9 @@ public sealed partial class Session
         var hours = _hoursPerDayMilli;
         // Creation order is the player's queue. When the shop is short, work for a site whose commander lost
         // confidence in contracting (a refused handshake, SPEC 4.5) waits behind everything else (M2-14).
-        var ready = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay <= d).ToList();
+        // The purchase card program is stood up around everything else: it takes only the hours the queue leaves.
+        var ready = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay <= d && w.Kind != WorkKind.GpcProgram).ToList();
+        var program = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay <= d && w.Kind == WorkKind.GpcProgram).ToList();
         var order = _lostConfidence.Count == 0 ? ready : ready.OrderBy(ConfidenceRank).ToList();
         var spent = new Dictionary<WorkItem, long>();
         foreach (var w in order)
@@ -189,6 +192,15 @@ public sealed partial class Session
             _hoursWorkedMilli += spend;
             spent[w] = spend;
         }
+        foreach (var w in program)
+        {
+            if (hours <= 0) break;
+            var spend = Math.Min(hours, w.HoursRemainingMilli);
+            w.HoursRemainingMilli -= spend;
+            hours -= spend;
+            _hoursWorkedMilli += spend;
+        }
+        _hoursLeftTodayMilli = hours;
         if (_lostConfidence.Count > 0) RecordDeferrals(d, ready, spent);
         // Complete in creation order after spending, so a zero-hour item finishes the day it is ready.
         foreach (var w in _work.ToList())
@@ -531,6 +543,10 @@ public sealed partial class Session
                 ["compliance.outOfScopeDenied"] = _outOfScopeDenied,
                 ["compliance.commanderConfidenceHits"] = _confidenceHits,
                 ["compliance.commitmentsUnresolved"] = _commitments.Count(c => c.Unresolved),
+                ["shop.smallBuys"] = _smallBuysWorked,
+                ["shop.smallBuyHours"] = _smallBuyHoursMilli / 1000.0,
+                ["shop.smallBuysHeldDays"] = _smallBuysHeldDays,
+                ["shop.gpcProgramDay"] = _gpcProgramDay ?? 0,
                 ["performance.issues"] = _issues.Count,
                 ["performance.cureNotices"] = _issues.Count(i => i.CureNoticeDay is not null),
                 ["performance.cured"] = _issues.Count(i => i.Outcome == CureOutcome.Cured),
