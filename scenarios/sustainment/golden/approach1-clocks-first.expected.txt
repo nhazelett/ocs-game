@@ -20,27 +20,26 @@ Before day 1
   START     Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (purchaseOrder), days -2 to 27.
   START     Inherited: Lodging at Spoke B from Second Island Camp Services (purchaseOrder), days -28 to 31.
 Day 1
-  ACTION    Ordered a review of the inherited contract files: aPower, cLodging, bGens, bFood, aFuel, cFuel, bFuel, hubWaste, aWater, aComms, hubTransport, cMhe, bLodging.
+  ACTION    Ordered a review of the inherited contract files: aPower, cLodging, bGens, bFood, aFuel, cFuel, bFuel, hubWaste, aComms, hubTransport, cMhe, bLodging.
   DONE      CE small buys: none worked today (no hours left); 8 waiting.
   FAIL      bFuel missed today's delivery.
 Day 2
-  DONE      CE small buys: none worked today (no hours left); 17 waiting.
-  CONFUSED  Execution confusion on hubTransport: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
-  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
-Day 3
   SURVEY    File review of aPower: power at Spoke A from North Island Power and Light (uca), days -49 to 70, funded from om1; UCA issued day -140, NTE $340,000, 39% obligated; definitization due by day 40; qualifying proposal in hand; delivery record 97% on time; nothing the handover did not mention.
-  SURVEY    File review of cLodging: lodging at Spoke C from Third Island Camp Services (uca), days -119 to 60, funded from om1; UCA issued day -172, NTE $1,200,000, 44% obligated; definitization due by day 8; qualifying proposal in hand; delivery record 96% on time.
+  SURVEY    File review of cLodging: lodging at Spoke C from Third Island Camp Services (uca), days -119 to 60, funded from om1; UCA issued day -172, NTE $1,200,000, 43% obligated; definitization due by day 8; qualifying proposal in hand; delivery record 96% on time.
   SURVEY    File review of bGens: power at Spoke B from Harbor Equipment Co (bpaCall), days -29 to 30, funded from om1; delivery record 95% on time; nothing the handover did not mention.
   SURVEY    File review of bFood: food service at Spoke B from Island Provisions (bpaCall), days -24 to 35, funded from om1; delivery record 96% on time; nothing the handover did not mention.
   SURVEY    File review of aFuel: fuel at Spoke A from Port Fuel Haulers (idiqOrder), days -19 to 40, funded from om1; fuelIdiq ceiling $5,000,000, $4,250,000 ordered (85%), $750,000 left to order; delivery record 95% on time.
   SURVEY    File review of cFuel: fuel at Spoke C from Port Fuel Haulers (idiqOrder), days -19 to 40, funded from om1; fuelIdiq ceiling $5,000,000, $4,250,000 ordered (85%), $750,000 left to order; delivery record 95% on time.
   SURVEY    File review of bFuel: fuel at Spoke B from Second Island Fuel (purchaseOrder), days -39 to 60, funded from om1; delivery record 88% on time, not the 97% reported at handover.
   SURVEY    File review of hubWaste: waste removal at Hub from Main Island Sanitation (purchaseOrder), days -14 to 75, funded from om1; delivery record 96% on time; nothing the handover did not mention.
-  SURVEY    File review of aWater: water at Spoke A from Partner force (ACSA) (acsa), days -9 to 50, funded from om1; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review of aComms: comms backhaul at Spoke A from North Island Telecom (purchaseOrder), days -9 to 21, funded from om1; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review of hubTransport: ground transport at Hub from Main Island Motor Pool Rentals (gpc), days -5 to 24, funded from om1; delivery record 96% on time; nothing the handover did not mention.
   SURVEY    File review of cMhe: material handling equipment at Spoke C from Harbor Equipment Co (purchaseOrder), days -2 to 27, funded from om1; delivery record 95% on time; nothing the handover did not mention.
   SURVEY    File review of bLodging: lodging at Spoke B from Second Island Camp Services (purchaseOrder), days -28 to 31, funded from om1; delivery record 95% on time; nothing the handover did not mention.
+  DONE      CE small buys: none worked today (no hours left); 17 waiting.
+  CONFUSED  Execution confusion on hubTransport: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+Day 3
   DONE      CE small buys: 26 worked today (13 h of shop time).
   OK        Ground transport at Hub restored to 100%.
   COR       COR report (SFC Duarte): bFuel missed its delivery on day 1, reported 2 day(s) later.
@@ -517,7 +516,7 @@ SCORECARD
   Mission output 88% (sortie generation 92%, throughput 93%, endurance 92%, resilience 63%)
   Obligated $3,116,235; incurred $2,844,385; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 543; payment errors 0; execution-confusion days 1; vendor failures 59; declined BPA calls 0
+  Surveys 0; shop hours worked 539; payment errors 0; execution-confusion days 1; vendor failures 59; declined BPA calls 0
   hubSite.transport: 0 day(s) down, 5 degraded, lowest 53%
   hubSite.waste: 0 day(s) down, 1 degraded, lowest 51%
   spokeASite.power: 0 day(s) down, 2 degraded, lowest 54%
@@ -913,27 +912,27 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #18 spokeASite.comms days 54-54, lowest 68%, 0 day(s) down: AVOIDABLE
       [avoidable] comms failed (first on day 54) and had no maintenance line; its failure odds were higher every day it ran. Performance issue pi3 opened day 44; decision: no decision.
   #19 spokeBSite.fuel days 32-33, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 32 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 34. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 32 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 34. Performance issue pi2 opened day 23; decision: no decision.
   #20 spokeBSite.fuel days 35-35, lowest 28%, 1 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 35 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 35 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
   #21 spokeBSite.fuel days 37-38, lowest 0%, 2 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 37 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 39. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 37 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 39. Performance issue pi2 opened day 23; decision: no decision.
   #22 spokeBSite.fuel days 41-41, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 41 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 41 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
   #23 spokeBSite.fuel days 44-44, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 44 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 44 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
   #24 spokeBSite.fuel days 47-47, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 47 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 49. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 47 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 49. Performance issue pi2 opened day 23; decision: no decision.
   #25 spokeBSite.fuel days 49-49, lowest 28%, 1 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 49 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 51. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 49 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 51. Performance issue pi2 opened day 23; decision: no decision.
   #26 spokeBSite.fuel days 52-52, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 52 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 52 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
   #27 spokeBSite.fuel days 54-54, lowest 28%, 1 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 54 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 56. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 54 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. The COR reported it on day 56. Performance issue pi2 opened day 23; decision: no decision.
   #28 spokeBSite.fuel days 57-57, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 57 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 57 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. Performance issue pi2 opened day 23; decision: no decision.
   #29 spokeBSite.fuel days 60-60, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] bFuel failed on day 60 with full operator and maintenance coverage. The file review on day 3 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its report was still on the way (due day 62) when the game ended. Performance issue pi2 opened day 23; decision: no decision.
+      [avoidable] bFuel failed on day 60 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its report was still on the way (due day 62) when the game ended. Performance issue pi2 opened day 23; decision: no decision.
   #30 spokeBSite.power days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] bGens failed (first on day 27) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 29.
   #31 spokeBSite.power days 29-29, lowest 64%, 0 day(s) down: AVOIDABLE
@@ -1065,4 +1064,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [not met] Mission output at least 88% (mission.output = 0.877)
 
-State hash 0f7347774d1ff7df1cc6a7bac01d674a46facd4203875d96131e884594f925aa
+State hash fb017787baa531fc0bf24eb2ae4a75119e9c9ecec84b2607a46912ed92537a74

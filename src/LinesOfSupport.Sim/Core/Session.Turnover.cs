@@ -85,8 +85,9 @@ public sealed partial class Session
                 if (remarks.Arrangements.TryGetValue(a.Id, out var rem)) contractSentences.Add(rem);
         }
 
-        // Vendor list, with how much the shop knows about each.
-        var vendors = Scenario.Vendors.Select(v => new TurnoverVendor(
+        // Vendor list, with how much the shop knows about each. Support reached only through someone else's agreement (the
+        // host nation's utilities, the partner force under the ACSA) is in the contracts paragraph, not a vendor you call.
+        var vendors = Scenario.Vendors.Where(v => !v.VehicleOnly).Select(v => new TurnoverVendor(
             v.Id, v.Name, IslandName(v.Island), v.Offers.Select(o => CapLabel(o.Capability)).Distinct().ToList(), v.InfoTier, v.Vetted,
             remarks.Vendors.TryGetValue(v.Id, out var r) ? r : null)).ToList();
         var vendorSentences = new List<string>();

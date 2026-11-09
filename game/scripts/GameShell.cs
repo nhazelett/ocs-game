@@ -95,7 +95,8 @@ public partial class GameShell : Control
     {
         if (ReadingTurnover) return;
         var advanced = AdvanceAndAutosave();
-        RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.");
+        if (advanced && session.View?.Finished == false) FocusNewMorning();
+        RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.", developerOnly: advanced);
     }
 
     private void OnReplay()
@@ -106,7 +107,7 @@ public partial class GameShell : Control
         {
             ResetDeskSelection();
             session.LoadReplay(replays[index]);
-            RefreshDisplay($"Replay loaded: {Path.GetFileNameWithoutExtension(replays[index]).Replace('-', ' ')}. Next day plays day 1.");
+            RefreshDisplay($"Replay loaded: {Path.GetFileNameWithoutExtension(replays[index]).Replace('-', ' ')}. Next day plays day 1.", developerOnly: true);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException)
         {
@@ -114,12 +115,23 @@ public partial class GameShell : Control
         }
     }
 
-    private void RefreshDisplay(string status)
+    private string displayStatus = "";
+    private bool displayStatusDeveloperOnly;
+    private void RefreshBuildStatus()
+    {
+        var label = GetNode<Label>("%BuildStatus");
+        var status = displayStatusDeveloperOnly && !DeveloperTools ? "" : displayStatus;
+        label.Text = (DeveloperTools && session.View is not null ? session.IsReplay ? "Replay · " : "Your decisions · " : "")
+            + status + (saveError is null ? "" : $"\nSave failed: {saveError}");
+        label.Visible = label.Text.Length > 0;
+    }
+
+    private void RefreshDisplay(string status, bool developerOnly = false)
     {
         var view = session.View;
         var strip = view?.TopStrip();
         var board = view?.MorningBoard();
-        GetNode<Label>("%BuildStatus").Text = (view is null ? "" : session.IsReplay ? "Replay · " : "Your decisions · ") + status + (saveError is null ? "" : $"\nSave failed: {saveError}");
+        displayStatus = status; displayStatusDeveloperOnly = developerOnly; RefreshBuildStatus();
         GetNode<Label>("%DayCounter").Text = strip is null ? "No scenario" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Day {strip.Day} (next)";
         GetNode<Button>("%NextDay").Disabled = view is null || view.Finished;
         GetNode<Button>("%Continue").Disabled = view is null || view.Finished;
