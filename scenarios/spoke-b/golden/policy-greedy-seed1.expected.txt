@@ -46,7 +46,7 @@ Day 10
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
 Day 11
-  EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  EVENT     Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 12
@@ -63,13 +63,13 @@ Day 13
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: water at 0%.
 Day 14
-  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
-  EVENT     Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears."
+  EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   OK        Water at Spoke C restored to 100%.
   OK        Food service at Spoke C restored to 100%.
 Day 15
-  EVENT     Spoke B unit asks the power vendor for extra work. Inbox: "Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract."
+  EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 88%: fuel on hand ran out.
@@ -78,7 +78,7 @@ Day 15
   SHORT     Water at Spoke C degraded to 75%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: food service on hand ran out; water at 75%.
 Day 16
-  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   COMPLY    The Spoke B unit's habit of going around contracting rises (Port Fuel Haulers fuel at Spoke B has been open 5 days).
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -93,7 +93,7 @@ Day 18
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 20
-  EVENT     Follow-on element ordered to Spoke C. Inbox: "Spoke C commander: higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
+  EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
@@ -261,7 +261,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #9 spokeCSite.food days 15-30, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #7)
-      [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 14: Weather closes the Third Island crossing. Inbox: "Harbor master: the ferry to Third Island is tied up until the weather clears.".
+      [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 14: Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
       [avoidable] Arrangements at Spoke C were sized for 360 meals a day against demand of 480 a day. Population rose to 160 on day 15, which the plan showed from day 1.
       [avoidable] Coastal Provisions food service at Spoke C failed (first on day 20) and had no food service staff line; its failure odds were higher every day it ran.
 
@@ -272,4 +272,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.708)
 
-State hash 18b09689a498a42bcc437fb78b603d8c61c8af3a3a4ca9e42d52c87563ab3310
+State hash e8d54865c8c77508a68b27f623670e79791130e48fff69732e5e1314f9246d1b

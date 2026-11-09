@@ -127,9 +127,23 @@ public sealed partial class Session
     internal PersonView? VendorRep(string? vendorId) =>
         vendorId is null ? null : BuildPerson(Scenario.People.FirstOrDefault(p => p.Role == "vendorRep" && p.Vendor == vendorId)?.Id);
 
-    /// <summary>Who a board item is heard from: the card's person, an event's speaker, the vendor's rep for an arrangement.</summary>
+    /// <summary>
+    /// Who brings news about a capability at a site to the shop (M2R-20): the person on the earliest card for that
+    /// capability at that site, else the first customer or commander the cast places at the site; null when no one is there.
+    /// </summary>
+    internal PersonView? SitePerson(string siteId, string capabilityId)
+    {
+        var card = _cards.Where(c => c.SiteId == siteId && c.CapabilityId == capabilityId && c.PersonId is not null)
+                         .OrderBy(c => c.SubmittedDay).FirstOrDefault();
+        if (card is not null) return BuildPerson(card.PersonId);
+        return BuildPerson(Scenario.People.FirstOrDefault(p => p.Site == siteId && p.Role is "customer" or "commander")?.Id);
+    }
+
+    /// <summary>Who a board item is heard from: the card's person, an event's speaker, the vendor's rep for an arrangement,
+    /// the site's person for a site capability.</summary>
     internal PersonView? PersonFor(BoardLinkKind kind, string linkId) => kind switch
     {
+        BoardLinkKind.SiteCapability when linkId.IndexOf('.') is var dot and > 0 => SitePerson(linkId[..dot], linkId[(dot + 1)..]),
         BoardLinkKind.Card => BuildPerson(_cards.FirstOrDefault(c => c.Id == linkId)?.PersonId),
         BoardLinkKind.Event => BuildPerson(Scenario.Events.FirstOrDefault(e => e.Id == linkId)?.From),
         BoardLinkKind.Arrangement => VendorRep(_arrangements.FirstOrDefault(a => a.Id == linkId)?.VendorId),

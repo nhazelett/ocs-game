@@ -60,7 +60,11 @@ public sealed partial class Session
             if (!e.Preconditions.All(p => Events.Holds(this, p, d))) continue;
             _eventSchedule[e.Id] = (start, true);
             _eventsFired++;
-            var text = e.PlayerVisibleAs is { Length: > 0 } msg ? $"{e.Label}. Inbox: \"{msg}\"" : e.Label;
+            // M2R-24: an event from a person carries that person's own words, in quotes; a notice with no person names
+            // its source in its own text ("Harbor master: ..."). Either way the line reads as written, with no "Inbox:" tag.
+            var text = e.PlayerVisibleAs is not { Length: > 0 } msg ? e.Label
+                : e.From is null ? $"{e.Label}. {msg}"
+                : $"{e.Label}. \"{msg}\"";
             var rec = AddRecord(d, RecordKind.Event, e.Id, text, []);
             _eventRecordIds[e.Id] = rec;
             for (var i = 0; i < e.Effects.Count; i++) Events.Apply(this, e, i, d, rec);

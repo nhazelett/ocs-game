@@ -21,7 +21,7 @@ Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 8
-  EVENT     Spoke B unit finds its own fuel. Inbox: "Spoke B first sergeant: we called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
+  EVENT     Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -40,13 +40,13 @@ Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
 Day 14
-  EVENT     Second increment confirmed for Spoke B. Inbox: "Spoke B: second increment of 80 personnel lands day 20, as in the plan."
+  EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 15
   WITHDRAWN Port Fuel Haulers walked off Port Fuel Haulers fuel at Spoke B after 7 days of unpaid delivery. Fuel at Spoke B loses that source today. It will quote this office 25% higher from now on.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 16
-  EVENT     Weather stops the barge. Inbox: "Harbor master: no barge movements for the next three days."
+  EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -130,7 +130,7 @@ Day 42
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
-  EVENT     SSG Reyes rotates home early. Inbox: "S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training."
+  EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
   COR       SSG Reyes rotates home. An untrained relief takes over as COR (poor: reports 4 day(s) late, about 50% of problems). Designate another COR to restore reporting.
   COMPLY    The Spoke B unit's habit of going around contracting rises (Island Power Rentals power at Spoke B has been open 5 days).
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -193,7 +193,7 @@ Day 66
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 68
-  EVENT     The new fiscal year's funding is held up. Inbox: "Comptroller: the new fiscal year's O&M release is held up at higher headquarters."
+  EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
@@ -309,4 +309,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash 4b5264cd1f2eaf183ac6c79d723db14c3e4f023c33851f1159d1a567b6c29129
+State hash d763b4c7b255df2b507c49389ae02c110a3e0fa9babd7acf9f8a0fbe35c601ad

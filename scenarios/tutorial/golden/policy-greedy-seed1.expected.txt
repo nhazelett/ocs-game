@@ -13,15 +13,15 @@ Before day 1
 Day 1
   ACTION    Government purchase card to Island Mart: Water at Hub, 4500 gal/day for 7 days (Potable water supply); $9,734 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $9,734.
-  EVENT     Your mentor on the cash box. Inbox: "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
-  EVENT     Your mentor on agreements. Inbox: "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
   DONE      CE small buys: 2 worked today (1 h of shop time).
   START     Water at Hub from Island Mart began, 4500 gal/day.
 Day 3
-  EVENT     Your mentor's last note. Inbox: "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
-  EVENT     The host nation takes its forklift back. Inbox: "Main Island Utilities: our forklift goes back to the port after day 7."
+  EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
+  EVENT     The host nation takes its forklift back. Main Island Utilities: our forklift goes back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -37,7 +37,7 @@ Day 6
 Day 7
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 8
-  EVENT     The host nation pulls its honey trucks. Inbox: "Main Island Utilities: we need our honey trucks back after day 12."
+  EVENT     The host nation pulls its honey trucks. Main Island Utilities: we need our honey trucks back after day 12.
   WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) material handling equipment at Hub ended.
@@ -121,4 +121,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.987)
 
-State hash a36c011d84d226d7b9bae28d1adf3039c93fbcd95d4c46ae3c66781fcbf38c9f
+State hash 4160f24e9c5a7af381c35d2db9bfc7ae9f01e2f098191d817da78073f59b9af6

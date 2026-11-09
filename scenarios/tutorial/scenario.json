@@ -611,7 +611,7 @@
   },
   "turnover": {
     "from": "mills",
-    "shop": "Here's the shop. Two of us, sixteen hours a day between us, and the contract-writing system won't be up while you're here, so everything is on paper.",
+    "shop": "Here's the shop.",
     "contracts": "Most of what keeps the hub running is the host nation's. Billeting and dining are calls on our camp BPA.",
     "vendorList": "These are the vendors I've used, and a couple I know by name.",
     "money": "Last, the money. There's enough; the cash box is the thing to watch.",
@@ -623,9 +623,7 @@
         "harborEquipment": "We have a BPA with Harbor Equipment for forklifts and the like. They've always answered.",
         "islandMart": "Island Mart takes the card. Harbor Bottling is cash only."
       },
-      "fundingLines": {
-        "om1": "One O&M line, good past the end of the month."
-      }
+      "fundingLines": {}
     }
   },
   "prepBriefing": {
@@ -673,7 +671,7 @@
   "events": [
     {
       "id": "mentorDay1",
-      "label": "Your mentor on the cash box",
+      "label": "Capt Mills on the cash box",
       "window": {
         "earliestDay": 1,
         "latestDay": 1
@@ -690,7 +688,7 @@
     },
     {
       "id": "mentorDay2",
-      "label": "Your mentor on agreements",
+      "label": "Capt Mills on agreements",
       "window": {
         "earliestDay": 2,
         "latestDay": 2
@@ -707,7 +705,7 @@
     },
     {
       "id": "mentorDay3",
-      "label": "Your mentor's last note",
+      "label": "Capt Mills's last note",
       "window": {
         "earliestDay": 3,
         "latestDay": 3

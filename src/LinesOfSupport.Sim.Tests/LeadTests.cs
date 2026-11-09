@@ -43,10 +43,46 @@ public class LeadTests
         Assert.Equal(LeadKind.Alert, d11.Lead?.Kind);
         Assert.Equal(d11.Items.First(i => i.Severity == BoardSeverity.Alert).RecordId, d11.Lead!.RecordId);
         Assert.Equal("spokeBSite.fuel", d11.Lead.LinkId);
+        Assert.Equal("ruiz", d11.Lead.Person?.Id); // M2R-20: the failure comes from Spoke B's customer, not from nowhere
         var d12 = m[12].Board.Lead!;
         Assert.Equal(LeadKind.Decision, d12.Kind);
         Assert.Equal("Mr. Kofi Mensah", d12.Person?.DisplayName);
         Assert.Contains("Port Fuel Haulers is supplying fuel at Spoke B on a handshake", d12.Text);
+    }
+
+    public static IEnumerable<object[]> AllGoldens() =>
+        Directory.GetDirectories(Path.Combine(Repo.Root, "scenarios"))
+                 .Where(d => Directory.Exists(Path.Combine(d, "golden")))
+                 .SelectMany(d => Directory.GetFiles(Path.Combine(d, "golden"), "*.json")
+                                           .Select(f => new object[] { Path.GetFileName(d), Path.GetFileNameWithoutExtension(f) }));
+
+    /// <summary>M2R-20: a board item about a capability at a site names who would bring it to the shop whenever the cast
+    /// has someone at that site, and the person on that site's card for the capability when there is one.</summary>
+    [Theory]
+    [MemberData(nameof(AllGoldens))]
+    public void Site_news_comes_from_someone_at_the_site(string scenario, string log)
+    {
+        var b = Repo.Load(scenario);
+        var l = InputLog.Load(Golden(scenario, log));
+        var s = Session.Create(b, l.Seed, l.PrepChoices);
+        while (!s.Finished)
+        {
+            var board = s.View.MorningBoard();
+            foreach (var item in board.Items.Where(i => i.LinkKind == BoardLinkKind.SiteCapability))
+            {
+                var site = item.LinkId[..item.LinkId.IndexOf('.')];
+                var cap = item.LinkId[(item.LinkId.IndexOf('.') + 1)..];
+                var card = b.Scenario.RequirementCards.Where(c => c.Site == site && c.Capability == cap && c.Person is not null)
+                                                      .OrderBy(c => c.SubmittedDay).FirstOrDefault();
+                var cast = b.Scenario.People.FirstOrDefault(p => p.Site == site && p.Role is "customer" or "commander");
+                var expected = card?.Person ?? cast?.Id;
+                Assert.Equal(expected, item.Person?.Id);
+            }
+            if (board.Lead is { LinkKind: BoardLinkKind.SiteCapability } lead)
+                Assert.Equal(board.Items.First(i => i.RecordId == lead.RecordId).Person?.Id, lead.Person?.Id);
+            foreach (var a in l.Actions.Where(a => a.Day == s.Day)) s.Apply(a);
+            s.AdvanceDay();
+        }
     }
 
     [Theory]
