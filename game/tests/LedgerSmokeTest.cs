@@ -35,7 +35,7 @@ public partial class LedgerSmokeTest : Node
                 foreach (var arrangement in view.Arrangements)
                 {
                     var row = arrangements.Single(b => b.GetMeta("arrangement").AsString() == arrangement.Id);
-                    Require(row.Text.Contains(arrangement.Status.ToString()) && row.Text.Contains($"Obligated {DeskUi.Money(arrangement.ObligatedCents)}") && row.Text.Contains($"incurred {DeskUi.Money(arrangement.IncurredCents)}") && row.Text.Contains($"Unobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"), "All arrangement amounts and status bind to Sim, including Q11.");
+                    Require(row.Text.Contains(arrangement.Status switch { ArrangementStatus.Pending => "Being arranged", ArrangementStatus.Active => "Providing support", ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended", _ => "Declined" }) && row.Text.Contains($"Money committed {DeskUi.Money(arrangement.ObligatedCents)}") && row.Text.Contains($"cost of support received {DeskUi.Money(arrangement.IncurredCents)}") && row.Text.Contains($"Received but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"), "All arrangement amounts and status bind to Sim, including Q11.");
                     sawUnpaid |= arrangement.UnobligatedIncurredCents > 0;
                     sawCoordination |= arrangement.IsCoordination;
                 }

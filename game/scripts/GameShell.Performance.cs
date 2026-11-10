@@ -48,8 +48,7 @@ public partial class GameShell
                 RefreshActionDesk(session.View); GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
             });
             resource.Disabled = view.Finished || !running;
-            var terminate = DeskUi.Button(terminating ? "Termination in work" : "Terminate", () =>
-                SendAction(new TerminateAction { Day = session.View!.Day, Arrangement = issue.ArrangementId }));
+            var terminate = DeskUi.Button("View contract", () => OpenContractView(issue.ArrangementId));
             terminate.Disabled = view.Finished || !running || terminating;
             row.AddChild(cure); row.AddChild(resource); row.AddChild(terminate);
             PerformanceChoices.Add((issue.Id, "cure"), cure);

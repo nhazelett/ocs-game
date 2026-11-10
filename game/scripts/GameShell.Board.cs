@@ -32,6 +32,7 @@ public partial class GameShell
     private void ResetDeskSelection()
     {
         ResetOpening();
+        CloseContractView();
         debriefHash = null;
         ResetVisits();
         BoardDetailsToggle.ButtonPressed = false;
@@ -151,19 +152,20 @@ public partial class GameShell
             row.SetMeta("funding", funding.Id); linkedLedger.AddChild(row);
         }
         if (view.Funding.Count == 0) linkedLedger.AddChild(DeskUi.Label("No funding lines."));
-        linkedLedger.AddChild(DeskUi.Label("Arrangements"));
+        linkedLedger.AddChild(DeskUi.Label("What we are paying for"));
         foreach (var arrangement in view.Arrangements)
         {
-            var button = DeskUi.Button($"{view.ArrangementName(arrangement.Id)} · {arrangement.Status}\nObligated {DeskUi.Money(arrangement.ObligatedCents)} · incurred {DeskUi.Money(arrangement.IncurredCents)}\nUnobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
+            var button = DeskUi.Button($"{view.ArrangementName(arrangement.Id)} · {ArrangementStatusText(arrangement.Status)}\nMoney committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
             {
-                SelectedArrangement = arrangement.Id; SelectedFunding = null; RenderLedgerContext(session.View);
+                OpenContractView(arrangement.Id);
             });
             button.ToggleMode = true; button.ButtonPressed = SelectedArrangement == arrangement.Id;
             button.SetMeta("arrangement", arrangement.Id); linkedLedger.AddChild(button);
             AddCorDesignation(linkedLedger, arrangement, view);
             AddArrangementActions(linkedLedger, arrangement, view);
         }
-        if (view.Arrangements.Count == 0) linkedLedger.AddChild(DeskUi.Label("No arrangements yet."));
+        if (view.Arrangements.Count == 0) linkedLedger.AddChild(DeskUi.Label("No support to pay for yet."));
+        if (ContractView?.Visible == true) RefreshContractView(view);
     }
 
     private void OnContinue()

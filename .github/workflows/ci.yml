@@ -149,6 +149,8 @@ jobs:
           grep -Fq 'BPA_SMOKE_PASS:' "$RUNNER_TEMP/godot-bpa.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PrepSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-prep.log"
           grep -Fq 'PREP_SMOKE_PASS:' "$RUNNER_TEMP/godot-prep.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/ContractSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-contract.log"
+          grep -Fq 'CONTRACT_SMOKE_PASS:' "$RUNNER_TEMP/godot-contract.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/LedgerSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-ledger.log"
           grep -Fq 'LEDGER_SMOKE_PASS:' "$RUNNER_TEMP/godot-ledger.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/ConfidenceSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-confidence.log"
