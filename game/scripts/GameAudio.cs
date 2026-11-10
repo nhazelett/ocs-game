@@ -18,6 +18,7 @@ public partial class GameAudio : Node
     internal int PlayedCount { get; private set; }
     internal string? LastCue { get; private set; }
     internal int LoadedCueCount => players.Count;
+    internal bool AnyCuePlaying => players.Values.Any(p => p.Playing && p.VolumeLinear > 0);
 
     internal void Initialize(string path)
     {

@@ -62,6 +62,11 @@ $audioOutput = New-Item -ItemType Directory -Path (Join-Path $output 'assets/aud
 Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/audio') -File |
     Copy-Item -Destination $audioOutput.FullName
 
+# The approved playlist and harbor loop are optional presentation files.
+$musicOutput = New-Item -ItemType Directory -Path (Join-Path $audioOutput.FullName 'music')
+Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/audio/music') -File |
+    Copy-Item -Destination $musicOutput.FullName
+
 # Launch from outside both the checkout and build folder, so cwd-dependent data loading cannot pass.
 # Release templates disallow scene-path overrides; the flag checks the actual main scene instead.
 $smokeLog = Join-Path ([IO.Path]::GetTempPath()) ("los-export-" + [guid]::NewGuid().ToString('N') + '.log')

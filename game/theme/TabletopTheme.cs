@@ -73,9 +73,11 @@ internal static class TabletopTheme
             theme.SetIcon(state?"checked":"unchecked","CheckBox",icon);theme.SetIcon(state?"checked_disabled":"unchecked_disabled","CheckBox",icon);
             theme.SetIcon(state?"radio_checked":"radio_unchecked","CheckBox",icon);
         }
-        theme.SetStylebox("slider","HSlider",Box(Outline,0,4));
-        theme.SetStylebox("grabber_area","HSlider",Box(Moss,0,4));
-        theme.SetStylebox("grabber_area_highlight","HSlider",Box(Moss,0,4));
+        var sliderTrack=Box(Outline,0,4);sliderTrack.ContentMarginTop=sliderTrack.ContentMarginBottom=4;
+        theme.SetStylebox("slider","HSlider",sliderTrack);
+        var sliderFill=Box(Moss,0,4);sliderFill.ContentMarginTop=sliderFill.ContentMarginBottom=4;
+        theme.SetStylebox("grabber_area","HSlider",sliderFill);
+        theme.SetStylebox("grabber_area_highlight","HSlider",sliderFill);
         using var knob=Image.CreateEmpty(18,18,false,Image.Format.Rgba8);knob.Fill(Colors.Transparent);
         for(var y=0;y<18;y++)for(var x=0;x<18;x++)
             if(new Vector2(x-8.5f,y-8.5f).Length()<=8)knob.SetPixel(x,y,Moss);

@@ -57,6 +57,10 @@ public partial class MapSmokeTest : Node
                     Require(map.Tiles.Single(t => t.SiteId == "spokeBSite" && t.CapabilityId == "power").Status == "down", "Day-ten generator support goes dark using Sim's status.");
                     var status=map.Tabletop!.SiteStatuses["spokeBSite"].Text.ToLowerInvariant();
                     Require(new[]{"power","fuel","lodging","down"}.All(status.Contains),"The actual site caption names every down capability in words.");
+                    map.Tabletop!._Process(0);
+                    Require(map.Tabletop.FactLabels.Where(l=>l.Label.HasMeta("reported_change")).All(l=>
+                        l.Label.GetRect().End.Y <= map.SiteScreenPoint("spokeBSite").Y-30),
+                        "Reported shortfall captions sit above the site's equipment instead of covering it.");
                     shell.DeveloperToggle.ButtonPressed = false; await Capture("day10"); shell.DeveloperToggle.ButtonPressed = true;
                 }
                 if (!capturedRun && facts.Runs.Any(r => r.SiteId == "spokeBSite"))

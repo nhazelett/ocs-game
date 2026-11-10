@@ -68,5 +68,5 @@ public partial class GameShell
         playbackElapsed += delta; Map.SetMovementProgress((float)(playbackElapsed / PlaybackSeconds));
         if (playbackElapsed >= PlaybackSeconds) FinishDayPlayback();
     }
-    public override void _Process(double delta) => TickDayPlayback(delta);
+    public override void _Process(double delta) { TickDayPlayback(delta); RefreshMusicContext(); }
 }
