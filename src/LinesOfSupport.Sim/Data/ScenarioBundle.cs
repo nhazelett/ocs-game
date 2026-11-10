@@ -217,6 +217,12 @@ public sealed class ScenarioBundle
         {
             if (c.Person is not null) Need(people.ContainsKey(c.Person), $"card {c.Id} person {c.Person} not found");
             Need(c.Person is not null || c.SubmittedBy.Length > 0, $"card {c.Id} names neither a person nor submittedBy");
+            foreach (var (line, k) in c.KnownBy)
+            {
+                Need(c.Lines.ContainsKey(line), $"card {c.Id} knownBy line {line} is not one of its lines");
+                Need(people.ContainsKey(k.Person), $"card {c.Id} knownBy person {k.Person} not found");
+                Need(k.Says.Length > 0, $"card {c.Id} knownBy {line} says nothing");
+            }
         }
         foreach (var e in s.Events)
             if (e.From is not null) Need(people.ContainsKey(e.From), $"event {e.Id} from {e.From} not found");

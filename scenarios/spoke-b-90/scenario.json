@@ -127,6 +127,10 @@
         "operator": false,
         "maintenance": false
       },
+      "knownBy": {
+        "operator": { "person": "ruiz", "says": "I can't spare anyone to run generators at Spoke B. Whoever brings them has to run them." },
+        "maintenance": { "person": "ruiz", "says": "Same for keeping them running: nobody of mine will be out there to fix them." }
+      },
       "person": "ruiz",
       "message": "Advance team at Spoke B needs power by day 7. I wrote it up as six sixty-kilowatt generators.",
       "flaggedEnduring": false

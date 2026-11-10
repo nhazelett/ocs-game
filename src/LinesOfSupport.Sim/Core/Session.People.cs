@@ -138,6 +138,10 @@ public sealed partial class Session
                 hours = Fixed.Milli(People.EngageJ4.ShopHours);
                 stops.AddRange(CheckEngageJ4(j, Day));
                 break;
+            case AskAboutAction a:
+                hours = Fixed.Milli(People.AskAbout.ShopHours);
+                stops.AddRange(CheckAskAbout(a));
+                break;
             default:
                 stops.Add("not a visit");
                 break;
@@ -314,6 +318,7 @@ public sealed partial class Session
                 break;
             case "vendor": CompleteMeetVendor(p.Target!, day, w.CauseId); break;
             case "j4": CompleteEngageJ4((EngageJ4Action)p.Extra!, day, w.CauseId); break;
+            case "ask": CompleteAskAbout((AskAboutAction)p.Extra!, day, w.CauseId); break;
         }
     }
 

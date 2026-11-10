@@ -120,6 +120,9 @@
         "operator": false,
         "maintenance": true
       },
+      "knownBy": {
+        "operator": { "person": "dunn", "says": "I should have written this down: I've got nobody licensed on forklifts this rotation. The rental has to come with drivers." }
+      },
       "person": "dunn",
       "message": "The host nation wants its forklift back after day 7 and the warehouse can't move pallets by hand. Three forklifts from day 8, through the end of the month.",
       "flaggedEnduring": false

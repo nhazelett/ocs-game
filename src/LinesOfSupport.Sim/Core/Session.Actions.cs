@@ -45,6 +45,8 @@ public sealed partial class Session
             PlanTransitionAction p => ApplyPlanTransition(p),
             ReviewFilesAction r => ApplyReviewFiles(r),
             AssignAction a => ApplyAssign(a),
+            AskAboutAction q => ApplyAskAbout(q),
+            AddLineAction l => ApplyAddLine(l),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _assigneeNow = null;
@@ -86,6 +88,8 @@ public sealed partial class Session
         PlanTransitionAction p => $"transition plan {p.Id}",
         ReviewFilesAction => "file review",
         AssignAction h => $"handing over {h.Work}",
+        AskAboutAction q => $"asking {q.Person} about {q.Card}",
+        AddLineAction l => $"{l.Card}.{l.Line}=added",
         _ => a.GetType().Name,
     };
 

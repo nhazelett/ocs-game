@@ -31,11 +31,31 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(PlanTransitionAction), "planTransition")]
 [JsonDerivedType(typeof(ReviewFilesAction), "reviewFiles")]
 [JsonDerivedType(typeof(AssignAction), "assign")]
+[JsonDerivedType(typeof(AskAboutAction), "askAbout")]
+[JsonDerivedType(typeof(AddLineAction), "addLine")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
     /// <summary>The team member who does the work this action creates (DESK-02). Null: you.</summary>
     public string? Assignee { get; init; }
+}
+
+/// <summary>
+/// Ask someone about a request (DESK-03, D3): the customer, CE, LRS, FSS, whoever might know what it leaves out. A short
+/// visit; when it is done, anything that person knows the request is missing is revealed and can be added.
+/// </summary>
+public sealed record AskAboutAction : PlayerAction
+{
+    public string Card { get; init; } = "";
+    public string Person { get; init; } = "";
+}
+
+/// <summary>Add a part of the request that someone told you about (DESK-03). Only a revealed line can be added;
+/// <see cref="SetLineAction"/> stays for the policies and older logs.</summary>
+public sealed record AddLineAction : PlayerAction
+{
+    public string Card { get; init; } = "";
+    public string Line { get; init; } = "";
 }
 
 /// <summary>

@@ -309,6 +309,19 @@
             "type": "string",
             "description": "What the unit wrote, e.g. '6 x 60 kW generators'"
           },
+          "knownBy": {
+            "type": "object",
+            "description": "DESK-03 (D3): for a line left off the request, who knows it is needed and what they say when asked about this request. Asking them reveals it; then the player can add it. A line with no entry is one nobody will tell you about.",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["person", "says"],
+              "properties": {
+                "person": { "$ref": "#/$defs/id", "description": "people[] id" },
+                "says": { "type": "string", "minLength": 1, "description": "What they tell you, in their words" }
+              }
+            }
+          },
           "lines": {
             "type": "object",
             "description": "Scope line id to on/off. Line ids come from the capability card catalog (cards.json, M1).",

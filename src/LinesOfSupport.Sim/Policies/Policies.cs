@@ -346,7 +346,7 @@ internal static class Helpers
         var order = team.Select((m, i) => (m.Id, i)).ToDictionary(x => x.Id, x => x.i, StringComparer.Ordinal);
         for (var i = 0; i < list.Count; i++)
         {
-            if (list[i] is SetLineAction or HoldSmallBuysAction or DesignateCorAction or CoordinateAction or PlanTransitionAction or AssignAction
+            if (list[i] is SetLineAction or HoldSmallBuysAction or DesignateCorAction or CoordinateAction or PlanTransitionAction or AssignAction or AddLineAction
                 || list[i].Assignee is not null) continue;
             var who = load.OrderBy(kv => kv.Value).ThenBy(kv => order[kv.Key]).First().Key;
             list[i] = list[i] with { Assignee = who };

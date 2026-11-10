@@ -132,7 +132,18 @@ public sealed record LeadItem(LeadKind Kind, string Text, BoardLinkKind LinkKind
 /// <param name="Supplies">For a "supplies" line, the capability it brings with it (power's fuelSupply supplies fuel).</param>
 /// <param name="GapIfOff">The consequence of leaving this line off, stated as a fact; null for core lines.</param>
 /// <param name="UsualOwner">For a supplies line: who normally arranges the supplied capability (R10), so the player knows whose door to knock on before buying it; null when the office buys it.</param>
-public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff, string? UsualOwner = null);
+/// <param name="Known">DESK-03: true when the line is in the request or someone has told you it is needed. A screen shows
+/// only known lines; an unknown off line is the part nobody has told you about, and it still bites.</param>
+/// <param name="CanAdd">True when someone told you about it and it is not in the request yet: offer "add what you learned".</param>
+/// <param name="Learned">What the person said about it, once they have.</param>
+/// <param name="LearnedFrom">Who said it.</param>
+public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff, string? UsualOwner = null,
+    bool Known = true, bool CanAdd = false, string? Learned = null, PersonView? LearnedFrom = null);
+
+/// <summary>Someone worth asking about a request (DESK-03): whoever brought it, then anyone who knows a part it left out.</summary>
+/// <param name="Asked">True once the talk has happened.</param>
+/// <param name="Pending">True while the talk is in a team member's queue.</param>
+public sealed record AskOption(PersonView Person, bool Asked, bool Pending);
 
 /// <summary>A capability this one depends on at the same site, and whether the player has it covered.</summary>
 /// <param name="Coverage">"inRequirement" (a supplies line on this card is on), "arranged" (an arrangement at the site covers it),
@@ -154,7 +165,7 @@ public sealed record RequirementEditorView(
     string CardId, string SiteId, string SiteName, string CapabilityId, string CapabilityLabel, string Unit,
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
     IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
-    string Title = "", PersonView? Person = null, string? Message = null);
+    string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 

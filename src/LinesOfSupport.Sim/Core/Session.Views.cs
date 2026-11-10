@@ -186,9 +186,15 @@ public sealed partial class Session
         var site = SiteData(card.SiteId);
         var from = Math.Max(card.RequestedStartDay, 1);
         var to = Math.Min(from + Math.Max(1, card.DurationDays) - 1, LastDay);
-        var lines = cap.Lines.Select(l => new RequirementLine(
-            l.Id, l.Label ?? l.Id, l.Kind, card.Lines.TryGetValue(l.Id, out var on) && on, l.Supplies, GapIfOff(cap, l),
-            l.Supplies is { } sup && _capData.TryGetValue(sup, out var supCap) ? supCap.UsualOwner : null)).ToList();
+        var lines = cap.Lines.Select(l =>
+        {
+            var on = card.Lines.TryGetValue(l.Id, out var o) && o;
+            var learned = LineLearned(card, l.Id);
+            return new RequirementLine(
+                l.Id, l.Label ?? l.Id, l.Kind, on, l.Supplies, GapIfOff(cap, l),
+                l.Supplies is { } sup && _capData.TryGetValue(sup, out var supCap) ? supCap.UsualOwner : null,
+                Known: on || learned is not null, CanAdd: !on && learned is not null, Learned: learned?.Says, LearnedFrom: learned?.From);
+        }).ToList();
         var deps = cap.DependsOn.Select(dep =>
         {
             var inCard = cap.Lines.Any(l => l.Kind == "supplies" && l.Supplies == dep && card.Lines.TryGetValue(l.Id, out var on) && on);
@@ -205,7 +211,7 @@ public sealed partial class Session
             card.Id, site.Id, site.Name, cap.Id, cap.Label, cap.Unit, person?.WithUnit ?? card.SubmittedBy, card.SubmittedDay,
             card.RequestedStartDay, card.DurationDays, card.QuantityHint,
             (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied,
-            CardTitle(card), person, card.Message);
+            CardTitle(card), person, card.Message, BuildWhoToAsk(card));
     }
 
     // ------------------------------------------------------------------ action editor

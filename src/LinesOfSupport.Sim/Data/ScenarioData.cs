@@ -175,6 +175,15 @@ public sealed record RequirementCardData
     /// <summary>What that person says when they bring it, in their words.</summary>
     public string? Message { get; init; }
     public bool FlaggedEnduring { get; init; }
+    /// <summary>DESK-03: line id to who knows it is needed and what they say when asked about this request.</summary>
+    public Dictionary<string, CardKnowledgeData> KnownBy { get; init; } = [];
+}
+
+/// <summary>Someone who knows a part the request left out (DESK-03, D3), and what they say when asked.</summary>
+public sealed record CardKnowledgeData
+{
+    public string Person { get; init; } = "";
+    public string Says { get; init; } = "";
 }
 
 public sealed record VendorOfferData
@@ -601,6 +610,13 @@ public sealed record GoingToPeopleRulesData
     public AskScoRulesData AskSco { get; init; } = new();
     public MeetVendorRulesData MeetVendor { get; init; } = new();
     public EngageJ4RulesData EngageJ4 { get; init; } = new();
+    public AskAboutRulesData AskAbout { get; init; } = new();
+}
+
+/// <summary>Asking someone about a request (DESK-03): shop hours for the conversation; they say what they know at once.</summary>
+public sealed record AskAboutRulesData
+{
+    public int ShopHours { get; init; } = 1;
 }
 
 /// <summary>Finding the finance office: the paying agent is set up within PayingAgentWithinDays of the visit (never later
