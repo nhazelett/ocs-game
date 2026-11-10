@@ -167,6 +167,11 @@ public sealed class SessionView
     /// Hand work over with <see cref="AssignAction"/>; give new work to someone with any action's Assignee.</summary>
     public IReadOnlyList<TeamMemberView> Team => _s.BuildTeam();
 
+    /// <summary>What is still open before the day ends (DESK-04, D1), as sentences to show beside "End the day": a request
+    /// due within three days (or late) with nothing arranged or in work, then a teammate with free hours. Empty when nothing
+    /// is open. Read only.</summary>
+    public IReadOnlyList<string> EndOfDayCheck() => _s.BuildEndOfDayCheck();
+
     /// <summary>Hours a piece of unfinished work would take if handed to this team member; null if it cannot be.</summary>
     public int? HoursIfAssigned(string workId, string memberId) => _s.HoursIfAssigned(workId, memberId);
 
