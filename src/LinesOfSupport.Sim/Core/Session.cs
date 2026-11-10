@@ -71,7 +71,7 @@ public sealed partial class Session
     private int _overnightFrom, _overnightTo;
     private int _recordSeq, _workSeq;
 
-    private Session(ScenarioBundle bundle, long seed, IReadOnlyList<string> prep)
+    private Session(ScenarioBundle bundle, long seed, IReadOnlyList<string> prep, IReadOnlyList<TeamPick>? team = null)
     {
         Bundle = bundle;
         Seed = seed;
@@ -98,8 +98,10 @@ public sealed partial class Session
         _missionWeights = [Fixed.Permille(w.SortieGeneration), Fixed.Permille(w.Throughput), Fixed.Permille(w.Endurance), Fixed.Permille(w.Resilience)];
 
         var shop = Scenario.Shop;
-        _people = shop.People;
-        _hoursPerDayMilli = shop.People * Fixed.Milli(Rules.Model.HoursPerPersonPerDay);
+        _team.AddRange(BuildTeam(shop, Fixed.Milli(Rules.Model.HoursPerPersonPerDay), team));
+        _lead = _team.First(m => m.Role == "you").Id;
+        _people = shop.Team is { Count: > 0 } ? _team.Count : shop.People;
+        _hoursPerDayMilli = _team.Sum(m => m.HoursPerDayMilli);
         _systemOnlineDay = shop.SystemOnlineDay;
         _manualFactorPermille = Fixed.Permille(Rules.Model.ManualContractTimeFactor);
         _cash = _cashInitial = shop.CashOnHandCents;
@@ -147,8 +149,8 @@ public sealed partial class Session
         }
     }
 
-    public static Session Create(ScenarioBundle bundle, long seed, IEnumerable<string>? prepChoices = null)
-        => new(bundle, seed, (prepChoices ?? []).ToList());
+    public static Session Create(ScenarioBundle bundle, long seed, IEnumerable<string>? prepChoices = null, IReadOnlyList<TeamPick>? team = null)
+        => new(bundle, seed, (prepChoices ?? []).ToList(), team);
 
     // ------------------------------------------------------------------ public read surface
 
@@ -365,7 +367,7 @@ public sealed partial class Session
     public InputLog ToInputLog() => new()
     {
         Scenario = Scenario.Id, RulesVersion = Rules.RulesVersion, Seed = Seed,
-        PrepChoices = [.. PrepChoices], Actions = [.. _applied],
+        PrepChoices = [.. PrepChoices], Actions = [.. _applied], Team = TeamPicks(),
     };
 
     /// <summary>

@@ -163,6 +163,13 @@ public sealed class SessionView
     /// <summary>The always-visible strip: day, shop-hours and cash gauges, usable funds, system status.</summary>
     public TopStripView TopStrip() => _s.BuildTopStrip();
 
+    /// <summary>The office, one entry per person in team order, with their hours today and their unfinished work (DESK-02).
+    /// Hand work over with <see cref="AssignAction"/>; give new work to someone with any action's Assignee.</summary>
+    public IReadOnlyList<TeamMemberView> Team => _s.BuildTeam();
+
+    /// <summary>Hours a piece of unfinished work would take if handed to this team member; null if it cannot be.</summary>
+    public int? HoursIfAssigned(string workId, string memberId) => _s.HoursIfAssigned(workId, memberId);
+
     /// <summary>What changed during the last AdvanceDay, alerts first, with the capability tiles and the top strip.</summary>
     public MorningBoardView MorningBoard() => _s.BuildMorningBoard();
 

@@ -18,7 +18,8 @@ public sealed partial class Session
         if (Finished) return ActionResult.Stop("the scenario has ended");
         if (action.Day != 0 && action.Day != Day) return ActionResult.Stop($"action is dated day {action.Day} but the current day is {Day}");
         action = action with { Day = Day };
-        var result = action switch
+        _assigneeNow = action.Assignee is { } who && _team.Any(m => m.Id == who) ? who : _lead;
+        var result = AssigneeStop(action) is { } notOnTeam ? ActionResult.Stop(notOnTeam) : action switch
         {
             SurveyAction s => ApplySurvey(s),
             SetLineAction s => ApplySetLine(s),
@@ -43,8 +44,10 @@ public sealed partial class Session
             HostNationRequestAction h => ApplyHostNationRequest(h),
             PlanTransitionAction p => ApplyPlanTransition(p),
             ReviewFilesAction r => ApplyReviewFiles(r),
+            AssignAction a => ApplyAssign(a),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
+        _assigneeNow = null;
         // Hard stops read as the preview gives them (M2R-40); Message, which the Rejected record carries, is unchanged.
         if (!result.Accepted) result = result with { HardStops = [.. result.HardStops.Select(SentenceCase)] };
         _applied.Add(action);
@@ -82,6 +85,7 @@ public sealed partial class Session
         HostNationRequestAction h => $"host nation support request {h.Id}",
         PlanTransitionAction p => $"transition plan {p.Id}",
         ReviewFilesAction => "file review",
+        AssignAction h => $"handing over {h.Work}",
         _ => a.GetType().Name,
     };
 
@@ -94,9 +98,12 @@ public sealed partial class Session
 
     private WorkItem AddWork(WorkKind kind, string label, long hoursMilli, int waitUntil, object? payload, string causeId)
     {
+        // DESK-02: the work goes to whoever the action named (you, if nobody), in that person's own hours.
+        var who = Member(_assigneeNow).Id;
+        hoursMilli = PersonHours(hoursMilli, who);
         var item = new WorkItem
         {
-            Id = $"w{++_workSeq}", Kind = kind, Label = label, HoursTotalMilli = hoursMilli, HoursRemainingMilli = hoursMilli,
+            Id = $"w{++_workSeq}", Kind = kind, Label = label, HoursTotalMilli = hoursMilli, HoursRemainingMilli = hoursMilli, Assignee = who,
             WaitUntilDay = waitUntil, CreatedDay = Day, Payload = payload, CauseId = causeId, SubjectId = WorkSubject(payload),
         };
         _work.Add(item);

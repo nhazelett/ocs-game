@@ -183,7 +183,7 @@ public sealed partial class Session
     internal ActionPreview BuildExternalSupportPreview(RequestExternalSupportAction r)
     {
         var chk = CheckExternalSupport(r);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
+        var queue = QueueHours(r.Assignee);
         if (chk.Instrument is not { } inst || chk.SiteId is not { } siteId || chk.CapabilityId is not { } capId)
             return new ActionPreview(false, chk.Stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
         var approval = inst.ApprovalLagDays ?? new IntRange(1, 1);
@@ -191,13 +191,13 @@ public sealed partial class Session
         int Prepared(int shopDays)
         {
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = _hoursPerDayMilli <= 0 ? 0 : (int)((hours + _hoursPerDayMilli - 1) / _hoursPerDayMilli);
+            var days = WorkDays(PersonHours(hours, r.Assignee), r.Assignee);
             return Day + Scenario.Actors.Fm.CertificationLagDays + Math.Max(0, days - 1);
         }
         var startMin = Math.Max(r.StartDay ?? 0, Prepared(inst.ShopDays.Min) + approval.Min + 1 + mobilization.Min);
         var startMax = Math.Max(r.StartDay ?? 0, Prepared(inst.ShopDays.Max) + approval.Max + 1 + mobilization.Max);
-        var hMin = CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
-        var hMax = CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
+        var hMin = CeilHours(PersonHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual), r.Assignee));
+        var hMax = CeilHours(PersonHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual), r.Assignee));
 
         var cap = Cap(capId);
         var site = SiteData(siteId);

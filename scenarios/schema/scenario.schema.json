@@ -967,6 +967,25 @@
             "null"
           ],
           "description": "null means sufficient for the scenario"
+        },
+        "team": {
+          "type": "array",
+          "minItems": 1,
+          "description": "The named team (DESK-02, docs/design/desk-redesign.md D2). Exactly one member has role you. Each member's work comes out of their own hours; work nobody is given stays with you. Absent means the player alone with people x hoursPerPersonPerDay hours (older scenarios). When present, people is ignored.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "role", "name", "hoursPerDay"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "role": { "enum": ["you", "experienced", "junior"] },
+              "name": { "type": "string", "minLength": 1, "description": "Default name; the player can rename at the start of a game" },
+              "rank": { "type": "string" },
+              "portrait": { "type": "string", "description": "Default face; the player can pick another at the start of a game" },
+              "hoursPerDay": { "type": "integer", "minimum": 1, "description": "This person's hours for the day" },
+              "speed": { "type": "number", "exclusiveMinimum": 0, "default": 1, "description": "Work this person gets through per hour against the usual pace: 1.2 means a 12-hour job takes them 10 hours" }
+            }
+          }
         }
       }
     },

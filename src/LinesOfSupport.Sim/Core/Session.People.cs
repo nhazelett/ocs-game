@@ -33,8 +33,10 @@ public sealed partial class Session
     internal int? VendorMetDay(string vendorId) => _vendorsMet.TryGetValue(vendorId, out var d) ? d : null;
 
     private GoingToPeopleRulesData People => Rules.GoingToPeople;
-    private bool VisitInWork(string kind, string? target = null)
-        => _work.Any(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.Payload is VisitPayload p && p.Kind == kind && (target is null || p.Target == target));
+    private bool VisitInWork(string kind, string? target = null) => VisitWork(kind, target) is not null;
+
+    private WorkItem? VisitWork(string kind, string? target = null)
+        => _work.FirstOrDefault(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.Payload is VisitPayload p && p.Kind == kind && (target is null || p.Target == target));
 
     /// <summary>Whether the usual owner has the capability at the site in hand (R10): an ACSA line covers it on some day of the
     /// window (inherited, ordered by the OCS seat, or added by the J4), or a J4 request for it is still in work.</summary>
@@ -110,7 +112,7 @@ public sealed partial class Session
             case FindFinanceAction:
                 hours = Fixed.Milli(People.FindFinance.ShopHours);
                 if (_financeFoundDay is not null) stops.Add("you have already found the finance office");
-                else if (VisitInWork("finance")) stops.Add("someone is already on the way to the finance office");
+                else if (VisitWork("finance") is { } going) stops.Add($"{WhoIs(going.Assignee)} already on the way to the finance office");
                 break;
             case JoinStaffMeetingAction { Attend: true }:
                 hours = Fixed.Milli(People.StaffMeeting.JoinShopHours);
@@ -181,8 +183,9 @@ public sealed partial class Session
     internal ActionPreview BuildVisitPreview(PlayerAction action)
     {
         var (stops, hours) = CheckVisit(action);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
-        var done = _hoursPerDayMilli <= 0 ? Day : Day + Math.Max(0, (int)((hours + _hoursPerDayMilli - 1) / _hoursPerDayMilli) - 1);
+        var queue = QueueHours(action.Assignee);
+        hours = PersonHours(hours, action.Assignee);
+        var done = Day + Math.Max(0, WorkDays(hours, action.Assignee) - 1);
         var ready = action switch
         {
             AskScoAction => done + ScoLag().Min,

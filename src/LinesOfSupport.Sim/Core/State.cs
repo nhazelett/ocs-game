@@ -121,8 +121,10 @@ public sealed class WorkItem
     public required string Label { get; init; }
     public int WaitUntilDay { get; set; }
     public long HoursRemainingMilli { get; set; }
-    public long HoursTotalMilli { get; init; }
+    public long HoursTotalMilli { get; set; }
     public int CreatedDay { get; init; }
+    /// <summary>The team member doing it (DESK-02). Hours are in that person's hours, at their pace.</summary>
+    public string Assignee { get; set; } = "";
     public int? CompletedDay { get; set; }
     public object? Payload { get; init; }
     public string CauseId { get; init; } = "";
