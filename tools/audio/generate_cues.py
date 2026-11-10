@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT; see assets/audio/LICENSE.txt
+# Project license TBD; see assets/audio/LICENSE.txt
 """Original, deterministic short cues. Standard library only; no sampled recordings."""
 from pathlib import Path
 import math
