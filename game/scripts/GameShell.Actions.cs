@@ -65,7 +65,7 @@ public partial class GameShell
         var targets = view.Cards.Select(c => view.RequirementEditor(c.Id)).Where(c => c is not null)
             .Select(c => new AwardTarget(c!.CardId, $"{c.Title} · {c.Person?.DisplayName ?? c.SubmittedBy}", c.SiteId, c.CapabilityId, c.CardId)).ToList();
         targets.AddRange(view.MorningBoard().Tiles.Select(t => new AwardTarget(t.SiteId + "." + t.CapabilityId,
-            $"{view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name} · {t.Label} (no card)", t.SiteId, t.CapabilityId, null)));
+            $"{view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name} {t.Label.ToLowerInvariant()}, without a request", t.SiteId, t.CapabilityId, null)));
         return targets;
     }
 

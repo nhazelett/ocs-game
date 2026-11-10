@@ -23,6 +23,22 @@ public partial class MarketSmokeTest : Node
             go.EmitSignal(Button.SignalName.Pressed);
             Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 2 && shell.CurrentActionEditor!.CardId == card.Id, "Requirement leads directly to its own market.");
             Require(shell.VendorInput.GetItemMetadata(shell.VendorInput.Selected).AsString() == "" && shell.PendingAward is null && shell.AwardButton.Disabled, "No vendor is ever preselected, including vehicle-only or refused suppliers.");
+            var targetPicker=shell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions").FindChildren("*","OptionButton",true,false).OfType<OptionButton>()
+                .Single(p=>Enumerable.Range(0,p.ItemCount).Any(i=>p.GetItemMetadata(i).AsString()=="spokeBSite.lodging"));
+            var lodging=Enumerable.Range(0,targetPicker.ItemCount).Single(i=>targetPicker.GetItemMetadata(i).AsString()=="spokeBSite.lodging");
+            Require(targetPicker.GetItemText(lodging)=="Spoke B lodging, without a request", "Unrequested support is described in ordinary words.");
+            Require(Enumerable.Range(0,targetPicker.ItemCount).All(i=>!targetPicker.GetItemText(i).Contains("(no card)")), "Target choices never call a request a card.");
+            var captureArgs=OS.GetCmdlineUserArgs();var labelsShot=Array.IndexOf(captureArgs,"--labels-screenshot");
+            if(labelsShot>=0)
+            {
+                shell.DeveloperToggle.ButtonPressed=false;
+                await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                targetPicker.ShowPopup();
+                await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
+                Require(GetViewport().GetTexture().GetImage().SavePng(captureArgs[labelsShot+1])==Error.Ok,"Native target-list screenshot saved.");
+                targetPicker.GetPopup().Hide();
+            }
             Pick(shell.VendorInput, "vendorC");
             Require(shell.InstrumentInput.GetItemMetadata(shell.InstrumentInput.Selected).AsString() == "" && shell.PendingAward is null, "Who is selected before how; no instrument silently chosen.");
             Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");

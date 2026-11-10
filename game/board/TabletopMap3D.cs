@@ -18,6 +18,7 @@ public partial class TabletopMap3D:Control
     internal IReadOnlyList<string> ReportedChangeLabels=>movingLabels.Where(x=>x.Label.HasMeta("reported_change")).Select(x=>x.Label.Text).ToArray();
     internal IReadOnlyList<(Label Label,Node3D Node,Line2D? Leader)> FactLabels=>movingLabels;
     internal Dictionary<string,Label> SiteStatuses{get;}=[];
+    internal IEnumerable<Label> CaptionLabels=>captions.Select(c=>c.Label);
     private readonly Dictionary<string,float> islandRadii=[];
     private ScenarioBoardData board=null!;
     private Node3D? motion;
@@ -114,11 +115,8 @@ public partial class TabletopMap3D:Control
     {
         if(camera is null)return;
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
-        var occupied=captions.Select(c=>
-        {
-            var rect=c.Label.GetRect();var width=Math.Min(rect.Size.X,c.Label.GetThemeFont("font").GetStringSize(c.Label.Text,fontSize:c.Label.GetThemeFontSize("font_size")).X);
-            return new Rect2(rect.Position+new Vector2((rect.Size.X-width)/2,0),new Vector2(width,c.Label.GetLineHeight()*c.Label.GetLineCount())).Grow(4);
-        }).ToList();
+        // Reserve the complete label, including wrapped lines and theme padding.
+        var occupied=captions.Select(c=>c.Label.GetRect().Grow(6)).ToList();
         foreach(var item in movingLabels.Where(m=>m.Label.Visible))
         {
             if(item.Leader is not null)
@@ -130,7 +128,7 @@ public partial class TabletopMap3D:Control
                     p.X=Math.Clamp(p.X,4,Math.Max(4,Size.X-item.Label.Size.X-4));
                     p.Y=Math.Clamp(p.Y,4,Math.Max(4,Size.Y-item.Label.Size.Y-4));return p;
                 }
-                var candidates=new[]{new Vector2(-180,22),new Vector2(-260,-80),new Vector2(20,-80),new Vector2(-120,-100),new Vector2(-260,70),new Vector2(20,70)}.Select(Place).ToArray();
+                var candidates=new[]{new Vector2(-180,22),new Vector2(-260,-80),new Vector2(20,-80),new Vector2(-120,-100),new Vector2(-260,70),new Vector2(20,70),new Vector2(-180,-160),new Vector2(20,-160)}.Select(Place).ToArray();
                 var position=candidates.FirstOrDefault(p=>!occupied.Any(r=>r.Intersects(new Rect2(p,item.Label.Size))),candidates[0]);
                 item.Label.Position=position;
                 item.Leader.Points=[anchor,new Vector2(Math.Clamp(anchor.X,position.X,position.X+item.Label.Size.X),Math.Clamp(anchor.Y,position.Y,position.Y+item.Label.Size.Y))];
