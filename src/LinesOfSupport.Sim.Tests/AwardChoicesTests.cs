@@ -108,3 +108,36 @@ public class AwardChoicesTests
         Assert.Null(s.View.AwardChoices("nowhere", "power"));
     }
 }
+
+/// <summary>DESK-01: this office cannot end support that is not its own contract.</summary>
+public class NotOursToEndTests
+{
+    [Theory]
+    [InlineData("tutorial")]
+    [InlineData("spoke-b")]
+    public void Host_nation_and_ACSA_support_cannot_be_terminated_and_the_game_is_told_why(string scenario)
+    {
+        var s = Session.Create(Repo.Load(scenario), 1);
+        foreach (var a in s.Arrangements.Where(a => a.Instrument is "hostNation" or "acsa").ToList())
+        {
+            var why = s.View.TerminateBlocked(a.Id);
+            Assert.NotNull(why);
+            Assert.EndsWith("It is not this office's contract to end.", why);
+            Assert.True(char.IsUpper(why![0]));
+            var r = s.Apply(new TerminateAction { Arrangement = a.Id });
+            Assert.False(r.Accepted);
+            Assert.Contains(why, r.HardStops);
+        }
+        for (var d = 0; d < 5; d++) s.AdvanceDay();
+        Assert.All(s.Arrangements.Where(a => a.Instrument is "hostNation" or "acsa" && a.StartDay <= 1), a => Assert.Equal(ArrangementStatus.Active, a.Status));
+    }
+
+    [Fact]
+    public void The_offices_own_contract_can_still_be_terminated()
+    {
+        var s = Session.Create(Repo.Load("tutorial"), 1);
+        var own = s.Arrangements.First(a => a.Instrument == "bpaCall");
+        Assert.Null(s.View.TerminateBlocked(own.Id));
+        Assert.True(s.Apply(new TerminateAction { Arrangement = own.Id }).Accepted);
+    }
+}

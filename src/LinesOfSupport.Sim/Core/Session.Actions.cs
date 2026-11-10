@@ -456,6 +456,7 @@ public sealed partial class Session
         var arr = _arrangements.FirstOrDefault(x => x.Id == t.Arrangement);
         if (arr is null) return ActionResult.Stop($"{NameOf(t.Arrangement)} does not exist");
         if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return ActionResult.Stop($"{NameOf(t.Arrangement)} is not running");
+        if (NotOursToEnd(arr) is { } notOurs) return ActionResult.Stop(notOurs);
         if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == t.Arrangement))
             return ActionResult.Stop($"termination of {NameOf(t.Arrangement)} is already in work");
         if (t.WithNotice && arr.NoticeDays is not > 0) return ActionResult.Stop($"{NameOf(t.Arrangement)} has no termination notice clause");
@@ -466,6 +467,16 @@ public sealed partial class Session
         if (t.WithNotice) _noticeTerminations.Add(w.Id);
         return ActionResult.Ok("termination in work");
     }
+
+    /// <summary>
+    /// Why this office cannot end an arrangement (DESK-01, Nick's 10 Nov playthrough: the tutorial's host nation power and
+    /// fuel were ended from the Ledger). Host nation support and an ACSA line are not this office's contracts: the host
+    /// nation agreement and the J4 own them. Null when the arrangement is the office's own.
+    /// </summary>
+    internal string? NotOursToEnd(Arrangement arr)
+        => arr.Instrument == HostNationInstrumentId ? $"{Capitalize(NameOf(arr.Id))} is host nation support under the agreement. It is not this office's contract to end."
+         : arr.Instrument == AcsaInstrument ? $"{Capitalize(NameOf(arr.Id))} is the J4's support under the ACSA. It is not this office's contract to end."
+         : null;
 
     // ------------------------------------------------------------------ work completion
 

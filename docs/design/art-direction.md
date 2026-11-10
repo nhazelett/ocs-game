@@ -28,3 +28,6 @@ He saw the three ART-01 directions. Keep all three and let the player choose (AR
 
 ## Suno (music and sound), Nick, 10 Nov 2026
 Nick has connected Suno to both agents and leaves it to us whether the game gets music; it also makes sound effects and loops. His limit: at most 100 generation credits per run; ask him before spending more. Downloading a file costs a separate download credit and needs his say-so (FOR-NICK). Every Suno file committed gets a PROVENANCE row: generated, Suno, the model, the prompt, the clip id. Instrumental only, no vocals, no artist or song names in prompts. Nothing a real unit or nation would recognize as theirs.
+
+## Nick, 10 Nov 2026 (after playing the Tabletop build)
+"It looks good, it's better than what we HAD. But I'm hoping for, like, high quality, as close to Unreal graphics as we can. We can progress slowly towards that if necessary since I don't want to mess with success so far." Higher-quality island and facility models before release (ART-10), in steps. Character models later (ART-11). The four Suno tracks are approved as they are.

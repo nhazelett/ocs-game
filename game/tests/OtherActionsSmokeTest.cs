@@ -31,7 +31,8 @@ public partial class OtherActionsSmokeTest : Node
             Scenario(shell, "spoke-b"); Replay(shell); Step(shell, 8);
             var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach1-as-written.json"));
             expected = LinesOfSupport.Sim.Replay.Run(bundle, log, 8);
-            var running = expected.Arrangements.First(a => !a.IsCoordination && a.Status == ArrangementStatus.Active);
+            // DESK-01: host nation and ACSA support are not this office's to end; the fixture terminates its own contract.
+            var running = expected.Arrangements.First(a => !a.IsCoordination && a.Status == ArrangementStatus.Active && expected.View.TerminateBlocked(a.Id) is null);
             result = expected.Apply(new TerminateAction { Day = expected.Day, Arrangement = running.Id }); Require(result.Accepted, "The fixture can terminate the contract.");
             shell.TerminateButtons[running.Id].EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.TerminateButtons[running.Id].Disabled, "Termination queues exactly once and shows its result.");
