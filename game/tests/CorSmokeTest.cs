@@ -9,7 +9,7 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class CorSmokeTest : Node
 {
-    public override void _Ready()
+    public override async void _Ready()
     {
         var temporary = Path.Combine(Path.GetTempPath(), "ocs-cor-ui-" + Guid.NewGuid().ToString("N"));
         try
@@ -117,6 +117,10 @@ public partial class CorSmokeTest : Node
             Require(shell.CorDesignations.Values.All(c => c.Submit.Disabled), "Finished games offer no enabled designation action.");
             Scenario(shell, "spoke-b");
             Require(shell.CorInput is null && shell.PendingAward!.Cor is null && shell.CorDesignations.Count == 0, "Scenario switch clears the COR controls and field.");
+            // M2R-39: release the shell's theme and portrait resources and let two frames pass before quitting, as the
+            // other full-shell tests do. Quitting with the shell alive crashed Godot at process exit on CI (signal 4 or 11
+            // after the pass line), which failed the job under pipefail.
+            shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("COR_SMOKE_PASS: award and designation actions, roster summaries, report links, rotation and known-record filtering.");
             GetTree().Quit();
         }
