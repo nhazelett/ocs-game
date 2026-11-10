@@ -40,6 +40,8 @@ public partial class EndDaySmokeTest : Node
             shell.FinishDayPlayback();
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
             Require(skip.IsVisibleInTree() && !skip.Disabled, "The explicit skip command is available from Menu during a deployment.");
+            Require(skip.Alignment == shell.NewGameButton.Alignment
+                && shell.ContinueGameButton.Text == "Continue saved game", "Menu commands align consistently and resuming names the saved game.");
             await Capture("menu");
             Require(skip.GetGlobalRect().End.Y <= 800, "The Menu shortcut stays on screen at 1280 by 800.");
             skip.EmitSignal(Button.SignalName.Pressed);
