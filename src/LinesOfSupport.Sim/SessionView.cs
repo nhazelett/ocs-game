@@ -172,6 +172,11 @@ public sealed class SessionView
     /// <summary>The action editor's pickers for a site and capability (optionally a card); null for an unknown site or capability.</summary>
     public ActionEditorView? ActionEditor(string siteId, string capabilityId, string? cardId = null) => _s.BuildActionEditor(siteId, capabilityId, cardId);
 
+    /// <summary>What can be picked together in the award editor given the vendor and instrument already picked, with a
+    /// plain reason on everything that cannot (M2R-35). Null for an unknown site or capability.</summary>
+    public AwardChoicesView? AwardChoices(string siteId, string capabilityId, string? cardId = null, string? vendorId = null, string? instrumentId = null)
+        => _s.BuildAwardChoices(siteId, capabilityId, cardId, vendorId, instrumentId);
+
     /// <summary>What an award would do if applied today: the same hard stops Apply would give, the soft gaps, cost and timing.
     /// Changes nothing and draws no random numbers.</summary>
     public ActionPreview Preview(AwardAction award) => _s.BuildPreview(award);

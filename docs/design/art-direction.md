@@ -22,3 +22,6 @@ Engine default grey panels and font. One grey silhouette for every person. Sites
 
 ## How the style gets chosen (ART-01)
 Codex builds three clearly different directions as the same screen: the day 11 morning (map with Spoke B down, Capt Ruiz's lead item, top strip). Each is a real Godot render at 1280x800, not a mock in another tool, with a one-paragraph note: the idea, palette, font, how people and sites are drawn, what it costs to carry across every screen. Fable posts the three images to Nick in chat. Nick picks one or mixes. Nothing else in ART starts before that pick.
+
+## Nick, 9 Nov 2026 evening
+He saw the three ART-01 directions. Keep all three and let the player choose (ART-07), but it is "not a hot requirement": a much larger visual overhaul is intended later, so nothing in ART should be gold-plated. Fixing how the game plays (M2R-36) comes before more art.

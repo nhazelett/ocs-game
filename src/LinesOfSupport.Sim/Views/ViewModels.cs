@@ -245,3 +245,19 @@ public sealed record StaffMeetingView(bool Attending, bool Joining, int? NextDay
 /// <param name="Pending">Asked and not yet answered.</param>
 /// <param name="Asked">Asked at least once this game.</param>
 public sealed record ScoQuestionView(string Id, string Label, bool Pending, bool Asked);
+
+/// <summary>One entry in an award editor list (M2R-35). Unavailable entries stay in the list, greyed, with the reason shown.</summary>
+/// <param name="Reason">Null when available; otherwise one plain sentence a player can read next to the greyed entry.</param>
+public sealed record ChoiceOption(string Id, string Label, bool Available, string? Reason);
+
+/// <summary>
+/// What can be picked together in the award editor given what is already picked (M2R-35). Ask again after every change of
+/// vendor or instrument. Reasons are structural only (who the vendor is, how it is reached and paid, what the shop holds
+/// today); amounts and limits stay with <see cref="ActionPreview"/>.
+/// </summary>
+/// <param name="VendorId">The vendor the lists were narrowed by, if any.</param>
+/// <param name="InstrumentId">The instrument the lists were narrowed by, if any.</param>
+public sealed record AwardChoicesView(
+    string? VendorId, string? InstrumentId,
+    IReadOnlyList<ChoiceOption> Instruments, IReadOnlyList<ChoiceOption> Vendors,
+    IReadOnlyList<ChoiceOption> Vehicles, IReadOnlyList<ChoiceOption> Funding);
