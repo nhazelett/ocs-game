@@ -51,9 +51,14 @@ public partial class CorSmokeTest : Node
             var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
             Require(ledger.GetChildren().OfType<Label>().Any(l => l.HasMeta("cor_arrangement") && l.GetMeta("cor_arrangement").AsString() == candidate.Id && l.Text.Contains("SGT Okafor") && l.Text.Contains(expected.View.CorSummary(expected.View.Cors.Single(c => c.Id == "corOkafor")))), "Ledger shows the assigned COR and reporting quality.");
             Require(shell.CorDesignations[candidate.Id].Submit.Disabled, "Designation refresh disables the now-current choice.");
+            if(!shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44").Available)
+            {
+                Require(shell.Session.Apply(new FindFinanceAction()).Accepted,"Establish the paying agent before testing a selectable cash instrument.");Step(shell,6);
+            }
             Pick(shell.InstrumentInput, "sf44");
             Require(shell.CorInput is null && shell.PendingAward!.Cor is null, "Cash instrument hides and clears the COR field.");
             Pick(shell.InstrumentInput, "purchaseOrder");
+            Pick(shell.FundingInput,shell.CurrentAwardChoices!.Funding.First(f=>f.Available).Id);
             Require(shell.CorInput is not null && shell.PendingAward!.Cor is null, "Returning to written terms starts at None without a hidden stale designation.");
 
             // Reporting fidelity is exercised on the authored no-COR replay, including the rotation.

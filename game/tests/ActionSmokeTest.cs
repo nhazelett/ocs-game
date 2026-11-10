@@ -13,7 +13,7 @@ public partial class ActionSmokeTest : Node
         {
             var shell = Shell(this);
             var original = shell.Session.StateHash;
-            Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
+            Pick(shell.InstrumentInput, ""); Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
             shell.QuantityInput.Value = 360;
             Require(shell.Session.StateHash == original, "Changing every picker/quantity only previews, never mutates Sim.");
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
@@ -40,11 +40,11 @@ public partial class ActionSmokeTest : Node
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "Award button sends the exact previewed action.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "ActionResult is shown.");
-            var instruments = shell.CurrentActionEditor!.Instruments;
-            foreach (var blocked in instruments.Where(i => i.UnavailableReason is not null))
+            var instruments = shell.CurrentAwardChoices!.Instruments;
+            foreach (var blocked in instruments.Where(i => !i.Available))
             {
                 var index = Enumerable.Range(0, shell.InstrumentInput.ItemCount).Single(i => shell.InstrumentInput.GetItemMetadata(i).AsString() == blocked.Id);
-                Require(shell.InstrumentInput.IsItemDisabled(index) && shell.InstrumentInput.GetItemText(index).Contains(blocked.UnavailableReason!), "Unavailable instrument is greyed with the actual reason.");
+                Require(shell.InstrumentInput.IsItemDisabled(index) && shell.InstrumentInput.GetItemTooltip(index)==blocked.Reason, "Unavailable instrument is greyed with the actual reason.");
             }
             GD.Print("ACTION_SMOKE_PASS: live pure previews, hard-stop gating, quote facts and exact award."); GetTree().Quit();
         }

@@ -39,6 +39,14 @@ public partial class GameShell
         split.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var form = new Control { CustomMinimumSize = new Vector2(0, 150) }; split.AddChild(form);
         awardPanel = DeskUi.Panel(form, "Inputs");
+        var formScroll = (ScrollContainer)awardPanel.GetParent();
+        formScroll.FollowFocus = true;
+        // ScrollContainer reserves the scrollbar's themed minimum width.
+        var scrollbar = formScroll.GetVScrollBar();
+        using var track = (StyleBoxFlat)scrollbar.GetThemeStylebox("scroll").Duplicate();
+        track.ContentMarginLeft = track.ContentMarginRight = 7;
+        scrollbar.AddThemeStyleboxOverride("scroll", track);
+        formScroll.AddThemeConstantOverride("scrollbar_h_separation", 4);
         var lower = new VBoxContainer { CustomMinimumSize = new Vector2(0, 180) }; split.AddChild(lower);
         var holder = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; lower.AddChild(holder);
         previewPanel = DeskUi.Panel(holder, "Preview");
@@ -48,6 +56,7 @@ public partial class GameShell
     private void ResetAwardForm()
     {
         awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = awardCor = null;
+        awardChoiceNotice = null;
         quantity = null; start = duration = null; awardSequence = 1;
     }
 
@@ -78,16 +87,7 @@ public partial class GameShell
         panel.AddChild(picker); return picker;
     }
 
-    private static string? FundingBlock(SessionView view, FundingOption funding, int day)
-    {
-        var reasons = new List<string>();
-        if (!funding.PaysForThis) reasons.Add($"Certified for {string.Join(", ", (funding.Capabilities ?? []).Select(id => CapabilityName(view, id).ToLowerInvariant()))} only");
-        if (!funding.UsableToday) reasons.Add(day < funding.AvailableDay
-            ? $"Available day {funding.AvailableDay}" : $"Expired after day {funding.ExpiresDay}");
-        return reasons.Count == 0 ? null : string.Join("; ", reasons);
-    }
-
-    private static string? Picked(OptionButton picker) => picker.ItemCount == 0 ? null : picker.GetItemMetadata(picker.Selected).AsString();
+    private static string? Picked(OptionButton picker) => picker.ItemCount == 0 || picker.Selected < 0 ? null : picker.GetItemMetadata(picker.Selected).AsString();
     private SpinBox AddNumber(string label, double value, double max, Action<double> changed)
     {
         awardPanel.AddChild(DeskUi.Label(label));
@@ -98,7 +98,7 @@ public partial class GameShell
     private void RefreshActionDesk(SessionView? view)
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
-        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CorInput = null;
+        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null;
         awardButton = DeskUi.Button("Arrange support", () =>
         {
             if (PendingAward is not null && AwardPreview?.Accepted == true && session.View?.Finished == false) SendAction(PendingAward);
@@ -109,32 +109,35 @@ public partial class GameShell
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
         if (!targets.Any(t => t.Id == awardTarget)) awardTarget = targets.FirstOrDefault(t => t.Card == SelectedCard)?.Id ?? targets[0].Id;
         AddPick(awardPanel, "What are you arranging?", targets.Select(t => new Pick(t.Id, t.Label)).ToArray(), awardTarget, id =>
-        { awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = null; quantity = null; start = duration = null; RefreshActionDesk(session.View); });
+        { awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null; awardChoiceNotice = null; quantity = null; start = duration = null; RefreshActionDesk(session.View); });
         var target = targets.Single(t => t.Id == awardTarget);
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
-        vendorInput = AddPick(awardPanel, "Who could provide it?", new[] { new Pick("", "Choose a supplier…") }.Concat(editor.Vendors.Select(v => new Pick(v.Id, DeskUi.ListLabel(v.Name) + (v.Standing is null ? "" : $" · {v.Standing}")))).ToArray(), awardVendor, id =>
-        { awardVendor = id; awardInstrument = awardVehicle = awardCor = null; RefreshActionDesk(session.View); });
-        awardVendor = Picked(vendorInput);
-        if (string.IsNullOrEmpty(awardVendor))
+        var choices = ReconcileAwardChoices(view, target);
+        vendorInput = AddAwardChoice("Who could provide it?", "Choose a supplier…", choices.Vendors, awardVendor,
+            id => { awardVendor = id; awardCor = null; }, out var vendorReason, awardChoiceNotice);
+        VendorChoiceReason = vendorReason;
+        instrumentInput = AddAwardChoice("How would you arrange it?", "Choose an arrangement…", choices.Instruments, awardInstrument,
+            id => { awardInstrument = id; awardCor = null; }, out var instrumentReason);
+        InstrumentChoiceReason = instrumentReason;
+        if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
+            awardPanel.AddChild(DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}. They offer {supplier.CapacityPerDay} {editor.Unit} a day, with {supplier.CapacityFreeToday} available today. Their lead time is {supplier.LeadTimeDays} days."));
+        var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
+        vehicleInput = AddAwardChoice("Vehicle", needsVehicle ? "Choose a vehicle…" : "No vehicle needed", choices.Vehicles, awardVehicle,
+            id => awardVehicle = id, out var vehicleReason);
+        vehicleInput.Disabled = !needsVehicle;
+        if (!needsVehicle) { vehicleReason.Text = ""; vehicleReason.Hide(); }
+        var immediate = awardInstrument is "sf44" or "gpc";
+        if (awardFunding is null && !immediate) awardFunding = choices.Funding.FirstOrDefault(f => f.Available)?.Id ?? "";
+        fundingInput = AddAwardChoice("Funding line", immediate ? "No funding line used" : "Choose a funding line…", choices.Funding, awardFunding,
+            id => awardFunding = id, out var fundingReason);
+        FundingChoiceReason = fundingReason;
+        fundingInput.Disabled = immediate;
+        if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
         {
-            previewPanel.AddChild(DeskUi.Label("Choose someone to approach. You can then explore the terms and timing without committing to an award."));
+            previewPanel.AddChild(DeskUi.Label("Choose an available supplier and arrangement, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
             return;
         }
-        var supplier = editor.Vendors.Single(v => v.Id == awardVendor);
-        awardPanel.AddChild(DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}. They offer {supplier.CapacityPerDay} {editor.Unit} a day, with {supplier.CapacityFreeToday} available today. Their lead time is {supplier.LeadTimeDays} days."));
-        instrumentInput = AddPick(awardPanel, "How would you arrange it?", new[] { new Pick("", "Choose an arrangement…") }.Concat(editor.Instruments.Select(i => new Pick(i.Id, i.Label, i.UnavailableReason))).ToArray(), awardInstrument, id => { awardInstrument = id; RefreshActionDesk(session.View); });
-        awardInstrument = Picked(instrumentInput);
-        if (string.IsNullOrEmpty(awardInstrument))
-        {
-            previewPanel.AddChild(DeskUi.Label("Choose how to arrange the support. The quote will show what it would cost, when it could start, and anything the terms leave uncovered."));
-            return;
-        }
-        var vehicles = new[] { new Pick("", "No vehicle") }.Concat(editor.Vehicles.Where(v => v.VendorId == awardVendor)
-            .Select(v => new Pick(v.Id, view.VehicleName(v.Id), v.OpenToday ? null : $"Ordering ended day {v.OrderingPeriodEndDay}"))).ToArray();
-        vehicleInput = AddPick(awardPanel, "Vehicle", vehicles, awardVehicle, id => { awardVehicle = id; RefreshActionDesk(session.View); }); awardVehicle = Picked(vehicleInput);
-        fundingInput = AddPick(awardPanel, "Funding line", editor.Funding.Select(f => new Pick(f.Id, $"{view.FundingName(f.Id)} · {DeskUi.Money(f.RemainingCents)} · expires {f.ExpiresDay}", FundingBlock(view, f, view.Day))).ToArray(), awardFunding, id => { awardFunding = id; RefreshActionDesk(session.View); });
-        awardFunding = Picked(fundingInput);
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {
             var cors = new[] { new Pick("", "None") }.Concat(view.Cors.Select(c => new Pick(c.Id, CorText(view, c)))).ToArray();
@@ -149,6 +152,11 @@ public partial class GameShell
         quantityInput = AddNumber($"Quantity ({editor.Unit})", quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
         startInput = AddNumber("Requested start day", start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
         durationInput = AddNumber("Duration (days)", duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
+        if (!AwardTermsComplete)
+        {
+            previewPanel.AddChild(DeskUi.Label("Choose an available vehicle and funding line for these terms before asking for the quote."));
+            return;
+        }
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
@@ -160,10 +168,11 @@ public partial class GameShell
     {
         var view = session.View; var editor = CurrentActionEditor;
         if (view is null || editor is null) return;
+        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; awardButton.Disabled = true; return; }
         while (view.Arrangements.Any(a => a.Id == $"player-award-{awardSequence}") || view.InWork($"player-award-{awardSequence}")) awardSequence++;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
-            Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = awardFunding,
+            Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = string.IsNullOrEmpty(awardFunding) ? null : awardFunding,
             Cor = string.IsNullOrEmpty(awardCor) ? null : awardCor,
             Quantity = quantity ?? 1, StartDay = start, DurationDays = duration ?? 1 };
         try

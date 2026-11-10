@@ -68,7 +68,10 @@ internal static class DeskSmokeSupport
 
     internal static void Step(GameShell shell, int days = 1)
     {
-        for (var i = 0; i < days; i++) shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
+        for (var i = 0; i < days; i++)
+        {
+            shell.FinishDayPlayback();shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);shell.FinishDayPlayback();
+        }
     }
 
     internal static void Pick(OptionButton picker, string id)

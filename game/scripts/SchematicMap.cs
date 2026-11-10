@@ -23,20 +23,22 @@ public partial class SchematicMap : Node2D
     private Vector2 worldSize = new(1500, 1000), offset, dragStart;
     private float zoom = .5f, animationSeconds;
     private bool dragging, cameraTouched;
-    internal void SelectSite(string? id) { SelectedSite = id; QueueRedraw(); }
-    internal void ShowConfidence(IEnumerable<string> values) { LostConfidenceSites = values.ToHashSet(StringComparer.Ordinal); QueueRedraw(); }
+    internal void SelectSite(string? id) { SelectedSite = id; Tabletop?.Select(id);QueueRedraw(); }
+    internal void ShowConfidence(IEnumerable<string> values) { LostConfidenceSites = values.ToHashSet(StringComparer.Ordinal);RefreshTabletop(); QueueRedraw(); }
     internal void ShowConditions(IReadOnlyDictionary<string, SiteCondition> values) { Conditions = values; QueueRedraw(); }
-    internal void ShowCapabilities(IReadOnlyList<CapabilityTile> values) { Tiles = values; QueueRedraw(); }
+    internal void ShowCapabilities(IReadOnlyList<CapabilityTile> values) { Tiles = values; RefreshTabletop();QueueRedraw(); }
     internal void ShowMapDay(MapDayView? value)
     {
         if (Day?.Day != value?.Day) animationSeconds = 0;
-        Day = value; KnownChanges = value?.Changes.Where(c => c.Known).ToArray() ?? []; QueueRedraw();
+        Day = value; KnownChanges = value?.Changes.Where(c => c.Known).ToArray() ?? []; RefreshTabletop();Tabletop?.ShowFacts(Day,Math.Clamp(animationSeconds/5f,0,1));QueueRedraw();
     }
     internal void ReplayMovement() { animationSeconds = 0; QueueRedraw(); }
-    internal Vector2 SiteScreenPoint(string id) => sites[id] * zoom + offset;
+    internal void SetMovementProgress(float progress) { animationSeconds=Math.Clamp(progress,0,1)*5;Tabletop?.ShowFacts(Day,Math.Clamp(progress,0,1));QueueRedraw(); }
+    internal Vector2 SiteScreenPoint(string id) => Tabletop?.SitePoint(id) ?? sites[id] * zoom + offset;
     internal void ShowScenario(ScenarioBoardData? data)
     {
         Data = data; Day = null; Tiles = []; KnownChanges = []; SelectedSite = null;
+        if(Tabletop is not null){RemoveChild(Tabletop);Tabletop.QueueFree();Tabletop=null;}tabletopSignature=null;
         LostConfidenceSites = new HashSet<string>(); Conditions = new Dictionary<string, SiteCondition>(); islands.Clear(); sites.Clear();
         if (data is not null)
         {
@@ -58,15 +60,17 @@ public partial class SchematicMap : Node2D
         var size = GetViewportRect().Size; if (size.X < 1 || size.Y < 1) return;
         zoom = Math.Min(size.X / worldSize.X, size.Y / worldSize.Y) * .94f;
         offset = size / 2 - worldSize * zoom / 2; cameraTouched = false; QueueRedraw();
+        Tabletop?.Fit();
     }
-    internal void PanBy(Vector2 amount) { offset += amount; cameraTouched = true; QueueRedraw(); }
+    internal void PanBy(Vector2 amount) { offset += amount;Tabletop?.PanBy(amount);cameraTouched = true; QueueRedraw(); }
     internal void ZoomAt(Vector2 anchor, float factor)
     {
         var world = (anchor - offset) / zoom;
+        Tabletop?.ZoomAt(anchor,factor);
         zoom = Math.Clamp(zoom * factor, .2f, 2f); offset = anchor - world * zoom; cameraTouched = true; QueueRedraw();
     }
-    public override void _Ready() => GetViewport().SizeChanged += () => { if (!cameraTouched) FitMap(); else QueueRedraw(); };
-    public override void _Process(double delta) { if (Day is not null && animationSeconds < 6) { animationSeconds += (float)delta; QueueRedraw(); } }
+    public override void _Ready() => GetViewport().SizeChanged += () => { if(Tabletop is not null)Tabletop.Size=GetViewportRect().Size; if (!cameraTouched) FitMap(); else QueueRedraw(); };
+    public override void _Process(double delta) { if (Day is not null && animationSeconds < 6) { animationSeconds += (float)delta;Tabletop?.ShowFacts(Day,Math.Clamp(animationSeconds/5f,0,1)); QueueRedraw(); } }
     public override void _Input(InputEvent input)
     {
         if (input is InputEventMouseButton mouse)
@@ -82,8 +86,8 @@ public partial class SchematicMap : Node2D
                     var wasDragging = dragging; dragging = false;
                     if (wasDragging && sites.Count > 0 && mouse.ButtonIndex == MouseButton.Left && dragStart.DistanceTo(mouse.Position) < 7)
                     {
-                        var target = sites.MinBy(s => (s.Value * zoom + offset).DistanceSquaredTo(mouse.Position));
-                        if (target.Key is not null && (target.Value * zoom + offset).DistanceTo(mouse.Position) < 100 * zoom)
+                        var target = sites.MinBy(s => SiteScreenPoint(s.Key).DistanceSquaredTo(mouse.Position));
+                        if (target.Key is not null && SiteScreenPoint(target.Key).DistanceTo(mouse.Position) < 100 * zoom)
                         { SelectSite(target.Key); SitePicked?.Invoke(target.Key); }
                     }
                 }
@@ -93,6 +97,7 @@ public partial class SchematicMap : Node2D
     }
     public override void _Draw()
     {
+        if(Tabletop is not null)return;
         DrawRect(new Rect2(Vector2.Zero, GetViewportRect().Size), new Color("8eafb2")); if (Data is null) return;
         DrawSetTransform(offset, 0, Vector2.One * zoom);
         for (var y = 70; y < worldSize.Y; y += 95) for (var x = 35; x < worldSize.X; x += 120)

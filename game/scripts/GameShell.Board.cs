@@ -168,7 +168,7 @@ public partial class GameShell
 
     private void OnContinue()
     {
-        if (ReadingTurnover) return;
+        if (ReadingTurnover || PlayingDay) return;
         var count = 0;
         var reason = "deployment complete";
         while (AdvanceAndAutosave())
@@ -181,5 +181,6 @@ public partial class GameShell
         if (session.View?.Finished == true) reason = "scenario complete";
         else if (count > 0) FocusNewMorning();
         RefreshDisplay($"Continued {count} days: {reason}. Results through day {session.CompletedDay}.", developerOnly: true);
+        if (count > 0) BeginDayPlayback();
     }
 }

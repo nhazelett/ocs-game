@@ -68,6 +68,7 @@ public partial class GameShell
 
     private void ShowFrontDoor()
     {
+        FinishDayPlayback();
         frontDoor.Show(); GetNode<Control>("Margin").Hide(); menuButton?.Hide();
         openingSurface.Hide();
         frontMessage.Text = "Take over the contracting shop. Keep the deployment supported as the days unfold.";
