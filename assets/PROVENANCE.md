@@ -58,7 +58,7 @@ Every file under assets/ must have a row here. CI fails without it.
 
 | assets/audio/README.md | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
 | assets/audio/LICENSE.txt | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
-| assets/audio/new-day.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
-| assets/audio/at-the-door.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
-| assets/audio/support-down.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
-| assets/audio/award-made.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/new-day.wav | Procedural audio and notes | generated | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/at-the-door.wav | Procedural audio and notes | generated | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/support-down.wav | Procedural audio and notes | generated | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/award-made.wav | Procedural audio and notes | generated | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
