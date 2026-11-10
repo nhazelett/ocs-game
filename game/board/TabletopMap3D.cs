@@ -13,9 +13,13 @@ public partial class TabletopMap3D:Control
     private readonly List<(Label Label,Vector3 Point,Vector2 Offset)> captions=[];
     private readonly Dictionary<string,MeshInstance3D> selections=[];
     private readonly List<(Node3D Ship,Node3D Truck,Vector3 From,Vector3 Port,Vector3 To)> runs=[];
-    private readonly List<(Label Label,Node3D Node)> movingLabels=[];
+    private readonly List<(Label Label,Node3D Node,Line2D? Leader)> movingLabels=[];
     private readonly List<MeshInstance3D> changeRings=[];
     internal IReadOnlyList<string> ReportedChangeLabels=>movingLabels.Where(x=>x.Label.HasMeta("reported_change")).Select(x=>x.Label.Text).ToArray();
+    internal IReadOnlyList<(Label Label,Node3D Node,Line2D? Leader)> FactLabels=>movingLabels;
+    internal Dictionary<string,Label> SiteStatuses{get;}=[];
+    private readonly Dictionary<string,float> islandRadii=[];
+    private ScenarioBoardData board=null!;
     private Node3D? motion;
     private string? factKey;
     private IReadOnlyList<CapabilityTile> capabilityTiles=[];
@@ -27,7 +31,7 @@ public partial class TabletopMap3D:Control
     internal void Configure(ScenarioBoardData board,IReadOnlyList<CapabilityTile> tiles,IReadOnlyList<MapLink> links,Font font,IReadOnlySet<string>? confidence=null)
     {
         MouseFilter=MouseFilterEnum.Ignore;ClipContents=true;using var theme=new Theme{DefaultFont=font,DefaultFontSize=18};Theme=theme;
-        capabilityTiles=tiles;
+        capabilityTiles=tiles;this.board=board;
         var holder=new SubViewportContainer{Stretch=true,MouseFilter=MouseFilterEnum.Ignore};AddChild(holder);holder.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var viewport=new SubViewport{OwnWorld3D=true,Size=new Vector2I((int)Size.X,(int)Size.Y),Msaa3D=Viewport.Msaa.Msaa4X,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};holder.AddChild(viewport);
         world=new Node3D();viewport.AddChild(world);
@@ -46,7 +50,7 @@ public partial class TabletopMap3D:Control
                 var rows=(tiles.Count(t=>t.SiteId==members[i].Id)+2)/3;radius=Math.Max(radius,rows*.48f+1);
                 sites[members[i].Id]=islands[island.Id]+new Vector3((i-(members.Length-1)/2f)*4.8f,0,0);
             }
-            radius+=(members.Length-1)*2.4f;radii[island.Id]=radius;
+            radius+=(members.Length-1)*2.4f;radii[island.Id]=radius;islandRadii[island.Id]=radius;
             var p=islands[island.Id];var variant=island.Id.Sum(c=>c)%13;
             Mesh(Island(radius,.65f,variant),p,"c0a479");Mesh(Island(radius*.9f,.12f,variant),p+new Vector3(0,.65f,0),"9ba487");
             for(var t=0;t<4;t++)
@@ -76,11 +80,26 @@ public partial class TabletopMap3D:Control
                 if(values[i].Status=="down")Caption("×",q+new Vector3(0,.8f,0),new Vector2(-12,-15),24,24,TabletopTheme.Alert);
             }
             selections[site.Id]=Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.79f,0),"556e65",true);selections[site.Id].Visible=false;
-            var state=values.Length==0?"Not assessed":values.All(t=>t.Status=="notOpen")?$"Opens day {site.OpensDay}":values.Any(t=>t.Status=="down")?"Support interrupted":values.Any(t=>t.Status=="degraded")?"Partly supported":"Supported";
+            var state=SiteStatus(values,site.OpensDay);
             var title=board.Sites.Count(s=>s.Island==site.Island)==1?site.Name+" / "+board.Islands.Single(i=>i.Id==site.Island).Name:site.Name;
             Caption(title,p+new Vector3(0,.75f,0),new Vector2(-170,62),340,20,TabletopTheme.Ink);
-            Caption(state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),p+new Vector3(0,.75f,0),new Vector2(-170,91),340,17,values.Any(t=>t.Status=="down")?TabletopTheme.Alert:TabletopTheme.Ink);
+            SiteStatuses[site.Id]=Caption(state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),p+new Vector3(0,.75f,0),new Vector2(-170,91),340,17,values.Any(t=>t.Status=="down")?TabletopTheme.Alert:TabletopTheme.Ink);
         }
+    }
+    private static string SiteStatus(IReadOnlyList<CapabilityTile> values,int opensDay)
+    {
+        if(values.Count==0)return "Not assessed";
+        if(values.All(t=>t.Status=="notOpen"))return $"Opens day {opensDay}";
+        string Names(string status)
+        {
+            var names=values.Where(t=>t.Status==status).Select(t=>t.Label.ToLowerInvariant()).ToArray();
+            return names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+        }
+        var clauses=new List<string>();
+        if(values.Any(t=>t.Status=="down"))clauses.Add(Names("down")+" down");
+        if(values.Any(t=>t.Status=="degraded"))clauses.Add(Names("degraded")+" partly supported");
+        var text=clauses.Count==0?"Supported":string.Join("; ",clauses);
+        return char.ToUpperInvariant(text[0])+text[1..];
     }
     internal void Select(string? id){foreach(var pair in selections)pair.Value.Visible=pair.Key==id;}
     internal void Fit(){world.Position=Vector3.Zero;camera.Size=fittedSize;}
@@ -95,9 +114,28 @@ public partial class TabletopMap3D:Control
     {
         if(camera is null)return;
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
-        var occupied=captions.Select(c=>c.Label.GetRect()).ToList();
+        var occupied=captions.Select(c=>
+        {
+            var rect=c.Label.GetRect();var width=Math.Min(rect.Size.X,c.Label.GetThemeFont("font").GetStringSize(c.Label.Text,fontSize:c.Label.GetThemeFontSize("font_size")).X);
+            return new Rect2(rect.Position+new Vector2((rect.Size.X-width)/2,0),new Vector2(width,c.Label.GetLineHeight()*c.Label.GetLineCount())).Grow(4);
+        }).ToList();
         foreach(var item in movingLabels.Where(m=>m.Label.Visible))
         {
+            if(item.Leader is not null)
+            {
+                var anchor=camera.UnprojectPosition(item.Node.GlobalPosition);
+                Vector2 Place(Vector2 offset)
+                {
+                    var p=anchor+offset;
+                    p.X=Math.Clamp(p.X,4,Math.Max(4,Size.X-item.Label.Size.X-4));
+                    p.Y=Math.Clamp(p.Y,4,Math.Max(4,Size.Y-item.Label.Size.Y-4));return p;
+                }
+                var candidates=new[]{new Vector2(-180,22),new Vector2(-260,-80),new Vector2(20,-80),new Vector2(-120,-100),new Vector2(-260,70),new Vector2(20,70)}.Select(Place).ToArray();
+                var position=candidates.FirstOrDefault(p=>!occupied.Any(r=>r.Intersects(new Rect2(p,item.Label.Size))),candidates[0]);
+                item.Label.Position=position;
+                item.Leader.Points=[anchor,new Vector2(Math.Clamp(anchor.X,position.X,position.X+item.Label.Size.X),Math.Clamp(anchor.Y,position.Y,position.Y+item.Label.Size.Y))];
+                occupied.Add(item.Label.GetRect());continue;
+            }
             var point=camera.UnprojectPosition(item.Node.GlobalPosition)+new Vector2(-130,-55);
             point.X=Math.Clamp(point.X,4,Math.Max(4,Size.X-264));point.Y=Math.Max(4,point.Y);
             while(point.Y>4 && occupied.Any(r=>r.Intersects(new Rect2(point,item.Label.Size))))point.Y=Math.Max(4,point.Y-28);
@@ -111,7 +149,7 @@ public partial class TabletopMap3D:Control
         if(key!=factKey)
         {
             if(motion is not null){world.RemoveChild(motion);motion.QueueFree();}
-            foreach(var item in movingLabels){RemoveChild(item.Label);item.Label.QueueFree();}movingLabels.Clear();runs.Clear();changeRings.Clear();
+            foreach(var item in movingLabels){RemoveChild(item.Label);item.Label.QueueFree();if(item.Leader is not null){RemoveChild(item.Leader);item.Leader.QueueFree();}}movingLabels.Clear();runs.Clear();changeRings.Clear();
             motion=new Node3D();world.AddChild(motion);factKey=key;
             foreach(var run in day.Runs)
             {
@@ -120,10 +158,17 @@ public partial class TabletopMap3D:Control
                 var description=(capabilityTiles.FirstOrDefault(t=>t.CapabilityId==run.CapabilityId)?.Label??"Supplies")+$" · {run.Quantity:N0} {run.Unit}";
                 MovingLabel(ship,description);MovingLabel(truck,description);
             }
-            foreach(var hold in day.Held.GroupBy(h=>h.FromIslandId))
+            foreach(var hold in day.Held.GroupBy(h=>(h.FromIslandId,h.ToIslandId,h.SiteId,h.CapabilityId,h.LinkId,h.Reason)))
             {
-                if(!islands.TryGetValue(hold.Key,out var p))continue;
-                var crate=Vehicle("cargo");crate.Position=p+new Vector3(-2.3f,.25f,.5f);MovingLabel(crate,"Cargo waiting");
+                if(!islands.TryGetValue(hold.Key.FromIslandId,out var p)||!islands.TryGetValue(hold.Key.ToIslandId,out var destination))continue;
+                var direction=(destination-p).Normalized();
+                var crate=Vehicle("cargo");crate.Position=p+direction*islandRadii[hold.Key.FromIslandId]+new Vector3(0,.25f,0);
+                var capability=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==hold.Key.CapabilityId)?.Label??"Supplies";
+                var site=board.Sites.FirstOrDefault(s=>s.Id==hold.Key.SiteId)?.Name??"the site";
+                var mode=day.Links.FirstOrDefault(l=>l.Id==hold.Key.LinkId)?.Mode;
+                var lane=mode switch{"barge" or "sealift"=>"barge lane","aircraft" or "airlift"=>"air lane",_=>"route"};
+                var reason=hold.Key.Reason=="closed"?lane+" closed":"no scheduled service today";
+                MovingLabel(crate,$"{capability} for {site} waiting: {reason}.",true);
             }
             foreach(var transit in day.Shipments)
             {
@@ -164,17 +209,19 @@ public partial class TabletopMap3D:Control
         else{Part(Vector3.Zero,new Vector3(1.1f,.16f,.45f),"4a5c60");Part(new Vector3(-.1f,.2f,0),new Vector3(.7f,.25f,.34f),"c3a267");}
         return root;
     }
-    private void MovingLabel(Node3D node,string text)
+    private void MovingLabel(Node3D node,string text,bool anchored=false)
     {
         var label=new Label{Size=new Vector2(260,28),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,MouseFilter=MouseFilterEnum.Ignore,HorizontalAlignment=HorizontalAlignment.Center};
         label.AddThemeFontSizeOverride("font_size",17);label.AddThemeColorOverride("font_color",TabletopTheme.Ink);
         using var labelStyle=new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2};label.AddThemeStyleboxOverride("normal",labelStyle);
-        AddChild(label);movingLabels.Add((label,node));
+        Line2D? leader=null;
+        if(anchored){label.Size=new Vector2(240,50);leader=new Line2D{Width=2,DefaultColor=TabletopTheme.Ink};AddChild(leader);}
+        AddChild(label);movingLabels.Add((label,node,leader));
     }
-    private void Caption(string text,Vector3 point,Vector2 offset,float width,int size,Color color)
+    private Label Caption(string text,Vector3 point,Vector2 offset,float width,int size,Color color)
     {
         var label=new Label{Size=new Vector2(width,54),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,HorizontalAlignment=HorizontalAlignment.Center,MouseFilter=MouseFilterEnum.Ignore};
-        label.AddThemeFontSizeOverride("font_size",size);label.AddThemeColorOverride("font_color",color);AddChild(label);label.Size=new Vector2(width,54);captions.Add((label,point,offset));
+        label.AddThemeFontSizeOverride("font_size",size);label.AddThemeColorOverride("font_color",color);AddChild(label);label.Size=new Vector2(width,54);captions.Add((label,point,offset));return label;
     }
     private void Equipment(Vector3 p,CapabilityTile tile)
     {

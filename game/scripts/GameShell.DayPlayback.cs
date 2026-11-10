@@ -33,10 +33,12 @@ public partial class GameShell
         var day = PlaybackFacts;
         var movements = day.Runs.Count == 0 ? "No deliveries crossed today." : $"{day.Runs.Count} {(day.Runs.Count == 1 ? "delivery crossed" : "deliveries crossed")} today.";
         var held = day.Held.Count == 0 ? "" : day.Held.Any(h => h.Reason == "closed") ? " Cargo waited at a closed route." : " Cargo waited for a scheduled service.";
-        var changes = day.Changes.Where(c => c.Known).Select(c =>
+        var changes = day.Changes.Where(c => c.Known).GroupBy(c => (c.SiteId,c.Kind,c.Permille)).Select(group =>
         {
+            var c=group.First();
             var site = Map.Data?.Sites.FirstOrDefault(s => s.Id == c.SiteId)?.Name ?? "A site";
-            var capability = Map.Tiles.FirstOrDefault(t => t.CapabilityId == c.CapabilityId)?.Label ?? "Support";
+            var names=group.Select(change=>(Map.Tiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support").ToLowerInvariant()).Distinct().ToArray();
+            var capability=names.Length<2?names[0]:string.Join(", ",names[..^1])+" and "+names[^1];
             return c.Kind switch
             {
                 "restored" => $"{site}: {capability} restored.",
@@ -45,8 +47,7 @@ public partial class GameShell
                 _ => "A site update was reported."
             };
         }).ToArray();
-        PlaybackText.Text = $"Day {day.Day} · what happened\n{movements}{held}\n" + (changes.FirstOrDefault() ?? "No reported changes in site support.")
-            + (changes.Length > 1 ? $" {changes.Length - 1} more in the day's records." : "");
+        PlaybackText.Text = $"Day {day.Day} · what happened\n{movements}{held}\n" + (changes.Length==0?"No reported changes in site support.":string.Join(" ",changes));
         playbackElapsed = 0; Map.ReplayMovement(); playbackOverlay.Show(); MoveChild(playbackOverlay, -1);
         GetNode<Button>("%NextDay").Disabled = true; GetNode<Button>("%Continue").Disabled = true;
         SkipPlaybackButton.GrabFocus();
