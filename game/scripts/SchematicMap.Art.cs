@@ -23,13 +23,13 @@ public partial class SchematicMap
             DrawCircle(p + new Vector2(4, 5), 13, new Color("617967")); DrawCircle(p, 12, new Color("71896c"));
         }
         DrawRect(new Rect2(point + new Vector2(-180, 112), new Vector2(75, 17)), new Color("9b8b69"));
-        Text(point + new Vector2(0, -extent.Y - 25), island.Name, 520, 34, new Color("eef1d9"));
+        Text(point + new Vector2(0, -extent.Y - 25), island.Name, 520, 34, new Color("343d4b"));
     }
     private void DrawSite(Vector2 point, BoardSite site)
     {
         var condition = Conditions.GetValueOrDefault(site.Id, SiteCondition.Unknown);
         var layout = SiteLayout(site.Id);
-        DrawRect(new Rect2(point + layout.Bounds.Position, layout.Bounds.Size), new Color("b5ae8d"));
+        DrawRect(new Rect2(point + layout.Bounds.Position, layout.Bounds.Size), new Color("d4c9b4"));
         if (SelectedSite == site.Id) DrawRect(new Rect2(point + layout.Bounds.Position - Vector2.One * 6, layout.Bounds.Size + Vector2.One * 12), new Color("fff2c6"), false, 4);
         foreach (var cell in layout.Tiles)
         {
@@ -43,9 +43,9 @@ public partial class SchematicMap
             if (KnownChanges.Any(c => c.SiteId == site.Id && c.CapabilityId == tile.CapabilityId)) DrawArc(p, 35, 0, Mathf.Tau, 32, new Color(tile.Status == "down" ? "ef8d72" : "e6e8af"), 3, true);
         }
         if (layout.Tiles.Count == 0) DrawEquipment(point, "lodging", new Color("899a8e"), false);
-        Text(point + new Vector2(0, layout.NameY), site.Name, 400, 32, new Color("f4eed6"));
+        Text(point + new Vector2(0, layout.NameY), site.Name, 400, 32, new Color("343d4b"));
         var state = condition switch { SiteCondition.NotOpen => $"Opens day {site.OpensDay}", SiteCondition.Full => "Supported", SiteCondition.Degraded => "Partly supported", SiteCondition.Down => "Support interrupted", _ => $"Opens day {site.OpensDay}" };
-        Text(point + new Vector2(0, layout.StateY), state + (LostConfidenceSites.Contains(site.Id) ? " · confidence lost" : ""), 450, 23, new Color("e0e3cf"));
+        Text(point + new Vector2(0, layout.StateY), state + (LostConfidenceSites.Contains(site.Id) ? " · confidence lost" : ""), 450, 23, new Color("343d4b"));
     }
     private void DrawEquipment(Vector2 p, string capability, Color color, bool live)
     {

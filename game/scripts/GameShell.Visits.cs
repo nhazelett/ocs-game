@@ -53,15 +53,15 @@ public partial class GameShell
         foreach (var item in (board?.Items ?? []).Where(i => view.Scenario.Tutorial && i.Person?.Role == "outgoingCco"))
         {
             var card = new PanelContainer();
-            card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("223b43"), ContentMarginLeft = 16,
+            card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 16,
                 ContentMarginRight = 16, ContentMarginTop = 14, ContentMarginBottom = 14 });
             mentorMessages.AddChild(card);
             var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 14); card.AddChild(row);
             var portrait = new PersonPortrait { SizeFlagsVertical = SizeFlags.ShrinkBegin };
-            if (item.Person!.Portrait is { } key) portrait.SetMeta("portrait_key", key);
+            portrait.SetPerson(item.Person);
             row.AddChild(portrait);
             var words = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; row.AddChild(words);
-            words.AddChild(DeskUi.Label(item.Person.WithUnit));
+            words.AddChild(DeskUi.Label(item.Person!.WithUnit));
             var message = DeskUi.Label(item.Text); message.SetMeta("mentor_record", item.RecordId); words.AddChild(message);
             mentorMessages.Visible = true;
         }
@@ -80,6 +80,7 @@ public partial class GameShell
         var person = contactPeople.TryGetValue(visitContact ?? "", out var personId) && personId is not null ? view.Person(personId) : null;
         if (person is not null)
         {
+            var face=new PersonPortrait{SizeFlagsHorizontal=SizeFlags.ShrinkBegin};face.SetPerson(person);visitsForm.AddChild(face);
             visitsForm.AddChild(DeskUi.Label(person.WithUnit));
             if (person.Line("greeting") is { } greeting) visitsForm.AddChild(DeskUi.Label(greeting));
         }
@@ -128,7 +129,7 @@ public partial class GameShell
         host.AddChild(DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop hours. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}."));
         if (preview.HardStops.Count > 0)
         {
-            var stops = DeskUi.Label(string.Join("\n\n", preview.HardStops)); stops.Modulate = new Color(1, .55f, .45f); host.AddChild(stops);
+            var stops = DeskUi.Label(string.Join("\n\n", preview.HardStops)); stops.AddThemeColorOverride("font_color", TabletopTheme.Alert); host.AddChild(stops);
         }
         if (preview.SoftGaps.Count > 0) host.AddChild(DeskUi.Label(string.Join("\n\n", preview.SoftGaps)));
     }

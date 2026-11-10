@@ -17,7 +17,7 @@ public partial class SchematicMap
     {
         var tiles = Tiles.Where(t => t.SiteId == site).ToArray();
         var labels = tiles.Select(t => MapLabel(t.Label)).ToArray();
-        var font = ThemeDB.FallbackFont;
+        var font = MapFont;
         float Width(string text) => font.GetStringSize(text, fontSize: 18).X;
         var cellWidth = Math.Max(124, labels.SelectMany(l => l.Split(' ')).Select(Width).DefaultIfEmpty(0).Max() + 16);
         string[] Wrap(string label)

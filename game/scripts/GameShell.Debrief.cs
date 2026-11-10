@@ -52,7 +52,7 @@ public partial class GameShell
         var sender = new HBoxContainer(); sender.AddThemeConstantOverride("separation", 20); debriefPanel.AddChild(sender);
         if (report.Summary?.From is { } person)
         {
-            sender.AddChild(new PersonPortrait { TooltipText = person.DisplayName, SizeFlagsVertical = SizeFlags.ShrinkBegin });
+            var portrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};portrait.SetPerson(person);sender.AddChild(portrait);
         }
         DebriefSpeaker = DeskUi.Label(report.Summary?.From?.WithUnit ?? "After the deployment");
         DebriefSpeaker.AddThemeFontSizeOverride("font_size", 22);
@@ -124,7 +124,7 @@ public partial class GameShell
             foreach (var value in band.PermilleByDay)
             {
                 var cell = new Label { Text = value < 0 ? "—" : $"{value / 10m:0.#}%" };
-                cell.Modulate = value < 0 ? Colors.Gray : new Color(1, .55f, .45f).Lerp(new Color(.55f, 1, .65f), Math.Clamp(value / 1000f, 0, 1));
+                cell.AddThemeColorOverride("font_color",value < 0 ? TabletopTheme.Muted : TabletopTheme.Alert.Lerp(TabletopTheme.Success, Math.Clamp(value / 1000f, 0, 1)));
                 grid.AddChild(cell);
             }
         }

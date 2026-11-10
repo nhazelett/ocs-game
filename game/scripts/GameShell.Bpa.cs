@@ -125,7 +125,7 @@ public partial class GameShell
         bpaPreviewText.Text = $"Shop {EstablishPreview.ShopHoursMin}–{EstablishPreview.ShopHoursMax} h · {EstablishPreview.QueueAheadHours} h queued\nReady for calls day {EstablishPreview.EarliestStartMin}–{EstablishPreview.EarliestStartMax} (ignores queue ahead)\n" +
             (EstablishPreview.HardStops.Count == 0 ? "No hard stops." : string.Join("\n", EstablishPreview.HardStops)) +
             (EstablishPreview.SoftGaps.Count == 0 ? "" : "\n" + string.Join("\n", EstablishPreview.SoftGaps));
-        bpaPreviewText.Modulate = EstablishPreview.Accepted ? Colors.White : new Color(1, .45f, .4f);
+        bpaPreviewText.AddThemeColorOverride("font_color", EstablishPreview.Accepted ? TabletopTheme.Ink : TabletopTheme.Alert);
         EstablishButton.Disabled = !EstablishPreview.Accepted || view.Finished;
     }
 }

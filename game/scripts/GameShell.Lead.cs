@@ -8,6 +8,7 @@ public partial class GameShell
 {
     private VBoxContainer boardDetails = null!;
     private Label leadSpeaker = null!, leadWords = null!;
+    private PersonPortrait leadPortrait=null!;
     internal LeadItem? DisplayedLead { get; private set; }
     internal Button LeadOpen { get; private set; } = null!;
     internal Button BoardDetailsToggle { get; private set; } = null!;
@@ -17,14 +18,17 @@ public partial class GameShell
     private void BuildLead(VBoxContainer board)
     {
         var card = new PanelContainer();
-        card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("1b2a32"), ContentMarginLeft = 18,
+        card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 18,
             ContentMarginRight = 18, ContentMarginTop = 18, ContentMarginBottom = 18, CornerRadiusTopLeft = 5,
             CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 });
         board.AddChild(card);
         var body = new VBoxContainer(); body.AddThemeConstantOverride("separation", 16); card.AddChild(body);
-        leadSpeaker = DeskUi.Label(); leadSpeaker.Modulate = new Color("bdd0d6"); body.AddChild(leadSpeaker);
-        leadWords = DeskUi.Label(); leadWords.AddThemeFontSizeOverride("font_size", 24); body.AddChild(leadWords);
+        var sender=new HBoxContainer();body.AddChild(sender);
+        leadPortrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};sender.AddChild(leadPortrait);
+        leadSpeaker = DeskUi.Label();leadSpeaker.SizeFlagsHorizontal=SizeFlags.ExpandFill;leadSpeaker.SizeFlagsVertical=SizeFlags.ShrinkCenter;sender.AddChild(leadSpeaker);
+        leadWords = DeskUi.Label(); leadWords.ThemeTypeVariation="TabletopHeading"; leadWords.AddThemeFontSizeOverride("font_size", 24); body.AddChild(leadWords);
         LeadOpen = DeskUi.Button("Open", OpenLead); LeadOpen.CustomMinimumSize = new Vector2(0, 44); body.AddChild(LeadOpen);
+        LeadOpen.ThemeTypeVariation="TabletopPrimary";
         BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
         BoardDetailsToggle.Toggled += open => boardDetails.Visible = open;
         board.AddChild(BoardDetailsToggle);
@@ -34,6 +38,7 @@ public partial class GameShell
     private void RefreshLead(SessionView? view, MorningBoardView? board)
     {
         DisplayedLead = board?.Lead;
+        leadPortrait.Visible=DisplayedLead?.Person is not null;if(leadPortrait.Visible)leadPortrait.SetPerson(DisplayedLead!.Person);
         leadSpeaker.Text = DisplayedLead?.Person?.WithUnit ?? ""; leadSpeaker.Visible = leadSpeaker.Text.Length > 0;
         leadWords.Text = DisplayedLead?.Text ?? (view is null ? "Your deployment has not started." : view.Finished ? "The deployment is complete." : "There is no priority message this morning.");
         LeadOpen.Disabled = DisplayedLead is null || DisplayedLead.LinkKind == BoardLinkKind.None;

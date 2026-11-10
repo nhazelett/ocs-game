@@ -49,6 +49,14 @@ Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios/rules') -Filter 'rule
 
 if (Test-Path -LiteralPath (Join-Path $scenarioOutput.FullName '_stub')) { throw 'Development stub must not ship.' }
 
+# The chosen Tabletop typeface is a runtime dependency, including its redistribution license.
+$fontOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/art-studies/fonts')
+foreach ($font in @('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bold.ttf', 'Atkinson-OFL.txt')) {
+    Copy-Item -LiteralPath (Join-Path $repoRoot "assets/art-studies/fonts/$font") -Destination $fontOutput.FullName
+}
+$portraitOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/portraits')
+Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/portraits') -Filter '*.svg' -File | Copy-Item -Destination $portraitOutput.FullName
+
 # Launch from outside both the checkout and build folder, so cwd-dependent data loading cannot pass.
 # Release templates disallow scene-path overrides; the flag checks the actual main scene instead.
 $smokeLog = Join-Path ([IO.Path]::GetTempPath()) ("los-export-" + [guid]::NewGuid().ToString('N') + '.log')

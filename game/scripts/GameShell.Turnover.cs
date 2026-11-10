@@ -10,6 +10,7 @@ public partial class GameShell
     private Label turnoverSpeaker = null!, turnoverWords = null!;
     private ScrollContainer turnoverScroll = null!;
     private int turnoverIndex;
+    private PersonPortrait turnoverPortrait=null!;
     internal TurnoverView? DisplayedTurnover { get; private set; }
     internal TurnoverSectionKind? CurrentTurnoverSection => DisplayedTurnover?.Sections[turnoverIndex].Kind;
     internal Button TurnoverNext { get; private set; } = null!;
@@ -20,7 +21,7 @@ public partial class GameShell
     private Control BuildOpeningSurface()
     {
         openingSurface = new PanelContainer { Name = "Opening", ZIndex = 10 };
-        openingSurface.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("111f29"),
+        openingSurface.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("e9e3d8"),
             ContentMarginLeft = 70, ContentMarginRight = 70, ContentMarginTop = 70, ContentMarginBottom = 50 });
         AddChild(openingSurface); openingSurface.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var pages = new Control(); openingSurface.AddChild(pages); return pages;
@@ -32,7 +33,7 @@ public partial class GameShell
         turnoverPage.AddThemeConstantOverride("separation", 24); pages.AddChild(turnoverPage);
         turnoverPage.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var sender = new HBoxContainer(); sender.AddThemeConstantOverride("separation", 20); turnoverPage.AddChild(sender);
-        sender.AddChild(new PersonPortrait { SizeFlagsVertical = SizeFlags.ShrinkBegin });
+        turnoverPortrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};sender.AddChild(turnoverPortrait);
         turnoverSpeaker = DeskUi.Label(); turnoverSpeaker.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         turnoverSpeaker.SizeFlagsVertical = SizeFlags.ShrinkCenter; turnoverSpeaker.AddThemeFontSizeOverride("font_size", 22);
         sender.AddChild(turnoverSpeaker);
@@ -59,6 +60,7 @@ public partial class GameShell
     private void RenderTurnover()
     {
         if (DisplayedTurnover is not { } handover) return;
+        turnoverPortrait.SetPerson(handover.From);
         turnoverSpeaker.Text = handover.From?.WithUnit ?? "The outgoing contracting officer";
         var paragraphs = new List<string?>();
         if (turnoverIndex == 0)

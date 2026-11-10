@@ -24,11 +24,14 @@ public partial class GameShell
     {
         DeskUi.Clear(prepPanel); PrepChoices.Clear();
         if (session.Prep is not { } prep) return;
-        prepPanel.AddChild(DeskUi.Label(prep.From?.WithUnit ?? "Before you leave"));
+        var sender=new HBoxContainer();prepPanel.AddChild(sender);
+        if(prep.From is not null){var portrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};portrait.SetPerson(prep.From);sender.AddChild(portrait);}
+        var name=DeskUi.Label(prep.From?.WithUnit ?? "Before you leave");name.SizeFlagsHorizontal=SizeFlags.ExpandFill;name.SizeFlagsVertical=SizeFlags.ShrinkCenter;sender.AddChild(name);
         var intro = DeskUi.Label(prep.Intro ?? $"You have {prep.BudgetDays} days before you leave. Choose what you want to put in place before you go.");
         intro.AddThemeFontSizeOverride("font_size", 22); prepPanel.AddChild(intro);
         prepCheckLabel = DeskUi.Label(); prepPanel.AddChild(prepCheckLabel);
         StartGameButton = DeskUi.Button("I'm ready to leave", StartPreparedGame);
+        StartGameButton.ThemeTypeVariation="TabletopPrimary";
         var scroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
         var choices = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
         choices.AddThemeConstantOverride("separation", 12);
@@ -52,7 +55,7 @@ public partial class GameShell
     {
         var check = session.CheckPrep(ChosenPrep);
         prepCheckLabel.Text = $"You've planned {check.UsedDays} of your {check.BudgetDays} days." + (check.Accepted ? " You can leave days unused." : "\n" + string.Join("\n", check.Stops));
-        prepCheckLabel.Modulate = check.Accepted ? Colors.White : new Color(1, .45f, .4f);
+        prepCheckLabel.AddThemeColorOverride("font_color", check.Accepted ? TabletopTheme.Ink : TabletopTheme.Alert);
         StartGameButton.Disabled = !check.Accepted;
     }
 
