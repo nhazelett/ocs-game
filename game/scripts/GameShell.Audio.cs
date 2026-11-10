@@ -31,16 +31,6 @@ public partial class GameShell
         var volumeLabel = DeskUi.Label(); column.AddChild(volumeLabel);
         SoundVolume = new HSlider { MinValue = 0, MaxValue = 100, Step = 1, Value = Sound.Volume * 100,
             CustomMinimumSize = new Vector2(480, 40), FocusMode = FocusModeEnum.All, TooltipText = "Sound volume" };
-        using var track = new StyleBoxFlat { BgColor = new Color("b8b0a0"), ContentMarginTop = 4, ContentMarginBottom = 4 };
-        track.SetCornerRadiusAll(4); SoundVolume.AddThemeStyleboxOverride("slider", track);
-        using var fill = new StyleBoxFlat { BgColor = new Color("536c5a"), ContentMarginTop = 4, ContentMarginBottom = 4 };
-        fill.SetCornerRadiusAll(4); SoundVolume.AddThemeStyleboxOverride("grabber_area", fill);
-        SoundVolume.AddThemeStyleboxOverride("grabber_area_highlight", fill);
-        using var knob = Image.CreateEmpty(18, 18, false, Image.Format.Rgba8); knob.Fill(Colors.Transparent);
-        for (var y = 0; y < 18; y++) for (var x = 0; x < 18; x++)
-            if (new Vector2(x - 8.5f, y - 8.5f).Length() <= 8) knob.SetPixel(x, y, new Color("536c5a"));
-        using var knobTexture = ImageTexture.CreateFromImage(knob);
-        SoundVolume.AddThemeIconOverride("grabber", knobTexture); SoundVolume.AddThemeIconOverride("grabber_highlight", knobTexture);
         column.AddChild(SoundVolume);
         var saved = DeskUi.Label("Settings are remembered on this computer."); column.AddChild(saved);
         void Change()

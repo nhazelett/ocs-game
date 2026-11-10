@@ -13,7 +13,7 @@ internal sealed record ArtStudyStyle(string Name, string Subtitle, string Backgr
 
     internal static Font LoadFont(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "assets", "art-studies", "fonts", name));
+        var path = Path.Combine(GamePaths.AssetRoot, "art-studies", "fonts", name);
         var font = new FontFile();
         if (font.LoadDynamicFont(path) != Error.Ok) throw new IOException($"Art study font could not load: {name}");
         return name == "Bitter.ttf" ? new FontVariation { BaseFont = font, VariationEmbolden = 1,

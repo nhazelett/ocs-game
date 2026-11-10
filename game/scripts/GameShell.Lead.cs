@@ -18,7 +18,7 @@ public partial class GameShell
     private void BuildLead(VBoxContainer board)
     {
         var card = new PanelContainer();
-        card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 18,
+        card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = TabletopTheme.Paper, ContentMarginLeft = 18,
             ContentMarginRight = 18, ContentMarginTop = 18, ContentMarginBottom = 18, CornerRadiusTopLeft = 5,
             CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 });
         board.AddChild(card);

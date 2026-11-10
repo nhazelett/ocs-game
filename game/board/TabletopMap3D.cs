@@ -36,7 +36,7 @@ public partial class TabletopMap3D:Control
         var holder=new SubViewportContainer{Stretch=true,MouseFilter=MouseFilterEnum.Ignore};AddChild(holder);holder.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var viewport=new SubViewport{OwnWorld3D=true,Size=new Vector2I((int)Size.X,(int)Size.Y),Msaa3D=Viewport.Msaa.Msaa4X,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};holder.AddChild(viewport);
         world=new Node3D();viewport.AddChild(world);
-        using var environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color("8eafb2"),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f};
+        using var environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color(TabletopTheme.Style.Water),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f};
         world.AddChild(new WorldEnvironment{Environment=environment});
         world.AddChild(new DirectionalLight3D{RotationDegrees=new Vector3(-52,-28,0),LightColor=new Color("fff0d1"),LightEnergy=.65f,ShadowEnabled=true});
         Mesh(new PlaneMesh{Size=new Vector2(100,100)},new Vector3(0,-.15f,0),"8eafb2",true);
@@ -246,11 +246,26 @@ public partial class TabletopMap3D:Control
         st.GenerateNormals();return st.Commit();
     }
     private void Box(Vector3 point,Vector3 size,string color)=>Mesh(new BoxMesh{Size=size},point,color);
+    private static Color LookColor(string color)
+    {
+        if(TabletopTheme.Direction==2)return new Color(color);
+        var style=TabletopTheme.Style;
+        return color switch
+        {
+            "8eafb2" => new Color(style.Water),
+            "c0a479" => new Color(style.Land).Darkened(.16f),
+            "9ba487" => new Color(style.Land),
+            "9f4937" => TabletopTheme.Alert,
+            "556e65" => TabletopTheme.Moss,
+            "e2e4d0" => TabletopTheme.Muted,
+            _ => new Color(color)
+        };
+    }
     private MeshInstance3D Mesh(Godot.Mesh mesh,Vector3 point,string color,bool unshaded=false,Node3D? parent=null)
     {
         using(mesh)
         {
-            using var material=new StandardMaterial3D{AlbedoColor=new Color(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
+            using var material=new StandardMaterial3D{AlbedoColor=LookColor(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
             var result=new MeshInstance3D{Mesh=mesh,Position=point,MaterialOverride=material};(parent??world).AddChild(result);return result;
         }
     }
