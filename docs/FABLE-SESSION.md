@@ -46,3 +46,6 @@ Only design or priority questions go to Nick (DISSENT.md section 6). Add the que
 - .NET 8 SDK: `curl -sSL -o /tmp/dotnet-install.sh https://dot.net/v1/dotnet-install.sh && bash /tmp/dotnet-install.sh --channel 8.0 --install-dir /opt/dotnet`, then `export PATH=/opt/dotnet:$PATH`.
 - Python checks need `pip install --break-system-packages jsonschema pyyaml`.
 - Commit messages end with the attribution lines the session provides.
+
+## Suno (music and sound), Nick, 10 Nov 2026
+Nick has connected Suno to both agents and leaves it to us whether the game gets music; it also makes sound effects and loops. His limit: at most 100 generation credits per run; ask him before spending more. Downloading a file costs a separate download credit and needs his say-so (FOR-NICK). Every Suno file committed gets a PROVENANCE row: generated, Suno, the model, the prompt, the clip id. Instrumental only, no vocals, no artist or song names in prompts. Nothing a real unit or nation would recognize as theirs.
