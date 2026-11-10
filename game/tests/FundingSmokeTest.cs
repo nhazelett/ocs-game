@@ -33,12 +33,11 @@ public partial class FundingSmokeTest : Node
                     Require(row.Text.Contains($"planned day {line.PlannedAvailableDay}, now day {line.AvailableDay}") == late, "Delayed release dates bind to Sim and appear only after the delay.");
                     lateSeen |= late;
                 }
-                foreach (var option in shell.CurrentActionEditor!.Funding)
+                foreach (var option in shell.CurrentAwardChoices!.Funding)
                 {
                     var index = Index(shell.FundingInput, option.Id);
-                    Require(shell.FundingInput.IsItemDisabled(index) == (!option.UsableToday || !option.PaysForThis), "Funding disabled state follows the current view.");
-                    if (!option.UsableToday)
-                        Require(shell.FundingInput.GetItemTooltip(index).Contains(view.Day < option.AvailableDay ? $"Available day {option.AvailableDay}" : $"Expired after day {option.ExpiresDay}"), "Unusable line explains release or expiry.");
+                    Require(shell.FundingInput.IsItemDisabled(index) == !option.Available, "Funding disabled state follows the current choice view.");
+                    Require(shell.FundingInput.GetItemTooltip(index)==(option.Reason??""), "Unusable line explains release or expiry with the Sim's exact sentence.");
                 }
                 foreach (var item in view.MorningBoard().Items.Where(i => i.LinkKind == BoardLinkKind.Funding))
                 {
@@ -65,8 +64,8 @@ public partial class FundingSmokeTest : Node
                 Require(shell.Session.StateHash == hash, "Reading and following funding notices is pure.");
                 if (view.Day == 77)
                 {
-                    Require(Enumerable.Range(0, shell.FundingInput.ItemCount).All(shell.FundingInput.IsItemDisabled), "Both expired and unreleased lines are disabled during the lapse.");
-                    Require(!shell.AwardPreview!.Accepted && shell.AwardButton.Disabled, "No-funds window blocks Award using Sim's preview.");
+                    Require(Enumerable.Range(1, shell.FundingInput.ItemCount-1).All(shell.FundingInput.IsItemDisabled), "Both expired and unreleased lines are disabled during the lapse.");
+                    Require(shell.PendingAward is null && shell.AwardButton.Disabled && !string.IsNullOrEmpty(shell.AwardChoiceNotice), "Expired funding is cleared and explained before Preview.");
                 }
                 if (view.Finished) break;
                 Step(shell); expected.AdvanceDay();
@@ -91,8 +90,8 @@ public partial class FundingSmokeTest : Node
             var purposeView = purposeShell.CurrentActionEditor!;
             Require(purposeView.CapabilityId == "power" && !purposeView.Funding.Single(f => f.Id == "om1").PaysForThis, "Power editor uses a real wrong-purpose fixture.");
             var wrong = Index(purposeShell.FundingInput, "om1");
-            Require(purposeShell.FundingInput.IsItemDisabled(wrong) && purposeShell.FundingInput.GetItemTooltip(wrong).Contains("Certified for fuel only"), "Wrong-purpose line is greyed with its purpose reason even while usable.");
-            Require(purposeShell.AwardButton.Disabled, "All unavailable funding leaves a Sim hard stop.");
+            Require(purposeShell.FundingInput.IsItemDisabled(wrong) && purposeShell.FundingInput.GetItemTooltip(wrong)==purposeShell.CurrentAwardChoices!.Funding.Single(f=>f.Id=="om1").Reason, "Wrong-purpose line is greyed with its purpose reason even while usable.");
+            Require(purposeShell.AwardButton.Disabled && purposeShell.PendingAward is null, "All unavailable funding is explained before an award preview.");
             var purposeLedger = purposeShell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
             Require(purposeLedger.GetChildren().OfType<Label>().Any(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == "om1" && l.Text.Contains("Purpose: fuel")), "Ledger shows the restricted purpose.");
             var before = purposeShell.Session.StateHash;
