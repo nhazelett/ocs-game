@@ -8,7 +8,7 @@ Expected look of this build and why: unchanged from main 544f03f (backlog text o
 
 ## Changed
 
-- backlog/BACKLOG.md: status line update; M2R-38, M2R-39, ART-01, ART-02 and ART-03 marked Done (merged); ART-07 points at PR 155.
+- backlog/BACKLOG.md: status line update; M2R-38, ART-01, ART-02 and ART-03 marked Done (merged); M2R-39 reopened (the exit crash recurred on this PR's own CI, SupportSmokeTest); ART-07 points at PR 155.
 
 ## Why
 
