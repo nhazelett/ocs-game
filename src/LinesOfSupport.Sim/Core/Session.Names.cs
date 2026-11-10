@@ -1,4 +1,5 @@
 using LinesOfSupport.Sim.Data;
+using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Sim.Core;
 
@@ -108,6 +109,23 @@ public sealed partial class Session
     /// <summary>Capitalizes each sentence's first letter, so a name that starts lower case ("the external contract's power")
     /// does not start a sentence that way (M2R-27).</summary>
     internal static string SentenceCase(string text) => SentenceStart.Replace(text, m => m.Groups[1].Value + char.ToUpperInvariant(m.Groups[2].Value[0]));
+
+    /// <summary>A preview as the player reads it: every hard stop and soft gap starts with a capital, so a sentence that opens
+    /// on a name written to read mid-sentence ("the partner force", "the O&amp;M line from day 76") reads as a sentence (M2R-40).</summary>
+    internal static ActionPreview Said(ActionPreview p) =>
+        p with { HardStops = [.. p.HardStops.Select(SentenceCase)], SoftGaps = [.. p.SoftGaps.Select(SentenceCase)] };
+
+    internal static TransitionPreview Said(TransitionPreview p) =>
+        p with { HardStops = [.. p.HardStops.Select(SentenceCase)], SoftGaps = [.. p.SoftGaps.Select(SentenceCase)] };
+
+    /// <summary>The award editor's reasons, each starting with a capital (M2R-40).</summary>
+    internal static AwardChoicesView? Said(AwardChoicesView? c)
+    {
+        if (c is null) return null;
+        static IReadOnlyList<ChoiceOption> Cased(IReadOnlyList<ChoiceOption> xs) =>
+            [.. xs.Select(o => o.Reason is { } r ? o with { Reason = SentenceCase(r) } : o)];
+        return c with { Instruments = Cased(c.Instruments), Vendors = Cased(c.Vendors), Vehicles = Cased(c.Vehicles), Funding = Cased(c.Funding) };
+    }
 
     internal static string Plural(long n, string noun) => n == 1 ? $"1 {noun}" : $"{n} {noun}s";
     internal static string Plural(long? n, string noun) => n is { } v ? Plural(v, noun) : $"{noun}s";

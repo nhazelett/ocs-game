@@ -23,7 +23,7 @@ public sealed partial class Session
         if (!Rules.Instruments.TryGetValue("bpaEstablish", out var inst)) return (["bpaEstablish is not in the rules"], null, null);
         if (string.IsNullOrWhiteSpace(e.Id)) stops.Add("a BPA needs an id");
         else if (_vehicles.Any(v => v.Id == e.Id) || _work.Any(w => w.CompletedDay is null && EstablishingId(w.Payload) == e.Id))
-            stops.Add($"id {NameOf(e.Id)} is already used");
+            stops.Add($"{Upper(NameOf(e.Id))} already exists");
         var vendor = VendorData(e.Vendor);
         if (vendor is null) return ([.. stops, $"vendor {e.Vendor} does not exist"], inst, null);
         if (!_capData.ContainsKey(e.Capability)) return ([.. stops, $"capability {e.Capability} does not exist"], inst, vendor);
@@ -114,7 +114,7 @@ public sealed partial class Session
         if (!Rules.Instruments.TryGetValue("idiqEstablish", out var inst)) return (["idiqEstablish is not in the rules"], null, null);
         if (string.IsNullOrWhiteSpace(e.Id)) stops.Add("an IDIQ needs an id");
         else if (_vehicles.Any(v => v.Id == e.Id) || _work.Any(w => w.CompletedDay is null && EstablishingId(w.Payload) == e.Id))
-            stops.Add($"id {NameOf(e.Id)} is already used");
+            stops.Add($"{Upper(NameOf(e.Id))} already exists");
         var vendor = VendorData(e.Vendor);
         if (vendor is null) return ([.. stops, $"vendor {e.Vendor} does not exist"], inst, null);
         if (!_capData.ContainsKey(e.Capability)) return ([.. stops, $"capability {e.Capability} does not exist"], inst, vendor);

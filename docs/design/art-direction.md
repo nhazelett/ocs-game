@@ -25,3 +25,6 @@ Codex builds three clearly different directions as the same screen: the day 11 m
 
 ## Nick, 9 Nov 2026 evening
 He saw the three ART-01 directions. Keep all three and let the player choose (ART-07), but it is "not a hot requirement": a much larger visual overhaul is intended later, so nothing in ART should be gold-plated. Fixing how the game plays (M2R-36) comes before more art.
+
+## Suno (music and sound), Nick, 10 Nov 2026
+Nick has connected Suno to both agents and leaves it to us whether the game gets music; it also makes sound effects and loops. His limit: at most 100 generation credits per run; ask him before spending more. Downloading a file costs a separate download credit and needs his say-so (FOR-NICK). Every Suno file committed gets a PROVENANCE row: generated, Suno, the model, the prompt, the clip id. Instrumental only, no vocals, no artist or song names in prompts. Nothing a real unit or nation would recognize as theirs.

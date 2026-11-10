@@ -109,7 +109,7 @@ public class ExternalSupportTests
         Assert.Contains(Stops(Request() with { Id = "" }), h => h.Contains("needs an id"));
         // Spoke B (30 days) has no external support contract in theater.
         var none = Session.Create(Repo.Load("spoke-b"), 1);
-        Assert.Contains(none.View.PreviewExternalSupport(Request()).HardStops, h => h.Contains("no external support contract"));
+        Assert.Contains(none.View.PreviewExternalSupport(Request()).HardStops, h => h.Contains("No external support contract"));
         // Preview and refused applies leave the game unchanged but for the Rejected record.
         Assert.Equal(hash, s.StateHash());
         var result = s.Apply(Request(days: 30));
@@ -117,7 +117,7 @@ public class ExternalSupportTests
         Assert.Equal(Stops(Request(days: 30)), result.HardStops);
         Assert.Empty(s.View.ExternalSupportRequests());
         Assert.True(s.Apply(Request()).Accepted);
-        Assert.Contains(s.View.PreviewExternalSupport(Request()).HardStops, h => h.Contains("already used"));
+        Assert.Contains(s.View.PreviewExternalSupport(Request()).HardStops, h => h.Contains("already exists"));
         // Capacity is shared across requests.
         Assert.Contains(s.View.PreviewExternalSupport(Request("ext2", qty: 1600)).HardStops, h => h.Contains("470 is already requested"));
     }

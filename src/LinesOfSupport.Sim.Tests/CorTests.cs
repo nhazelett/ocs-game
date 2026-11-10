@@ -135,7 +135,7 @@ public class CorTests
 
         var fresh = Session.Create(bundle, 1);
         var award = (AwardAction)InputLog.Load(Golden("approach1-as-written.json")).Actions[0];
-        Assert.Contains("this scenario has no COR roster", fresh.View.Preview(award).HardStops);
+        Assert.Contains("This scenario has no COR roster", fresh.View.Preview(award).HardStops);
     }
 
     [Fact]
@@ -189,7 +189,7 @@ public class CorTests
             Id = "cash", Instrument = "sf44", Vendor = "vendorA", Site = "spokeBSite", Capability = "power",
             Lines = ["generation"], Quantity = 10, DurationDays = 3, Cor = "corReyes",
         };
-        Assert.Contains(s.View.Preview(cash).HardStops, h => h.StartsWith("a COR is designated only on a contract with written terms"));
+        Assert.Contains(s.View.Preview(cash).HardStops, h => h.StartsWith("A COR is designated only on a contract with written terms"));
     }
 
     [Fact]

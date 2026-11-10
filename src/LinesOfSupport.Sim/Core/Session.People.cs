@@ -150,7 +150,7 @@ public sealed partial class Session
         {
             if (string.IsNullOrWhiteSpace(j.Id)) stops.Add("a request needs an id");
             else if (IdInUse(j.Id) || _work.Any(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "j4" } p && p.Target == j.Id))
-                stops.Add($"id {j.Id} is already used");
+                stops.Add("This request to the J4 has already been made");
         }
         if (!Scenario.Sites.Any(s => s.Id == j.Site)) { stops.Add("no such site"); return stops; }
         if (!_capData.ContainsKey(j.Capability)) { stops.Add("no such capability"); return stops; }

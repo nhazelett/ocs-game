@@ -7,3 +7,6 @@
 *.blend filter=lfs diff=lfs merge=lfs -text
 # Handoff screenshots are plain files so reviewers without LFS can open them (docs/design/opening-and-guidance.md 9)
 docs/handoffs/images/*.png -filter -diff -merge text=unset
+
+# Short original cues ship directly; each is under 30 KB.
+assets/audio/*.wav -filter -diff -merge -text

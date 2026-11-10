@@ -101,8 +101,8 @@ public class FundingTests
         Assert.True(s.View.Preview(PowerPo()).Accepted, string.Join("; ", s.View.Preview(PowerPo()).HardStops));
         Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("is not usable on day 1"));
         PlayTo(s, 77);
-        Assert.Contains(s.View.Preview(PowerPo()).HardStops, h => h.Contains("the O&M line good through day 75 is not usable on day 77"));
-        Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("the O&M line from day 76 is not usable on day 77"));
+        Assert.Contains(s.View.Preview(PowerPo()).HardStops, h => h.Contains("The O&M line good through day 75 is not usable on day 77"));
+        Assert.Contains(s.View.Preview(PowerPo("om2")).HardStops, h => h.Contains("The O&M line from day 76 is not usable on day 77"));
         Assert.False(s.Apply(PowerPo()).Accepted);
         var option = s.View.ActionEditor("spokeBSite", "power")!.Funding.Single(f => f.Id == "om2");
         Assert.False(option.UsableToday);
