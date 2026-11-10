@@ -25,7 +25,7 @@ public sealed partial class Session
         {
             // The vendor's own reason first (it explains every greyed entry at once), then what the shop lacks today,
             // then what this vendor and this instrument lack together.
-            var reason = (vendor is null ? null : VendorReason(vendor, capId, lines))
+            var reason = (vendor is null ? null : VendorReason(vendor, siteId, capId, lines))
                          ?? (InstrumentUnavailable(kv.Key) is { } why ? Sentence(why) : null)
                          ?? (vendor is null ? null : PairReason(vendor, kv.Key, siteId, capId, lines));
             return new ChoiceOption(kv.Key, kv.Value.Label, reason is null, reason);
@@ -33,7 +33,7 @@ public sealed partial class Session
 
         var vendors = offering.Select(v =>
         {
-            var reason = VendorReason(v, capId, lines) ?? (instId is null ? null : PairReason(v, instId, siteId, capId, lines));
+            var reason = VendorReason(v, siteId, capId, lines) ?? (instId is null ? null : PairReason(v, instId, siteId, capId, lines));
             return new ChoiceOption(v.Id, v.Name, reason is null, reason);
         }).ToList();
 
@@ -57,7 +57,7 @@ public sealed partial class Session
     }
 
     /// <summary>Why this vendor cannot be bought from at all today, whatever the instrument; null when it can.</summary>
-    private string? VendorReason(VendorData v, string capId, List<string> lines)
+    private string? VendorReason(VendorData v, string siteId, string capId, List<string> lines)
     {
         if (v.VehicleOnly && !_vehicles.Any(x => x.Vendor == v.Id && x.VisibleOnDay1))
         {
@@ -65,7 +65,7 @@ public sealed partial class Session
             return via == AcsaInstrument
                 ? $"{Capitalize(v.Name)} supplies under the ACSA. That is the J4's to arrange, not a purchase by this office."
                 : via == HostNationInstrumentId
-                    ? $"{v.Name} is host nation support. It is requested under the host nation agreement, not bought with cash, the card or a contract."
+                    ? HostNationVendorReason(v, siteId, capId)
                     : $"{v.Name} is reached only through an agreement this office does not hold.";
         }
         if (_standing.TryGetValue(v.Id, out var standing) && standing.DeclinesWork)
@@ -76,10 +76,24 @@ public sealed partial class Session
         return null;
     }
 
+    /// <summary>
+    /// Why a host nation vendor is not a purchase (M2R-37). Only points at a host nation request when the scenario has an
+    /// agreement that covers this capability and it has not been withdrawn; otherwise it says the support came with the
+    /// force and this office cannot add to it, so the reason never names a door the player does not have.
+    /// </summary>
+    private string HostNationVendorReason(VendorData v, string siteId, string capId)
+    {
+        var covered = Agreement is { } hn && hn.Capacity.TryGetValue(capId, out var capacity) && capacity > 0 && !HnWithdrawn(capId)
+                      && (hn.Sites.Count == 0 || hn.Sites.Contains(siteId));
+        return covered
+            ? $"{v.Name} is asked for with a host nation request under the agreement, not bought with cash, the card or a contract."
+            : $"{v.Name} supports the force under an agreement made before you arrived. This office cannot buy from it or add to that support.";
+    }
+
     /// <summary>Why this vendor and this instrument do not go together today; null when they do. Includes the vendor's own reason.</summary>
     private string? PairReason(VendorData v, string instId, string siteId, string capId, List<string> lines)
     {
-        if (VendorReason(v, capId, lines) is { } own) return own;
+        if (VendorReason(v, siteId, capId, lines) is { } own) return own;
         switch (instId)
         {
             case "sf44" when !v.AcceptsCash: return $"{v.Name} does not take cash.";

@@ -11,10 +11,24 @@ public class AwardChoicesTests
         var s = Session.Create(Repo.Load("spoke-b"), 1);
         var c = s.View.AwardChoices("spokeBSite", "lodging", vendorId: "hubUtilities")!;
         Assert.All(c.Instruments, i => Assert.False(i.Available));
-        Assert.All(c.Instruments, i => Assert.Contains("host nation support", i.Reason));
+        Assert.All(c.Instruments, i => Assert.Contains("agreement made before you arrived", i.Reason));
         var hn = s.View.AwardChoices("spokeBSite", "lodging")!.Vendors.Single(v => v.Id == "hubUtilities");
         Assert.False(hn.Available);
-        Assert.Equal("Main Island Utilities (host nation) is host nation support. It is requested under the host nation agreement, not bought with cash, the card or a contract.", hn.Reason);
+        // Spoke B has no host nation agreement this office can add to (M2R-37): the reason does not point at a request.
+        Assert.Equal("Main Island Utilities (host nation) supports the force under an agreement made before you arrived. This office cannot buy from it or add to that support.", hn.Reason);
+    }
+
+    [Fact]
+    public void Host_nation_reason_names_a_request_only_where_the_agreement_covers_it()
+    {
+        // Sustainment's agreement covers water and fuel, not power (M2R-37).
+        var s = Session.Create(Repo.Load("sustainment"), 1);
+        var fuel = s.View.AwardChoices("hubSite", "fuel")!.Vendors.Single(v => v.Id == "hubUtilities");
+        Assert.False(fuel.Available);
+        Assert.Equal("Main Island Utilities (host nation) is asked for with a host nation request under the agreement, not bought with cash, the card or a contract.", fuel.Reason);
+        var power = s.View.AwardChoices("hubSite", "power")!.Vendors.Single(v => v.Id == "hubUtilities");
+        Assert.Contains("agreement made before you arrived", power.Reason);
+        Assert.DoesNotContain("request", power.Reason);
     }
 
     [Fact]
