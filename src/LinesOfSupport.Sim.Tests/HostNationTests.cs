@@ -109,8 +109,8 @@ public class HostNationTests
         Assert.Contains(Stops(Request(site: "hubSite")), h => h.Contains("does not cover"));
         Assert.Contains(Stops(Request(line: "om2")), h => h.Contains("not usable on day 1"));
         Assert.Contains(Stops(Request(line: null)), h => h.Contains("needs a funding line"));
-        Assert.Contains(Stops(Request(days: 0)), h => h.Contains("duration must be positive"));
-        Assert.Contains(Session.Create(Repo.Load("spoke-b-90"), 1).View.PreviewHostNation(Request()).HardStops, h => h.Contains("no host nation support agreement"));
+        Assert.Contains(Stops(Request(days: 0)), h => h.Contains("Duration must be positive"));
+        Assert.Contains(Session.Create(Repo.Load("spoke-b-90"), 1).View.PreviewHostNation(Request()).HardStops, h => h.Contains("No host nation support agreement"));
         Assert.Equal(hash, s.StateHash());
         var refused = s.Apply(Request(qty: 1600));
         Assert.False(refused.Accepted);
@@ -118,7 +118,7 @@ public class HostNationTests
         // Capacity is shared by requests on the same days, including ones still in shop work.
         Assert.True(s.Apply(Request()).Accepted);
         Assert.Contains(Stops(Request("second", qty: 400)), h => h.Contains("1170 is already requested"));
-        Assert.Contains(Stops(Request()), h => h.Contains("already used"));
+        Assert.Contains(Stops(Request()), h => h.Contains("already exists"));
         Assert.True(s.View.PreviewHostNation(Request("second", qty: 330)).Accepted);
     }
 

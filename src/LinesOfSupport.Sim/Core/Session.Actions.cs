@@ -45,6 +45,8 @@ public sealed partial class Session
             ReviewFilesAction r => ApplyReviewFiles(r),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
+        // Hard stops read as the preview gives them (M2R-40); Message, which the Rejected record carries, is unchanged.
+        if (!result.Accepted) result = result with { HardStops = [.. result.HardStops.Select(SentenceCase)] };
         _applied.Add(action);
         _appliedRejected.Add(!result.Accepted);
         if (!result.Accepted)
@@ -139,7 +141,7 @@ public sealed partial class Session
         var stops = new List<string>();
         if (string.IsNullOrWhiteSpace(a.Id)) stops.Add("an award needs an id");
         else if (_arrangements.Any(x => x.Id == a.Id) || _work.Any(w => w.Payload is AwardPayload p && p.Action.Id == a.Id))
-            stops.Add($"id {NameOf(a.Id)} is already used");
+            stops.Add($"{Upper(NameOf(a.Id))} already exists");
         if (!Rules.Instruments.TryGetValue(a.Instrument, out var inst)) return AwardCheck.Fail($"instrument {a.Instrument} is not in the rules");
         if (!AwardableInM0.Contains(a.Instrument)) return AwardCheck.Fail($"{inst.Label} is not implemented in this build");
 
