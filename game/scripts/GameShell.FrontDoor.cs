@@ -35,6 +35,7 @@ public partial class GameShell
         frontMessage.CustomMinimumSize = new Vector2(500, 0); column.AddChild(frontMessage);
         frontChoices = new VBoxContainer(); frontChoices.AddThemeConstantOverride("separation", 12); column.AddChild(frontChoices);
         DeveloperWorkspaceButton = FrontButton("Open developer workspace", ShowGameSurface); column.AddChild(DeveloperWorkspaceButton);
+        BuildSoundControls(column);
         ArtStudiesButton = FrontButton("ART-01 · compare art directions", () =>
         {
             var study = new Art.ArtDirections { ZIndex = 50 };
