@@ -53,8 +53,9 @@ public partial class GameShell
         foreach (var item in (board?.Items ?? []).Where(i => view.Scenario.Tutorial && i.Person?.Role == "outgoingCco"))
         {
             var card = new PanelContainer();
-            card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 16,
-                ContentMarginRight = 16, ContentMarginTop = 14, ContentMarginBottom = 14 });
+            using var cardStyle = new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 16,
+                ContentMarginRight = 16, ContentMarginTop = 14, ContentMarginBottom = 14 };
+            card.AddThemeStyleboxOverride("panel", cardStyle);
             mentorMessages.AddChild(card);
             var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 14); card.AddChild(row);
             var portrait = new PersonPortrait { SizeFlagsVertical = SizeFlags.ShrinkBegin };

@@ -1,0 +1,5 @@
+Project license TBD
+
+These original project audio cues and their generator have no separate license
+selection. Nick will choose the project license before public release, as for
+the other original assets. See assets/PROVENANCE.md for source and authorship.

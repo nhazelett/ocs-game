@@ -57,6 +57,11 @@ foreach ($font in @('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bo
 $portraitOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/portraits')
 Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/portraits') -Filter '*.svg' -File | Copy-Item -Destination $portraitOutput.FullName
 
+# Original short cues and their redistribution grant are runtime files.
+$audioOutput = New-Item -ItemType Directory -Path (Join-Path $output 'assets/audio')
+Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/audio') -File |
+    Copy-Item -Destination $audioOutput.FullName
+
 # Launch from outside both the checkout and build folder, so cwd-dependent data loading cannot pass.
 # Release templates disallow scene-path overrides; the flag checks the actual main scene instead.
 $smokeLog = Join-Path ([IO.Path]::GetTempPath()) ("los-export-" + [guid]::NewGuid().ToString('N') + '.log')
