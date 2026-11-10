@@ -41,6 +41,16 @@ public partial class GameAudio : Node
         ApplyVolume();
     }
 
+    public override void _ExitTree()
+    {
+        foreach (var player in players.Values)
+        {
+            player.Stop();
+            player.Stream = null;
+        }
+        players.Clear();
+    }
+
     internal void ChangeSettings(float volume, bool muted)
     {
         Volume = float.IsFinite(volume) ? Math.Clamp(volume, 0, 1) : .5f;
