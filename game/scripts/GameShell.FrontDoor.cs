@@ -38,6 +38,7 @@ public partial class GameShell
         var skipQuietDays = GetNode<Button>("%Continue");
         skipQuietDays.Reparent(column, false);
         skipQuietDays.ThemeTypeVariation = "TabletopPrimary";
+        skipQuietDays.Alignment = HorizontalAlignment.Left;
         skipQuietDays.CustomMinimumSize = new Vector2(0, 50);
         skipQuietDays.AddThemeFontSizeOverride("font_size", 22);
         BuildSoundControls(column);
@@ -73,7 +74,7 @@ public partial class GameShell
         frontMessage.Text = "Take over the contracting shop. Keep the deployment supported as the days unfold.";
         DeskUi.Clear(frontChoices);
         NewGameButton = FrontButton("New game", ShowNewGames); frontChoices.AddChild(NewGameButton);
-        ContinueGameButton = FrontButton("Continue", () => LoadSavedGame(AutosavePath));
+        ContinueGameButton = FrontButton("Continue saved game", () => LoadSavedGame(AutosavePath));
         ContinueGameButton.Disabled = !File.Exists(AutosavePath); frontChoices.AddChild(ContinueGameButton);
         ContinueGameButton.TooltipText = ContinueGameButton.Disabled ? "A saved deployment will appear here." : "Return to your saved deployment.";
         RefreshDeveloperAccess(); NewGameButton.GrabFocus();
