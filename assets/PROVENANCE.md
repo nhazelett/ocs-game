@@ -55,3 +55,10 @@ Every file under assets/ must have a row here. CI fails without it.
 | assets/portraits/ward.svg | SVG portrait | generated | Codex; original vector character design | tools/art/generate_portraits.py; fictional faceted tabletop cast, no photo references | Project license TBD | 2026-11-09 |
 | assets/portraits/whitfield.svg | SVG portrait | generated | Codex; original vector character design | tools/art/generate_portraits.py; fictional faceted tabletop cast, no photo references | Project license TBD | 2026-11-09 |
 | assets/portraits/README.md | Portrait source notes | authored | Codex | ART-03 original fictional character design and regeneration notes | Project license TBD | 2026-11-09 |
+
+| assets/audio/README.md | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/LICENSE.txt | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/new-day.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/at-the-door.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/support-down.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |
+| assets/audio/award-made.wav | Procedural audio and notes | authored | Codex | tools/audio/generate_cues.py; original sine synthesis, no samples or AI model | MIT; assets/audio/LICENSE.txt | 2026-11-10 |

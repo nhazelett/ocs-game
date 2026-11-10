@@ -12,6 +12,9 @@ internal sealed class GameSessionBridge
     private Session? session;
     private InputLog? log;
     internal SessionView? View => session?.View;
+    internal event Action<SessionView>? DayAdvanced;
+    internal event Action<SessionView>? DeploymentStarted;
+    internal event Action<PlayerAction>? ActionAccepted;
     internal bool IsReplay => log is not null;
     internal PrepView? Prep => bundle is not null && session is null ? PrepScreen.View(bundle) : null;
     internal PrepCheck CheckPrep(IEnumerable<string> picks) => PrepScreen.Check(bundle ?? throw new InvalidOperationException("Load a scenario first."), picks);
@@ -20,7 +23,7 @@ internal sealed class GameSessionBridge
         if (session is null) return ActionResult.Stop("Load a scenario before making a decision.");
         var result = session.Apply(action);
         // A successful player command takes control from the authored input source; the Sim state is retained.
-        if (result.Accepted) log = null;
+        if (result.Accepted) { log = null; ActionAccepted?.Invoke(action); }
         return result;
     }
     internal string? StateHash => session?.StateHash();
@@ -53,6 +56,7 @@ internal sealed class GameSessionBridge
         if (!check.Accepted) throw new InvalidDataException(string.Join("; ", check.Stops));
         session = Session.Create(bundle!, 1, chosen);
         log = null;
+        DeploymentStarted?.Invoke(session.View);
     }
 
     internal void LoadReplay(string path)
@@ -74,6 +78,7 @@ internal sealed class GameSessionBridge
         if (log is not null)
             foreach (var action in log.Actions.Where(a => a.Day == session.Day)) session.Apply(action);
         session.AdvanceDay();
+        DayAdvanced?.Invoke(session.View);
         return true;
     }
 }
