@@ -29,3 +29,7 @@ No new FOR-NICK entry. The earlier PR 146 publication blocker remains recorded l
 ## Next
 
 Fable reviews and merges on its own schedule. The remaining PR 146 artifacts require the already requested owner approval before publication resumes. Once a slot opens, start with the fix pass and the current backlog order; do not restart ART-06 or duplicate the pending artifacts. M2R-38 is proposed in Fable PR 147 and ART-07 remains low priority.
+
+## CI fix pass on PR 149
+
+The initial CI run 42755198972 passed the .NET/scenario/provenance jobs and gameplay assertions through Support, then aborted during Support’s native shutdown (exit 134). Its repeated unsafe ImageTexture and StyleBoxFlat references came from portrait textures and regenerated person cards. PersonPortrait now disposes both read/create texture wrappers after the native control owns them; customer and tutorial person cards likewise dispose their style wrappers after native ownership. Visual content and simulation behavior are unchanged. Game build and the full Support, Portrait, People, GoingToPeople, TabletopTheme and Audio native suites pass after this fix. The earlier paragraph’s no-crash observation applies to the local runs; CI exposed this additional failure and the fix stays on PR 149. Some successful suites still report audio stream/playback ObjectDB warnings, without unsafe-reference errors; do not claim those warnings are eliminated. The updated CI must pass before Fable merges.

@@ -27,9 +27,10 @@ public partial class GameShell
         foreach (var request in requests)
         {
             var card = new PanelContainer();
-            card.AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 14,
+            using var cardStyle = new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 14,
                 ContentMarginRight = 14, ContentMarginTop = 14, ContentMarginBottom = 14, CornerRadiusTopLeft = 5,
-                CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 });
+                CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 };
+            card.AddThemeStyleboxOverride("panel", cardStyle);
             customerMessages.AddChild(card);
             var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 14); card.AddChild(row);
             var portrait = new PersonPortrait { TooltipText = request.Person?.DisplayName ?? "Customer", SizeFlagsVertical = SizeFlags.ShrinkBegin };
