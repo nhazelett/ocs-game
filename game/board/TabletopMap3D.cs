@@ -14,6 +14,8 @@ public partial class TabletopMap3D:Control
     private readonly Dictionary<string,MeshInstance3D> selections=[];
     private readonly List<(Node3D Ship,Node3D Truck,Vector3 From,Vector3 Port,Vector3 To)> runs=[];
     private readonly List<(Label Label,Node3D Node)> movingLabels=[];
+    private readonly List<MeshInstance3D> changeRings=[];
+    internal IReadOnlyList<string> ReportedChangeLabels=>movingLabels.Where(x=>x.Label.HasMeta("reported_change")).Select(x=>x.Label.Text).ToArray();
     private Node3D? motion;
     private string? factKey;
     private IReadOnlyList<CapabilityTile> capabilityTiles=[];
@@ -24,12 +26,13 @@ public partial class TabletopMap3D:Control
     internal Vector2 SitePoint(string id)=>camera.UnprojectPosition(world.ToGlobal(sites[id]+new Vector3(0,.7f,0)));
     internal void Configure(ScenarioBoardData board,IReadOnlyList<CapabilityTile> tiles,IReadOnlyList<MapLink> links,Font font,IReadOnlySet<string>? confidence=null)
     {
-        MouseFilter=MouseFilterEnum.Ignore;ClipContents=true;Theme=new Theme{DefaultFont=font,DefaultFontSize=18};
+        MouseFilter=MouseFilterEnum.Ignore;ClipContents=true;using var theme=new Theme{DefaultFont=font,DefaultFontSize=18};Theme=theme;
         capabilityTiles=tiles;
         var holder=new SubViewportContainer{Stretch=true,MouseFilter=MouseFilterEnum.Ignore};AddChild(holder);holder.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var viewport=new SubViewport{OwnWorld3D=true,Size=new Vector2I((int)Size.X,(int)Size.Y),Msaa3D=Viewport.Msaa.Msaa4X,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};holder.AddChild(viewport);
         world=new Node3D();viewport.AddChild(world);
-        world.AddChild(new WorldEnvironment{Environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color("8eafb2"),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f}});
+        using var environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color("8eafb2"),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f};
+        world.AddChild(new WorldEnvironment{Environment=environment});
         world.AddChild(new DirectionalLight3D{RotationDegrees=new Vector3(-52,-28,0),LightColor=new Color("fff0d1"),LightEnergy=.65f,ShadowEnabled=true});
         Mesh(new PlaneMesh{Size=new Vector2(100,100)},new Vector3(0,-.15f,0),"8eafb2",true);
         var ordered=board.Islands.OrderByDescending(i=>i.IsHub).ToArray();var spokes=ordered.Length-1;
@@ -104,11 +107,11 @@ public partial class TabletopMap3D:Control
     internal void ShowFacts(MapDayView? day,float progress)
     {
         if(day is null)return;
-        var key=day.Day+string.Join(";",day.Runs.Select(r=>r.ToString()))+string.Join(";",day.Held.Select(h=>h.ToString()))+string.Join(";",day.Shipments.Select(s=>s.ToString()));
+        var key=day.Day+string.Join(";",day.Runs.Select(r=>r.ToString()))+string.Join(";",day.Held.Select(h=>h.ToString()))+string.Join(";",day.Shipments.Select(s=>s.ToString()))+string.Join(";",day.Changes.Where(c=>c.Known));
         if(key!=factKey)
         {
             if(motion is not null){world.RemoveChild(motion);motion.QueueFree();}
-            foreach(var item in movingLabels){RemoveChild(item.Label);item.Label.QueueFree();}movingLabels.Clear();runs.Clear();
+            foreach(var item in movingLabels){RemoveChild(item.Label);item.Label.QueueFree();}movingLabels.Clear();runs.Clear();changeRings.Clear();
             motion=new Node3D();world.AddChild(motion);factKey=key;
             foreach(var run in day.Runs)
             {
@@ -128,6 +131,19 @@ public partial class TabletopMap3D:Control
                 var carrier=Vehicle(transit.Mode);carrier.Position=p+new Vector3(-3,.5f,-1);
                 MovingLabel(carrier,transit.CustomsHeld?"Held in customs":$"On its way · due day {transit.ArrivalDay}");
             }
+            foreach(var group in day.Changes.Where(c=>c.Known).GroupBy(c=>c.SiteId))
+            {
+                if(!sites.TryGetValue(group.Key,out var p))continue;
+                var ring=Mesh(new TorusMesh{InnerRadius=1.6f,OuterRadius=1.66f,Rings=32,RingSegments=6},p+Vector3.Up*.81f,group.All(c=>c.Kind=="restored")?"355d48":"9f4937",true,motion);
+                changeRings.Add(ring);
+                var marker=new Node3D{Position=p+Vector3.Up*1.1f};motion.AddChild(marker);
+                MovingLabel(marker,string.Join("\n",group.Select(change=>
+                {
+                    var name=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support";
+                    return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} short · {change.Permille/10m:0.#}%";
+                })));
+                movingLabels[^1].Label.SetMeta("reported_change",true);
+            }
         }
         foreach(var run in runs)
         {
@@ -136,6 +152,7 @@ public partial class TabletopMap3D:Control
             run.Truck.Position=run.Port.Lerp(run.To,Math.Clamp((progress-.72f)/.28f,0,1))+Vector3.Up*.9f;
         }
         foreach(var label in movingLabels)label.Label.Visible=label.Node.Visible;
+        foreach(var ring in changeRings)ring.Scale=Vector3.One*(1+Mathf.Sin(progress*Mathf.Tau*2)*.06f);
     }
     private Node3D Vehicle(string mode)
     {
@@ -151,7 +168,7 @@ public partial class TabletopMap3D:Control
     {
         var label=new Label{Size=new Vector2(260,28),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,MouseFilter=MouseFilterEnum.Ignore,HorizontalAlignment=HorizontalAlignment.Center};
         label.AddThemeFontSizeOverride("font_size",17);label.AddThemeColorOverride("font_color",TabletopTheme.Ink);
-        label.AddThemeStyleboxOverride("normal",new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2});
+        using var labelStyle=new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2};label.AddThemeStyleboxOverride("normal",labelStyle);
         AddChild(label);movingLabels.Add((label,node));
     }
     private void Caption(string text,Vector3 point,Vector2 offset,float width,int size,Color color)
@@ -186,7 +203,10 @@ public partial class TabletopMap3D:Control
     private void Box(Vector3 point,Vector3 size,string color)=>Mesh(new BoxMesh{Size=size},point,color);
     private MeshInstance3D Mesh(Godot.Mesh mesh,Vector3 point,string color,bool unshaded=false,Node3D? parent=null)
     {
-        var material=new StandardMaterial3D{AlbedoColor=new Color(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
-        var result=new MeshInstance3D{Mesh=mesh,Position=point,MaterialOverride=material};(parent??world).AddChild(result);return result;
+        using(mesh)
+        {
+            using var material=new StandardMaterial3D{AlbedoColor=new Color(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
+            var result=new MeshInstance3D{Mesh=mesh,Position=point,MaterialOverride=material};(parent??world).AddChild(result);return result;
+        }
     }
 }

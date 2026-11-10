@@ -32,6 +32,7 @@ public partial class GameShell : Control
         BuildSaveControls();
         BuildMapControls();
         BuildFrontDoor();
+        BuildDayPlayback();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -67,6 +68,7 @@ public partial class GameShell : Control
 
     private void LoadScenario(long index)
     {
+        FinishDayPlayback();
         ResetDeskSelection();
         saveError = null;
         session.Clear();
@@ -92,14 +94,16 @@ public partial class GameShell : Control
 
     private void OnNextDay()
     {
-        if (ReadingTurnover) return;
+        if (ReadingTurnover || PlayingDay) return;
         var advanced = AdvanceAndAutosave();
         if (advanced && session.View?.Finished == false) FocusNewMorning();
         RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.", developerOnly: advanced);
+        if (advanced) BeginDayPlayback();
     }
 
     private void OnReplay()
     {
+        FinishDayPlayback();
         var index = GetNode<OptionButton>("%ReplayPicker").Selected;
         if (index < 0 || index >= replays.Length) return;
         try

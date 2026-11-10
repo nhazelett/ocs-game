@@ -33,6 +33,7 @@ public partial class SchematicMap : Node2D
         Day = value; KnownChanges = value?.Changes.Where(c => c.Known).ToArray() ?? []; RefreshTabletop();Tabletop?.ShowFacts(Day,Math.Clamp(animationSeconds/5f,0,1));QueueRedraw();
     }
     internal void ReplayMovement() { animationSeconds = 0; QueueRedraw(); }
+    internal void SetMovementProgress(float progress) { animationSeconds=Math.Clamp(progress,0,1)*5;Tabletop?.ShowFacts(Day,Math.Clamp(progress,0,1));QueueRedraw(); }
     internal Vector2 SiteScreenPoint(string id) => Tabletop?.SitePoint(id) ?? sites[id] * zoom + offset;
     internal void ShowScenario(ScenarioBoardData? data)
     {

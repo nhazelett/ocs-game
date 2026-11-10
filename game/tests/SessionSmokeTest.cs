@@ -28,7 +28,7 @@ public partial class SessionSmokeTest : Node
             shell.GetNode<Button>("%ReplayButton").EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.View!.Day == 1 && shell.Session.CompletedDay == 0, "Replay resets to before day 1.");
             var next = shell.GetNode<Button>("%NextDay");
-            for (var i = 0; i < 10; i++) next.EmitSignal(Button.SignalName.Pressed);
+            for (var i = 0; i < 10; i++) DeskSmokeSupport.Step(shell);
             var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach1-as-written.json"));
             var expected = Replay.Run(bundle, log, stopAfterDay: 10);
             Require(shell.Session.StateHash == expected.StateHash(), "Ten UI steps equal the Sim replay, including all dated actions.");
@@ -56,9 +56,9 @@ public partial class SessionSmokeTest : Node
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }
-            while (!shell.Session.View!.Finished) next.EmitSignal(Button.SignalName.Pressed);
+            while (!shell.Session.View!.Finished) DeskSmokeSupport.Step(shell);
             var finished = shell.Session.StateHash;
-            next.EmitSignal(Button.SignalName.Pressed);
+            DeskSmokeSupport.Step(shell);
             Require(next.Disabled && shell.Session.StateHash == finished, "Finished sessions cannot advance again.");
             picker.EmitSignal(OptionButton.SignalName.ItemSelected, spoke);
             DeskSmokeSupport.DeployWithoutPrep(shell);
@@ -69,7 +69,7 @@ public partial class SessionSmokeTest : Node
             DeskSmokeSupport.DeployWithoutPrep(shell);
             var longBundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b-90"));
             Require(shell.Session.StateHash == Session.Create(longBundle, 1).StateHash() && shell.Session.View!.LastDay == 90, "The 90-day scenario starts a fresh seeded session.");
-            next.EmitSignal(Button.SignalName.Pressed);
+            DeskSmokeSupport.Step(shell);
             Require(shell.Session.CompletedDay == 1, "The 90-day scenario advances normally.");
 
             var empty = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();

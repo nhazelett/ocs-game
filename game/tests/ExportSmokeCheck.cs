@@ -36,7 +36,7 @@ internal static class ExportSmokeCheck
             Require(!replay.Disabled, "Packaged approach logs enable Replay.");
             shell.GetNode<OptionButton>("%ReplayPicker").Select(0);
             replay.EmitSignal(Button.SignalName.Pressed);
-            for (var day = 0; day < 10; day++) shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
+            DeskSmokeSupport.Step(shell,10);
             Require(shell.Session.CompletedDay == 10 && shell.Session.View!.Capabilities.Any(c => c.SiteId == "spokeBSite" && c.CapabilityId == "power" && c.TodayPermille == 0), "Packaged approach 1 reaches day-10 power down.");
             GD.Print($"EXPORT_SMOKE_PASS: {catalog.Count} scenarios, referenced rules, real session and packaged replay.");
             shell.GetTree().Quit();
