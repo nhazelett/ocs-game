@@ -120,7 +120,11 @@ public partial class CorSmokeTest : Node
             // M2R-39: release the shell's theme and portrait resources and let two frames pass before quitting, as the
             // other full-shell tests do. Quitting with the shell alive crashed Godot at process exit on CI (signal 4 or 11
             // after the pass line), which failed the job under pipefail.
-            shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            shell.QueueFree(); shell = null!; await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            // The crash is the engine finalizing managed StyleBoxFlat wrappers after it has begun shutting down ("Leaked unsafe
+            // reference", csharp_script.cpp finalize). Collect them while the engine is still up.
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("COR_SMOKE_PASS: award and designation actions, roster summaries, report links, rotation and known-record filtering.");
             GetTree().Quit();
         }
