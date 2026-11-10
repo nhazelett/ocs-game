@@ -24,12 +24,13 @@ public partial class TabletopMap3D:Control
     internal Vector2 SitePoint(string id)=>camera.UnprojectPosition(world.ToGlobal(sites[id]+new Vector3(0,.7f,0)));
     internal void Configure(ScenarioBoardData board,IReadOnlyList<CapabilityTile> tiles,IReadOnlyList<MapLink> links,Font font,IReadOnlySet<string>? confidence=null)
     {
-        MouseFilter=MouseFilterEnum.Ignore;ClipContents=true;Theme=new Theme{DefaultFont=font,DefaultFontSize=18};
+        MouseFilter=MouseFilterEnum.Ignore;ClipContents=true;using var theme=new Theme{DefaultFont=font,DefaultFontSize=18};Theme=theme;
         capabilityTiles=tiles;
         var holder=new SubViewportContainer{Stretch=true,MouseFilter=MouseFilterEnum.Ignore};AddChild(holder);holder.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var viewport=new SubViewport{OwnWorld3D=true,Size=new Vector2I((int)Size.X,(int)Size.Y),Msaa3D=Viewport.Msaa.Msaa4X,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};holder.AddChild(viewport);
         world=new Node3D();viewport.AddChild(world);
-        world.AddChild(new WorldEnvironment{Environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color("8eafb2"),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f}});
+        using var environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color("8eafb2"),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f};
+        world.AddChild(new WorldEnvironment{Environment=environment});
         world.AddChild(new DirectionalLight3D{RotationDegrees=new Vector3(-52,-28,0),LightColor=new Color("fff0d1"),LightEnergy=.65f,ShadowEnabled=true});
         Mesh(new PlaneMesh{Size=new Vector2(100,100)},new Vector3(0,-.15f,0),"8eafb2",true);
         var ordered=board.Islands.OrderByDescending(i=>i.IsHub).ToArray();var spokes=ordered.Length-1;
@@ -62,7 +63,7 @@ public partial class TabletopMap3D:Control
             var state=links.FirstOrDefault(l=>l.FromIslandId==route.From&&l.ToIslandId==route.To&&l.Mode==route.Mode);var closed=state?.Open==false;
             var shift=route.Mode=="aircraft"?new Vector3(0,0,-.7f):Vector3.Zero;
             for(var i=0;i<18;i++){var p=a.Lerp(b,i/17f)+shift;p.Y=-.12f;Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true);}
-            Caption(mode+" lane"+(closed?" · closed":""),(a+b)/2+shift,new Vector2(-100,route.Mode=="aircraft"?-24:0),200,16,closed?TabletopTheme.Alert:TabletopTheme.Ink);
+            Caption(mode+" lane"+(closed?" · closed":""),(a+b)/2+shift,new Vector2(-140,route.Mode=="aircraft"?-50:-30),200,16,closed?TabletopTheme.Alert:TabletopTheme.Ink);
         }
         foreach(var site in board.Sites)
         {
@@ -151,7 +152,7 @@ public partial class TabletopMap3D:Control
     {
         var label=new Label{Size=new Vector2(260,28),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,MouseFilter=MouseFilterEnum.Ignore,HorizontalAlignment=HorizontalAlignment.Center};
         label.AddThemeFontSizeOverride("font_size",17);label.AddThemeColorOverride("font_color",TabletopTheme.Ink);
-        label.AddThemeStyleboxOverride("normal",new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2});
+        using var labelStyle=new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2};label.AddThemeStyleboxOverride("normal",labelStyle);
         AddChild(label);movingLabels.Add((label,node));
     }
     private void Caption(string text,Vector3 point,Vector2 offset,float width,int size,Color color)
@@ -186,7 +187,10 @@ public partial class TabletopMap3D:Control
     private void Box(Vector3 point,Vector3 size,string color)=>Mesh(new BoxMesh{Size=size},point,color);
     private MeshInstance3D Mesh(Godot.Mesh mesh,Vector3 point,string color,bool unshaded=false,Node3D? parent=null)
     {
-        var material=new StandardMaterial3D{AlbedoColor=new Color(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
-        var result=new MeshInstance3D{Mesh=mesh,Position=point,MaterialOverride=material};(parent??world).AddChild(result);return result;
+        using(mesh)
+        {
+            using var material=new StandardMaterial3D{AlbedoColor=new Color(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
+            var result=new MeshInstance3D{Mesh=mesh,Position=point,MaterialOverride=material};(parent??world).AddChild(result);return result;
+        }
     }
 }
