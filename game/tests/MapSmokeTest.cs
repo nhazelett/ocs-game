@@ -43,7 +43,7 @@ public partial class MapSmokeTest : Node
             Require(map.SelectedSite == "hubSite" && shell.SelectedCapability?.StartsWith("hubSite.") == true, "Clicking a site reaches its actual support details.");
             Require(shell.Session.StateHash == hash, "Site inspection is read-only.");
             shell.DeveloperToggle.ButtonPressed = true; Replay(shell);
-            var capturedRun = false; var capturedClosure = false;
+            var capturedRun = false; var capturedClosure = false; var capturedDay18 = false;
             for (var day = 1; day <= 20; day++)
             {
                 Step(shell); hash = shell.Session.StateHash;
@@ -79,9 +79,22 @@ public partial class MapSmokeTest : Node
                     Require(cargo.Leader.Points[0]!=before,"The cargo label tether follows the real map camera.");map.FitMap();
                     capturedClosure = true; shell.DeveloperToggle.ButtonPressed = false; await Capture("closed"); shell.DeveloperToggle.ButtonPressed = true;
                 }
+                // The morning of day 18 displays the movements completed on day 17.
+                if (day == 17)
+                {
+                    shell.DeveloperToggle.ButtonPressed=false;
+                    await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                    await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                    map.FitMap();map.Tabletop!._Process(0);
+                    var cargo=map.Tabletop.FactLabels.Single(l=>l.Leader is not null && l.Label.Text=="Fuel for Spoke B waiting: barge lane closed.");
+                    Require(map.Tabletop.CaptionLabels.All(l=>!l.GetGlobalRect().Intersects(cargo.Label.GetGlobalRect().Grow(4))),
+                        "Day-eighteen held cargo leaves every route, site name and status caption readable at default zoom.");
+                    capturedDay18=true;
+                    shell.DeveloperToggle.ButtonPressed=false;await Capture("day18");shell.DeveloperToggle.ButtonPressed=true;
+                }
                 Require(shell.Session.StateHash == hash, "Animation, rendering and snapshot queries never mutate Sim.");
             }
-            Require(capturedRun && capturedClosure, "Real authored approach exercises a delivery and a closed route holding cargo.");
+            Require(capturedRun && capturedClosure && capturedDay18, "Real authored approach exercises a delivery and a closed route holding cargo.");
             var actual = shell.Session.View!.MapDay();
             map.ShowMapDay(actual with { Changes = [.. actual.Changes, new MapChange("hubSite", "power", "vendorFailure", 0, null, "unreported-test", false)] });
             Require(map.KnownChanges.All(c => c.RecordId != "unreported-test"), "An explicitly unreported change is never drawn.");
