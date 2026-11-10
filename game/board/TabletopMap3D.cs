@@ -112,17 +112,26 @@ public partial class TabletopMap3D:Control
     {
         if(camera is null)return;
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
-        var occupied=captions.Select(c=>c.Label.GetRect()).ToList();
+        var occupied=captions.Select(c=>
+        {
+            var rect=c.Label.GetRect();var width=Math.Min(rect.Size.X,c.Label.GetThemeFont("font").GetStringSize(c.Label.Text,fontSize:c.Label.GetThemeFontSize("font_size")).X);
+            return new Rect2(rect.Position+new Vector2((rect.Size.X-width)/2,0),new Vector2(width,c.Label.GetLineHeight()*c.Label.GetLineCount())).Grow(4);
+        }).ToList();
         foreach(var item in movingLabels.Where(m=>m.Label.Visible))
         {
             if(item.Leader is not null)
             {
                 var anchor=camera.UnprojectPosition(item.Node.GlobalPosition);
-                var position=anchor+new Vector2(-130,22);
-                position.X=Math.Clamp(position.X,4,Math.Max(4,Size.X-item.Label.Size.X-4));
-                position.Y=Math.Clamp(position.Y,4,Math.Max(4,Size.Y-item.Label.Size.Y-4));
+                Vector2 Place(Vector2 offset)
+                {
+                    var p=anchor+offset;
+                    p.X=Math.Clamp(p.X,4,Math.Max(4,Size.X-item.Label.Size.X-4));
+                    p.Y=Math.Clamp(p.Y,4,Math.Max(4,Size.Y-item.Label.Size.Y-4));return p;
+                }
+                var candidates=new[]{new Vector2(-180,22),new Vector2(-260,-80),new Vector2(20,-80),new Vector2(-120,-100),new Vector2(-260,70),new Vector2(20,70)}.Select(Place).ToArray();
+                var position=candidates.FirstOrDefault(p=>!occupied.Any(r=>r.Intersects(new Rect2(p,item.Label.Size))),candidates[0]);
                 item.Label.Position=position;
-                item.Leader.Points=[anchor,new Vector2(Math.Clamp(anchor.X,position.X,position.X+item.Label.Size.X),position.Y)];
+                item.Leader.Points=[anchor,new Vector2(Math.Clamp(anchor.X,position.X,position.X+item.Label.Size.X),Math.Clamp(anchor.Y,position.Y,position.Y+item.Label.Size.Y))];
                 occupied.Add(item.Label.GetRect());continue;
             }
             var point=camera.UnprojectPosition(item.Node.GlobalPosition)+new Vector2(-130,-55);
@@ -190,7 +199,7 @@ public partial class TabletopMap3D:Control
         label.AddThemeFontSizeOverride("font_size",17);label.AddThemeColorOverride("font_color",TabletopTheme.Ink);
         using var labelStyle=new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2};label.AddThemeStyleboxOverride("normal",labelStyle);
         Line2D? leader=null;
-        if(anchored){label.Size=new Vector2(260,60);leader=new Line2D{Width=2,DefaultColor=TabletopTheme.Ink};AddChild(leader);}
+        if(anchored){label.Size=new Vector2(240,50);leader=new Line2D{Width=2,DefaultColor=TabletopTheme.Ink};AddChild(leader);}
         AddChild(label);movingLabels.Add((label,node,leader));
     }
     private Label Caption(string text,Vector3 point,Vector2 offset,float width,int size,Color color)
