@@ -65,7 +65,7 @@ public partial class TabletopMap3D:Control
             var state=links.FirstOrDefault(l=>l.FromIslandId==route.From&&l.ToIslandId==route.To&&l.Mode==route.Mode);var closed=state?.Open==false;
             var shift=route.Mode=="aircraft"?new Vector3(0,0,-.7f):Vector3.Zero;
             for(var i=0;i<18;i++){var p=a.Lerp(b,i/17f)+shift;p.Y=-.12f;Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true);}
-            Caption(mode+" lane"+(closed?" · closed":""),(a+b)/2+shift,new Vector2(-100,route.Mode=="aircraft"?-24:0),200,16,closed?TabletopTheme.Alert:TabletopTheme.Ink);
+            Caption(mode+" lane"+(closed?" · closed":""),(a+b)/2+shift,new Vector2(-140,route.Mode=="aircraft"?-50:-30),200,16,closed?TabletopTheme.Alert:TabletopTheme.Ink);
         }
         foreach(var site in board.Sites)
         {
