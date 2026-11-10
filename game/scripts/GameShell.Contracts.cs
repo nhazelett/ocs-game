@@ -15,6 +15,7 @@ public partial class GameShell
     {
         ContractView = new PanelContainer { Name = "ContractDetails", ZIndex = 14, Visible = false };
         AddChild(ContractView); ContractView.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+        ContractView.OffsetTop = 64;
         contractContents = DeskUi.Panel(ContractView, "ContractRecord");
         EndContractDialog = new ConfirmationDialog { Title = "End this contract?", Exclusive = true };
         AddChild(EndContractDialog);
@@ -58,7 +59,7 @@ public partial class GameShell
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
         contractContents.AddChild(DeskUi.Button("Back to what we are paying for", CloseContractView));
-        var title = DeskUi.Label(view.ArrangementName(arrangement.Id));
+        var title = DeskUi.Label(DeskUi.ListLabel(view.ArrangementName(arrangement.Id)));
         title.AddThemeFontSizeOverride("font_size", 28); contractContents.AddChild(title);
         var site = view.NameOf(arrangement.SiteId);
         var unit = view.ActionEditor(arrangement.SiteId, arrangement.CapabilityId)?.Unit ?? "units";
@@ -67,7 +68,7 @@ public partial class GameShell
             .Where(line => arrangement.Lines.Contains(line.Id)).Select(line => line.Label?.ToLowerInvariant() ?? "support"));
         contractContents.AddChild(DeskUi.Label($"{ArrangementStatusText(arrangement.Status)}. Supplies {supplies}."));
         if (scope.Length > 0) contractContents.AddChild(DeskUi.Label("Includes " + scope + "."));
-        contractContents.AddChild(DeskUi.Label($"Money committed: {DeskUi.Money(arrangement.ObligatedCents)}. Cost of support received: {DeskUi.Money(arrangement.IncurredCents)}.\nReceived but not yet covered by committed funds: {DeskUi.Money(arrangement.UnobligatedIncurredCents)}."));
+        contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement)));
         if (arrangement.NoticeDays is { } days)
             contractContents.AddChild(DeskUi.Label($"The contract requires {days} days of notice."));
         var blocked = view.TerminateBlocked(arrangement.Id);
@@ -80,12 +81,22 @@ public partial class GameShell
             var target = current?.Arrangements.FirstOrDefault(a => a.Id == arrangement.Id);
             if (current is null || target is null || !CanEndContract(current, target)) return;
             contractToEnd = target.Id;
-            EndContractDialog.DialogText = $"End this contract? Here is what stops.\n\n{current.ArrangementName(target.Id)} supplies {supplies}.\nIncludes {scope}.\n\nEnding it uses shop time. Its support stops when that work is complete.";
+            EndContractDialog.DialogText = $"End this contract? Here is what stops.\n\n{DeskUi.ListLabel(current.ArrangementName(target.Id))} supplies {supplies}.\nIncludes {scope}.\n\nEnding it uses shop time. Its support stops when that work is complete.";
             EndContractDialog.PopupCentered(new Vector2I(620, 300));
             EndContractDialog.GetCancelButton().GrabFocus();
         });
         end.Disabled = !CanEndContract(view, arrangement);
         contractContents.AddChild(end); terminations[arrangement.Id] = end;
+    }
+
+    private static string ArrangementPaymentText(SessionView view, Arrangement arrangement)
+    {
+        if (view.TerminateBlocked(arrangement.Id) is not null
+            && arrangement.ObligatedCents == 0 && arrangement.IncurredCents == 0 && arrangement.UnobligatedIncurredCents == 0)
+            return arrangement.Instrument == "hostNation"
+                ? "Provided under the host nation agreement; this office has no recorded costs."
+                : "Provided by the J4 under the ACSA; this office has no recorded costs.";
+        return $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
     }
 
     private static string ArrangementStatusText(ArrangementStatus status) => status switch

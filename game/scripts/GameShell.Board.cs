@@ -143,7 +143,7 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("Funding lines"));
         foreach (var funding in view.Funding)
         {
-            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{view.FundingName(funding.Id)} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
+            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{DeskUi.ListLabel(view.FundingName(funding.Id))} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
             var purpose = funding.Capabilities.Count == 0 ? "any" : string.Join(", ", funding.Capabilities.Select(id => CapabilityName(view, id).ToLowerInvariant()));
             row.Text += $"\nPurpose: {purpose}";
             if (funding.AvailableDay > funding.PlannedAvailableDay)
@@ -155,7 +155,7 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("What we are paying for"));
         foreach (var arrangement in view.Arrangements)
         {
-            var button = DeskUi.Button($"{view.ArrangementName(arrangement.Id)} · {ArrangementStatusText(arrangement.Status)}\nMoney committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
+            var button = DeskUi.Button($"{DeskUi.ListLabel(view.ArrangementName(arrangement.Id))} · {ArrangementStatusText(arrangement.Status)}\n{ArrangementPaymentText(view, arrangement)}", () =>
             {
                 OpenContractView(arrangement.Id);
             });
