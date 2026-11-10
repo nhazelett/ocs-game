@@ -43,7 +43,7 @@ public sealed partial class Session
         if (string.IsNullOrWhiteSpace(r.Id)) stops.Add("a request needs an id");
         else if (_arrangements.Any(x => x.Id == r.Id) || _external.Any(x => x.Id == r.Id)
                  || _work.Any(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Id == r.Id))
-            stops.Add($"id {NameOf(r.Id)} is already used");
+            stops.Add($"{Upper(NameOf(r.Id))} already exists");
 
         CardState? card = null;
         if (r.Card is not null)

@@ -99,14 +99,14 @@ public sealed class SessionView
 
     /// <summary>What a file review would take (M3-17): hard stops, shop hours (min and max equal) and in
     /// EarliestStartMin/Max the day the findings would come in, ignoring the queue ahead. Changes nothing.</summary>
-    public ActionPreview PreviewReviewFiles(ReviewFilesAction review) => _s.BuildReviewFilesPreview(review);
+    public ActionPreview PreviewReviewFiles(ReviewFilesAction review) => Session.Said(_s.BuildReviewFilesPreview(review));
 
     // Going to people (M2R-04, docs/design/opening-and-guidance.md 6.2 and 6.2a). Each visit is an action with a shop-hour
     // cost; what the person says comes back as a RecordKind.Visit record, linked to them by BoardLinkKind.Person.
     /// <summary>Hours, ready day and hard stops for FindFinanceAction, JoinStaffMeetingAction, AskScoAction,
     /// MeetVendorAction or EngageJ4Action. For a question, the ready range is when the answer can come back; for the
     /// J4, the first day of support.</summary>
-    public ActionPreview PreviewVisit(PlayerAction visit) => _s.BuildVisitPreview(visit);
+    public ActionPreview PreviewVisit(PlayerAction visit) => Session.Said(_s.BuildVisitPreview(visit));
     // Plain names (M2R-07, design doc R6). Ids are keys for actions and links; show these instead.
     /// <summary>"Harbor Equipment Co power at Spoke B": an arrangement (or a pending award, or a handshake) by who, what and where.</summary>
     public string ArrangementName(string id) => _s.ArrName(id);
@@ -175,11 +175,11 @@ public sealed class SessionView
     /// <summary>What can be picked together in the award editor given the vendor and instrument already picked, with a
     /// plain reason on everything that cannot (M2R-35). Null for an unknown site or capability.</summary>
     public AwardChoicesView? AwardChoices(string siteId, string capabilityId, string? cardId = null, string? vendorId = null, string? instrumentId = null)
-        => _s.BuildAwardChoices(siteId, capabilityId, cardId, vendorId, instrumentId);
+        => Session.Said(_s.BuildAwardChoices(siteId, capabilityId, cardId, vendorId, instrumentId));
 
     /// <summary>What an award would do if applied today: the same hard stops Apply would give, the soft gaps, cost and timing.
     /// Changes nothing and draws no random numbers.</summary>
-    public ActionPreview Preview(AwardAction award) => _s.BuildPreview(award);
+    public ActionPreview Preview(AwardAction award) => Session.Said(_s.BuildPreview(award));
 
     /// <summary>The debrief (SPEC 4): timeline, decisions with what was known, gaps tagged avoidable / discoverable /
     /// unforeseeable with their evidence, scorecard and commitments. Covers the days played so far.</summary>
@@ -192,16 +192,16 @@ public sealed class SessionView
 
     /// <summary>What establishing a BPA would take: hard stops, shop hours, and in EarliestStartMin/Max the first day calls
     /// could be placed (ignoring the queue ahead). Changes nothing.</summary>
-    public ActionPreview PreviewEstablish(EstablishBpaAction bpa) => _s.BuildEstablishPreview(bpa);
+    public ActionPreview PreviewEstablish(EstablishBpaAction bpa) => Session.Said(_s.BuildEstablishPreview(bpa));
 
     /// <summary>What establishing an IDIQ would take (M3-06): hard stops, shop hours, the minimum guarantee it obligates
     /// (in TotalCents) and in EarliestStartMin/Max the first day orders could be placed. Changes nothing.</summary>
-    public ActionPreview PreviewEstablish(EstablishIdiqAction idiq) => _s.BuildEstablishIdiqPreview(idiq);
+    public ActionPreview PreviewEstablish(EstablishIdiqAction idiq) => Session.Said(_s.BuildEstablishIdiqPreview(idiq));
 
     /// <summary>What an external support request would take (M3-05): the same hard stops Apply would give, the soft gaps,
     /// its estimated cost (obligated by the external office at award) and in EarliestStartMin/Max the first day of
     /// performance at the best and worst roll. Changes nothing and draws no random numbers.</summary>
-    public ActionPreview PreviewExternalSupport(RequestExternalSupportAction request) => _s.BuildExternalSupportPreview(request);
+    public ActionPreview PreviewExternalSupport(RequestExternalSupportAction request) => Session.Said(_s.BuildExternalSupportPreview(request));
 
     /// <summary>External support requests made this game and where each stands (M3-05).</summary>
     public IReadOnlyList<ExternalSupportRequestView> ExternalSupportRequests() => _s.BuildExternalSupportRequests();
@@ -211,7 +211,7 @@ public sealed class SessionView
 
     /// <summary>What an ACSA order would take (M3-06): hard stops, soft gaps, reimbursable cost and the first day of support
     /// at the best and worst roll. Changes nothing and draws no random numbers.</summary>
-    public ActionPreview PreviewAcsa(AcsaOrderAction order) => _s.BuildAcsaPreview(order);
+    public ActionPreview PreviewAcsa(AcsaOrderAction order) => Session.Said(_s.BuildAcsaPreview(order));
 
     /// <summary>The partner force with an ACSA, or null when none is present.</summary>
     public AcsaPartnerData? AcsaPartner => _s.Scenario.Actors.AcsaPartner is { Present: true } p ? p : null;
@@ -221,7 +221,7 @@ public sealed class SessionView
 
     /// <summary>What a host nation support request would take (M3-06): hard stops, soft gaps, the shop's cost share and the
     /// first day of support at the best and worst roll. Changes nothing and draws no random numbers.</summary>
-    public ActionPreview PreviewHostNation(HostNationRequestAction request) => _s.BuildHostNationPreview(request);
+    public ActionPreview PreviewHostNation(HostNationRequestAction request) => Session.Said(_s.BuildHostNationPreview(request));
 
     /// <summary>The host nation support agreement, or null when none exists.</summary>
     public HostNationData? HostNation => _s.Scenario.Actors.HostNation is { AgreementExists: true } h ? h : null;
@@ -235,7 +235,7 @@ public sealed class SessionView
 
     /// <summary>What a transition plan would be if made today (M3-05): the same hard stops Apply would give, and the
     /// projection and soft gaps it would show. Changes nothing and draws no random numbers.</summary>
-    public TransitionPreview PreviewTransition(PlanTransitionAction plan) => _s.BuildTransitionPreview(plan);
+    public TransitionPreview PreviewTransition(PlanTransitionAction plan) => Session.Said(_s.BuildTransitionPreview(plan));
 
     /// <summary>IDIQs the shop can order from, with ceiling, ordered value and the minimum guarantee not yet ordered.</summary>
     public IReadOnlyList<IdiqState> Idiqs => _s.Idiqs;

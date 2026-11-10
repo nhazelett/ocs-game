@@ -32,7 +32,7 @@ public sealed partial class Session
         TransitionCheck Done(Arrangement? o, string? site, string? cap) => new(stops, o, site, cap, overlap, handoff, owner);
 
         if (string.IsNullOrWhiteSpace(p.Id)) stops.Add("a transition plan needs an id");
-        else if (_transitions.Any(t => t.Id == p.Id)) stops.Add($"id {NameOf(p.Id)} is already used");
+        else if (_transitions.Any(t => t.Id == p.Id)) stops.Add($"{Upper(NameOf(p.Id))} already exists");
 
         var outA = _arrangements.FirstOrDefault(a => a.Id == p.Outgoing);
         if (outA is null) { stops.Add($"{NameOf(p.Outgoing)} is not an arrangement"); return Done(null, null, null); }

@@ -43,7 +43,7 @@ public sealed partial class Session
         AcsaCheck Fail(string why) => new([.. stops, why], null, null, null, null, [], 0, 0);
         if (!Rules.Instruments.TryGetValue(AcsaInstrument, out var inst)) return Fail("acsa is not in the rules");
         if (string.IsNullOrWhiteSpace(o.Id)) stops.Add("an order needs an id");
-        else if (IdInUse(o.Id)) stops.Add($"id {NameOf(o.Id)} is already used");
+        else if (IdInUse(o.Id)) stops.Add($"{Upper(NameOf(o.Id))} already exists");
         CardState? card = null;
         if (o.Card is not null)
         {

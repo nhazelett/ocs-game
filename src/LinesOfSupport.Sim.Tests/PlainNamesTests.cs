@@ -24,7 +24,7 @@ public class PlainNamesTests
         return new Regex(@"\b(" + string.Join("|", ids.Select(Regex.Escape)) + @")\b");
     }
 
-    private static IEnumerable<(string Where, string Text)> DebriefAndPreviews(Session s)
+    internal static IEnumerable<(string Where, string Text)> DebriefAndPreviews(Session s)
     {
         var d = s.View.Debrief();
         foreach (var g in d.Gaps)
@@ -50,6 +50,8 @@ public class PlainNamesTests
                 EstablishIdiqAction x => s.View.PreviewEstablish(x),
                 RequestExternalSupportAction x => s.View.PreviewExternalSupport(x),
                 HostNationRequestAction x => s.View.PreviewHostNation(x),
+                ReviewFilesAction x => s.View.PreviewReviewFiles(x),
+                FindFinanceAction or JoinStaffMeetingAction or AskScoAction or MeetVendorAction or EngageJ4Action => s.View.PreviewVisit(a),
                 _ => null,
             };
             if (p is null) continue;
