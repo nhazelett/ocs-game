@@ -41,6 +41,7 @@ public partial class GameShell
         leadPortrait.Visible=DisplayedLead?.Person is not null;if(leadPortrait.Visible)leadPortrait.SetPerson(DisplayedLead!.Person);
         leadSpeaker.Text = DisplayedLead?.Person?.WithUnit ?? ""; leadSpeaker.Visible = leadSpeaker.Text.Length > 0;
         leadWords.Text = DisplayedLead?.Text ?? (view is null ? "Your deployment has not started." : view.Finished ? "The deployment is complete." : "There is no priority message this morning.");
+        LeadOpen.Visible = DisplayedLead is not null;
         LeadOpen.Disabled = DisplayedLead is null || DisplayedLead.LinkKind == BoardLinkKind.None;
     }
 
