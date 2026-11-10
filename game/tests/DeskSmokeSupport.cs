@@ -58,6 +58,18 @@ internal static class DeskSmokeSupport
         if (editor.Instruments.FirstOrDefault(i => i.UnavailableReason is null) is { } instrument) Pick(shell.InstrumentInput, instrument.Id);
     }
 
+    internal static void PickAwardTarget(GameShell shell, string id)
+    {
+        var requests = shell.AwardRequestInput;
+        if (Enumerable.Range(0, requests.ItemCount).Any(i => requests.GetItemMetadata(i).AsString() == id))
+            Pick(requests, id);
+        else
+        {
+            Pick(requests, "own-initiative");
+            Pick(shell.InitiativeTargetInput!, id);
+        }
+    }
+
     internal static void Replay(GameShell shell, string name = "approach1 as written")
     {
         var picker = shell.GetNode<OptionButton>("%ReplayPicker");

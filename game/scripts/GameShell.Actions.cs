@@ -22,6 +22,8 @@ public partial class GameShell
     internal AwardAction? PendingAward { get; private set; }
     internal ActionPreview? AwardPreview { get; private set; }
     internal ActionEditorView? CurrentActionEditor { get; private set; }
+    internal OptionButton AwardRequestInput { get; private set; } = null!;
+    internal OptionButton? InitiativeTargetInput { get; private set; }
     internal OptionButton InstrumentInput => instrumentInput;
     internal OptionButton FundingInput => fundingInput;
     internal OptionButton? CorInput { get; private set; }
@@ -65,7 +67,7 @@ public partial class GameShell
         var targets = view.Cards.Select(c => view.RequirementEditor(c.Id)).Where(c => c is not null)
             .Select(c => new AwardTarget(c!.CardId, $"{c.Title} · {c.Person?.DisplayName ?? c.SubmittedBy}", c.SiteId, c.CapabilityId, c.CardId)).ToList();
         targets.AddRange(view.MorningBoard().Tiles.Select(t => new AwardTarget(t.SiteId + "." + t.CapabilityId,
-            $"{view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name} {t.Label.ToLowerInvariant()}, without a request", t.SiteId, t.CapabilityId, null)));
+            $"{view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name} {t.Label.ToLowerInvariant()}", t.SiteId, t.CapabilityId, null)));
         return targets;
     }
 
@@ -98,7 +100,7 @@ public partial class GameShell
     private void RefreshActionDesk(SessionView? view)
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
-        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null;
+        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; InitiativeTargetInput = null;
         awardButton = DeskUi.Button("Arrange support", () =>
         {
             if (PendingAward is not null && AwardPreview?.Accepted == true && session.View?.Finished == false) SendAction(PendingAward);
@@ -107,10 +109,23 @@ public partial class GameShell
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         var targets = AwardTargets(view);
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
-        if (!targets.Any(t => t.Id == awardTarget)) awardTarget = targets.FirstOrDefault(t => t.Card == SelectedCard)?.Id ?? targets[0].Id;
-        AddPick(awardPanel, "What are you arranging?", targets.Select(t => new Pick(t.Id, t.Label)).ToArray(), awardTarget, id =>
-        { awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null; awardChoiceNotice = null; quantity = null; start = duration = null; RefreshActionDesk(session.View); });
+        if (!targets.Any(t => t.Id == awardTarget))
+            awardTarget = (targets.FirstOrDefault(t => SelectedCard is not null && t.Card == SelectedCard)
+                ?? targets.FirstOrDefault(t => t.Card is not null) ?? targets[0]).Id;
+        void ChooseTarget(string id)
+        {
+            awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
+            awardChoiceNotice = null; quantity = null; start = duration = null; RefreshActionDesk(session.View);
+        }
         var target = targets.Single(t => t.Id == awardTarget);
+        var ownTargets = targets.Where(t => t.Card is null).ToArray();
+        var requestOptions = targets.Where(t => t.Card is not null).Select(t => new Pick(t.Id, t.Label)).ToList();
+        if (ownTargets.Length > 0) requestOptions.Add(new Pick("own-initiative", "Buy on your own initiative"));
+        AwardRequestInput = AddPick(awardPanel, "What are you arranging?", requestOptions,
+            target.Card ?? "own-initiative", id => ChooseTarget(id == "own-initiative" ? ownTargets[0].Id : id));
+        if (target.Card is null)
+            InitiativeTargetInput = AddPick(awardPanel, "What would you buy on your own initiative?",
+                ownTargets.Select(t => new Pick(t.Id, t.Label)).ToArray(), target.Id, ChooseTarget);
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
         var choices = ReconcileAwardChoices(view, target);

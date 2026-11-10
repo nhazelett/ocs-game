@@ -72,9 +72,7 @@ public partial class ChromeSmokeTest : Node
             Require(cashLabel.GetLineCount() == 1 && cash.Value == shell.Session.View.TopStrip().CashCents,
                 "Day eleven keeps cash on one line while the gauge retains exact cents.");
             Require(shell.Session.StateHash == selectionHash, "Map selection and rendering change no Sim state.");
-            var targetPicker = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions").FindChildren("*", "OptionButton", true, false).OfType<OptionButton>()
-                .Single(p => Enumerable.Range(0, p.ItemCount).Any(i => p.GetItemMetadata(i).AsString() == "hubSite.fuel"));
-            Pick(targetPicker, "hubSite.fuel");
+            PickAwardTarget(shell, "hubSite.fuel");
             var partner = Enumerable.Range(0, shell.VendorInput.ItemCount).Single(i => shell.VendorInput.GetItemMetadata(i).AsString() == "partnerForce");
             Require(shell.CurrentActionEditor!.Vendors.Single(v => v.Id == "partnerForce").Name == "the partner force"
                 && shell.VendorInput.GetItemText(partner).StartsWith("The partner force")
