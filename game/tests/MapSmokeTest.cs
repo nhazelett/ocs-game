@@ -23,16 +23,20 @@ public partial class MapSmokeTest : Node
             async Task Capture(string name)
             {
                 if (shot < 0) return;
+                await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1] + "-" + name + ".png") == Error.Ok, "Screenshot saved.");
             }
             var hash = shell.Session.StateHash;
             Require(map.Day?.Day == 0 && map.Day.Runs.Count == 0, "No fictional movements before any day is played.");
             Require(map.Tiles.SequenceEqual(shell.Session.View!.MorningBoard().Tiles), "Every equipment symbol reads its actual capability tile.");
+            Require(map.Tabletop is not null && map.Tabletop.SiteCount==map.Data!.Sites.Count && map.Tabletop.CapabilityObjects==map.Tiles.Count,"Native 3D board includes every authored site and actual capability tile.");
             await Capture("day1");
             var oldZoom = map.CameraZoom; var oldOffset = map.CameraOffset;
+            var oldPoint=map.SiteScreenPoint("hubSite");var oldSize=map.Tabletop!.CameraSize;
             map.ZoomAt(new Vector2(250, 200), 1.3f); map.PanBy(new Vector2(40, -20));
             Require(map.CameraZoom > oldZoom && map.CameraOffset != oldOffset && shell.Session.StateHash == hash, "Pan/zoom are real camera changes without Sim mutation.");
+            Require(map.Tabletop.CameraSize<oldSize && map.SiteScreenPoint("hubSite")!=oldPoint,"Real 3D camera and projected site position change.");
             map.FitMap(); var point = map.SiteScreenPoint("hubSite");
             map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = true });
             map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = false });

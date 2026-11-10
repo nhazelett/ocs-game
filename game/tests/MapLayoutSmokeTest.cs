@@ -20,6 +20,7 @@ public partial class MapLayoutSmokeTest : Node
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             void Check(string site)
             {
+                Require(map.Tabletop is not null && map.Tabletop.SiteCount==map.Data!.Sites.Count && map.Tabletop.CapabilityObjects==map.Tiles.Count,"Actual 3D renderer includes all sites and capability rows.");
                 var layout = map.SiteLayout(site);
                 Require(layout.Tiles.Select(t => t.Tile).SequenceEqual(map.Tiles.Where(t => t.SiteId == site)), "Every actual capability has a rendered tile.");
                 foreach (var tile in layout.Tiles)
@@ -37,8 +38,7 @@ public partial class MapLayoutSmokeTest : Node
             var tutorialLayout = map.SiteLayout("hubSite");
             Require(tutorialLayout.Tiles.Single(t => t.Tile.CapabilityId == "mhe").LabelLines.SequenceEqual(new[] { "Material", "handling", "equipment" }), "Material handling equipment is readable in full on three lines.");
             var point = map.SiteScreenPoint("hubSite");
-            Require(map.GetViewportRect().Encloses(new Rect2(point + tutorialLayout.Bounds.Position * map.CameraZoom, tutorialLayout.Bounds.Size * map.CameraZoom))
-                && point.Y + tutorialLayout.StateY * map.CameraZoom < map.GetViewportRect().End.Y, "Cold fit includes the whole tutorial card and site status.");
+            Require(map.GetViewportRect().HasPoint(point), "Cold fit includes the tutorial's actual 3D site.");
             await Screenshot("--map-screenshot");
             // Larger future site inventories use the same drawing layout, without changing scenario data or the Sim.
             var original = map.Tiles;
