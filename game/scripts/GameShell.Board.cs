@@ -143,7 +143,9 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("Funding lines"));
         foreach (var funding in view.Funding)
         {
-            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{DeskUi.ListLabel(view.FundingName(funding.Id))} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
+            var heading = SelectedFunding == funding.Id
+                ? "Selected funding line: " + view.FundingName(funding.Id) : DeskUi.ListLabel(view.FundingName(funding.Id));
+            var row = DeskUi.Label($"{heading} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
             var purpose = funding.Capabilities.Count == 0 ? "any" : string.Join(", ", funding.Capabilities.Select(id => CapabilityName(view, id).ToLowerInvariant()));
             row.Text += $"\nPurpose: {purpose}";
             if (funding.AvailableDay > funding.PlannedAvailableDay)
