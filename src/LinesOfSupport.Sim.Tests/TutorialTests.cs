@@ -73,10 +73,10 @@ public class TutorialTests
             Assert.True(s.Apply(new AwardAction
             {
                 Id = "call", Instrument = "bpaCall", Vendor = "harborEquipment", Vehicle = "equipBpa", Card = "tutForklift",
-                Quantity = 3, StartDay = 8, DurationDays = 13, FundingLine = "om1",
+                Quantity = 3, StartDay = 8, DurationDays = 13, FundingLine = "om1", Assignee = "avery",
             }).Accepted);
-            s.AdvanceDay();
-            s.AdvanceDay();
+            // Without the system-access prep the call is written by hand: MSgt Avery needs two days for it (DESK-02).
+            for (var i = 0; i < 3 && s.Arrangements.All(a => a.Id != "call"); i++) s.AdvanceDay();
             var call = s.Arrangements.Single(a => a.Id == "call");
             Assert.Equal(ArrangementStatus.Declined, call.Status);
             Assert.Equal(0, call.ObligatedCents);
@@ -92,10 +92,9 @@ public class TutorialTests
         s.Apply(new AwardAction
         {
             Id = "late", Instrument = "bpaCall", Vendor = "harborEquipment", Vehicle = "equipBpa", Card = "tutForklift",
-            Quantity = 1, StartDay = 14, DurationDays = 5, FundingLine = "om1",
+            Quantity = 1, StartDay = 14, DurationDays = 5, FundingLine = "om1", Assignee = "avery",
         });
-        s.AdvanceDay();
-        s.AdvanceDay();
+        for (var i = 0; i < 3 && s.Arrangements.All(a => a.Id != "late"); i++) s.AdvanceDay();
         // The 4% to 8% aggregate decline roll still applies; seed 1 does not decline here.
         Assert.NotEqual(ArrangementStatus.Declined, s.Arrangements.Single(a => a.Id == "late").Status);
     }

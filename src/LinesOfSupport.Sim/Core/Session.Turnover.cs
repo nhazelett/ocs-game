@@ -44,7 +44,7 @@ public sealed partial class Session
     private static string ConfidenceSentence(string tier, IReadOnlyList<string> names) => tier switch
     {
         "observed" => $"I've seen the work of {Join(names)} myself.",
-        "surveyed" => $"Someone's been out to look at {Join(names)}.",
+        "surveyed" => $"We've been out to look at {Join(names)}.",
         "estimated" => $"I've talked to {Join(names)}, but the prices are estimates.",
         _ => names.Count == 1
             ? $"{names[0]} is just a name on a list; I've never called them."
