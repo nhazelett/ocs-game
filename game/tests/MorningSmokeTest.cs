@@ -15,6 +15,7 @@ public partial class MorningSmokeTest : Node
         try
         {
             var shell = Shell(this);
+            Require(shell.DisplayedLead is not null && shell.LeadOpen.Visible && !shell.LeadOpen.Disabled, "An actual priority item keeps its working Open button.");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var expected = Session.Create(bundle, 1);
             var days = 0;
@@ -57,13 +58,35 @@ public partial class MorningSmokeTest : Node
             foreach (var key in new[] { "events", "variation", "requirementCards", "inheritedArrangements" }) data[key] = new JsonArray();
             foreach (var site in data["sites"]!.AsArray()) site!["capabilities"] = new JsonArray();
             File.WriteAllText(Path.Combine(dir, "scenario.json"), data.ToJsonString());
-            var quiet = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
+            using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
+            var quiet = scene.Instantiate<GameShell>();
             quiet.ScenarioRootOverride = temporary; AddChild(quiet);
             DeveloperWorkspace(quiet);
             DeployWithoutPrep(quiet);
+            quiet.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            quiet.DeveloperToggle.ButtonPressed = false;
+            shell.Hide();
+            var quietHash = quiet.Session.StateHash;
+            Require(quiet.Session.View!.MorningBoard().Lead is null && quiet.DisplayedLead is null && !quiet.LeadOpen.Visible,
+                "A real quiet morning omits Open while keeping the no-priority sentence.");
+            Require(quiet.LeadWords.Text == "There is no priority message this morning.", "The quiet morning still explains why there is no lead.");
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(quiet.PeopleToggle.IsVisibleInTree() && quiet.BoardDetailsToggle.IsVisibleInTree()
+                && quiet.BoardDetailsToggle.GetGlobalRect().End.Y < GetViewport().GetVisibleRect().End.Y,
+                "People and other updates remain reachable in the compact quiet board.");
+            var quietShot = Array.IndexOf(args, "--quiet-screenshot");
+            if (quietShot >= 0)
+            {
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[quietShot + 1]) == Error.Ok, "Quiet morning screenshot saved.");
+            }
+            Require(quiet.Session.StateHash == quietHash, "The quiet layout and capture leave Sim state unchanged.");
             quiet.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
             Require(quiet.Session.View!.Finished && quiet.Session.CompletedDay == quiet.Session.View.LastDay, "A quiet scenario continues to completion without an arbitrary week stop.");
-            GD.Print("MORNING_SMOKE_PASS: alert-first details, linked targets, Sim lead stop and quiet completion.");
+            Require(!quiet.LeadOpen.Visible, "Open stays hidden at completion without a lead.");
+            GD.Print("MORNING_SMOKE_PASS: quiet morning without Open, alert-first details, linked targets, Sim lead stop and quiet completion.");
             shell.QueueFree(); quiet.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
