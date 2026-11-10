@@ -49,9 +49,9 @@ Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios/rules') -Filter 'rule
 
 if (Test-Path -LiteralPath (Join-Path $scenarioOutput.FullName '_stub')) { throw 'Development stub must not ship.' }
 
-# The chosen Tabletop typeface is a runtime dependency, including its redistribution license.
+# Every selectable look has its runtime typefaces and redistribution licenses.
 $fontOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/art-studies/fonts')
-foreach ($font in @('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bold.ttf', 'Atkinson-OFL.txt')) {
+foreach ($font in @('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bold.ttf', 'Atkinson-OFL.txt', 'Barlow-Regular.ttf', 'Barlow-SemiBold.ttf', 'Barlow-OFL.txt', 'Bitter.ttf', 'Bitter-OFL.txt')) {
     Copy-Item -LiteralPath (Join-Path $repoRoot "assets/art-studies/fonts/$font") -Destination $fontOutput.FullName
 }
 $portraitOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/portraits')

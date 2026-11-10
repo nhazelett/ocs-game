@@ -4,15 +4,26 @@ namespace LinesOfSupport.Game;
 
 internal static class TabletopTheme
 {
-    internal static readonly Color Background=new("e9e3d8"), Paper=new("faf5ea"), Ink=new("343d4b"), Muted=new("66716d"),
-        Moss=new("556e65"), Outline=new("b8b29f"), Alert=new("9f4937"), Warning=new("7a5a22"), Success=new("355d48");
-    internal static FontFile Font(bool bold=false)
-    {
-        var path=Path.Combine(GamePaths.AssetRoot,"art-studies","fonts",bold?"AtkinsonHyperlegible-Bold.ttf":"AtkinsonHyperlegible-Regular.ttf");
-        var font=new FontFile();
-        if(font.LoadDynamicFont(path)!=Error.Ok) throw new IOException("The packaged Tabletop font is missing: "+Path.GetFileName(path));
-        return font;
-    }
+    internal static int Direction { get; private set; } = 2;
+    internal static Art.ArtStudyStyle Style => Art.ArtStudyStyle.All[Direction];
+    internal static void Select(int index) => Direction = index is >= 0 and < 3 ? index : 2;
+    internal static Color Background => new(Style.Background);
+    internal static Color Paper => new(Style.Panel);
+    internal static Color Ink => new(Style.Ink);
+    internal static Color Muted => new(Style.Muted);
+    internal static Color Moss => new(Style.Accent);
+    internal static Color Outline => Direction == 2 ? new("b8b29f") : Muted;
+    internal static Color Alert => new(Style.Alert);
+    internal static Color Warning => Direction == 1 ? new("efd17e") : new("7a5a22");
+    internal static Color Success => Direction == 1 ? new("96d8a9") : new("355d48");
+    internal static Color Hover => Direction == 2 ? new("e3e5d7") : Paper.Lerp(Moss, .15f);
+    internal static Color Pressed => Direction == 2 ? new("dfe2d2") : Paper.Lerp(Moss, .25f);
+    internal static Color Input => Direction == 2 ? new("fffdf5") : Paper;
+    internal static Color Track => Direction == 2 ? new("d6d0bf") : Background;
+    internal static Color PrimaryInk => Direction == 1 ? Background : Paper;
+    internal static Font Font(bool bold=false) => Art.ArtStudyStyle.LoadFont(bold ? Style.HeadingFont : Style.Font);
+    internal static Color[] ColorsByRole() => [Background, Paper, Ink, Muted, Moss, Outline, Alert, Warning, Success, Hover, Pressed, Input, Track];
+
     internal static StyleBoxFlat Box(Color color,int padding=8,int radius=6)
         =>new(){BgColor=color,BorderColor=Outline,BorderWidthLeft=1,BorderWidthRight=1,BorderWidthTop=1,BorderWidthBottom=1,
             ContentMarginLeft=padding,ContentMarginRight=padding,ContentMarginTop=padding,ContentMarginBottom=padding,
@@ -30,20 +41,20 @@ internal static class TabletopTheme
         foreach(var type in new[]{"Panel","PanelContainer","PopupPanel","PopupMenu","Tree","ItemList","TooltipPanel"}) theme.SetStylebox("panel",type,Box(Paper,12));
         foreach(var type in new[]{"Button","OptionButton"})
         {
-            theme.SetStylebox("normal",type,Box(Paper,8));theme.SetStylebox("hover",type,Box(new Color("e3e5d7"),8));
-            theme.SetStylebox("pressed",type,Box(new Color("dfe2d2"),8));theme.SetStylebox("disabled",type,Box(Background,8));
+            theme.SetStylebox("normal",type,Box(Paper,8));theme.SetStylebox("hover",type,Box(Hover,8));
+            theme.SetStylebox("pressed",type,Box(Pressed,8));theme.SetStylebox("disabled",type,Box(Background,8));
             var focus=Box(Colors.Transparent,0);focus.BorderColor=Moss;focus.SetBorderWidthAll(2);theme.SetStylebox("focus",type,focus);
         }
         theme.SetTypeVariation("TabletopPrimary","Button");
         foreach(var name in new[]{"normal","pressed","hover","hover_pressed"}) theme.SetStylebox(name,"TabletopPrimary",Box(Moss,10));
-        foreach(var name in new[]{"font_color","font_hover_color","font_focus_color","font_pressed_color","font_hover_pressed_color"})theme.SetColor(name,"TabletopPrimary",Paper);
+        foreach(var name in new[]{"font_color","font_hover_color","font_focus_color","font_pressed_color","font_hover_pressed_color"})theme.SetColor(name,"TabletopPrimary",PrimaryInk);
         foreach(var type in new[]{"LineEdit","TextEdit"})
         {
-            theme.SetStylebox("normal",type,Box(new Color("fffdf5"),6));theme.SetStylebox("read_only",type,Box(Background,6));
+            theme.SetStylebox("normal",type,Box(Input,6));theme.SetStylebox("read_only",type,Box(Background,6));
             theme.SetStylebox("focus",type,Box(Colors.Transparent,0));theme.SetColor("caret_color",type,Ink);theme.SetColor("selection_color",type,Moss);
         }
         theme.SetStylebox("panel","TabContainer",Box(Paper,10));theme.SetStylebox("tab_selected","TabContainer",Box(Paper,8));
-        theme.SetStylebox("tab_unselected","TabContainer",Box(Background,8));theme.SetStylebox("tab_hovered","TabContainer",Box(new Color("e3e5d7"),8));
+        theme.SetStylebox("tab_unselected","TabContainer",Box(Background,8));theme.SetStylebox("tab_hovered","TabContainer",Box(Hover,8));
         theme.SetStylebox("tab_disabled","TabContainer",Box(Background,8));
         theme.SetColor("font_selected_color","TabContainer",Ink);theme.SetColor("font_unselected_color","TabContainer",Muted);
         foreach(var type in new[]{"HScrollBar","VScrollBar"})
@@ -51,8 +62,8 @@ internal static class TabletopTheme
             theme.SetStylebox("scroll",type,Box(Background,0,3));theme.SetStylebox("grabber",type,Box(Moss,0,3));
             theme.SetStylebox("grabber_highlight",type,Box(Moss.Lightened(.12f),0,3));theme.SetStylebox("grabber_pressed",type,Box(Ink,0,3));
         }
-        theme.SetStylebox("background","ProgressBar",Box(new Color("d6d0bf"),0,3));theme.SetStylebox("fill","ProgressBar",Box(Moss,0,3));
-        theme.SetStylebox("hover","PopupMenu",Box(new Color("e3e5d7"),4));
+        theme.SetStylebox("background","ProgressBar",Box(Track,0,3));theme.SetStylebox("fill","ProgressBar",Box(Moss,0,3));
+        theme.SetStylebox("hover","PopupMenu",Box(Hover,4));
         foreach(var type in new[]{"Tree","ItemList"}){theme.SetStylebox("selected",type,Box(Moss,4));theme.SetStylebox("selected_focus",type,Box(Moss,4));}
         theme.SetStylebox("embedded_border","Window",Box(Paper,12));theme.SetColor("title_color","Window",Ink);
         foreach(var type in new[]{"VBoxContainer","HBoxContainer"})theme.SetConstant("separation",type,10);
@@ -62,6 +73,14 @@ internal static class TabletopTheme
             theme.SetIcon(state?"checked":"unchecked","CheckBox",icon);theme.SetIcon(state?"checked_disabled":"unchecked_disabled","CheckBox",icon);
             theme.SetIcon(state?"radio_checked":"radio_unchecked","CheckBox",icon);
         }
+        theme.SetStylebox("slider","HSlider",Box(Outline,0,4));
+        theme.SetStylebox("grabber_area","HSlider",Box(Moss,0,4));
+        theme.SetStylebox("grabber_area_highlight","HSlider",Box(Moss,0,4));
+        using var knob=Image.CreateEmpty(18,18,false,Image.Format.Rgba8);knob.Fill(Colors.Transparent);
+        for(var y=0;y<18;y++)for(var x=0;x<18;x++)
+            if(new Vector2(x-8.5f,y-8.5f).Length()<=8)knob.SetPixel(x,y,Moss);
+        using var texture=ImageTexture.CreateFromImage(knob);
+        theme.SetIcon("grabber","HSlider",texture);theme.SetIcon("grabber_highlight","HSlider",texture);
         var arrow=Arrow();theme.SetIcon("arrow","OptionButton",arrow);
         theme.SetIcon("updown","SpinBox",UpDown());
         foreach(var name in new[]{"increment","increment_highlight","decrement","decrement_highlight"})

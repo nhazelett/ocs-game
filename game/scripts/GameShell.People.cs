@@ -27,7 +27,7 @@ public partial class GameShell
         foreach (var request in requests)
         {
             var card = new PanelContainer();
-            using var cardStyle = new StyleBoxFlat { BgColor = new Color("faf5ea"), ContentMarginLeft = 14,
+            using var cardStyle = new StyleBoxFlat { BgColor = TabletopTheme.Paper, ContentMarginLeft = 14,
                 ContentMarginRight = 14, ContentMarginTop = 14, ContentMarginBottom = 14, CornerRadiusTopLeft = 5,
                 CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 };
             card.AddThemeStyleboxOverride("panel", cardStyle);

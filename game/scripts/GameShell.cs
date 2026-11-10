@@ -14,6 +14,7 @@ public partial class GameShell : Control
 
     public override void _Ready()
     {
+        LoadLook();
         BuildReadableChrome();
         GetNode<Label>("%GameTitle").Text = ProjectSettings.GetSetting("application/config/name").AsString();
         GetNode<Button>("%NextDay").Pressed += OnNextDay;

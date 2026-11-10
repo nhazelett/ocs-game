@@ -21,7 +21,7 @@ public partial class GameShell
     private void BuildFrontDoor()
     {
         frontDoor = new PanelContainer { Name = "FrontDoor", ZIndex = 15 };
-        var background = new StyleBoxFlat { BgColor = new Color("e9e3d8") };
+        var background = new StyleBoxFlat { BgColor = TabletopTheme.Background };
         frontDoor.AddThemeStyleboxOverride("panel", background);
         AddChild(frontDoor); frontDoor.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var center = new CenterContainer(); frontDoor.AddChild(center);
@@ -30,12 +30,13 @@ public partial class GameShell
         var column = new VBoxContainer { CustomMinimumSize = new Vector2(500, 0) }; column.AddThemeConstantOverride("separation", 22); margin.AddChild(column);
         var imprint = new Label { Text = "KTHQ", SelfModulate = Colors.White }; imprint.AddThemeFontSizeOverride("font_size", 18); column.AddChild(imprint);
         var title = new Label { Text = "OCS\nLines of Support", ThemeTypeVariation="TabletopHeading" }; title.AddThemeFontSizeOverride("font_size", 46); column.AddChild(title);
-        var accent = new ColorRect { Color = new Color("556e65"), CustomMinimumSize = new Vector2(0, 3), MouseFilter = MouseFilterEnum.Ignore }; column.AddChild(accent);
+        var accent = new ColorRect { Color = TabletopTheme.Moss, CustomMinimumSize = new Vector2(0, 3), MouseFilter = MouseFilterEnum.Ignore }; column.AddChild(accent);
         frontMessage = DeskUi.Label("Take over the contracting shop. Keep the deployment supported as the days unfold.");
         frontMessage.CustomMinimumSize = new Vector2(500, 0); column.AddChild(frontMessage);
         frontChoices = new VBoxContainer(); frontChoices.AddThemeConstantOverride("separation", 12); column.AddChild(frontChoices);
         DeveloperWorkspaceButton = FrontButton("Open developer workspace", ShowGameSurface); column.AddChild(DeveloperWorkspaceButton);
         BuildSoundControls(column);
+        BuildLookControls(column);
         ArtStudiesButton = FrontButton("ART-01 · compare art directions", () =>
         {
             var study = new Art.ArtDirections { ZIndex = 50 };
@@ -55,15 +56,7 @@ public partial class GameShell
     {
         var button = DeskUi.Button(text, pressed); button.CustomMinimumSize = new Vector2(0, 50);
         button.AddThemeFontSizeOverride("font_size", 22);
-        var normal = new StyleBoxFlat { BgColor = new Color("556e65"), ContentMarginLeft = 20, ContentMarginRight = 20,
-            ContentMarginTop = 10, ContentMarginBottom = 10, CornerRadiusTopLeft = 4, CornerRadiusTopRight = 4, CornerRadiusBottomLeft = 4, CornerRadiusBottomRight = 4 };
-        button.AddThemeStyleboxOverride("normal", normal);
-        button.AddThemeColorOverride("font_color",TabletopTheme.Paper);
-        button.AddThemeColorOverride("font_hover_color",TabletopTheme.Paper);
-        button.AddThemeColorOverride("font_focus_color",TabletopTheme.Paper);
-        button.AddThemeColorOverride("font_pressed_color",TabletopTheme.Paper);
-        var hover = (StyleBoxFlat)normal.Duplicate(); hover.BgColor = new Color("667f72"); button.AddThemeStyleboxOverride("hover", hover);
-        var focus = (StyleBoxFlat)normal.Duplicate(); focus.BorderColor = new Color("556e65"); focus.SetBorderWidthAll(2); button.AddThemeStyleboxOverride("focus", focus);
+        button.ThemeTypeVariation = "TabletopPrimary";
         return button;
     }
 
