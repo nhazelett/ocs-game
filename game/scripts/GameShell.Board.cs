@@ -169,6 +169,7 @@ public partial class GameShell
     private void OnContinue()
     {
         if (ReadingTurnover || PlayingDay) return;
+        ShowGameSurface();
         var count = 0;
         var reason = "deployment complete";
         while (AdvanceAndAutosave())
