@@ -1,6 +1,6 @@
 **Work session handoff**
 
-Expected look of this build and why: `codex/ART-06` adds a bone-paper Sound panel with moss volume slider, visible mute checkbox and cue preview, reached from the title or Menu. The shared Atkinson type and Tabletop theme continue throughout. Four short original sounds accompany actual events; all visual messages remain. [Native 1280 by 800 screenshot](images/2026-11-10-codex-art-06-sound.png), plain PNG below 40 KB. PR 143 carries this session note and ownership answer only; the sound implementation is on its separate branch pending a queue slot.
+Expected look of this build and why: `codex/ART-06` adds a bone-paper Sound panel with moss volume slider, visible mute checkbox and cue preview, reached from the title or Menu. The shared Atkinson type and Tabletop theme continue throughout. Four short original sounds accompany actual events; all visual messages remain. [Native 1280 by 800 screenshot](https://github.com/nhazelett/ocs-game/blob/codex/ART-06/docs/handoffs/images/2026-11-10-codex-art-06-sound.png), plain PNG below 40 KB. PR 143 carries this session note and ownership answer only; the sound implementation is on its separate branch pending a queue slot.
 
 ## PRs reviewed this session
 
@@ -21,6 +21,8 @@ ART-06 is the next unclaimed Codex row after Nick's recorded Tabletop choice. Th
 Solution build and all 611 .NET tests pass (490 Sim, 121 Harness); local SDK needs DOTNET_ROOT/PATH set and -m:1. Game builds with no Game warnings. Five scenarios and provenance pass; all 72 Python validator tests pass; whitespace and conflict-marker checks pass. Seven native Godot 4.6.1 suites pass and exit cleanly: Audio, DayPlayback, FrontDoor, TabletopTheme, Action, Lead, Save. Audio exercises loaded WAV playback, successful/refused award cues, real morning/shortfall events, silent mute/zero, disk persistence and unchanged Sim state when browsing or previewing cues. Four generated files reproduce byte for byte, last 0.29-0.61 seconds and do not clip. Native screenshot visually inspected. Seven inherited Sim/Sim.Tests warnings in a full rebuild; none introduced in Game.
 
 Current main 15593c5 was retrieved through the connected GitHub app: shell HTTPS pull has no credentials. Main's complete tree and commit were SHA-verified locally. The working source incorporates PR 143's exact tree e1395e2 and the resource fix; unrelated archived screenshots and two unused comparison fonts remain sparse locally. Runtime Atkinson fonts and cast assets are present and verified. Windows packaging now copies all audio files and the existing release smoke asserts four loaded streams plus license; an actual Windows export was not rerun in this Linux environment.
+
+The first sound-blob upload was denied by automatic review for an unverified destination and missing trusted authorization. Repository metadata verified the private owner/repository and write access; user_message_read retrieved Nick's original 8 Nov standing implementation job. The exact denied upload was retried once under that new evidence and succeeded. All subsequent objects published normally. Remote sound commit `2d4afb56163c4d7efa2e5eaaf63040d6e1c1a42d` has tree `bbeaf604abe6ae4ad885c740b38d9a23b69170ea`, exactly matching the tested local implementation. No ongoing publication blocker or approval request.
 
 ## Unresolved
 
