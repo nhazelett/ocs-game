@@ -172,6 +172,11 @@ public sealed class SessionView
     /// <summary>The action editor's pickers for a site and capability (optionally a card); null for an unknown site or capability.</summary>
     public ActionEditorView? ActionEditor(string siteId, string capabilityId, string? cardId = null) => _s.BuildActionEditor(siteId, capabilityId, cardId);
 
+    /// <summary>Why this office cannot terminate the arrangement (host nation support, an ACSA line), as one plain sentence;
+    /// null when it is the office's own to end, or the id is unknown (DESK-01). The game hides Terminate when this is not null.</summary>
+    public string? TerminateBlocked(string arrangementId)
+        => _s.Arrangements.FirstOrDefault(a => a.Id == arrangementId) is { } a ? _s.NotOursToEnd(a) : null;
+
     /// <summary>What can be picked together in the award editor given the vendor and instrument already picked, with a
     /// plain reason on everything that cannot (M2R-35). Null for an unknown site or capability.</summary>
     public AwardChoicesView? AwardChoices(string siteId, string capabilityId, string? cardId = null, string? vendorId = null, string? instrumentId = null)
