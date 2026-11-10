@@ -47,7 +47,7 @@ public partial class GameShell
     }
 
     private OptionButton AddAwardChoice(string label, string prompt, IReadOnlyList<ChoiceOption> options,
-        string? selected, Action<string> changed, out Label explanation)
+        string? selected, Action<string> changed, out Label explanation, string? notice = null)
     {
         awardPanel.AddChild(DeskUi.Label(label));
         var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
@@ -62,10 +62,14 @@ public partial class GameShell
         }
         var index = options.Select((o, i) => (o, i)).Where(x => x.o.Id == selected && x.o.Available).Select(x => x.i + 1).DefaultIfEmpty(0).First();
         picker.Select(index);
-        var unavailable = options.FirstOrDefault(o => !o.Available);
-        var reasonText = unavailable?.Reason ?? "";
-        if (!string.IsNullOrEmpty(selected) && unavailable is not null)
-            reasonText = $"{DeskUi.ListLabel(unavailable.Label)} is unavailable. {reasonText}";
+        var unavailable = options.Where(o => !o.Available).ToArray();
+        var reasonText = index > 0 ? "" : unavailable.Length switch
+        {
+            1 => unavailable[0].Reason ?? "",
+            > 1 => $"{unavailable.Length} choices are unavailable; point at one to see why.",
+            _ => ""
+        };
+        reasonText = notice ?? reasonText;
         var reasonLabel = DeskUi.Label(reasonText);
         reasonLabel.Visible = reasonLabel.Text.Length > 0;
         picker.ItemSelected += i =>
@@ -83,7 +87,13 @@ public partial class GameShell
         {
             if (id < 0 || id >= picker.ItemCount) return;
             var option = options.FirstOrDefault(o => o.Id == picker.GetItemMetadata((int)id).AsString());
-            if (option?.Reason is { } reason) { reasonLabel.Text = reason; reasonLabel.Show(); }
+            reasonLabel.Text = option is { Available: false, Reason: { } reason } ? reason : reasonText;
+            reasonLabel.Visible = reasonLabel.Text.Length > 0;
+        };
+        picker.GetPopup().PopupHide += () =>
+        {
+            reasonLabel.Text = reasonText;
+            reasonLabel.Visible = reasonLabel.Text.Length > 0;
         };
         awardPanel.AddChild(picker); awardPanel.AddChild(reasonLabel); explanation = reasonLabel;
         return picker;

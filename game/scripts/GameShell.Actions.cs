@@ -39,6 +39,14 @@ public partial class GameShell
         split.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var form = new Control { CustomMinimumSize = new Vector2(0, 150) }; split.AddChild(form);
         awardPanel = DeskUi.Panel(form, "Inputs");
+        var formScroll = (ScrollContainer)awardPanel.GetParent();
+        formScroll.FollowFocus = true;
+        // ScrollContainer reserves the scrollbar's themed minimum width.
+        var scrollbar = formScroll.GetVScrollBar();
+        using var track = (StyleBoxFlat)scrollbar.GetThemeStylebox("scroll").Duplicate();
+        track.ContentMarginLeft = track.ContentMarginRight = 7;
+        scrollbar.AddThemeStyleboxOverride("scroll", track);
+        formScroll.AddThemeConstantOverride("scrollbar_h_separation", 4);
         var lower = new VBoxContainer { CustomMinimumSize = new Vector2(0, 180) }; split.AddChild(lower);
         var holder = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; lower.AddChild(holder);
         previewPanel = DeskUi.Panel(holder, "Preview");
@@ -107,10 +115,8 @@ public partial class GameShell
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
         var choices = ReconcileAwardChoices(view, target);
         vendorInput = AddAwardChoice("Who could provide it?", "Choose a supplier…", choices.Vendors, awardVendor,
-            id => { awardVendor = id; awardCor = null; }, out var vendorReason);
+            id => { awardVendor = id; awardCor = null; }, out var vendorReason, awardChoiceNotice);
         VendorChoiceReason = vendorReason;
-        if (!string.IsNullOrEmpty(awardChoiceNotice)) { vendorReason.Text = awardChoiceNotice; vendorReason.Show(); }
-        else if (!string.IsNullOrEmpty(awardVendor) || !string.IsNullOrEmpty(awardInstrument)) { vendorReason.Text = ""; vendorReason.Hide(); }
         instrumentInput = AddAwardChoice("How would you arrange it?", "Choose an arrangement…", choices.Instruments, awardInstrument,
             id => { awardInstrument = id; awardCor = null; }, out var instrumentReason);
         InstrumentChoiceReason = instrumentReason;
@@ -118,8 +124,9 @@ public partial class GameShell
             awardPanel.AddChild(DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}. They offer {supplier.CapacityPerDay} {editor.Unit} a day, with {supplier.CapacityFreeToday} available today. Their lead time is {supplier.LeadTimeDays} days."));
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
         vehicleInput = AddAwardChoice("Vehicle", needsVehicle ? "Choose a vehicle…" : "No vehicle needed", choices.Vehicles, awardVehicle,
-            id => awardVehicle = id, out _);
+            id => awardVehicle = id, out var vehicleReason);
         vehicleInput.Disabled = !needsVehicle;
+        if (!needsVehicle) { vehicleReason.Text = ""; vehicleReason.Hide(); }
         var immediate = awardInstrument is "sf44" or "gpc";
         if (awardFunding is null && !immediate) awardFunding = choices.Funding.FirstOrDefault(f => f.Available)?.Id ?? "";
         fundingInput = AddAwardChoice("Funding line", immediate ? "No funding line used" : "Choose a funding line…", choices.Funding, awardFunding,
