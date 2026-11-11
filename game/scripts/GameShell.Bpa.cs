@@ -114,8 +114,8 @@ public partial class GameShell
             box.AddChild(DeskUi.Label("Cash: " + Payment(card.AcceptsCash) + " · Card: " + Payment(card.AcceptsGpc)));
             box.AddChild(DeskUi.Label("Islands reached: " + (card.IslandsReached is null ? "—" : string.Join(", ", card.IslandsReached.Select(view.NameOf)))));
             foreach (var sell in card.Sells)
-                box.AddChild(DeskUi.Label(sell.Label + "\nSupply per day: " + (sell.CapacityPerDay is { } capacity ? $"{capacity} {sell.Unit}" : "—")
-                    + "\nPrice per unit per day: " + (sell.UnitPriceCents is { } price ? DeskUi.Money(price) : "—")
+                box.AddChild(DeskUi.Label(sell.Label + "\nSupply per day: " + (sell.CapacityPerDay is { } capacity ? $"{capacity.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} {sell.Unit}" : "—")
+                    + $"\nPrice per {sell.Unit}{(view.Rules.Model.Capabilities.Single(c => c.Id == sell.CapabilityId).Delivery == "consumable" ? "" : " per day")}: " + (sell.UnitPriceCents is { } price ? DeskUi.Money(price) : "—")
                     + " · Notice: " + (sell.LeadTimeDays is { } days ? (days == 1 ? "1 day" : $"{days} days") : "—")));
             if (card.Standing is not null) box.AddChild(DeskUi.Label("Standing: " + card.Standing));
             if (card.KnownFrom is not null) box.AddChild(DeskUi.Label(card.KnownFrom));

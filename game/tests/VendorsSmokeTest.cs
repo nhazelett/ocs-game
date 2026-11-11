@@ -36,7 +36,7 @@ public partial class VendorsSmokeTest : Node
                 "The award editor also blanks unknown payment and capacity instead of disclosing its raw numbers.");
             var blank = CardText("harborBottling");
             Require(blank.Contains("Cash: — · Card: —") && blank.Contains("Islands reached: —")
-                && blank.Contains("Supply per day: —") && blank.Contains("Price per unit per day: — · Notice: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
+                && blank.Contains("Supply per day: —") && blank.Contains("Price per gal: — · Notice: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
             Require(blank.Contains(expected.View.VendorCards().Single(c => c.Id == "harborBottling").StillToLearn!), "The exact engine sentence explains how to fill the blanks.");
             var hash = shell.Session.StateHash;
             await Capture("blank");
@@ -52,10 +52,13 @@ public partial class VendorsSmokeTest : Node
             var known = expected.View.VendorCards().Single(c => c.Id == "harborBottling");
             var sale = known.Sells.Single(); var text = CardText(known.Id);
             Require(shell.Session.StateHash == expected.StateHash() && text.Contains("Cash: yes · Card: no")
-                && text.Contains(DeskUi.Money(sale.UnitPriceCents!.Value)) && text.Contains(sale.CapacityPerDay + " " + sale.Unit)
+                && text.Contains(DeskUi.Money(sale.UnitPriceCents!.Value)) && text.Contains(sale.CapacityPerDay!.Value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " " + sale.Unit)
                 && text.Contains(known.KnownFrom!), "A completed meeting fills in the exact price, supply, payment and source supplied by Sim.");
             Require(shell.SupplierKnowledge!.Text.Contains("Cash: yes · Card: no") && !shell.SupplierKnowledge.Text.Contains("Supply per day: —"),
                 "The same award summary fills in after the engine reports learned terms and capacity.");
+            Require(text.Contains("Supply per day: 5,000 gal") && text.Contains("Price per gal: " + DeskUi.Money(sale.UnitPriceCents!.Value)),
+                "A consumable quote names its engine unit and groups thousands without adding another per-day charge.");
+            Require(CardText("campServices").Contains("Price per beds per day:"), "An equipment quote retains its daily basis and the engine unit.");
             await Capture("known");
             Require(CardText("campServices").Contains(expected.View.VehicleName("campBpa")), "An existing BPA appears on its vendor's card.");
             shell.VendorMeetButtons["harborBottling"].EmitSignal(Button.SignalName.Pressed);

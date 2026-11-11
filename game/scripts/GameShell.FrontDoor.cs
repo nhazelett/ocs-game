@@ -21,7 +21,7 @@ public partial class GameShell
     private void BuildFrontDoor()
     {
         frontDoor = new PanelContainer { Name = "FrontDoor", ZIndex = 15 };
-        var background = new StyleBoxFlat { BgColor = TabletopTheme.Background };
+        using var background = new StyleBoxFlat { BgColor = TabletopTheme.Background };
         frontDoor.AddThemeStyleboxOverride("panel", background);
         AddChild(frontDoor); frontDoor.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var center = new CenterContainer(); frontDoor.AddChild(center);

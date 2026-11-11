@@ -133,6 +133,10 @@ public partial class PrioritiesSmokeTest : Node
                 Require(shell.PriorityInputs.Values.All(t => t.GetGlobalRect().Position.X >= scroll.GetGlobalRect().Position.X
                     && t.GetGlobalRect().End.X <= scroll.GetGlobalRect().End.X), "The three toggles fit the award form.");
                 Require(shell.AwardTrade!.GetGlobalRect().End.X <= GetViewport().GetVisibleRect().End.X, "The wrapped trade stays in the preview pane.");
+                var previewScroll = (ScrollContainer)shell.AwardTrade.GetParent().GetParent();
+                Require(previewScroll.GetGlobalRect().Encloses(shell.AwardTrade.GetGlobalRect())
+                    && previewScroll.GetGlobalRect().Encloses(shell.AwardTiming.GetGlobalRect()),
+                    "The complete trade and shop-hours cost fit together above the preview fold.");
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[index + 1] + "-" + suffix + ".png") == Error.Ok, "Native pair screenshot saved.");

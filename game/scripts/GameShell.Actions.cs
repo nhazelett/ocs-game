@@ -18,7 +18,7 @@ public partial class GameShell
     private int awardFormVersion;
     private OptionButton instrumentInput = null!, vendorInput = null!, vehicleInput = null!, fundingInput = null!;
     private SpinBox quantityInput = null!, startInput = null!, durationInput = null!;
-    private Label previewCost = null!, previewStops = null!, previewGaps = null!;
+    private Label previewCost = null!, previewTiming = null!, previewStops = null!, previewGaps = null!;
     private Button awardButton = null!;
     internal AwardAction? PendingAward { get; private set; }
     internal ActionPreview? AwardPreview { get; private set; }
@@ -35,6 +35,7 @@ public partial class GameShell
     internal SpinBox DurationInput => durationInput;
     internal SpinBox StartInput => startInput;
     internal Button AwardButton => awardButton;
+    internal Label AwardTiming => previewTiming;
 
     private void BuildActionDesk()
     {
@@ -194,6 +195,7 @@ public partial class GameShell
             return;
         }
         AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); // DESK-26
+        previewTiming = DeskUi.Label(); previewPanel.AddChild(previewTiming);
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
@@ -218,7 +220,8 @@ public partial class GameShell
             AwardPreview = view.Preview(PendingAward);
             AwardTrade!.Text = AwardPreview.Trade ?? ""; AwardTrade.Visible = AwardPreview.Trade is not null; // DESK-26
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
-            previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.\n\nIt would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
+            previewTiming.Text = $"It would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
+            previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.";
             previewStops.Text = string.Join("\n\n", AwardPreview.HardStops);
             previewGaps.Text = string.Join("\n\n", AwardPreview.SoftGaps);
             previewStops.Visible = AwardPreview.HardStops.Count > 0;
@@ -227,7 +230,7 @@ public partial class GameShell
         }
         catch (OverflowException)
         {
-            AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
+            AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
             previewGaps.Text = ""; awardButton.Disabled = true;
         }
     }
