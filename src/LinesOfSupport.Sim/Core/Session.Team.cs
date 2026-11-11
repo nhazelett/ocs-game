@@ -127,14 +127,21 @@ public sealed partial class Session
     }
 
     /// <summary>Hours a work item would take if handed to this person, at their pace; null if it cannot be handed over.</summary>
-    internal int? HoursIfAssigned(string workId, string memberId)
+    internal double? HoursIfAssigned(string workId, string memberId)
     {
         var w = _work.FirstOrDefault(x => x.Id == workId && x.CompletedDay is null);
         var to = _team.FirstOrDefault(m => m.Id == memberId);
         if (w is null || to is null) return null;
         var from = Member(w.Assignee);
-        return CeilHours(w.HoursRemainingMilli <= 0 ? 0 : (w.HoursRemainingMilli * from.SpeedPermille + to.SpeedPermille - 1) / to.SpeedPermille);
+        return HalfHours(w.HoursRemainingMilli <= 0 ? 0 : (w.HoursRemainingMilli * from.SpeedPermille + to.SpeedPermille - 1) / to.SpeedPermille);
     }
+
+    /// <summary>Milli-hours shown to the player, rounded up to the half hour (DESK-14), so a faster teammate's 2.4 hours
+    /// reads 2.5, not 3. Only the views round; the Sim still charges milli-hours.</summary>
+    internal static double HalfHours(long milli) => milli <= 0 ? 0 : (milli + 499) / 500 / 2.0;
+
+    /// <summary>Hours as a player reads them: "3", "2.5".</summary>
+    internal static string HoursText(double hours) => hours.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
 
     // ------------------------------------------------------------------ views
 
@@ -145,13 +152,13 @@ public sealed partial class Session
         {
             var open = _work.Where(w => w.CompletedDay is null && w.Assignee == m.Id).ToList();
             var readyMilli = open.Where(w => w.WaitUntilDay <= Day).Sum(w => w.HoursRemainingMilli);
-            var perDay = CeilHours(m.HoursPerDayMilli);
-            var today = CeilHours(Math.Min(m.HoursPerDayMilli, readyMilli));
-            var work = open.Select(w => new TeamWorkView(w.Id, w.Label, CeilHours(w.HoursRemainingMilli), w.WaitUntilDay <= Day,
+            var perDay = HalfHours(m.HoursPerDayMilli);
+            var today = HalfHours(Math.Min(m.HoursPerDayMilli, readyMilli));
+            var work = open.Select(w => new TeamWorkView(w.Id, w.Label, HalfHours(w.HoursRemainingMilli), w.WaitUntilDay <= Day,
                 w.WaitUntilDay > Day ? w.WaitUntilDay : null)).ToList();
             result.Add(new TeamMemberView(m.Id, m.Role, m.Role == "you" ? "You" : m.Name, m.Rank, m.Portrait,
                 m.Role switch { "you" => "You", "experienced" => "Experienced contracting officer", _ => "Junior contracting officer" },
-                Pace(m.SpeedPermille), perDay, today, Math.Max(0, perDay - today), CeilHours(open.Sum(w => w.HoursRemainingMilli)), work));
+                Pace(m.SpeedPermille), perDay, today, Math.Max(0, perDay - today), HalfHours(open.Sum(w => w.HoursRemainingMilli)), work));
         }
         return result;
     }

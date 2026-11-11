@@ -95,7 +95,7 @@ public class TeamTests
         Assert.True(s.Apply(ForkliftCall("novak")).Accepted);
         var w = s.Work.Single();
         var junior = w.HoursRemainingMilli;
-        Assert.Equal((int)((junior * 750 / 1250 + 999) / 1000), s.View.HoursIfAssigned(w.Id, "avery"));
+        Assert.Equal((junior * 750 / 1250 + 499) / 500 / 2.0, s.View.HoursIfAssigned(w.Id, "avery"));
         Assert.True(s.Apply(new AssignAction { Work = w.Id, To = "avery" }).Accepted);
         Assert.Equal("avery", w.Assignee);
         Assert.Equal((junior * 750 + 1249) / 1250, w.HoursRemainingMilli);
@@ -173,5 +173,28 @@ public class TeamTests
         var path = Path.Combine(Path.GetTempPath(), $"los-team-{Guid.NewGuid():N}.json");
         File.WriteAllText(path, log.ToJson());
         return path;
+    }
+
+    [Fact]
+    public void A_teammates_pace_shows_in_the_hours_rounded_to_the_half_hour()
+    {
+        // DESK-14: the finance trip is 3 hours of usual work; the experienced CCO's is 2.4, shown 2.5 (it read 3, the same
+        // as yours), the junior's is 4. The Sim still charges the milli-hours.
+        var s = Session.Create(Repo.Load("tutorial"), 1);
+        Assert.True(s.Apply(new FindFinanceAction()).Accepted);
+        var w = s.Work.Single();
+        Assert.Equal(3000, w.HoursRemainingMilli);
+        Assert.Equal(3, s.View.HoursIfAssigned(w.Id, "you"));
+        Assert.Equal(2.5, s.View.HoursIfAssigned(w.Id, "avery"));
+        Assert.Equal(4, s.View.HoursIfAssigned(w.Id, "novak"));
+
+        Assert.True(s.Apply(new AssignAction { Work = w.Id, To = "avery" }).Accepted);
+        Assert.Equal(2400, w.HoursRemainingMilli);
+        var avery = s.View.Team.Single(m => m.Id == "avery");
+        Assert.Equal(2.5, Assert.Single(avery.Work).HoursLeft);
+        Assert.Equal(2.5, avery.HoursSpokenForToday);
+        Assert.Equal(5.5, avery.FreeHoursToday);
+        Assert.Equal(2.5, avery.HoursQueued);
+        Assert.Contains("MSgt Joan Avery has 5.5 free hours today.", s.View.EndOfDayCheck());
     }
 }
