@@ -110,7 +110,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Food service depends on water, which was short. (see #0)
   #2 hubSite.waste days 13-20, lowest 0%, 8 day(s) down: AVOIDABLE
       [discoverable] Inherited host nation support for waste removal at Hub was withdrawn by the host nation on day 8 (last day of support 12) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
-      [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12.
+      [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12. It was raised at the commander's staff meeting on day 6, when the shop was not in the room.
   #3 hubSite.mhe days 8-20, lowest 0%, 13 day(s) down: AVOIDABLE
       [discoverable] Inherited host nation support for material handling equipment at Hub was withdrawn by the host nation on day 3 (last day of support 7) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
       [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7.

@@ -181,6 +181,20 @@ public sealed class ScenarioBundle
             foreach (var c in f.Capabilities) Need(caps.Contains(c), $"funding line {f.Id} capability {c} not in rules");
             Need(f.AvailableDay <= f.ExpiresDay, $"funding line {f.Id} expires before it is released");
         }
+        // The team (DESK-02): exactly one "you", unique ids, hours and a pace above zero.
+        if (s.Shop.Team is { } team)
+        {
+            Need(team.Count > 0, "shop.team is empty");
+            Need(team.Count(m => m.Role == "you") == 1, "shop.team needs exactly one member with role you");
+            Need(team.Select(m => m.Id).Distinct(StringComparer.Ordinal).Count() == team.Count, "shop.team ids are not unique");
+            foreach (var m in team)
+            {
+                Need(m.Role is "you" or "experienced" or "junior", $"team member {m.Id} role {m.Role} is not you, experienced or junior");
+                Need(m.Name.Length > 0, $"team member {m.Id} has no name");
+                Need(m.HoursPerDay > 0, $"team member {m.Id} needs hours a day");
+                Need(m.Speed > 0, $"team member {m.Id} speed must be above zero");
+            }
+        }
         // People (M2R-01): unique ids, known roles, and every reference names a person in the right role.
         var people = new Dictionary<string, PersonData>(StringComparer.Ordinal);
         foreach (var p in s.People) Need(people.TryAdd(p.Id, p), $"person id {p.Id} is not unique");
@@ -203,6 +217,18 @@ public sealed class ScenarioBundle
         {
             if (c.Person is not null) Need(people.ContainsKey(c.Person), $"card {c.Id} person {c.Person} not found");
             Need(c.Person is not null || c.SubmittedBy.Length > 0, $"card {c.Id} names neither a person nor submittedBy");
+            foreach (var (line, k) in c.KnownBy)
+            {
+                Need(c.Lines.ContainsKey(line), $"card {c.Id} knownBy line {line} is not one of its lines");
+                Need(people.ContainsKey(k.Person), $"card {c.Id} knownBy person {k.Person} not found");
+                Need(k.Says.Length > 0, $"card {c.Id} knownBy {line} says nothing");
+            }
+            if (c.HeardAtStaffMeeting is { } h)
+            {
+                Need(h.FromDay >= 1 && h.FromDay < c.SubmittedDay, $"card {c.Id} heardAtStaffMeeting.fromDay must be at least 1 and before submittedDay");
+                if (h.By is not null) Need(people.ContainsKey(h.By), $"card {c.Id} heardAtStaffMeeting.by person {h.By} not found");
+                Need(h.Says.Length > 0, $"card {c.Id} heardAtStaffMeeting says nothing");
+            }
         }
         foreach (var e in s.Events)
             if (e.From is not null) Need(people.ContainsKey(e.From), $"event {e.Id} from {e.From} not found");

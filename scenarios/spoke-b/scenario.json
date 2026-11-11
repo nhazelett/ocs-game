@@ -228,6 +228,10 @@
         "operator": false,
         "maintenance": false
       },
+      "knownBy": {
+        "operator": { "person": "ruiz", "says": "I can't spare anyone to run generators at Spoke B. Whoever brings them has to run them." },
+        "maintenance": { "person": "ruiz", "says": "Same for keeping them running: nobody of mine will be out there to fix them." }
+      },
       "person": "ruiz",
       "message": "Advance team at Spoke B needs power by day 7. I wrote it up as six sixty-kilowatt generators.",
       "flaggedEnduring": false
@@ -245,6 +249,10 @@
         "operator": false,
         "maintenance": false
       },
+      "knownBy": {
+        "operator": { "person": "ruiz", "says": "Nobody is running the plant at Spoke C. The vendor has to bring its own operators." },
+        "maintenance": { "person": "ruiz", "says": "And nobody maintains it either. Put maintenance in the request." }
+      },
       "person": "okafor",
       "message": "Spoke C has no water of its own. We need bottled water from day 5, about eighteen hundred gallons a day.",
       "flaggedEnduring": false
@@ -260,6 +268,9 @@
       "lines": {
         "service": true,
         "operator": false
+      },
+      "knownBy": {
+        "operator": { "person": "brandt", "says": "There are no cooks at Spoke C. Whoever brings the meals has to bring the people to serve them." }
       },
       "person": "brandt",
       "message": "Hot meals for the camp, three a day, from day 12. The MREs won't last.",
@@ -822,6 +833,62 @@
       "portrait": "lin",
       "lines": {
         "greeting": "Spoke C. We're small and we're last in line, I know."
+      }
+    },
+    {
+      "id": "moreau",
+      "name": "Andre Moreau",
+      "rank": "Mr.",
+      "unit": "Meridian Site Services",
+      "role": "vendorRep",
+      "vendor": "vendorB",
+      "lines": {
+        "greeting": "Site services out on the second island. Generators come with the job."
+      }
+    },
+    {
+      "id": "reyna",
+      "name": "Tomas Reyna",
+      "rank": "Mr.",
+      "unit": "Harbor Equipment Co",
+      "role": "vendorRep",
+      "vendor": "vendorC",
+      "portrait": "reyna",
+      "lines": {
+        "greeting": "Generators, light towers, loaders. Call us off the agreement any time."
+      }
+    },
+    {
+      "id": "sato",
+      "name": "Hana Sato",
+      "rank": "Ms.",
+      "unit": "Second Island Fuel",
+      "role": "vendorRep",
+      "vendor": "vendorD",
+      "lines": {
+        "greeting": "We keep the fuel on the second island. Small outfit, but we're right there."
+      }
+    },
+    {
+      "id": "pryce",
+      "name": "Owen Pryce",
+      "rank": "Mr.",
+      "unit": "Third Island Water Works",
+      "role": "vendorRep",
+      "vendor": "vendorF",
+      "lines": {
+        "greeting": "Water and meals on the third island. We have done it for years."
+      }
+    },
+    {
+      "id": "carvalho",
+      "name": "Ines Carvalho",
+      "rank": "Ms.",
+      "unit": "Coastal Provisions",
+      "role": "vendorRep",
+      "vendor": "vendorG",
+      "lines": {
+        "greeting": "Water and rations, stocked right here on the third island."
       }
     }
   ],

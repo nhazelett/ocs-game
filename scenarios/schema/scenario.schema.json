@@ -309,6 +309,30 @@
             "type": "string",
             "description": "What the unit wrote, e.g. '6 x 60 kW generators'"
           },
+          "heardAtStaffMeeting": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fromDay", "says"],
+            "description": "DESK-08 (D4): the requirement comes up at the commander's staff meeting from fromDay. A shop in the room has it on the desk the next morning; a shop that is not gets it on submittedDay, which must be later.",
+            "properties": {
+              "fromDay": { "type": "integer", "minimum": 1 },
+              "by": { "$ref": "#/$defs/id", "description": "people[] id of who raises it. Default: the commander." },
+              "says": { "type": "string", "minLength": 1, "description": "What they say in the room, in their words" }
+            }
+          },
+          "knownBy": {
+            "type": "object",
+            "description": "DESK-03 (D3): for a line left off the request, who knows it is needed and what they say when asked about this request. Asking them reveals it; then the player can add it. A line with no entry is one nobody will tell you about.",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["person", "says"],
+              "properties": {
+                "person": { "$ref": "#/$defs/id", "description": "people[] id" },
+                "says": { "type": "string", "minLength": 1, "description": "What they tell you, in their words" }
+              }
+            }
+          },
           "lines": {
             "type": "object",
             "description": "Scope line id to on/off. Line ids come from the capability card catalog (cards.json, M1).",
@@ -737,6 +761,13 @@
           "quality": {
             "type": "string",
             "description": "A key of rules cor.qualities"
+          },
+          "knows": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Capabilities the COR's unit works with every day (DESK-07). When present, a COR off their unit's work, or already watching other contracts, reports fewer problems (rules cor.offFitPermille, perOtherContractPermille). Absent: fit is not modeled for this COR."
           }
         }
       }
@@ -967,6 +998,25 @@
             "null"
           ],
           "description": "null means sufficient for the scenario"
+        },
+        "team": {
+          "type": "array",
+          "minItems": 1,
+          "description": "The named team (DESK-02, docs/design/desk-redesign.md D2). Exactly one member has role you. Each member's work comes out of their own hours; work nobody is given stays with you. Absent means the player alone with people x hoursPerPersonPerDay hours (older scenarios). When present, people is ignored.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "role", "name", "hoursPerDay"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "role": { "enum": ["you", "experienced", "junior"] },
+              "name": { "type": "string", "minLength": 1, "description": "Default name; the player can rename at the start of a game" },
+              "rank": { "type": "string" },
+              "portrait": { "type": "string", "description": "Default face; the player can pick another at the start of a game" },
+              "hoursPerDay": { "type": "integer", "minimum": 1, "description": "This person's hours for the day" },
+              "speed": { "type": "number", "exclusiveMinimum": 0, "default": 1, "description": "Work this person gets through per hour against the usual pace: 1.2 means a 12-hour job takes them 10 hours" }
+            }
+          }
         }
       }
     },

@@ -97,7 +97,7 @@ SCORECARD
   Mission output 100% (sortie generation 100%, throughput 100%, endurance 100%, resilience 100%)
   Obligated $643,466; incurred $331,466; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 37; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 1
+  Surveys 0; shop hours worked 33; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 1
 
 PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
@@ -106,4 +106,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 32233a4d46205ef8ac1ae3c4ffbaa6ad0a50489a6ebc54b528ba6e1b77b17013
+State hash 438baab0b9bccf21225c1722182b116febf2be4a109eb840f5c7aa2b73ed10d3
