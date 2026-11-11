@@ -116,3 +116,12 @@ M2R-13 puts the Sim's lead item first on Board. **Other updates and sites** expa
 Menu > Sound has independent Sound and Music volume/mute controls, remembered on this computer. Music includes the approved title, alternating desk tracks with fades and quiet gaps, and harbor ambience while the map is visible. Event cues lower the background mix. Missing music files leave the game usable and silent. The runtime reads the four Ogg files under the packaged assets/audio/music folder; Windows packaging includes them.
 
 MusicSmokeTest.tscn exercises actual native playback, transitions, playlist gaps, ambience crossfades, cue ducking, independent controls, disk preferences and missing-file behavior with the dummy audio driver. It does not provide a human listening verdict.
+
+
+## Vendors (DESK-24)
+
+Vendors replaces the visible Directory and Vehicles tabs. Choose whose card to read: what they sell and where they are based is always shown; payment, price, supply, notice and reach stay blank until the Sim says they are known. The card names the representative, offers the existing meeting preview/action, and shows the office's arrangements, known BPAs/IDIQs and setup work with that vendor. Host-nation and partner support are excluded by the Sim's vendor-card projection.
+
+Set up a BPA or IDIQ from that vendor's card. The scrollable setup view offers only that supplier's capabilities and scope. IDIQ setup takes a ceiling, optional guarantee and ordering period, and a funding line; both forms show the exact engine preview and block submission on its hard stops. Back, duplicate clicks, stale forms and finished games cannot submit a setup. New arrangements and vehicles retain the existing save/replay path.
+
+VendorsSmokeTest checks exact nullable facts, meeting fill-in, independent Sim state hashes, typed IDIQ terms and preview, cancellation/stale/duplicate guards, save/resume and completed setup on the vendor card. The existing BPA suite still checks threshold stops and the actual completed call limit.

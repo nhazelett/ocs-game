@@ -107,7 +107,6 @@ public partial class GameShell
             default:
                 if (person is not null && view.Scenario.People.First(p => p.Id == person.Id).Vendor is { } vendor)
                 {
-                    visitsForm.AddChild(DeskUi.Label($"Directory confidence: {view.VendorConfidence(vendor)}."));
                     if (view.VendorMetDay(vendor) is { } met) visitsForm.AddChild(DeskUi.Label($"You met on day {met}."));
                     AddVisit("vendor", "Meet " + person.DisplayName, new MeetVendorAction { Day = view.Day, Vendor = vendor }, view);
                 }

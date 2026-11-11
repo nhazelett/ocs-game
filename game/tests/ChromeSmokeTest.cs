@@ -76,8 +76,8 @@ public partial class ChromeSmokeTest : Node
             var partner = Enumerable.Range(0, shell.VendorInput.ItemCount).Single(i => shell.VendorInput.GetItemMetadata(i).AsString() == "partnerForce");
             Require(shell.CurrentActionEditor!.Vendors.Single(v => v.Id == "partnerForce").Name == "the partner force"
                 && shell.VendorInput.GetItemText(partner).StartsWith("The partner force")
-                && shell.EstablishVendorButtons["partnerForce"].Text.StartsWith("The partner force"),
-                "Market and Directory capitalise the partner list label while retaining the authored noun in Sim.");
+                && !shell.VendorCardContents.ContainsKey("partnerForce"),
+                "Market capitalises the partner list label; partner support has no buyable vendor card.");
             Require(shell.Session.StateHash == selectionHash, "Vendor label formatting changes no Sim state.");
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.SelectedCapability is null && !caption.Visible && caption.Text == "", "Continue starts with no stale map selection.");

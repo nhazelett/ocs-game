@@ -27,6 +27,7 @@ public partial class GameShell
     internal OptionButton InstrumentInput => instrumentInput;
     internal OptionButton FundingInput => fundingInput;
     internal OptionButton? CorInput { get; private set; }
+    internal Label? SupplierKnowledge { get; private set; }
     internal OptionButton VendorInput => vendorInput;
     internal OptionButton VehicleInput => vehicleInput;
     internal SpinBox QuantityInput => quantityInput;
@@ -107,6 +108,7 @@ public partial class GameShell
         });
         awardButton.Disabled = true; awardFooter.AddChild(awardButton);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
+        SupplierKnowledge = null;
         var targets = AwardTargets(view);
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
         if (!targets.Any(t => t.Id == awardTarget))
@@ -136,7 +138,14 @@ public partial class GameShell
             id => { awardInstrument = id; awardCor = null; }, out var instrumentReason);
         InstrumentChoiceReason = instrumentReason;
         if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
-            awardPanel.AddChild(DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}. They offer {supplier.CapacityPerDay} {editor.Unit} a day, with {supplier.CapacityFreeToday} available today. Their lead time is {supplier.LeadTimeDays} days."));
+        {
+            SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
+                + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)
+                + "\nSupply per day: " + (supplier.CapacityKnown ? $"{supplier.CapacityPerDay} {editor.Unit}" : "—")
+                + " · Available today: " + (supplier.CapacityKnown ? supplier.CapacityFreeToday.ToString() : "—")
+                + "\nNotice: " + (supplier.PaymentKnown ? (supplier.LeadTimeDays == 1 ? "1 day" : $"{supplier.LeadTimeDays} days") : "—"));
+            awardPanel.AddChild(SupplierKnowledge);
+        }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
         vehicleInput = AddAwardChoice("Vehicle", needsVehicle ? "Choose a vehicle…" : "No vehicle needed", choices.Vehicles, awardVehicle,
             id => awardVehicle = id, out var vehicleReason);
