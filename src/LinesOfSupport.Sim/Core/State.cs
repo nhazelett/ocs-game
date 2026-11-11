@@ -162,7 +162,8 @@ public sealed class CardState
     public required string SiteId { get; init; }
     public required string CapabilityId { get; init; }
     public required Dictionary<string, bool> Lines { get; init; }
-    public int SubmittedDay { get; init; }
+    /// <summary>The day it is on the desk. A requirement raised at a staff meeting moves earlier (DESK-08).</summary>
+    public int SubmittedDay { get; set; }
     public int RequestedStartDay { get; init; }
     public int DurationDays { get; init; }
     public string? QuantityHint { get; init; }
@@ -170,6 +171,10 @@ public sealed class CardState
     /// <summary>The person who brought the card (M2R-01), a people[] id; null for a free-text submitter.</summary>
     public string? PersonId { get; init; }
     public string? Message { get; init; }
+    /// <summary>DESK-08: the scenario's staff-meeting hearing, if any.</summary>
+    public Data.StaffMeetingHearingData? Heard { get; init; }
+    /// <summary>DESK-08: the meeting day the shop heard it in the room; null if it was not.</summary>
+    public int? RaisedInRoomDay { get; set; }
 }
 
 /// <summary>What the player knows about an island. Surveys raise the tier; the true facts are in the scenario.</summary>

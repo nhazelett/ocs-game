@@ -223,6 +223,12 @@ public sealed class ScenarioBundle
                 Need(people.ContainsKey(k.Person), $"card {c.Id} knownBy person {k.Person} not found");
                 Need(k.Says.Length > 0, $"card {c.Id} knownBy {line} says nothing");
             }
+            if (c.HeardAtStaffMeeting is { } h)
+            {
+                Need(h.FromDay >= 1 && h.FromDay < c.SubmittedDay, $"card {c.Id} heardAtStaffMeeting.fromDay must be at least 1 and before submittedDay");
+                if (h.By is not null) Need(people.ContainsKey(h.By), $"card {c.Id} heardAtStaffMeeting.by person {h.By} not found");
+                Need(h.Says.Length > 0, $"card {c.Id} heardAtStaffMeeting says nothing");
+            }
         }
         foreach (var e in s.Events)
             if (e.From is not null) Need(people.ContainsKey(e.From), $"event {e.Id} from {e.From} not found");

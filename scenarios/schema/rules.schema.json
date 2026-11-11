@@ -926,6 +926,23 @@
             "previewDays": {
               "type": "integer",
               "minimum": 0
+            },
+            "notes": {
+              "type": "string"
+            },
+            "contractingPermille": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000,
+              "description": "DESK-08 (D4): chance per meeting that it has anything for contracting (previews of requests due within previewDays). Default 1000."
+            },
+            "opsTalk": {
+              "type": "array",
+              "description": "DESK-08 (D4): what a meeting with nothing for contracting talks about; one line is drawn per meeting. Player-visible sentences.",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           }
         },

@@ -140,6 +140,10 @@
       },
       "person": "ruizT",
       "message": "The host nation is pulling its honey trucks after day 12. We need somebody pumping the latrines from day 13, every day.",
+      "heardAtStaffMeeting": {
+        "fromDay": 6,
+        "says": "The mayor's office tells me Main Island Utilities wants its honey trucks back before long. When they go, the latrines still get pumped every day, no gap. Contracting, that one is yours. Capt Ruiz has the numbers."
+      },
       "flaggedEnduring": false
     }
   ],

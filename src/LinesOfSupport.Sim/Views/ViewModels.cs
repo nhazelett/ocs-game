@@ -161,11 +161,14 @@ public sealed record RequirementDependency(string CapabilityId, string Label, st
 /// <param name="Title">What and where, e.g. "Power for Spoke B": the card's name on screen (M2R-01).</param>
 /// <param name="Person">The person who brought it, when the scenario names one (M2R-01).</param>
 /// <param name="Message">What they said when they brought it, in their words.</param>
+/// <param name="HeardAt">DESK-08 (D4): for a requirement first raised at the staff meeting, one sentence on whether the
+/// shop was in the room ("...and the shop was in the room." or "...so it reached you on day 9."). Null for any other.</param>
 public sealed record RequirementEditorView(
     string CardId, string SiteId, string SiteName, string CapabilityId, string CapabilityLabel, string Unit,
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
     IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
-    string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null);
+    string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null,
+    string? HeardAt = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 

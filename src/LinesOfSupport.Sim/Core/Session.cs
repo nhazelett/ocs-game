@@ -127,6 +127,7 @@ public sealed partial class Session
                 Id = c.Id, SiteId = c.Site, CapabilityId = c.Capability, Lines = new Dictionary<string, bool>(c.Lines, StringComparer.Ordinal),
                 SubmittedDay = c.SubmittedDay, RequestedStartDay = c.RequestedStartDay, DurationDays = c.DurationDays,
                 QuantityHint = c.QuantityHint, SubmittedBy = c.SubmittedBy, PersonId = c.Person, Message = c.Message,
+                Heard = c.HeardAtStaffMeeting,
             });
         foreach (var i in Scenario.Islands)
             _knowledge.Add(new IslandKnowledge { IslandId = i.Id, Tier = i.InfoTier ?? (i.IsHub ? "observed" : "assumed") });

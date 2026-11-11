@@ -788,10 +788,20 @@
       "sourceUrl": "https://www.acquisition.gov/far/13.306"
     },
     "staffMeeting": {
+      "notes": "DESK-08 (D4): the commander's stand-up is every day and is mostly not about contracting. contractingPermille is the chance a meeting has anything for the shop (it then mentions requests due within previewDays); otherwise it is one line of opsTalk. A requirement tagged heardAtStaffMeeting is raised in the room whatever the draw. weeklyShopHours is the hours of each meeting (the name is from the weekly cadence). Placeholders, tuned in playtest.",
       "joinShopHours": 2,
-      "weeklyShopHours": 2,
-      "everyDays": 7,
-      "previewDays": 7
+      "weeklyShopHours": 1,
+      "everyDays": 1,
+      "previewDays": 7,
+      "contractingPermille": 400,
+      "opsTalk": [
+        "Most of it was the flying schedule: two sorties slipped for weather and one jet is down waiting on a part. Nothing for contracting.",
+        "Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.",
+        "The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.",
+        "Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.",
+        "Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.",
+        "Operations briefed tomorrow's sorties and a change to the alert posture. Nothing for contracting."
+      ]
     },
     "askSco": {
       "shopHours": 1,

@@ -55,29 +55,25 @@ public class GoingToPeopleTests
     }
 
     [Fact]
-    public void The_staff_meeting_shows_requirements_before_they_are_submitted_and_recurs_weekly()
+    public void The_staff_meeting_recurs_every_day_once_joined_and_stops_when_you_stop_going()
     {
         var s = Session.Create(Repo.Load("spoke-b"), 1);
         Assert.False(s.Apply(new JoinStaffMeetingAction { Attend = false }).Accepted);
         Assert.True(s.Apply(new JoinStaffMeetingAction()).Accepted);
         Assert.True(s.View.StaffMeeting.Joining);
         s.AdvanceDay();
-        var first = Assert.Single(Visits(s));
-        // MSgt Brandt's food service card is submitted on day 3; the meeting on day 1 hears about it first.
-        Assert.Contains("MSgt Lena Brandt, Spoke C camp, said they will be asking for food service for Spoke C, wanted from day 12.", first.Text);
+        Assert.StartsWith("You got yourself into the commander's staff meeting.", Assert.Single(Visits(s)).Text);
         var meeting = s.View.StaffMeeting;
         Assert.True(meeting.Attending);
-        Assert.Equal(8, meeting.NextDay);
-        Assert.Contains("req0014", meeting.PreviewedCards);
+        Assert.Equal(2, meeting.NextDay);
         Days(s, 7);
-        Assert.Equal([1, 8], s.View.StaffMeeting.MeetingDays);
-        Assert.Contains("Nobody raised anything new", Visits(s)[1].Text);
-        // Each meeting after the first costs the weekly hours.
+        Assert.Equal([1, 2, 3, 4, 5, 6, 7, 8], s.View.StaffMeeting.MeetingDays);
+        // Each meeting after the first costs the meeting's hours (DESK-08: every day).
         Assert.Contains(s.Work, w => w.Kind == WorkKind.Visit && w.Label == "Staff meeting" && w.CreatedDay == 8
                                      && w.HoursTotalMilli == s.Rules.GoingToPeople.StaffMeeting.WeeklyShopHours * 1000L);
         Assert.True(s.Apply(new JoinStaffMeetingAction { Attend = false }).Accepted);
         Days(s, 8);
-        Assert.Equal([1, 8], s.View.StaffMeeting.MeetingDays);
+        Assert.Equal([1, 2, 3, 4, 5, 6, 7, 8], s.View.StaffMeeting.MeetingDays);
         Assert.False(s.View.StaffMeeting.Attending);
     }
 
@@ -252,7 +248,7 @@ public class GoingToPeopleTests
         foreach (var r in Visits(a))
             foreach (var id in ids)
                 Assert.False(Regex.IsMatch(r.Text, $@"\b{Regex.Escape(id)}\b"), $"'{id}' in: {r.Text}");
-        Assert.Equal(4 + 1 + 5 + a.Scenario.Vendors.Count, Visits(a).Count);
+        Assert.Equal(4 + 1 + a.View.StaffMeeting.MeetingDays.Count + a.Scenario.Vendors.Count, Visits(a).Count);
         // Visits go through the input log like any action: a replay lands on the same state.
         Assert.Equal(a.StateHash(), Replay.Run(Repo.Load("spoke-b"), a.ToInputLog()).StateHash());
     }

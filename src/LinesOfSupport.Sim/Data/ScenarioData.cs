@@ -177,6 +177,22 @@ public sealed record RequirementCardData
     public bool FlaggedEnduring { get; init; }
     /// <summary>DESK-03: line id to who knows it is needed and what they say when asked about this request.</summary>
     public Dictionary<string, CardKnowledgeData> KnownBy { get; init; } = [];
+    /// <summary>DESK-08 (D4): a requirement first raised at the commander's staff meeting. Null: it just arrives.</summary>
+    public StaffMeetingHearingData? HeardAtStaffMeeting { get; init; }
+}
+
+/// <summary>
+/// A requirement that comes up at the commander's staff meeting before anyone brings it to the shop (DESK-08, D4). From
+/// FromDay a meeting the shop attends raises it, and it is on the desk the next morning; a shop that is not in the room
+/// gets it on the card's submittedDay, which is later.
+/// </summary>
+public sealed record StaffMeetingHearingData
+{
+    public int FromDay { get; init; }
+    /// <summary>Who raises it in the room (a people[] id). Null: the commander.</summary>
+    public string? By { get; init; }
+    /// <summary>What they say, in their words.</summary>
+    public string Says { get; init; } = "";
 }
 
 /// <summary>Someone who knows a part the request left out (DESK-03, D3), and what they say when asked.</summary>
@@ -650,14 +666,21 @@ public sealed record FindFinanceRulesData
     public string? SourceUrl { get; init; }
 }
 
-/// <summary>The commander's staff meeting: joining costs hours once, each weekly meeting after that costs WeeklyShopHours
-/// and shows requirements due to be submitted within PreviewDays.</summary>
+/// <summary>The commander's staff meeting: joining costs hours once, each meeting after that (every EveryDays) costs
+/// WeeklyShopHours (the name is from the weekly cadence; it is the hours of each meeting). DESK-08 (D4): a meeting
+/// carries something for contracting only on a ContractingPermille draw, when it previews requests due within
+/// PreviewDays; otherwise it is ops talk, one line of OpsTalk. A requirement tagged heardAtStaffMeeting is raised in
+/// the room whatever the draw.</summary>
 public sealed record StaffMeetingRulesData
 {
     public int JoinShopHours { get; init; } = 2;
     public int WeeklyShopHours { get; init; } = 2;
     public int EveryDays { get; init; } = 7;
     public int PreviewDays { get; init; } = 7;
+    /// <summary>DESK-08: odds (per mille) that a meeting has anything for contracting. 1000 (the default): every meeting does.</summary>
+    public int ContractingPermille { get; init; } = 1000;
+    /// <summary>DESK-08: what the meeting talks about when nothing in it is for contracting, one line drawn per meeting.</summary>
+    public List<string> OpsTalk { get; init; } = [];
 }
 
 /// <summary>Reachback to the SCO's staff: a question from the short list, answered after the SCO's response lag

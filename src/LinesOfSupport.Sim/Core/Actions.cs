@@ -314,7 +314,7 @@ public sealed record StandUpGpcProgramAction : PlayerAction;
 /// replenishment, and returns the real cash and card timing. Once per game.</summary>
 public sealed record FindFinanceAction : PlayerAction;
 
-/// <summary>Get into the commander's weekly staff meeting (Attend true), or stop going (false). Once in, each meeting costs
+/// <summary>Get into the commander's staff meeting (Attend true), or stop going (false). Once in, each meeting costs
 /// shop hours and returns the commander's priorities and requirements before they are submitted (design doc 6.2).</summary>
 public sealed record JoinStaffMeetingAction : PlayerAction
 {

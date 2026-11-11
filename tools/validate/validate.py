@@ -91,6 +91,12 @@ def cross_checks(sc, rules):
             errs.append(f"card {card['id']}: person {person} not found")
         if person is None and not card.get("submittedBy", ""):
             errs.append(f"card {card['id']} names neither a person nor submittedBy")
+        heard = card.get("heardAtStaffMeeting")
+        if heard is not None:
+            if not 1 <= heard["fromDay"] < card["submittedDay"]:
+                errs.append(f"card {card['id']}: heardAtStaffMeeting.fromDay must be at least 1 and before submittedDay")
+            if heard.get("by") is not None and heard["by"] not in people:
+                errs.append(f"card {card['id']}: heardAtStaffMeeting.by {heard['by']} not found")
     for event in sc["events"]:
         speaker = event.get("from")
         if speaker is not None and speaker not in people:

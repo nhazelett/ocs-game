@@ -152,7 +152,9 @@ public sealed partial class Session
                 var ended = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && a.Status != ArrangementStatus.Declined && a.EndDay < d)
                                          .OrderByDescending(a => a.EndDay).FirstOrDefault();
                 var tail = (ended is null ? "" : $" The last arrangement supplying it, {NameOf(ended.Id)}, ended on day {ended.EndDay}.")
-                           + (later is null ? "" : $" {NameOf(later.Id)} did not start until day {later.StartDay}.{ExternalNote(later)}{PickLateNote(later)}");
+                           + (later is null ? "" : $" {NameOf(later.Id)} did not start until day {later.StartDay}.{ExternalNote(later)}{PickLateNote(later)}")
+                           + (card.Heard is { } h && card.RaisedInRoomDay is null && h.FromDay < card.SubmittedDay
+                               ? $" It was raised at the commander's staff meeting on day {h.FromDay}, when the shop was not in the room." : "");
                 yield return ($"card|{card.Id}|{ended?.Id}", new GapFactor(GapFactorKind.Uncovered, GapTag.Avoidable, d,
                     $"{Upper(CardName(card.Id))} (submitted day {card.SubmittedDay}, needed from day {card.RequestedStartDay}) had nothing supplying it from day {d}.{tail}",
                     later is null ? (ended is null ? [] : [ended.CauseId]) : [later.CauseId]));
