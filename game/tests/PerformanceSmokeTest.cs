@@ -47,6 +47,8 @@ public partial class PerformanceSmokeTest : Node
             result = expected.Apply(new TerminateAction { Day = expected.Day, Arrangement = issue.ArrangementId });
             Require(result.Accepted, "Termination fixture is accepted.");
             shell.PerformanceChoices[(issue.Id, "terminate")].EmitSignal(Button.SignalName.Pressed);
+            shell.TerminateButtons[issue.ArrangementId].EmitSignal(Button.SignalName.Pressed);
+            shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.PerformanceChoices[(issue.Id, "terminate")].Disabled, "Terminate sends the exact action and prevents duplicate work.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "Terminate ActionResult is visible.");
             while (!shell.Session.View!.Finished) Step(shell);

@@ -19,6 +19,7 @@ public partial class GameShell
     {
         boardActions = new VBoxContainer { Name = "SupportActions" };
         boardDetails.AddChild(boardActions);
+        BuildContractView();
     }
 
     private void RefreshBoardActions(SessionView? view)
@@ -58,9 +59,6 @@ public partial class GameShell
     private void AddArrangementActions(VBoxContainer parent, Arrangement arrangement, SessionView view)
     {
         if (arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return;
-        var terminate = DeskUi.Button("Terminate " + view.ArrangementName(arrangement.Id), () => SendAction(new TerminateAction { Day = session.View!.Day, Arrangement = arrangement.Id }));
-        terminate.Disabled = view.Finished || view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
-        parent.AddChild(terminate); terminations.Add(arrangement.Id, terminate);
         if (arrangement.Uca is { } uca)
             parent.AddChild(DeskUi.Label("UCA · " + (uca.Definitized ? "definitized" : uca.DefinitizationInWork ? "definitization in work" : uca.ProposalReceived ? "qualifying proposal received" : "awaiting qualifying proposal")));
         if (arrangement.Uca is not { ProposalReceived: true, Definitized: false, DefinitizationInWork: false }) return;

@@ -38,7 +38,7 @@ internal static class TabletopTheme
             theme.SetColor("font_focus_color",type,Ink);theme.SetColor("font_disabled_color",type,Muted);theme.SetColor("font_selected_color",type,Paper);
         }
         theme.SetFont("normal_font","RichTextLabel",regular);theme.SetFont("bold_font","RichTextLabel",bold);theme.SetColor("default_color","RichTextLabel",Ink);
-        foreach(var type in new[]{"Panel","PanelContainer","PopupPanel","PopupMenu","Tree","ItemList","TooltipPanel"}) theme.SetStylebox("panel",type,Box(Paper,12));
+        foreach(var type in new[]{"Panel","PanelContainer","PopupPanel","PopupMenu","Tree","ItemList","TooltipPanel","AcceptDialog","ConfirmationDialog"}) theme.SetStylebox("panel",type,Box(Paper,12));
         foreach(var type in new[]{"Button","OptionButton"})
         {
             theme.SetStylebox("normal",type,Box(Paper,8));theme.SetStylebox("hover",type,Box(Hover,8));
@@ -81,6 +81,10 @@ internal static class TabletopTheme
             if(new Vector2(x-8.5f,y-8.5f).Length()<=8)knob.SetPixel(x,y,Moss);
         using var texture=ImageTexture.CreateFromImage(knob);
         theme.SetIcon("grabber","HSlider",texture);theme.SetIcon("grabber_highlight","HSlider",texture);
+        using var closeImage=Image.CreateEmpty(18,18,false,Image.Format.Rgba8);closeImage.Fill(Colors.Transparent);
+        for(var i=4;i<14;i++){closeImage.FillRect(new Rect2I(i,i,2,2),Ink);closeImage.FillRect(new Rect2I(17-i,i,2,2),Ink);}
+        using var closeTexture=ImageTexture.CreateFromImage(closeImage);
+        foreach(var name in new[]{"close","close_hl","close_pressed"})theme.SetIcon(name,"Window",closeTexture);
         var arrow=Arrow();theme.SetIcon("arrow","OptionButton",arrow);
         theme.SetIcon("updown","SpinBox",UpDown());
         foreach(var name in new[]{"increment","increment_highlight","decrement","decrement_highlight"})
