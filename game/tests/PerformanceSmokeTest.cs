@@ -8,7 +8,7 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class PerformanceSmokeTest : Node
 {
-    public override void _Ready()
+    public override async void _Ready()
     {
         try
         {
@@ -54,6 +54,14 @@ public partial class PerformanceSmokeTest : Node
             while (!shell.Session.View!.Finished) Step(shell);
             Require(shell.PerformanceChoices.Values.All(b => b.Disabled), "Finished-game performance controls are disabled.");
             Scenario(shell, "spoke-b"); Require(shell.PerformanceChoices.Count == 0, "Scenario reset clears performance choices.");
+            // Release the full shell and finalize managed resources while Godot is still running.
+            // CI previously crashed during native shutdown after this suite's pass marker.
+            shell.QueueFree(); shell = null!;
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(!GetChildren().OfType<GameShell>().Any(), "The full shell is gone before process shutdown.");
             GD.Print("PERFORMANCE_SMOKE_PASS: persistent issue, pure re-source navigation, cure timing/outcome and exact termination."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"PERFORMANCE_SMOKE_FAIL: {error}"); GetTree().Quit(1); }

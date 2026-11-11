@@ -33,7 +33,14 @@ public partial class SupportSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }
             Require(shell.Session.StateHash == hash, "Opening actual support-withdrawal evidence leaves Sim unchanged.");
-            shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            // Release the full shell and finalize managed resources while Godot is still running.
+            // CI previously crashed during native shutdown after this suite's pass marker.
+            shell.QueueFree(); shell = null!;
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(!GetChildren().OfType<GameShell>().Any(), "The full shell is gone before process shutdown.");
             GD.Print("SUPPORT_SMOKE_PASS: actual ACSA withdrawal label, unchanged evidence and read-only debrief."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"SUPPORT_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
