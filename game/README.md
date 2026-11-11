@@ -133,3 +133,11 @@ VendorsSmokeTest checks exact nullable facts, meeting fill-in, independent Sim s
 The tutorial replaces the aggregate shop-hours gauge with three named personal-hour bars. Click a name to inspect that person's work and hand an unfinished task to another teammate. The picker shows Sim's hours at each person's pace; new work starts with you. The team view is read only until Give them this task is pressed.
 
 Before leaving, Your team opens the name and portrait choices. Apply remembers them in user://team.cfg for future new deployments. The deployment stores its own choices in InputLog.Team, so saves and replays keep their original team. Legacy scenarios retain their authored single-person roster until DESK-12; the screen does not invent extra staff.
+
+### COR reasons and the customer's ask (DESK-27)
+
+Written awards list CORs in `SessionView.CorChoices` order with each exact `Why` sentence below the picker and on its tooltip. None remains the default. Quantity, start and duration captions retain the customer's `ActionEditorView.Requested*` values while the player changes their purchase. Own-initiative buys carry no customer ask. Award pickers clip long selected captions so the scrollable form stays within the desk pane. `AwardContextSmokeTest` checks those bindings, stale controls, exact award/save replay and graphical containment.
+
+### The office vehicle (DESK-29)
+
+Buy on your own initiative starts with `SessionView.OwnInitiative` offers, followed by ordinary site needs. Each office offer shows its exact reason and seller names, and uses the existing award editor for its site/capability. The visits page binds `HasShopVehicle` beside the quoted visit hours; the Sim owns activation, expiry and every time saving. `ShopVehicleSmokeTest` checks a real tutorial purchase, the cheaper meeting, save/load, expiry and scenario clearing against independent Sim play.

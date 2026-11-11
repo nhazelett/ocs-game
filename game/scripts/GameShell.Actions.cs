@@ -25,6 +25,7 @@ public partial class GameShell
     internal ActionEditorView? CurrentActionEditor { get; private set; }
     internal OptionButton AwardRequestInput { get; private set; } = null!;
     internal OptionButton? InitiativeTargetInput { get; private set; }
+    internal Label? InitiativeDetails { get; private set; }
     internal OptionButton InstrumentInput => instrumentInput;
     internal OptionButton FundingInput => fundingInput;
     internal OptionButton? CorInput { get; private set; }
@@ -72,15 +73,17 @@ public partial class GameShell
     {
         var targets = view.Cards.Select(c => view.RequirementEditor(c.Id)).Where(c => c is not null)
             .Select(c => new AwardTarget(c!.CardId, $"{c.Title} · {c.Person?.DisplayName ?? c.SubmittedBy}", c.SiteId, c.CapabilityId, c.CardId)).ToList();
+        targets.AddRange(view.OwnInitiative.Select(t => new AwardTarget(t.SiteId + "." + t.CapabilityId,
+            t.Label + " · " + view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name, t.SiteId, t.CapabilityId, null)));
         targets.AddRange(view.MorningBoard().Tiles.Select(t => new AwardTarget(t.SiteId + "." + t.CapabilityId,
             $"{view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name} {t.Label.ToLowerInvariant()}", t.SiteId, t.CapabilityId, null)));
-        return targets;
+        return targets.GroupBy(t => t.Id).Select(g => g.First()).ToList();
     }
 
     private static OptionButton AddPick(VBoxContainer panel, string label, IReadOnlyList<Pick> options, string? selected, Action<string> changed)
     {
         panel.AddChild(DeskUi.Label(label));
-        var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
+        var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true };
         for (var i = 0; i < options.Count; i++)
         {
             picker.AddItem(options[i].Text + (options[i].Block is null ? "" : $" — {options[i].Block}"));
@@ -106,7 +109,7 @@ public partial class GameShell
     private void RefreshActionDesk(SessionView? view)
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
-        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; InitiativeTargetInput = null;
+        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
         PriorityInputs.Clear(); AwardTrade = null; // DESK-26
         var formVersion = ++awardFormVersion;
         var formHash = session.StateHash;
@@ -130,6 +133,7 @@ public partial class GameShell
                 ?? targets.FirstOrDefault(t => t.Card is not null) ?? targets[0]).Id;
         void ChooseTarget(string id)
         {
+            if (formVersion != awardFormVersion || formHash != session.StateHash) return;
             awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
             awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
         }
@@ -142,6 +146,12 @@ public partial class GameShell
         if (target.Card is null)
             InitiativeTargetInput = AddPick(awardPanel, "What would you buy on your own initiative?",
                 ownTargets.Select(t => new Pick(t.Id, t.Label)).ToArray(), target.Id, ChooseTarget);
+        if (target.Card is null && view.OwnInitiative.FirstOrDefault(t => t.SiteId == target.Site && t.CapabilityId == target.Capability) is { } initiative)
+        {
+            InitiativeDetails = DeskUi.Label(initiative.Why + "\nWho sells it: " + string.Join(", ", initiative.Vendors.Select(view.NameOf)) + "."
+                + (initiative.Have ? "\nThe office has one running today." : ""));
+            awardPanel.AddChild(InitiativeDetails);
+        }
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
         var choices = ReconcileAwardChoices(view, target);
@@ -179,18 +189,32 @@ public partial class GameShell
         }
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {
-            var cors = new[] { new Pick("", "None") }.Concat(view.Cors.Select(c => new Pick(c.Id, CorText(view, c)))).ToArray();
-            CorInput = AddPick(awardPanel, "COR", cors, awardCor, id => { awardCor = id; UpdateAwardPreview(); });
+            var cors = view.CorChoices(editor.CapabilityId);
+            var options = new[] { new Pick("", "None") }.Concat(cors.Select(c => new Pick(c.Id,
+                c.Name + (string.IsNullOrEmpty(c.Unit) ? "" : " · " + c.Unit)))).ToArray();
+            CorInput = AddPick(awardPanel, "Who will watch this contract?", options, awardCor, id =>
+            {
+                if (formVersion != awardFormVersion || formHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay
+                    || session.View is not { Finished: false }) return;
+                awardCor = id; UpdateAwardPreview();
+            });
+            CorInput.Disabled = view.Finished;
             awardCor = Picked(CorInput);
+            for (var i = 0; i < cors.Count; i++)
+            {
+                CorInput.SetItemTooltip(i + 1, cors[i].Why);
+                var reason = DeskUi.Label(cors[i].Why);
+                awardPanel.AddChild(reason); CorReasonLabels.Add(reason);
+            }
         }
         else awardCor = null;
         var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
         quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);
         duration ??= Math.Max(1, requirement?.DurationDays ?? view.LastDay);
         // SpinBox stores doubles: this is its exact-integer display limit, not a simulation capacity rule.
-        quantityInput = AddNumber($"Quantity ({editor.Unit})", quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
-        startInput = AddNumber("Requested start day", start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
-        durationInput = AddNumber("Duration (days)", duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
+        quantityInput = AddNumber($"Quantity ({editor.Unit})" + (editor.CardId is null ? "" : $" · Asked: {editor.RequestedQuantity ?? "No quantity stated"}"), quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
+        startInput = AddNumber("Start day" + (editor.RequestedStartDay is { } askedStart ? $" · Asked: day {askedStart}" : ""), start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
+        durationInput = AddNumber("Duration (days)" + (editor.RequestedDurationDays is { } askedDays ? $" · Asked: {askedDays} days" : ""), duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
         if (!AwardTermsComplete)
         {
             previewPanel.AddChild(DeskUi.Label("Choose an available vehicle and funding line for these terms before asking for the quote."));

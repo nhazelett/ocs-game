@@ -114,11 +114,11 @@ public partial class RequirementSmokeTest : Node
             // The tutorial is the gate path: operators are learned from Dunn, then deliberately added.
             Scenario(shell, "tutorial"); Step(shell, 3); Open("tutForklift"); KnownLines("tutForklift");
             Require(!shell.RequirementAddButtons.ContainsKey("operator"), "The tutorial never exposes an unlearned operators control.");
-            await Capture("--request-screenshot");
+            await Capture("request", "--request-screenshot");
             shell.RequirementAskButtons["dunn"].EmitSignal(Button.SignalName.Pressed); Step(shell); Open("tutForklift");
             KnownLines("tutForklift");
             Require(shell.RequirementAddButtons.ContainsKey("operator"), "Dunn's completed visit reveals the operators.");
-            await Capture("--learned-screenshot", shell.RequirementAddButtons["operator"]);
+            await Capture("learned", "--learned-screenshot", shell.RequirementAddButtons["operator"]);
             shell.RequirementAddButtons["operator"].EmitSignal(Button.SignalName.Pressed); KnownLines("tutForklift");
 
             // Exact provenance for both an attended and a missed meeting.
@@ -152,9 +152,17 @@ public partial class RequirementSmokeTest : Node
                     && panel.GetChildren().OfType<Label>().Any(l => l.HasMeta("heard_at") && l.Text == model.HeardAt),
                     "The request shows the Sim's exact staff-meeting source sentence.");
             }
-            async Task Capture(string flag, Control? focus = null)
+            async Task Capture(string suffix, string legacyFlag, Control? focus = null)
             {
-                var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, flag); if (at < 0) return;
+                var args = OS.GetCmdlineUserArgs();
+                var prefixAt = Array.IndexOf(args, "--screenshots");
+                var at = prefixAt >= 0 ? prefixAt : Array.IndexOf(args, legacyFlag);
+                if (at < 0) return;
+                Require(at + 1 < args.Length, "The screenshot option needs an output path.");
+                var path = args[at + 1] + (prefixAt >= 0 ? "-" + suffix + ".png" : "");
+                var stateBefore = shell!.Session.StateHash;
+                Require(shell.Session.View!.RequirementEditor("tutForklift")!.Unit == "forklifts"
+                    && shell.TeamBars.Count == 3, "Gate captures use plain forklift units and the three-person tutorial team.");
                 shell!.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 1;
                 var scroll = (ScrollContainer)panel.GetParent(); scroll.ScrollVertical = 0;
                 await Frames(); if (focus is not null) scroll.EnsureControlVisible(focus); await Frames();
@@ -165,7 +173,8 @@ public partial class RequirementSmokeTest : Node
                     "The learned action is entirely inside the visible request form.");
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();
-                Require(image.SavePng(args[at + 1]) == Error.Ok, "Native request screenshot saved.");
+                Require(image.SavePng(path) == Error.Ok, "Native request screenshot saved.");
+                Require(shell.Session.StateHash == stateBefore, "Capturing a request changes no simulation state.");
             }
         }
         catch (Exception error) { shell?.QueueFree(); GD.PushError($"REQUIREMENT_SMOKE_FAIL: {error}"); GetTree().Quit(1); }

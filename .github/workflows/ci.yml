@@ -125,6 +125,8 @@ jobs:
           grep -Fq 'PLAIN_NAMES_SMOKE_PASS:' "$RUNNER_TEMP/godot-names.log"
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/InitiativeSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-initiative.log"
           grep -Fq 'INITIATIVE_SMOKE_PASS:' "$RUNNER_TEMP/godot-initiative.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/ShopVehicleSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-shop-vehicle.log"
+          grep -Fq 'SHOP_VEHICLE_SMOKE_PASS:' "$RUNNER_TEMP/godot-shop-vehicle.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/MarketSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-market.log"
           grep -Fq 'MARKET_SMOKE_PASS:' "$RUNNER_TEMP/godot-market.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/BoardSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-board.log"
@@ -177,6 +179,8 @@ jobs:
           grep -Fq 'FUNDING_SMOKE_PASS:' "$RUNNER_TEMP/godot-funding.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/CorSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-cor.log"
           grep -Fq 'COR_SMOKE_PASS:' "$RUNNER_TEMP/godot-cor.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/AwardContextSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-award-context.log"
+          grep -Fq 'AWARD_CONTEXT_SMOKE_PASS:' "$RUNNER_TEMP/godot-award-context.log"
           python3 -m py_compile tools/bpy/generate_kit.py
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"

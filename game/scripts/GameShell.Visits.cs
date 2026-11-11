@@ -19,6 +19,7 @@ public partial class GameShell
     internal SpinBox? J4QuantityInput { get; private set; }
     internal Dictionary<string, Button> VisitButtons { get; } = [];
     internal Dictionary<string, (PlayerAction Action, ActionPreview Preview)> VisitOptions { get; } = [];
+    internal Label? ShopVehicleStatus { get; private set; }
     internal VBoxContainer VisitResults => visitResults;
     internal VBoxContainer MentorMessages => mentorMessages;
 
@@ -46,7 +47,7 @@ public partial class GameShell
     {
         DeskUi.Clear(visitsForm); DeskUi.Clear(visitResults); DeskUi.Clear(mentorMessages);
         VisitButtons.Clear(); VisitOptions.Clear(); contactPeople.Clear();
-        ScoQuestionInput = J4SiteInput = null; J4QuantityInput = null;
+        ScoQuestionInput = J4SiteInput = null; J4QuantityInput = null; ShopVehicleStatus = null;
         mentorMessages.Visible = false; PeopleToggle.Disabled = view is null;
         if (view is null) return;
         // Only tutorial-authored messages from the outgoing CCO are guidance. The Sim supplies their exact words and day.
@@ -84,6 +85,11 @@ public partial class GameShell
             var face=new PersonPortrait{SizeFlagsHorizontal=SizeFlags.ShrinkBegin};face.SetPerson(person);visitsForm.AddChild(face);
             visitsForm.AddChild(DeskUi.Label(person.WithUnit));
             if (person.Line("greeting") is { } greeting) visitsForm.AddChild(DeskUi.Label(greeting));
+        }
+        if (view.OwnInitiative.Count > 0)
+        {
+            ShopVehicleStatus = DeskUi.Label(view.HasShopVehicle ? "Office vehicle: running today." : "Office vehicle: none running today.");
+            visitsForm.AddChild(ShopVehicleStatus);
         }
         switch (visitContact)
         {
@@ -126,7 +132,11 @@ public partial class GameShell
         var button = DeskUi.Button(text, () => SendAction(action)); button.Disabled = view.Finished || !preview.Accepted;
         button.SetMeta("visit", key); host.AddChild(button); VisitButtons[key] = button;
         static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
-        host.AddChild(DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop hours. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}."));
+        static string Hours(int min, int max) => $"{Range(min, max)} shop {(min == 1 && max == 1 ? "hour" : "hours")}";
+        var saving = action is MeetVendorAction && view.HasShopVehicle && preview.ShopHoursMax < view.Rules.GoingToPeople.MeetVendor.ShopHours
+            ? $" with the office vehicle, down from the usual {Hours(view.Rules.GoingToPeople.MeetVendor.ShopHours, view.Rules.GoingToPeople.MeetVendor.ShopHours)}" : "";
+        var timing = DeskUi.Label($"This takes {Hours(preview.ShopHoursMin, preview.ShopHoursMax)}{saving}. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}.");
+        timing.SetMeta("visit_timing", key); host.AddChild(timing);
         if (preview.HardStops.Count > 0)
         {
             var stops = DeskUi.Label(string.Join("\n\n", preview.HardStops)); stops.AddThemeColorOverride("font_color", TabletopTheme.Alert); host.AddChild(stops);

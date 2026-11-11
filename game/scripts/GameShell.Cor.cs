@@ -6,6 +6,7 @@ namespace LinesOfSupport.Game;
 
 public partial class GameShell
 {
+    internal List<Label> CorReasonLabels { get; } = [];
     internal Dictionary<string, (OptionButton Picker, Button Submit)> CorDesignations { get; } = [];
 
     private static string CorText(SessionView view, CorState cor)
