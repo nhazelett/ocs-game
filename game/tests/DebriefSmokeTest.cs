@@ -15,7 +15,7 @@ public partial class DebriefSmokeTest : Node
         var temporary = Path.Combine(Path.GetTempPath(), "ocs-debrief-" + Guid.NewGuid());
         try
         {
-            // The gate's approach 1 path, through normal New game, award and ratification controls.
+            // The gate's approach 1 path through New game, award and ratification controls; later cards use legacy scope fixtures.
             static GameShell CreateShell() { using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn"); return scene.Instantiate<GameShell>(); }
             shell = CreateShell(); shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json"); AddChild(shell);
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
@@ -38,7 +38,9 @@ public partial class DebriefSmokeTest : Node
             void SetLine(string card, string line)
             {
                 OpenCard(card); Require(expected.Apply(new SetLineAction { Day = expected.Day, Card = card, Line = line, On = true }).Accepted, "Scope line is accepted by Sim.");
-                shell.RequirementToggles[line].ButtonPressed = true;
+                // These later-card fixtures keep the debrief's original evidence coverage. Discovery UI has its own native suite.
+                Require(shell.SendAction(new SetLineAction { Day = expected.Day, Card = card, Line = line, On = true }).Accepted,
+                    "The supported legacy scope fixture is accepted by the game bridge.");
             }
             void Award(string vendor, string instrument, long quantity, int start, int duration)
             {
@@ -66,7 +68,7 @@ public partial class DebriefSmokeTest : Node
                     shell.CommitmentChoices[(commitment.Id, "ratify")].EmitSignal(Button.SignalName.Pressed);
                 }
                 Step(shell); expected.AdvanceDay();
-                Require(shell.Session.StateHash == expected.StateHash(), "Normal controls reproduce the same independent Sim game each morning.");
+                Require(shell.Session.StateHash == expected.StateHash(), "Controls and authored scope fixtures reproduce the same independent Sim game each morning.");
             }
             Require(!shell.DeveloperToggle.ButtonPressed && !shell.Session.IsReplay, "The by-hand path needs neither files nor developer tools.");
             await CheckOpening(shell);
