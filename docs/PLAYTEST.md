@@ -1,3 +1,15 @@
+# DESK playtest (backlog DESK-28)
+
+For Nick, after the desk redesign (docs/design/desk-redesign.md). The same cold-start play as on 10 Nov: the tutorial, with no help from outside the game.
+
+1. Get the build as below (Get the build). Leave Developer tools off.
+2. New game, Tutorial. Play as you did on 10 Nov, as far as you like; the full twenty days if you can.
+3. Write down every moment you did not know what you were looking at or what to do next, with the day and the screen. Your ten findings from 10 Nov are in the design doc, section 1; the pre-gate walk (docs/reviews/2026-11-11-desk-pre-gate.md) says what each one should look like now.
+
+The gate question: does the desk make sense without help? Yes: the paused work resumes (Spoke B gets the team, the port-to-port shipper, better island art). No: say where, and that is redesigned first. Tell Fable in chat.
+
+The M2R script below is kept for its build steps and as the record of the last gate.
+
 # M2R playtest (backlog M2R-23)
 
 For Nick. This is the gate for M2R, Playable opening (docs/design/opening-and-guidance.md section 10). It replaces the M2 script you played on 8 Nov 2026; that version is in the history of this file. Play it only after Fable has said in chat that M2R is ready (the walk in docs/reviews/ repeated from fresh screenshots); until then some checks below cannot pass.
