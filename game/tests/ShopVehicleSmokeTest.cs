@@ -28,6 +28,10 @@ public partial class ShopVehicleSmokeTest : Node
                 Pick(shell.PersonContactInput, "vendor:" + rep.Id);
             }
             VendorVisit(); var before = shell.VisitOptions["vendor"].Preview;
+            Label Timing() => shell.ShopVehicleStatus!.GetParent().GetChildren().OfType<Label>()
+                .Single(l => l.HasMeta("visit_timing") && l.GetMeta("visit_timing").AsString() == "vendor");
+            Require(Timing().Text.StartsWith($"This takes {before.ShopHoursMin} shop hours.") && !Timing().Text.Contains("down from"),
+                "An ordinary vendor meeting uses plural hours and claims no vehicle saving.");
             var oldRequests = shell.AwardRequestInput; var oldRequestIndex = oldRequests.Selected;
             Pick(oldRequests, "own-initiative");
             oldRequests.EmitSignal(OptionButton.SignalName.ItemSelected, oldRequestIndex);
@@ -55,8 +59,10 @@ public partial class ShopVehicleSmokeTest : Node
             var real = expected.View.PreviewVisit(shell.VisitOptions["vendor"].Action);
             Require(after.ShopHoursMin < before.ShopHoursMin && after.ShopHoursMin == real.ShopHoursMin && after.ShopHoursMax == real.ShopHoursMax,
                 "The running vehicle's lower visit hours come from Sim, not Game arithmetic.");
-            var timing = shell.ShopVehicleStatus!.GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("visit_timing") && l.GetMeta("visit_timing").AsString() == "vendor");
-            Require(timing.Text.Contains($"This takes {after.ShopHoursMin} shop hours.") && shell.ShopVehicleStatus.Text == "Office vehicle: running today.", "The real visit timing and running status are visible together on the visits page.");
+            var timing = Timing();
+            Require(timing.Text.StartsWith($"This takes {after.ShopHoursMin} shop hour with the office vehicle, down from the usual {before.ShopHoursMin} shop hours.")
+                && shell.ShopVehicleStatus!.Text == "Office vehicle: running today.",
+                "The singular hour, actual saving and running status are visible together; the baseline is the independent pre-purchase preview.");
             await Capture(timing, "running-visit"); Matches();
             shell.SaveButton.EmitSignal(Button.SignalName.Pressed); var saved = GameSaveStore.Read(shell.AutosavePath);
             Require(LinesOfSupport.Sim.Replay.Resume(bundle, saved).StateHash() == expected.StateHash(), "The actual saved vehicle reproduces the independent state.");
@@ -67,6 +73,9 @@ public partial class ShopVehicleSmokeTest : Node
             shell.VisitButtons["vendor"].EmitSignal(Button.SignalName.Pressed); Matches();
             while (shell.Session.View!.HasShopVehicle) { Step(shell); expected.AdvanceDay(); Matches(); }
             Require(!shell.Session.View.OwnInitiative.Single().Have && shell.ShopVehicleStatus!.Text == "Office vehicle: none running today.", "Expiry clears the status without caching the benefit.");
+            VendorVisit();
+            Require(shell.VisitOptions["vendor"].Preview.ShopHoursMin == before.ShopHoursMin && !Timing().Text.Contains("down from"),
+                "Expiry restores the original visit hours and removes the saving sentence.");
             Scenario(shell, "spoke-b");
             Require(shell.ShopVehicleStatus is null && shell.InitiativeDetails is null, "A scenario with no office offer inherits no vehicle status or explanation.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

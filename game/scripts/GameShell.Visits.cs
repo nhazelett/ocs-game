@@ -132,7 +132,10 @@ public partial class GameShell
         var button = DeskUi.Button(text, () => SendAction(action)); button.Disabled = view.Finished || !preview.Accepted;
         button.SetMeta("visit", key); host.AddChild(button); VisitButtons[key] = button;
         static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
-        var timing = DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop hours. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}.");
+        static string Hours(int min, int max) => $"{Range(min, max)} shop {(min == 1 && max == 1 ? "hour" : "hours")}";
+        var saving = action is MeetVendorAction && view.HasShopVehicle && preview.ShopHoursMax < view.Rules.GoingToPeople.MeetVendor.ShopHours
+            ? $" with the office vehicle, down from the usual {Hours(view.Rules.GoingToPeople.MeetVendor.ShopHours, view.Rules.GoingToPeople.MeetVendor.ShopHours)}" : "";
+        var timing = DeskUi.Label($"This takes {Hours(preview.ShopHoursMin, preview.ShopHoursMax)}{saving}. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}.");
         timing.SetMeta("visit_timing", key); host.AddChild(timing);
         if (preview.HardStops.Count > 0)
         {
