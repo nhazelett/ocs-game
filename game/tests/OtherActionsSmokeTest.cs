@@ -34,7 +34,9 @@ public partial class OtherActionsSmokeTest : Node
             // DESK-01: host nation and ACSA support are not this office's to end; the fixture terminates its own contract.
             var running = expected.Arrangements.First(a => !a.IsCoordination && a.Status == ArrangementStatus.Active && expected.View.TerminateBlocked(a.Id) is null);
             result = expected.Apply(new TerminateAction { Day = expected.Day, Arrangement = running.Id }); Require(result.Accepted, "The fixture can terminate the contract.");
+            shell.OpenContractView(running.Id);
             shell.TerminateButtons[running.Id].EmitSignal(Button.SignalName.Pressed);
+            shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.TerminateButtons[running.Id].Disabled, "Termination queues exactly once and shows its result.");
 
             Scenario(shell, "spoke-b-90"); Replay(shell, "approach3b uca never definitized");

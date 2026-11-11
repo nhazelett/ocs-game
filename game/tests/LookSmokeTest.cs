@@ -38,6 +38,12 @@ public partial class LookSmokeTest : Node
             {
                 shell!.LookPicker.Select(direction);
                 shell.LookPicker.EmitSignal(OptionButton.SignalName.ItemSelected, direction);
+                GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+                using var theme = shell.Theme;
+                using var panel = theme.GetStylebox("panel", "Panel");
+                using var arrow = theme.GetIcon("arrow", "OptionButton");
+                Require(panel is StyleBoxFlat paper && paper.BgColor.IsEqualApprox(TabletopTheme.Paper)
+                    && arrow.GetSize().X > 0, "Each native theme retains its styles and icons after managed wrappers are released.");
             }
             shell = Open();
             Require(shell.LookDirection == 2 && shell.LookPicker.Selected == 2, "Tabletop is the fresh default.");
@@ -70,7 +76,7 @@ public partial class LookSmokeTest : Node
                 Require(shell.GetThemeColor("font_color", "Label").IsEqualApprox(new Color(style.Ink)),
                     "Every screen inherits the selected ink.");
                 Require(shell.GetNode<Label>("%GameTitle").GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink)
-                    && shell.GetNode<Button>("%Continue").GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink),
+                    && shell.GetNode<Button>("Navigation/Menu").GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink),
                     "Existing labels and ordinary buttons keep legible inherited ink after switching.");
                 Require(shell.LookButton.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.PrimaryInk),
                     "Primary buttons use legible ink against the accent.");

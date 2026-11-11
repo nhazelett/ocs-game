@@ -16,7 +16,7 @@ public partial class LedgerSmokeTest : Node
             Scenario(shell, "spoke-b-90"); Replay(shell, "approach3b uca never definitized");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b-90"));
             var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach3b-uca-never-definitized.json"));
-            var sawUnpaid = false; var sawUnusable = false; var sawCoordination = false;
+            var sawUnpaid = false; var sawUnusable = false; var sawCoordination = false; var sawFreeSupport = false;
             while (true)
             {
                 var view = shell.Session.View!;
@@ -28,6 +28,7 @@ public partial class LedgerSmokeTest : Node
                     var row = funds.Single(l => l.GetMeta("funding").AsString() == funding.Id);
                     Require(row.Text.Contains(DeskUi.Money(funding.RemainingCents)) && row.Text.Contains($"expires day {funding.ExpiresDay}"), "Remaining funds and expiry come from Sim.");
                     Require(row.Text.Contains(funding.UsableOn(view.Day) ? "· usable today" : "· not usable today"), "Funding usability refreshes with the day.");
+                    Require(char.IsUpper(row.Text[0]), "Funding headings start with a capital.");
                     sawUnusable |= !funding.UsableOn(view.Day);
                 }
                 var arrangements = ledger.GetChildren().OfType<Button>().Where(b => b.HasMeta("arrangement")).ToArray();
@@ -35,14 +36,23 @@ public partial class LedgerSmokeTest : Node
                 foreach (var arrangement in view.Arrangements)
                 {
                     var row = arrangements.Single(b => b.GetMeta("arrangement").AsString() == arrangement.Id);
-                    Require(row.Text.Contains(arrangement.Status.ToString()) && row.Text.Contains($"Obligated {DeskUi.Money(arrangement.ObligatedCents)}") && row.Text.Contains($"incurred {DeskUi.Money(arrangement.IncurredCents)}") && row.Text.Contains($"Unobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"), "All arrangement amounts and status bind to Sim, including Q11.");
+                    Require(char.IsUpper(row.Text[0]) && row.Text.Contains(arrangement.Status switch { ArrangementStatus.Pending => "Being arranged", ArrangementStatus.Active => "Providing support", ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended", _ => "Declined" }), "Support headings are capitalized and keep the Sim status.");
+                    if (row.Text.Contains("no recorded costs"))
+                    {
+                        Require(view.TerminateBlocked(arrangement.Id) is not null && arrangement.ObligatedCents == 0
+                            && arrangement.IncurredCents == 0 && arrangement.UnobligatedIncurredCents == 0 && !row.Text.Contains('$'),
+                            "A no-cost sentence applies only to protected support with zero recorded amounts.");
+                        sawFreeSupport = true;
+                    }
+                    else
+                        Require(row.Text.Contains($"Money committed {DeskUi.Money(arrangement.ObligatedCents)}") && row.Text.Contains($"cost of support received {DeskUi.Money(arrangement.IncurredCents)}") && row.Text.Contains($"Received but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"), "Payment amounts bind to Sim, including Q11.");
                     sawUnpaid |= arrangement.UnobligatedIncurredCents > 0;
                     sawCoordination |= arrangement.IsCoordination;
                 }
                 if (view.Finished) break;
                 Step(shell);
             }
-            Require(sawUnpaid && sawUnusable && sawCoordination, "Replay covers unpaid UCA, expired funds and coordination rows.");
+            Require(sawUnpaid && sawUnusable && sawCoordination && sawFreeSupport, "Replay covers unpaid UCA, expired funds and coordination rows.");
             var expected = LinesOfSupport.Sim.Replay.Run(bundle, log);
             Require(shell.Session.StateHash == expected.StateHash(), "Inspecting every row leaves the replay unchanged.");
             Scenario(shell, "spoke-b"); Replay(shell, "approach1 refuse"); Step(shell, 14);

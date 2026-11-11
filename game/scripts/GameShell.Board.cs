@@ -32,6 +32,7 @@ public partial class GameShell
     private void ResetDeskSelection()
     {
         ResetOpening();
+        CloseContractView();
         debriefHash = null;
         ResetVisits();
         BoardDetailsToggle.ButtonPressed = false;
@@ -142,7 +143,9 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Label("Funding lines"));
         foreach (var funding in view.Funding)
         {
-            var row = DeskUi.Label($"{(SelectedFunding == funding.Id ? "Selected funding line: " : "")}{view.FundingName(funding.Id)} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
+            var heading = SelectedFunding == funding.Id
+                ? "Selected funding line: " + view.FundingName(funding.Id) : DeskUi.ListLabel(view.FundingName(funding.Id));
+            var row = DeskUi.Label($"{heading} · remaining {DeskUi.Money(funding.RemainingCents)}\nAvailable day {funding.AvailableDay} · expires day {funding.ExpiresDay} · {(funding.UsableOn(view.Day) ? "usable today" : "not usable today")}");
             var purpose = funding.Capabilities.Count == 0 ? "any" : string.Join(", ", funding.Capabilities.Select(id => CapabilityName(view, id).ToLowerInvariant()));
             row.Text += $"\nPurpose: {purpose}";
             if (funding.AvailableDay > funding.PlannedAvailableDay)
@@ -151,24 +154,26 @@ public partial class GameShell
             row.SetMeta("funding", funding.Id); linkedLedger.AddChild(row);
         }
         if (view.Funding.Count == 0) linkedLedger.AddChild(DeskUi.Label("No funding lines."));
-        linkedLedger.AddChild(DeskUi.Label("Arrangements"));
+        linkedLedger.AddChild(DeskUi.Label("What we are paying for"));
         foreach (var arrangement in view.Arrangements)
         {
-            var button = DeskUi.Button($"{view.ArrangementName(arrangement.Id)} · {arrangement.Status}\nObligated {DeskUi.Money(arrangement.ObligatedCents)} · incurred {DeskUi.Money(arrangement.IncurredCents)}\nUnobligated incurred {DeskUi.Money(arrangement.UnobligatedIncurredCents)}", () =>
+            var button = DeskUi.Button($"{DeskUi.ListLabel(view.ArrangementName(arrangement.Id))} · {ArrangementStatusText(arrangement.Status)}\n{ArrangementPaymentText(view, arrangement)}", () =>
             {
-                SelectedArrangement = arrangement.Id; SelectedFunding = null; RenderLedgerContext(session.View);
+                OpenContractView(arrangement.Id);
             });
             button.ToggleMode = true; button.ButtonPressed = SelectedArrangement == arrangement.Id;
             button.SetMeta("arrangement", arrangement.Id); linkedLedger.AddChild(button);
             AddCorDesignation(linkedLedger, arrangement, view);
             AddArrangementActions(linkedLedger, arrangement, view);
         }
-        if (view.Arrangements.Count == 0) linkedLedger.AddChild(DeskUi.Label("No arrangements yet."));
+        if (view.Arrangements.Count == 0) linkedLedger.AddChild(DeskUi.Label("No support to pay for yet."));
+        if (ContractView?.Visible == true) RefreshContractView(view);
     }
 
     private void OnContinue()
     {
         if (ReadingTurnover || PlayingDay) return;
+        ShowGameSurface();
         var count = 0;
         var reason = "deployment complete";
         while (AdvanceAndAutosave())

@@ -108,3 +108,9 @@ M2R-15 replaces the schematic dots with an illustrated 2D map. Drag to pan, scro
 
 **Show today's movement** repeats a five-second visual animation of the last completed day's `MapDay()` facts; it never advances time or replays an input file. Actual delivery runs travel by their reported mode and finish with a truck at the site. Closed routes stay closed, held cargo waits at its source, and incoming shipments remain outside the destination until the Sim reports arrival. Aircraft appear for actual aircraft/airlift movements or transit records, never merely because an air route has a published schedule. Unreported change causes are not drawn. The map's shapes are drawn in Game source; no new asset files or textures are used.
 M2R-13 puts the Sim's lead item first on Board. **Other updates and sites** expands the remaining work. **Open** reaches the actual requirement, site, funding/contract context or Inbox decision controls. Daily advance collapses the detail list; Continue stops at the next Lead from Sim, with no automatic decisions.
+
+## Sound and music
+
+Menu > Sound has independent Sound and Music volume/mute controls, remembered on this computer. Music includes the approved title, alternating desk tracks with fades and quiet gaps, and harbor ambience while the map is visible. Event cues lower the background mix. Missing music files leave the game usable and silent. The runtime reads the four Ogg files under the packaged assets/audio/music folder; Windows packaging includes them.
+
+MusicSmokeTest.tscn exercises actual native playback, transitions, playlist gaps, ambience crossfades, cue ducking, independent controls, disk preferences and missing-file behavior with the dummy audio driver. It does not provide a human listening verdict.

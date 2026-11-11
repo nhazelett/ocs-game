@@ -111,7 +111,7 @@ public partial class GameShell : Control
         {
             ResetDeskSelection();
             session.LoadReplay(replays[index]);
-            RefreshDisplay($"Replay loaded: {Path.GetFileNameWithoutExtension(replays[index]).Replace('-', ' ')}. Next day plays day 1.", developerOnly: true);
+            RefreshDisplay($"Replay loaded: {Path.GetFileNameWithoutExtension(replays[index]).Replace('-', ' ')}. End the day plays day 1.", developerOnly: true);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException)
         {

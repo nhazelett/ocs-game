@@ -95,8 +95,7 @@ public partial class FundingSmokeTest : Node
             var purposeLedger = purposeShell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
             Require(purposeLedger.GetChildren().OfType<Label>().Any(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == "om1" && l.Text.Contains("Purpose: fuel")), "Ledger shows the restricted purpose.");
             var before = purposeShell.Session.StateHash;
-            var targets = purposeShell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions/AwardEditor").FindChildren("*", "OptionButton", true, false).OfType<OptionButton>().First();
-            Pick(targets, "hubSite.fuel");
+            PickAwardTarget(purposeShell, "hubSite.fuel");
             ChoosePreviewFixture(purposeShell);
             var right = Index(purposeShell.FundingInput, "om1");
             Require(!purposeShell.FundingInput.IsItemDisabled(right) && purposeShell.FundingInput.GetItemTooltip(right) == "", "Changing capability re-enables purpose-matching funds and clears the reason.");
