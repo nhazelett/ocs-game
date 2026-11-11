@@ -17,6 +17,9 @@ public sealed record InputLog
     public List<string> PrepChoices { get; init; } = [];
     public List<PlayerAction> Actions { get; init; } = [];
 
+    /// <summary>Names and faces the player gave the team at the start (DESK-02). Absent: the scenario's own.</summary>
+    public List<TeamPick>? Team { get; init; }
+
     /// <summary>
     /// For a save taken mid-game: the day about to be played when it was written. Every action dated that day
     /// has already been applied and the day has not been advanced. Absent (null) means a finished game or a plain
@@ -31,6 +34,14 @@ public sealed record InputLog
     public string ToJson() => JsonSerializer.Serialize(this, Json.Options);
 }
 
+/// <summary>A teammate's name or face, as the player chose it at the start of a game (DESK-02). Null keeps the scenario's.</summary>
+public sealed record TeamPick
+{
+    public string Id { get; init; } = "";
+    public string? Name { get; init; }
+    public string? Portrait { get; init; }
+}
+
 public static class Replay
 {
     /// <summary>Plays a log to the end of the scenario. Actions are applied on their day, in log order.</summary>
@@ -40,7 +51,7 @@ public static class Replay
             throw new InvalidDataException($"log is for scenario {log.Scenario}, bundle is {bundle.Scenario.Id}");
         if (log.RulesVersion != bundle.Rules.RulesVersion)
             throw new InvalidDataException($"log was played under rules {log.RulesVersion}, bundle has {bundle.Rules.RulesVersion}");
-        var session = Session.Create(bundle, log.Seed, log.PrepChoices);
+        var session = Session.Create(bundle, log.Seed, log.PrepChoices, log.Team);
         var byDay = log.Actions.GroupBy(a => a.Day).ToDictionary(g => g.Key, g => g.ToList());
         var last = Math.Min(stopAfterDay ?? session.LastDay, session.LastDay);
         while (!session.Finished && session.Day <= last)

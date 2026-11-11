@@ -182,10 +182,10 @@ public sealed partial class Session
     internal ActionPreview BuildReviewFilesPreview(ReviewFilesAction r)
     {
         var (files, stops) = CheckReviewFiles(r);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
-        var hours = CeilHours(Fixed.Milli(Rules.FileReview.HoursPerArrangement) * files.Count);
+        var queue = QueueHours(r.Assignee);
+        var hours = CeilHours(PersonHours(Fixed.Milli(Rules.FileReview.HoursPerArrangement) * files.Count, r.Assignee));
         // Findings are ready the day the hours are worked, ignoring the queue ahead.
-        var ready = _hoursPerDayMilli <= 0 ? Day : Day + Math.Max(0, (int)((hours * 1000L + _hoursPerDayMilli - 1) / _hoursPerDayMilli) - 1);
+        var ready = Day + Math.Max(0, WorkDays(hours * 1000L, r.Assignee) - 1);
         return new ActionPreview(stops.Count == 0, stops, [], 0, 0, 0, hours, hours, ready, ready, queue);
     }
 

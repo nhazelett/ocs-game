@@ -70,6 +70,9 @@ public sealed class SessionView
     public IReadOnlyList<CorState> Cors => _s.Cors;
     /// <summary>"fair: reports 2 days late, about 80% of problems".</summary>
     public string CorSummary(CorState cor) => _s.CorSummary(cor);
+    /// <summary>The COR roster for a contract of this capability (DESK-07, D8), best odds first, each with why they fit the
+    /// work or do not. Empty when the scenario has no roster. Read only.</summary>
+    public IReadOnlyList<CorChoice> CorChoices(string capabilityId) => _s.BuildCorChoices(capabilityId);
     /// <summary>Lag and report odds for a COR's current quality (rules cor.qualities).</summary>
     public CorQualityData CorQuality(CorState cor) => _s.CorQuality(cor);
     /// <summary>False for a record the office has not been told about yet: a VendorFailure waiting for a COR or unit
@@ -162,6 +165,22 @@ public sealed class SessionView
 
     /// <summary>The always-visible strip: day, shop-hours and cash gauges, usable funds, system status.</summary>
     public TopStripView TopStrip() => _s.BuildTopStrip();
+
+    /// <summary>The office, one entry per person in team order, with their hours today and their unfinished work (DESK-02).
+    /// Hand work over with <see cref="AssignAction"/>; give new work to someone with any action's Assignee.</summary>
+    public IReadOnlyList<TeamMemberView> Team => _s.BuildTeam();
+
+    /// <summary>What is still open before the day ends (DESK-04, D1), as sentences to show beside "End the day": a request
+    /// due within three days (or late) with nothing arranged or in work, then a teammate with free hours. Empty when nothing
+    /// is open. Read only.</summary>
+    public IReadOnlyList<string> EndOfDayCheck() => _s.BuildEndOfDayCheck();
+
+    /// <summary>One card per vendor the office could buy from (DESK-05, D6): what they sell, cash or card, which islands they
+    /// reach, what the office holds with them. What has not been learned is null (blank on the card). Read only.</summary>
+    public IReadOnlyList<VendorCard> VendorCards() => _s.BuildVendorCards();
+
+    /// <summary>Hours a piece of unfinished work would take if handed to this team member; null if it cannot be.</summary>
+    public int? HoursIfAssigned(string workId, string memberId) => _s.HoursIfAssigned(workId, memberId);
 
     /// <summary>What changed during the last AdvanceDay, alerts first, with the capability tiles and the top strip.</summary>
     public MorningBoardView MorningBoard() => _s.BuildMorningBoard();

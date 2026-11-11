@@ -22,27 +22,26 @@ Day 1
   EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
   SURVEY    File review: lodging at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review: food service at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
-  DONE      CE small buys: none worked today (no hours left); 2 waiting.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
   EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
-  DONE      CE small buys: none worked today (no hours left); 4 waiting.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
   START     Water at Hub from Island Mart began, 4950 gal/day.
 Day 3
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
   EVENT     The host nation takes its forklift back. Main Island Utilities: our forklift goes back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
-  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
-  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 6 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 4
   ACTION    The request for material handling equipment for Hub: Operators switched on.
   ACTION    Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day.
   ! gpc t-tutForklift-bridge: Rejected: Coastal Rentals can supply 4 unit-days/day in total and 3 is already committed
   EVENT     Harbor Equipment Co is short of forklifts this week
-  DONE      CE small buys: 7 worked today (3.5 h of shop time, 1 on cards).
+  DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 5
-  DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
+  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
+  DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 6
   DONE      Undefinitized contract action awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 8, ends day 20. UCA issued with NTE $9,438; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
@@ -115,7 +114,7 @@ SCORECARD
   Mission output 96% (sortie generation 100%, throughput 85%, endurance 100%, resilience 100%)
   Obligated $640,123; incurred $330,416; incurred but not obligated $2,293
   Unauthorized commitments 0; UCAs past due 2; HHQ inquiries 1
-  Surveys 0; shop hours worked 79; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 0
+  Surveys 0; shop hours worked 77; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 0
   hubSite.waste: 1 day(s) down, 0 degraded, lowest 0%
   hubSite.mhe: 3 day(s) down, 0 degraded, lowest 0%
 
@@ -127,7 +126,7 @@ GAPS AND WHY (each traced back through its causes)
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.waste days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
       [discoverable] Inherited host nation support for waste removal at Hub was withdrawn by the host nation on day 8 (last day of support 12) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
-      [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12. Main Island Sanitation waste removal at Hub did not start until day 14.
+      [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12. Main Island Sanitation waste removal at Hub did not start until day 14. It was raised at the commander's staff meeting on day 6, when the shop was not in the room.
   #1 hubSite.mhe days 18-20, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Coastal Rentals material handling equipment at Hub stopped work on day 17: incurred costs went past the obligation cap; it had been past due for definitization since day 15.
 
@@ -138,4 +137,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.962)
 
-State hash 17acdf572ffd82a9b0a1707d38735d7b491166c75c8a4888896e4b7e0e88ef2d
+State hash 6ea7c594f4bb8184570edf1de2efda4e0523404bc4df04988f508f829452a74e

@@ -18,7 +18,8 @@ public sealed partial class Session
         if (Finished) return ActionResult.Stop("the scenario has ended");
         if (action.Day != 0 && action.Day != Day) return ActionResult.Stop($"action is dated day {action.Day} but the current day is {Day}");
         action = action with { Day = Day };
-        var result = action switch
+        _assigneeNow = action.Assignee is { } who && _team.Any(m => m.Id == who) ? who : _lead;
+        var result = AssigneeStop(action) is { } notOnTeam ? ActionResult.Stop(notOnTeam) : action switch
         {
             SurveyAction s => ApplySurvey(s),
             SetLineAction s => ApplySetLine(s),
@@ -43,8 +44,12 @@ public sealed partial class Session
             HostNationRequestAction h => ApplyHostNationRequest(h),
             PlanTransitionAction p => ApplyPlanTransition(p),
             ReviewFilesAction r => ApplyReviewFiles(r),
+            AssignAction a => ApplyAssign(a),
+            AskAboutAction q => ApplyAskAbout(q),
+            AddLineAction l => ApplyAddLine(l),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
+        _assigneeNow = null;
         // Hard stops read as the preview gives them (M2R-40); Message, which the Rejected record carries, is unchanged.
         if (!result.Accepted) result = result with { HardStops = [.. result.HardStops.Select(SentenceCase)] };
         _applied.Add(action);
@@ -82,6 +87,9 @@ public sealed partial class Session
         HostNationRequestAction h => $"host nation support request {h.Id}",
         PlanTransitionAction p => $"transition plan {p.Id}",
         ReviewFilesAction => "file review",
+        AssignAction h => $"handing over {h.Work}",
+        AskAboutAction q => $"asking {q.Person} about {q.Card}",
+        AddLineAction l => $"{l.Card}.{l.Line}=added",
         _ => a.GetType().Name,
     };
 
@@ -94,9 +102,12 @@ public sealed partial class Session
 
     private WorkItem AddWork(WorkKind kind, string label, long hoursMilli, int waitUntil, object? payload, string causeId)
     {
+        // DESK-02: the work goes to whoever the action named (you, if nobody), in that person's own hours.
+        var who = Member(_assigneeNow).Id;
+        hoursMilli = PersonHours(hoursMilli, who);
         var item = new WorkItem
         {
-            Id = $"w{++_workSeq}", Kind = kind, Label = label, HoursTotalMilli = hoursMilli, HoursRemainingMilli = hoursMilli,
+            Id = $"w{++_workSeq}", Kind = kind, Label = label, HoursTotalMilli = hoursMilli, HoursRemainingMilli = hoursMilli, Assignee = who,
             WaitUntilDay = waitUntil, CreatedDay = Day, Payload = payload, CauseId = causeId, SubjectId = WorkSubject(payload),
         };
         _work.Add(item);
@@ -196,6 +207,10 @@ public sealed partial class Session
         var incumbent = _arrangements.Any(x => x.VendorId == vendor.Id && x.SiteId == siteId && x.CapabilityId == capId
                                                && x.Status == ArrangementStatus.Active);
         var mob = incumbent ? 0 : Fixed.MulPermille(baseCost, Fixed.Permille(offer.MobilizationFraction));
+        // DESK-06: fast and good pays a premium (computed on base and mobilization separately so the total adds up).
+        var pick = PickKey(a.Priorities);
+        stops.AddRange(PickStops(a, inst));
+        daily = WithPremium(pick, daily); baseCost = WithPremium(pick, baseCost); mob = WithPremium(pick, mob);
         if (a.Instrument == "gpc")
         {
             var sur = Fixed.Permille(vendor.GpcSurchargeFraction);
@@ -288,7 +303,9 @@ public sealed partial class Session
         var startLag = _rngWork.NextInt(inst.StartLagDays);
         // Off-island goods add strategic lift to the vendor's lead time, drawn after the work stream so local awards are unchanged.
         var lead = offer.LeadTimeDays + (vendor.OffIsland ? DrawLift(a.Lift!) : 0);
-        var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead, Fixed.Permille(vendor.Reliability), StockIsland(vendor, capId));
+        var pick = PickKey(a.Priorities);   // DESK-06
+        var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead,
+                                       FirstQuoteReliability(pick, Fixed.Permille(vendor.Reliability)), StockIsland(vendor, capId));
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
         var lineText = string.Join(", ", lines.Select(l => LineLabel(capId, l)));
 
@@ -305,7 +322,7 @@ public sealed partial class Session
             }
             default:
             {
-                var shopDays = _rngWork.NextInt(inst.ShopDays);
+                var shopDays = _rngWork.NextInt(inst.ShopDays) + CompeteDays(pick);   // DESK-06: drawn first, so the stream is unchanged
                 var wait = Day + Scenario.Actors.Fm.CertificationLagDays;
                 var approval = "";
                 if (a.Instrument == "uca")
@@ -315,7 +332,7 @@ public sealed partial class Session
                     approval = $" Approval request routed through the SCO; answer expected in {Plural(lag, "day")}.";
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
-                    $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}", []);
+                    $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);
                 AddWork(WorkKind.Award, $"{inst.Label} with {vendor.Name} for {Lower(CapLabel(capId))} at {SiteName(siteId)}", Hours(shopDays, inst.RequiresSystemOrManual), wait, payload, rec);
                 return ActionResult.Ok("in work");
             }
@@ -371,7 +388,7 @@ public sealed partial class Session
             Lines = p.Lines, SupplierIslandId = p.SupplierIsland, QuantityMilli = a.Quantity * 1000, DailyCostCents = p.DailyCostCents,
             MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine, FromGuaranteeCents = fromGuarantee,
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
-            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor,
+            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor, Pick = PickKey(a.Priorities),
         };
         foreach (var lineId in p.Lines)
         {

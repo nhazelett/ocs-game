@@ -175,6 +175,31 @@ public sealed record RequirementCardData
     /// <summary>What that person says when they bring it, in their words.</summary>
     public string? Message { get; init; }
     public bool FlaggedEnduring { get; init; }
+    /// <summary>DESK-03: line id to who knows it is needed and what they say when asked about this request.</summary>
+    public Dictionary<string, CardKnowledgeData> KnownBy { get; init; } = [];
+    /// <summary>DESK-08 (D4): a requirement first raised at the commander's staff meeting. Null: it just arrives.</summary>
+    public StaffMeetingHearingData? HeardAtStaffMeeting { get; init; }
+}
+
+/// <summary>
+/// A requirement that comes up at the commander's staff meeting before anyone brings it to the shop (DESK-08, D4). From
+/// FromDay a meeting the shop attends raises it, and it is on the desk the next morning; a shop that is not in the room
+/// gets it on the card's submittedDay, which is later.
+/// </summary>
+public sealed record StaffMeetingHearingData
+{
+    public int FromDay { get; init; }
+    /// <summary>Who raises it in the room (a people[] id). Null: the commander.</summary>
+    public string? By { get; init; }
+    /// <summary>What they say, in their words.</summary>
+    public string Says { get; init; } = "";
+}
+
+/// <summary>Someone who knows a part the request left out (DESK-03, D3), and what they say when asked.</summary>
+public sealed record CardKnowledgeData
+{
+    public string Person { get; init; } = "";
+    public string Says { get; init; } = "";
 }
 
 public sealed record VendorOfferData
@@ -276,6 +301,9 @@ public sealed record CorData
     public string? Unit { get; init; }
     /// <summary>A key of rules cor.qualities: sets report lag and fidelity.</summary>
     public string Quality { get; init; } = "fair";
+    /// <summary>Capabilities the COR's unit works with every day (DESK-07, D8). Null: fit is not modeled for this COR, so
+    /// neither the fit nor the stretch rule applies (older scenarios play as before).</summary>
+    public List<string>? Knows { get; init; }
 }
 
 public sealed record FundingLineData
@@ -300,6 +328,20 @@ public sealed record ShopData
     public long? GpcMonthlyCents { get; init; }
     public int? PayingAgentAvailableDay { get; init; }
     public long? WarrantCents { get; init; }
+    /// <summary>The named team (DESK-02). Null: the player alone with People x hoursPerPersonPerDay hours.</summary>
+    public List<TeamMemberData>? Team { get; init; }
+}
+
+/// <summary>One member of the contracting office (DESK-02, D2). Speed is work per hour against the usual pace.</summary>
+public sealed record TeamMemberData
+{
+    public string Id { get; init; } = "";
+    public string Role { get; init; } = "you";
+    public string Name { get; init; } = "";
+    public string? Rank { get; init; }
+    public string? Portrait { get; init; }
+    public int HoursPerDay { get; init; }
+    public double Speed { get; init; } = 1;
 }
 
 public sealed record ScoData
@@ -464,6 +506,18 @@ public sealed record RulesFile
     public SmallBuysRulesData SmallBuys { get; init; } = new();
     public GpcProgramRulesData GpcProgram { get; init; } = new();
     public GoingToPeopleRulesData GoingToPeople { get; init; } = new();
+    public PickTwoRulesData PickTwo { get; init; } = new();
+}
+
+/// <summary>Fast, cheap, good: pick two (DESK-06, D7). Placeholder numbers, tuned in playtest.</summary>
+/// <param name="CompeteShopDays">Cheap and good: shop days added to the action for competing it.</param>
+/// <param name="PremiumPermille">Fast and good: premium on the price and mobilization, in thousandths.</param>
+/// <param name="FirstQuoteFailurePermille">Fast and cheap: added daily failure odds, in thousandths.</param>
+public sealed record PickTwoRulesData
+{
+    public int CompeteShopDays { get; init; } = 2;
+    public int PremiumPermille { get; init; } = 150;
+    public int FirstQuoteFailurePermille { get; init; } = 15;
 }
 
 /// <summary>Vendor claims after a termination without the contract's notice (M3-19, FAR 49): shop hours to settle,
@@ -518,6 +572,12 @@ public sealed record CorRulesData
     public int NoCorLagDays { get; init; } = 3;
     /// <summary>Quality of the untrained relief who takes over when a COR rotates home.</summary>
     public string ReliefQuality { get; init; } = "poor";
+    /// <summary>DESK-07 (D8): report odds lost when the contract's work is not the COR's unit's work.</summary>
+    public int OffFitPermille { get; init; } = 300;
+    /// <summary>DESK-07: report odds lost for each other running contract the COR already watches.</summary>
+    public int PerOtherContractPermille { get; init; } = 150;
+    /// <summary>DESK-07: the report odds never fall below this.</summary>
+    public int FloorPermille { get; init; } = 100;
     public string? SourceUrl { get; init; }
 }
 
@@ -587,6 +647,13 @@ public sealed record GoingToPeopleRulesData
     public AskScoRulesData AskSco { get; init; } = new();
     public MeetVendorRulesData MeetVendor { get; init; } = new();
     public EngageJ4RulesData EngageJ4 { get; init; } = new();
+    public AskAboutRulesData AskAbout { get; init; } = new();
+}
+
+/// <summary>Asking someone about a request (DESK-03): shop hours for the conversation; they say what they know at once.</summary>
+public sealed record AskAboutRulesData
+{
+    public int ShopHours { get; init; } = 1;
 }
 
 /// <summary>Finding the finance office: the paying agent is set up within PayingAgentWithinDays of the visit (never later
@@ -599,14 +666,21 @@ public sealed record FindFinanceRulesData
     public string? SourceUrl { get; init; }
 }
 
-/// <summary>The commander's staff meeting: joining costs hours once, each weekly meeting after that costs WeeklyShopHours
-/// and shows requirements due to be submitted within PreviewDays.</summary>
+/// <summary>The commander's staff meeting: joining costs hours once, each meeting after that (every EveryDays) costs
+/// WeeklyShopHours (the name is from the weekly cadence; it is the hours of each meeting). DESK-08 (D4): a meeting
+/// carries something for contracting only on a ContractingPermille draw, when it previews requests due within
+/// PreviewDays; otherwise it is ops talk, one line of OpsTalk. A requirement tagged heardAtStaffMeeting is raised in
+/// the room whatever the draw.</summary>
 public sealed record StaffMeetingRulesData
 {
     public int JoinShopHours { get; init; } = 2;
     public int WeeklyShopHours { get; init; } = 2;
     public int EveryDays { get; init; } = 7;
     public int PreviewDays { get; init; } = 7;
+    /// <summary>DESK-08: odds (per mille) that a meeting has anything for contracting. 1000 (the default): every meeting does.</summary>
+    public int ContractingPermille { get; init; } = 1000;
+    /// <summary>DESK-08: what the meeting talks about when nothing in it is for contracting, one line drawn per meeting.</summary>
+    public List<string> OpsTalk { get; init; } = [];
 }
 
 /// <summary>Reachback to the SCO's staff: a question from the short list, answered after the SCO's response lag

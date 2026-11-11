@@ -73,11 +73,11 @@ public sealed partial class Session
     internal ActionPreview BuildEstablishPreview(EstablishBpaAction e)
     {
         var (stops, inst, _) = CheckEstablishBpa(e);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
+        var queue = QueueHours(e.Assignee);
         if (inst is null) return new ActionPreview(false, stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
-        var hMin = CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
-        var hMax = CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
-        int Ready(int hours) => _hoursPerDayMilli <= 0 ? Day : Day + Math.Max(0, (int)((hours * 1000L + _hoursPerDayMilli - 1) / _hoursPerDayMilli) - 1);
+        var hMin = CeilHours(PersonHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual), e.Assignee));
+        var hMax = CeilHours(PersonHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual), e.Assignee));
+        int Ready(int hours) => Day + Math.Max(0, WorkDays(hours * 1000L, e.Assignee) - 1);
         var gaps = new List<string> { "A BPA is not binding: the vendor may decline any call, and the odds rise with market tempo." };
         if (Day < _systemOnlineDay) gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: set-up takes longer.");
         // Ready-day range goes in the start fields: the first day calls can be placed.
@@ -187,12 +187,12 @@ public sealed partial class Session
     internal ActionPreview BuildEstablishIdiqPreview(EstablishIdiqAction e)
     {
         var (stops, inst, vendor) = CheckEstablishIdiq(e);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
+        var queue = QueueHours(e.Assignee);
         if (inst is null) return new ActionPreview(false, stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
         var min = MinimumGuaranteeFor(e, inst);
-        var hMin = CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
-        var hMax = CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
-        int Ready(int hours) => _hoursPerDayMilli <= 0 ? Day : Day + Math.Max(0, (int)((hours * 1000L + _hoursPerDayMilli - 1) / _hoursPerDayMilli) - 1);
+        var hMin = CeilHours(PersonHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual), e.Assignee));
+        var hMax = CeilHours(PersonHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual), e.Assignee));
+        int Ready(int hours) => Day + Math.Max(0, WorkDays(hours * 1000L, e.Assignee) - 1);
         var gaps = new List<string> { $"The minimum guarantee of {Money(min)} is obligated at award and owed to the vendor whether or not it is ordered." };
         if (vendor?.Offers.FirstOrDefault(o => o.Capability == e.Capability) is { } offer)
             gaps.Add($"Binding, but {vendor.Name}'s capacity is still about {offer.CapacityPerDay:0} {Cap(e.Capability).Unit}/day in total: orders above it are accepted and delivered short.");

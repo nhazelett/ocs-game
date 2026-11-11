@@ -79,7 +79,7 @@ A successful player action during a replay takes control of the existing session
 
 ## Requirements (M2-03)
 
-The Requirements tab lists only cards returned by RequirementEditor(card). Checkboxes send SetLineAction, without advancing time; the panel then reloads the Sim view. Missing-line warnings use GapIfOff verbatim. The dependency checklist shows none / in requirement / arranged and covering arrangements; peak demand and units are shown. There is no dollar entry. RequirementSmokeTest verifies edits against direct Sim hashes and checks the warning/checklist changes.
+The Requirements tab binds RequirementEditor(card) without scope checkboxes. Only Known lines appear. WhoToAsk offers typed AskAboutAction visits with the Sim preview; Pending and Asked prevent repeats. A completed visit shows Learned and LearnedFrom verbatim, and CanAdd offers AddLineAction. Unknown parts stay hidden; the dependency checklist, J4 shortcut, peak demand and Go to market remain. HeardAt is the exact staff-meeting source sentence. RequirementSmokeTest compares visits and additions with independent Sim hashes, checks duplicate/finished guards, save/resume and replay takeover, and captures the tutorial before and after asking Dunn. SetLineAction remains a Sim/log compatibility API and is not exposed in the requirement UI.
 
 ## Actions (M2-04)
 
