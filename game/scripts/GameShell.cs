@@ -102,6 +102,7 @@ public partial class GameShell : Control
         if (open.Count > 0)
         {
             endDayCheckHash = session.StateHash;
+            EndDayDialog.GetLabel().SetAnchorsPreset(LayoutPreset.TopLeft);
             EndDayDialog.GetLabel().Size = new Vector2(600, 0);
             EndDayDialog.DialogText = "Before you end the day\n\n" + string.Join("\n\n", open);
             EndDayDialog.ResetSize();
