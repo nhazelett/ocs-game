@@ -29,7 +29,7 @@ Day 3
   DONE      CE small buys: 2 worked today (1 h of shop time).
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 4
-  ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Maintenance); quoted $7,020.
+  ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); quoted $7,020.
   EVENT     Harbor Equipment Co is short of forklifts this week
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 5
@@ -37,7 +37,7 @@ Day 5
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 6
   ACTION    The request for material handling equipment for Hub: Operators switched on.
-  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); $8,580 paid on the spot.
+  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Operators, Maintenance); $8,580 paid on the spot.
   DONE      Government purchase card awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 8, ends day 20. Obligated $8,580.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 7
@@ -47,7 +47,7 @@ Day 8
   WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) material handling equipment at Hub ended.
-  START     Material handling equipment at Hub from Coastal Rentals began, 3 unit-days/day.
+  START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
 Day 9
   ACTION    SF 44 cash purchase to Main Island Sanitation: Waste removal at Hub, 3600 gal/day for 8 days (Removal and disposal). Paid in cash at each delivery, $144 a day, about $1,152 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated as each delivery is paid.
@@ -106,4 +106,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 468f5db44087dd8c3b9534d36186f6e33aa11938126e00ee2d197aab9087b8f8
+State hash c432e970ab8cc8f454b225fe139b9a4e4f67c294e6319b6007ee86312dd2e7e2

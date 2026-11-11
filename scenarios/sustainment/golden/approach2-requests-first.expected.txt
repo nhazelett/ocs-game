@@ -26,7 +26,7 @@ Day 2
   ACTION    Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100. Approval request routed through the SCO; answer expected in 2 days.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   CONFUSED  Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
-  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
 Day 3
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Ground transport at Hub restored to 100%.
@@ -34,7 +34,7 @@ Day 3
 Day 4
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 5
-  ACTION    Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
+  ACTION    Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
   DONE      Undefinitized contract action awarded to North Island Telecom for comms backhaul at Spoke A; performance starts day 22, ends day 60. UCA issued with NTE $38,610; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 6
@@ -51,7 +51,7 @@ Day 8
   OK        Lodging at Spoke B restored to 100%.
   UCA-DUE   Third Island Camp Services lodging at Spoke C is due for definitization (47% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 9
-  ACTION    Undefinitized contract action started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 unit-days/day for 33 days (MHE equipment); quoted $17,820. Approval request routed through the SCO; answer expected in 2 days.
+  ACTION    Undefinitized contract action started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 forklifts/day for 33 days (Forklifts); quoted $17,820. Approval request routed through the SCO; answer expected in 2 days.
   DONE      Undefinitized contract action awarded to Main Island Motor Pool Rentals for ground transport at Hub; performance starts day 25, ends day 60. UCA issued with NTE $88,704; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 days later.
@@ -126,7 +126,7 @@ Day 24
 Day 25
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Main Island Motor Pool Rentals ground transport at Hub ended.
-  START     Ground transport at Hub from Main Island Motor Pool Rentals began, 14 vehicle-days/day.
+  START     Ground transport at Hub from Main Island Motor Pool Rentals began, 14 vehicles/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 days later.
 Day 26
@@ -142,11 +142,11 @@ Day 27
 Day 28
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Harbor Equipment Co material handling equipment at Spoke C ended.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 3 unit-days/day.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 3 forklifts/day.
   FAIL      North Island Power and Light power at Spoke A had equipment down.
   FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
-  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
@@ -215,7 +215,7 @@ Day 36
   END       Island Provisions food service at Spoke B ended.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
-  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 days later.
   COR       COR report (SSG Mensah): Main Island Motor Pool Rentals ground transport at Hub had equipment down on day 36.
 Day 37
@@ -304,7 +304,7 @@ Day 49
   COMPLY    Higher HQ asked why Main Island Motor Pool Rentals ground transport at Hub is past due for definitization. A response is now shop work.
   DONE      Response to higher HQ on Main Island Motor Pool Rentals ground transport at Hub sent.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  SHORT     Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicle-days against demand 13.
+  SHORT     Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicles against demand 13.
   SHORT     Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
   SHORT     Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
   OK        Fuel at Spoke B restored to 100%.
@@ -386,7 +386,7 @@ SCORECARD
   spokeCSite.mhe: 16 day(s) down, 2 degraded, lowest 0%
 
 GAPS AND WHY (each traced back through its causes)
-  Day 2: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  Day 2: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 2: Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
           <- day 0: Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (government purchase card), days -5 to 24.
   Day 7: Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
@@ -414,9 +414,9 @@ GAPS AND WHY (each traced back through its causes)
       <- day 27: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
           <- day 27: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
-  Day 28: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  Day 28: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 28: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
-          <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
+          <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
   Day 28: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
       <- day 28: North Island Power and Light power at Spoke A had equipment down.
           <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
@@ -457,9 +457,9 @@ GAPS AND WHY (each traced back through its causes)
   Day 34: Fuel at Spoke B down to 28%: fuel on hand ran out.
       <- day 34: Second Island Fuel fuel at Spoke B missed today's delivery.
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 36: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  Day 36: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 36: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance line).
-          <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
+          <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
   Day 37: Fuel at Spoke C degraded to 85%: fuel on hand ran out.
   Day 37: Material handling equipment at Spoke C degraded to 85%: fuel at 85%.
       <- day 37: Fuel at Spoke C degraded to 85%: fuel on hand ran out.
@@ -492,8 +492,8 @@ GAPS AND WHY (each traced back through its causes)
   Day 48: Fuel at Spoke B down to 0%: fuel on hand ran out.
       <- day 48: Second Island Fuel fuel at Spoke B missed today's delivery.
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 49: Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicle-days against demand 13.
-      <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicle-days/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
+  Day 49: Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicles against demand 13.
+      <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
   Day 49: Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
       <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 49: Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
@@ -626,4 +626,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 6399000)
   [not met] Mission output at least 88% (mission.output = 0.681)
 
-State hash 2d955f958b32747b45804fa9e121ffabd804460e104000a767be13dc1e591da5
+State hash a6ff783c928921637d14843024b95a2553bf1518fb4b7342e34f996bb7554537

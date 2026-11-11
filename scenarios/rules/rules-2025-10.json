@@ -562,7 +562,7 @@
       {
         "id": "transport",
         "label": "Ground transport",
-        "unit": "vehicle-days",
+        "unit": "vehicles",
         "demandPerPersonPerDay": 0.02,
         "dependsOn": [
           "fuel"
@@ -589,7 +589,7 @@
       {
         "id": "mhe",
         "label": "Material handling equipment",
-        "unit": "unit-days",
+        "unit": "forklifts",
         "demandPerPersonPerDay": 0.01,
         "dependsOn": [
           "fuel"
@@ -598,7 +598,7 @@
         "lines": [
           {
             "id": "equipment",
-            "label": "MHE equipment",
+            "label": "Forklifts",
             "kind": "core"
           },
           {
