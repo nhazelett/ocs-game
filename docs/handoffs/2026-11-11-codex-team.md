@@ -10,7 +10,7 @@ Read the session/kickoff instructions, required SPEC sections, ADR-0001 to 0003,
 
 ## Changed
 
-DESK-22 is implemented on codex/DESK-22, for an ordinary PR to main. The remote claim was created before implementation. It combines PR 161's reviewed screen stack (carrying 158–160) with Fable's DESK-02 team contract at 08c3f97, as Q18 directs. Both dependency heads are retained as commit parents; no rebase.
+DESK-22 is implemented in [PR 173](https://github.com/nhazelett/ocs-game/pull/173), an ordinary PR to main from codex/DESK-22. The remote claim was created before implementation. It combines PR 161's reviewed screen stack (carrying 158–160) with Fable's DESK-02 team contract at 08c3f97, as Q18 directs. Both dependency heads are retained as commit parents; no rebase.
 
 The new Game team surface binds SessionView.Team, HoursIfAssigned and AssignAction. The anonymous hours controls are hidden. Each personal bar shows assigned hours out of that person's day; names open the read-only roster and work queue. A handoff happens only when "Give them this task" is pressed. New work remains with you by default. The Sim decides the new owner's pace and workload; Game contains no work-hour rules.
 
@@ -38,6 +38,6 @@ No implementation, account, tool or cost blocker. No FOR-NICK addition. No fresh
 
 ## Next
 
-Opening DESK-22 brings Codex to five open PRs, so new work stops. Fable reviews and merges on its own schedule; the screen stack 158–161 and Sim dependency 162 are named in the PR. After room opens, start with a fix pass, then DESK-23 on the Fable ref approved in Q18. Codex merged no PR, pushed nothing to main, force-pushed nothing and deleted no shared branch.
+Another Codex session opened DESK-23 as PR 171 during this implementation. I missed the changed count before opening PR 173, briefly bringing the shared queue to six. PR 173 was closed to restore the limit without deleting its branch. Fable then merged PRs 158, 159 and 160; after verifying capacity, PR 173 was reopened. The implementation and screenshots were preserved throughout. Recount the live queue at the next session; this session ends after the completed DESK-22 item, with no further claim. DESK-23 already exists as PR 171, so do not duplicate it. Fable reviews and merges on its own schedule. Codex merged no PR, pushed nothing to main, force-pushed nothing and deleted no shared branch.
 
-PRs opened: DESK-22. PRs fixed: none needed. FOR-NICK additions: none.
+PRs opened: 173 (DESK-22, reopened after capacity was verified). PRs fixed: none needed. FOR-NICK additions: none.
