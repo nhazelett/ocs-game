@@ -29,6 +29,9 @@ public partial class TeamSmokeTest : Node
             Require(shell.TeamCustomizeButton.Visible && shell.Session.View is null, "The authored team can be personalised before deploying.");
             shell.TeamCustomizeButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.TeamNameInputs.Count == 3 && shell.TeamFaceInputs.Count == 3, "All three people have real name and portrait controls.");
+            Require(shell.TeamFaces.Values.All(face => face.PortraitKey != "fallback")
+                && shell.TeamFaces.Values.Select(face => face.PortraitKey).Distinct().Count() == 3,
+                "A first deployment starts with three distinct people, not empty silhouettes.");
             var members = shell.Session.PrepTeam;
             var lead = members.Single(m => m.Role == "you");
             var experienced = members.Single(m => m.Role == "experienced");
@@ -40,8 +43,8 @@ public partial class TeamSmokeTest : Node
             shell.TeamNameInputs[experienced.Id].Text = "Robin Hayes";
             shell.TeamNameInputs[junior.Id].Text = "Sam Reed";
             var face = shell.TeamFaceInputs[experienced.Id];
-            face.Select(1); face.EmitSignal(OptionButton.SignalName.ItemSelected, 1);
-            var faceKey = face.GetItemMetadata(1).AsString();
+            face.Select(4); face.EmitSignal(OptionButton.SignalName.ItemSelected, 4);
+            var faceKey = face.GetItemMetadata(4).AsString();
             Require(shell.TeamFaces[experienced.Id].PortraitKey == faceKey, "The selected face is rendered from the existing portrait set.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string suffix)

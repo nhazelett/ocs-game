@@ -62,15 +62,20 @@ public partial class GameShell
         teamPicks.Clear();
         using var config = new ConfigFile();
         config.Load(TeamSettingsPath);
+        var usedDefaults = new HashSet<string>(StringComparer.Ordinal);
         foreach (var member in session.PrepTeam)
         {
+            var defaultFace = member.Portrait;
+            if (string.IsNullOrEmpty(defaultFace) || !teamPortraits.Contains(defaultFace))
+                defaultFace = teamPortraits.FirstOrDefault(face => face.Length > 0 && !usedDefaults.Contains(face)) ?? "";
+            usedDefaults.Add(defaultFace);
             var section = session.PrepScenarioId + "." + member.Id;
             var nameValue = config.GetValue(section, "name", member.Name);
-            var faceValue = config.GetValue(section, "portrait", member.Portrait ?? "");
+            var faceValue = config.GetValue(section, "portrait", defaultFace);
             var name = nameValue.VariantType == Variant.Type.String ? nameValue.AsString().Trim() : member.Name;
-            var face = faceValue.VariantType == Variant.Type.String ? faceValue.AsString() : member.Portrait ?? "";
+            var face = faceValue.VariantType == Variant.Type.String ? faceValue.AsString() : defaultFace;
             if (name.Length is 0 or > 40) name = member.Name;
-            if (!teamPortraits.Contains(face)) face = member.Portrait ?? "";
+            if (!teamPortraits.Contains(face)) face = defaultFace;
             teamPicks[member.Id] = new TeamPick { Id = member.Id, Name = name, Portrait = face };
         }
     }
@@ -206,7 +211,7 @@ public partial class GameShell
             if (member.Work.Count == 0) card.AddChild(DeskUi.Label("No unfinished tasks."));
             foreach (var work in member.Work)
             {
-                card.AddChild(DeskUi.Label(work.Label + $" · {work.HoursLeft} hours left" +
+                card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {work.HoursLeft} hours left" +
                     (work.Ready ? "" : $" · waiting until day {work.WaitsUntilDay}")));
                 var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 12); card.AddChild(row);
                 var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, 44) };
