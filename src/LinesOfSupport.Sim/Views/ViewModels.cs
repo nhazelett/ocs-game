@@ -62,22 +62,23 @@ public sealed record TopStripView(
 /// <param name="Portrait">Face key the player picked or the scenario gave; null means the fallback face.</param>
 /// <param name="RoleLabel">"You", "Experienced contracting officer" or "Junior contracting officer".</param>
 /// <param name="Pace">One sentence on how fast this person works.</param>
-/// <param name="HoursPerDay">This person's hours for a day (their bar's maximum).</param>
+/// <param name="HoursPerDay">This person's hours for a day (their bar's maximum). Every hours figure on the team view is
+/// rounded up to the half hour (DESK-14), so a faster teammate's pace shows: 2.5 hours, not 3.</param>
 /// <param name="HoursSpokenForToday">Hours of today that go to this person's work that is ready today.</param>
 /// <param name="FreeHoursToday">Hours of today with nothing of theirs to do (they go to walk-in small buys).</param>
 /// <param name="HoursQueued">All of this person's unfinished work, including work still waiting on an outside lag.</param>
 /// <param name="Work">This person's unfinished work, in queue order.</param>
 public sealed record TeamMemberView(
     string Id, string Role, string Name, string? Rank, string? Portrait, string RoleLabel, string Pace,
-    int HoursPerDay, int HoursSpokenForToday, int FreeHoursToday, int HoursQueued, IReadOnlyList<TeamWorkView> Work);
+    double HoursPerDay, double HoursSpokenForToday, double FreeHoursToday, double HoursQueued, IReadOnlyList<TeamWorkView> Work);
 
 /// <summary>A piece of unfinished work held by one team member (DESK-02).</summary>
 /// <param name="WorkId">For AssignAction.Work. Never shown.</param>
 /// <param name="Label">Plain name of the work.</param>
-/// <param name="HoursLeft">Hours left, in this person's hours.</param>
+/// <param name="HoursLeft">Hours left, in this person's hours, rounded up to the half hour.</param>
 /// <param name="Ready">True when it can be worked today; false while it waits on someone outside the office.</param>
 /// <param name="WaitsUntilDay">The day it can be worked, when not today.</param>
-public sealed record TeamWorkView(string WorkId, string Label, int HoursLeft, bool Ready, int? WaitsUntilDay);
+public sealed record TeamWorkView(string WorkId, string Label, double HoursLeft, bool Ready, int? WaitsUntilDay);
 
 // ------------------------------------------------------------------ morning board
 

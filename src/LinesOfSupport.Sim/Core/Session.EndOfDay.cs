@@ -23,8 +23,8 @@ public sealed partial class Session
         {
             var name = m.Rank is { Length: > 0 } r ? $"{r} {m.Name}" : m.Name;
             open.Add(m.FreeHoursToday >= m.HoursPerDay
-                ? $"{name} has nothing to work on today; their {m.HoursPerDay} hours go to walk-in small buys."
-                : $"{name} has {m.FreeHoursToday} free hour{(m.FreeHoursToday == 1 ? "" : "s")} today.");
+                ? $"{name} has nothing to work on today; their {HoursText(m.HoursPerDay)} hours go to walk-in small buys."
+                : $"{name} has {HoursText(m.FreeHoursToday)} free hour{(m.FreeHoursToday == 1 ? "" : "s")} today.");
         }
         return open;
     }
