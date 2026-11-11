@@ -6,7 +6,8 @@ public partial class GameShell
 {
     private void BuildReadableChrome()
     {
-        Theme = TabletopTheme.Create();
+        using var theme = TabletopTheme.Create();
+        Theme = theme;
         GetNode<Button>("%NextDay").ThemeTypeVariation="TabletopPrimary";
         var background = new ColorRect { Color = TabletopTheme.Background, MouseFilter = MouseFilterEnum.Ignore };
         AddChild(background); MoveChild(background, 0); background.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);

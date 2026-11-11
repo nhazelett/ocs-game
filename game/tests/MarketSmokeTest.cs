@@ -23,11 +23,13 @@ public partial class MarketSmokeTest : Node
             go.EmitSignal(Button.SignalName.Pressed);
             Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 2 && shell.CurrentActionEditor!.CardId == card.Id, "Requirement leads directly to its own market.");
             Require(shell.VendorInput.GetItemMetadata(shell.VendorInput.Selected).AsString() == "" && shell.PendingAward is null && shell.AwardButton.Disabled, "No vendor is ever preselected, including vehicle-only or refused suppliers.");
-            var targetPicker=shell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions").FindChildren("*","OptionButton",true,false).OfType<OptionButton>()
-                .Single(p=>Enumerable.Range(0,p.ItemCount).Any(i=>p.GetItemMetadata(i).AsString()=="spokeBSite.lodging"));
+            var requests=shell.AwardRequestInput;
+            Require(Enumerable.Range(0,requests.ItemCount).All(i=>!requests.GetItemText(i).Contains("without a request",StringComparison.OrdinalIgnoreCase)),
+                "Customer requests are not mixed with unrequested support.");
+            Pick(requests,"own-initiative");
+            var targetPicker=shell.InitiativeTargetInput!;
             var lodging=Enumerable.Range(0,targetPicker.ItemCount).Single(i=>targetPicker.GetItemMetadata(i).AsString()=="spokeBSite.lodging");
-            Require(targetPicker.GetItemText(lodging)=="Spoke B lodging, without a request", "Unrequested support is described in ordinary words.");
-            Require(Enumerable.Range(0,targetPicker.ItemCount).All(i=>!targetPicker.GetItemText(i).Contains("(no card)")), "Target choices never call a request a card.");
+            Require(targetPicker.GetItemText(lodging)=="Spoke B lodging", "Own-initiative targets use ordinary capability names.");
             var captureArgs=OS.GetCmdlineUserArgs();var labelsShot=Array.IndexOf(captureArgs,"--labels-screenshot");
             if(labelsShot>=0)
             {
@@ -39,6 +41,7 @@ public partial class MarketSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(captureArgs[labelsShot+1])==Error.Ok,"Native target-list screenshot saved.");
                 targetPicker.GetPopup().Hide();
             }
+            Pick(shell.AwardRequestInput,card.Id);
             Pick(shell.VendorInput, "vendorC");
             Require(shell.InstrumentInput.GetItemMetadata(shell.InstrumentInput.Selected).AsString() == "" && shell.PendingAward is null, "Who is selected before how; no instrument silently chosen.");
             Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");

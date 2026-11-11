@@ -15,8 +15,7 @@ public partial class AwardChoicesSmokeTest : Node
             var hash = shell.Session.StateHash;
             void Target(string id)
             {
-                var picker = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions/AwardEditor").FindChildren("*", "OptionButton", true, false).OfType<OptionButton>().First();
-                Pick(picker, id);
+                PickAwardTarget(shell, id);
             }
             void Bindings()
             {

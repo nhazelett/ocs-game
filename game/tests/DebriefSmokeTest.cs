@@ -53,9 +53,7 @@ public partial class DebriefSmokeTest : Node
                 {
                     SetLine("req0012", "operator"); SetLine("req0012", "maintenance");
                     GoToMarket("req0012"); Award("vendorF", "uca", 2640, 5, 60);
-                    var target = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Actions").FindChildren("*", "OptionButton", true, false).OfType<OptionButton>()
-                        .Single(p => Enumerable.Range(0, p.ItemCount).Any(i => p.GetItemMetadata(i).AsString() == "spokeCSite.water"));
-                    Pick(target, "spokeCSite.water"); Award("vendorG", "purchaseOrder", 2640, 5, 12);
+                    PickAwardTarget(shell, "spokeCSite.water"); Award("vendorG", "purchaseOrder", 2640, 5, 12);
                 }
                 if (expected.Day == 3)
                 {
