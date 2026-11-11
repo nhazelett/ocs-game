@@ -181,14 +181,14 @@ public sealed partial class Session
     internal ActionPreview BuildHostNationPreview(HostNationRequestAction o)
     {
         var chk = CheckHostNation(o);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
+        var queue = QueueHours(o.Assignee);
         if (chk.Instrument is not { } inst || chk.SiteId is not { } siteId || chk.CapabilityId is not { } capId)
             return new ActionPreview(false, chk.Stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
         var lagFm = chk.TotalCents > 0 ? Scenario.Actors.Fm.CertificationLagDays : 0;
         int Done(int shopDays)
         {
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = _hoursPerDayMilli <= 0 ? 0 : (int)((hours + _hoursPerDayMilli - 1) / _hoursPerDayMilli);
+            var days = WorkDays(PersonHours(hours, o.Assignee), o.Assignee);
             return Day + lagFm + Math.Max(0, days - 1);
         }
         var startMin = Math.Max(o.StartDay ?? 0, Done(inst.ShopDays.Min) + 1 + inst.StartLagDays.Min);

@@ -53,9 +53,15 @@ public sealed partial class Session
     {
         if (!CorModeled || !inst.WrittenTerms) return null;
         if (CorOf(a.Cor) is { } c)
+        {
+            // DESK-07: with fit modeled, the reason is the COR's fit and load, not the quality word.
+            if (c.Knows is not null && CapabilityOf(a) is { } capId)
+                return CorReportPermille(c, capId, null) >= 1000 && CorQuality(c).LagDays == 0 ? null
+                    : $"{CorWhy(c, capId, null)} Some vendor problems will reach you late or not at all.";
             return CorQuality(c) is { LagDays: 0, ReportPermille: >= 1000 }
                 ? null
                 : $"COR {c.Name} is {CorSummary(c)}: some vendor problems will reach you late or not at all.";
+        }
         return $"No COR named: nobody checks the vendor's deliveries for the government. Problems surface as mission effects, reported by the unit {Plural(Rules.Cor.NoCorLagDays, "day")} later.";
     }
 
@@ -105,7 +111,7 @@ public sealed partial class Session
             if (CorOf(a.CorId) is { } cor)
             {
                 var q = CorQuality(cor);
-                if (_rngCor.Roll(q.ReportPermille)) _corReports.Add(new CorReport(a.Id, d, d + q.LagDays, cor.Id, t.FailureRecord));
+                if (_rngCor.Roll(CorReportPermille(cor, a.CapabilityId, a.Id))) _corReports.Add(new CorReport(a.Id, d, d + q.LagDays, cor.Id, t.FailureRecord));
             }
             else if (CapState(a.SiteId, a.CapabilityId) is { TodayPermille: < 1000 })
                 _corReports.Add(new CorReport(a.Id, d, d + Rules.Cor.NoCorLagDays, null, t.FailureRecord));

@@ -24,7 +24,7 @@ Day 1
 Day 2
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   CONFUSED  Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
-  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
 Day 3
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Ground transport at Hub restored to 100%.
@@ -137,7 +137,7 @@ Day 27
   SHORT     Power at Spoke B degraded to 56%: fuel at 56%.
   SHORT     Lodging at Spoke B degraded to 56%: power at 56%.
   SHORT     Food service at Spoke B degraded to 56%: power at 56%.
-  SHORT     Material handling equipment at Spoke C degraded to 66%: supply 1 unit-days against demand 1.
+  SHORT     Material handling equipment at Spoke C degraded to 66%: supply 1 forklifts against demand 1.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 23, reported 4 days later.
   INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 21 and 23 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 28
@@ -334,7 +334,7 @@ SCORECARD
   spokeCSite.mhe: 33 day(s) down, 1 degraded, lowest 0%
 
 GAPS AND WHY (each traced back through its causes)
-  Day 2: Ground transport at Hub degraded to 53%: supply 7 vehicle-days against demand 13.
+  Day 2: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 2: Execution confusion on Main Island Motor Pool Rentals ground transport at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
           <- day 0: Inherited: Ground transport at Hub from Main Island Motor Pool Rentals (government purchase card), days -5 to 24.
   Day 7: Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
@@ -381,7 +381,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 27: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
               <- day 27: Second Island Fuel fuel at Spoke B missed today's delivery.
                   <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 27: Material handling equipment at Spoke C degraded to 66%: supply 1 unit-days against demand 1.
+  Day 27: Material handling equipment at Spoke C degraded to 66%: supply 1 forklifts against demand 1.
       <- day 27: Harbor Equipment Co material handling equipment at Spoke C had equipment down.
           <- day 0: Inherited: Material handling equipment at Spoke C from Harbor Equipment Co (written purchase order), days -2 to 27.
   Day 28: Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -538,4 +538,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.559)
 
-State hash ce2517ac64bea5a4ac43a3e42df13136fd04eadb1b2cb582cc50608136342a58
+State hash 65f04955c4dc3031d0bfab115ade4552adb7af23675a22fb4d199965764c8a7f

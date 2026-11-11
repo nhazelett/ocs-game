@@ -30,9 +30,42 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(HostNationRequestAction), "hostNationRequest")]
 [JsonDerivedType(typeof(PlanTransitionAction), "planTransition")]
 [JsonDerivedType(typeof(ReviewFilesAction), "reviewFiles")]
+[JsonDerivedType(typeof(AssignAction), "assign")]
+[JsonDerivedType(typeof(AskAboutAction), "askAbout")]
+[JsonDerivedType(typeof(AddLineAction), "addLine")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
+    /// <summary>The team member who does the work this action creates (DESK-02). Null: you.</summary>
+    public string? Assignee { get; init; }
+}
+
+/// <summary>
+/// Ask someone about a request (DESK-03, D3): the customer, CE, LRS, FSS, whoever might know what it leaves out. A short
+/// visit; when it is done, anything that person knows the request is missing is revealed and can be added.
+/// </summary>
+public sealed record AskAboutAction : PlayerAction
+{
+    public string Card { get; init; } = "";
+    public string Person { get; init; } = "";
+}
+
+/// <summary>Add a part of the request that someone told you about (DESK-03). Only a revealed line can be added;
+/// <see cref="SetLineAction"/> stays for the policies and older logs.</summary>
+public sealed record AddLineAction : PlayerAction
+{
+    public string Card { get; init; } = "";
+    public string Line { get; init; } = "";
+}
+
+/// <summary>
+/// Hand unfinished work to another team member (DESK-02, D2). The hours left are re-reckoned at the new person's pace.
+/// Work is a work item id (SessionView.Team lists them); To is a team member id.
+/// </summary>
+public sealed record AssignAction : PlayerAction
+{
+    public string Work { get; init; } = "";
+    public string To { get; init; } = "";
 }
 
 /// <summary>Order a site survey of an island. Costs shop hours; findings return after a delay.</summary>
@@ -72,6 +105,9 @@ public sealed record AwardAction : PlayerAction
     public string? Cor { get; init; }
     /// <summary>Off-island vendors only (M3-06): "airlift" or "sealift", one of the vendor's lift modes.</summary>
     public string? Lift { get; init; }
+    /// <summary>Written contracts (DESK-06, D7): two of "fast", "cheap" and "good". Null makes no pick and changes nothing,
+    /// which is how older logs and the policies play.</summary>
+    public List<string>? Priorities { get; init; }
 }
 
 /// <summary>Borrow capacity from another site's unit. Not a contract; can be withdrawn.</summary>
@@ -278,7 +314,7 @@ public sealed record StandUpGpcProgramAction : PlayerAction;
 /// replenishment, and returns the real cash and card timing. Once per game.</summary>
 public sealed record FindFinanceAction : PlayerAction;
 
-/// <summary>Get into the commander's weekly staff meeting (Attend true), or stop going (false). Once in, each meeting costs
+/// <summary>Get into the commander's staff meeting (Attend true), or stop going (false). Once in, each meeting costs
 /// shop hours and returns the commander's priorities and requirements before they are submitted (design doc 6.2).</summary>
 public sealed record JoinStaffMeetingAction : PlayerAction
 {

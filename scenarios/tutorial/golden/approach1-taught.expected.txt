@@ -29,7 +29,7 @@ Day 3
   DONE      CE small buys: 2 worked today (1 h of shop time).
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 4
-  ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Maintenance); quoted $7,020.
+  ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); quoted $7,020.
   EVENT     Harbor Equipment Co is short of forklifts this week
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 5
@@ -37,7 +37,7 @@ Day 5
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 6
   ACTION    The request for material handling equipment for Hub: Operators switched on.
-  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 unit-days/day for 13 days (MHE equipment, Operators, Maintenance); $8,580 paid on the spot.
+  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Operators, Maintenance); $8,580 paid on the spot.
   DONE      Government purchase card awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 8, ends day 20. Obligated $8,580.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 7
@@ -47,7 +47,7 @@ Day 8
   WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) material handling equipment at Hub ended.
-  START     Material handling equipment at Hub from Coastal Rentals began, 3 unit-days/day.
+  START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
 Day 9
   ACTION    Written purchase order started with Main Island Sanitation: Waste removal at Hub, 3600 gal/day for 8 days (Removal and disposal); quoted $1,152.
   DONE      CE small buys: 2 worked today (1 h of shop time).
@@ -97,7 +97,7 @@ SCORECARD
   Mission output 100% (sortie generation 100%, throughput 100%, endurance 100%, resilience 100%)
   Obligated $643,466; incurred $331,466; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 37; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 1
+  Surveys 0; shop hours worked 33; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 1
 
 PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
@@ -106,4 +106,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 32233a4d46205ef8ac1ae3c4ffbaa6ad0a50489a6ebc54b528ba6e1b77b17013
+State hash ac715d7e7a2bf8a7e71191f0d18202a9dc98aceef31ce459135c655c89d593f9

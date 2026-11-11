@@ -186,9 +186,15 @@ public sealed partial class Session
         var site = SiteData(card.SiteId);
         var from = Math.Max(card.RequestedStartDay, 1);
         var to = Math.Min(from + Math.Max(1, card.DurationDays) - 1, LastDay);
-        var lines = cap.Lines.Select(l => new RequirementLine(
-            l.Id, l.Label ?? l.Id, l.Kind, card.Lines.TryGetValue(l.Id, out var on) && on, l.Supplies, GapIfOff(cap, l),
-            l.Supplies is { } sup && _capData.TryGetValue(sup, out var supCap) ? supCap.UsualOwner : null)).ToList();
+        var lines = cap.Lines.Select(l =>
+        {
+            var on = card.Lines.TryGetValue(l.Id, out var o) && o;
+            var learned = LineLearned(card, l.Id);
+            return new RequirementLine(
+                l.Id, l.Label ?? l.Id, l.Kind, on, l.Supplies, GapIfOff(cap, l),
+                l.Supplies is { } sup && _capData.TryGetValue(sup, out var supCap) ? supCap.UsualOwner : null,
+                Known: on || learned is not null, CanAdd: !on && learned is not null, Learned: learned?.Says, LearnedFrom: learned?.From);
+        }).ToList();
         var deps = cap.DependsOn.Select(dep =>
         {
             var inCard = cap.Lines.Any(l => l.Kind == "supplies" && l.Supplies == dep && card.Lines.TryGetValue(l.Id, out var on) && on);
@@ -205,7 +211,7 @@ public sealed partial class Session
             card.Id, site.Id, site.Name, cap.Id, cap.Label, cap.Unit, person?.WithUnit ?? card.SubmittedBy, card.SubmittedDay,
             card.RequestedStartDay, card.DurationDays, card.QuantityHint,
             (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied,
-            CardTitle(card), person, card.Message);
+            CardTitle(card), person, card.Message, BuildWhoToAsk(card), HeardSentence(card));
     }
 
     // ------------------------------------------------------------------ action editor
@@ -271,7 +277,8 @@ public sealed partial class Session
                 x.v.Id, x.v.Name, x.v.Island, IslandData(x.v.Island).Name, x.o!.Lines,
                 (int)Math.Floor(x.o.CapacityPerDay), (int)Math.Max(0, (Fixed.Milli(x.o.CapacityPerDay) - CommittedMilli(x.v.Id, capId, Day, Day)) / 1000),
                 x.o.LeadTimeDays, UnitPriceFor(x.v, x.o), Fixed.Permille(x.o.MobilizationFraction), x.v.AcceptsCash, x.v.AcceptsGpc, x.v.VehicleOnly,
-                _standing.TryGetValue(x.v.Id, out var st) ? (st.DeclinesWork ? "declines work after an unpaid handshake" : $"quotes {st.MarkupPermille / 10}% higher after an unpaid handshake") : null))
+                _standing.TryGetValue(x.v.Id, out var st) ? (st.DeclinesWork ? "declines work after an unpaid handshake" : $"quotes {st.MarkupPermille / 10}% higher after an unpaid handshake") : null,
+                VendorTermsKnown(x.v), VendorSupplyKnown(x.v)))
             .ToList();
 
         var vehicles = _vehicles
@@ -293,13 +300,14 @@ public sealed partial class Session
 
         return new ActionEditorView(Day, siteId, capId, cap.Label, cap.Unit, card?.Id, selected,
                                     (PeakDemandMilli(siteId, capId, from, to) + 999) / 1000, _cash,
-                                    instruments, vendors, vehicles, funding);
+                                    instruments, vendors, vehicles, funding,
+                                    card?.RequestedStartDay, card?.DurationDays, card?.QuantityHint);
     }
 
     internal ActionPreview BuildPreview(AwardAction a)
     {
         var chk = CheckAward(a);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
+        var queue = QueueHours(a.Assignee);
         if (chk.Instrument is not { } inst || chk.Offer is not { } offer || chk.SiteId is not { } siteId || chk.CapabilityId is not { } capId)
             return new ActionPreview(false, chk.Stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
 
@@ -310,16 +318,17 @@ public sealed partial class Session
             if (immediate) return Day;
             var wait = Day + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0);
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = _hoursPerDayMilli <= 0 ? 0 : (int)((hours + _hoursPerDayMilli - 1) / _hoursPerDayMilli);
+            var days = WorkDays(PersonHours(hours, a.Assignee), a.Assignee);
             return wait + Math.Max(0, days - 1);
         }
-        var minDone = Completion(inst.ShopDays.Min, Rules.Uca.ApprovalLagDays.Min);
-        var maxDone = Completion(inst.ShopDays.Max, Rules.Uca.ApprovalLagDays.Max);
+        var compete = CompeteDays(PickKey(a.Priorities));   // DESK-06
+        var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min);
+        var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max);
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
         var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
         var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
-        var hMin = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
-        var hMax = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
+        var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee));
+        var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee));
 
         var gaps = new List<string>();
         var cap = Cap(capId);
@@ -371,6 +380,6 @@ public sealed partial class Session
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
-                                 hMin, hMax, startMin, startMax, queue);
+                                 hMin, hMax, startMin, startMax, queue, PickTrade(a, chk.TotalCents));
     }
 }

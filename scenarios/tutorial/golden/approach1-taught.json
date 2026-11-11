@@ -32,7 +32,8 @@
       "startDay": 8,
       "durationDays": 13,
       "fundingLine": "om1",
-      "vehicle": "equipBpa"
+      "vehicle": "equipBpa",
+      "assignee": "avery"
     },
     {
       "kind": "setLine",
@@ -64,7 +65,8 @@
       "startDay": 13,
       "durationDays": 8,
       "fundingLine": "om1",
-      "cor": "corPratt"
+      "cor": "corPratt",
+      "assignee": "avery"
     }
   ]
 }

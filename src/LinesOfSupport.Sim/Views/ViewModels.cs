@@ -54,6 +54,31 @@ public sealed record TopStripView(
     int SmallBuysToday = 0, int SmallBuyHoursToday = 0, int SmallBuyBacklog = 0, bool SmallBuysHeld = false,
     string GpcProgram = "none");
 
+/// <summary>One member of the office for the strip's three named bars and for handing out work (DESK-02, D2).</summary>
+/// <param name="Id">Team member id, for AwardAction.Assignee (any action's Assignee) and AssignAction.To. Never shown.</param>
+/// <param name="Role">"you", "experienced" or "junior".</param>
+/// <param name="Name">The name the player sees: "You" for the player, otherwise the teammate's (renameable) name.</param>
+/// <param name="Rank">Rank, when the scenario gives one; shown before the name.</param>
+/// <param name="Portrait">Face key the player picked or the scenario gave; null means the fallback face.</param>
+/// <param name="RoleLabel">"You", "Experienced contracting officer" or "Junior contracting officer".</param>
+/// <param name="Pace">One sentence on how fast this person works.</param>
+/// <param name="HoursPerDay">This person's hours for a day (their bar's maximum).</param>
+/// <param name="HoursSpokenForToday">Hours of today that go to this person's work that is ready today.</param>
+/// <param name="FreeHoursToday">Hours of today with nothing of theirs to do (they go to walk-in small buys).</param>
+/// <param name="HoursQueued">All of this person's unfinished work, including work still waiting on an outside lag.</param>
+/// <param name="Work">This person's unfinished work, in queue order.</param>
+public sealed record TeamMemberView(
+    string Id, string Role, string Name, string? Rank, string? Portrait, string RoleLabel, string Pace,
+    int HoursPerDay, int HoursSpokenForToday, int FreeHoursToday, int HoursQueued, IReadOnlyList<TeamWorkView> Work);
+
+/// <summary>A piece of unfinished work held by one team member (DESK-02).</summary>
+/// <param name="WorkId">For AssignAction.Work. Never shown.</param>
+/// <param name="Label">Plain name of the work.</param>
+/// <param name="HoursLeft">Hours left, in this person's hours.</param>
+/// <param name="Ready">True when it can be worked today; false while it waits on someone outside the office.</param>
+/// <param name="WaitsUntilDay">The day it can be worked, when not today.</param>
+public sealed record TeamWorkView(string WorkId, string Label, int HoursLeft, bool Ready, int? WaitsUntilDay);
+
 // ------------------------------------------------------------------ morning board
 
 /// <summary>What the morning board groups items under (SPEC section 2, morning board).</summary>
@@ -107,7 +132,18 @@ public sealed record LeadItem(LeadKind Kind, string Text, BoardLinkKind LinkKind
 /// <param name="Supplies">For a "supplies" line, the capability it brings with it (power's fuelSupply supplies fuel).</param>
 /// <param name="GapIfOff">The consequence of leaving this line off, stated as a fact; null for core lines.</param>
 /// <param name="UsualOwner">For a supplies line: who normally arranges the supplied capability (R10), so the player knows whose door to knock on before buying it; null when the office buys it.</param>
-public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff, string? UsualOwner = null);
+/// <param name="Known">DESK-03: true when the line is in the request or someone has told you it is needed. A screen shows
+/// only known lines; an unknown off line is the part nobody has told you about, and it still bites.</param>
+/// <param name="CanAdd">True when someone told you about it and it is not in the request yet: offer "add what you learned".</param>
+/// <param name="Learned">What the person said about it, once they have.</param>
+/// <param name="LearnedFrom">Who said it.</param>
+public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff, string? UsualOwner = null,
+    bool Known = true, bool CanAdd = false, string? Learned = null, PersonView? LearnedFrom = null);
+
+/// <summary>Someone worth asking about a request (DESK-03): whoever brought it, then anyone who knows a part it left out.</summary>
+/// <param name="Asked">True once the talk has happened.</param>
+/// <param name="Pending">True while the talk is in a team member's queue.</param>
+public sealed record AskOption(PersonView Person, bool Asked, bool Pending);
 
 /// <summary>A capability this one depends on at the same site, and whether the player has it covered.</summary>
 /// <param name="Coverage">"inRequirement" (a supplies line on this card is on), "arranged" (an arrangement at the site covers it),
@@ -125,11 +161,14 @@ public sealed record RequirementDependency(string CapabilityId, string Label, st
 /// <param name="Title">What and where, e.g. "Power for Spoke B": the card's name on screen (M2R-01).</param>
 /// <param name="Person">The person who brought it, when the scenario names one (M2R-01).</param>
 /// <param name="Message">What they said when they brought it, in their words.</param>
+/// <param name="HeardAt">DESK-08 (D4): for a requirement first raised at the staff meeting, one sentence on whether the
+/// shop was in the room ("...and the shop was in the room." or "...so it reached you on day 9."). Null for any other.</param>
 public sealed record RequirementEditorView(
     string CardId, string SiteId, string SiteName, string CapabilityId, string CapabilityLabel, string Unit,
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
     IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
-    string Title = "", PersonView? Person = null, string? Message = null);
+    string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null,
+    string? HeardAt = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 
@@ -148,10 +187,45 @@ public sealed record InstrumentOption(
 /// <param name="VehicleOnly">Reachable only through an existing vehicle (BPA call).</param>
 /// <param name="Standing">Null normally; otherwise how this vendor treats the office after an unpaid handshake
 /// ("declines work", or the markup already included in UnitPriceCents).</param>
+/// <param name="PaymentKnown">False until the office has learned how this vendor takes payment (DESK-05): met them, done
+/// business with them, or the scenario says it knows them. The game shows cash and card as blank while false; the Sim
+/// still decides on the true facts.</param>
+/// <param name="CapacityKnown">False until the office has learned how much this vendor can supply (DESK-05): the above, or a
+/// survey of their island. The game shows capacity as blank while false.</param>
 public sealed record VendorOption(
     string Id, string Name, string IslandId, string IslandName, IReadOnlyList<string> Lines, int CapacityPerDay, int CapacityFreeToday,
     int LeadTimeDays, long UnitPriceCents, int MobilizationPermille, bool AcceptsCash, bool AcceptsGpc, bool VehicleOnly,
-    string? Standing = null);
+    string? Standing = null, bool PaymentKnown = true, bool CapacityKnown = true);
+
+/// <summary>One thing a vendor sells, as their card shows it (DESK-05). A number the office has not learned is null.</summary>
+/// <param name="CapacityPerDay">Units a day they can supply; null until met, dealt with, or their island surveyed.</param>
+/// <param name="UnitPriceCents">Their price per unit per day; null until met or dealt with.</param>
+/// <param name="LeadTimeDays">Days' notice they need; null until met or dealt with.</param>
+public sealed record VendorCardOffer(string CapabilityId, string Label, string Unit, int? CapacityPerDay, long? UnitPriceCents, int? LeadTimeDays);
+
+/// <summary>
+/// One vendor's card (DESK-05, D6), for the Vendors tab that replaces the Directory and Vehicles tabs. Every vendor the
+/// office could buy from has one (host nation and ACSA suppliers do not). What the office has not learned is null, shown
+/// blank, never hidden. Meeting the vendor fills in everything; doing business with them does too; a survey of their island
+/// fills in capacity and reach.
+/// </summary>
+/// <param name="Sells">What they sell. The capability is always known; the numbers fill in as the office learns them.</param>
+/// <param name="AcceptsCash">Whether they take cash (an SF 44); null until learned.</param>
+/// <param name="AcceptsGpc">Whether they take the card; null until learned.</param>
+/// <param name="IslandsReached">Island ids their goods can reach, in scenario order; null until learned. Names through NameOf.</param>
+/// <param name="ArrangementIds">What the office holds with them now: pending, running or suspended arrangements.</param>
+/// <param name="VehicleIds">BPAs and IDIQs with them the office knows about.</param>
+/// <param name="Rep">Who to meet, when someone from the vendor can come by.</param>
+/// <param name="MetDay">The day the office met them, if it has.</param>
+/// <param name="MeetingSetUp">A meeting with them is in the shop's work now.</param>
+/// <param name="Standing">How they treat the office after an unpaid handshake; null normally.</param>
+/// <param name="KnownFrom">One sentence on where what the card shows came from; null when nothing is known yet.</param>
+/// <param name="StillToLearn">One sentence on what is still blank and how to fill it; null when the card is complete.</param>
+public sealed record VendorCard(
+    string Id, string Name, string IslandId, string IslandName, IReadOnlyList<VendorCardOffer> Sells,
+    bool? AcceptsCash, bool? AcceptsGpc, IReadOnlyList<string>? IslandsReached,
+    IReadOnlyList<string> ArrangementIds, IReadOnlyList<string> VehicleIds,
+    PersonView? Rep, int? MetDay, bool MeetingSetUp, string? Standing, string? KnownFrom, string? StillToLearn);
 
 /// <summary>An existing vehicle the shop knows about that could carry this action.</summary>
 /// <param name="CeilingCents">IDIQs: the contract ceiling (null for BPAs, or an IDIQ with no ceiling in its data).</param>
@@ -171,14 +245,25 @@ public sealed record VehicleOption(
 public sealed record FundingOption(string Id, string Type, long RemainingCents, int AvailableDay, int ExpiresDay, bool UsableToday,
     int PlannedAvailableDay = 0, IReadOnlyList<string>? Capabilities = null, bool PaysForThis = true);
 
+/// <summary>A COR the award editor offers, with why they fit the work or do not (DESK-07, D8).</summary>
+/// <param name="Fits">Whether the work is the COR's unit's work; null when the scenario does not model fit for this COR.</param>
+/// <param name="Watching">Other running contracts the COR already watches.</param>
+/// <param name="ReportPermille">Odds, in thousandths, that they report a problem on this work.</param>
+/// <param name="Why">One sentence: who, whether the work is theirs, their load, the odds and the lag.</param>
+public sealed record CorChoice(string Id, string Name, string? Unit, bool? Fits, int Watching, int ReportPermille, int LagDays, string Why);
+
 /// <summary>Everything the action editor needs to assemble an award for one site and capability.</summary>
 /// <param name="CardId">The requirement card being acted on, if any.</param>
 /// <param name="SelectedLines">Lines switched on on the card (or the capability's core lines when there is no card).</param>
+/// <param name="RequestedStartDay">What the customer asked for (DESK-07, D9): the card's start day; null without a card.</param>
+/// <param name="RequestedDurationDays">The card's duration in days; null without a card.</param>
+/// <param name="RequestedQuantity">The card's quantity as the customer put it, if they did.</param>
 public sealed record ActionEditorView(
     int Day, string SiteId, string CapabilityId, string CapabilityLabel, string Unit, string? CardId,
     IReadOnlyList<string> SelectedLines, long PeakDemandUnits, long CashCents,
     IReadOnlyList<InstrumentOption> Instruments, IReadOnlyList<VendorOption> Vendors,
-    IReadOnlyList<VehicleOption> Vehicles, IReadOnlyList<FundingOption> Funding);
+    IReadOnlyList<VehicleOption> Vehicles, IReadOnlyList<FundingOption> Funding,
+    int? RequestedStartDay = null, int? RequestedDurationDays = null, string? RequestedQuantity = null);
 
 /// <summary>An external support request as the OCS seat sees it (M3-05). Status: Preparing (shop work), InApproval
 /// (with the SCO and the external office), Awarded, Refused. The answer day is shown as a range until it comes;
@@ -199,10 +284,11 @@ public sealed record InheritedFileView(
 /// </summary>
 /// <param name="EarliestStartMin">Earliest first day of performance at the best roll, ignoring work already queued ahead of it.</param>
 /// <param name="QueueAheadHours">Shop hours of unfinished work already in the queue.</param>
+/// <param name="Trade">The fast, cheap, good pick's trade in one sentence with this award's numbers (DESK-06); null with no pick.</param>
 public sealed record ActionPreview(
     bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps,
     long DailyCents, long MobilizationCents, long TotalCents,
-    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours);
+    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours, string? Trade = null);
 
 /// <summary>
 /// A transition plan as the transition planner shows it (M3-05, SPEC 3 "Transition plan"): both arrangements on a
@@ -231,6 +317,14 @@ public sealed record TransitionView(
 public sealed record TransitionPreview(bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps, TransitionView? Plan);
 
 // ------------------------------------------------------------------ going to people (M2R-04)
+
+/// <summary>
+/// Something the shop can buy that nobody asked for (DESK-10, D5): the "Buy on your own initiative" entry. Bought with an
+/// ordinary AwardAction for SiteId and CapabilityId from one of Vendors.
+/// </summary>
+/// <param name="Why">What it is for, in a sentence.</param>
+/// <param name="Have">The office already has one running today.</param>
+public sealed record OwnInitiativeView(string SiteId, string CapabilityId, string Label, string Why, IReadOnlyList<string> Vendors, bool Have);
 
 /// <summary>The commander's staff meeting as the shop sees it (design doc 6.2).</summary>
 /// <param name="Attending">The shop goes every week.</param>
