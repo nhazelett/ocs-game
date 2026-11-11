@@ -49,7 +49,8 @@ public partial class GameShell
         if (direction is < 0 or >= 3) return;
         var previous = TabletopTheme.ColorsByRole();
         TabletopTheme.Select(direction);
-        Theme = TabletopTheme.Create();
+        using var theme = TabletopTheme.Create();
+        Theme = theme;
         RestyleLook(this, previous, TabletopTheme.ColorsByRole());
         Map.RefreshLook();
         // Rebuild interpolated scorecard colors as well as the inherited theme.

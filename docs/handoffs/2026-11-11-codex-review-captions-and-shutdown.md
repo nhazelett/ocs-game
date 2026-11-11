@@ -12,6 +12,8 @@ Read the live session/kickoff, required SPEC sections, ADR-0001 to 0003, DISSENT
 
 PR 160: SupportSmokeTest and PerformanceSmokeTest now free the full shell, clear the reference, wait two frames, collect managed finalizers while Godot is running, then wait another frame. They verify the shell is gone before printing the pass marker and quitting. Existing behavior assertions remain. This responds to Fable's reports of exit crashes after pass markers in both PRs. The fix and its review response live on the same DESK-25 branch.
 
+The updated PR 160 CI run (267, 42929115996) then failed after PEOPLE_SMOKE_PASS with leaked Theme and StyleBoxFlat wrappers, while the first updated ART-09 run (268) passed. That concrete recurrence justified a shared ownership correction instead of a blind rerun: theme setup releases managed font, style and icon wrappers once the native Theme retains them, and the shell releases the initial/replacement Theme wrapper once the native Control owns it. The portrait gallery follows the same rule. LookSmokeTest forces collection after each style change, then checks the native paper style and arrow icon before continuing through every screen. Visual parameters are unchanged.
+
 PR 161: carries the updated PR 160 as an additional commit parent, preserving both branches' history. Clarified the supply caption requested in its review. MapSmokeTest checks the real zero-supply caption, a partial-supply projection, unchanged specific restoration/failure messages, known filtering, equipment clearance and unchanged Sim state. Added the inspected native PNG and this handoff; carried the PR 160 handoff update.
 
 No Sim, scenario, rule, asset, provenance, backlog Status, QUESTIONS or FOR-NICK change. No generation or download spend. No new PR or remote claim.
@@ -28,11 +30,13 @@ Verified the isolated local ART-09 and DESK-25 baseline trees against all paths 
 
 Solution and Game builds pass; 632 .NET tests (511 Sim, 121 Harness), 72 Python tests, validate.py, provenance.py, conflicts.py and whitespace checks pass. A reused MSBuild worker initially returned a silent failure; build/test succeeded with isolated workers (-m:1 -nr:false). No source fix or assertion change was needed for that tool issue.
 
-On ART-09, Support and Performance each pass ten consecutive native runs, all exit 0 and no ERROR lines. Map, DayPlayback and MapLayout pass; the graphical Map suite also exits 0. The committed screenshot is a visually inspected 1280 by 800 plain PNG, 151,460 bytes, outside LFS. On the exact DESK-25 tree, Game build and Support, Performance and Initiative pass with exit 0. Remote publication uses the tested file contents and fast-forwards with expected-head checks. New CI runs follow both branch updates; their final state is recorded in the session summary.
+The final shared-resource correction passes the complete native CI block on both exact source trees: DESK-25 has 42 pass markers and ART-09 has 43, both exit 0 with no ERROR lines. This includes the original behavior assertions and both kit cases. People, Support and Performance additionally each pass ten consecutive native runs on the final ART-09 source, all exit 0 with no ERROR lines. The Look suite checks all three themes after forced collection.
+
+The graphical Map suite exits 0; its refreshed screenshot is pixel-identical after the ownership fix. The committed capture is a visually inspected 1280 by 800 plain PNG, 151,460 bytes, outside LFS. Remote publication uses the tested file contents and fast-forwards with expected-head checks. Fresh CI runs follow the final branch updates; their final state is recorded in the session summary.
 
 ## Unresolved
 
-Support still reports a nonfatal ObjectDB exit warning. Ten consecutive passes mitigate the observed intermittent shutdown problem; they do not prove the engine flake eliminated. No fresh Windows export or human audio listening verdict is claimed. Fable/Claude review: the supplied wording and the new map screenshot. No development/publication blocker or FOR-NICK addition.
+Some existing suites still report nonfatal ObjectDB exit warnings. Deterministic wrapper release and repeated successful native exits address the observed shutdown problem; they do not prove every engine shutdown flake eliminated. No fresh Windows export or human audio listening verdict is claimed. Fable/Claude review: the supplied wording, map screenshot and shared native-resource ownership change. No development/publication blocker or FOR-NICK addition.
 
 ## Next
 

@@ -30,7 +30,12 @@ internal static class TabletopTheme
             CornerRadiusTopLeft=radius,CornerRadiusTopRight=radius,CornerRadiusBottomLeft=radius,CornerRadiusBottomRight=radius};
     internal static Theme Create()
     {
-        var regular=Font(); var bold=Font(true); var theme=new Theme{DefaultFont=regular,DefaultFontSize=18};
+        using var regular=Font(); using var bold=Font(true); var theme=new Theme{DefaultFont=regular,DefaultFontSize=18};
+        // SetStylebox retains the native resource. Release its managed wrapper now, before engine shutdown.
+        void SetBox(string name, string type, StyleBoxFlat box)
+        {
+            using (box) theme.SetStylebox(name, type, box);
+        }
         theme.SetTypeVariation("TabletopHeading","Label");theme.SetFont("font","TabletopHeading",bold);theme.SetFontSize("font_size","TabletopHeading",24);
         foreach(var type in new[]{"Label","Button","OptionButton","CheckBox","LineEdit","TextEdit","PopupMenu","Tree","ItemList","TabContainer","Window","TooltipLabel"})
         {
@@ -38,44 +43,44 @@ internal static class TabletopTheme
             theme.SetColor("font_focus_color",type,Ink);theme.SetColor("font_disabled_color",type,Muted);theme.SetColor("font_selected_color",type,Paper);
         }
         theme.SetFont("normal_font","RichTextLabel",regular);theme.SetFont("bold_font","RichTextLabel",bold);theme.SetColor("default_color","RichTextLabel",Ink);
-        foreach(var type in new[]{"Panel","PanelContainer","PopupPanel","PopupMenu","Tree","ItemList","TooltipPanel","AcceptDialog","ConfirmationDialog"}) theme.SetStylebox("panel",type,Box(Paper,12));
+        foreach(var type in new[]{"Panel","PanelContainer","PopupPanel","PopupMenu","Tree","ItemList","TooltipPanel","AcceptDialog","ConfirmationDialog"}) SetBox("panel",type,Box(Paper,12));
         foreach(var type in new[]{"Button","OptionButton"})
         {
-            theme.SetStylebox("normal",type,Box(Paper,8));theme.SetStylebox("hover",type,Box(Hover,8));
-            theme.SetStylebox("pressed",type,Box(Pressed,8));theme.SetStylebox("disabled",type,Box(Background,8));
-            var focus=Box(Colors.Transparent,0);focus.BorderColor=Moss;focus.SetBorderWidthAll(2);theme.SetStylebox("focus",type,focus);
+            SetBox("normal",type,Box(Paper,8));SetBox("hover",type,Box(Hover,8));
+            SetBox("pressed",type,Box(Pressed,8));SetBox("disabled",type,Box(Background,8));
+            using var focus=Box(Colors.Transparent,0);focus.BorderColor=Moss;focus.SetBorderWidthAll(2);theme.SetStylebox("focus",type,focus);
         }
         theme.SetTypeVariation("TabletopPrimary","Button");
-        foreach(var name in new[]{"normal","pressed","hover","hover_pressed"}) theme.SetStylebox(name,"TabletopPrimary",Box(Moss,10));
+        foreach(var name in new[]{"normal","pressed","hover","hover_pressed"}) SetBox(name,"TabletopPrimary",Box(Moss,10));
         foreach(var name in new[]{"font_color","font_hover_color","font_focus_color","font_pressed_color","font_hover_pressed_color"})theme.SetColor(name,"TabletopPrimary",PrimaryInk);
         foreach(var type in new[]{"LineEdit","TextEdit"})
         {
-            theme.SetStylebox("normal",type,Box(Input,6));theme.SetStylebox("read_only",type,Box(Background,6));
-            theme.SetStylebox("focus",type,Box(Colors.Transparent,0));theme.SetColor("caret_color",type,Ink);theme.SetColor("selection_color",type,Moss);
+            SetBox("normal",type,Box(Input,6));SetBox("read_only",type,Box(Background,6));
+            SetBox("focus",type,Box(Colors.Transparent,0));theme.SetColor("caret_color",type,Ink);theme.SetColor("selection_color",type,Moss);
         }
-        theme.SetStylebox("panel","TabContainer",Box(Paper,10));theme.SetStylebox("tab_selected","TabContainer",Box(Paper,8));
-        theme.SetStylebox("tab_unselected","TabContainer",Box(Background,8));theme.SetStylebox("tab_hovered","TabContainer",Box(Hover,8));
-        theme.SetStylebox("tab_disabled","TabContainer",Box(Background,8));
+        SetBox("panel","TabContainer",Box(Paper,10));SetBox("tab_selected","TabContainer",Box(Paper,8));
+        SetBox("tab_unselected","TabContainer",Box(Background,8));SetBox("tab_hovered","TabContainer",Box(Hover,8));
+        SetBox("tab_disabled","TabContainer",Box(Background,8));
         theme.SetColor("font_selected_color","TabContainer",Ink);theme.SetColor("font_unselected_color","TabContainer",Muted);
         foreach(var type in new[]{"HScrollBar","VScrollBar"})
         {
-            theme.SetStylebox("scroll",type,Box(Background,0,3));theme.SetStylebox("grabber",type,Box(Moss,0,3));
-            theme.SetStylebox("grabber_highlight",type,Box(Moss.Lightened(.12f),0,3));theme.SetStylebox("grabber_pressed",type,Box(Ink,0,3));
+            SetBox("scroll",type,Box(Background,0,3));SetBox("grabber",type,Box(Moss,0,3));
+            SetBox("grabber_highlight",type,Box(Moss.Lightened(.12f),0,3));SetBox("grabber_pressed",type,Box(Ink,0,3));
         }
-        theme.SetStylebox("background","ProgressBar",Box(Track,0,3));theme.SetStylebox("fill","ProgressBar",Box(Moss,0,3));
-        theme.SetStylebox("hover","PopupMenu",Box(Hover,4));
-        foreach(var type in new[]{"Tree","ItemList"}){theme.SetStylebox("selected",type,Box(Moss,4));theme.SetStylebox("selected_focus",type,Box(Moss,4));}
-        theme.SetStylebox("embedded_border","Window",Box(Paper,12));theme.SetColor("title_color","Window",Ink);
+        SetBox("background","ProgressBar",Box(Track,0,3));SetBox("fill","ProgressBar",Box(Moss,0,3));
+        SetBox("hover","PopupMenu",Box(Hover,4));
+        foreach(var type in new[]{"Tree","ItemList"}){SetBox("selected",type,Box(Moss,4));SetBox("selected_focus",type,Box(Moss,4));}
+        SetBox("embedded_border","Window",Box(Paper,12));theme.SetColor("title_color","Window",Ink);
         foreach(var type in new[]{"VBoxContainer","HBoxContainer"})theme.SetConstant("separation",type,10);
         foreach(var state in new[]{false,true})
         {
-            var icon=CheckIcon(state);
+            using var icon=CheckIcon(state);
             theme.SetIcon(state?"checked":"unchecked","CheckBox",icon);theme.SetIcon(state?"checked_disabled":"unchecked_disabled","CheckBox",icon);
             theme.SetIcon(state?"radio_checked":"radio_unchecked","CheckBox",icon);
         }
-        var sliderTrack=Box(Outline,0,4);sliderTrack.ContentMarginTop=sliderTrack.ContentMarginBottom=4;
+        using var sliderTrack=Box(Outline,0,4);sliderTrack.ContentMarginTop=sliderTrack.ContentMarginBottom=4;
         theme.SetStylebox("slider","HSlider",sliderTrack);
-        var sliderFill=Box(Moss,0,4);sliderFill.ContentMarginTop=sliderFill.ContentMarginBottom=4;
+        using var sliderFill=Box(Moss,0,4);sliderFill.ContentMarginTop=sliderFill.ContentMarginBottom=4;
         theme.SetStylebox("grabber_area","HSlider",sliderFill);
         theme.SetStylebox("grabber_area_highlight","HSlider",sliderFill);
         using var knob=Image.CreateEmpty(18,18,false,Image.Format.Rgba8);knob.Fill(Colors.Transparent);
@@ -87,10 +92,12 @@ internal static class TabletopTheme
         for(var i=4;i<14;i++){closeImage.FillRect(new Rect2I(i,i,2,2),Ink);closeImage.FillRect(new Rect2I(17-i,i,2,2),Ink);}
         using var closeTexture=ImageTexture.CreateFromImage(closeImage);
         foreach(var name in new[]{"close","close_hl","close_pressed"})theme.SetIcon(name,"Window",closeTexture);
-        var arrow=Arrow();theme.SetIcon("arrow","OptionButton",arrow);
-        theme.SetIcon("updown","SpinBox",UpDown());
+        using var arrow=Arrow();theme.SetIcon("arrow","OptionButton",arrow);
+        using var upDown=UpDown();theme.SetIcon("updown","SpinBox",upDown);
         foreach(var name in new[]{"increment","increment_highlight","decrement","decrement_highlight"})
-            theme.SetIcon(name,"TabContainer",Chevron(name.StartsWith("increment")));
+        {
+            using var chevron=Chevron(name.StartsWith("increment"));theme.SetIcon(name,"TabContainer",chevron);
+        }
         return theme;
     }
     private static Texture2D CheckIcon(bool selected)
