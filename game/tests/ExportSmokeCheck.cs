@@ -21,6 +21,7 @@ internal static class ExportSmokeCheck
                 Require(File.Exists(Path.Combine(GamePaths.AssetRoot,"art-studies","fonts",license)),"Every packaged typeface has its redistribution license.");
             Require(File.Exists(Path.Combine(GamePaths.AssetRoot,"portraits","fallback.svg")),"Packaged cast fallback is present.");
             Require(shell.Sound.LoadedCueCount == 4 && File.Exists(Path.Combine(GamePaths.AssetRoot,"audio","LICENSE.txt")), "Packaged sound cues and license load outside the checkout.");
+            Require(shell.Music.LoadedStreamCount == 4, "Packaged approved music and ambience load outside the checkout.");
             DeskSmokeSupport.DeveloperWorkspace(shell);
             var catalog = ScenarioCatalog.Discover(GamePaths.ScenarioRoot);
             Require(catalog.All(x => !x.Name.StartsWith("_", StringComparison.Ordinal)), "Development scenarios are not packaged.");

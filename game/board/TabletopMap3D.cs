@@ -134,7 +134,8 @@ public partial class TabletopMap3D:Control
                 item.Leader.Points=[anchor,new Vector2(Math.Clamp(anchor.X,position.X,position.X+item.Label.Size.X),Math.Clamp(anchor.Y,position.Y,position.Y+item.Label.Size.Y))];
                 occupied.Add(item.Label.GetRect());continue;
             }
-            var point=camera.UnprojectPosition(item.Node.GlobalPosition)+new Vector2(-130,-55);
+            var offsetY=item.Label.HasMeta("reported_change")?-item.Label.Size.Y-80:-55;
+            var point=camera.UnprojectPosition(item.Node.GlobalPosition)+new Vector2(-130,offsetY);
             point.X=Math.Clamp(point.X,4,Math.Max(4,Size.X-264));point.Y=Math.Max(4,point.Y);
             while(point.Y>4 && occupied.Any(r=>r.Intersects(new Rect2(point,item.Label.Size))))point.Y=Math.Max(4,point.Y-28);
             item.Label.Position=point;occupied.Add(item.Label.GetRect());
@@ -183,7 +184,7 @@ public partial class TabletopMap3D:Control
                 MovingLabel(marker,string.Join("\n",group.Select(change=>
                 {
                     var name=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support";
-                    return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} short · {change.Permille/10m:0.#}%";
+                    return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} {change.Permille/10m:0.#}% supplied";
                 })));
                 movingLabels[^1].Label.SetMeta("reported_change",true);
             }
