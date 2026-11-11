@@ -67,7 +67,7 @@ public partial class GameShell
         session.StartScenario(ChosenPrep);
         TryAutosave();
         BeginTurnover();
-        RefreshDisplay(DeveloperTools ? "Seed 1 · preparations applied. Next day plays day 1." : "Your preparations are in place. You're ready for your first day.");
+        RefreshDisplay(DeveloperTools ? "Seed 1 · preparations applied. End the day plays day 1." : "Your preparations are in place. You're ready for your first day.", developerOnly: DeveloperTools);
     }
 
     private void RefreshPrepVisibility()

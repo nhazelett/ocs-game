@@ -91,17 +91,12 @@ show_percentage = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Continue" type="Button" parent="Margin/Layout/TopStrip/Margin/Row"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Continue"
-tooltip_text = "Continue to the next priority item or the end of the deployment."
-
 [node name="NextDay" type="Button" parent="Margin/Layout/TopStrip/Margin/Row"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(112, 0)
 layout_mode = 2
-text = "Next day"
+text = "End the day"
+tooltip_text = "Finish this day and see what happened. Advances exactly one day."
 
 [node name="WorkArea" type="HSplitContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -247,3 +242,9 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "No scenario loaded."
 autowrap_mode = 2
+
+[node name="Continue" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+text = "Skip quiet days"
+tooltip_text = "Advance until someone has news, a priority item is ready, or the deployment ends."

@@ -70,7 +70,7 @@ public partial class LookSmokeTest : Node
                 Require(shell.GetThemeColor("font_color", "Label").IsEqualApprox(new Color(style.Ink)),
                     "Every screen inherits the selected ink.");
                 Require(shell.GetNode<Label>("%GameTitle").GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink)
-                    && shell.GetNode<Button>("%Continue").GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink),
+                    && shell.GetNode<Button>("Navigation/Menu").GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink),
                     "Existing labels and ordinary buttons keep legible inherited ink after switching.");
                 Require(shell.LookButton.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.PrimaryInk),
                     "Primary buttons use legible ink against the accent.");
