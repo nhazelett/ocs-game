@@ -34,9 +34,10 @@ public partial class BpaSmokeTest : Node
             Require(shell.Session.View!.Vehicles.All(v => v.Id != candidate.Id), "BPA is not ready before setup work finishes.");
             while (expected.View.Vehicles.All(v => v.Id != candidate.Id) && !expected.Finished) { expected.AdvanceDay(); Step(shell); }
             Require(shell.Session.StateHash == expected.StateHash(), "Setup completes through normal Sim day advance.");
-            var rows = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Vehicles/KnownVehicles/Contents").GetChildren().OfType<Label>();
-            Require(rows.Any(l => l.HasMeta("vehicle") && l.GetMeta("vehicle").AsString() == candidate.Id && l.Text.Contains("$50,000.00")), "Ready BPA appears in Vehicles with actual limit.");
+            var rows = shell.VendorCardContents["vendorD"].GetChildren().OfType<Label>();
+            Require(rows.Any(l => l.HasMeta("vehicle") && l.GetMeta("vehicle").AsString() == candidate.Id && l.Text.Contains("$50,000.00")), "Ready BPA appears on its vendor card with the actual limit.");
             Require(shell.Session.View.ActionEditor("spokeBSite", "fuel")!.Vehicles.Any(v => v.Id == candidate.Id && v.OpenToday), "The normal award editor can use the completed BPA.");
+            shell.EstablishVendorButtons["vendorD"].EmitSignal(Button.SignalName.Pressed);
             Require(shell.PendingEstablish!.Id != candidate.Id, "Next command cannot reuse an existing or in-work ID.");
             GD.Print("BPA_SMOKE_PASS: offered scope, pure timing preview, limit gating, exact submit and completed vehicle."); GetTree().Quit();
         }

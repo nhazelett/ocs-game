@@ -44,7 +44,7 @@ public sealed partial class Session
     private static string ConfidenceSentence(string tier, IReadOnlyList<string> names) => tier switch
     {
         "observed" => $"I've seen the work of {Join(names)} myself.",
-        "surveyed" => $"Someone's been out to look at {Join(names)}.",
+        "surveyed" => $"We've been out to look at {Join(names)}.",
         "estimated" => $"I've talked to {Join(names)}, but the prices are estimates.",
         _ => names.Count == 1
             ? $"{names[0]} is just a name on a list; I've never called them."
@@ -52,6 +52,23 @@ public sealed partial class Session
     };
 
     private static string Tier(string infoTier) => ConfidenceOrder.Contains(infoTier) ? infoTier : "assumed";
+
+    /// <summary>The outgoing CCO introduces the team (DESK-02): who they are, how fast, whose hours.</summary>
+    private string TeamSentence()
+    {
+        var others = _team.Where(m => m.Role != "you").ToList();
+        if (others.Count == 0) return $"It's just you, {CeilHours(Member(_lead).HoursPerDayMilli)} hours a day.";
+        static string Short(TeamMember m) => m.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last();
+        var parts = new List<string> { $"You've got {Join(others.Select(MemberName).ToList())}." };
+        foreach (var m in others)
+            parts.Add(m.SpeedPermille > 1000 ? $"{Short(m)} has done this before and works fast."
+                    : m.SpeedPermille < 1000 ? $"{Short(m)} is new and still learning."
+                    : $"{Short(m)} works at the usual pace.");
+        parts.Add($"You have {CeilHours(Member(_lead).HoursPerDayMilli)} hours a day; "
+                  + string.Join(", ", others.Select(m => $"{Short(m)} has {CeilHours(m.HoursPerDayMilli)}")) + ".");
+        parts.Add("Hand them work, or it stays with you.");
+        return string.Join(" ", parts);
+    }
 
     internal TurnoverView BuildTurnover()
     {
@@ -65,7 +82,7 @@ public sealed partial class Session
         var hours = CeilHours(_hoursPerDayMilli);
         var shop = new List<string>
         {
-            _people == 1 ? $"It's just you, {hours} hours a day." : $"There are {Number(_people)} of you, {hours} hours a day between you.",
+            HasTeam ? TeamSentence() : _people == 1 ? $"It's just you, {hours} hours a day." : $"There are {Number(_people)} of you, {hours} hours a day between you.",
             _systemOnlineDay <= 1
                 ? "The contract-writing system is up."
                 : _systemOnlineDay > LastDay

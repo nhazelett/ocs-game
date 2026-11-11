@@ -45,6 +45,7 @@ public partial class GameShell
                 (effect.HasEffect ? "" : " This preparation is recorded in your debrief; it has no modeled effect yet.")));
             toggle.Toggled += _ => UpdatePrepCheck();
         }
+        AddTeamPreparation(prepPanel);
         var buttons = new HBoxContainer(); prepPanel.AddChild(buttons);
         buttons.AddChild(DeskUi.Button("Back", ShowFrontDoor)); buttons.AddChild(StartGameButton);
         StartGameButton.CustomMinimumSize = new Vector2(220, 46); StartGameButton.SizeFlagsHorizontal = SizeFlags.ExpandFill;
@@ -64,7 +65,7 @@ public partial class GameShell
         if (session.Prep is null) return;
         UpdatePrepCheck();
         if (StartGameButton.Disabled) return;
-        session.StartScenario(ChosenPrep);
+        session.StartScenario(ChosenPrep, teamPicks.Values.ToArray());
         TryAutosave();
         BeginTurnover();
         RefreshDisplay(DeveloperTools ? "Seed 1 · preparations applied. End the day plays day 1." : "Your preparations are in place. You're ready for your first day.", developerOnly: DeveloperTools);

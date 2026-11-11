@@ -37,6 +37,7 @@ public partial class AudioSmokeTest : Node
             Require(shell.Sound.PlayedCount == count + 4 && shell.Session.StateHash == hash, "Every file really plays; presentation leaves Sim unchanged.");
             Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa"); shell.QuantityInput.Value = 360;
             count = shell.Sound.PlayedCount;
+            PickPriorities(shell, "fast", "cheap");
             Require(!shell.SendAction(shell.PendingAward! with { Quantity = 100000 }).Accepted && shell.Sound.PlayedCount == count, "A refused award adds no cue.");
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Sound.PlayedCount == count + 1 && shell.Sound.LastCue == "award-made", "Accepted real Award alone triggers its cue.");

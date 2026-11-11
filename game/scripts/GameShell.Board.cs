@@ -31,7 +31,9 @@ public partial class GameShell
 
     private void ResetDeskSelection()
     {
+        CancelEndDayCheck();
         ResetOpening();
+        TeamPanel?.Hide();
         CloseContractView();
         debriefHash = null;
         ResetVisits();
@@ -180,7 +182,7 @@ public partial class GameShell
         {
             count++;
             var board = session.View!.MorningBoard();
-            if (HasPeopleNews(session.View!, board)) { reason = "someone has news for you"; break; }
+            if (HasPeopleNews(session.View!, board)) { reason = "new messages have arrived"; break; }
             if (board.Lead is not null) { reason = "the next priority item is ready"; break; }
         }
         if (session.View?.Finished == true) reason = "scenario complete";

@@ -76,7 +76,7 @@ public partial class GoingToPeopleSmokeTest : Node
             var vendorPerson = expected.Scenario.People.First(p => p.Role == "vendorRep" && p.Vendor is not null);
             Pick(shell.PersonContactInput, "vendor:" + vendorPerson.Id); Submit("vendor");
             while (expected.View.VendorMetDay(vendorPerson.Vendor!) is null) Day();
-            Require(shell.VisitButtons["vendor"].Disabled && Labels(shell.GetNode("Margin")).Any(l => l.Text == "Directory confidence: " + expected.View.VendorConfidence(vendorPerson.Vendor!) + "."), "Meeting updates the displayed directory confidence and prevents duplicate meetings.");
+            Require(shell.VisitButtons["vendor"].Disabled && shell.Session.View!.VendorCards().Single(c => c.Id == vendorPerson.Vendor).KnownFrom is not null, "Meeting fills in its vendor card and prevents duplicate meetings.");
             Require(!shell.MentorMessages.Visible, "Scenario play never acquires tutorial mentor directions.");
 
             Scenario(shell, "spoke-b"); expected = Session.Create(bundle, 1); shell.PeopleToggle.ButtonPressed = true;

@@ -48,7 +48,7 @@
       "requiresSystemOrManual": false,
       "maxActionCents": null,
       "limitBasis": "microPurchase",
-      "notes": "Draws cash on hand; replenishment lag is per scenario. A recurring service on repeated SF 44s rolls executionConfusionNoTerms daily and is tagged in the debrief."
+      "notes": "Draws cash on hand; replenishment lag is per scenario. For more than one day it is paid at each delivery and each delivery is a trip (sf44Deliveries, DESK-09). A recurring service on repeated SF 44s rolls executionConfusionNoTerms daily and is tagged in the debrief."
     },
     "gpc": {
       "label": "Government purchase card",
@@ -562,7 +562,7 @@
       {
         "id": "transport",
         "label": "Ground transport",
-        "unit": "vehicle-days",
+        "unit": "vehicles",
         "demandPerPersonPerDay": 0.02,
         "dependsOn": [
           "fuel"
@@ -589,7 +589,7 @@
       {
         "id": "mhe",
         "label": "Material handling equipment",
-        "unit": "unit-days",
+        "unit": "forklifts",
         "demandPerPersonPerDay": 0.01,
         "dependsOn": [
           "fuel"
@@ -598,7 +598,7 @@
         "lines": [
           {
             "id": "equipment",
-            "label": "MHE equipment",
+            "label": "Forklifts",
             "kind": "core"
           },
           {
@@ -610,6 +610,22 @@
             "id": "maintenance",
             "label": "Maintenance",
             "kind": "maintenance"
+          }
+        ]
+      },
+      {
+        "id": "shopVehicle",
+        "label": "Vehicle for the contracting office",
+        "unit": "vehicles",
+        "demandPerPersonPerDay": 0,
+        "dependsOn": [],
+        "delivery": "continuous",
+        "forShop": true,
+        "lines": [
+          {
+            "id": "vehicle",
+            "label": "Vehicle",
+            "kind": "core"
           }
         ]
       }
@@ -725,6 +741,9 @@
     },
     "noCorLagDays": 3,
     "reliefQuality": "poor",
+    "offFitPermille": 300,
+    "perOtherContractPermille": 150,
+    "floorPermille": 100,
     "sourceUrl": "https://www.acquisition.gov/dfars/201.602-2-responsibilities."
   },
   "lift": {
@@ -785,10 +804,20 @@
       "sourceUrl": "https://www.acquisition.gov/far/13.306"
     },
     "staffMeeting": {
+      "notes": "DESK-08 (D4): the commander's stand-up is every day and is mostly not about contracting. contractingPermille is the chance a meeting has anything for the shop (it then mentions requests due within previewDays); otherwise it is one line of opsTalk. A requirement tagged heardAtStaffMeeting is raised in the room whatever the draw. weeklyShopHours is the hours of each meeting (the name is from the weekly cadence). Placeholders, tuned in playtest.",
       "joinShopHours": 2,
-      "weeklyShopHours": 2,
-      "everyDays": 7,
-      "previewDays": 7
+      "weeklyShopHours": 1,
+      "everyDays": 1,
+      "previewDays": 7,
+      "contractingPermille": 400,
+      "opsTalk": [
+        "Most of it was the flying schedule: two sorties slipped for weather and one jet is down waiting on a part. Nothing for contracting.",
+        "Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.",
+        "The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.",
+        "Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.",
+        "Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.",
+        "Operations briefed tomorrow's sorties and a change to the alert posture. Nothing for contracting."
+      ]
     },
     "askSco": {
       "shopHours": 1,
@@ -824,5 +853,21 @@
       "lagDays": 3,
       "sourceUrl": "https://www.jcs.mil/Portals/36/Documents/Doctrine/pubs/jp4_10.pdf"
     }
+  },
+  "pickTwo": {
+    "notes": "Fast, cheap, good: pick two, on written contracts (DESK-06, docs/design/desk-redesign.md D7). Cheap and good means competing it (more shop days); fast and good means a premium; fast and cheap means the first quote (higher failure odds). Placeholder numbers, tuned in playtest.",
+    "competeShopDays": 2,
+    "premiumPermille": 150,
+    "firstQuoteFailurePermille": 15
+  },
+  "sf44Deliveries": {
+    "notes": "DESK-09 (D11): an SF 44 for more than one day is paid in cash at each delivery, and each delivery is a trip for the CCO and the paying agent. Off-island sites need the surface link open on the day; a closed link stops the delivery and the payment. A delivery the cash on hand cannot cover does not happen. Not modeled: unauthorized commitment (the CCO is warranted), price creep, split-purchase findings, paying agent clearing. Placeholder hours, tuned in playtest.",
+    "tripShopHours": 2,
+    "offIslandTripShopHours": 6,
+    "sourceUrl": "https://www.acquisition.gov/far/13.306"
+  },
+  "shopVehicle": {
+    "notes": "DESK-10 (D5): a vehicle the office buys on its own initiative. While one is running, a vendor meeting and an SF 44 trip on the shop's own island take visitHoursPermille of their usual hours, rounded up. Placeholder, tuned in playtest.",
+    "visitHoursPermille": 500
   }
 }

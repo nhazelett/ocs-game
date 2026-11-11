@@ -45,6 +45,7 @@ public partial class InitiativeSmokeTest : Node
             PickAwardTarget(shell,"spokeBSite.power");
             Pick(shell.VendorInput,"vendorC");Pick(shell.InstrumentInput,"bpaCall");Pick(shell.VehicleInput,"bosBpa");
             shell.QuantityInput.Value=360;shell.DurationInput.Value=30;
+            PickPriorities(shell, "fast", "cheap");
             var action=shell.PendingAward!;
             Require(action.Card is null && action.Site=="spokeBSite" && action.Capability=="power","The own-initiative action carries the actual target without a request.");
             var expected=Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot,"spoke-b")),1);

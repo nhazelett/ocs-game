@@ -6,13 +6,20 @@ namespace LinesOfSupport.Sim.Core;
 // Going to people (backlog M2R-04, docs/design/opening-and-guidance.md 6.2 and 6.2a, rule R3). Finance, the commander's
 // staff meeting, the SCO's staff, a vendor who comes by and the J4 are not in the inbox: going to them is an action that
 // costs shop hours and returns facts. Nothing here runs unless the player goes, so games that never do replay exactly as
-// before. The SCO's answer lag is the one random draw, from its own "people" stream.
+// before. The SCO's answer lag is drawn from its own "people" stream; the staff meeting's draws (DESK-08) from its own "meeting" stream.
 public sealed partial class Session
 {
     private sealed record VisitPayload(string Kind, string? Target, object? Extra = null);
 
     private DeterministicRandom? _rngPeopleStream;
     private DeterministicRandom RngPeople => _rngPeopleStream ??= DeterministicRandom.ForStream(Seed, "people");
+    // DESK-08: whether a meeting has anything for contracting, and which ops talk line it has instead. Its own stream,
+    // drawn once per meeting held, so a game that never attends draws nothing and replays as before.
+    private DeterministicRandom? _rngMeetingStream;
+    private DeterministicRandom RngMeeting => _rngMeetingStream ??= DeterministicRandom.ForStream(Seed, "meeting");
+    /// <summary>The team member who goes to the meeting: whoever got the shop into it.</summary>
+    private string? _meetingAssignee;
+    private int? _lastOpsTalk;
 
     private int? _financeFoundDay;
     private bool _attendingMeetings;
@@ -33,8 +40,10 @@ public sealed partial class Session
     internal int? VendorMetDay(string vendorId) => _vendorsMet.TryGetValue(vendorId, out var d) ? d : null;
 
     private GoingToPeopleRulesData People => Rules.GoingToPeople;
-    private bool VisitInWork(string kind, string? target = null)
-        => _work.Any(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.Payload is VisitPayload p && p.Kind == kind && (target is null || p.Target == target));
+    private bool VisitInWork(string kind, string? target = null) => VisitWork(kind, target) is not null;
+
+    private WorkItem? VisitWork(string kind, string? target = null)
+        => _work.FirstOrDefault(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.Payload is VisitPayload p && p.Kind == kind && (target is null || p.Target == target));
 
     /// <summary>Whether the usual owner has the capability at the site in hand (R10): an ACSA line covers it on some day of the
     /// window (inherited, ordered by the OCS seat, or added by the J4), or a J4 request for it is still in work.</summary>
@@ -110,7 +119,7 @@ public sealed partial class Session
             case FindFinanceAction:
                 hours = Fixed.Milli(People.FindFinance.ShopHours);
                 if (_financeFoundDay is not null) stops.Add("you have already found the finance office");
-                else if (VisitInWork("finance")) stops.Add("someone is already on the way to the finance office");
+                else if (VisitWork("finance") is { } going) stops.Add($"{WhoIs(going.Assignee)} already on the way to the finance office");
                 break;
             case JoinStaffMeetingAction { Attend: true }:
                 hours = Fixed.Milli(People.StaffMeeting.JoinShopHours);
@@ -127,7 +136,7 @@ public sealed partial class Session
                     stops.Add("that question is already with the SCO's staff");
                 break;
             case MeetVendorAction m:
-                hours = Fixed.Milli(People.MeetVendor.ShopHours);
+                hours = WithShopVehicle(Fixed.Milli(People.MeetVendor.ShopHours), Day);
                 if (VendorData(m.Vendor) is not { } v) stops.Add("no such vendor");
                 else if (_vendorsMet.ContainsKey(v.Id)) stops.Add($"you have already met {v.Name}");
                 else if (VisitInWork("vendor", v.Id)) stops.Add($"a meeting with {v.Name} is already set up");
@@ -135,6 +144,10 @@ public sealed partial class Session
             case EngageJ4Action j:
                 hours = Fixed.Milli(People.EngageJ4.ShopHours);
                 stops.AddRange(CheckEngageJ4(j, Day));
+                break;
+            case AskAboutAction a:
+                hours = Fixed.Milli(People.AskAbout.ShopHours);
+                stops.AddRange(CheckAskAbout(a));
                 break;
             default:
                 stops.Add("not a visit");
@@ -181,8 +194,9 @@ public sealed partial class Session
     internal ActionPreview BuildVisitPreview(PlayerAction action)
     {
         var (stops, hours) = CheckVisit(action);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
-        var done = _hoursPerDayMilli <= 0 ? Day : Day + Math.Max(0, (int)((hours + _hoursPerDayMilli - 1) / _hoursPerDayMilli) - 1);
+        var queue = QueueHours(action.Assignee);
+        hours = PersonHours(hours, action.Assignee);
+        var done = Day + Math.Max(0, WorkDays(hours, action.Assignee) - 1);
         var ready = action switch
         {
             AskScoAction => done + ScoLag().Min,
@@ -229,7 +243,7 @@ public sealed partial class Session
         var cmd = Scenario.Actors.Commander.Person;
         if (j.Attend)
             return StartVisit(j, "joinMeeting", null, PersonSubject(cmd, "staffMeeting"),
-                $"Getting yourself into the commander's staff meeting: about {People.StaffMeeting.JoinShopHours} shop hours, then {People.StaffMeeting.WeeklyShopHours} each week.");
+                $"Getting the shop into the commander's staff meeting: about {People.StaffMeeting.JoinShopHours} shop hours, then {People.StaffMeeting.WeeklyShopHours} at each meeting, {(People.StaffMeeting.EveryDays <= 1 ? "every day" : $"every {People.StaffMeeting.EveryDays} days")}.");
         var (stops, _) = CheckVisit(j);
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
         _work.RemoveAll(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "joinMeeting" or "meeting" });
@@ -271,8 +285,10 @@ public sealed partial class Session
     {
         if (!_attendingMeetings || _nextMeetingDay != d) return;
         _nextMeetingDay = d + Math.Max(1, People.StaffMeeting.EveryDays);
+        _assigneeNow = _meetingAssignee;
         var item = AddWork(WorkKind.Visit, "Staff meeting", Fixed.Milli(People.StaffMeeting.WeeklyShopHours), d,
                            new VisitPayload("meeting", null), _meetingJoinRecord);
+        _assigneeNow = null;
         _work.Remove(item);
         _work.Insert(0, item);
     }
@@ -301,16 +317,18 @@ public sealed partial class Session
             case "joinMeeting":
                 _attendingMeetings = true;
                 _meetingJoinRecord = w.CauseId;
-                HoldMeeting(day, w.CauseId, first: true);
+                _meetingAssignee = w.Assignee;
+                HoldMeeting(day, w.CauseId, first: true, w.Assignee);
                 _nextMeetingDay = day + Math.Max(1, People.StaffMeeting.EveryDays);
                 break;
-            case "meeting": HoldMeeting(day, w.CauseId, first: false); break;
+            case "meeting": HoldMeeting(day, w.CauseId, first: false, w.Assignee); break;
             case "sco":
                 _scoAsked.Add(p.Target!);
                 _scoAnswersDue.Add((day + RngPeople.NextInt(ScoLag()), p.Target!, w.CauseId));
                 break;
             case "vendor": CompleteMeetVendor(p.Target!, day, w.CauseId); break;
             case "j4": CompleteEngageJ4((EngageJ4Action)p.Extra!, day, w.CauseId); break;
+            case "ask": CompleteAskAbout((AskAboutAction)p.Extra!, day, w.CauseId); break;
         }
     }
 
@@ -332,31 +350,75 @@ public sealed partial class Session
             $"{Who(fm, "The finance office")}: \"{agentText}. You have {Money(_cash)} on hand, and when it runs low I can turn it around in {_cashReplenishLagDays} days. {cards} Send me the paperwork and certification takes {Scenario.Actors.Fm.CertificationLagDays} day{(Scenario.Actors.Fm.CertificationLagDays == 1 ? "" : "s")}.\"", [cause]);
     }
 
-    private void HoldMeeting(int day, string cause, bool first)
+    /// <summary>
+    /// A staff meeting the shop is in (DESK-08, D4). A requirement tagged heardAtStaffMeeting whose day has come is raised
+    /// in the room, and is on the desk tomorrow instead of on its later day. Otherwise one draw decides whether the
+    /// meeting has anything for contracting: if it does, the requests due within the preview window are mentioned; if
+    /// not, or there are none, the meeting is ops talk. The commander's priorities are given at the first meeting.
+    /// </summary>
+    private void HoldMeeting(int day, string cause, bool first, string? who)
     {
         _meetingDays.Add(day);
+        var r = People.StaffMeeting;
         var cmd = Scenario.Actors.Commander.Person;
-        var order = Scenario.Actors.Commander.PriorityOrder.Where(id => Scenario.Sites.Any(s => s.Id == id)).Select(SiteName).ToList();
-        var priorities = order.Count switch
+        var priorities = "";
+        if (first)
         {
-            0 => "",
-            1 => $" If we run short, {order[0]} comes first.",
-            _ => $" If we run short, it's {string.Join(", then ", order)}.",
-        };
-        var horizon = day + People.StaffMeeting.PreviewDays;
-        var coming = _cards.Where(c => c.SubmittedDay > day && c.SubmittedDay <= horizon && !_previewedCards.Contains(c.Id))
-                           .OrderBy(c => c.SubmittedDay).ToList();
-        var heard = new List<string>();
-        foreach (var c in coming)
-        {
-            _previewedCards.Add(c.Id);
-            var who = WhoDoes(c.PersonId, c.SubmittedBy ?? "A unit");
-            heard.Add($"{who} said they will be asking for {Lower(CardTitle(c))}, wanted from day {c.RequestedStartDay}.");
+            var order = Scenario.Actors.Commander.PriorityOrder.Where(id => Scenario.Sites.Any(s => s.Id == id)).Select(SiteName).ToList();
+            priorities = order.Count switch
+            {
+                0 => "",
+                1 => $" If we run short, {order[0]} comes first.",
+                _ => $" If we run short, it's {string.Join(", then ", order)}.",
+            };
         }
-        var news = heard.Count == 0 ? " Nobody raised anything new for the shop." : " " + string.Join(" ", heard);
-        var opening = first ? "You got yourself into the commander's staff meeting." : "Staff meeting.";
+        // The draws come first and always, so what is said never changes what is drawn.
+        var forShop = RngMeeting.Roll(r.ContractingPermille);
+        // Never the same ops talk two meetings running: draw among the others.
+        var talk = r.OpsTalk.Count switch { 0 => -1, 1 => 0, _ => RngMeeting.NextInt(0, r.OpsTalk.Count - 2) };
+        if (talk >= 0 && _lastOpsTalk is { } last && talk >= last && r.OpsTalk.Count > 1) talk++;
+
+        var heard = new List<string>();
+        foreach (var c in _cards.Where(c => c.Heard is { } h && h.FromDay <= day && c.SubmittedDay > day && c.RaisedInRoomDay is null)
+                                .OrderBy(c => c.Heard!.FromDay).ThenBy(c => c.SubmittedDay))
+        {
+            c.RaisedInRoomDay = day;
+            c.SubmittedDay = Math.Min(c.SubmittedDay, day + 1);
+            _previewedCards.Add(c.Id);
+            var by = c.Heard!.By ?? cmd;
+            var raiser = by == cmd ? "Then the commander" : WhoDoes(by, "Someone at the table");
+            var bringer = c.PersonId is not null && c.PersonId != by ? $" {WhoDoes(c.PersonId, "They")} will bring it to you tomorrow." : "";
+            heard.Add($"{raiser} turned to the shop: \"{c.Heard.Says}\" That is {Lower(CardTitle(c))}, wanted from day {c.RequestedStartDay}.{bringer}");
+        }
+        if (forShop)
+        {
+            var horizon = day + r.PreviewDays;
+            foreach (var c in _cards.Where(c => c.Heard is null && c.SubmittedDay > day && c.SubmittedDay <= horizon && !_previewedCards.Contains(c.Id))
+                                    .OrderBy(c => c.SubmittedDay))
+            {
+                _previewedCards.Add(c.Id);
+                heard.Add($"{WhoDoes(c.PersonId, c.SubmittedBy ?? "A unit")} said they will be asking for {Lower(CardTitle(c))}, wanted from day {c.RequestedStartDay}.");
+            }
+        }
+        var news = heard.Count > 0 ? " " + string.Join(" ", heard)
+            : talk >= 0 ? " " + r.OpsTalk[talk]
+            : " Nobody raised anything new for the shop.";
+        if (heard.Count == 0 && talk >= 0) _lastOpsTalk = talk;
+        var opening = first
+            ? Member(who).Role == "you" ? "You got yourself into the commander's staff meeting." : $"{Upper(MemberName(Member(who)))} got the shop into the commander's staff meeting."
+            : Member(who).Role == "you" ? "Staff meeting." : $"Staff meeting, with {MemberName(Member(who))} there for the shop.";
         AddRecord(day, RecordKind.Visit, PersonSubject(cmd, "staffMeeting"),
             $"{opening} {WhoDoes(cmd, "The commander")} ran it.{priorities}{news}", cause.Length == 0 ? [] : [cause]);
+    }
+
+    /// <summary>DESK-08: how a requirement tagged heardAtStaffMeeting reached the shop, in a sentence; null for any other.</summary>
+    internal string? HeardSentence(CardState c)
+    {
+        if (c.Heard is not { } h) return null;
+        var by = WhoDoes(h.By ?? Scenario.Actors.Commander.Person, "The commander");
+        if (c.RaisedInRoomDay is { } d) return $"{by} raised it at the staff meeting on day {d}, and the shop was in the room.";
+        return Day < c.SubmittedDay ? null
+            : $"{by} raised it at the staff meeting on day {h.FromDay}. The shop was not in the room, so it reached you on day {c.SubmittedDay}.";
     }
 
     private static string Lower(string s) => s.Length == 0 ? s : char.ToLowerInvariant(s[0]) + s[1..];
@@ -385,9 +447,10 @@ public sealed partial class Session
             raised.Add($"{CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} was started on a letter contract {DayText(a.Uca!.IssuedDay)} and never definitized; they are waiting on the modification and their money");
         }
         var said = raised.Count == 0 ? "" : $" They raised an old contract: {string.Join("; and ", raised)}.";
-        var tier = _vendorConfidence.ContainsKey(v.Id) ? $" Your directory entry for them is now {to}, not {was}." : "";
+        // DESK-05: the meeting fills in their card, so say what it now shows (payment and reach) and that it is filled in.
+        var terms = offers.Count == 0 ? "" : $" {PaymentSentence(v)} {ReachSentence(v)}";
         var rec = AddRecord(day, RecordKind.Visit, PersonSubject(rep, v.Id),
-            $"Met {(BuildPerson(rep) is { } rp ? $"{rp.DisplayName} of {v.Name}" : v.Name)}. {offerText}{said}{tier}", [cause]);
+            $"Met {(BuildPerson(rep) is { } rp ? $"{rp.DisplayName} of {v.Name}" : v.Name)}. {offerText}{terms}{said} Their vendor card is filled in.", [cause]);
         foreach (var a in _arrangements.Where(a => a.VendorId == v.Id && a.CreatedDay == 0 && ProblemHidden(a) && a.Uca is { Definitized: false }))
             _revealed.TryAdd(a.Id, (day, rec, RevealSource.Vendor));
     }

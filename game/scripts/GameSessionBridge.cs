@@ -17,6 +17,8 @@ internal sealed class GameSessionBridge
     internal event Action<PlayerAction>? ActionAccepted;
     internal bool IsReplay => log is not null;
     internal PrepView? Prep => bundle is not null && session is null ? PrepScreen.View(bundle) : null;
+    internal IReadOnlyList<TeamMemberData> PrepTeam => bundle?.Scenario.Shop.Team ?? [];
+    internal string? PrepScenarioId => bundle?.Scenario.Id;
     internal PrepCheck CheckPrep(IEnumerable<string> picks) => PrepScreen.Check(bundle ?? throw new InvalidOperationException("Load a scenario first."), picks);
     internal ActionResult Apply(PlayerAction action)
     {
@@ -49,12 +51,12 @@ internal sealed class GameSessionBridge
         bundle = loaded;
     }
 
-    internal void StartScenario(IEnumerable<string> picks)
+    internal void StartScenario(IEnumerable<string> picks, IReadOnlyList<TeamPick>? team = null)
     {
         var chosen = picks.ToArray();
         var check = CheckPrep(chosen);
         if (!check.Accepted) throw new InvalidDataException(string.Join("; ", check.Stops));
-        session = Session.Create(bundle!, 1, chosen);
+        session = Session.Create(bundle!, 1, chosen, team);
         log = null;
         DeploymentStarted?.Invoke(session.View);
     }

@@ -34,6 +34,8 @@ public partial class GameShell : Control
         BuildMapControls();
         BuildFrontDoor();
         BuildDayPlayback();
+        BuildEndDayCheck();
+        BuildTeamDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -95,7 +97,25 @@ public partial class GameShell : Control
 
     private void OnNextDay()
     {
-        if (ReadingTurnover || PlayingDay) return;
+        if (ReadingTurnover || PlayingDay || AtFrontDoor || session.View is not { Finished: false } view) return;
+        if (EndDayDialog.Visible) return;
+        var open = view.EndOfDayCheck();
+        if (open.Count > 0)
+        {
+            endDayCheckHash = session.StateHash;
+            EndDayDialog.GetLabel().SetAnchorsPreset(LayoutPreset.TopLeft);
+            EndDayDialog.GetLabel().Size = new Vector2(600, 0);
+            EndDayDialog.DialogText = "Before you end the day\n\n" + string.Join("\n\n", open);
+            EndDayDialog.ResetSize();
+            EndDayDialog.PopupCentered(new Vector2I(660, 0));
+            EndDayDialog.GetCancelButton().GrabFocus();
+            return;
+        }
+        AdvanceDayFromDesk();
+    }
+
+    private void AdvanceDayFromDesk()
+    {
         var advanced = AdvanceAndAutosave();
         if (advanced && session.View?.Finished == false) FocusNewMorning();
         RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.", developerOnly: advanced);
@@ -132,6 +152,7 @@ public partial class GameShell : Control
 
     private void RefreshDisplay(string status, bool developerOnly = false)
     {
+        if (endDayCheckHash is not null && endDayCheckHash != session.StateHash) CancelEndDayCheck();
         var view = session.View;
         var strip = view?.TopStrip();
         var board = view?.MorningBoard();
@@ -182,5 +203,6 @@ public partial class GameShell : Control
         RefreshDebrief(view);
         RefreshPrepVisibility();
         RefreshSaveControls();
+        RefreshTeam();
     }
 }

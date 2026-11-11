@@ -71,7 +71,7 @@ public sealed partial class Session
     private int _overnightFrom, _overnightTo;
     private int _recordSeq, _workSeq;
 
-    private Session(ScenarioBundle bundle, long seed, IReadOnlyList<string> prep)
+    private Session(ScenarioBundle bundle, long seed, IReadOnlyList<string> prep, IReadOnlyList<TeamPick>? team = null)
     {
         Bundle = bundle;
         Seed = seed;
@@ -98,8 +98,10 @@ public sealed partial class Session
         _missionWeights = [Fixed.Permille(w.SortieGeneration), Fixed.Permille(w.Throughput), Fixed.Permille(w.Endurance), Fixed.Permille(w.Resilience)];
 
         var shop = Scenario.Shop;
-        _people = shop.People;
-        _hoursPerDayMilli = shop.People * Fixed.Milli(Rules.Model.HoursPerPersonPerDay);
+        _team.AddRange(BuildTeam(shop, Fixed.Milli(Rules.Model.HoursPerPersonPerDay), team));
+        _lead = _team.First(m => m.Role == "you").Id;
+        _people = shop.Team is { Count: > 0 } ? _team.Count : shop.People;
+        _hoursPerDayMilli = _team.Sum(m => m.HoursPerDayMilli);
         _systemOnlineDay = shop.SystemOnlineDay;
         _manualFactorPermille = Fixed.Permille(Rules.Model.ManualContractTimeFactor);
         _cash = _cashInitial = shop.CashOnHandCents;
@@ -125,6 +127,7 @@ public sealed partial class Session
                 Id = c.Id, SiteId = c.Site, CapabilityId = c.Capability, Lines = new Dictionary<string, bool>(c.Lines, StringComparer.Ordinal),
                 SubmittedDay = c.SubmittedDay, RequestedStartDay = c.RequestedStartDay, DurationDays = c.DurationDays,
                 QuantityHint = c.QuantityHint, SubmittedBy = c.SubmittedBy, PersonId = c.Person, Message = c.Message,
+                Heard = c.HeardAtStaffMeeting,
             });
         foreach (var i in Scenario.Islands)
             _knowledge.Add(new IslandKnowledge { IslandId = i.Id, Tier = i.InfoTier ?? (i.IsHub ? "observed" : "assumed") });
@@ -135,7 +138,7 @@ public sealed partial class Session
                     SiteId = site.Id, CapabilityId = sc.Id, Critical = sc.Critical,
                     BufferDaysPermille = Fixed.Permille(sc.BufferDays ?? Rules.Model.DefaultBufferDays),
                 });
-        foreach (var c in Scenario.Cors) _cors.Add(new CorState { Id = c.Id, Name = c.Name, Unit = c.Unit, Quality = c.Quality });
+        foreach (var c in Scenario.Cors) _cors.Add(new CorState { Id = c.Id, Name = c.Name, Unit = c.Unit, Quality = c.Quality, Knows = c.Knows });
         foreach (var a in Scenario.InheritedArrangements) AddInherited(a);
         foreach (var e in Scenario.Events)
         {
@@ -147,8 +150,8 @@ public sealed partial class Session
         }
     }
 
-    public static Session Create(ScenarioBundle bundle, long seed, IEnumerable<string>? prepChoices = null)
-        => new(bundle, seed, (prepChoices ?? []).ToList());
+    public static Session Create(ScenarioBundle bundle, long seed, IEnumerable<string>? prepChoices = null, IReadOnlyList<TeamPick>? team = null)
+        => new(bundle, seed, (prepChoices ?? []).ToList(), team);
 
     // ------------------------------------------------------------------ public read surface
 
@@ -365,7 +368,7 @@ public sealed partial class Session
     public InputLog ToInputLog() => new()
     {
         Scenario = Scenario.Id, RulesVersion = Rules.RulesVersion, Seed = Seed,
-        PrepChoices = [.. PrepChoices], Actions = [.. _applied],
+        PrepChoices = [.. PrepChoices], Actions = [.. _applied], Team = TeamPicks(),
     };
 
     /// <summary>
