@@ -23,7 +23,7 @@ The repo needs the spec before either agent writes code, and the decisions that 
 
 - Game title (Q1). Project code names stay `LinesOfSupport.*` until it is set; renaming is a one-commit change before M0 code lands.
 - Scope section 4.2's prep-day costs and section 4.1's lead times are first-pass numbers and are marked as tunables in the spec.
-- Spec v0.2 still says "Steam only after an ethics opinion" in one place in section 10; the bottom line now says the ethics question is handled before public release. Section 10 is the one to read as "before a Steam page exists," which is consistent; wording to be tightened in v0.3.
+- Section 10 is the one to read for what has to be true before a Steam page exists; the bottom line says the same in fewer words. Wording to be tightened in v0.3.
 
 ## Next
 

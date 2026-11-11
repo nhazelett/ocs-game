@@ -15,13 +15,13 @@ Boundaries I recommend holding for 1.0:
 - 2D "desk" interface first. The 3D tabletop is a presentation layer added once the sim is proven fun, and the data model never depends on it.
 - Fictional island chain, fictional vendors, generic equipment. No Air Force marks, insignia, or named operations in content.
 - Godot 4 .NET with C# throughout; the simulation is a separate class library that runs headless for tests and balance runs.
-- Standalone Windows build first, shipped as a KTHQ product. The ethics question is handled before a public release, not before building.
+- Standalone Windows build first, shipped as a KTHQ product. Any release review the owner needs is handled before a public release, not before building.
 
 Decisions made 7 Nov 2026 (everything else below is resolved by my judgment and recorded as an assumption):
 
 1. **Primary learner is the CCO.** The OCS seat exists so the CCO learns why integration matters and keeps the contingency focus; it is not a co-equal game.
 2. **Setting is a fictional island chain.** A hub island and spoke islands, because island hopping is the hub-and-spoke problem with transport built in.
-3. **It is a KTHQ product** and is marketed as one. No ethics opinion now; that gets handled before a public release if it is needed.
+3. **It is a KTHQ product** and is marketed as one. Any release review the owner needs is handled before a public release.
 4. **First playable is hub plus two spokes over 30 days.** Scenario lengths of 60, 90, 180 and 270 days come later from the same skeleton model.
 5. **Every instrument has a cost as well as a speed,** and the game must make the player feel it: SF 44, GPC, purchase orders, BPAs, IDIQs, UCAs, local versus stateside sourcing, cash versus card, manual versus system-written contracts. Sections 4.1 to 4.3 carry this.
 
@@ -398,7 +398,7 @@ Every arrow points at the sim or away from it; nothing talks to the Godot projec
 4. **Event chain authoring.** Each chain with preconditions is cheap to code and expensive to balance. The harness carries that load.
 5. **Editor UX.** The assembly model lives or dies on whether building a contract action feels like a decision or like data entry. This is the first UI experiment and may need two or three passes.
 
-**Dependencies:** the Spoke B scenario depends on the sim core; the 3D board depends on the asset kit, which depends on Codex's Blender pipeline working with its available tools; Steam depends on an ethics opinion and a Steamworks account in your name or a label's; hot-seat depends on nothing new.
+**Dependencies:** the Spoke B scenario depends on the sim core; the 3D board depends on the asset kit, which depends on Codex's Blender pipeline working with its available tools; Steam depends on the owner's release review and a Steamworks account in your name or a label's; hot-seat depends on nothing new.
 
 **What needs a prototype before anyone estimates it:** the action editor (one week of UI experiments decides whether the assembly model is right), the diorama look (one site rendered from the kit decides the whole visual plan), and the counterfactual picker. Everything else is ordinary engineering with known shape.
 
@@ -414,7 +414,7 @@ Every arrow points at the sim or away from it; nothing talks to the Godot projec
 - Free games are allowed; the page describes no different process for them.
 - Content survey requires an AI disclosure. Since Valve's January 2026 rewrite, AI-assisted development tools do not need disclosure, but pre-generated content players see (art, audio, text) does, and the disclosure shows on the store page ([Game Developer](https://gamedeveloper.com/business/valve-tweaks-and-clarifies-ai-disclosure-rules-for-steam)). The asset kit is generated, so we disclose it plainly. No live-generated AI content in the game means no guardrail declaration is needed.
 
-**Pre-conditions before a Steam page exists:** an ethics opinion covering a free public release by a serving member whose official duties overlap the subject; a decision on the label it ships under; no Air Force marks, insignia or official names anywhere in the game, store page or key art; and a short public statement that the game is an unofficial training aid with no endorsement.
+**Pre-conditions before a Steam page exists:** whatever release review the owner needs for a free public release; a decision on the label it ships under; no Air Force marks, insignia or official names anywhere in the game, store page or key art; and a short public statement that the game is an unofficial training aid with no endorsement.
 
 **Other channels worth nothing extra:** itch.io (free, no fee, no waiting periods) as a public beta channel before Steam, and the GitHub release as the canonical download for people on networks that block game storefronts.
 
@@ -517,7 +517,7 @@ Codex (M0 and M1):
 
 Nick (now): the four decisions in the bottom line, and a first pass at the five scenario skeletons in prose, one paragraph each.
 
-**Requires manual attention, outside expertise or money (none block M0 to M2):** ethics opinion; Steamworks account, $100 fee, and tax paperwork in a real person's name; a human eye on key art and iconography; code-signing certificate if SmartScreen becomes a problem; sound licensing checks; three external playtesters.
+**Requires manual attention, outside expertise or money (none block M0 to M2):** the owner's release review; Steamworks account, $100 fee, and tax paperwork in a real person's name; a human eye on key art and iconography; code-signing certificate if SmartScreen becomes a problem; sound licensing checks; three external playtesters.
 
 ## 13. Open questions, assumptions, research
 
