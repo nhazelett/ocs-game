@@ -18,7 +18,8 @@ public partial class PortraitSmokeTest:Node
             string[] first=["ruiz","cole","whitfield","mills"];
             people=people.OrderBy(p=>Array.IndexOf(first,p.Portrait) is var i && i>=0?i:99).ThenBy(p=>p.DisplayName).ToList();
             var hashes=new HashSet<string>();
-            var gallery=new Control{Theme=TabletopTheme.Create()};AddChild(gallery);gallery.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            using var theme=TabletopTheme.Create();
+            var gallery=new Control{Theme=theme};AddChild(gallery);gallery.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
             var bg=new ColorRect{Color=TabletopTheme.Background,MouseFilter=Control.MouseFilterEnum.Ignore};gallery.AddChild(bg);bg.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
             Art.ArtDirections.Label(gallery,"Tabletop / the people you meet",new Rect2(24,18,900,40),28,"343d4b");
             Art.ArtDirections.Label(gallery,"Original fictional character designs · no photographs or unit marks",new Rect2(24,59,1100,30),18,"66716d");
