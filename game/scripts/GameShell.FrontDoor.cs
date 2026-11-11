@@ -68,6 +68,7 @@ public partial class GameShell
 
     private void ShowFrontDoor()
     {
+        CancelEndDayCheck();
         FinishDayPlayback();
         frontDoor.Show(); GetNode<Control>("Margin").Hide(); menuButton?.Hide();
         openingSurface.Hide();

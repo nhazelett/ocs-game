@@ -12,7 +12,7 @@ public partial class DayPlaybackSmokeTest : Node
         {
             var shell=Shell(this);Replay(shell);Step(shell,9);
             var map=shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
-            var next=shell.GetNode<Button>("%NextDay");next.EmitSignal(Button.SignalName.Pressed);
+            var next=shell.GetNode<Button>("%NextDay");EndDay(shell);
             Require(shell.PlayingDay && shell.PlaybackFacts!.Day==10 && next.Disabled,"Next day automatically plays exactly the completed day and holds further input.");
             var hash=shell.Session.StateHash;
             next.EmitSignal(Button.SignalName.Pressed);shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
@@ -25,7 +25,7 @@ public partial class DayPlaybackSmokeTest : Node
             var sawRun=false;var sawClosure=false;
             for(var i=0;i<15;i++)
             {
-                next.EmitSignal(Button.SignalName.Pressed);hash=shell.Session.StateHash;
+                EndDay(shell);hash=shell.Session.StateHash;
                 var facts=shell.Session.View!.MapDay();
                 Require(shell.PlaybackFacts!.Day==facts.Day && shell.PlaybackFacts.Runs.SequenceEqual(facts.Runs) && shell.PlaybackFacts.Held.SequenceEqual(facts.Held),"Playback uses the exact current snapshot.");
                 if(!sawRun && facts.Runs.Count>0){sawRun=true;shell.TickDayPlayback(1.8);await Capture("delivery");}

@@ -31,6 +31,7 @@ public partial class GameShell
 
     private void ResetDeskSelection()
     {
+        CancelEndDayCheck();
         ResetOpening();
         CloseContractView();
         debriefHash = null;
