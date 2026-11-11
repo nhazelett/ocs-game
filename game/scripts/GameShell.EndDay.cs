@@ -9,7 +9,7 @@ public partial class GameShell
 
     private void BuildEndDayCheck()
     {
-        EndDayDialog = new ConfirmationDialog { Title = "Before you end the day", Exclusive = true };
+        EndDayDialog = new ConfirmationDialog { Title = "", Borderless = true, DialogAutowrap = true, Exclusive = true };
         AddChild(EndDayDialog);
         EndDayDialog.GetLabel().AutowrapMode = TextServer.AutowrapMode.WordSmart;
         EndDayDialog.GetLabel().CustomMinimumSize = new Vector2(600, 0);

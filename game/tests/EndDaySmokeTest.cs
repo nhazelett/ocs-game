@@ -53,7 +53,7 @@ public partial class EndDaySmokeTest : Node
             var tutorial = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial")), 1);
             hash = shell.Session.StateHash;
             end.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.EndDayDialog.Visible && shell.EndDayDialog.DialogText == string.Join("\n\n", tutorial.View.EndOfDayCheck())
+            Require(shell.EndDayDialog.Visible && shell.EndDayDialog.DialogText == "Before you end the day\n\n" + string.Join("\n\n", tutorial.View.EndOfDayCheck())
                 && shell.Session.StateHash == hash && shell.Session.CompletedDay == 0 && !shell.PlayingDay,
                 "The exact Sim sentences appear before any state change, autosave or playback.");
             Require(shell.EndDayDialog.DialogText.Contains("Water for Hub") && shell.EndDayDialog.DialogText.Contains("MSgt Joan Avery")
@@ -61,6 +61,7 @@ public partial class EndDaySmokeTest : Node
             end.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash, "Repeated clicks cannot advance behind the check.");
             await Capture("check");
+            Require(shell.EndDayDialog.Size.Y < 400, "The short check fits a compact dialog instead of leaving a large empty panel.");
             Require(shell.EndDayDialog.GetCancelButton().HasFocus(), "Returning to the desk is the focused choice.");
             Require(shell.EndDayDialog.GetLabel().GetRect().End.X <= shell.EndDayDialog.Size.X,
                 "The wrapped check fits its dialog.");
@@ -90,7 +91,7 @@ public partial class EndDaySmokeTest : Node
                 "Starting another deployment invalidates the old confirmation.");
             Step(shell, 5); hash = shell.Session.StateHash;
             end.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.EndDayDialog.Visible && shell.EndDayDialog.DialogText == string.Join("\n\n", shell.Session.View!.EndOfDayCheck())
+            Require(shell.EndDayDialog.Visible && shell.EndDayDialog.DialogText == "Before you end the day\n\n" + string.Join("\n\n", shell.Session.View!.EndOfDayCheck())
                 && shell.EndDayDialog.DialogText.Contains("was wanted from day 5"), "An overdue request retains the exact late wording.");
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
             shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
