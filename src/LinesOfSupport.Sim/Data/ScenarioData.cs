@@ -507,6 +507,7 @@ public sealed record RulesFile
     public GpcProgramRulesData GpcProgram { get; init; } = new();
     public GoingToPeopleRulesData GoingToPeople { get; init; } = new();
     public PickTwoRulesData PickTwo { get; init; } = new();
+    public Sf44DeliveriesRulesData Sf44Deliveries { get; init; } = new();
 }
 
 /// <summary>Fast, cheap, good: pick two (DESK-06, D7). Placeholder numbers, tuned in playtest.</summary>
@@ -663,6 +664,19 @@ public sealed record FindFinanceRulesData
     public int ShopHours { get; init; } = 3;
     public int PayingAgentWithinDays { get; init; } = 3;
     public int ReplenishLagDays { get; init; } = 3;
+    public string? SourceUrl { get; init; }
+}
+
+/// <summary>
+/// An SF 44 for more than one day (DESK-09, D11): every delivery is a trip for the CCO and the paying agent, paid in
+/// cash on the day. TripShopHours on the supplier's island; OffIslandTripShopHours to a site across the water, which
+/// also needs the surface link open that day. Nothing else is modeled.
+/// </summary>
+public sealed record Sf44DeliveriesRulesData
+{
+    public string? Notes { get; init; }
+    public int TripShopHours { get; init; } = 2;
+    public int OffIslandTripShopHours { get; init; } = 6;
     public string? SourceUrl { get; init; }
 }
 

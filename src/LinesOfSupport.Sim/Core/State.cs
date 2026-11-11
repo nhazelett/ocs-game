@@ -48,6 +48,9 @@ public sealed class Arrangement
     public string? CorId { get; set; }
     /// <summary>The fast, cheap, good pick made at award (DESK-06): "fast+cheap", "fast+good" or "cheap+good"; null for none.</summary>
     public string? Pick { get; init; }
+    /// <summary>DESK-09: an SF 44 for more than one day, paid in cash at each delivery; the team member who makes the trips.</summary>
+    public bool PaidPerDelivery { get; init; }
+    public string? TripAssignee { get; init; }
     /// <summary>Days of termination notice the contract requires, or null for none (inherited noticeDays, M3-19).</summary>
     public int? NoticeDays { get; init; }
 }

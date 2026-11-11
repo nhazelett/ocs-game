@@ -7,6 +7,8 @@ public sealed partial class Session
         public int FactorPermille = 1000;          // multiplier on this arrangement's supply today
         public bool Failed, Confused, Suspended;
         public string? FailureRecord, ConfusionRecord, CapacityRecord;
+        /// <summary>DESK-09: an SF 44 delivery that did not happen today (no cash, or the link closed), and why.</summary>
+        public string? NoDeliveryRecord, NoDeliveryReason;
     }
 
     /// <summary>Plays the current day. Fixed order: events, knowledge, UCA clocks, shop work, external support awards, lifecycle, supply, transition plans, money, score.</summary>
@@ -24,6 +26,7 @@ public sealed partial class Session
         UcaClocks(d);
         CommitmentClocks(d);
         PeopleBeforeWork(d);
+        Sf44Deliveries(d);
         DoShopWork(d);
         PeopleAfterWork(d);
         SmallBuys(d);
@@ -289,6 +292,13 @@ public sealed partial class Session
                 t.ConfusionRecord = AddRecord(d, RecordKind.ExecutionConfusion, a.Id,
                     $"Execution confusion on {NameOf(a.Id)}: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.", [a.CauseId]);
             }
+            // DESK-09: an SF 44 delivery that was not made today supplies nothing (the draws above are kept, so no stream moves).
+            if (_sf44Held.TryGetValue(a.Id, out var held))
+            {
+                t.FactorPermille = 0;
+                t.NoDeliveryRecord = held.Record;
+                t.NoDeliveryReason = held.Reason;
+            }
         }
         return result;
     }
@@ -330,6 +340,7 @@ public sealed partial class Session
                     if (t.FailureRecord is not null) causes.Add(t.FailureRecord);
                     if (t.ConfusionRecord is not null) causes.Add(t.ConfusionRecord);
                     if (t.CapacityRecord is not null) { causes.Add(t.CapacityRecord); reasons.Add($"{VendorData(a.VendorId)!.Name} over capacity"); }
+                    if (t.NoDeliveryRecord is not null) { causes.Add(t.NoDeliveryRecord); reasons.Add(t.NoDeliveryReason!); }
                     if (cap.Delivery == "consumable" && a.SupplierIslandId != site.Island)
                     {
                         a.InTransitMilli += q;
@@ -418,7 +429,7 @@ public sealed partial class Session
         foreach (var a in _arrangements)
         {
             if (!today.ContainsKey(a.Id) || a.IsCoordination) continue;
-            if (a.Status == ArrangementStatus.Active)
+            if (a.Status == ArrangementStatus.Active && !(today[a.Id].NoDeliveryRecord is not null))
             {
                 a.IncurredCents += a.DailyCostCents;
                 if (!a.MobilizationCharged) { a.IncurredCents += a.MobilizationCents; a.MobilizationCharged = true; }

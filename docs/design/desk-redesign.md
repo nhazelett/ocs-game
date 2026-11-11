@@ -67,7 +67,7 @@ The scope checkboxes. The Directory tab. Terminate buttons in the Ledger. The Co
 - Ask in view (D9): `ActionEditorView` already carries peak demand; add the card's requested start and days.
   Built (DESK-07): `RequestedStartDay`, `RequestedDurationDays` and `RequestedQuantity` (the customer's own words), null without a card.
 - End of day (D1): `SessionView.EndOfDayCheck()` returns the open items as sentences. Read only.
-- SF 44 (D11): a multi-day SF 44 pays per delivery from cash on the day, costs trip hours per delivery, and for an off-island site needs the link open that day.
+- SF 44 (D11): a multi-day SF 44 pays per delivery from cash on the day, costs trip hours per delivery, and for an off-island site needs the link open that day. Built (DESK-09): rules `sf44Deliveries` (2 trip hours on the supplier's island, 6 across the water); the trip goes to whoever made the buy, at the front of their day; a held delivery supplies nothing, costs nothing and names its reason in the shortfall. The no-terms confusion roll on recurring cash buys is unchanged.
 
 ## 5. Order
 

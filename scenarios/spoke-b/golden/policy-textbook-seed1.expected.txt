@@ -26,8 +26,8 @@ Day 1
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 2 days.
-  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2640 gal/day for 10 days (Potable water supply); $10,560 paid on the spot.
-  DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated $10,560.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
+  DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated as each delivery is paid.
   VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      Survey team dispatched to Third Island; findings due day 3.
@@ -38,9 +38,8 @@ Day 2
 Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088. Approval request routed through the SCO; answer expected in 2 days.
-  CASH      Cash on hand down to $6,176; FM replenishment expected day 6.
-  ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 528 meals/day for 7 days (Meal service); $33,264 paid on the spot.
-  DONE      SF 44 cash purchase awarded to Coastal Provisions for food service at Spoke C; performance starts day 12, ends day 18. Obligated $33,264.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 528 meals/day for 7 days (Meal service). Paid in cash at each delivery, $4,752 a day, about $33,264 in all. Each delivery is a trip for you and the paying agent: 6 shop hours.
+  DONE      SF 44 cash purchase awarded to Coastal Provisions for food service at Spoke C; performance starts day 12, ends day 18. Obligated as each delivery is paid.
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   SURVEY    Survey of Third Island returned: grid power available; no fuel point; water: well; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Third Island Water Works, Coastal Provisions; Coastal Provisions stocks food service from Main Island, so its deliveries ride the surface link.
   COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 12 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
@@ -55,17 +54,16 @@ Day 5
   START     Fuel at Spoke B from the partner force began, 1287 gal/day.
   CONFUSED  Execution confusion on Coastal Provisions water at Spoke C: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 6
-  DONE      Undefinitized contract action awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 41. UCA issued with NTE $229,997; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 26 waiting.
-  CASH      FM replenished cash on hand to $50,000.
 Day 7
-  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
-  DONE      CE small buys: 8 worked today (4 h of shop time); 25 still waiting.
+  DONE      Undefinitized contract action awarded to Third Island Water Works for food service at Spoke C; performance starts day 13, ends day 42. UCA issued with NTE $229,997; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: none worked today (no hours left); 33 waiting.
   START     Power at Spoke B from Harbor Equipment Co began, 514 kW/day.
 Day 8
-  DONE      CE small buys: 27 worked today (13.5 h of shop time, 4 on cards).
+  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
+  DONE      CE small buys: 24 worked today (12 h of shop time); 15 still waiting.
 Day 9
-  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  DONE      CE small buys: 17 worked today (8.5 h of shop time, 4 on cards).
 Day 10
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 11
@@ -74,29 +72,32 @@ Day 12
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     Food service at Spoke C from Coastal Provisions began, 528 meals/day.
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
-  START     Food service at Spoke C from Third Island Water Works began, 528 meals/day.
 Day 13
   SURVEY    Forecast from your Third Island survey contacts: Weather closes the Third Island crossing. No that arrangement sailings days 14 to 15.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  START     Food service at Spoke C from Third Island Water Works began, 528 meals/day.
 Day 14
   ACTION    Termination of Coastal Provisions water at Spoke C started.
-  ACTION    Termination of Coastal Provisions food service at Spoke C started.
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
+  CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
   END       Coastal Provisions water at Spoke C terminated; performance ends day 14.
-  END       Coastal Provisions food service at Spoke C terminated; performance ends day 14.
-  DONE      CE small buys: none worked today (no hours left); 2 waiting, 5 went on cards.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
 Day 15
+  ACTION    Termination of Coastal Provisions food service at Spoke C started.
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
-  DONE      CE small buys: 4 worked today (2 h of shop time, 4 on cards).
+  CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
+  END       Coastal Provisions food service at Spoke C terminated; performance ends day 15.
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   END       Coastal Provisions water at Spoke C ended.
-  END       Coastal Provisions food service at Spoke C ended.
 Day 16
   ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
+  END       Coastal Provisions food service at Spoke C ended.
 Day 17
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
@@ -120,8 +121,8 @@ Day 20
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
 Day 21
-  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 720 gal/day for 9 days (Potable water supply); $2,592 paid on the spot.
-  DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 23, ends day 31. Obligated $2,592.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 720 gal/day for 9 days (Potable water supply). Paid in cash at each delivery, $288 a day, about $2,592 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
+  DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 23, ends day 31. Obligated as each delivery is paid.
   UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   START     Fuel at Spoke B from the other unit began, 1170 gal/day.
@@ -138,16 +139,16 @@ Day 24
 Day 25
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
-  OBLIGATE  Third Island Water Works food service at Spoke C has incurred $116,160 against $114,998 obligated: the UCA obligation cap of 50% of NTE is reached. The vendor stops work in 3 days if this stands.
-  UCA-DUE   Third Island Water Works food service at Spoke C is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 26
   EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 27. A coordination is not a contract.
-  UCA       Third Island Water Works submitted a qualifying proposal for food service at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
   FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  OBLIGATE  Third Island Water Works food service at Spoke C has incurred $116,160 against $114,998 obligated: the UCA obligation cap of 50% of NTE is reached. The vendor stops work in 3 days if this stands.
+  UCA-DUE   Third Island Water Works food service at Spoke C is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 27
   UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
+  UCA       Third Island Water Works submitted a qualifying proposal for food service at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
 Day 28
   ACTION    Definitization of Third Island Water Works water at Spoke C started; to be funded from the O&M line.
@@ -156,11 +157,9 @@ Day 28
 Day 29
   DONE      CE small buys: none worked today (no hours left); 4 waiting, 6 went on cards.
 Day 30
-  COMPLY    Higher HQ asked why Third Island Water Works food service at Spoke C is past due for definitization. A response is now shop work.
-  DEFINITZD Third Island Water Works water at Spoke C definitized at $51,480; obligation caps lifted; $27,579 of $27,720 funded from the O&M line; the rest waits on money.
-  DONE      Response to higher HQ on Third Island Water Works food service at Spoke C sent.
-  DONE      CE small buys: 6 worked today (3 h of shop time, 5 on cards).
-  OBLIGATE  Third Island Water Works food service at Spoke C has incurred $145,200 against $139,392 obligated: The O&M line has $0 left. The vendor stops work in 3 days if this stands.
+  DEFINITZD Third Island Water Works water at Spoke C definitized at $51,480; obligation caps lifted; fully funded from the O&M line.
+  DONE      CE small buys: 4 worked today (2 h of shop time, 5 on cards); 2 still waiting.
+  OBLIGATE  Third Island Water Works food service at Spoke C has incurred $139,392 against $139,251 obligated: The O&M line has $0 left. The vendor stops work in 3 days if this stands.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -182,9 +181,9 @@ Spoke C Waste removal         ..........................
 
 SCORECARD
   Mission output 93% (sortie generation 99%, throughput 99%, endurance 99%, resilience 58%)
-  Obligated $946,416; incurred $551,349; incurred but not obligated $5,808
-  Unauthorized commitments 0; UCAs past due 1; HHQ inquiries 1
-  Surveys 2; shop hours worked 257; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 0
+  Obligated $922,368; incurred $540,789; incurred but not obligated $141
+  Unauthorized commitments 0; UCAs past due 1; HHQ inquiries 0
+  Surveys 2; shop hours worked 302; payment errors 0; execution-confusion days 1; vendor failures 5; declined BPA calls 0
   spokeBSite.power: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 1 day(s) down, 0 degraded, lowest 0%
@@ -215,4 +214,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.925)
 
-State hash c3488cb524eb5fba816f8b7b967d299ec6e40b151e1dd62b8afe089ff057ad9a
+State hash d1ae9e157dcd873b9bf36c5cdc15da08e3ef83ddb19334d65406b7bcd14b59be

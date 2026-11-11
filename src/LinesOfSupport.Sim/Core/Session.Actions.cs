@@ -236,7 +236,12 @@ public sealed partial class Session
             case "sf44":
                 if (_payingAgentDay is null || Day < _payingAgentDay) stops.Add("no paying agent with cash on hand yet");
                 if (!vendor.AcceptsCash) stops.Add($"{vendor.Name} does not take cash");
-                if (total > _cash) stops.Add($"cash on hand is {Money(_cash)}");
+                // DESK-09: an SF 44 for more than one day is paid at each delivery, so only the first has to fit today.
+                if (a.DurationDays > 1)
+                {
+                    if (daily + mob > _cash) stops.Add($"cash on hand is {Money(_cash)} and the first delivery costs {Money(daily + mob)}");
+                }
+                else if (total > _cash) stops.Add($"cash on hand is {Money(_cash)}");
                 break;
             case "gpc":
                 if (_gpcAvailableDay is null || Day < _gpcAvailableDay) stops.Add("no government purchase card accounts yet");
@@ -311,6 +316,15 @@ public sealed partial class Session
 
         switch (a.Instrument)
         {
+            case "sf44" when a.DurationDays > 1:
+            {
+                // DESK-09 (D11): paid in cash at each delivery, and each delivery is a trip (Sf44Deliveries).
+                var trip = TripHours(siteId, StockIsland(vendor, capId));
+                var rec = AddRecord(Day, RecordKind.Action, a.Id,
+                    $"{inst.Label} to {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}). Paid in cash at each delivery, {Money(daily)} a day{(mob > 0 ? $" and {Money(mob)} with the first" : "")}, about {Money(total)} in all. Each delivery is a trip for {(Member(_assigneeNow).Role == "you" ? "you" : MemberName(Member(_assigneeNow)))} and the paying agent: {Plural(trip, "shop hour")}.", []);
+                CompleteAward(payload, Day, rec);
+                return ActionResult.Ok("bought");
+            }
             case "sf44":
             case "gpc":
             {
@@ -378,7 +392,7 @@ public sealed partial class Session
             obligated = p.TotalCents;
             if (idiq is not null) idiq.OrderedCents += p.TotalCents;
         }
-        else if (a.Instrument is "sf44" or "gpc") obligated = p.TotalCents;
+        else if (a.Instrument is "sf44" or "gpc") obligated = PerDelivery(a) ? 0 : p.TotalCents;   // DESK-09: obligated as each delivery is paid
 
         var earliest = day + 1 + p.StartLag + p.LeadTime;
         var start = Math.Max(a.StartDay ?? earliest, earliest);
@@ -389,6 +403,7 @@ public sealed partial class Session
             MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine, FromGuaranteeCents = fromGuarantee,
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
             StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor, Pick = PickKey(a.Priorities),
+            PaidPerDelivery = PerDelivery(a), TripAssignee = PerDelivery(a) ? Member(_assigneeNow).Id : null,
         };
         foreach (var lineId in p.Lines)
         {
@@ -412,13 +427,14 @@ public sealed partial class Session
             ? $" UCA issued with NTE {Money(u.NteCents)}; obligations capped at {Rules.Uca.ObligationCapBeforeProposal * 100:0}% of NTE until a qualifying proposal."
             : fromGuarantee > 0
                 ? $" Obligated {Money(obligated)}, {Money(fromGuarantee)} of it from {NameOf(a.Vehicle)}'s minimum guarantee."
+                : arr.PaidPerDelivery ? " Obligated as each delivery is paid."
                 : $" Obligated {Money(obligated)}.";
         AddRecord(day, RecordKind.WorkDone, a.Id, $"{inst.Label} awarded to {VendorData(a.Vendor)!.Name} for {Lower(CapLabel(arr.CapabilityId))} at {SiteName(arr.SiteId)}; performance starts day {arr.StartDay}, ends day {arr.EndDay}.{tail}", [causeId]);
     }
 
-    private void ScheduleReplenish()
+    private void ScheduleReplenish(bool shortNow = false)
     {
-        if (_cashReplenishDay is null && _cash * 1000 < _cashInitial * Rules.Model.CashReplenishThresholdPermille)
+        if (_cashReplenishDay is null && (shortNow || _cash * 1000 < _cashInitial * Rules.Model.CashReplenishThresholdPermille))
         {
             _cashReplenishDay = Day + _cashReplenishLagDays;
             AddRecord(Day, RecordKind.Cash, "cash", $"Cash on hand down to {Money(_cash)}; FM replenishment expected day {_cashReplenishDay}.", []);

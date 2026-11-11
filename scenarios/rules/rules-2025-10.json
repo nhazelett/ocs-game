@@ -48,7 +48,7 @@
       "requiresSystemOrManual": false,
       "maxActionCents": null,
       "limitBasis": "microPurchase",
-      "notes": "Draws cash on hand; replenishment lag is per scenario. A recurring service on repeated SF 44s rolls executionConfusionNoTerms daily and is tagged in the debrief."
+      "notes": "Draws cash on hand; replenishment lag is per scenario. For more than one day it is paid at each delivery and each delivery is a trip (sf44Deliveries, DESK-09). A recurring service on repeated SF 44s rolls executionConfusionNoTerms daily and is tagged in the debrief."
     },
     "gpc": {
       "label": "Government purchase card",
@@ -843,5 +843,11 @@
     "competeShopDays": 2,
     "premiumPermille": 150,
     "firstQuoteFailurePermille": 15
+  },
+  "sf44Deliveries": {
+    "notes": "DESK-09 (D11): an SF 44 for more than one day is paid in cash at each delivery, and each delivery is a trip for the CCO and the paying agent. Off-island sites need the surface link open on the day; a closed link stops the delivery and the payment. A delivery the cash on hand cannot cover does not happen. Not modeled: unauthorized commitment (the CCO is warranted), price creep, split-purchase findings, paying agent clearing. Placeholder hours, tuned in playtest.",
+    "tripShopHours": 2,
+    "offIslandTripShopHours": 6,
+    "sourceUrl": "https://www.acquisition.gov/far/13.306"
   }
 }

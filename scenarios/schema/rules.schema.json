@@ -1061,6 +1061,34 @@
           "description": "Fast and cheap: added daily failure odds, in thousandths"
         }
       }
+    },
+    "sf44Deliveries": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "An SF 44 for more than one day (DESK-09, D11): cash paid at each delivery, a trip each delivery.",
+      "required": [
+        "tripShopHours",
+        "offIslandTripShopHours"
+      ],
+      "properties": {
+        "notes": {
+          "type": "string"
+        },
+        "tripShopHours": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Shop hours per delivery on the supplier's island"
+        },
+        "offIslandTripShopHours": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Shop hours per delivery to a site across the water"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
     }
   },
   "$defs": {
