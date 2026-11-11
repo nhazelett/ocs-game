@@ -177,6 +177,8 @@ jobs:
           grep -Fq 'FUNDING_SMOKE_PASS:' "$RUNNER_TEMP/godot-funding.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/CorSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-cor.log"
           grep -Fq 'COR_SMOKE_PASS:' "$RUNNER_TEMP/godot-cor.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/AwardContextSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-award-context.log"
+          grep -Fq 'AWARD_CONTEXT_SMOKE_PASS:' "$RUNNER_TEMP/godot-award-context.log"
           python3 -m py_compile tools/bpy/generate_kit.py
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"

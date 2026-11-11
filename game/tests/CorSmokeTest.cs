@@ -27,7 +27,7 @@ public partial class CorSmokeTest : Node
             foreach (var cor in shell.Session.View!.Cors)
             {
                 var index = Enumerable.Range(0, shell.CorInput!.ItemCount).Single(i => shell.CorInput.GetItemMetadata(i).AsString() == cor.Id);
-                Require(shell.CorInput.GetItemText(index).Contains(cor.Name) && shell.CorInput.GetItemText(index).Contains(shell.Session.View.CorSummary(cor)), "COR choice shows roster name and exact reporting summary.");
+                Require(shell.CorInput.GetItemText(index).Contains(cor.Name) && shell.CorInput.GetItemTooltip(index) == shell.Session.View.CorChoices(shell.CurrentActionEditor!.CapabilityId).Single(c => c.Id == cor.Id).Why, "COR choice shows roster name and exact reporting summary.");
             }
             Pick(shell.CorInput!, "corOkafor");
             Require(shell.PendingAward!.Cor == "corOkafor" && shell.AwardPreview!.SoftGaps.Any(g => g.StartsWith("COR SGT Okafor is fair")), "Fair COR updates both action and real soft gap.");
@@ -95,7 +95,7 @@ public partial class CorSmokeTest : Node
                 if (rotated is not null)
                 {
                     rotationSeen = true; Pick(shell.InstrumentInput, "purchaseOrder");
-                    Require(shell.CorInput is not null && Enumerable.Range(0, shell.CorInput.ItemCount).Any(i => shell.CorInput.GetItemText(i).Contains(rotated.Name) && shell.CorInput.GetItemText(i).Contains(view.CorSummary(rotated))), "COR picker refreshes to the relief's current name and reporting quality.");
+                    Require(shell.CorInput is not null && Enumerable.Range(0, shell.CorInput.ItemCount).Any(i => shell.CorInput.GetItemText(i).Contains(rotated.Name) && shell.CorInput.GetItemTooltip(i) == view.CorChoices(shell.CurrentActionEditor!.CapabilityId).Single(c => c.Id == rotated.Id).Why), "COR picker refreshes to the relief's current name and reporting quality.");
                 }
                 Require(shell.Session.StateHash == hash, "Inspecting reports and roster never changes replay state.");
                 if (view.Finished) break;

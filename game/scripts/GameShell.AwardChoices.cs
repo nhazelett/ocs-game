@@ -50,7 +50,7 @@ public partial class GameShell
         string? selected, Action<string> changed, out Label explanation, string? notice = null)
     {
         awardPanel.AddChild(DeskUi.Label(label));
-        var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
+        var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true };
         picker.AddItem(prompt); picker.SetItemMetadata(0, "");
         foreach (var option in options)
         {
