@@ -44,6 +44,14 @@ public partial class LookSmokeTest : Node
                 using var arrow = theme.GetIcon("arrow", "OptionButton");
                 Require(panel is StyleBoxFlat paper && paper.BgColor.IsEqualApprox(TabletopTheme.Paper)
                     && arrow.GetSize().X > 0, "Each native theme retains its styles and icons after managed wrappers are released.");
+                foreach (var (surface, color) in new[] { (shell.GetNode<PanelContainer>("FrontDoor"), TabletopTheme.Background),
+                    (shell.GetNode<PanelContainer>("Opening"), TabletopTheme.Background),
+                    ((PanelContainer)shell.LeadWords.GetParent().GetParent(), TabletopTheme.Paper) })
+                {
+                    using var retained = surface.GetThemeStylebox("panel");
+                    Require(retained is StyleBoxFlat panelStyle && panelStyle.BgColor.IsEqualApprox(color),
+                        "The title, opening and lead panels retain their exact native colors after managed collection.");
+                }
             }
             shell = Open();
             Require(shell.LookDirection == 2 && shell.LookPicker.Selected == 2, "Tabletop is the fresh default.");

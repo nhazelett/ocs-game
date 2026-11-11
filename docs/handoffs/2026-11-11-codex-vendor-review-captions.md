@@ -18,9 +18,11 @@ Fable's 13:00 UTC review asks for a thousands separator and the offered unit ins
 
 The local baseline tree 6cdbf67f4791cefc45da36090ec05d6d8c932c62 matches published PR 175. Live main is 2138840; CLI pull could not authenticate, so repository state and publication use the connected GitHub API. Solution and Game builds pass, all 684 .NET tests (563 Sim, 121 Harness), scenario/provenance/conflict validators and whitespace checks pass. Native headless and graphical Vendors suites exit 0, with the new screenshot inspected. Dummy audio; no Windows export or listening verdict claimed. Temporary .NET SDK/runtime and an authenticated loopback Xvfb provided local verification; no project dependency changed.
 
+The first caption-fix CI run (305, 43036245525) passed Vendors and the other checks, then crashed after CONFIDENCE_SMOKE_PASS with two unsafe StyleBoxFlat wrappers and the same native !rc_owner fatal condition seen on PR 176. This is evidence for carrying the shared cleanup onto this branch too: the title, opening and lead panels release their managed style wrappers after native ownership is retained; SessionSmokeTest explicitly disposes its PackedScene and frees both shells before collection/quit. LookSmokeTest forces collection and verifies all three panel colors in each theme. The panel styles and visible layout do not change. PR 176 carries the same correction, so either dependency order retains it.
+
 ## Unresolved
 
-Existing nonfatal ObjectDB/compiler/analyzer warnings. No new asset, spend, QUESTIONS or FOR-NICK entry. Fable review: offered units and per-unit versus daily price labels. The separate PR 176 shutdown repair follows this commit through a merge parent so it cannot restore old captions.
+Existing nonfatal ObjectDB/compiler/analyzer warnings. No new asset, spend, QUESTIONS or FOR-NICK entry. Fable review: offered units and per-unit versus daily price labels. The final standalone shared-cleanup source passes native Session, Look and Confidence checks before publication. PR 176 follows this commit through a merge parent so it cannot restore old captions or cleanup.
 
 ## Next
 
