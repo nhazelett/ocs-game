@@ -172,6 +172,10 @@ public sealed class SessionView
     /// is open. Read only.</summary>
     public IReadOnlyList<string> EndOfDayCheck() => _s.BuildEndOfDayCheck();
 
+    /// <summary>One card per vendor the office could buy from (DESK-05, D6): what they sell, cash or card, which islands they
+    /// reach, what the office holds with them. What has not been learned is null (blank on the card). Read only.</summary>
+    public IReadOnlyList<VendorCard> VendorCards() => _s.BuildVendorCards();
+
     /// <summary>Hours a piece of unfinished work would take if handed to this team member; null if it cannot be.</summary>
     public int? HoursIfAssigned(string workId, string memberId) => _s.HoursIfAssigned(workId, memberId);
 

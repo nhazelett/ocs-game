@@ -495,6 +495,40 @@
       "lines": {
         "greeting": "We haul fuel anywhere the barge goes. Happy to get on your list."
       }
+    },
+    {
+      "id": "moreau",
+      "name": "Andre Moreau",
+      "rank": "Mr.",
+      "unit": "Meridian Site Services",
+      "role": "vendorRep",
+      "vendor": "vendorB",
+      "lines": {
+        "greeting": "Site services out on the second island. Generators come with the job."
+      }
+    },
+    {
+      "id": "reyna",
+      "name": "Tomas Reyna",
+      "rank": "Mr.",
+      "unit": "Harbor Equipment Co",
+      "role": "vendorRep",
+      "vendor": "vendorC",
+      "portrait": "reyna",
+      "lines": {
+        "greeting": "Generators, light towers, loaders. Call us off the agreement any time."
+      }
+    },
+    {
+      "id": "sato",
+      "name": "Hana Sato",
+      "rank": "Ms.",
+      "unit": "Second Island Fuel",
+      "role": "vendorRep",
+      "vendor": "vendorD",
+      "lines": {
+        "greeting": "We keep the fuel on the second island. Small outfit, but we're right there."
+      }
     }
   ],
   "briefing": {

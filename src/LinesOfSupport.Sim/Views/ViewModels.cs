@@ -184,10 +184,45 @@ public sealed record InstrumentOption(
 /// <param name="VehicleOnly">Reachable only through an existing vehicle (BPA call).</param>
 /// <param name="Standing">Null normally; otherwise how this vendor treats the office after an unpaid handshake
 /// ("declines work", or the markup already included in UnitPriceCents).</param>
+/// <param name="PaymentKnown">False until the office has learned how this vendor takes payment (DESK-05): met them, done
+/// business with them, or the scenario says it knows them. The game shows cash and card as blank while false; the Sim
+/// still decides on the true facts.</param>
+/// <param name="CapacityKnown">False until the office has learned how much this vendor can supply (DESK-05): the above, or a
+/// survey of their island. The game shows capacity as blank while false.</param>
 public sealed record VendorOption(
     string Id, string Name, string IslandId, string IslandName, IReadOnlyList<string> Lines, int CapacityPerDay, int CapacityFreeToday,
     int LeadTimeDays, long UnitPriceCents, int MobilizationPermille, bool AcceptsCash, bool AcceptsGpc, bool VehicleOnly,
-    string? Standing = null);
+    string? Standing = null, bool PaymentKnown = true, bool CapacityKnown = true);
+
+/// <summary>One thing a vendor sells, as their card shows it (DESK-05). A number the office has not learned is null.</summary>
+/// <param name="CapacityPerDay">Units a day they can supply; null until met, dealt with, or their island surveyed.</param>
+/// <param name="UnitPriceCents">Their price per unit per day; null until met or dealt with.</param>
+/// <param name="LeadTimeDays">Days' notice they need; null until met or dealt with.</param>
+public sealed record VendorCardOffer(string CapabilityId, string Label, string Unit, int? CapacityPerDay, long? UnitPriceCents, int? LeadTimeDays);
+
+/// <summary>
+/// One vendor's card (DESK-05, D6), for the Vendors tab that replaces the Directory and Vehicles tabs. Every vendor the
+/// office could buy from has one (host nation and ACSA suppliers do not). What the office has not learned is null, shown
+/// blank, never hidden. Meeting the vendor fills in everything; doing business with them does too; a survey of their island
+/// fills in capacity and reach.
+/// </summary>
+/// <param name="Sells">What they sell. The capability is always known; the numbers fill in as the office learns them.</param>
+/// <param name="AcceptsCash">Whether they take cash (an SF 44); null until learned.</param>
+/// <param name="AcceptsGpc">Whether they take the card; null until learned.</param>
+/// <param name="IslandsReached">Island ids their goods can reach, in scenario order; null until learned. Names through NameOf.</param>
+/// <param name="ArrangementIds">What the office holds with them now: pending, running or suspended arrangements.</param>
+/// <param name="VehicleIds">BPAs and IDIQs with them the office knows about.</param>
+/// <param name="Rep">Who to meet, when someone from the vendor can come by.</param>
+/// <param name="MetDay">The day the office met them, if it has.</param>
+/// <param name="MeetingSetUp">A meeting with them is in the shop's work now.</param>
+/// <param name="Standing">How they treat the office after an unpaid handshake; null normally.</param>
+/// <param name="KnownFrom">One sentence on where what the card shows came from; null when nothing is known yet.</param>
+/// <param name="StillToLearn">One sentence on what is still blank and how to fill it; null when the card is complete.</param>
+public sealed record VendorCard(
+    string Id, string Name, string IslandId, string IslandName, IReadOnlyList<VendorCardOffer> Sells,
+    bool? AcceptsCash, bool? AcceptsGpc, IReadOnlyList<string>? IslandsReached,
+    IReadOnlyList<string> ArrangementIds, IReadOnlyList<string> VehicleIds,
+    PersonView? Rep, int? MetDay, bool MeetingSetUp, string? Standing, string? KnownFrom, string? StillToLearn);
 
 /// <summary>An existing vehicle the shop knows about that could carry this action.</summary>
 /// <param name="CeilingCents">IDIQs: the contract ceiling (null for BPAs, or an IDIQ with no ceiling in its data).</param>

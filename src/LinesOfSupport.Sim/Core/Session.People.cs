@@ -393,9 +393,10 @@ public sealed partial class Session
             raised.Add($"{CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} was started on a letter contract {DayText(a.Uca!.IssuedDay)} and never definitized; they are waiting on the modification and their money");
         }
         var said = raised.Count == 0 ? "" : $" They raised an old contract: {string.Join("; and ", raised)}.";
-        var tier = _vendorConfidence.ContainsKey(v.Id) ? $" Your directory entry for them is now {to}, not {was}." : "";
+        // DESK-05: the meeting fills in their card, so say what it now shows (payment and reach) and that it is filled in.
+        var terms = offers.Count == 0 ? "" : $" {PaymentSentence(v)} {ReachSentence(v)}";
         var rec = AddRecord(day, RecordKind.Visit, PersonSubject(rep, v.Id),
-            $"Met {(BuildPerson(rep) is { } rp ? $"{rp.DisplayName} of {v.Name}" : v.Name)}. {offerText}{said}{tier}", [cause]);
+            $"Met {(BuildPerson(rep) is { } rp ? $"{rp.DisplayName} of {v.Name}" : v.Name)}. {offerText}{terms}{said} Their vendor card is filled in.", [cause]);
         foreach (var a in _arrangements.Where(a => a.VendorId == v.Id && a.CreatedDay == 0 && ProblemHidden(a) && a.Uca is { Definitized: false }))
             _revealed.TryAdd(a.Id, (day, rec, RevealSource.Vendor));
     }

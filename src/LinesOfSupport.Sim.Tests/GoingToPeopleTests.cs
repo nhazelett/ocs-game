@@ -144,7 +144,7 @@ public class GoingToPeopleTests
     }
 
     [Fact]
-    public void Meeting_a_vendor_firms_up_the_directory_entry()
+    public void Meeting_a_vendor_firms_up_what_the_office_knows()
     {
         var s = Session.Create(Repo.Load("spoke-b"), 1);
         Assert.Equal("assumed", s.View.VendorConfidence("vendorD"));
@@ -155,8 +155,10 @@ public class GoingToPeopleTests
         Assert.Equal("estimated", s.View.VendorConfidence("vendorD"));
         Assert.Equal(1, s.View.VendorMetDay("vendorD"));
         var said = Assert.Single(Visits(s));
-        Assert.StartsWith("Met Second Island Fuel. They offer fuel, up to", said.Text);
-        Assert.Contains("now estimated, not assumed", said.Text);
+        // DESK-05: Second Island Fuel now has a rep, and the meeting fills in the vendor card instead of a directory tier.
+        Assert.StartsWith("Met Ms. Hana Sato of Second Island Fuel. They offer fuel, up to", said.Text);
+        Assert.Contains("They take cash, not the card.", said.Text);
+        Assert.EndsWith("Their vendor card is filled in.", said.Text);
         // A rep in the cast is who you sit down with; the board links the item to them.
         Assert.True(s.Apply(new MeetVendorAction { Vendor = "vendorE" }).Accepted);
         s.AdvanceDay();

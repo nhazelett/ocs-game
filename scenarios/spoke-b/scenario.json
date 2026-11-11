@@ -834,6 +834,62 @@
       "lines": {
         "greeting": "Spoke C. We're small and we're last in line, I know."
       }
+    },
+    {
+      "id": "moreau",
+      "name": "Andre Moreau",
+      "rank": "Mr.",
+      "unit": "Meridian Site Services",
+      "role": "vendorRep",
+      "vendor": "vendorB",
+      "lines": {
+        "greeting": "Site services out on the second island. Generators come with the job."
+      }
+    },
+    {
+      "id": "reyna",
+      "name": "Tomas Reyna",
+      "rank": "Mr.",
+      "unit": "Harbor Equipment Co",
+      "role": "vendorRep",
+      "vendor": "vendorC",
+      "portrait": "reyna",
+      "lines": {
+        "greeting": "Generators, light towers, loaders. Call us off the agreement any time."
+      }
+    },
+    {
+      "id": "sato",
+      "name": "Hana Sato",
+      "rank": "Ms.",
+      "unit": "Second Island Fuel",
+      "role": "vendorRep",
+      "vendor": "vendorD",
+      "lines": {
+        "greeting": "We keep the fuel on the second island. Small outfit, but we're right there."
+      }
+    },
+    {
+      "id": "pryce",
+      "name": "Owen Pryce",
+      "rank": "Mr.",
+      "unit": "Third Island Water Works",
+      "role": "vendorRep",
+      "vendor": "vendorF",
+      "lines": {
+        "greeting": "Water and meals on the third island. We have done it for years."
+      }
+    },
+    {
+      "id": "carvalho",
+      "name": "Ines Carvalho",
+      "rank": "Ms.",
+      "unit": "Coastal Provisions",
+      "role": "vendorRep",
+      "vendor": "vendorG",
+      "lines": {
+        "greeting": "Water and rations, stocked right here on the third island."
+      }
     }
   ],
   "briefing": {

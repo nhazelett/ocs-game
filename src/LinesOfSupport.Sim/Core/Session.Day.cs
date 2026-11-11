@@ -138,6 +138,7 @@ public sealed partial class Session
         {
             k.Tier = "surveyed";
             k.SurveyReturnsDay = null;
+            _islandsSurveyedInPlay.Add(k.IslandId);
             var i = IslandData(k.IslandId);
             var facts = new List<string>
             {

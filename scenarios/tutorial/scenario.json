@@ -605,6 +605,61 @@
       "lines": {
         "greeting": "Forklifts, loaders, light towers. Call us off the agreement any time."
       }
+    },
+    {
+      "id": "brooks",
+      "name": "Lena Brooks",
+      "rank": "Ms.",
+      "unit": "Island Mart",
+      "role": "vendorRep",
+      "vendor": "islandMart",
+      "lines": {
+        "greeting": "Bottled water by the pallet, and most things a camp runs short of."
+      }
+    },
+    {
+      "id": "silva",
+      "name": "Marco Silva",
+      "rank": "Mr.",
+      "unit": "Harbor Bottling",
+      "role": "vendorRep",
+      "vendor": "harborBottling",
+      "lines": {
+        "greeting": "We bottle on the harbor road. Water by the case or the truckload."
+      }
+    },
+    {
+      "id": "haddad",
+      "name": "Nadia Haddad",
+      "rank": "Ms.",
+      "unit": "Coastal Rentals",
+      "role": "vendorRep",
+      "vendor": "coastalRentals",
+      "lines": {
+        "greeting": "Forklifts and loaders to rent, by the day or the month."
+      }
+    },
+    {
+      "id": "kowalski",
+      "name": "Pete Kowalski",
+      "rank": "Mr.",
+      "unit": "Main Island Sanitation",
+      "role": "vendorRep",
+      "vendor": "sanitation",
+      "lines": {
+        "greeting": "Latrines, pumping, trash haul. We keep a camp clean."
+      }
+    },
+    {
+      "id": "tan",
+      "name": "Grace Tan",
+      "rank": "Ms.",
+      "unit": "Island Camp Services",
+      "role": "vendorRep",
+      "vendor": "campServices",
+      "lines": {
+        "greeting": "We run your billeting and the dining hall under the agreement."
+      }
     }
   ],
   "briefing": {
