@@ -58,6 +58,8 @@ public partial class MapSmokeTest : Node
                     var status=map.Tabletop!.SiteStatuses["spokeBSite"].Text.ToLowerInvariant();
                     Require(new[]{"power","fuel","lodging","down"}.All(status.Contains),"The actual site caption names every down capability in words.");
                     map.Tabletop!._Process(0);
+                    Require(map.Tabletop.ReportedChangeLabels.Any(l => l.Contains("Fuel 0% supplied")),
+                        "The real zero-supply caption states how much fuel is supplied, not a percentage short.");
                     Require(map.Tabletop.FactLabels.Where(l=>l.Label.HasMeta("reported_change")).All(l=>
                         l.Label.GetRect().End.Y <= map.SiteScreenPoint("spokeBSite").Y-30),
                         "Reported shortfall captions sit above the site's equipment instead of covering it.");
@@ -102,6 +104,15 @@ public partial class MapSmokeTest : Node
             var actual = shell.Session.View!.MapDay();
             map.ShowMapDay(actual with { Changes = [.. actual.Changes, new MapChange("hubSite", "power", "vendorFailure", 0, null, "unreported-test", false)] });
             Require(map.KnownChanges.All(c => c.RecordId != "unreported-test"), "An explicitly unreported change is never drawn.");
+            map.ShowMapDay(actual with { Changes = [
+                new MapChange("spokeBSite", "fuel", "shortfall", 375, null, "partial-supply-test", true),
+                new MapChange("spokeBSite", "power", "restored", 1000, null, "restored-test", true),
+                new MapChange("spokeBSite", "lodging", "vendorFailure", 0, null, "failure-test", true)] });
+            var captions = string.Join("\n", map.Tabletop!.ReportedChangeLabels);
+            Require(captions.Contains("Fuel 37.5% supplied") && captions.Contains("Power restored")
+                && captions.Contains("Lodging: supplier failure reported"),
+                "Partial supply uses the reported percentage; restoration and supplier-failure wording stay specific.");
+            Require(shell.Session.StateHash == hash, "Caption fixtures leave the real session unchanged.");
             map.ShowMapDay(actual);
             File.Delete(shell.AutosavePath);
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

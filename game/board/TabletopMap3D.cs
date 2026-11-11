@@ -184,7 +184,7 @@ public partial class TabletopMap3D:Control
                 MovingLabel(marker,string.Join("\n",group.Select(change=>
                 {
                     var name=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support";
-                    return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} short · {change.Permille/10m:0.#}%";
+                    return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} {change.Permille/10m:0.#}% supplied";
                 })));
                 movingLabels[^1].Label.SetMeta("reported_change",true);
             }
