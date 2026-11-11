@@ -51,11 +51,13 @@ public sealed partial class Session
     /// <summary>Records each held-back item the first day it gets fewer hours than the plain queue would have given it.</summary>
     private void RecordDeferrals(int d, List<WorkItem> readyInQueueOrder, Dictionary<WorkItem, long> spent)
     {
-        var hours = _hoursPerDayMilli;
+        // The plain queue, per person (DESK-02): what each item would have had from its own person's hours.
+        var left = _team.ToDictionary(m => m.Id, m => m.HoursPerDayMilli, StringComparer.Ordinal);
         foreach (var w in readyInQueueOrder)
         {
-            var plain = Math.Min(Math.Max(0, hours), w.HoursRemainingMilli + spent.GetValueOrDefault(w));
-            hours -= plain;
+            var who = Member(w.Assignee).Id;
+            var plain = Math.Min(Math.Max(0, left[who]), w.HoursRemainingMilli + spent.GetValueOrDefault(w));
+            left[who] -= plain;
             if (spent.GetValueOrDefault(w) >= plain || _deferredWork.Contains(w.Id)) continue;
             var site = SiteOf(w)!;
             var refusal = _lostConfidence[site];

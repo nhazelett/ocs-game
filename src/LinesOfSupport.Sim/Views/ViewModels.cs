@@ -54,6 +54,31 @@ public sealed record TopStripView(
     int SmallBuysToday = 0, int SmallBuyHoursToday = 0, int SmallBuyBacklog = 0, bool SmallBuysHeld = false,
     string GpcProgram = "none");
 
+/// <summary>One member of the office for the strip's three named bars and for handing out work (DESK-02, D2).</summary>
+/// <param name="Id">Team member id, for AwardAction.Assignee (any action's Assignee) and AssignAction.To. Never shown.</param>
+/// <param name="Role">"you", "experienced" or "junior".</param>
+/// <param name="Name">The name the player sees: "You" for the player, otherwise the teammate's (renameable) name.</param>
+/// <param name="Rank">Rank, when the scenario gives one; shown before the name.</param>
+/// <param name="Portrait">Face key the player picked or the scenario gave; null means the fallback face.</param>
+/// <param name="RoleLabel">"You", "Experienced contracting officer" or "Junior contracting officer".</param>
+/// <param name="Pace">One sentence on how fast this person works.</param>
+/// <param name="HoursPerDay">This person's hours for a day (their bar's maximum).</param>
+/// <param name="HoursSpokenForToday">Hours of today that go to this person's work that is ready today.</param>
+/// <param name="FreeHoursToday">Hours of today with nothing of theirs to do (they go to walk-in small buys).</param>
+/// <param name="HoursQueued">All of this person's unfinished work, including work still waiting on an outside lag.</param>
+/// <param name="Work">This person's unfinished work, in queue order.</param>
+public sealed record TeamMemberView(
+    string Id, string Role, string Name, string? Rank, string? Portrait, string RoleLabel, string Pace,
+    int HoursPerDay, int HoursSpokenForToday, int FreeHoursToday, int HoursQueued, IReadOnlyList<TeamWorkView> Work);
+
+/// <summary>A piece of unfinished work held by one team member (DESK-02).</summary>
+/// <param name="WorkId">For AssignAction.Work. Never shown.</param>
+/// <param name="Label">Plain name of the work.</param>
+/// <param name="HoursLeft">Hours left, in this person's hours.</param>
+/// <param name="Ready">True when it can be worked today; false while it waits on someone outside the office.</param>
+/// <param name="WaitsUntilDay">The day it can be worked, when not today.</param>
+public sealed record TeamWorkView(string WorkId, string Label, int HoursLeft, bool Ready, int? WaitsUntilDay);
+
 // ------------------------------------------------------------------ morning board
 
 /// <summary>What the morning board groups items under (SPEC section 2, morning board).</summary>

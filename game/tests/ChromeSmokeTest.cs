@@ -35,7 +35,7 @@ public partial class ChromeSmokeTest : Node
             var hash = shell.Session.StateHash;
             var strip = shell.Session.View!.TopStrip();
             Require(shell.GetNode<Label>("%DayCounter").Text == "Morning of day 1" && shell.GetNode<Label>("%InboxDay").Text == "Your first morning", "Initial morning and inbox have no day-zero/results ambiguity.");
-            Require(shell.GetNode<Label>("%ShopHoursLabel").Text.Contains("none spoken for") && strip.ShopHoursQueued == 0,
+            Require(shell.TeamBars["you"].Value == 0 && strip.ShopHoursQueued == 0,
                 "An empty work queue reads naturally without inventing available hours.");
             var cash = shell.GetNode<ProgressBar>("%CashGauge");
             Require(cash.Value == strip.CashCents && cash.MaxValue == strip.CashFullCents && cash.Value == cash.MaxValue,
@@ -54,7 +54,7 @@ public partial class ChromeSmokeTest : Node
             Require(expected.Apply(new FindFinanceAction { Day = expected.Day }).Accepted, "Finance fixture is a valid actual action.");
             strip = expected.View.TopStrip();
             Require(strip.ShopHoursQueued > 0 && shell.Session.StateHash == expected.StateHash(), "Real visit changes only the same Sim state as direct play.");
-            Require(shell.GetNode<Label>("%ShopHoursLabel").Text == $"{strip.ShopHoursQueued:0.#} of {strip.ShopHoursPerDay:0.#} hours spoken for",
+            Require(shell.TeamBars["you"].Value == expected.View.Team.Single().HoursSpokenForToday && shell.TeamBars["you"].MaxValue == strip.ShopHoursPerDay,
                 "Queued wording binds to actual committed shop hours, including fractions.");
             Step(shell); expected.AdvanceDay();
             Require(shell.GetNode<Label>("%DayCounter").Text == "Morning of day 2" && shell.GetNode<Label>("%InboxDay").Text == "What happened on day 1"

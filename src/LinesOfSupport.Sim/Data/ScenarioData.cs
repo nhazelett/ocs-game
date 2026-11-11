@@ -300,6 +300,20 @@ public sealed record ShopData
     public long? GpcMonthlyCents { get; init; }
     public int? PayingAgentAvailableDay { get; init; }
     public long? WarrantCents { get; init; }
+    /// <summary>The named team (DESK-02). Null: the player alone with People x hoursPerPersonPerDay hours.</summary>
+    public List<TeamMemberData>? Team { get; init; }
+}
+
+/// <summary>One member of the contracting office (DESK-02, D2). Speed is work per hour against the usual pace.</summary>
+public sealed record TeamMemberData
+{
+    public string Id { get; init; } = "";
+    public string Role { get; init; } = "you";
+    public string Name { get; init; } = "";
+    public string? Rank { get; init; }
+    public string? Portrait { get; init; }
+    public int HoursPerDay { get; init; }
+    public double Speed { get; init; } = 1;
 }
 
 public sealed record ScoData

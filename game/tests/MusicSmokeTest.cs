@@ -59,6 +59,9 @@ public partial class MusicSmokeTest : Node
             Require(missing.LoadedStreamCount==0 && !missing.MusicPlayer.Playing && missing.HarborPlayers.All(p=>!p.Playing),"Missing music files simply remain silent.");
             missing.Free();
             Require(shell.Session.StateHash==hash,"Playback, playlist, mix and settings never mutate the Sim.");
+            shell.TeamButtons.Values.First().EmitSignal(Button.SignalName.Pressed);shell._Process(1);music.Tick(2);
+            Require(music.HarborPlayers.All(p=>!p.Playing), "The team view covering the map fades out harbor ambience.");
+            shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);shell._Process(1);music.Tick(2);
             shell.OpenContractView(shell.Session.View!.Arrangements.First().Id);shell._Process(1);music.Tick(2);
             Require(music.HarborPlayers.All(p=>!p.Playing),"A contract detail covering the map fades out harbor ambience.");
             shell.CloseContractView();shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);shell._Process(1);music.Tick(2);music.Tick(2);

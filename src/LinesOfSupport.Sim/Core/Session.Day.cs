@@ -183,7 +183,8 @@ public sealed partial class Session
 
     private void DoShopWork(int d)
     {
-        var hours = _hoursPerDayMilli;
+        // DESK-02: each person works their own items out of their own hours; nobody picks up another's work.
+        var left = _team.ToDictionary(m => m.Id, m => m.HoursPerDayMilli, StringComparer.Ordinal);
         // Creation order is the player's queue. When the shop is short, work for a site whose commander lost
         // confidence in contracting (a refused handshake, SPEC 4.5) waits behind everything else (M2-14).
         // The purchase card program is stood up around everything else: it takes only the hours the queue leaves.
@@ -193,22 +194,25 @@ public sealed partial class Session
         var spent = new Dictionary<WorkItem, long>();
         foreach (var w in order)
         {
-            if (hours <= 0) break;
+            var hours = left[Member(w.Assignee).Id];
+            if (hours <= 0) continue;
             var spend = Math.Min(hours, w.HoursRemainingMilli);
             w.HoursRemainingMilli -= spend;
-            hours -= spend;
+            left[Member(w.Assignee).Id] = hours - spend;
             _hoursWorkedMilli += spend;
             spent[w] = spend;
         }
         foreach (var w in program)
         {
-            if (hours <= 0) break;
+            var hours = left[Member(w.Assignee).Id];
+            if (hours <= 0) continue;
             var spend = Math.Min(hours, w.HoursRemainingMilli);
             w.HoursRemainingMilli -= spend;
-            hours -= spend;
+            left[Member(w.Assignee).Id] = hours - spend;
             _hoursWorkedMilli += spend;
         }
-        _hoursLeftTodayMilli = hours;
+        foreach (var m in _team) m.HoursLeftMilli = left[m.Id];
+        _hoursLeftTodayMilli = left.Values.Sum();
         if (_lostConfidence.Count > 0) RecordDeferrals(d, ready, spent);
         // Complete in creation order after spending, so a zero-hour item finishes the day it is ready.
         foreach (var w in _work.ToList())

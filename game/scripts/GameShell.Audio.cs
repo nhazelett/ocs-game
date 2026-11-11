@@ -20,7 +20,7 @@ public partial class GameShell
     {
         if (Music is null) return;
         var seesMap = !AtFrontDoor && session.View is not null && !ReadingTurnover
-            && !ContractView.Visible && GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").IsVisibleInTree();
+            && !ContractView.Visible && TeamPanel?.Visible != true && GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").IsVisibleInTree();
         Music.SetContext(AtFrontDoor, seesMap);
     }
 

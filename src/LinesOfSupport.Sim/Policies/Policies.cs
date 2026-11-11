@@ -85,7 +85,10 @@ public sealed class TextbookPolicy : IPolicy
         }
     }
 
-    public IEnumerable<PlayerAction> Decide(SessionView v)
+    // The textbook office divides the work (DESK-02): each new piece goes to whoever has the least on their plate.
+    public IEnumerable<PlayerAction> Decide(SessionView v) => Helpers.Divide(v, DecideAll(v));
+
+    private IEnumerable<PlayerAction> DecideAll(SessionView v)
     {
         var actions = new List<PlayerAction>();
         // Unauthorized commitments: ratify a handshake at once (the vendor delivered in good faith and the need is
@@ -330,6 +333,28 @@ public sealed class TextbookPolicy : IPolicy
 
 internal static class Helpers
 {
+    /// <summary>
+    /// Hands each action that creates work to the team member with the least queued work for their hours, counting what
+    /// this batch has already handed out (a day's worth each). A one-person office is left alone.
+    /// </summary>
+    public static List<PlayerAction> Divide(SessionView v, IEnumerable<PlayerAction> actions)
+    {
+        var list = actions.ToList();
+        var team = v.Team;
+        if (team.Count < 2) return list;
+        var load = team.ToDictionary(m => m.Id, m => (double)m.HoursQueued / Math.Max(1, m.HoursPerDay), StringComparer.Ordinal);
+        var order = team.Select((m, i) => (m.Id, i)).ToDictionary(x => x.Id, x => x.i, StringComparer.Ordinal);
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (list[i] is SetLineAction or HoldSmallBuysAction or DesignateCorAction or CoordinateAction or PlanTransitionAction or AssignAction
+                || list[i].Assignee is not null) continue;
+            var who = load.OrderBy(kv => kv.Value).ThenBy(kv => order[kv.Key]).First().Key;
+            list[i] = list[i] with { Assignee = who };
+            load[who] += 1;
+        }
+        return list;
+    }
+
     /// <summary>Lower is better: report lag first, then the share of problems reported (M3-04).</summary>
     public static int CorRank(SessionView v, CorState c) { var q = v.CorQuality(c); return q.LagDays * 1000 + (1000 - q.ReportPermille); }
 

@@ -117,7 +117,7 @@ public sealed partial class Session
         {
             var w = _work.FirstOrDefault(x => x.Kind == WorkKind.ExternalSupportRequest && x.CompletedDay is null && (x.Payload as string) == r.Id);
             var remaining = w?.HoursRemainingMilli ?? 0;
-            var days = _hoursPerDayMilli <= 0 ? 0 : (int)((remaining + _hoursPerDayMilli - 1) / _hoursPerDayMilli);
+            var days = WorkDays(remaining, w?.Assignee);
             var submit = Math.Max(Day, w?.WaitUntilDay ?? Day) + Math.Max(0, days - 1);
             (answerMin, answerMax) = (submit + approval.Min, submit + approval.Max);
         }

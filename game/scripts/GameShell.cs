@@ -34,6 +34,7 @@ public partial class GameShell : Control
         BuildMapControls();
         BuildFrontDoor();
         BuildDayPlayback();
+        BuildTeamDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
         if (OS.GetCmdlineUserArgs().Contains("--export-smoke-test"))
@@ -182,5 +183,6 @@ public partial class GameShell : Control
         RefreshDebrief(view);
         RefreshPrepVisibility();
         RefreshSaveControls();
+        RefreshTeam();
     }
 }

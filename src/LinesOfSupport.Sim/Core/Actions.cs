@@ -30,9 +30,22 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(HostNationRequestAction), "hostNationRequest")]
 [JsonDerivedType(typeof(PlanTransitionAction), "planTransition")]
 [JsonDerivedType(typeof(ReviewFilesAction), "reviewFiles")]
+[JsonDerivedType(typeof(AssignAction), "assign")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
+    /// <summary>The team member who does the work this action creates (DESK-02). Null: you.</summary>
+    public string? Assignee { get; init; }
+}
+
+/// <summary>
+/// Hand unfinished work to another team member (DESK-02, D2). The hours left are re-reckoned at the new person's pace.
+/// Work is a work item id (SessionView.Team lists them); To is a team member id.
+/// </summary>
+public sealed record AssignAction : PlayerAction
+{
+    public string Work { get; init; } = "";
+    public string To { get; init; } = "";
 }
 
 /// <summary>Order a site survey of an island. Costs shop hours; findings return after a delay.</summary>

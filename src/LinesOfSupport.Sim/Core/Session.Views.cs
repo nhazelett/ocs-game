@@ -299,7 +299,7 @@ public sealed partial class Session
     internal ActionPreview BuildPreview(AwardAction a)
     {
         var chk = CheckAward(a);
-        var queue = CeilHours(_work.Where(w => w.CompletedDay is null).Sum(w => w.HoursRemainingMilli));
+        var queue = QueueHours(a.Assignee);
         if (chk.Instrument is not { } inst || chk.Offer is not { } offer || chk.SiteId is not { } siteId || chk.CapabilityId is not { } capId)
             return new ActionPreview(false, chk.Stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
 
@@ -310,7 +310,7 @@ public sealed partial class Session
             if (immediate) return Day;
             var wait = Day + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0);
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = _hoursPerDayMilli <= 0 ? 0 : (int)((hours + _hoursPerDayMilli - 1) / _hoursPerDayMilli);
+            var days = WorkDays(PersonHours(hours, a.Assignee), a.Assignee);
             return wait + Math.Max(0, days - 1);
         }
         var minDone = Completion(inst.ShopDays.Min, Rules.Uca.ApprovalLagDays.Min);
@@ -318,8 +318,8 @@ public sealed partial class Session
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
         var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
         var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
-        var hMin = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual));
-        var hMax = immediate ? 0 : CeilHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual));
+        var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual), a.Assignee));
+        var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual), a.Assignee));
 
         var gaps = new List<string>();
         var cap = Cap(capId);

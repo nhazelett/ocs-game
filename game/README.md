@@ -114,3 +114,9 @@ M2R-13 puts the Sim's lead item first on Board. **Other updates and sites** expa
 Menu > Sound has independent Sound and Music volume/mute controls, remembered on this computer. Music includes the approved title, alternating desk tracks with fades and quiet gaps, and harbor ambience while the map is visible. Event cues lower the background mix. Missing music files leave the game usable and silent. The runtime reads the four Ogg files under the packaged assets/audio/music folder; Windows packaging includes them.
 
 MusicSmokeTest.tscn exercises actual native playback, transitions, playlist gaps, ambience crossfades, cue ducking, independent controls, disk preferences and missing-file behavior with the dummy audio driver. It does not provide a human listening verdict.
+
+## Named team (DESK-22)
+
+The tutorial replaces the aggregate shop-hours gauge with three named personal-hour bars. Click a name to inspect that person's work and hand an unfinished task to another teammate. The picker shows Sim's hours at each person's pace; new work starts with you. The team view is read only until Give them this task is pressed.
+
+Before leaving, Your team opens the name and portrait choices. Apply remembers them in user://team.cfg for future new deployments. The deployment stores its own choices in InputLog.Team, so saves and replays keep their original team. Legacy scenarios retain their authored single-person roster until DESK-12; the screen does not invent extra staff.
