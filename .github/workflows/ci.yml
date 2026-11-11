@@ -103,6 +103,8 @@ jobs:
           grep -Fq 'PORTRAIT_SMOKE_PASS:' "$RUNNER_TEMP/godot-portraits.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/ArtStudySmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-art-study.log"
           grep -Fq 'ART_STUDY_SMOKE_PASS:' "$RUNNER_TEMP/godot-art-study.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/TeamSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-team.log"
+          grep -Fq 'TEAM_SMOKE_PASS:' "$RUNNER_TEMP/godot-team.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/ChromeSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-chrome.log"
           grep -Fq 'CHROME_SMOKE_PASS:' "$RUNNER_TEMP/godot-chrome.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/TurnoverSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-turnover.log"

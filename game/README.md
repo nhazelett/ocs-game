@@ -127,3 +127,9 @@ Vendors replaces the visible Directory and Vehicles tabs. Choose whose card to r
 Set up a BPA or IDIQ from that vendor's card. The scrollable setup view offers only that supplier's capabilities and scope. IDIQ setup takes a ceiling, optional guarantee and ordering period, and a funding line; both forms show the exact engine preview and block submission on its hard stops. Back, duplicate clicks, stale forms and finished games cannot submit a setup. New arrangements and vehicles retain the existing save/replay path.
 
 VendorsSmokeTest checks exact nullable facts, meeting fill-in, independent Sim state hashes, typed IDIQ terms and preview, cancellation/stale/duplicate guards, save/resume and completed setup on the vendor card. The existing BPA suite still checks threshold stops and the actual completed call limit.
+
+## Named team (DESK-22)
+
+The tutorial replaces the aggregate shop-hours gauge with three named personal-hour bars. Click a name to inspect that person's work and hand an unfinished task to another teammate. The picker shows Sim's hours at each person's pace; new work starts with you. The team view is read only until Give them this task is pressed.
+
+Before leaving, Your team opens the name and portrait choices. Apply remembers them in user://team.cfg for future new deployments. The deployment stores its own choices in InputLog.Team, so saves and replays keep their original team. Legacy scenarios retain their authored single-person roster until DESK-12; the screen does not invent extra staff.
