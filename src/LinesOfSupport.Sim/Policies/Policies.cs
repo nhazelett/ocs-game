@@ -342,7 +342,8 @@ internal static class Helpers
         var list = actions.ToList();
         var team = v.Team;
         if (team.Count < 2) return list;
-        var load = team.ToDictionary(m => m.Id, m => (double)m.HoursQueued / Math.Max(1, m.HoursPerDay), StringComparer.Ordinal);
+        // Whole hours, as before DESK-14 (the ceiling of the half-hour figure is the old ceiling), so no policy log moves.
+        var load = team.ToDictionary(m => m.Id, m => Math.Ceiling(m.HoursQueued) / Math.Max(1, Math.Ceiling(m.HoursPerDay)), StringComparer.Ordinal);
         var order = team.Select((m, i) => (m.Id, i)).ToDictionary(x => x.Id, x => x.i, StringComparer.Ordinal);
         for (var i = 0; i < list.Count; i++)
         {

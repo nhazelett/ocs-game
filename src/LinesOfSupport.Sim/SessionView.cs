@@ -184,8 +184,9 @@ public sealed class SessionView
     /// reach, what the office holds with them. What has not been learned is null (blank on the card). Read only.</summary>
     public IReadOnlyList<VendorCard> VendorCards() => _s.BuildVendorCards();
 
-    /// <summary>Hours a piece of unfinished work would take if handed to this team member; null if it cannot be.</summary>
-    public int? HoursIfAssigned(string workId, string memberId) => _s.HoursIfAssigned(workId, memberId);
+    /// <summary>Hours a piece of unfinished work would take if handed to this team member, at their pace, rounded up to
+    /// the half hour (DESK-14); null if it cannot be.</summary>
+    public double? HoursIfAssigned(string workId, string memberId) => _s.HoursIfAssigned(workId, memberId);
 
     /// <summary>What changed during the last AdvanceDay, alerts first, with the capability tiles and the top strip.</summary>
     public MorningBoardView MorningBoard() => _s.BuildMorningBoard();
