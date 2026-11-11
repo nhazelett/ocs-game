@@ -65,6 +65,9 @@ public partial class RequirementSmokeTest : Node
             var before = expected.View.RequirementEditor("req0007")!;
             Require(shell.RequirementAskButtons.Keys.SequenceEqual(before.WhoToAsk!.Select(a => a.Person.Id)),
                 "Who to ask comes from the Sim.");
+            Require(before.WhoToAsk!.All(option => shell.RequirementAskButtons[option.Person.Id].Text == $"Ask {option.Person.DisplayName}")
+                && panel.GetChildren().OfType<Label>().Any(l => l.Text == "A request is often missing something. These people may know."),
+                "Before the first ask, the button names the person and the request explains why to ask.");
             var askAction = new AskAboutAction { Day = expected.Day, Card = "req0007", Person = "ruiz" };
             var preview = expected.View.PreviewVisit(askAction);
             Require(panel.GetChildren().OfType<Label>().Any(l => l.HasMeta("ask_preview") && l.Text.Contains(preview.ShopHoursMin.ToString())

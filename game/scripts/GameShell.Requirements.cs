@@ -38,8 +38,11 @@ public partial class GameShell
             included.SetMeta("requirement_line", line.Id); included.SetMeta("included", line.On); linkedRequirement.AddChild(included);
             if (line.Learned is { } learned)
             {
-                var speaker = DeskUi.Label($"{line.LearnedFrom?.WithUnit ?? "Someone"} told you:");
-                speaker.SetMeta("learned_from", line.Id); linkedRequirement.AddChild(speaker);
+                if (line.LearnedFrom is { } person)
+                {
+                    var speaker = DeskUi.Label($"{person.WithUnit} told you:");
+                    speaker.SetMeta("learned_from", line.Id); linkedRequirement.AddChild(speaker);
+                }
                 var said = DeskUi.Label($"“{learned}”");
                 said.SetMeta("learned_line", line.Id); linkedRequirement.AddChild(said);
             }
@@ -53,13 +56,15 @@ public partial class GameShell
             add.TooltipText = line.Label; add.SetMeta("add_line", line.Id); add.Disabled = view!.Finished;
             linkedRequirement.AddChild(add); RequirementAddButtons.Add(line.Id, add);
         }
+        if (card.WhoToAsk?.Any(option => !option.Asked && !option.Pending) == true)
+            linkedRequirement.AddChild(DeskUi.Label("A request is often missing something. These people may know."));
         foreach (var option in card.WhoToAsk ?? [])
         {
             linkedRequirement.AddChild(DeskUi.Label(option.Person.WithUnit));
             var action = new AskAboutAction { Day = view!.Day, Card = card.CardId, Person = option.Person.Id };
             var preview = view.PreviewVisit(action);
             var ask = DeskUi.Button(option.Pending ? "Visit in progress" : option.Asked ? "Already asked about this request"
-                : "Ask about this request", () => AskAboutRequirement(card.CardId, option.Person.Id));
+                : $"Ask {option.Person.DisplayName}", () => AskAboutRequirement(card.CardId, option.Person.Id));
             ask.SetMeta("ask_person", option.Person.Id);
             ask.Disabled = view.Finished || option.Asked || option.Pending || !preview.Accepted;
             linkedRequirement.AddChild(ask); RequirementAskButtons.Add(option.Person.Id, ask);
