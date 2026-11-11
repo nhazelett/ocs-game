@@ -60,7 +60,9 @@ public partial class J4DependencySmokeTest : Node
             }
             CheckOwner(true); Require(Shortcut() is null && expected.View.RequirementEditor("req0007")!.Dependencies.Single(d => d.CapabilityId == "fuel").Coverage == "arranged", "Completed ACSA support remains engaged and covered.");
             Scenario(shell, "spoke-b"); expected = Session.Create(bundle, 1);
-            shell.RequirementToggles["fuelSupply"].EmitSignal(BaseButton.SignalName.Toggled, true);
+            // An older save may already include fuel; exercise that supported state without restoring removed UI.
+            Require(shell.SendAction(new SetLineAction { Card = "req0007", Line = "fuelSupply", On = true }).Accepted,
+                "Legacy included-fuel fixture is accepted.");
             Require(Shortcut() is null, "Fuel included in the requirement has no uncovered-line shortcut.");
             Scenario(shell, "tutorial");
             Require(shell.Session.View!.Scenario.Actors.AcsaPartner is null && Shortcut() is null, "No ACSA contact is invented in a scenario without a partner.");

@@ -15,11 +15,12 @@ public partial class ShellSmokeTest : Node
             DeskSmokeSupport.DeployWithoutPrep(shell);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
-            var expected = new[] { "Board", "Requirements", "Actions", "Directory", "Vehicles", "Ledger", "Inbox", "Reports", "Debrief" };
+            var expected = new[] { "Board", "Requirements", "Actions", "Vendors", "Vehicles", "Ledger", "Inbox", "Reports", "Debrief" };
             Require(tabs.GetTabCount() == expected.Length, "All nine desk tabs exist.");
             for (var i = 0; i < expected.Length; i++)
             {
                 Require(tabs.GetTabTitle(i) == expected[i], $"Tab {i}: {expected[i]}.");
+                if (tabs.IsTabHidden(i)) { Require(expected[i] == "Vehicles", "Only the folded vehicle tab is hidden."); continue; }
                 tabs.CurrentTab = i;
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 Require(tabs.GetCurrentTabControl().Visible, "Selected tab is visible.");

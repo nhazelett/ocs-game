@@ -15,6 +15,7 @@ public partial class ActionSmokeTest : Node
             var original = shell.Session.StateHash;
             Pick(shell.InstrumentInput, ""); Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
             shell.QuantityInput.Value = 360;
+            PickPriorities(shell, "fast", "cheap");
             Require(shell.Session.StateHash == original, "Changing every picker/quantity only previews, never mutates Sim.");
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             var candidate = shell.PendingAward!;

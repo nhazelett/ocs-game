@@ -11,7 +11,8 @@ public partial class SessionSmokeTest : Node
     {
         try
         {
-            var shell = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
+            using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
+            var shell = scene.Instantiate<GameShell>();
             AddChild(shell);
             DeskSmokeSupport.DeveloperWorkspace(shell);
             var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
@@ -72,10 +73,19 @@ public partial class SessionSmokeTest : Node
             DeskSmokeSupport.Step(shell);
             Require(shell.Session.CompletedDay == 1, "The 90-day scenario advances normally.");
 
-            var empty = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameShell>();
+            var empty = scene.Instantiate<GameShell>();
             empty.ScenarioRootOverride = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
             AddChild(empty);
             Require(empty.Session.View is null && empty.GetNode<Button>("%NextDay").Disabled, "No scenario holds no Session and disables advance.");
+            // Free both full shells and release the cached scene wrapper before mono/native shutdown.
+            // A pass marker is valid only after the resources have survived their finalizers here.
+            shell.QueueFree(); empty.QueueFree(); shell = null!; empty = null!;
+            scene.Dispose();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(!GetChildren().OfType<GameShell>().Any(), "Both shells are freed before process shutdown.");
             GD.Print("SESSION_SMOKE_PASS: real session, replay, day-10 power down, board, cash, inbox, finish and reset.");
             GetTree().Quit();
         }

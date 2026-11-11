@@ -1,5 +1,7 @@
 # LinesOfSupport.Game
 
+DESK-20's End the day button reads `SessionView.EndOfDayCheck()` before advancing. When there are open items, the check shows the Sim's exact sentences and focuses Back to the desk; End the day anyway advances one day and starts that day's playback. An empty check advances immediately. Canceling, changing the day's work, opening the Menu or switching deployments invalidates the old confirmation. Menu's explicit Skip quiet days command retains its existing behavior. `EndDaySmokeTest` exercises the check and its guards against independent Sim state hashes.
+
 Cold launch opens the title with **New game** and **Continue**. New game offers **Spoke B** and the tutorial when its scenario is installed; preparation follows. Continue resumes the autosave without opening a file dialog. **Menu** returns to the title. The **Developer tools** toggle is off on every launch; opting in exposes the scenario catalog, approach replay and saved-file loader, plus a title-screen shortcut to the testing workspace. Turning it off closes the file dialog. The older panel descriptions below refer to that workspace while M2R's remaining opening/map revisions are built.
 
 M1-05 shell for **OCS: Lines of Support**. Requires the **.NET 8 SDK** and **Godot 4.6 .NET** (tested with 4.6.1). The standard Godot download without .NET cannot run these C# scripts. No art, add-ons, export templates or Python packages are needed to open and run the game project.
@@ -79,11 +81,13 @@ A successful player action during a replay takes control of the existing session
 
 ## Requirements (M2-03)
 
-The Requirements tab lists only cards returned by RequirementEditor(card). Checkboxes send SetLineAction, without advancing time; the panel then reloads the Sim view. Missing-line warnings use GapIfOff verbatim. The dependency checklist shows none / in requirement / arranged and covering arrangements; peak demand and units are shown. There is no dollar entry. RequirementSmokeTest verifies edits against direct Sim hashes and checks the warning/checklist changes.
+The Requirements tab binds RequirementEditor(card) without scope checkboxes. Only Known lines appear. WhoToAsk offers typed AskAboutAction visits with the Sim preview; Pending and Asked prevent repeats. A completed visit shows Learned and LearnedFrom verbatim, and CanAdd offers AddLineAction. Unknown parts stay hidden; the dependency checklist, J4 shortcut, peak demand and Go to market remain. HeardAt is the exact staff-meeting source sentence. RequirementSmokeTest compares visits and additions with independent Sim hashes, checks duplicate/finished guards, save/resume and replay takeover, and captures the tutorial before and after asking Dunn. SetLineAction remains a Sim/log compatibility API and is not exposed in the requirement UI.
 
 ## Actions (M2-04)
 
 Choose a submitted requirement or a site/capability, then instrument, vendor, known vehicle and funding line from ActionEditor. Unavailable instruments are disabled with their actual reason. Quantity, requested start and duration are numeric pickers; quotes, mobilization and totals are display-only. UCA NTE uses the engine default, never Game arithmetic.
+
+Written contracts ask for two priorities: Fast, Cheap and Good. No pair is chosen for the player. The third toggle is disabled once two are selected; turn one off to change the pair. The preview shows `ActionPreview.Trade` verbatim, with the engine's price and timing. Every written `AwardAction` carries the pair; cash/card buys carry none. New targets, deployments and completed awards clear the pick. Priority controls and submission reject obsolete forms and changed state. `PrioritiesSmokeTest` checks all three trades, forced third/one/zero picks, amount changes, BPA/UCA bindings, stale/duplicate signals, save/resume, replay takeover and finished games against independent Sim results.
 
 Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview scroll independently, and Award stays in the footer. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
 
@@ -114,3 +118,12 @@ M2R-13 puts the Sim's lead item first on Board. **Other updates and sites** expa
 Menu > Sound has independent Sound and Music volume/mute controls, remembered on this computer. Music includes the approved title, alternating desk tracks with fades and quiet gaps, and harbor ambience while the map is visible. Event cues lower the background mix. Missing music files leave the game usable and silent. The runtime reads the four Ogg files under the packaged assets/audio/music folder; Windows packaging includes them.
 
 MusicSmokeTest.tscn exercises actual native playback, transitions, playlist gaps, ambience crossfades, cue ducking, independent controls, disk preferences and missing-file behavior with the dummy audio driver. It does not provide a human listening verdict.
+
+
+## Vendors (DESK-24)
+
+Vendors replaces the visible Directory and Vehicles tabs. Choose whose card to read: what they sell and where they are based is always shown; payment, price, supply, notice and reach stay blank until the Sim says they are known. The card names the representative, offers the existing meeting preview/action, and shows the office's arrangements, known BPAs/IDIQs and setup work with that vendor. Host-nation and partner support are excluded by the Sim's vendor-card projection.
+
+Set up a BPA or IDIQ from that vendor's card. The scrollable setup view offers only that supplier's capabilities and scope. IDIQ setup takes a ceiling, optional guarantee and ordering period, and a funding line; both forms show the exact engine preview and block submission on its hard stops. Back, duplicate clicks, stale forms and finished games cannot submit a setup. New arrangements and vehicles retain the existing save/replay path.
+
+VendorsSmokeTest checks exact nullable facts, meeting fill-in, independent Sim state hashes, typed IDIQ terms and preview, cancellation/stale/duplicate guards, save/resume and completed setup on the vendor card. The existing BPA suite still checks threshold stops and the actual completed call limit.

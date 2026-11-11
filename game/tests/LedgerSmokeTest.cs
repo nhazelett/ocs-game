@@ -57,9 +57,9 @@ public partial class LedgerSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash(), "Inspecting every row leaves the replay unchanged.");
             Scenario(shell, "spoke-b"); Replay(shell, "approach1 refuse"); Step(shell, 14);
             var offers = shell.Session.View!.ActionEditor("spokeBSite", "power")!.Vendors;
-            var directory = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Directory/BpaDirectory").GetChild(0).GetNode("Vendors/Contents");
-            foreach (var vendor in offers)
-                Require(directory.GetChildren().OfType<Button>().Any(b => b.Text.Contains(vendor.Name, StringComparison.OrdinalIgnoreCase) && (vendor.Standing is null || b.Text.Contains(vendor.Standing))), "Directory preserves Sim vendor standing.");
+            var directory = shell.VendorCardsBox;
+            foreach (var vendor in shell.Session.View!.VendorCards())
+                Require(shell.VendorCardContents[vendor.Id].GetChildren().OfType<Label>().Any(l => l.Text.Contains(vendor.Name)) && (vendor.Standing is null || shell.VendorCardContents[vendor.Id].GetChildren().OfType<Label>().Any(l => l.Text.Contains(vendor.Standing))), "Directory preserves Sim vendor standing.");
             GD.Print("LEDGER_SMOKE_PASS: 90-day costs, coordination, funding expiry, vendor standing and pure bindings."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"LEDGER_SMOKE_FAIL: {error}"); GetTree().Quit(1); }

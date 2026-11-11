@@ -82,8 +82,20 @@ internal static class DeskSmokeSupport
     {
         for (var i = 0; i < days; i++)
         {
-            shell.FinishDayPlayback();shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);shell.FinishDayPlayback();
+            shell.FinishDayPlayback(); EndDay(shell); shell.FinishDayPlayback();
         }
+    }
+
+    internal static void EndDay(GameShell shell)
+    {
+        shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
+        if (shell.EndDayDialog.Visible) shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
+    }
+
+    internal static void PickPriorities(GameShell shell, params string[] priorities)
+    {
+        foreach (var toggle in shell.PriorityInputs.Values) toggle.ButtonPressed = false;
+        foreach (var priority in priorities) shell.PriorityInputs[priority].ButtonPressed = true;
     }
 
     internal static void Pick(OptionButton picker, string id)

@@ -60,14 +60,19 @@ public partial class AwardChoicesSmokeTest : Node
             Pick(shell.VehicleInput,"bosBpa");
             Require(shell.PendingAward is not null && shell.AwardPreview is not null,"A complete structural selection reaches the real amount-dependent preview.");
             await Capture("full-award",shell.FundingInput);
-            shell.RequirementToggles["operator"].ButtonPressed=true;
+            // Complete the real CE visit, then add what it revealed while a BPA is assembled.
+            shell.RequirementAskButtons["ruiz"].EmitSignal(Button.SignalName.Pressed); Step(shell);
+            Target("req0007"); Pick(shell.VendorInput,"vendorC"); Pick(shell.InstrumentInput,"bpaCall"); Pick(shell.VehicleInput,"bosBpa");
+            Require(shell.PendingAward is not null,"The BPA remains valid before learned scope is added.");
+            shell.RequirementAddButtons["operator"].EmitSignal(Button.SignalName.Pressed);
             var why=shell.Session.View!.AwardChoices("spokeBSite","power","req0007","vendorC","bpaCall")!.Vendors.Single(v=>v.Id=="vendorC").Reason!;
             Require(Selected(shell.VendorInput)=="" && Selected(shell.InstrumentInput)=="" && shell.PendingAward is null
                 && shell.AwardChoiceNotice!.Contains(why),"A scope change clears newly invalid selections and retains the Sim's reason before Preview.");
             shell.VendorInput.GetPopup().EmitSignal(Popup.SignalName.PopupHide);
             Require(shell.VendorChoiceReason.Text.Contains(why),"A cleared choice keeps its reason after closing the supplier list.");
-            shell.RequirementToggles["operator"].ButtonPressed=false;
+            shell.NavigateBoardItem(new BoardItem("",shell.Session.View!.Day,BoardCategory.Request,BoardSeverity.Info,BoardLinkKind.Card,"req0007","",[]));
             Require(Selected(shell.VendorInput)=="","A cleared choice is not silently restored.");
+            Scenario(shell,"spoke-b");
             Require(shell.Session.Apply(new FindFinanceAction()).Accepted,"Finance fixture accepted."); Step(shell,6);
             Target("req0007"); Pick(shell.VendorInput,"vendorB"); Bindings();
             var cash=shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44");

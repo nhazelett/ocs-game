@@ -20,6 +20,7 @@ public partial class CorSmokeTest : Node
             Scenario(shell, "spoke-b-90");
             Pick(shell.VendorInput, "vendorA"); Pick(shell.InstrumentInput, "purchaseOrder");
             shell.QuantityInput.Value = 60; shell.DurationInput.Value = 10;
+            PickPriorities(shell, "fast", "cheap");
             Require(shell.CorInput is not null && shell.PendingAward!.Cor is null, "Written award with a roster offers None by default.");
             Require(shell.AwardPreview!.SoftGaps.Any(g => g.StartsWith("No COR named")), "None preserves Sim's no-COR warning.");
             var unchanged = shell.Session.StateHash;
@@ -59,6 +60,7 @@ public partial class CorSmokeTest : Node
             Require(shell.CorInput is null && shell.PendingAward!.Cor is null, "Cash instrument hides and clears the COR field.");
             Pick(shell.InstrumentInput, "purchaseOrder");
             Pick(shell.FundingInput,shell.CurrentAwardChoices!.Funding.First(f=>f.Available).Id);
+            PickPriorities(shell, "fast", "cheap");
             Require(shell.CorInput is not null && shell.PendingAward!.Cor is null, "Returning to written terms starts at None without a hidden stale designation.");
 
             // Reporting fidelity is exercised on the authored no-COR replay, including the rotation.
