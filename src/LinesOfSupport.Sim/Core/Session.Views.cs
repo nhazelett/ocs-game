@@ -300,7 +300,8 @@ public sealed partial class Session
 
         return new ActionEditorView(Day, siteId, capId, cap.Label, cap.Unit, card?.Id, selected,
                                     (PeakDemandMilli(siteId, capId, from, to) + 999) / 1000, _cash,
-                                    instruments, vendors, vehicles, funding);
+                                    instruments, vendors, vehicles, funding,
+                                    card?.RequestedStartDay, card?.DurationDays, card?.QuantityHint);
     }
 
     internal ActionPreview BuildPreview(AwardAction a)

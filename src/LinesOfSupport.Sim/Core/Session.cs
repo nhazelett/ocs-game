@@ -137,7 +137,7 @@ public sealed partial class Session
                     SiteId = site.Id, CapabilityId = sc.Id, Critical = sc.Critical,
                     BufferDaysPermille = Fixed.Permille(sc.BufferDays ?? Rules.Model.DefaultBufferDays),
                 });
-        foreach (var c in Scenario.Cors) _cors.Add(new CorState { Id = c.Id, Name = c.Name, Unit = c.Unit, Quality = c.Quality });
+        foreach (var c in Scenario.Cors) _cors.Add(new CorState { Id = c.Id, Name = c.Name, Unit = c.Unit, Quality = c.Quality, Knows = c.Knows });
         foreach (var a in Scenario.InheritedArrangements) AddInherited(a);
         foreach (var e in Scenario.Events)
         {

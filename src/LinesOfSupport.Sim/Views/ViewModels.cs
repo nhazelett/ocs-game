@@ -242,14 +242,25 @@ public sealed record VehicleOption(
 public sealed record FundingOption(string Id, string Type, long RemainingCents, int AvailableDay, int ExpiresDay, bool UsableToday,
     int PlannedAvailableDay = 0, IReadOnlyList<string>? Capabilities = null, bool PaysForThis = true);
 
+/// <summary>A COR the award editor offers, with why they fit the work or do not (DESK-07, D8).</summary>
+/// <param name="Fits">Whether the work is the COR's unit's work; null when the scenario does not model fit for this COR.</param>
+/// <param name="Watching">Other running contracts the COR already watches.</param>
+/// <param name="ReportPermille">Odds, in thousandths, that they report a problem on this work.</param>
+/// <param name="Why">One sentence: who, whether the work is theirs, their load, the odds and the lag.</param>
+public sealed record CorChoice(string Id, string Name, string? Unit, bool? Fits, int Watching, int ReportPermille, int LagDays, string Why);
+
 /// <summary>Everything the action editor needs to assemble an award for one site and capability.</summary>
 /// <param name="CardId">The requirement card being acted on, if any.</param>
 /// <param name="SelectedLines">Lines switched on on the card (or the capability's core lines when there is no card).</param>
+/// <param name="RequestedStartDay">What the customer asked for (DESK-07, D9): the card's start day; null without a card.</param>
+/// <param name="RequestedDurationDays">The card's duration in days; null without a card.</param>
+/// <param name="RequestedQuantity">The card's quantity as the customer put it, if they did.</param>
 public sealed record ActionEditorView(
     int Day, string SiteId, string CapabilityId, string CapabilityLabel, string Unit, string? CardId,
     IReadOnlyList<string> SelectedLines, long PeakDemandUnits, long CashCents,
     IReadOnlyList<InstrumentOption> Instruments, IReadOnlyList<VendorOption> Vendors,
-    IReadOnlyList<VehicleOption> Vehicles, IReadOnlyList<FundingOption> Funding);
+    IReadOnlyList<VehicleOption> Vehicles, IReadOnlyList<FundingOption> Funding,
+    int? RequestedStartDay = null, int? RequestedDurationDays = null, string? RequestedQuantity = null);
 
 /// <summary>An external support request as the OCS seat sees it (M3-05). Status: Preparing (shop work), InApproval
 /// (with the SCO and the external office), Awarded, Refused. The answer day is shown as a range until it comes;

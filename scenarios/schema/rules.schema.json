@@ -696,6 +696,24 @@
         },
         "sourceUrl": {
           "type": "string"
+        },
+        "offFitPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "DESK-07: report odds lost when the contract's work is not the COR's unit's work (only for a COR with knows)."
+        },
+        "perOtherContractPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "DESK-07: report odds lost for each other running contract the COR already watches (only for a COR with knows)."
+        },
+        "floorPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "DESK-07: the report odds never fall below this."
         }
       }
     },

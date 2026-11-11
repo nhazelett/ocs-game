@@ -63,7 +63,9 @@ The scope checkboxes. The Directory tab. Terminate buttons in the Ledger. The Co
 - Pick two (D7): `AwardAction.Priorities` (two of fast, cheap, good). Rules block `pickTwo` with three numbers: extra shop days for competing, the premium, the added failure odds. The debrief names the pick when it explains a gap or a cost.
   Built (DESK-06): 2 shop days, 15%, 15 in a thousand a day, on purchase orders, BPA calls, IDIQ orders and UCAs. The Sim takes no pick as "none" (old logs and policies unchanged); the game always sends one (DESK-26). `ActionPreview.Trade` is the trade in one sentence with this award's numbers. The action record ends "Picked fast and good.", which is where the debrief's decision list shows the cost; a late competed award and a failing first-quote vendor say so in their gap factors. To strip it: Session.PickTwo.cs, the `Priorities` and `Pick` fields, the rules block and the lines marked DESK-06.
 - COR fit (D8): `cors[].knows` (capabilities); detection odds drop off fit and with each additional contract.
+  Built (DESK-07): minus 300 in a thousand off the COR's work, minus 150 per other running contract, floor 100, only for a COR with `knows` (the tutorial's two). `SessionView.CorChoices(capability)` lists the roster best odds first, each with a `Why` sentence; the preview's COR line uses the same sentence. Report lag is unchanged. Goldens did not move.
 - Ask in view (D9): `ActionEditorView` already carries peak demand; add the card's requested start and days.
+  Built (DESK-07): `RequestedStartDay`, `RequestedDurationDays` and `RequestedQuantity` (the customer's own words), null without a card.
 - End of day (D1): `SessionView.EndOfDayCheck()` returns the open items as sentences. Read only.
 - SF 44 (D11): a multi-day SF 44 pays per delivery from cash on the day, costs trip hours per delivery, and for an off-island site needs the link open that day.
 

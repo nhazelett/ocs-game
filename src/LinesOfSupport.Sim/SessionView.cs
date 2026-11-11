@@ -70,6 +70,9 @@ public sealed class SessionView
     public IReadOnlyList<CorState> Cors => _s.Cors;
     /// <summary>"fair: reports 2 days late, about 80% of problems".</summary>
     public string CorSummary(CorState cor) => _s.CorSummary(cor);
+    /// <summary>The COR roster for a contract of this capability (DESK-07, D8), best odds first, each with why they fit the
+    /// work or do not. Empty when the scenario has no roster. Read only.</summary>
+    public IReadOnlyList<CorChoice> CorChoices(string capabilityId) => _s.BuildCorChoices(capabilityId);
     /// <summary>Lag and report odds for a COR's current quality (rules cor.qualities).</summary>
     public CorQualityData CorQuality(CorState cor) => _s.CorQuality(cor);
     /// <summary>False for a record the office has not been told about yet: a VendorFailure waiting for a COR or unit

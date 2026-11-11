@@ -502,13 +502,15 @@
       "id": "corLane",
       "name": "SSgt Lane",
       "unit": "3 FSS",
-      "quality": "good"
+      "quality": "good",
+      "knows": ["water", "lodging", "food"]
     },
     {
       "id": "corPratt",
       "name": "TSgt Pratt",
       "unit": "3 CES",
-      "quality": "fair"
+      "quality": "fair",
+      "knows": ["mhe", "power", "waste"]
     }
   ],
   "people": [

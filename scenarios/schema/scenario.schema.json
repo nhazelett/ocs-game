@@ -750,6 +750,13 @@
           "quality": {
             "type": "string",
             "description": "A key of rules cor.qualities"
+          },
+          "knows": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Capabilities the COR's unit works with every day (DESK-07). When present, a COR off their unit's work, or already watching other contracts, reports fewer problems (rules cor.offFitPermille, perOtherContractPermille). Absent: fit is not modeled for this COR."
           }
         }
       }

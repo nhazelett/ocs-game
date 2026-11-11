@@ -725,6 +725,9 @@
     },
     "noCorLagDays": 3,
     "reliefQuality": "poor",
+    "offFitPermille": 300,
+    "perOtherContractPermille": 150,
+    "floorPermille": 100,
     "sourceUrl": "https://www.acquisition.gov/dfars/201.602-2-responsibilities."
   },
   "lift": {

@@ -72,6 +72,8 @@ public sealed class CorState
     public required string Quality { get; set; }
     /// <summary>Day the nominated COR rotated home and an untrained relief took over, or null.</summary>
     public int? RotatedDay { get; set; }
+    /// <summary>Capabilities the COR's unit works with (DESK-07); null when fit is not modeled.</summary>
+    public IReadOnlyList<string>? Knows { get; init; }
 }
 
 /// <summary>A report of a vendor failure on its way to the office (M3-04): from the COR, or from the unit when there is none.</summary>

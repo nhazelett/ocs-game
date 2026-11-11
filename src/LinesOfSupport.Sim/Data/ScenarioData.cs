@@ -285,6 +285,9 @@ public sealed record CorData
     public string? Unit { get; init; }
     /// <summary>A key of rules cor.qualities: sets report lag and fidelity.</summary>
     public string Quality { get; init; } = "fair";
+    /// <summary>Capabilities the COR's unit works with every day (DESK-07, D8). Null: fit is not modeled for this COR, so
+    /// neither the fit nor the stretch rule applies (older scenarios play as before).</summary>
+    public List<string>? Knows { get; init; }
 }
 
 public sealed record FundingLineData
@@ -553,6 +556,12 @@ public sealed record CorRulesData
     public int NoCorLagDays { get; init; } = 3;
     /// <summary>Quality of the untrained relief who takes over when a COR rotates home.</summary>
     public string ReliefQuality { get; init; } = "poor";
+    /// <summary>DESK-07 (D8): report odds lost when the contract's work is not the COR's unit's work.</summary>
+    public int OffFitPermille { get; init; } = 300;
+    /// <summary>DESK-07: report odds lost for each other running contract the COR already watches.</summary>
+    public int PerOtherContractPermille { get; init; } = 150;
+    /// <summary>DESK-07: the report odds never fall below this.</summary>
+    public int FloorPermille { get; init; } = 100;
     public string? SourceUrl { get; init; }
 }
 
