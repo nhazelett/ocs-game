@@ -508,6 +508,7 @@ public sealed record RulesFile
     public GoingToPeopleRulesData GoingToPeople { get; init; } = new();
     public PickTwoRulesData PickTwo { get; init; } = new();
     public Sf44DeliveriesRulesData Sf44Deliveries { get; init; } = new();
+    public ShopVehicleRulesData ShopVehicle { get; init; } = new();
 }
 
 /// <summary>Fast, cheap, good: pick two (DESK-06, D7). Placeholder numbers, tuned in playtest.</summary>
@@ -680,6 +681,14 @@ public sealed record Sf44DeliveriesRulesData
     public string? SourceUrl { get; init; }
 }
 
+/// <summary>A vehicle for the contracting office (DESK-10, D5): while one is running, a vendor meeting and an SF 44 trip on
+/// the shop's own island take VisitHoursPermille of their usual hours, rounded up. The one rule number.</summary>
+public sealed record ShopVehicleRulesData
+{
+    public string? Notes { get; init; }
+    public int VisitHoursPermille { get; init; } = 1000;
+}
+
 /// <summary>The commander's staff meeting: joining costs hours once, each meeting after that (every EveryDays) costs
 /// WeeklyShopHours (the name is from the weekly cadence; it is the hours of each meeting). DESK-08 (D4): a meeting
 /// carries something for contracting only on a ContractingPermille draw, when it previews requests due within
@@ -810,6 +819,8 @@ public sealed record CapabilityData
     public List<CapabilityLineData> Lines { get; init; } = [];
     /// <summary>Who normally arranges this for a deployed site (R10), shown on the dependency checklist; null: the contracting office.</summary>
     public string? UsualOwner { get; init; }
+    /// <summary>DESK-10 (D5): the office's own need (the shop vehicle): no site demand, not scored, bought on the shop's own initiative.</summary>
+    public bool ForShop { get; init; }
 }
 
 public sealed record MissionWeightsData(double SortieGeneration, double Throughput, double Endurance, double Resilience);

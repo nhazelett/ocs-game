@@ -303,6 +303,10 @@
                     }
                   }
                 }
+              },
+              "forShop": {
+                "type": "boolean",
+                "description": "DESK-10 (D5): the office's own need (the shop vehicle), bought on its own initiative. No site demand; not part of the mission score; no execution confusion."
               }
             }
           }
@@ -1087,6 +1091,25 @@
         "sourceUrl": {
           "type": "string",
           "format": "uri"
+        }
+      }
+    },
+    "shopVehicle": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A vehicle for the contracting office (DESK-10, D5).",
+      "required": [
+        "visitHoursPermille"
+      ],
+      "properties": {
+        "notes": {
+          "type": "string"
+        },
+        "visitHoursPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "While the office has a vehicle, vendor meetings and SF 44 trips on its own island take this share of their hours, rounded up"
         }
       }
     }

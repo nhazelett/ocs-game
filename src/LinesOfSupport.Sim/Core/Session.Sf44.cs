@@ -15,10 +15,16 @@ public sealed partial class Session
     private Sf44DeliveriesRulesData Sf44Rules => Rules.Sf44Deliveries;
 
     /// <summary>Shop hours for one delivery trip: across the water costs more.</summary>
-    private int TripHours(string siteId, string supplierIsland)
-        => supplierIsland != SiteData(siteId).Island ? Sf44Rules.OffIslandTripShopHours : Sf44Rules.TripShopHours;
+    /// <summary>Milli-hours for one delivery trip: across the water costs more; on the shop's island a shop vehicle (DESK-10) cuts it.</summary>
+    private long TripMilli(string siteId, string supplierIsland, int day)
+    {
+        var island = SiteData(siteId).Island;
+        if (supplierIsland != island) return Fixed.Milli(Sf44Rules.OffIslandTripShopHours);
+        var hours = Fixed.Milli(Sf44Rules.TripShopHours);
+        return island == ShopIsland ? WithShopVehicle(hours, day) : hours;
+    }
 
-    private int TripHours(Arrangement a) => TripHours(a.SiteId, a.SupplierIslandId);
+    private long TripMilli(Arrangement a, int day) => TripMilli(a.SiteId, a.SupplierIslandId, day);
 
     /// <summary>True when every surface link between the islands is closed today (a closure, not a day off the schedule).</summary>
     private bool SurfaceClosed(string fromIsland, string toIsland, int day)
@@ -66,7 +72,7 @@ public sealed partial class Session
             a.ObligatedCents += cost;
             ScheduleReplenish();
             _assigneeNow = a.TripAssignee;
-            trips.Add(AddWork(WorkKind.Visit, $"SF 44 delivery and payment at {site.Name}", Fixed.Milli(TripHours(a)), d,
+            trips.Add(AddWork(WorkKind.Visit, $"SF 44 delivery and payment at {site.Name}", TripMilli(a, d), d,
                               new VisitPayload("sf44Trip", a.Id), a.CauseId));
             _assigneeNow = null;
         }

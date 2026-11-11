@@ -318,6 +318,14 @@ public sealed record TransitionPreview(bool Accepted, IReadOnlyList<string> Hard
 
 // ------------------------------------------------------------------ going to people (M2R-04)
 
+/// <summary>
+/// Something the shop can buy that nobody asked for (DESK-10, D5): the "Buy on your own initiative" entry. Bought with an
+/// ordinary AwardAction for SiteId and CapabilityId from one of Vendors.
+/// </summary>
+/// <param name="Why">What it is for, in a sentence.</param>
+/// <param name="Have">The office already has one running today.</param>
+public sealed record OwnInitiativeView(string SiteId, string CapabilityId, string Label, string Why, IReadOnlyList<string> Vendors, bool Have);
+
 /// <summary>The commander's staff meeting as the shop sees it (design doc 6.2).</summary>
 /// <param name="Attending">The shop goes every week.</param>
 /// <param name="Joining">Getting into the meeting is in the shop's queue.</param>

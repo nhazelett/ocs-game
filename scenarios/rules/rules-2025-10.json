@@ -612,6 +612,22 @@
             "kind": "maintenance"
           }
         ]
+      },
+      {
+        "id": "shopVehicle",
+        "label": "Vehicle for the contracting office",
+        "unit": "vehicles",
+        "demandPerPersonPerDay": 0,
+        "dependsOn": [],
+        "delivery": "continuous",
+        "forShop": true,
+        "lines": [
+          {
+            "id": "vehicle",
+            "label": "Vehicle",
+            "kind": "core"
+          }
+        ]
       }
     ],
     "defaultBufferDays": 3,
@@ -849,5 +865,9 @@
     "tripShopHours": 2,
     "offIslandTripShopHours": 6,
     "sourceUrl": "https://www.acquisition.gov/far/13.306"
+  },
+  "shopVehicle": {
+    "notes": "DESK-10 (D5): a vehicle the office buys on its own initiative. While one is running, a vendor meeting and an SF 44 trip on the shop's own island take visitHoursPermille of their usual hours, rounded up. Placeholder, tuned in playtest.",
+    "visitHoursPermille": 500
   }
 }

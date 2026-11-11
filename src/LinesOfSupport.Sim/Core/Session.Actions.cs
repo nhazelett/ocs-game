@@ -319,7 +319,7 @@ public sealed partial class Session
             case "sf44" when a.DurationDays > 1:
             {
                 // DESK-09 (D11): paid in cash at each delivery, and each delivery is a trip (Sf44Deliveries).
-                var trip = TripHours(siteId, StockIsland(vendor, capId));
+                var trip = CeilHours(TripMilli(siteId, StockIsland(vendor, capId), Day));
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
                     $"{inst.Label} to {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}). Paid in cash at each delivery, {Money(daily)} a day{(mob > 0 ? $" and {Money(mob)} with the first" : "")}, about {Money(total)} in all. Each delivery is a trip for {(Member(_assigneeNow).Role == "you" ? "you" : MemberName(Member(_assigneeNow)))} and the paying agent: {Plural(trip, "shop hour")}.", []);
                 CompleteAward(payload, Day, rec);

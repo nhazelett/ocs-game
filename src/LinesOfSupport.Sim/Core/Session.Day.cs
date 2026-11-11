@@ -261,6 +261,8 @@ public sealed partial class Session
             var t = new Today();
             result[a.Id] = t;
             if (a.Status == ArrangementStatus.Suspended) { t.Suspended = true; t.FactorPermille = 0; continue; }
+            // The office's own vehicle (DESK-10) supplies no site and draws nothing, so buying one moves no other roll.
+            if (ForShop(a.CapabilityId)) continue;
 
             var cap = Cap(a.CapabilityId);
             var failPm = 1000 - a.ReliabilityPermille;

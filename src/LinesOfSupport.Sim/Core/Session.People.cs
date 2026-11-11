@@ -136,7 +136,7 @@ public sealed partial class Session
                     stops.Add("that question is already with the SCO's staff");
                 break;
             case MeetVendorAction m:
-                hours = Fixed.Milli(People.MeetVendor.ShopHours);
+                hours = WithShopVehicle(Fixed.Milli(People.MeetVendor.ShopHours), Day);
                 if (VendorData(m.Vendor) is not { } v) stops.Add("no such vendor");
                 else if (_vendorsMet.ContainsKey(v.Id)) stops.Add($"you have already met {v.Name}");
                 else if (VisitInWork("vendor", v.Id)) stops.Add($"a meeting with {v.Name} is already set up");
