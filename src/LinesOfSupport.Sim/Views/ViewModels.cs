@@ -270,10 +270,11 @@ public sealed record InheritedFileView(
 /// </summary>
 /// <param name="EarliestStartMin">Earliest first day of performance at the best roll, ignoring work already queued ahead of it.</param>
 /// <param name="QueueAheadHours">Shop hours of unfinished work already in the queue.</param>
+/// <param name="Trade">The fast, cheap, good pick's trade in one sentence with this award's numbers (DESK-06); null with no pick.</param>
 public sealed record ActionPreview(
     bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps,
     long DailyCents, long MobilizationCents, long TotalCents,
-    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours);
+    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours, string? Trade = null);
 
 /// <summary>
 /// A transition plan as the transition planner shows it (M3-05, SPEC 3 "Transition plan"): both arrangements on a

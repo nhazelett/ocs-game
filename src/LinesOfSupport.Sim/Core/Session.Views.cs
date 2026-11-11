@@ -320,13 +320,14 @@ public sealed partial class Session
             var days = WorkDays(PersonHours(hours, a.Assignee), a.Assignee);
             return wait + Math.Max(0, days - 1);
         }
-        var minDone = Completion(inst.ShopDays.Min, Rules.Uca.ApprovalLagDays.Min);
-        var maxDone = Completion(inst.ShopDays.Max, Rules.Uca.ApprovalLagDays.Max);
+        var compete = CompeteDays(PickKey(a.Priorities));   // DESK-06
+        var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min);
+        var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max);
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
         var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
         var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
-        var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min, inst.RequiresSystemOrManual), a.Assignee));
-        var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max, inst.RequiresSystemOrManual), a.Assignee));
+        var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee));
+        var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee));
 
         var gaps = new List<string>();
         var cap = Cap(capId);
@@ -378,6 +379,6 @@ public sealed partial class Session
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
-                                 hMin, hMax, startMin, startMax, queue);
+                                 hMin, hMax, startMin, startMax, queue, PickTrade(a, chk.TotalCents));
     }
 }

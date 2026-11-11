@@ -46,6 +46,8 @@ public sealed class Arrangement
     public bool MobilizationCharged { get; set; }
     /// <summary>The COR designated on this arrangement, or null for none (M3-04).</summary>
     public string? CorId { get; set; }
+    /// <summary>The fast, cheap, good pick made at award (DESK-06): "fast+cheap", "fast+good" or "cheap+good"; null for none.</summary>
+    public string? Pick { get; init; }
     /// <summary>Days of termination notice the contract requires, or null for none (inherited noticeDays, M3-19).</summary>
     public int? NoticeDays { get; init; }
 }

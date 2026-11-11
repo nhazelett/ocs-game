@@ -996,6 +996,36 @@
           }
         }
       }
+    },
+    "pickTwo": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Fast, cheap, good: pick two (DESK-06, D7). Applies to written contracts when the award names two priorities.",
+      "required": [
+        "competeShopDays",
+        "premiumPermille",
+        "firstQuoteFailurePermille"
+      ],
+      "properties": {
+        "notes": {
+          "type": "string"
+        },
+        "competeShopDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cheap and good: shop days added for competing the action"
+        },
+        "premiumPermille": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Fast and good: premium on price and mobilization, in thousandths"
+        },
+        "firstQuoteFailurePermille": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Fast and cheap: added daily failure odds, in thousandths"
+        }
+      }
     }
   },
   "$defs": {

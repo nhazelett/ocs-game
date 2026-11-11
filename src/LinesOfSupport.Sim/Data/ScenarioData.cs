@@ -487,6 +487,18 @@ public sealed record RulesFile
     public SmallBuysRulesData SmallBuys { get; init; } = new();
     public GpcProgramRulesData GpcProgram { get; init; } = new();
     public GoingToPeopleRulesData GoingToPeople { get; init; } = new();
+    public PickTwoRulesData PickTwo { get; init; } = new();
+}
+
+/// <summary>Fast, cheap, good: pick two (DESK-06, D7). Placeholder numbers, tuned in playtest.</summary>
+/// <param name="CompeteShopDays">Cheap and good: shop days added to the action for competing it.</param>
+/// <param name="PremiumPermille">Fast and good: premium on the price and mobilization, in thousandths.</param>
+/// <param name="FirstQuoteFailurePermille">Fast and cheap: added daily failure odds, in thousandths.</param>
+public sealed record PickTwoRulesData
+{
+    public int CompeteShopDays { get; init; } = 2;
+    public int PremiumPermille { get; init; } = 150;
+    public int FirstQuoteFailurePermille { get; init; } = 15;
 }
 
 /// <summary>Vendor claims after a termination without the contract's notice (M3-19, FAR 49): shop hours to settle,

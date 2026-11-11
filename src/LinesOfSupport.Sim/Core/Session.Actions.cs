@@ -207,6 +207,10 @@ public sealed partial class Session
         var incumbent = _arrangements.Any(x => x.VendorId == vendor.Id && x.SiteId == siteId && x.CapabilityId == capId
                                                && x.Status == ArrangementStatus.Active);
         var mob = incumbent ? 0 : Fixed.MulPermille(baseCost, Fixed.Permille(offer.MobilizationFraction));
+        // DESK-06: fast and good pays a premium (computed on base and mobilization separately so the total adds up).
+        var pick = PickKey(a.Priorities);
+        stops.AddRange(PickStops(a, inst));
+        daily = WithPremium(pick, daily); baseCost = WithPremium(pick, baseCost); mob = WithPremium(pick, mob);
         if (a.Instrument == "gpc")
         {
             var sur = Fixed.Permille(vendor.GpcSurchargeFraction);
@@ -299,7 +303,9 @@ public sealed partial class Session
         var startLag = _rngWork.NextInt(inst.StartLagDays);
         // Off-island goods add strategic lift to the vendor's lead time, drawn after the work stream so local awards are unchanged.
         var lead = offer.LeadTimeDays + (vendor.OffIsland ? DrawLift(a.Lift!) : 0);
-        var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead, Fixed.Permille(vendor.Reliability), StockIsland(vendor, capId));
+        var pick = PickKey(a.Priorities);   // DESK-06
+        var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead,
+                                       FirstQuoteReliability(pick, Fixed.Permille(vendor.Reliability)), StockIsland(vendor, capId));
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
         var lineText = string.Join(", ", lines.Select(l => LineLabel(capId, l)));
 
@@ -316,7 +322,7 @@ public sealed partial class Session
             }
             default:
             {
-                var shopDays = _rngWork.NextInt(inst.ShopDays);
+                var shopDays = _rngWork.NextInt(inst.ShopDays) + CompeteDays(pick);   // DESK-06: drawn first, so the stream is unchanged
                 var wait = Day + Scenario.Actors.Fm.CertificationLagDays;
                 var approval = "";
                 if (a.Instrument == "uca")
@@ -326,7 +332,7 @@ public sealed partial class Session
                     approval = $" Approval request routed through the SCO; answer expected in {Plural(lag, "day")}.";
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
-                    $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}", []);
+                    $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);
                 AddWork(WorkKind.Award, $"{inst.Label} with {vendor.Name} for {Lower(CapLabel(capId))} at {SiteName(siteId)}", Hours(shopDays, inst.RequiresSystemOrManual), wait, payload, rec);
                 return ActionResult.Ok("in work");
             }
@@ -382,7 +388,7 @@ public sealed partial class Session
             Lines = p.Lines, SupplierIslandId = p.SupplierIsland, QuantityMilli = a.Quantity * 1000, DailyCostCents = p.DailyCostCents,
             MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine, FromGuaranteeCents = fromGuarantee,
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
-            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor,
+            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor, Pick = PickKey(a.Priorities),
         };
         foreach (var lineId in p.Lines)
         {

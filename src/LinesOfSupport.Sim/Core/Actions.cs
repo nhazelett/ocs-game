@@ -105,6 +105,9 @@ public sealed record AwardAction : PlayerAction
     public string? Cor { get; init; }
     /// <summary>Off-island vendors only (M3-06): "airlift" or "sealift", one of the vendor's lift modes.</summary>
     public string? Lift { get; init; }
+    /// <summary>Written contracts (DESK-06, D7): two of "fast", "cheap" and "good". Null makes no pick and changes nothing,
+    /// which is how older logs and the policies play.</summary>
+    public List<string>? Priorities { get; init; }
 }
 
 /// <summary>Borrow capacity from another site's unit. Not a contract; can be withdrawn.</summary>

@@ -203,3 +203,9 @@ What the tags do not do yet: judge whether the information was worth its cost (a
 | Knowledge does not gate a buy | Calling a vendor to buy is itself how you learn they do not take the card. | The Sim still decides every award on the true facts; the award editor says "does not take cash" whether or not the card showed it. Unknown facts are blank on screen only. | Keeps every replay and golden report unchanged; no administration screen to fill in first. | If playtest shows players buying blind on purpose |
 | More vendors to meet | | Every vendor on a card in the tutorial, Spoke B and Spoke B 90 now has a rep to meet (five new in the tutorial, five in Spoke B, three in Spoke B 90). New reps use the fallback portrait until the art pass gives them faces. The sustainment draft has no cast yet. | D6: there are more vendors to meet than today. | Portraits (Codex, assets) |
 
+## Fast, cheap, good (DESK-06)
+
+| Topic | Real | Modeled | Why | Revisit |
+| --- | --- | --- | --- | --- |
+| Points of emphasis | A contracting officer weighs speed, price and quality on every action: competing it takes time, a rush job costs more, and taking the first offer risks the work. Competition and evaluation follow from what matters most. | On a written contract (purchase order, BPA call, IDIQ order, UCA) the award may name two of fast, cheap and good (`AwardAction.Priorities`). Cheap and good adds `competeShopDays` (2) to the shop work; fast and good adds `premiumPermille` (15%) to the price and mobilization; fast and cheap lowers the contract's reliability by `firstQuoteFailurePermille` (1.5 points a day). No pick changes nothing, so older logs and the policies play as before. The action record names the pick, and the debrief names it when a competed award started late or a first-quote vendor failed. | Nick, 10 Nov 2026 (D7): his "points of emphasis" without an administration screen; built to be stripped. | Playtest (the three numbers; whether to keep it) |
+

@@ -824,5 +824,11 @@
       "lagDays": 3,
       "sourceUrl": "https://www.jcs.mil/Portals/36/Documents/Doctrine/pubs/jp4_10.pdf"
     }
+  },
+  "pickTwo": {
+    "notes": "Fast, cheap, good: pick two, on written contracts (DESK-06, docs/design/desk-redesign.md D7). Cheap and good means competing it (more shop days); fast and good means a premium; fast and cheap means the first quote (higher failure odds). Placeholder numbers, tuned in playtest.",
+    "competeShopDays": 2,
+    "premiumPermille": 150,
+    "firstQuoteFailurePermille": 15
   }
 }
