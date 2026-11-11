@@ -87,6 +87,8 @@ The Requirements tab binds RequirementEditor(card) without scope checkboxes. Onl
 
 Choose a submitted requirement or a site/capability, then instrument, vendor, known vehicle and funding line from ActionEditor. Unavailable instruments are disabled with their actual reason. Quantity, requested start and duration are numeric pickers; quotes, mobilization and totals are display-only. UCA NTE uses the engine default, never Game arithmetic.
 
+Written contracts ask for two priorities: Fast, Cheap and Good. No pair is chosen for the player. The third toggle is disabled once two are selected; turn one off to change the pair. The preview shows `ActionPreview.Trade` verbatim, with the engine's price and timing. Every written `AwardAction` carries the pair; cash/card buys carry none. New targets, deployments and completed awards clear the pick. Priority controls and submission reject obsolete forms and changed state. `PrioritiesSmokeTest` checks all three trades, forced third/one/zero picks, amount changes, BPA/UCA bindings, stale/duplicate signals, save/resume, replay takeover and finished games against independent Sim results.
+
 Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview scroll independently, and Award stays in the footer. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
 
 ## Other desk actions (M2-06)

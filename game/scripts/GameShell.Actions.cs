@@ -15,6 +15,7 @@ public partial class GameShell
     private long? quantity;
     private int? start, duration;
     private int awardSequence = 1;
+    private int awardFormVersion;
     private OptionButton instrumentInput = null!, vendorInput = null!, vehicleInput = null!, fundingInput = null!;
     private SpinBox quantityInput = null!, startInput = null!, durationInput = null!;
     private Label previewCost = null!, previewStops = null!, previewGaps = null!;
@@ -60,6 +61,7 @@ public partial class GameShell
     {
         awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = awardCor = null;
         awardChoiceNotice = null;
+        awardPriorities.Clear(); // DESK-26
         quantity = null; start = duration = null; awardSequence = 1;
     }
 
@@ -102,9 +104,18 @@ public partial class GameShell
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
         PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; InitiativeTargetInput = null;
+        PriorityInputs.Clear(); AwardTrade = null; // DESK-26
+        var formVersion = ++awardFormVersion;
+        var formHash = session.StateHash;
         awardButton = DeskUi.Button("Arrange support", () =>
         {
-            if (PendingAward is not null && AwardPreview?.Accepted == true && session.View?.Finished == false) SendAction(PendingAward);
+            if (formVersion != awardFormVersion || formHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay) return;
+            if (PendingAward is not null && AwardPreview?.Accepted == true && session.View?.Finished == false)
+            {
+                var action = PendingAward;
+                awardPriorities.Clear(); // DESK-26: each new written contract gets its own pick.
+                SendAction(action);
+            }
         });
         awardButton.Disabled = true; awardFooter.AddChild(awardButton);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
@@ -117,7 +128,7 @@ public partial class GameShell
         void ChooseTarget(string id)
         {
             awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
-            awardChoiceNotice = null; quantity = null; start = duration = null; RefreshActionDesk(session.View);
+            awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
         }
         var target = targets.Single(t => t.Id == awardTarget);
         var ownTargets = targets.Where(t => t.Card is null).ToArray();
@@ -157,6 +168,7 @@ public partial class GameShell
             id => awardFunding = id, out var fundingReason);
         FundingChoiceReason = fundingReason;
         fundingInput.Disabled = immediate;
+        BuildAwardPriorities(view); // DESK-26
         if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
         {
             previewPanel.AddChild(DeskUi.Label("Choose an available supplier and arrangement, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
@@ -181,6 +193,7 @@ public partial class GameShell
             previewPanel.AddChild(DeskUi.Label("Choose an available vehicle and funding line for these terms before asking for the quote."));
             return;
         }
+        AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); // DESK-26
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
@@ -198,10 +211,12 @@ public partial class GameShell
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
             Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = string.IsNullOrEmpty(awardFunding) ? null : awardFunding,
             Cor = string.IsNullOrEmpty(awardCor) ? null : awardCor,
-            Quantity = quantity ?? 1, StartDay = start, DurationDays = duration ?? 1 };
+            Quantity = quantity ?? 1, StartDay = start, DurationDays = duration ?? 1,
+            Priorities = WrittenAward ? [.. PriorityOrder.Where(awardPriorities.Contains)] : null }; // DESK-26
         try
         {
             AwardPreview = view.Preview(PendingAward);
+            AwardTrade!.Text = AwardPreview.Trade ?? ""; AwardTrade.Visible = AwardPreview.Trade is not null; // DESK-26
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
             previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.\n\nIt would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
             previewStops.Text = string.Join("\n\n", AwardPreview.HardStops);
@@ -212,7 +227,7 @@ public partial class GameShell
         }
         catch (OverflowException)
         {
-            AwardPreview = null; previewCost.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
+            AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
             previewGaps.Text = ""; awardButton.Disabled = true;
         }
     }

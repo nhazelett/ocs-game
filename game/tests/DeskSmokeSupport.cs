@@ -92,6 +92,12 @@ internal static class DeskSmokeSupport
         if (shell.EndDayDialog.Visible) shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
     }
 
+    internal static void PickPriorities(GameShell shell, params string[] priorities)
+    {
+        foreach (var toggle in shell.PriorityInputs.Values) toggle.ButtonPressed = false;
+        foreach (var priority in priorities) shell.PriorityInputs[priority].ButtonPressed = true;
+    }
+
     internal static void Pick(OptionButton picker, string id)
     {
         var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemMetadata(i).AsString() == id);

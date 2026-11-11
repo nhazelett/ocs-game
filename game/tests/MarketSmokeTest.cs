@@ -47,6 +47,7 @@ public partial class MarketSmokeTest : Node
             Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
             shell.QuantityInput.Value = 360; shell.DurationInput.Value = 30;
             Require(shell.Session.StateHash == hash, "Every market choice remains a pure preview.");
+            PickPriorities(shell, "fast", "cheap");
             var candidate = shell.PendingAward!;
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             var preview = expected.View.Preview(candidate);

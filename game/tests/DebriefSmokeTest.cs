@@ -23,6 +23,7 @@ public partial class DebriefSmokeTest : Node
             Require(shell.DisplayedDebrief is null, "Debrief waits for the final day.");
             Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
             shell.QuantityInput.Value = 360; shell.DurationInput.Value = 60;
+            PickPriorities(shell, "fast", "cheap");
             Require(shell.PendingAward!.StartDay == 7 && !shell.AwardButton.Disabled, "Gate path buys the generators as written, starting day seven.");
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             Require(expected.Apply(shell.PendingAward!).Accepted, "The engine accepts the exact player award."); shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
@@ -46,6 +47,7 @@ public partial class DebriefSmokeTest : Node
             {
                 Pick(shell.VendorInput, vendor); Pick(shell.InstrumentInput, instrument);
                 shell.QuantityInput.Value = quantity; shell.StartInput.Value = start; shell.DurationInput.Value = duration;
+                PickPriorities(shell, "fast", "cheap");
                 Require(!shell.AwardButton.Disabled && expected.Apply(shell.PendingAward!).Accepted, "Spoke C support is accepted with its exact UI terms.");
                 shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             }
