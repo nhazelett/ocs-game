@@ -25,6 +25,7 @@ public partial class GameShell
     internal ActionEditorView? CurrentActionEditor { get; private set; }
     internal OptionButton AwardRequestInput { get; private set; } = null!;
     internal OptionButton? InitiativeTargetInput { get; private set; }
+    internal Label? InitiativeDetails { get; private set; }
     internal OptionButton InstrumentInput => instrumentInput;
     internal OptionButton FundingInput => fundingInput;
     internal OptionButton? CorInput { get; private set; }
@@ -72,9 +73,11 @@ public partial class GameShell
     {
         var targets = view.Cards.Select(c => view.RequirementEditor(c.Id)).Where(c => c is not null)
             .Select(c => new AwardTarget(c!.CardId, $"{c.Title} · {c.Person?.DisplayName ?? c.SubmittedBy}", c.SiteId, c.CapabilityId, c.CardId)).ToList();
+        targets.AddRange(view.OwnInitiative.Select(t => new AwardTarget(t.SiteId + "." + t.CapabilityId,
+            t.Label + " · " + view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name, t.SiteId, t.CapabilityId, null)));
         targets.AddRange(view.MorningBoard().Tiles.Select(t => new AwardTarget(t.SiteId + "." + t.CapabilityId,
             $"{view.Scenario.Sites.Single(s => s.Id == t.SiteId).Name} {t.Label.ToLowerInvariant()}", t.SiteId, t.CapabilityId, null)));
-        return targets;
+        return targets.GroupBy(t => t.Id).Select(g => g.First()).ToList();
     }
 
     private static OptionButton AddPick(VBoxContainer panel, string label, IReadOnlyList<Pick> options, string? selected, Action<string> changed)
@@ -106,7 +109,7 @@ public partial class GameShell
     private void RefreshActionDesk(SessionView? view)
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
-        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null;
+        PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
         PriorityInputs.Clear(); AwardTrade = null; // DESK-26
         var formVersion = ++awardFormVersion;
         var formHash = session.StateHash;
@@ -130,6 +133,7 @@ public partial class GameShell
                 ?? targets.FirstOrDefault(t => t.Card is not null) ?? targets[0]).Id;
         void ChooseTarget(string id)
         {
+            if (formVersion != awardFormVersion || formHash != session.StateHash) return;
             awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
             awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
         }
@@ -142,6 +146,12 @@ public partial class GameShell
         if (target.Card is null)
             InitiativeTargetInput = AddPick(awardPanel, "What would you buy on your own initiative?",
                 ownTargets.Select(t => new Pick(t.Id, t.Label)).ToArray(), target.Id, ChooseTarget);
+        if (target.Card is null && view.OwnInitiative.FirstOrDefault(t => t.SiteId == target.Site && t.CapabilityId == target.Capability) is { } initiative)
+        {
+            InitiativeDetails = DeskUi.Label(initiative.Why + "\nWho sells it: " + string.Join(", ", initiative.Vendors.Select(view.NameOf)) + "."
+                + (initiative.Have ? "\nThe office has one running today." : ""));
+            awardPanel.AddChild(InitiativeDetails);
+        }
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
         var choices = ReconcileAwardChoices(view, target);

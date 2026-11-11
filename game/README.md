@@ -137,3 +137,7 @@ Before leaving, Your team opens the name and portrait choices. Apply remembers t
 ### COR reasons and the customer's ask (DESK-27)
 
 Written awards list CORs in `SessionView.CorChoices` order with each exact `Why` sentence below the picker and on its tooltip. None remains the default. Quantity, start and duration captions retain the customer's `ActionEditorView.Requested*` values while the player changes their purchase. Own-initiative buys carry no customer ask. Award pickers clip long selected captions so the scrollable form stays within the desk pane. `AwardContextSmokeTest` checks those bindings, stale controls, exact award/save replay and graphical containment.
+
+### The office vehicle (DESK-29)
+
+Buy on your own initiative starts with `SessionView.OwnInitiative` offers, followed by ordinary site needs. Each office offer shows its exact reason and seller names, and uses the existing award editor for its site/capability. The visits page binds `HasShopVehicle` beside the quoted visit hours; the Sim owns activation, expiry and every time saving. `ShopVehicleSmokeTest` checks a real tutorial purchase, the cheaper meeting, save/load, expiry and scenario clearing against independent Sim play.
