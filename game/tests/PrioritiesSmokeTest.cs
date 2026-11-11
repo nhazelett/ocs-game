@@ -137,6 +137,9 @@ public partial class PrioritiesSmokeTest : Node
                 Require(previewScroll.GetGlobalRect().Encloses(shell.AwardTrade.GetGlobalRect())
                     && previewScroll.GetGlobalRect().Encloses(shell.AwardTiming.GetGlobalRect()),
                     "The complete trade and shop-hours cost fit together above the preview fold.");
+                Require(previewScroll.GetGlobalRect().Encloses(shell.AwardCost.GetGlobalRect())
+                    && shell.AwardCost.GetGlobalRect().End.Y + 8 <= previewScroll.GetGlobalRect().End.Y,
+                    $"The complete quote, including its punctuation, clears the preview edge above the award button ({suffix}: quote {shell.AwardCost.GetGlobalRect()}, preview {previewScroll.GetGlobalRect()}).");
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[index + 1] + "-" + suffix + ".png") == Error.Ok, "Native pair screenshot saved.");

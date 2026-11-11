@@ -36,6 +36,7 @@ public partial class GameShell
     internal SpinBox StartInput => startInput;
     internal Button AwardButton => awardButton;
     internal Label AwardTiming => previewTiming;
+    internal Label AwardCost => previewCost;
 
     private void BuildActionDesk()
     {
@@ -52,11 +53,12 @@ public partial class GameShell
         track.ContentMarginLeft = track.ContentMarginRight = 7;
         scrollbar.AddThemeStyleboxOverride("scroll", track);
         formScroll.AddThemeConstantOverride("scrollbar_h_separation", 4);
-        var lower = new VBoxContainer { CustomMinimumSize = new Vector2(0, 180) }; split.AddChild(lower);
+        var lower = new VBoxContainer { CustomMinimumSize = new Vector2(0, 240) }; split.AddChild(lower);
         var holder = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; lower.AddChild(holder);
         previewPanel = DeskUi.Panel(holder, "Preview");
         awardFooter = new VBoxContainer(); lower.AddChild(awardFooter);
-        split.SplitOffsets = [310];
+        // Leave room for the complete trade, timing and quote above the award button.
+        split.SplitOffsets = [254];
     }
     private void ResetAwardForm()
     {
@@ -199,6 +201,7 @@ public partial class GameShell
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
+        previewPanel.AddChild(new Control { CustomMinimumSize = new Vector2(0, 8), MouseFilter = MouseFilterEnum.Ignore });
         if (session.IsReplay) awardFooter.AddChild(DeskUi.Label("Awarding takes control and stops future replay actions."));
         UpdateAwardPreview();
     }
