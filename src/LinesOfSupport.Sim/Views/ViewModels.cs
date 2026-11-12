@@ -72,6 +72,36 @@ public sealed record TeamMemberView(
     string Id, string Role, string Name, string? Rank, string? Portrait, string RoleLabel, string Pace,
     double HoursPerDay, double HoursSpokenForToday, double FreeHoursToday, double HoursQueued, IReadOnlyList<TeamWorkView> Work);
 
+/// <summary>
+/// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
+/// tab shows these under the lead, needing attention first.
+/// </summary>
+/// <param name="CardId">For opening the request. Never shown.</param>
+/// <param name="Title">"Water for Hub".</param>
+/// <param name="From">The person who asked; null for a request from no one in the cast.</param>
+/// <param name="State">One of the constants below.</param>
+/// <param name="TeammateId">The team member on it (writing it, asking about it, or making its SF 44 trips), for their face; null when nobody is.</param>
+/// <param name="Teammate">That team member as the player reads them ("you", "MSgt Joan Avery"); null when nobody is.</param>
+/// <param name="Sentence">Where it stands, in one or two sentences: the vendor, the days, who is doing what.</param>
+public sealed record RequestStanding(
+    string CardId, string Title, PersonView? From, string State, string? TeammateId, string? Teammate, string Sentence)
+{
+    /// <summary>Nothing arranged and nothing in work.</summary>
+    public const string Nothing = "nothing";
+    /// <summary>Someone on the team is asking a person about the request; nothing bought yet.</summary>
+    public const string Asking = "asking";
+    /// <summary>A contract, order or request for this support is being written or worked.</summary>
+    public const string Buying = "buying";
+    /// <summary>Support is in place and starts on a later day.</summary>
+    public const string Arranged = "arranged";
+    /// <summary>Support is delivering and the capability was at full yesterday.</summary>
+    public const string Running = "running";
+    /// <summary>Support is running, but on hold or the capability was below full yesterday.</summary>
+    public const string Short = "short";
+    /// <summary>The request's days are over and the support that covered it has ended.</summary>
+    public const string Ended = "ended";
+}
+
 /// <summary>A piece of unfinished work held by one team member (DESK-02).</summary>
 /// <param name="WorkId">For AssignAction.Work. Never shown.</param>
 /// <param name="Label">Plain name of the work.</param>

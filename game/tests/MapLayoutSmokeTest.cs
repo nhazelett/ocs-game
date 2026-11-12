@@ -47,14 +47,14 @@ public partial class MapLayoutSmokeTest : Node
                 map.ShowCapabilities(Enumerable.Range(0, count).Select(i => original[i % original.Count] with { CapabilityId = "layout-" + i }).ToArray()); Check("hubSite");
             }
             map.ShowCapabilities(original); Require(shell.Session.StateHash == hash, "Layout inspection changes no simulation state.");
-            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             shell.PeopleToggle.ButtonPressed = true; Pick(shell.PersonContactInput, "finance");
-            var visitPanel = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Board/MorningBoard");
+            var visitPanel = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Today/TodayPane/Body/Body");
             string VisitText() => Labels(visitPanel).Single(l => l.Text.StartsWith("This takes ")).Text;
             Require(shell.VisitOptions["finance"].Preview.QueueAheadHours == 0 && !VisitText().Contains("queue"), "An empty visit queue adds no clause.");
             var visitHash = shell.Session.StateHash;
             Require(VisitText().Contains("earliest result is day ") && visitHash == shell.Session.StateHash, "Visit preview still shows the real timing without spending time.");
-            await Screenshot("--visit-screenshot", shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/MorningBoard"), Labels(visitPanel).Single(l => l.Text.StartsWith("This takes ")));
+            await Screenshot("--visit-screenshot", shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body"), Labels(visitPanel).Single(l => l.Text.StartsWith("This takes ")));
             shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
             var hours = shell.VisitOptions["finance"].Preview.QueueAheadHours;
             Require(hours > 0 && VisitText().Contains($", not counting the {hours} hours already queued."), "A queued visit states the exact pending hours.");

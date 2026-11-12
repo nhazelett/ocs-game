@@ -180,6 +180,10 @@ public sealed class SessionView
     /// is open. Read only.</summary>
     public IReadOnlyList<string> EndOfDayCheck() => _s.BuildEndOfDayCheck();
 
+    /// <summary>Where things stand (DESK-31, D16): one entry per request on the desk, needing attention first (late with
+    /// nothing arranged, running short, nothing yet), then in hand (asking, buying, arranged, running), then done. Read only.</summary>
+    public IReadOnlyList<RequestStanding> WhereThingsStand() => _s.BuildWhereThingsStand();
+
     /// <summary>One card per vendor the office could buy from (DESK-05, D6): what they sell, cash or card, which islands they
     /// reach, what the office holds with them. What has not been learned is null (blank on the card). Read only.</summary>
     public IReadOnlyList<VendorCard> VendorCards() => _s.BuildVendorCards();

@@ -13,7 +13,7 @@ public partial class ContractSmokeTest : Node
         try
         {
             var shell = Shell(this);
-            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = 5;
+            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.PaymentsTab;
             shell.DeveloperToggle.ButtonPressed = false;
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string suffix)
@@ -24,7 +24,7 @@ public partial class ContractSmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Screenshot saved.");
             }
-            var ledger = tabs.GetNode("Ledger/LedgerContext/Contents");
+            var ledger = tabs.GetNode("Payments/LedgerContext/Contents");
             Require(shell.TerminateButtons.Count == 0 && !ledger.GetChildren().OfType<Button>().Any(b => b.Text.StartsWith("Terminate") || b.Text.StartsWith("End this")),
                 "The payment list has no termination controls.");
             var hash = shell.Session.StateHash;
@@ -43,7 +43,7 @@ public partial class ContractSmokeTest : Node
                     "Contract navigation does not run underneath Menu or Developer tools.");
             }
             shell.CloseContractView(); shell.DeveloperToggle.ButtonPressed = true; Replay(shell); Step(shell, 8);
-            shell.DeveloperToggle.ButtonPressed = false; tabs.CurrentTab = 5;
+            shell.DeveloperToggle.ButtonPressed = false; tabs.CurrentTab = GameShell.PaymentsTab;
             var own = shell.Session.View!.Arrangements.First(a => !a.IsCoordination && a.Status == ArrangementStatus.Active && shell.Session.View.TerminateBlocked(a.Id) is null);
             await Capture("ledger");
             var row = ledger.GetChildren().OfType<Button>().Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == own.Id);

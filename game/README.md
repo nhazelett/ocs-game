@@ -17,7 +17,7 @@ Replace `godot` with your Godot .NET executable path if it is not on PATH. Open 
 
 ## Expected build
 
-A default-theme desktop shell: the real Sim's next day, shop queue/capacity and cash gauges, a left schematic board in a SubViewport, and a right desk with nine tabs. Inbox shows the morning board; Requirements edits submitted scope cards; later desk work follows its backlog items. Use the tab-bar arrows to reach later tabs, or keyboard focus. The board/desk split can be dragged.
+The themed desk has five live tabs: Today, Requests, Vendors, Payments and Inbox. All five fit at 1280 by 800 without tab arrows. Go to market opens inside Requests, with Back to requests returning to the current request; Buy on your own initiative is also reachable from Requests. Only one request or market scroll pane is visible at a time, and the market action and its reason stay fixed below it. Debrief appears after the final day and opens the full-width after-action. Starting or loading a new deployment hides it again. The board/desk split can be dragged.
 
 The Scenario picker lists folders under `scenarios/` containing `scenario.json`, preferring `_stub` initially. Choose **spoke-b** or **spoke-b-90** to see pre-deployment preparations in Board. Each choice shows its prep-day cost, with/without effects and whether the effect is modeled. The live budget check comes from `PrepScreen.Check`; over-budget picks disable **Deploy**. Deploy creates a seed-1 Session with exactly the selected choices, including an empty selection. No day can advance before deployment. The board reads existing islands, transport links and site IDs/names/opensDay. It draws shapes, mode-labeled lines and site markers. Parallel links are separated so both labels are readable. No textures or art assets are present.
 
@@ -27,11 +27,13 @@ Island positions are a deterministic screen layout based on authored array order
 
 The Sim's Day is the day **about to be played**. After playing day 10 the strip says **Day 11 (next)**, while Inbox and the status line say **day 10 results**. At the end it says **Day 30 complete** (or 90). Inbox renders `MorningBoard().Items` with the Sim's category/severity and text, alerts first. It treats text as literal text, never markup. Site colors use the lowest capability tile's Sim-provided status: green/full, amber/degraded, red/down, grey/not open or unknown. Labels also name the condition, so color is not the only signal.
 
-Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Replay can start directly from prep and uses the log's seed/prep. Sim validates the scenario/rules identity; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to fresh, unchecked prep choices. The interactive mode offers Inbox decisions; award editing is available in Actions; automatic policy play is not present. All gameplay rules remain in Sim (ADR-0005).
+Choose an **Approach**, click **Replay**, then use **Next day** to step its authored input log. Replay can start directly from prep and uses the log's seed/prep. Sim validates the scenario/rules identity; each step submits that day's actions in recorded order through `Apply`, then calls `AdvanceDay`. Switching scenario clears the replay and returns to fresh, unchecked prep choices. The interactive mode offers Inbox decisions; award editing opens inside Requests; automatic policy play is not present. All gameplay rules remain in Sim (ADR-0005).
 
 ## Morning board (M2-01)
 
-The Board tab shows the Sim's morning items in alert-first order and its capability tiles. Linked items open their requirement, select their capability/site on the map, or select the matching arrangement in Ledger. The initial requirement/ledger destinations show real read-only context; their full editor/panel work follows in M2-03/M2-05. Items without a Sim link remain plain information. Event/island links focus their existing board text; cash/work links focus their ledger context.
+Today shows **Where things stand** directly below the lead: one compact row per request, the asker's face and name, and `SessionView.WhereThingsStand()`'s exact sentence, in its attention-first order. Opening a row takes you to that request at its top and closes any old market pane. Rows share Today's main scroll and refresh after actions, day changes and loading a deployment; no status or assignment logic is reproduced in Game. `LeadSmokeTest` includes the standings checks for every tutorial morning, exact faces and sentences, pure navigation, obsolete controls and scenario resets. Add `-- --standing-screenshots <absolute-prefix>` in a graphical run for tutorial days 1, 4 and 9.
+
+The Today tab shows the Sim's morning items in alert-first order and its capability tiles. Linked items open their requirement, select their capability/site on the map, or select the matching arrangement in Ledger. The initial requirement/ledger destinations show real read-only context; their full editor/panel work follows in M2-03/M2-05. Items without a Sim link remain plain information. Event/island links focus their existing board text; cash/work links focus their ledger context.
 
 **Continue** now advances to the next Sim-projected lead or scenario completion (M2R-13), replacing the earlier seven-day/alert limit. It uses the same day/replay path as Next day. Its tooltip states this behavior; it does not auto-decide requests. `MorningSmokeTest.tscn` verifies the stopping rule, a seven-day quiet fixture and the three primary link destinations. A day-11 screenshot is in the M2-01 handoff.
 
@@ -45,7 +47,7 @@ godot --headless --path game res://tests/BoardSmokeTest.tscn
 godot --headless --path game res://tests/SessionSmokeTest.tscn
 ```
 
-Expected final line: `SHELL_SMOKE_PASS: nine tabs, board viewport, real gauges and day advance.` The scene instantiates the real main scene, visits all tabs, and emits the real Next day button signal. CI runs this from a clean GitHub checkout with Godot 4.6.1 .NET and .NET 8.
+Expected final line begins `SHELL_SMOKE_PASS: five fitting tabs`. The scene instantiates the real main scene, checks each tab title and geometry, exercises request, market and own-initiative navigation without changing Sim state, advances the real game, and checks that Debrief appears only after completion. Run without `--headless` and append `-- --screenshots <absolute-prefix>` for Today, request, market and completed-deployment PNGs. CI runs this from a clean GitHub checkout with Godot 4.6.1 .NET and .NET 8.
 
 The board scene prints `BOARD_SMOKE_PASS` after checking folder discovery, authored labels and modes, picker switching, invalid JSON/reference handling and missing directories. Its test data is temporary and does not edit the authoritative scenarios.
 
@@ -81,15 +83,15 @@ A successful player action during a replay takes control of the existing session
 
 ## Requirements (M2-03)
 
-The Requirements tab binds RequirementEditor(card) without scope checkboxes. Only Known lines appear. WhoToAsk offers typed AskAboutAction visits with the Sim preview; Pending and Asked prevent repeats. A completed visit shows Learned and LearnedFrom verbatim, and CanAdd offers AddLineAction. Unknown parts stay hidden; the dependency checklist, J4 shortcut, peak demand and Go to market remain. HeardAt is the exact staff-meeting source sentence. RequirementSmokeTest compares visits and additions with independent Sim hashes, checks duplicate/finished guards, save/resume and replay takeover, and captures the tutorial before and after asking Dunn. SetLineAction remains a Sim/log compatibility API and is not exposed in the requirement UI.
+The Requests tab binds RequirementEditor(card) without scope checkboxes. Only Known lines appear. WhoToAsk offers typed AskAboutAction visits with the Sim preview; Pending and Asked prevent repeats. A completed visit shows Learned and LearnedFrom verbatim, and CanAdd offers AddLineAction. Unknown parts stay hidden; the dependency checklist, J4 shortcut, peak demand and Go to market remain. HeardAt is the exact staff-meeting source sentence. RequirementSmokeTest compares visits and additions with independent Sim hashes, checks duplicate/finished guards, save/resume and replay takeover, and captures the tutorial before and after asking Dunn. SetLineAction remains a Sim/log compatibility API and is not exposed in the requirement UI.
 
-## Actions (M2-04)
+## Market inside Requests (M2-04, DESK-34)
 
 Choose a submitted requirement or a site/capability, then instrument, vendor, known vehicle and funding line from ActionEditor. Unavailable instruments are disabled with their actual reason. Quantity, requested start and duration are numeric pickers; quotes, mobilization and totals are display-only. UCA NTE uses the engine default, never Game arithmetic.
 
 Written contracts ask for two priorities: Fast, Cheap and Good. No pair is chosen for the player. The third toggle is disabled once two are selected; turn one off to change the pair. The preview shows `ActionPreview.Trade` verbatim, with the engine's price and timing. Every written `AwardAction` carries the pair; cash/card buys carry none. New targets, deployments and completed awards clear the pick. Priority controls and submission reject obsolete forms and changed state. `PrioritiesSmokeTest` checks all three trades, forced third/one/zero picks, amount changes, BPA/UCA bindings, stale/duplicate signals, save/resume, replay takeover and finished games against independent Sim results.
 
-Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview scroll independently, and Award stays in the footer. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
+Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview share one scroll, and Arrange support and its disabled reason stay fixed beneath it. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
 
 ## Other desk actions (M2-06)
 
@@ -141,3 +143,9 @@ Written awards list CORs in `SessionView.CorChoices` order with each exact `Why`
 ### The office vehicle (DESK-29)
 
 Buy on your own initiative starts with `SessionView.OwnInitiative` offers, followed by ordinary site needs. Each office offer shows its exact reason and seller names, and uses the existing award editor for its site/capability. The visits page binds `HasShopVehicle` beside the quoted visit hours; the Sim owns activation, expiry and every time saving. `ShopVehicleSmokeTest` checks a real tutorial purchase, the cheaper meeting, save/load, expiry and scenario clearing against independent Sim play.
+
+## Single-scroll desk panes (DESK-33)
+
+The award inputs and quote move together in one scroll. The primary actions for awards, vendor setup, requests, visits, coordination and contract details stay in fixed footers. A disabled desk action has its reason immediately below it: the next missing choice, the first exact Sim hard stop, or its current state. Ready actions clear the old reason. The debrief capability timeline wraps into its main scroll instead of opening another scroll area.
+
+`AwardContextSmokeTest` also runs `PaneSmokeChecks`: missing choices, exact refusal text, read-only previews, forced-submit guards, one visible scroll per pane, and primary-action containment while scrolling. Its `--screenshots <prefix>` option adds greyed, ready and refused award captures at the real window size.

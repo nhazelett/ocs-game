@@ -34,7 +34,7 @@ public partial class DebriefSmokeTest : Node
             void GoToMarket(string card)
             {
                 OpenCard(card);
-                Buttons(shell.GetNode<TabContainer>("%DeskTabs").GetNode("Requirements/RequirementContext/Contents")).Single(b => b.HasMeta("market_card")).EmitSignal(Button.SignalName.Pressed);
+                shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
             }
             void SetLine(string card, string line)
             {
@@ -95,7 +95,7 @@ public partial class DebriefSmokeTest : Node
             var tabs = shell.GetNode<TabContainer>("%DeskTabs"); Buttons(shell.DebriefPanel).Single(b => b.Text == "Back to the map").EmitSignal(Button.SignalName.Pressed); await Frames();
             Require(shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").Visible && tabs.TabsVisible
                 && shell.GetNode<Control>("Margin/Layout/TopStrip").Visible, "Returning to the map restores the desk and top strip.");
-            tabs.CurrentTab = 8; await Frames();
+            tabs.CurrentTab = GameShell.DebriefTab; await Frames();
             Require(!shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").Visible && !tabs.TabsVisible, "Reopening Debrief uses the whole work area again.");
             Scenario(shell, "_stub");
             Require(shell.DisplayedDebrief is null && shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").Visible && tabs.TabsVisible, "Changing deployment clears the debrief and restores normal layout.");
@@ -132,7 +132,7 @@ public partial class DebriefSmokeTest : Node
         var report = shell.Session.View!.Debrief(); var hash = shell.Session.StateHash;
         Require(shell.DisplayedDebrief!.Scorecard == report.Scorecard && shell.DebriefSummaryText.Text == report.Summary!.Text, "Summary and scores bind exactly to Sim.");
         Require(shell.DebriefSpeaker.Text == (report.Summary!.From?.WithUnit ?? "After the deployment"), "Rank, name and unit come from the summary's person.");
-        Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 8 && !shell.DebriefFullRecord.Visible, "Final day opens the after-action with the full record closed.");
+        Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.DebriefTab && !shell.DebriefFullRecord.Visible, "Final day opens the after-action with the full record closed.");
         if (report.Summary!.LeadGap is { } lead)
             Require(shell.DebriefPanel.GetChildren().OfType<VBoxContainer>().Single(v => v.HasMeta("gap_detail") && v.GetMeta("gap_detail").AsInt32() == lead).Visible, "The Sim's lead gap evidence is already open.");
         foreach (var gap in report.Gaps)

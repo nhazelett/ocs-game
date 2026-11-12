@@ -36,7 +36,7 @@ Day 3
 Day 4
   ACTION    The request for material handling equipment for Hub: Operators switched on.
   ACTION    Undefinitized contract action started with Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Operators, Maintenance); quoted $8,580. Approval request routed through the SCO; answer expected in 1 day.
-  ! gpc t-tutForklift-bridge: Rejected: Coastal Rentals can supply 4 forklifts/day in total and 3 is already committed
+  ! gpc t-tutForklift-bridge: Rejected: Coastal Rentals has 1 forklift left on those days, after 3 already committed. Ask for 1 or less, or buy the rest from someone else.
   EVENT     Harbor Equipment Co is short of forklifts this week
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 5
@@ -55,7 +55,7 @@ Day 8
   START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
 Day 9
   ACTION    Undefinitized contract action started with Main Island Sanitation: Waste removal at Hub, 3960 gal/day for 8 days (Removal and disposal); quoted $1,267. Approval request routed through the SCO; answer expected in 1 day.
-  ! sf44 t-tutWaste-bridge: Rejected: Main Island Sanitation can supply 6000 gal/day in total and 3960 is already committed
+  ! sf44 t-tutWaste-bridge: Rejected: Main Island Sanitation has 2040 gal left on those days, after 3960 already committed. Ask for 2040 or less, or buy the rest from someone else.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
   START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
   END       Island Mart water at Hub ended.
@@ -137,4 +137,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.962)
 
-State hash ab5067a86aa1b751e82d158f04320e00c461f7bfe4f36fe9f8cbb6bbc648574c
+State hash 4641b4937234d296246ad420b32c364bb030a655a19c75d10cfa5fdea6e79ea5

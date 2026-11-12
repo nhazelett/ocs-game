@@ -93,7 +93,7 @@ public partial class LookSmokeTest : Node
                     tabs.CurrentTab = i;
                     Require(tabs.GetCurrentTabControl().GetThemeDefaultFont() == shell.GetThemeDefaultFont(), "All desks inherit the selected font.");
                 }
-                tabs.CurrentTab = 0; map.FitMap();
+                tabs.CurrentTab = GameShell.TodayTab; map.FitMap();
                 await Capture("morning-" + direction);
                 map.ZoomAt(new Vector2(220, 180), 1.2f); map.PanBy(new Vector2(30, -12));
                 pan = map.Tabletop!.Pan; zoom = map.Tabletop.CameraSize;

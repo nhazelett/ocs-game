@@ -10,7 +10,9 @@ public partial class GameShell
     private sealed record BpaOffer(string Capability, string Label, VendorOption Vendor);
     internal OptionButton VendorCardPicker { get; private set; } = null!;
     internal VBoxContainer VendorCardsBox { get; private set; } = null!;
-    private VBoxContainer bpaForm = null!;
+    private VBoxContainer bpaForm = null!, vendorSetupFooter = null!;
+    private Control vendorSetupPane = null!;
+    private Label establishReason = null!;
     private ScrollContainer vendorCardsScroll = null!, vendorSetupScroll = null!;
     private Label bpaPreviewText = null!;
     private string? bpaVendor, bpaCapability, idiqFunding, setupHash, selectedVendor;
@@ -43,14 +45,13 @@ public partial class GameShell
     private void BuildBpaDesk()
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        var page = tabs.GetNode<Control>("Directory");
+        var page = tabs.GetNode<Control>("Vendors");
         tabs.SetTabTitle(page.GetIndex(), "Vendors");
-        // Keep stable internal tab indices for navigation; this obsolete surface is unreachable.
-        tabs.SetTabHidden(tabs.GetNode<Control>("Vehicles").GetIndex(), true);
         VendorCardsBox = DeskUi.Panel(page, "VendorCards");
         vendorCardsScroll = (ScrollContainer)VendorCardsBox.GetParent();
-        bpaForm = DeskUi.Panel(page, "VendorSetup");
-        vendorSetupScroll = (ScrollContainer)bpaForm.GetParent(); vendorSetupScroll.Hide();
+        bpaForm = DeskUi.Pane(page, "VendorSetup", out vendorSetupFooter);
+        vendorSetupScroll = (ScrollContainer)bpaForm.GetParent();
+        vendorSetupPane = vendorSetupFooter.GetParent<Control>(); vendorSetupPane.Hide();
         vendorSetupScroll.FollowFocus = true;
     }
 
@@ -61,7 +62,7 @@ public partial class GameShell
 
     private void CloseVendorSetup()
     {
-        vendorSetupVersion++; vendorSetupScroll.Hide(); vendorCardsScroll.Show();
+        vendorSetupVersion++; vendorSetupPane.Hide(); vendorCardsScroll.Show();
         PendingEstablish = null; PendingIdiq = null; EstablishPreview = null; setupHash = null;
     }
 
@@ -78,7 +79,7 @@ public partial class GameShell
             || !view.VendorCards().Any(c => c.Id == vendor)) return;
         bpaVendor = vendor; bpaCapability = null; bpaScope.Clear(); bpaCallLimit = idiqGuarantee = null;
         idiqFunding = null; idiqCeiling = 0; idiqPeriod = null; settingIdiq = idiq;
-        vendorCardsScroll.Hide(); vendorSetupScroll.Show(); vendorSetupScroll.ScrollVertical = 0;
+        vendorCardsScroll.Hide(); vendorSetupPane.Show(); vendorSetupScroll.ScrollVertical = 0;
         RefreshBpaForm(view, DirectoryOffers(view)); VendorSetupBack.GrabFocus();
     }
 
@@ -148,7 +149,9 @@ public partial class GameShell
                 var meet = DeskUi.Button(card.MeetingSetUp ? "Meeting in work" : card.MetDay is { } met ? $"Met on day {met}" : "Meet " + rep.DisplayName,
                     () => MeetFromVendorCard(card.Id, observedHash));
                 meet.Disabled = view.Finished || card.MetDay is not null || card.MeetingSetUp || !visit.Accepted;
-                details.AddChild(meet); VendorMeetButtons[card.Id] = meet;
+                var meetReason = DeskUi.ActionReason(details, meet);
+                DeskUi.Gate(meet, meetReason, view.Finished ? DeskUi.FinishedReason : card.MeetingSetUp ? "The meeting is already in work."
+                    : card.MetDay is not null ? "You have already met this vendor." : visit.HardStops.FirstOrDefault()); VendorMeetButtons[card.Id] = meet;
                 if (card.MetDay is null && !card.MeetingSetUp)
                     details.AddChild(DeskUi.Label(visit.Accepted ? $"About {VendorRange(visit.ShopHoursMin, visit.ShopHoursMax)} shop hours; back day {VendorRange(visit.EarliestStartMin, visit.EarliestStartMax)}{DeskUi.QueueClause(visit.QueueAheadHours)}." : string.Join("\n", visit.HardStops)));
             }
@@ -156,10 +159,12 @@ public partial class GameShell
             {
                 var bpa = DeskUi.Button("Set up a BPA", () => OpenVendorSetup(card.Id, false)); bpa.Disabled = view.Finished;
                 var idiq = DeskUi.Button("Set up an IDIQ", () => OpenVendorSetup(card.Id, true)); idiq.Disabled = view.Finished;
-                box.AddChild(bpa); box.AddChild(idiq); EstablishVendorButtons[card.Id] = bpa; IdiqVendorButtons[card.Id] = idiq;
+                var bpaReason = DeskUi.ActionReason(box, bpa); var idiqReason = DeskUi.ActionReason(box, idiq);
+                DeskUi.Gate(bpa, bpaReason, view.Finished ? DeskUi.FinishedReason : null);
+                DeskUi.Gate(idiq, idiqReason, view.Finished ? DeskUi.FinishedReason : null); EstablishVendorButtons[card.Id] = bpa; IdiqVendorButtons[card.Id] = idiq;
             }
         }
-        if (vendorSetupScroll.Visible) RefreshBpaForm(view, offers);
+        if (vendorSetupPane.Visible) RefreshBpaForm(view, offers);
     }
 
     private static string VendorRange(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
@@ -169,7 +174,7 @@ public partial class GameShell
     private void RefreshBpaForm(SessionView view, IReadOnlyList<BpaOffer> offers)
     {
         var version = ++vendorSetupVersion;
-        DeskUi.Clear(bpaForm); BpaScopeInputs.Clear(); PendingEstablish = null; PendingIdiq = null; EstablishPreview = null;
+        DeskUi.Clear(bpaForm); DeskUi.Clear(vendorSetupFooter); BpaScopeInputs.Clear(); PendingEstablish = null; PendingIdiq = null; EstablishPreview = null;
         var available = offers.Where(o => o.Vendor.Id == bpaVendor).ToArray();
         VendorSetupBack = DeskUi.Button("Back to vendors", CloseVendorSetup); bpaForm.AddChild(VendorSetupBack);
         if (available.Length == 0) { CloseVendorSetup(); return; }
@@ -216,7 +221,7 @@ public partial class GameShell
         }
         if (session.IsReplay) bpaForm.AddChild(DeskUi.Label("Setting this up takes control and stops future replay actions."));
         bpaPreviewText = DeskUi.Label(); bpaForm.AddChild(bpaPreviewText);
-        EstablishButton = DeskUi.Button(settingIdiq ? "Establish IDIQ" : "Establish BPA", () => SubmitVendorSetup(version)); bpaForm.AddChild(EstablishButton);
+        EstablishButton = DeskUi.Button(settingIdiq ? "Establish IDIQ" : "Establish BPA", () => SubmitVendorSetup(version)); establishReason = DeskUi.ActionReason(vendorSetupFooter, EstablishButton);
         UpdateEstablishPreview();
     }
 
@@ -229,7 +234,7 @@ public partial class GameShell
 
     private void UpdateEstablishPreview()
     {
-        if (session.View is not { } view || bpaVendor is null || bpaCapability is null || !vendorSetupScroll.Visible) return;
+        if (session.View is not { } view || bpaVendor is null || bpaCapability is null || !vendorSetupPane.Visible) return;
         var prefix = settingIdiq ? "player-idiq-" : "player-bpa-";
         bool InUse(string id) => view.Vehicles.Any(v => v.Id == id) || view.Work.Any(w => w.Payload is EstablishBpaAction b && b.Id == id || w.Payload is EstablishIdiqAction i && i.Id == id);
         while (InUse(prefix + bpaSequence)) bpaSequence++;
@@ -252,12 +257,12 @@ public partial class GameShell
             + (EstablishPreview.HardStops.Count == 0 ? "\nNo hard stops." : "\n" + string.Join("\n", EstablishPreview.HardStops))
             + (EstablishPreview.SoftGaps.Count == 0 ? "" : "\n" + string.Join("\n", EstablishPreview.SoftGaps));
         bpaPreviewText.AddThemeColorOverride("font_color", EstablishPreview.Accepted ? TabletopTheme.Ink : TabletopTheme.Alert);
-        EstablishButton.Disabled = !EstablishPreview.Accepted || view.Finished;
+        DeskUi.Gate(EstablishButton, establishReason, view.Finished ? DeskUi.FinishedReason : EstablishPreview.HardStops.FirstOrDefault());
     }
 
     private void SubmitVendorSetup(int version)
     {
-        if (version != vendorSetupVersion || !vendorSetupScroll.Visible || AtFrontDoor || PlayingDay || ReadingTurnover || session.View is not { Finished: false }
+        if (version != vendorSetupVersion || !vendorSetupPane.Visible || AtFrontDoor || PlayingDay || ReadingTurnover || session.View is not { Finished: false }
             || setupHash != session.StateHash || EstablishPreview?.Accepted != true) return;
         PlayerAction? action = settingIdiq ? PendingIdiq : PendingEstablish;
         if (action is null) return;

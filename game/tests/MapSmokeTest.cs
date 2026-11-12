@@ -15,7 +15,7 @@ public partial class MapSmokeTest : Node
             shell.AutosavePathOverride = Path.Combine(Path.GetTempPath(), "ocs-map-" + Guid.NewGuid().ToString("N") + ".json");
             AddChild(shell); shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
             shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell);
-            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             var map = shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

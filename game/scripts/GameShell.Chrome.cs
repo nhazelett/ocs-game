@@ -4,6 +4,24 @@ namespace LinesOfSupport.Game;
 
 public partial class GameShell
 {
+    internal const int TodayTab = 0, RequestsTab = 1, VendorsTab = 2, PaymentsTab = 3, InboxTab = 4, DebriefTab = 5;
+    internal bool MarketOpen => GetNode<Control>("%DeskTabs/Requests/Market").Visible;
+
+    internal void ShowMarket()
+    {
+        GetNode<Control>("%DeskTabs/Requests/RequirementPane").Hide();
+        GetNode<Control>("%DeskTabs/Requests/Market").Show();
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = RequestsTab;
+    }
+
+    internal void ShowRequests()
+    {
+        GetNode<Control>("%DeskTabs/Requests/Market").Hide();
+        GetNode<Control>("%DeskTabs/Requests/RequirementPane").Show();
+        RenderRequirementContext(session.View);
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = RequestsTab;
+    }
+
     private void BuildReadableChrome()
     {
         using var theme = TabletopTheme.Create();

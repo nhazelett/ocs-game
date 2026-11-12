@@ -170,30 +170,32 @@ autowrap_mode = 2
 
 [node name="DeskTabs" type="TabContainer" parent="Margin/Layout/WorkArea"]
 unique_name_in_owner = true
+clip_tabs = false
 custom_minimum_size = Vector2(440, 300)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Board" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Today" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 layout_mode = 2
 
-[node name="Requirements" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Requests" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="Actions" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Market" type="Control" parent="Margin/Layout/WorkArea/DeskTabs/Requests"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Vendors" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="Directory" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
-visible = false
-layout_mode = 2
-
-[node name="Vehicles" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
-visible = false
-layout_mode = 2
-
-[node name="Ledger" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Payments" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 visible = false
 layout_mode = 2
 
@@ -228,10 +230,6 @@ fit_content = true
 scroll_active = false
 bbcode_enabled = false
 selection_enabled = true
-
-[node name="Reports" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
-visible = false
-layout_mode = 2
 
 [node name="Debrief" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
 visible = false

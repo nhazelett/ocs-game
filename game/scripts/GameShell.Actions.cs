@@ -36,30 +36,33 @@ public partial class GameShell
     internal SpinBox DurationInput => durationInput;
     internal SpinBox StartInput => startInput;
     internal Button AwardButton => awardButton;
+    internal Button AwardBackButton { get; private set; } = null!;
     internal Label AwardTiming => previewTiming;
     internal Label AwardCost => previewCost;
+    internal Label AwardBlockedReason { get; private set; } = null!;
+    internal ScrollContainer AwardScroll => (ScrollContainer)awardPanel.GetParent().GetParent();
+
+    private void GateAward(SessionView? view)
+    {
+        string? reason = view is null ? "Start a deployment to arrange support."
+            : view.Finished ? DeskUi.FinishedReason
+            : CurrentActionEditor is null ? "Choose a request or something to buy on your own initiative."
+            : string.IsNullOrEmpty(awardVendor) ? "Choose an available supplier."
+            : string.IsNullOrEmpty(awardInstrument) ? "Choose an available arrangement."
+            : awardInstrument is "bpaCall" or "idiqOrder" && string.IsNullOrEmpty(awardVehicle) ? "Choose an available vehicle."
+            : awardInstrument is not ("sf44" or "gpc") && string.IsNullOrEmpty(awardFunding) ? "Choose an available funding line."
+            : AwardPreview?.HardStops.FirstOrDefault();
+        reason ??= AwardPreview is null ? "Complete the terms to see the quote." : null;
+        DeskUi.Gate(awardButton, AwardBlockedReason, reason);
+    }
 
     private void BuildActionDesk()
     {
-        var split = new VSplitContainer { Name = "AwardEditor" };
-        GetNode<TabContainer>("%DeskTabs").GetNode<Control>("Actions").AddChild(split);
-        split.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        var form = new Control { CustomMinimumSize = new Vector2(0, 150) }; split.AddChild(form);
-        awardPanel = DeskUi.Panel(form, "Inputs");
-        var formScroll = (ScrollContainer)awardPanel.GetParent();
-        formScroll.FollowFocus = true;
-        // ScrollContainer reserves the scrollbar's themed minimum width.
-        var scrollbar = formScroll.GetVScrollBar();
-        using var track = (StyleBoxFlat)scrollbar.GetThemeStylebox("scroll").Duplicate();
-        track.ContentMarginLeft = track.ContentMarginRight = 7;
-        scrollbar.AddThemeStyleboxOverride("scroll", track);
-        formScroll.AddThemeConstantOverride("scrollbar_h_separation", 4);
-        var lower = new VBoxContainer { CustomMinimumSize = new Vector2(0, 240) }; split.AddChild(lower);
-        var holder = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; lower.AddChild(holder);
-        previewPanel = DeskUi.Panel(holder, "Preview");
-        awardFooter = new VBoxContainer(); lower.AddChild(awardFooter);
-        // Leave room for the complete trade, timing and quote above the award button.
-        split.SplitOffsets = [254];
+        var body = DeskUi.Pane(GetNode<TabContainer>("%DeskTabs").GetNode<Control>("Requests/Market"), "AwardEditor", out awardFooter);
+        awardPanel = new VBoxContainer { Name = "Inputs" }; body.AddChild(awardPanel);
+        awardPanel.AddThemeConstantOverride("separation", 10);
+        previewPanel = new VBoxContainer { Name = "Quote" }; body.AddChild(previewPanel);
+        previewPanel.AddThemeConstantOverride("separation", 10);
     }
     private void ResetAwardForm()
     {
@@ -123,7 +126,9 @@ public partial class GameShell
                 SendAction(action);
             }
         });
-        awardButton.Disabled = true; awardFooter.AddChild(awardButton);
+        var back = AwardBackButton = DeskUi.Button("Back to requests", ShowRequests);
+        awardFooter.AddChild(back);
+        AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         SupplierKnowledge = null;
         var targets = AwardTargets(view);
@@ -134,6 +139,7 @@ public partial class GameShell
         void ChooseTarget(string id)
         {
             if (formVersion != awardFormVersion || formHash != session.StateHash) return;
+            SelectedCard = targets.Single(t => t.Id == id).Card;
             awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
             awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
         }
@@ -181,7 +187,7 @@ public partial class GameShell
             id => awardFunding = id, out var fundingReason);
         FundingChoiceReason = fundingReason;
         fundingInput.Disabled = immediate;
-        BuildAwardPriorities(view); // DESK-26
+        BuildAwardPriorities(view); GateAward(view); // DESK-26
         if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
         {
             previewPanel.AddChild(DeskUi.Label("Choose an available supplier and arrangement, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
@@ -226,7 +232,7 @@ public partial class GameShell
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
         previewPanel.AddChild(new Control { CustomMinimumSize = new Vector2(0, 8), MouseFilter = MouseFilterEnum.Ignore });
-        if (session.IsReplay) awardFooter.AddChild(DeskUi.Label("Awarding takes control and stops future replay actions."));
+        if (session.IsReplay) previewPanel.AddChild(DeskUi.Label("Awarding takes control and stops future replay actions."));
         UpdateAwardPreview();
     }
 
@@ -234,7 +240,7 @@ public partial class GameShell
     {
         var view = session.View; var editor = CurrentActionEditor;
         if (view is null || editor is null) return;
-        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; awardButton.Disabled = true; return; }
+        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; GateAward(view); return; }
         while (view.Arrangements.Any(a => a.Id == $"player-award-{awardSequence}") || view.InWork($"player-award-{awardSequence}")) awardSequence++;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
@@ -253,18 +259,27 @@ public partial class GameShell
             previewGaps.Text = string.Join("\n\n", AwardPreview.SoftGaps);
             previewStops.Visible = AwardPreview.HardStops.Count > 0;
             previewGaps.Visible = AwardPreview.SoftGaps.Count > 0;
-            awardButton.Disabled = !AwardPreview.Accepted || view.Finished;
+            GateAward(view);
         }
         catch (OverflowException)
         {
             AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
-            previewGaps.Text = ""; awardButton.Disabled = true;
+            previewGaps.Text = ""; DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
         }
+    }
+
+    private void GoToOwnInitiative()
+    {
+        if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay) return;
+        ResetAwardForm(); awardTarget = AwardTargets(view).FirstOrDefault(t => t.Card is null)?.Id;
+        RefreshActionDesk(view); ShowMarket();
     }
 
     private void GoToMarket(string card)
     {
+        if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay
+            || !view.Cards.Any(c => c.Id == card)) return;
         ResetAwardForm(); awardTarget = card; SelectedCard = card;
-        RefreshActionDesk(session.View); GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
+        RefreshActionDesk(session.View); ShowMarket();
     }
 }

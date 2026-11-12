@@ -162,7 +162,7 @@ public class IdiqTests
         // A purchase order for more than vendorD's 700 gal/day is refused at award ...
         var po = new AwardAction { Id = "po", Instrument = "purchaseOrder", Vendor = "vendorD", Site = "spokeBSite", Capability = "fuel",
                                    Lines = ["delivery"], Quantity = 900, DurationDays = 10, FundingLine = "om1" };
-        Assert.Contains(s.View.Preview(po).HardStops, h => h.Contains("can supply"));
+        Assert.Contains(s.View.Preview(po).HardStops, h => h.Contains("700 gal/day in all"));
         // ... an IDIQ order is binding, so it is accepted, with a soft gap saying what will happen.
         var lockUp = Order("hubFuel", 700, 20, "hubSite");
         var spoke = Order("spokeFuel", 400, 15);

@@ -17,7 +17,7 @@ public partial class LeadSmokeTest : Node
             var shell = scene.Instantiate<GameShell>(); shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json"); AddChild(shell);
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell);
             var hash = shell.Session.StateHash;
-            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0; shell.DeveloperToggle.ButtonPressed = false;
+            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab; shell.DeveloperToggle.ButtonPressed = false;
             var lead = shell.Session.View!.MorningBoard().Lead!;
             Require(shell.DisplayedLead == lead && shell.LeadWords.Text == lead.Text && !shell.BoardDetailsVisible, "Day-one Sim lead is prominent and the other work starts collapsed.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
@@ -30,7 +30,7 @@ public partial class LeadSmokeTest : Node
             }
             await Capture("day1");
             shell.LeadOpen.EmitSignal(Button.SignalName.Pressed);
-            Require(lead.LinkKind == BoardLinkKind.Card && shell.SelectedCard == lead.LinkId && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 1, "First customer's lead opens the exact card.");
+            Require(lead.LinkKind == BoardLinkKind.Card && shell.SelectedCard == lead.LinkId && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab, "First customer's lead opens the exact card.");
             Require(shell.Session.StateHash == hash, "Opening a lead is read-only.");
             shell.BoardDetailsToggle.ButtonPressed = true;
             Require(shell.BoardDetailsVisible, "Player can still inspect all other work and sites.");
@@ -49,7 +49,7 @@ public partial class LeadSmokeTest : Node
             shell.LeadOpen.EmitSignal(Button.SignalName.Pressed);
             var commitment = shell.Session.View.Commitments.FirstOrDefault(c => c.ArrangementId == lead.LinkId && c.Decision == CommitmentDecision.Open);
             if (lead.LinkKind == BoardLinkKind.Arrangement && commitment is not null)
-                Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 6, "Unresolved commitment lead opens its decision controls in Inbox.");
+                Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab, "Unresolved commitment lead opens its decision controls in Inbox.");
             Require(shell.Session.StateHash == hash, "Inspecting the later decision also leaves state unchanged.");
             var foundCommitment = false;
             while (!shell.Session.View.Finished)
@@ -59,7 +59,7 @@ public partial class LeadSmokeTest : Node
                     && shell.Session.View.Commitments.Any(c => c.ArrangementId == current.LinkId && c.Decision == CommitmentDecision.Open))
                 {
                     hash = shell.Session.StateHash; shell.LeadOpen.EmitSignal(Button.SignalName.Pressed);
-                    Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 6 && shell.Session.StateHash == hash,
+                    Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab && shell.Session.StateHash == hash,
                         "A real commitment lead reaches its Inbox decision without taking that decision.");
                     foundCommitment = true; break;
                 }
@@ -67,6 +67,7 @@ public partial class LeadSmokeTest : Node
             }
             Require(foundCommitment, "The authored replay exercised an open commitment lead.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await StandingSmokeChecks.Run(this);
             GD.Print("LEAD_SMOKE_PASS: exact day-one/later leads, collapsed details, true Continue stop and read-only decision links."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"LEAD_SMOKE_FAIL: {error}"); GetTree().Quit(1); }

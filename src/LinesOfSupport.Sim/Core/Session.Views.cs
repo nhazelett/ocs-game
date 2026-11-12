@@ -10,6 +10,13 @@ public sealed partial class Session
     private static int CeilHours(long milli) => (int)((milli + 999) / 1000);
     private static string Rate(CapabilityData cap) => cap.Delivery == "consumable" ? $"{cap.Unit}/day" : cap.Unit;
 
+    /// <summary>A count in the capability's unit, singular for one ("1 forklift", "500 gal/day").</summary>
+    private static string Amount(long n, CapabilityData cap)
+    {
+        var unit = n == 1 && cap.Unit.Length > 3 && cap.Unit.EndsWith('s') && cap.Unit.All(char.IsLower) ? cap.Unit[..^1] : cap.Unit;
+        return cap.Delivery == "consumable" ? $"{n} {unit}/day" : $"{n} {unit}";
+    }
+
     internal TopStripView BuildTopStrip()
     {
         var perDay = CeilHours(_hoursPerDayMilli);
@@ -330,7 +337,7 @@ public sealed partial class Session
         var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee));
         var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee));
 
-        var gaps = new List<string>();
+        var gaps = new List<string>(AlreadyInPlace(a, siteId, capId, startMin, startMax + Math.Max(1, a.DurationDays) - 1));   // DESK-32
         var cap = Cap(capId);
         var site = SiteData(siteId);
         var vendor = chk.Vendor!;

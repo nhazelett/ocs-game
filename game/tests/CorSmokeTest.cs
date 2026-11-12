@@ -49,7 +49,7 @@ public partial class CorSmokeTest : Node
             Require(expected.Apply(new DesignateCorAction { Day = expected.Day, Arrangement = candidate.Id, Cor = "corOkafor" }).Accepted, "Sim accepts the designation fixture.");
             controls.Submit.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text.Contains("designated"), "Ledger submits the exact designation and shows its result.");
-            var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
+            var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents");
             Require(ledger.GetChildren().OfType<Label>().Any(l => l.HasMeta("cor_arrangement") && l.GetMeta("cor_arrangement").AsString() == candidate.Id && l.Text.Contains("SGT Okafor") && l.Text.Contains(expected.View.CorSummary(expected.View.Cors.Single(c => c.Id == "corOkafor")))), "Ledger shows the assigned COR and reporting quality.");
             Require(shell.CorDesignations[candidate.Id].Submit.Disabled, "Designation refresh disables the now-current choice.");
             if(!shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44").Available)
@@ -86,7 +86,7 @@ public partial class CorSmokeTest : Node
                     {
                         Require(item.LinkKind == BoardLinkKind.Arrangement && !button.Disabled, "COR or unit failure report links to its arrangement.");
                         button.EmitSignal(Button.SignalName.Pressed);
-                        Require(shell.SelectedArrangement == record.Subject && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 5, "Report button opens the arrangement's ledger row.");
+                        Require(shell.SelectedArrangement == record.Subject && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.PaymentsTab, "Report button opens the arrangement's ledger row.");
                         reportSeen = true;
                     }
                     else Require(button.Disabled, "Roster rotation notice remains informational per the Sim contract.");

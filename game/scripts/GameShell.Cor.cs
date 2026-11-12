@@ -24,10 +24,11 @@ public partial class GameShell
         var selected = current?.Id ?? view.Cors.First().Id;
         var submit = DeskUi.Button("Designate COR · " + view.ArrangementName(arrangement.Id), () =>
             SendAction(new DesignateCorAction { Day = session.View!.Day, Arrangement = arrangement.Id, Cor = selected }));
-        void Gate() => submit.Disabled = view.Finished || selected == arrangement.CorId;
+        Label reason = null!;
+        void Gate() => DeskUi.Gate(submit, reason, view.Finished ? DeskUi.FinishedReason : selected == arrangement.CorId ? "This COR is already assigned to the contract." : null);
         var picker = AddPick(parent, "Designate COR", view.Cors.Select(c => new Pick(c.Id, CorText(view, c))).ToArray(), selected,
             id => { selected = id; Gate(); });
         picker.Disabled = view.Finished;
-        Gate(); parent.AddChild(submit); CorDesignations.Add(arrangement.Id, (picker, submit));
+        reason = DeskUi.ActionReason(parent, submit); Gate(); CorDesignations.Add(arrangement.Id, (picker, submit));
     }
 }

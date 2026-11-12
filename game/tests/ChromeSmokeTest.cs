@@ -31,7 +31,7 @@ public partial class ChromeSmokeTest : Node
                 "Preparation screenshot exercises both real checked and unchecked choices.");
             Require(!shell.DeveloperToggle.ButtonPressed, "Normal entry keeps developer tools unchecked.");
             await Capture("prep");
-            DeployWithoutPrep(shell); shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            DeployWithoutPrep(shell); shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             var hash = shell.Session.StateHash;
             var strip = shell.Session.View!.TopStrip();
             Require(shell.GetNode<Label>("%DayCounter").Text == "Morning of day 1" && shell.GetNode<Label>("%InboxDay").Text == "Your first morning", "Initial morning and inbox have no day-zero/results ambiguity.");

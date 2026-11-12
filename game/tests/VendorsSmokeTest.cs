@@ -15,9 +15,9 @@ public partial class VendorsSmokeTest : Node
             Scenario(shell, "tutorial");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
             var expected = Session.Create(bundle, 1);
-            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = 3;
+            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.VendorsTab;
             shell.DeveloperToggle.ButtonPressed = false;
-            Require(tabs.GetTabTitle(3) == "Vendors" && tabs.IsTabHidden(4), "Vendors replaces Directory and folds away the separate Vehicles tab.");
+            Require(tabs.GetTabTitle(GameShell.VendorsTab) == "Vendors" && !tabs.HasNode("Vehicles"), "Vendors replaces Directory and the obsolete Vehicles page is removed.");
             Require(shell.VendorCardContents.Keys.Order().SequenceEqual(expected.View.VendorCards().Select(c => c.Id).Order()), "Exactly one card per engine vendor, excluding host-nation and partner support.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string suffix)
@@ -48,7 +48,7 @@ public partial class VendorsSmokeTest : Node
             hash = shell.Session.StateHash; meet.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash && shell.VendorMeetButtons["harborBottling"].Disabled, "A duplicate meeting cannot queue more work.");
             while (expected.View.VendorMetDay("harborBottling") is null) { expected.AdvanceDay(); Step(shell); }
-            tabs.CurrentTab = 3; Pick(shell.VendorCardPicker, "harborBottling");
+            tabs.CurrentTab = GameShell.VendorsTab; Pick(shell.VendorCardPicker, "harborBottling");
             var known = expected.View.VendorCards().Single(c => c.Id == "harborBottling");
             var sale = known.Sells.Single(); var text = CardText(known.Id);
             Require(shell.Session.StateHash == expected.StateHash() && text.Contains("Cash: yes · Card: no")
@@ -65,7 +65,7 @@ public partial class VendorsSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash(), "A completed meeting remains guarded.");
 
             Scenario(shell, "spoke-b"); expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
-            tabs.CurrentTab = 3;
+            tabs.CurrentTab = GameShell.VendorsTab;
             shell.IdiqVendorButtons["vendorD"].EmitSignal(Button.SignalName.Pressed);
             Pick(shell.BpaCapabilityInput, "fuel");
             Require(shell.EstablishButton.Disabled, "Empty scope and a zero ceiling retain engine hard stops.");

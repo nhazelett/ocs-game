@@ -24,7 +24,7 @@ public partial class ShopVehicleSmokeTest : Node
             var rep = shell.Session.View.Scenario.People.Single(p => p.Vendor == "sanitation");
             void VendorVisit()
             {
-                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0; shell.PeopleToggle.ButtonPressed = true;
+                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true;
                 Pick(shell.PersonContactInput, "vendor:" + rep.Id);
             }
             VendorVisit(); var before = shell.VisitOptions["vendor"].Preview;
@@ -87,10 +87,11 @@ public partial class ShopVehicleSmokeTest : Node
             {
                 var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots"); if (shot < 0) return;
                 shell.DeveloperToggle.ButtonPressed = false;
-                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = suffix == "office-purchase" ? 2 : 0;
+                if (suffix == "office-purchase") shell.ShowMarket();
+                else shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-                var scroll = suffix == "office-purchase" ? (ScrollContainer)focus.GetParent().GetParent()
-                    : shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/MorningBoard");
+                var scroll = suffix == "office-purchase" ? shell.AwardScroll
+                    : shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body");
                 if (suffix == "office-purchase") scroll.EnsureControlVisible(focus);
                 else scroll.EnsureControlVisible(focus);
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

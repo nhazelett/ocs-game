@@ -7,6 +7,7 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     private VBoxContainer morningItems = null!, morningTiles = null!, linkedRequirement = null!, linkedLedger = null!;
+    private VBoxContainer requirementFooter = null!, boardContents = null!, boardFooter = null!;
     private Label morningHeading = null!, boardFocus = null!;
     internal string? SelectedCard { get; private set; }
     internal string? SelectedCapability { get; private set; }
@@ -19,14 +20,14 @@ public partial class GameShell
     private void BuildMorningDesk()
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        var board = DeskUi.Panel(tabs.GetNode<Control>("Board"), "MorningBoard");
+        var board = boardContents = DeskUi.Pane(tabs.GetNode<Control>("Today"), "TodayPane", out boardFooter);
         BuildLead(board);
         morningHeading = DeskUi.Label(); boardDetails.AddChild(morningHeading);
         boardFocus = DeskUi.Label(); boardDetails.AddChild(boardFocus);
         morningItems = new VBoxContainer { Name = "Items" }; boardDetails.AddChild(morningItems);
         morningTiles = new VBoxContainer { Name = "Tiles" }; boardDetails.AddChild(morningTiles);
-        linkedRequirement = DeskUi.Panel(tabs.GetNode<Control>("Requirements"), "RequirementContext");
-        linkedLedger = DeskUi.Panel(tabs.GetNode<Control>("Ledger"), "LedgerContext");
+        linkedRequirement = DeskUi.Pane(tabs.GetNode<Control>("Requests"), "RequirementPane", out requirementFooter);
+        linkedLedger = DeskUi.Panel(tabs.GetNode<Control>("Payments"), "LedgerContext");
     }
 
     private void ResetDeskSelection()
@@ -42,6 +43,7 @@ public partial class GameShell
         boardFocus.Text = "";
         Map.SelectSite(null);
         ResetAwardForm();
+        ShowRequests();
         ResetBpaForm();
         coordinationQuantity = 1;
     }
@@ -50,6 +52,7 @@ public partial class GameShell
     {
         DeskUi.Clear(morningItems); DeskUi.Clear(morningTiles);
         RefreshLead(view, board);
+        RefreshStandings(view);
         morningHeading.Text = board is null ? "No scenario loaded" :
             $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {board.Items.Count(x => x.Severity == BoardSeverity.Alert)} alerts · {board.Items.Count(x => x.Category == BoardCategory.Request)} requests";
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
@@ -58,7 +61,8 @@ public partial class GameShell
             var button = DeskUi.Button($"{item.Severity} · {item.Category}\n{item.Text}", () => NavigateBoardItem(item));
             button.Disabled = item.LinkKind == BoardLinkKind.None;
             button.SetMeta("link_kind", item.LinkKind.ToString()); button.SetMeta("link_id", item.LinkId);
-            morningItems.AddChild(button);
+            var reason = DeskUi.ActionReason(morningItems, button);
+            DeskUi.Gate(button, reason, item.LinkKind == BoardLinkKind.None ? "This update has no further detail to open." : null);
         }
         foreach (var tile in board?.Tiles ?? [])
         {
@@ -94,16 +98,17 @@ public partial class GameShell
         switch (item.LinkKind)
         {
             case BoardLinkKind.Card:
-                SelectedCard = item.LinkId; tabs.CurrentTab = 1;
-                RenderRequirementContext(session.View); break;
+                SelectedCard = item.LinkId; ShowRequests();
+                linkedRequirement.GetParent<ScrollContainer>().ScrollVertical = 0;
+                break;
             case BoardLinkKind.SiteCapability: SelectCapability(item.LinkId); break;
             case BoardLinkKind.Arrangement:
-                SelectedArrangement = item.LinkId; SelectedFunding = null; tabs.CurrentTab = 5;
+                SelectedArrangement = item.LinkId; SelectedFunding = null; tabs.CurrentTab = PaymentsTab;
                 RenderLedgerContext(session.View); break;
             case BoardLinkKind.Funding:
                 SelectedArrangement = null;
                 SelectedFunding = session.View?.Funding.Any(f => f.Id == item.LinkId) == true ? item.LinkId : null;
-                tabs.CurrentTab = 5; RenderLedgerContext(session.View);
+                tabs.CurrentTab = PaymentsTab; RenderLedgerContext(session.View);
                 var focus = linkedLedger.GetChildren().OfType<Label>()
                     .FirstOrDefault(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == SelectedFunding);
                 if (focus is null) linkedLedger.AddChild(DeskUi.Label(item.Text));
@@ -115,12 +120,12 @@ public partial class GameShell
                 break;
             case BoardLinkKind.Cash:
             case BoardLinkKind.Work:
-                tabs.CurrentTab = 5; RenderLedgerContext(session.View);
+                tabs.CurrentTab = PaymentsTab; RenderLedgerContext(session.View);
                 linkedLedger.AddChild(DeskUi.Label(item.Text)); break;
             case BoardLinkKind.Person: FocusPerson(item); break;
             case BoardLinkKind.Island:
             case BoardLinkKind.Event:
-                tabs.CurrentTab = 0; boardFocus.Text = item.Text; break;
+                tabs.CurrentTab = TodayTab; boardFocus.Text = item.Text; break;
         }
     }
 
@@ -132,7 +137,7 @@ public partial class GameShell
         if (tile is null) return;
         SelectedCapability = key;
         Map.SelectSite(tile.SiteId);
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         RefreshMorningDesk(view, view.MorningBoard());
     }
 

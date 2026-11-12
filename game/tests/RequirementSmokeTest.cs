@@ -21,7 +21,7 @@ public partial class RequirementSmokeTest : Node
             shell.LookPicker.Select(0); shell.LookPicker.EmitSignal(OptionButton.SignalName.ItemSelected, 0);
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var expected = Session.Create(bundle, 1);
-            var panel = shell.GetNode<TabContainer>("%DeskTabs").GetNode<VBoxContainer>("Requirements/RequirementContext/Contents");
+            var panel = shell.GetNode<TabContainer>("%DeskTabs").GetNode<VBoxContainer>("Requests/RequirementPane/Body/Body/Contents");
             var actions = new List<PlayerAction>();
             shell.Session.ActionAccepted += actions.Add;
             void Open(string card) => shell.NavigateBoardItem(new BoardItem("", shell.Session.View!.Day, BoardCategory.Request,
@@ -97,7 +97,7 @@ public partial class RequirementSmokeTest : Node
             KnownLines("req0007"); ResumeMatches();
             Require(!panel.GetChildren().OfType<Label>().Any(l => l.HasMeta("requirement_line") && l.GetMeta("requirement_line").AsString() == "fuelSupply")
                 && panel.GetChildren().OfType<Button>().Any(b => b.HasMeta("dependency_visit")), "Spoke B fuel stays undiscovered; the J4 shortcut remains.");
-            panel.GetChildren().OfType<Button>().Single(b => b.HasMeta("market_card")).EmitSignal(Button.SignalName.Pressed);
+            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.CurrentActionEditor?.CardId == "req0007" && shell.CurrentActionEditor.SelectedLines.Contains("operator")
                 && shell.CurrentActionEditor.SelectedLines.Contains("maintenance"), "Go to market uses the updated request scope.");
 
@@ -163,7 +163,7 @@ public partial class RequirementSmokeTest : Node
                 var stateBefore = shell!.Session.StateHash;
                 Require(shell.Session.View!.RequirementEditor("tutForklift")!.Unit == "forklifts"
                     && shell.TeamBars.Count == 3, "Gate captures use plain forklift units and the three-person tutorial team.");
-                shell!.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 1;
+                shell!.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.RequestsTab;
                 var scroll = (ScrollContainer)panel.GetParent(); scroll.ScrollVertical = 0;
                 await Frames(); if (focus is not null) scroll.EnsureControlVisible(focus); await Frames();
                 Require(panel.GetGlobalRect().End.X <= scroll.GetGlobalRect().End.X

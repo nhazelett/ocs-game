@@ -43,7 +43,7 @@ public partial class PlainNamesSmokeTest : Node
             Scenario(shell, "spoke-b"); shell.DeveloperToggle.ButtonPressed = false;
             shell.RequestOpenButtons["req0007"].EmitSignal(Button.SignalName.Pressed);
             var card = shell.Session.View!.RequirementEditor("req0007")!;
-            var panel = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Requirements");
+            var panel = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Requests");
             Require(PlayerText(panel).Any(t => t.Contains(card.Title) && t.Contains(card.Person!.DisplayName)), "The requirement shows what and who.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshot");
             if (shot >= 0)

@@ -32,7 +32,7 @@ public partial class ActionSmokeTest : Node
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshot");
             if (shot >= 0)
             {
-                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
+                shell.ShowMarket();
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }

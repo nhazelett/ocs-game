@@ -12,6 +12,7 @@ public partial class AwardContextSmokeTest : Node
     {
         try
         {
+            await PaneSmokeChecks.Run(this);
             var shell = Shell(this);
             Scenario(shell, "tutorial"); Step(shell, 3);
             PickAwardTarget(shell, "tutForklift");
@@ -75,10 +76,9 @@ public partial class AwardContextSmokeTest : Node
             {
                 var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
                 if (shot < 0) return;
-                shell.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
-                shell.GetNode<VSplitContainer>("%DeskTabs/Actions/AwardEditor").SplitOffsets = [480];
+                shell.DeveloperToggle.ButtonPressed = false; shell.ShowMarket();
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-                var scroll = (ScrollContainer)focus.GetParent().GetParent();
+                var scroll = shell.AwardScroll;
                 if (suffix == "cor-reasons") scroll.ScrollVertical = Math.Max(0, (int)focus.Position.Y - 34);
                 else scroll.EnsureControlVisible(suffix == "other-cor" ? focus : shell.DurationInput);
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

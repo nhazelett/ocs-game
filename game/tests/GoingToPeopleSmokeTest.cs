@@ -59,7 +59,7 @@ public partial class GoingToPeopleSmokeTest : Node
             Require(shell.VisitButtons["finance"].Disabled && Labels(shell.VisitResults).Any(l => l.Text.Contains(expected.Records.Single(r => r.Kind == RecordKind.Visit).Text)), "Finance completes with exact returned facts and stays found.");
             var personItem = shell.Session.View!.MorningBoard().Items.Single(i => i.LinkKind == BoardLinkKind.Person);
             var beforeNavigation = shell.Session.StateHash; shell.PeopleToggle.ButtonPressed = false; shell.NavigateBoardItem(personItem);
-            Require(shell.PeopleToggle.ButtonPressed && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 0 && shell.Session.StateHash == beforeNavigation, "Person-linked news opens the board contact without spending time.");
+            Require(shell.PeopleToggle.ButtonPressed && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.TodayTab && shell.Session.StateHash == beforeNavigation, "Person-linked news opens the board contact without spending time.");
             Pick(shell.PersonContactInput, "meeting"); Submit("meeting");
             while (!expected.View.StaffMeeting.Attending) Day();
             var next = expected.View.StaffMeeting.NextDay!.Value;
@@ -111,11 +111,11 @@ public partial class GoingToPeopleSmokeTest : Node
     private async Task Screenshot(GameShell shell, string flag)
     {
         var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, flag); if (at < 0) return;
-        shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0; shell.DeveloperToggle.ButtonPressed = false;
+        shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab; shell.DeveloperToggle.ButtonPressed = false;
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         if (flag == "--people-screenshot")
         {
-            var board = shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/MorningBoard");
+            var board = shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body");
             board.EnsureControlVisible(shell.VisitButtons["finance"].GetParent().GetChildren().OfType<Label>().Last());
         }
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
