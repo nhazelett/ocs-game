@@ -72,3 +72,32 @@ The scope checkboxes. The Directory tab. Terminate buttons in the Ledger. The Co
 ## 5. Order
 
 Codex can start now, with no Sim change: one End the day button (DESK-20), the Ledger without Terminate (DESK-21, using `SessionView.TerminateBlocked`), the own-initiative entry (DESK-25). Fable builds the Sim rows in this order: team, discovery, end-of-day check, vendor knowledge, pick two, COR fit and the ask, staff meetings, SF 44, shop vehicle. Each Codex screen row follows its Sim row. The port-to-port shipper and the higher-quality models come after the DESK gate.
+
+## 6. The DESK gate, first play (11 and 12 Nov 2026)
+
+Nick played the tutorial on the main build with everything above merged (PRs 180 to 184). His verdict: "it's shaping up well", and "Music is a nice touch, I'd like to get into the UI and UX soon." What did not work yet, in his words:
+
+- "There's two scroll boxes here, and you can't really tell. It makes navigation confusing." (The award form scrolls inside the tab, and the tab scrolls too.)
+- "Not a big fan of the left/right navigation here, either. It's kind of hidden and it hides your tabs." (Eight tabs do not fit, so the tab bar shows arrows.)
+- "When this button is greyed out, it should explain why." (The reason exists, but it is above the button, often scrolled out of view, and a refusal like "Harbor Bottling can supply 5000 gal/day in total and 4500 is already committed" says a fact, not what to do.)
+- "I tend to also get lost in the sauce about what's going on. Maybe I anticipate more needs? I'm not too sure." Asked whether the 4500 already committed was his own earlier water buy: "I don't remember. And there inlies the problem lol. I went to buy water, I probably did."
+
+Nick agreed to the decisions below in chat ("Go ahead and implement the findings, and we'll keep working").
+
+D13. **One scroll per pane.** A pane scrolls as one piece; nothing scrolls inside it. The button that acts (Arrange support) stays in view at the bottom of the pane.
+
+D14. **Five tabs that always fit.** Today (the board), Requests (going to market opens inside the request it is for, so there is no separate Actions tab), Vendors, Payments (the ledger), Inbox. No arrows at 1280 by 800. The Debrief tab appears only when the game is over. The empty Reports tab goes.
+
+D15. **A greyed button says why, under the button.** One sentence, always, directly under it: what is missing, or the first thing the Sim refuses. Refusals say what to do next, not only the fact ("Harbor Bottling has 500 gal/day left on those days. Ask for 500 or less, or buy the rest from someone else.").
+
+D16. **Where things stand.** The Today tab gives one line per request: who asked, where it is (nothing yet, someone asking about it, a contract being written by a named teammate, arranged to start on a day, running, running short, ended), and who is on it. And when you go to buy something already arranged or being bought, the quote says so first ("You already have Harbor Bottling water at Hub, 4500 gal/day from day 5 to day 11."), because buying more than asked is sometimes right (D9) but buying it twice by accident never is.
+
+Left out on purpose: a task list or calendar, notifications, a separate status screen, and any rule that stops a second buy. The answer to "maybe I anticipate more needs?" is to make the present readable first; anticipation is already rewarded by the staff meeting and own-initiative buys.
+
+Sim notes (Fable):
+
+- Where things stand (D16): `SessionView.WhereThingsStand()`, one entry per request on the desk, needing attention first. Each has the request, the person who asked, a state (`nothing`, `asking`, `buying`, `arranged`, `running`, `short`, `ended`), the teammate on it, and one sentence. Read only.
+- Already in place (D16): the award preview's first soft gap names live or in-work support for the same site and capability on overlapping days. Not a stop.
+- Capacity refusal (D15): says what is left on those days and the next step.
+
+Order: Fable builds DESK-31 (where things stand) and DESK-32 (the quote says what is in place; refusals say what to do). Codex builds DESK-33 (one scroll, the button and its reason) and DESK-34 (five tabs) now, and DESK-35 (where things stand on Today) after DESK-31. Then Nick plays again, and the UI and UX pass he asked for starts with him. DESK-11, DESK-12, ART-10 and other Sim depth stay paused until then.
