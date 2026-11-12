@@ -101,6 +101,36 @@ public class StandingTests
         Assert.Equal("Nothing is arranged, and it was wanted from day 5.", first.Sentence);
     }
 
+    [Fact]
+    public void A_contract_on_its_first_day_is_not_blamed_for_the_gap_before_it()
+    {
+        // Approach 4 buys Spoke B's power late: Meridian starts on day 17, after ten dark days. On day 17 it is running,
+        // not short, though power was at 0% the day before; the day before, it is the first thing on the list.
+        var log = InputLog.Load(Path.Combine(Repo.Scenario("spoke-b"), "golden", "approach4-enduring-only.json"));
+        var s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 15);
+        var first = s.View.WhereThingsStand()[0];
+        Assert.Equal("Power for Spoke B", first.Title);
+        Assert.Equal(RequestStanding.Arranged, first.State);
+        Assert.Equal("Meridian Site Services starts on day 17: 470 kW. It was wanted from day 7.", first.Sentence);
+
+        s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 16);
+        var power = s.View.WhereThingsStand().Single(x => x.Title == "Power for Spoke B");
+        Assert.Equal(RequestStanding.Running, power.State);
+        Assert.Equal("Meridian Site Services is delivering 470 kW.", power.Sentence);
+    }
+
+    [Fact]
+    public void A_request_missed_altogether_is_over_once_its_days_are_and_sorts_last()
+    {
+        var s = Session.Create(Repo.Load("tutorial"), 1);
+        while (s.Day < 9) s.AdvanceDay();
+        var all = s.View.WhereThingsStand();
+        var water = all.Single(x => x.Title == "Water for Hub");
+        Assert.Equal(RequestStanding.Ended, water.State);
+        Assert.Equal("Its days are over: it was wanted from day 2 to day 8, and nothing was arranged.", water.Sentence);
+        Assert.Same(water, all[^1]);
+    }
+
     public static IEnumerable<object[]> Scenarios() => [["spoke-b"], ["spoke-b-90"], ["sustainment"], ["tutorial"]];
 
     [Theory]

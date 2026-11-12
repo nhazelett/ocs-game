@@ -19,11 +19,13 @@ public sealed partial class Session
         return [.. list.OrderBy(x => x.Order).ThenBy(x => x.Wanted).Select(x => x.Entry)];
     }
 
-    /// <summary>Needing attention first: late with nothing, running short, nothing yet, then in hand, then done.</summary>
+    /// <summary>Needing attention first: late with nothing, running short or arranged to start after the day wanted,
+    /// nothing yet, then in hand, then done.</summary>
     private static int StandingOrder(string state, bool wantedAlready) => state switch
     {
         RequestStanding.Nothing when wantedAlready => 0,
         RequestStanding.Short => 1,
+        RequestStanding.Arranged when wantedAlready => 1,   // wanted already, but what is arranged starts later
         RequestStanding.Nothing => 2,
         RequestStanding.Asking => 3,
         RequestStanding.Buying => 4,
@@ -59,7 +61,9 @@ public sealed partial class Session
             var trips = Trips(a);
             if (a.Status == ArrangementStatus.Suspended)
                 return Entry(RequestStanding.Short, $"{SupplierName(a)} is on hold{(a.EndDay >= LastDay ? "" : $"; it runs through day {a.EndDay}")}{More(running.Count)}.{trips}", a.TripAssignee);
-            if (yesterday < 1000)
+            // Yesterday's level speaks only for support that was already running yesterday: on the day a contract
+            // starts, the gap before it is not its shortfall (DESK-31 follow-up).
+            if (yesterday < 1000 && a.StartDay < Day)
                 return Entry(RequestStanding.Short,
                     $"{SupplierName(a)} is meant to deliver{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}, but {Lower(cap.Label)} at {SiteName(card.SiteId)} was at {yesterday / 10}% yesterday.{trips}", a.TripAssignee);
             return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}.{trips}", a.TripAssignee);
@@ -84,6 +88,9 @@ public sealed partial class Session
         var stopped = covering.OrderBy(a => a.EndDay).LastOrDefault();
         if (stopped is not null && Day > to)
             return Entry(RequestStanding.Ended, $"Done: {SupplierName(stopped)} delivered through day {stopped.EndDay}.");
+        // A request whose days are over with nothing ever arranged is missed, not still to do: it sorts with the done ones.
+        if (Day > to)
+            return Entry(RequestStanding.Ended, $"Its days are over: it was wanted from day {from} to day {to}, and nothing was arranged.");
         var stoppedNote = stopped is not null ? $" {SupplierName(stopped)} stopped after day {stopped.EndDay}; it is wanted through day {to}." : "";
 
         var asking = _work.Where(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "ask" } v
