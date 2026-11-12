@@ -2,7 +2,7 @@
 
 Every Fable session follows this, whether Nick started it in chat or the schedule did (every three hours as of 9 Nov 2026, hourly before; tasks have been finishing inside 30 minutes). Scheduled runs start with no memory of earlier conversations: this file, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: keep moving unless truly stalled on a decision only he can make. Codex runs on its own schedule following `docs/CODEX-SESSION.md`.
 
-**Merges happen at check-ins (Nick, 8 Nov 2026, FOR-NICK #1).** Scheduled runs cannot merge: the unattended permission check refuses merges as "Merge Without Review". So a scheduled run never attempts a merge. It reviews open PRs (section 3) and records its verdict as a PR comment, builds and opens PRs, and stacks. When Nick messages Fable in chat, that session does the merge pass: rerun tests on the combined tree, check balance if the Sim or a scenario changed, merge in order.
+**Review and merge on sight (Nick, 12 Nov 2026, replacing the 8 Nov check-in rule in FOR-NICK #1).** Nick does not review PRs. Every Fable session, scheduled or in chat, reviews each open PR it sees (section 3) and merges the ones that pass: rerun tests on the combined tree, check balance if the Sim or a scenario changed, merge in order (the top of a stack lands what is under it). A PR that does not pass gets a PR comment saying what blocks it. If a merge call is refused by the session's permission check, do not retry through another tool: leave the comment "Fable review: ready to merge" and move on.
 
 ## 1. Start
 1. Pull `main`. Read the status line in `backlog/BACKLOG.md`, the latest two handoff notes in `docs/handoffs/`, and `backlog/QUESTIONS.md`.
@@ -13,7 +13,7 @@ Every Fable session follows this, whether Nick started it in chat or the schedul
 1. Take the highest Fable item in `backlog/BACKLOG.md` that is not Done and not blocked. Order inside a milestone is Fable's call (DISSENT.md section 2); milestone scope is Nick's.
 2. **Claim it** before starting: push an empty branch `fable/<item-id>`. If that branch already exists on the remote and was pushed in the last three hours, another Fable session has it; take the next item.
 3. Build it to the spec and the ADRs, with tests. `dotnet test src/LinesOfSupport.sln`, `python3 tools/validate/validate.py` and `python3 tools/validate/provenance.py` pass before a PR.
-4. Open the PR (template, Objections section) and wait for CI. In a chat session with Nick, merge it when green; in a scheduled run, leave it open and stack the next item on it. Stop starting new Sim or scenario code at ten unmerged Fable PRs: do review, backlog and design work instead until a check-in merges the queue.
+4. Open the PR (template, Objections section) and wait for CI. Merge it when green (section 3 applies to Fable's own PRs too). If the merge is refused, stack the next item on it. Stop starting new Sim or scenario code at ten unmerged Fable PRs: do review, backlog and design work instead.
 5. **Merge pass** again (section 3), then the next item. Repeat until the backlog has nothing unblocked for Fable or the session's budget is spent.
 6. If Fable's backlog is empty, add the next items from SPEC 11's milestone plan (Fable's lane only), then continue.
 
@@ -24,14 +24,14 @@ Every Fable session follows this, whether Nick started it in chat or the schedul
 
 ## 3. Merge pass (after every completed task, and at session start)
 
-In a scheduled run this is a review pass: apply the rules below, and instead of merging leave a PR comment `Fable review: ready to merge` (or what blocks it). In a chat session with Nick, merge.
+Every session merges what passes the rules below (Nick, 12 Nov 2026). Only if the merge call is refused, leave a PR comment `Fable review: ready to merge`; a PR that does not pass gets a comment saying what blocks it.
 For each open Codex PR:
 - Changed files all inside Codex's components (`src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, Codex handoff notes) and every CI check green: merge it.
 - Conflicted only in `backlog/*.md` or `.github/workflows/ci.yml`: merge `main` into the Codex branch (never force-push), keep both sides, rerun the tests, push, wait for CI, merge, and leave a one-line PR comment saying what was resolved.
   Before committing a resolution, run `git grep -nE '^(<<<<<<< |=======$|>>>>>>> )'` and stop if it finds anything; a branch can already carry markers from an earlier bad merge, and CI does not check Markdown yet (M2-16). Never chain the commit after a resolver with `;`.
 - Touches `src/LinesOfSupport.Sim*`, `scenarios/schema/`, `scenarios/rules/`, `docs/SPEC.md` or `docs/decisions/`: review it as a design change; merge if it is right, otherwise file an objection per `docs/DISSENT.md`.
 - CI red: do not merge; comment with the failing check and leave it for Codex.
-Merging only on green CI keeps Codex's queue (limit ten open PRs) moving between Nick's check-ins.
+Merging only on green CI keeps Codex's queue (limit ten open PRs) moving without Nick.
 
 ## 4. When blocked on Nick
 Only design or priority questions go to Nick (DISSENT.md section 6). Add the question to `backlog/FOR-NICK.md` in the escalation format (question, options, cost of each, which are reversible, each agent's recommendation), mark the blocked item `Blocked on Nick (FOR-NICK #n)`, and move to the next unblocked item. Never wait idle. When Nick answers in chat, record the answer there and in the item.
