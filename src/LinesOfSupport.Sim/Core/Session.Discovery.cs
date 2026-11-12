@@ -66,7 +66,7 @@ public sealed partial class Session
         card.Lines[a.Line] = true;
         AddRecord(Day, RecordKind.Action, card.Id,
             $"{Upper(CardName(card.Id))}: {LineLabel(card.CapabilityId, a.Line)} added, as {BuildPerson(from.Person)?.DisplayName ?? "they"} said.", []);
-        return ActionResult.Ok("line added");
+        return ActionResult.Ok($"{Upper(LineLabel(card.CapabilityId, a.Line))} added to the request.");   // DESK-36: the game shows this
     }
 
     /// <summary>True when someone has told you this line is needed (or it was in the request all along).</summary>

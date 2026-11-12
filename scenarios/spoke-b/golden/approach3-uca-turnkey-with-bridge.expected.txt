@@ -45,7 +45,7 @@ Day 5
   DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 6
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 13, ends day 72. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 14 waiting.
@@ -59,7 +59,7 @@ Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 12
@@ -79,7 +79,7 @@ Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 16
   ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
@@ -170,4 +170,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.915)
 
-State hash 3fe6467d2ded22b294b07ab7aa9c5deca4cf57808dc32d222f3cb9335ea93125
+State hash 03916ad43ac9fb4ce2b14d5bfa7db06afd8c0e9d1d3bb9d41f7b70e265b2f76b

@@ -142,7 +142,7 @@ public sealed partial class Session
                 var card = other.CardId is null ? null : _cards.FirstOrDefault(c => c.Id == other.CardId);
                 var where = card is null ? "" : $" The dependency checklist on {CardName(card.Id)} showed {cap.Label.ToLowerInvariant()} uncovered from day {card.SubmittedDay}.";
                 yield return ($"line|{other.Id}", new GapFactor(GapFactorKind.MissingSupplyLine, GapTag.Avoidable, d,
-                    $"{Upper(NameOf(other.Id))} was bought without its {(supplyLine.Label ?? supplyLine.Id).ToLowerInvariant()} line, and nothing else supplied {cap.Label.ToLowerInvariant()}.{where}", [other.CauseId]));
+                    $"{Upper(NameOf(other.Id))} was bought without {(supplyLine.Label ?? supplyLine.Id).ToLowerInvariant()}, and nothing else supplied {cap.Label.ToLowerInvariant()}.{where}", [other.CauseId]));
             }
             foreach (var card in _cards.Where(c => c.SiteId == siteId && c.CapabilityId == capId && c.SubmittedDay <= d && c.RequestedStartDay <= d))
             {
@@ -260,7 +260,7 @@ public sealed partial class Session
                         }
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
-                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and had no {string.Join(" or ", missing)} line; its failure odds were higher every day it ran.{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
+                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
                                 $"{Upper(NameOf(a.Id))} failed on day {d} with full operator and maintenance coverage.{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;

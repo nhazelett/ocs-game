@@ -71,7 +71,7 @@ Day 14
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   END       The other unit's fuel at Spoke B ended.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
@@ -115,7 +115,7 @@ Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 23
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -208,11 +208,11 @@ GAPS AND WHY (each traced back through its causes)
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 17-19, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] The coordination for fuel at Spoke B was withdrawn on day 12 and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.
-      [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
+      [avoidable] Harbor Equipment Co power at Spoke B was bought without generator fuel supply, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.fuel days 21-23, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 23) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 23) and was bought without on-site storage; its failure odds were higher every day it ran.
   #2 spokeBSite.fuel days 30-30, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
   #3 spokeBSite.power days 17-30, lowest 0%, 6 day(s) down: AVOIDABLE
@@ -232,4 +232,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.831)
 
-State hash 1a6c35650cdffc71aa0937d50946f5af83beb7fb5bee15bd29494a1a3c4703ca
+State hash a1c153142dae9eede3f14b222cfbbff92429b873718b670658710864051bb138

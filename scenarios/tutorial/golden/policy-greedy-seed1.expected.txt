@@ -62,7 +62,7 @@ Day 13
 Day 14
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Main Island Utilities (host nation) power at Hub had equipment down.
-  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators line).
+  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
   SHORT     Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
 Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time).
@@ -73,7 +73,7 @@ Day 17
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 18
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators line).
+  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
   SHORT     Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
 Day 19
   DONE      CE small buys: 2 worked today (1 h of shop time).
@@ -102,17 +102,17 @@ SCORECARD
 
 GAPS AND WHY (each traced back through its causes)
   Day 14: Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
-      <- day 14: Coastal Rentals material handling equipment at Hub had equipment down (no operators line).
+      <- day 14: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
           <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
   Day 18: Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
-      <- day 18: Coastal Rentals material handling equipment at Hub had equipment down (no operators line).
+      <- day 18: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
           <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.mhe days 14-14, lowest 50%, 0 day(s) down: AVOIDABLE
-      [avoidable] Coastal Rentals material handling equipment at Hub failed (first on day 14) and had no operators line; its failure odds were higher every day it ran.
+      [avoidable] Coastal Rentals material handling equipment at Hub failed (first on day 14) and was bought without operators; its failure odds were higher every day it ran.
   #1 hubSite.mhe days 18-18, lowest 50%, 0 day(s) down: AVOIDABLE
-      [avoidable] Coastal Rentals material handling equipment at Hub failed (first on day 18) and had no operators line; its failure odds were higher every day it ran.
+      [avoidable] Coastal Rentals material handling equipment at Hub failed (first on day 18) and was bought without operators; its failure odds were higher every day it ran.
 
 PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
@@ -121,4 +121,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.987)
 
-State hash c49e50fcbaa3560e92c7f88868c5138260ad38cbb56c302ed896695643efdb9e
+State hash f6b20d6f527fcfb65fe04340e560b50134222c457e19d374cccb84cf530db19d

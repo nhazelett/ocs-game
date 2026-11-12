@@ -66,7 +66,7 @@ Day 21
 Day 22
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage).
 Day 23
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
@@ -109,7 +109,7 @@ Day 36
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 38
   WITHDRAWN Harbor Equipment Co walked off Harbor Equipment Co power at Spoke B after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   COMPLY    Higher HQ asked why Harbor Equipment Co power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
@@ -287,14 +287,14 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and was bought without on-site storage; its failure odds were higher every day it ran.
       [avoidable] Second Island Fuel fuel at Spoke B was left unresolved and the vendor walked off on day 36.
       [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 days late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
   #2 spokeBSite.power days 7-90, lowest 0%, 77 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Harbor Equipment Co power at Spoke B did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 37) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 37) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran.
       [avoidable] Harbor Equipment Co power at Spoke B was left unresolved and the vendor walked off on day 38.
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 38. The last arrangement supplying it, Harbor Equipment Co power at Spoke B, ended on day 37. Island Power Rentals power at Spoke B did not start until day 40.
       [avoidable] Island Power Rentals power at Spoke B was left unresolved and the vendor walked off on day 47.
@@ -309,4 +309,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash f4fa85b3ee17f4159cb6aaf07ebea6c195482871d90e74880b70c7f86afc7d4e
+State hash 19dff8b8cd97c5f0da9c7601caca89f19f7db9d2d7c5e2a85c3d9cdc06c07306

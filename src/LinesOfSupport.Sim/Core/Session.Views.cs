@@ -176,10 +176,11 @@ public sealed partial class Session
         {
             "core" => null,
             "supplies" when line.Supplies is { } sup =>
-                $"No {label} line: {CapLabel(sup).ToLowerInvariant()} has to come from another arrangement at the site, or {cap.Label.ToLowerInvariant()} stops when it runs out.",
-            "operator" => $"No {label} line: daily failure odds rise while it runs.",
-            "maintenance" => $"No {label} line: daily failure odds rise while it runs.",
-            _ => $"No {label} line.",
+                $"Without {label}, {CapLabel(sup).ToLowerInvariant()} has to come from another arrangement at the site, or {cap.Label.ToLowerInvariant()} stops when it runs out.",
+            // DESK-36: no "line" in what the player reads; the request has no checkboxes since DESK-23 (D3).
+            "operator" => $"Without {label}, it fails more often every day it runs.",
+            "maintenance" => $"Without {label}, it fails more often the longer it runs.",
+            _ => $"{Upper(label)} is left out.",
         };
     }
 

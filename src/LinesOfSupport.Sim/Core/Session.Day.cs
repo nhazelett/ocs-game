@@ -278,8 +278,8 @@ public sealed partial class Session
                 var consumable = cap.Delivery == "consumable";
                 t.FactorPermille = consumable ? 0 : f.ContinuousFailureSupplyPermille;
                 var why = new List<string>();
-                if (!a.IsCoordination && missingMaintenance) why.AddRange(cap.Lines.Where(l => l.Kind == "maintenance").Select(l => $"no {l.Label!.ToLowerInvariant()} line"));
-                if (!a.IsCoordination && missingOperator) why.AddRange(cap.Lines.Where(l => l.Kind == "operator").Select(l => $"no {l.Label!.ToLowerInvariant()} line"));
+                if (!a.IsCoordination && missingMaintenance) why.AddRange(cap.Lines.Where(l => l.Kind == "maintenance").Select(l => $"no {l.Label!.ToLowerInvariant()}"));
+                if (!a.IsCoordination && missingOperator) why.AddRange(cap.Lines.Where(l => l.Kind == "operator").Select(l => $"no {l.Label!.ToLowerInvariant()}"));
                 t.FailureRecord = AddRecord(d, RecordKind.VendorFailure, a.Id,
                     $"{Upper(NameOf(a.Id))} {(consumable ? "missed today's delivery" : "had equipment down")}{(why.Count > 0 ? $" ({string.Join(", ", why)})" : "")}.", [a.CauseId]);
             }

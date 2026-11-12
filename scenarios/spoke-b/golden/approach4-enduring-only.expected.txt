@@ -40,7 +40,7 @@ Day 5
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
 Day 6
   DONE      CE small buys: none worked today (no hours left); 14 waiting.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 7
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 15, ends day 74. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 13, ends day 40. Obligated $177,408.
@@ -172,4 +172,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash cb61b37e29a4777a9f3a16f857ca8fb175602fa4c6131af82ecae796e8c40e08
+State hash f9ddb2fa3043e3ce6810075d53ff3ee8676d321122fcb42aae0a949279ced1dd
