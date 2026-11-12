@@ -27,7 +27,7 @@ public class AlreadyInPlaceTests
         var again = s.View.Preview(Water("second", 4500));
         Assert.False(again.Accepted);
         Assert.Equal("Harbor Bottling is already set to supply water at Hub, 4500 gal/day from day 3 to day 9; this would be on top of it.", again.SoftGaps[0]);
-        Assert.Equal("Harbor Bottling can supply 5000 gal/day and 4500 is already committed on those days, so 500 is left. Ask for 500 or less, or buy the rest from someone else.",
+        Assert.Equal("Harbor Bottling has 500 gal/day left on those days, after 4500 already committed. Ask for 500 or less, or buy the rest from someone else.",
             Assert.Single(again.HardStops));
         Assert.True(s.View.Preview(Water("second", 500)).Accepted);
     }
@@ -37,8 +37,18 @@ public class AlreadyInPlaceTests
     {
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
         Assert.True(s.Apply(Water("first", 5000)).Accepted);
-        Assert.Equal("Harbor Bottling can supply 5000 gal/day and all of it is already committed on those days. Buy from someone else, or pick days when they are free.",
+        Assert.Equal("Harbor Bottling has nothing left on those days, with all 5000 gal/day already committed. Buy from someone else, or pick days when they are free.",
             Assert.Single(s.View.Preview(Water("second", 100)).HardStops));
+    }
+
+    [Fact]
+    public void Asking_for_more_than_a_vendor_has_says_what_they_have_not_that_nothing_is_committed()
+    {
+        // The DESK-33 screenshot read "can supply 5 forklifts and 0 is already committed", which says nothing useful.
+        var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
+        var stop = Assert.Single(s.View.Preview(Water("first", 6000)).HardStops);
+        Assert.Equal("Harbor Bottling has 5000 gal/day in all. Ask for 5000 or less, or buy the rest from someone else.", stop);
+        Assert.DoesNotContain("0 is already committed", stop);
     }
 
     [Fact]
