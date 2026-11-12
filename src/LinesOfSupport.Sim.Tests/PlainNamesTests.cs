@@ -99,6 +99,7 @@ public class PlainNamesTests
                 var board = s.View.MorningBoard();
                 mornings.AddRange(board.Items.Select(i => ($"board day {s.Day}", i.Text)));
                 if (board.Lead is { } lead) mornings.Add(($"lead day {s.Day}", lead.Text));
+                mornings.AddRange(s.View.WhereThingsStand().Select(e => ($"where things stand day {s.Day}", e.Sentence))); // DESK-31
             }
             NoIds(s, mornings.Concat(DebriefAndPreviews(s)), $"{scenario}/{name}");
         }
