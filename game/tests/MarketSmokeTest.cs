@@ -21,7 +21,7 @@ public partial class MarketSmokeTest : Node
             shell.NavigateBoardItem(new LinesOfSupport.Sim.Views.BoardItem("", 1, LinesOfSupport.Sim.Views.BoardCategory.Request, LinesOfSupport.Sim.Views.BoardSeverity.Info, LinesOfSupport.Sim.Views.BoardLinkKind.Card, card.Id, "", []));
             var go = shell.RequirementMarketButton;
             go.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 2 && shell.CurrentActionEditor!.CardId == card.Id, "Requirement leads directly to its own market.");
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab && shell.CurrentActionEditor!.CardId == card.Id, "Requirement leads directly to its own market.");
             Require(shell.VendorInput.GetItemMetadata(shell.VendorInput.Selected).AsString() == "" && shell.PendingAward is null && shell.AwardButton.Disabled, "No vendor is ever preselected, including vehicle-only or refused suppliers.");
             var requests=shell.AwardRequestInput;
             Require(Enumerable.Range(0,requests.ItemCount).All(i=>!requests.GetItemText(i).Contains("without a request",StringComparison.OrdinalIgnoreCase)),

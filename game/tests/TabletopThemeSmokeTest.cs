@@ -30,7 +30,7 @@ public partial class TabletopThemeSmokeTest:Node
                 Require(tabs.GetCurrentTabControl().GetThemeDefaultFont().GetFontName().Contains("Atkinson"),"Every desk inherits the same theme.");
                 Require(shell.Session.StateHash==hash,"Theme/navigation leaves the live Sim unchanged.");
             }
-            shell.DeveloperToggle.ButtonPressed=true;Replay(shell);Step(shell,10);shell.DeveloperToggle.ButtonPressed=false;tabs.CurrentTab=0;
+            shell.DeveloperToggle.ButtonPressed=true;Replay(shell);Step(shell,10);shell.DeveloperToggle.ButtonPressed=false;tabs.CurrentTab=GameShell.TodayTab;
             await Capture("morning");while(!shell.Session.View!.Finished)Step(shell);await Capture("debrief");
             Require(shell.DebriefSummaryText.GetThemeDefaultFont().GetFontName().Contains("Atkinson"),"After-action inherits the chosen typeface.");
             File.Delete(shell.AutosavePath);shell.QueueFree();await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);

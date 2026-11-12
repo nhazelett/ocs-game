@@ -13,7 +13,7 @@ public partial class EndDaySmokeTest : Node
         {
             var shell = Shell(this);
             shell.DeveloperToggle.ButtonPressed = false;
-            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             Require(!shell.GetNode<Label>("%BuildStatus").Visible, "Developer diagnostics stay off the player desk.");
             var end = shell.GetNode<Button>("%NextDay");
             var skip = shell.GetNode<Button>("%Continue");

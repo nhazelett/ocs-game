@@ -45,7 +45,7 @@ public partial class GameShell
             var resource = DeskUi.Button("Re-source…", () =>
             {
                 ResetAwardForm(); awardTarget = issue.SiteId + "." + issue.CapabilityId;
-                RefreshActionDesk(session.View); GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
+                RefreshActionDesk(session.View); ShowMarket();
             });
             resource.Disabled = view.Finished || !running;
             var terminate = DeskUi.Button("View contract", () => OpenContractView(issue.ArrangementId));

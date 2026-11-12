@@ -48,7 +48,7 @@ public partial class GameShell
     internal void OpenContractView(string id)
     {
         if (session.View?.Arrangements.Any(a => a.Id == id) != true) return;
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 5;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
         SelectedArrangement = id; SelectedFunding = null; RenderLedgerContext(session.View);
         ContractView.Show(); RefreshContractView(session.View);
     }

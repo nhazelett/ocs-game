@@ -92,7 +92,7 @@ public partial class AwardChoicesSmokeTest : Node
 
             async Task ReachFunding()
             {
-                var tabs=shell.GetNode<TabContainer>("%DeskTabs");tabs.CurrentTab=2;
+                var tabs=shell.GetNode<TabContainer>("%DeskTabs");shell.ShowMarket();
                 await Layout();
                 var scroll=shell.AwardScroll;
                 var bar=scroll.GetVScrollBar();
@@ -113,7 +113,7 @@ public partial class AwardChoicesSmokeTest : Node
             async Task Capture(string name,Control focus,bool openList=false)
             {
                 var args=OS.GetCmdlineUserArgs();var index=Array.IndexOf(args,"--screenshots");if(index<0)return;
-                shell.DeveloperToggle.ButtonPressed=false;shell.GetNode<TabContainer>("%DeskTabs").CurrentTab=2;
+                shell.DeveloperToggle.ButtonPressed=false;shell.ShowMarket();
                 await Layout();
                 shell.AwardScroll.EnsureControlVisible(focus);
                 await Layout();

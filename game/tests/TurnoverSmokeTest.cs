@@ -58,7 +58,7 @@ public partial class TurnoverSmokeTest : Node
                 shell.TurnoverNext.EmitSignal(Button.SignalName.Pressed);
                 Require(shell.Session.StateHash == hash, "Reading and moving between paragraphs is read-only.");
             }
-            Require(!shell.ReadingTurnover && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 6 && shell.RequestOpenButtons.Count > 0, "Turnover ends with the first customer messages, with their card behind Open.");
+            Require(!shell.ReadingTurnover && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab && shell.RequestOpenButtons.Count > 0, "Turnover ends with the first customer messages, with their card behind Open.");
             Step(shell); expected.AdvanceDay();
             Require(shell.Session.StateHash == expected.StateHash(), "First day uses precisely the selected preparations.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

@@ -28,7 +28,7 @@ public partial class PerformanceSmokeTest : Node
             Require(shell.PerformanceRows.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text == record.Text), "Persistent inbox row shows the original issue record.");
             var hash = shell.Session.StateHash;
             shell.PerformanceChoices[(issue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
-            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 2 && shell.CurrentActionEditor!.SiteId == issue.SiteId && shell.CurrentActionEditor.CapabilityId == issue.CapabilityId, "Re-source opens the matching action editor.");
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab && shell.CurrentActionEditor!.SiteId == issue.SiteId && shell.CurrentActionEditor.CapabilityId == issue.CapabilityId, "Re-source opens the matching action editor.");
             Require(shell.Session.StateHash == hash && shell.Session.IsReplay, "Opening re-source neither changes Sim nor takes control.");
             var result = expected.Apply(new CureNoticeAction { Day = expected.Day, Issue = issue.Id });
             Require(result.Accepted, "Cure fixture is accepted.");

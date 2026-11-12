@@ -20,7 +20,7 @@ public partial class LedgerSmokeTest : Node
             while (true)
             {
                 var view = shell.Session.View!;
-                var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
+                var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents");
                 var funds = ledger.GetChildren().OfType<Label>().Where(l => l.HasMeta("funding")).ToArray();
                 Require(funds.Length == view.Funding.Count, "Every funding line is shown exactly once.");
                 foreach (var funding in view.Funding)

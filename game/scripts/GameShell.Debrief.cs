@@ -27,7 +27,7 @@ public partial class GameShell
     private void RefreshDebriefLayout()
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        var reading = session.View?.Finished == true && tabs.CurrentTab == 8;
+        var reading = session.View?.Finished == true && tabs.CurrentTab == DebriefTab;
         GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").Visible = !reading;
         GetNode<Control>("Margin/Layout/TopStrip").Visible = !reading;
         tabs.TabsVisible = !reading;
@@ -35,6 +35,9 @@ public partial class GameShell
 
     private void RefreshDebrief(SessionView? view)
     {
+        var tabs = GetNode<TabContainer>("%DeskTabs");
+        if (view?.Finished != true && tabs.CurrentTab == DebriefTab) tabs.CurrentTab = TodayTab;
+        tabs.SetTabHidden(DebriefTab, view?.Finished != true);
         RefreshDebriefLayout();
         if (view?.Finished != true)
         {
@@ -48,7 +51,7 @@ public partial class GameShell
         var report = DisplayedDebrief = view.Debrief();
         DeskUi.Clear(debriefPanel);
         var navigation = new HBoxContainer(); debriefPanel.AddChild(navigation);
-        navigation.AddChild(DeskUi.Button("Back to the map", () => GetNode<TabContainer>("%DeskTabs").CurrentTab = 0));
+        navigation.AddChild(DeskUi.Button("Back to the map", () => GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab));
         var sender = new HBoxContainer(); sender.AddThemeConstantOverride("separation", 20); debriefPanel.AddChild(sender);
         if (report.Summary?.From is { } person)
         {
@@ -68,7 +71,7 @@ public partial class GameShell
         DebriefRecordButton = DeskUi.Button("The full record", () => DebriefFullRecord.Visible = !DebriefFullRecord.Visible);
         debriefPanel.AddChild(DebriefRecordButton); debriefPanel.AddChild(DebriefFullRecord);
         BuildDebriefRecord(DebriefFullRecord, view, report);
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 8;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = DebriefTab;
         RefreshDebriefLayout();
         ((ScrollContainer)debriefPanel.GetParent()).ScrollVertical = 0;
     }

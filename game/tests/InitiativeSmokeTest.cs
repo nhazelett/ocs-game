@@ -12,7 +12,7 @@ public partial class InitiativeSmokeTest : Node
         try
         {
             var shell = Shell(this);
-            shell.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
+            shell.DeveloperToggle.ButtonPressed = false; shell.ShowMarket();
             var view = shell.Session.View!; var hash = shell.Session.StateHash;
             var card = shell.CurrentActionEditor!.CardId!;
             Require(card is not null && shell.InitiativeTargetInput is null, "A customer request opens first with no unrelated targets.");

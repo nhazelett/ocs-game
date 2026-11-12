@@ -45,10 +45,8 @@ public partial class GameShell
     private void BuildBpaDesk()
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        var page = tabs.GetNode<Control>("Directory");
+        var page = tabs.GetNode<Control>("Vendors");
         tabs.SetTabTitle(page.GetIndex(), "Vendors");
-        // Keep stable internal tab indices for navigation; this obsolete surface is unreachable.
-        tabs.SetTabHidden(tabs.GetNode<Control>("Vehicles").GetIndex(), true);
         VendorCardsBox = DeskUi.Panel(page, "VendorCards");
         vendorCardsScroll = (ScrollContainer)VendorCardsBox.GetParent();
         bpaForm = DeskUi.Pane(page, "VendorSetup", out vendorSetupFooter);

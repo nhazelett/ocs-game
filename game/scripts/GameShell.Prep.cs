@@ -79,7 +79,7 @@ public partial class GameShell
         for (var i = 1; i < tabs.GetTabCount(); i++) tabs.SetTabDisabled(i, preparing);
         if (preparing)
         {
-            tabs.CurrentTab = 0;
+            tabs.CurrentTab = TodayTab;
             GetNode<Label>("%DayCounter").Text = "Pre-deployment";
         }
         RefreshOpeningVisibility();

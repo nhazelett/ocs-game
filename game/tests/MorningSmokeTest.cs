@@ -37,12 +37,12 @@ public partial class MorningSmokeTest : Node
             Require(map.SelectedSite == tile.SiteId && shell.SelectedCapability == "spokeBSite.power", "Capability link selects the actual tile and highlights its site.");
             var card = shell.Session.View.Cards.First();
             shell.NavigateBoardItem(new BoardItem("test", 10, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, card.Id, "", []));
-            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 1 && shell.SelectedCard == card.Id, "Card link opens the selected requirement.");
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab && shell.SelectedCard == card.Id, "Card link opens the selected requirement.");
             var arrangement = shell.Session.View.Arrangements.First();
             shell.NavigateBoardItem(new BoardItem("test", 10, BoardCategory.Delivery, BoardSeverity.Info, BoardLinkKind.Arrangement, arrangement.Id, "", []));
-            var rows = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents").GetChildren().OfType<Button>();
-            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 5 && rows.Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == arrangement.Id).ButtonPressed, "Arrangement link opens and selects its real ledger row.");
-            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            var rows = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents").GetChildren().OfType<Button>();
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.PaymentsTab && rows.Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == arrangement.Id).ButtonPressed, "Arrangement link opens and selects its real ledger row.");
+            shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshot");
             if (shot >= 0)
             {
@@ -63,7 +63,7 @@ public partial class MorningSmokeTest : Node
             quiet.ScenarioRootOverride = temporary; AddChild(quiet);
             DeveloperWorkspace(quiet);
             DeployWithoutPrep(quiet);
-            quiet.GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            quiet.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             quiet.DeveloperToggle.ButtonPressed = false;
             shell.Hide();
             var quietHash = quiet.Session.StateHash;

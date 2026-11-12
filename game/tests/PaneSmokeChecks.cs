@@ -12,7 +12,7 @@ internal static class PaneSmokeChecks
         {
             Scenario(shell, "tutorial"); Step(shell, 3);
             shell.DeveloperToggle.ButtonPressed = false;
-            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = 2;
+            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); shell.ShowMarket();
             PickAwardTarget(shell, "tutForklift");
             var hash = shell.Session.StateHash;
             Blocked("Choose an available supplier.");
@@ -33,18 +33,19 @@ internal static class PaneSmokeChecks
             Require(shell.Session.StateHash == stopped, "Forcing a refused award cannot submit.");
             foreach (var i in Enumerable.Range(0, tabs.GetTabCount()))
             {
+                if (tabs.IsTabHidden(i)) continue;
                 tabs.CurrentTab = i; await Frames();
                 var scrolls = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Where(s => s.IsVisibleInTree()).ToArray();
                 Require(scrolls.Length <= 1, "A desk pane has at most one visible scroll, including the full debrief.");
             }
-            tabs.CurrentTab = 0; shell.PeopleToggle.ButtonPressed = true; await Frames();
+            tabs.CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true; await Frames();
             CheckFooter(shell.VisitButtons["finance"]);
             var today = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Single(s => s.IsVisibleInTree());
             today.ScrollVertical = 100000; await Frames(); CheckFooter(shell.VisitButtons["finance"]);
-            tabs.CurrentTab = 1; await Frames(); CheckFooter(shell.RequirementMarketButton);
+            shell.ShowRequests(); await Frames(); CheckFooter(shell.RequirementMarketButton);
             var request = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Single(s => s.IsVisibleInTree());
             request.ScrollVertical = 100000; await Frames(); CheckFooter(shell.RequirementMarketButton);
-            tabs.CurrentTab = 3;
+            tabs.CurrentTab = GameShell.VendorsTab;
             shell.EstablishVendorButtons["harborEquipment"].EmitSignal(Button.SignalName.Pressed);
             await Frames();
             Require(shell.EstablishButton.Disabled, "A vehicle with no scope is refused.");

@@ -53,7 +53,7 @@ public partial class SessionSmokeTest : Node
             if (shot >= 0)
             {
                 Require(shot + 1 < args.Length && DisplayServer.GetName() != "headless", "Screenshot needs a display and path.");
-                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 6;
+                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.InboxTab;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }

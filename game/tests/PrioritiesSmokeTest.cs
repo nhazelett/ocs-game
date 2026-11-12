@@ -124,7 +124,7 @@ public partial class PrioritiesSmokeTest : Node
             {
                 var args = OS.GetCmdlineUserArgs(); var index = Array.IndexOf(args, "--screenshots");
                 if (index < 0) return;
-                shell.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
+                shell.DeveloperToggle.ButtonPressed = false; shell.ShowMarket();
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var toggle = shell.PriorityInputs["fast"];
                 var scroll = shell.AwardScroll;

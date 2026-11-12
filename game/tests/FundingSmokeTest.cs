@@ -24,7 +24,7 @@ public partial class FundingSmokeTest : Node
             {
                 var view = shell.Session.View!;
                 var hash = shell.Session.StateHash;
-                var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
+                var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents");
                 foreach (var line in view.Funding)
                 {
                     var row = ledger.GetChildren().OfType<Label>().Single(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == line.Id);
@@ -44,7 +44,7 @@ public partial class FundingSmokeTest : Node
                     var button = shell.MorningItems.GetChildren().OfType<Button>().Single(b => b.Text.EndsWith(item.Text));
                     Require(!button.Disabled, "Funding notice is clickable.");
                     button.EmitSignal(Button.SignalName.Pressed);
-                    Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == 5, "Notice opens Ledger.");
+                    Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.PaymentsTab, "Notice opens Ledger.");
                     if (view.Funding.Any(f => f.Id == item.LinkId))
                     {
                         Require(shell.SelectedFunding == item.LinkId, "Notice selects its actual funding line.");
@@ -92,7 +92,7 @@ public partial class FundingSmokeTest : Node
             var wrong = Index(purposeShell.FundingInput, "om1");
             Require(purposeShell.FundingInput.IsItemDisabled(wrong) && purposeShell.FundingInput.GetItemTooltip(wrong)==purposeShell.CurrentAwardChoices!.Funding.Single(f=>f.Id=="om1").Reason, "Wrong-purpose line is greyed with its purpose reason even while usable.");
             Require(purposeShell.AwardButton.Disabled && purposeShell.PendingAward is null, "All unavailable funding is explained before an award preview.");
-            var purposeLedger = purposeShell.GetNode<TabContainer>("%DeskTabs").GetNode("Ledger/LedgerContext/Contents");
+            var purposeLedger = purposeShell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents");
             Require(purposeLedger.GetChildren().OfType<Label>().Any(l => l.HasMeta("funding") && l.GetMeta("funding").AsString() == "om1" && l.Text.Contains("Purpose: fuel")), "Ledger shows the restricted purpose.");
             var before = purposeShell.Session.StateHash;
             PickAwardTarget(purposeShell, "hubSite.fuel");

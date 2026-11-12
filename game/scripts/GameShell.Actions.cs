@@ -36,6 +36,7 @@ public partial class GameShell
     internal SpinBox DurationInput => durationInput;
     internal SpinBox StartInput => startInput;
     internal Button AwardButton => awardButton;
+    internal Button AwardBackButton { get; private set; } = null!;
     internal Label AwardTiming => previewTiming;
     internal Label AwardCost => previewCost;
     internal Label AwardBlockedReason { get; private set; } = null!;
@@ -57,7 +58,7 @@ public partial class GameShell
 
     private void BuildActionDesk()
     {
-        var body = DeskUi.Pane(GetNode<TabContainer>("%DeskTabs").GetNode<Control>("Actions"), "AwardEditor", out awardFooter);
+        var body = DeskUi.Pane(GetNode<TabContainer>("%DeskTabs").GetNode<Control>("Requests/Market"), "AwardEditor", out awardFooter);
         awardPanel = new VBoxContainer { Name = "Inputs" }; body.AddChild(awardPanel);
         awardPanel.AddThemeConstantOverride("separation", 10);
         previewPanel = new VBoxContainer { Name = "Quote" }; body.AddChild(previewPanel);
@@ -125,6 +126,8 @@ public partial class GameShell
                 SendAction(action);
             }
         });
+        var back = AwardBackButton = DeskUi.Button("Back to requests", ShowRequests);
+        awardFooter.AddChild(back);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         SupplierKnowledge = null;
@@ -136,6 +139,7 @@ public partial class GameShell
         void ChooseTarget(string id)
         {
             if (formVersion != awardFormVersion || formHash != session.StateHash) return;
+            SelectedCard = targets.Single(t => t.Id == id).Card;
             awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
             awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
         }
@@ -264,9 +268,18 @@ public partial class GameShell
         }
     }
 
+    private void GoToOwnInitiative()
+    {
+        if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay) return;
+        ResetAwardForm(); awardTarget = AwardTargets(view).FirstOrDefault(t => t.Card is null)?.Id;
+        RefreshActionDesk(view); ShowMarket();
+    }
+
     private void GoToMarket(string card)
     {
+        if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay
+            || !view.Cards.Any(c => c.Id == card)) return;
         ResetAwardForm(); awardTarget = card; SelectedCard = card;
-        RefreshActionDesk(session.View); GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
+        RefreshActionDesk(session.View); ShowMarket();
     }
 }

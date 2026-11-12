@@ -7,6 +7,7 @@ namespace LinesOfSupport.Game;
 
 public partial class GameShell
 {
+    internal Button RequestInitiativeButton { get; private set; } = null!;
     internal Button RequirementMarketButton { get; private set; } = null!;
     internal Dictionary<string, Button> RequirementAskButtons { get; } = new(StringComparer.Ordinal);
     internal Dictionary<string, Button> RequirementAddButtons { get; } = new(StringComparer.Ordinal);
@@ -16,6 +17,10 @@ public partial class GameShell
         DeskUi.Clear(linkedRequirement); DeskUi.Clear(requirementFooter); RequirementAskButtons.Clear(); RequirementAddButtons.Clear();
         var scroll = (ScrollContainer)linkedRequirement.GetParent();
         scroll.FollowFocus = true;
+        var initiative = RequestInitiativeButton = DeskUi.Button("Buy on your own initiative", GoToOwnInitiative);
+        var initiativeReason = DeskUi.ActionReason(requirementFooter, initiative);
+        DeskUi.Gate(initiative, initiativeReason, view is null ? "Start a deployment to buy support."
+            : view.Finished ? DeskUi.FinishedReason : null);
         var cards = view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<RequirementEditorView>().ToArray() ?? [];
         if (cards.Length == 0) { linkedRequirement.AddChild(DeskUi.Label("No submitted requirements are available.")); return; }
         if (!cards.Any(c => c.CardId == SelectedCard)) SelectedCard = cards[0].CardId;

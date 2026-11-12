@@ -80,7 +80,7 @@ public partial class GameShell
             Map.ShowScenario(data);
             GetNode<OptionButton>("%ScenarioPicker").Select(index);
             SetReplays(replayPaths);
-            GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+            GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
             RefreshDisplay(DeveloperTools ? $"Resumed {Path.GetFileName(path)}. Your saved decisions are applied; future days are yours to play." : "Your saved deployment is ready. Pick up where you left off.");
             ShowGameSurface();
         }

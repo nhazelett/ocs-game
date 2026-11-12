@@ -64,7 +64,7 @@ public partial class GameShell
             else if (issue is not null && PerformanceChoices.TryGetValue((issue.Id, "resource"), out var resource)) target = resource;
             if (target is not null)
             {
-                GetNode<TabContainer>("%DeskTabs").CurrentTab = 6;
+                GetNode<TabContainer>("%DeskTabs").CurrentTab = InboxTab;
                 GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(target);
                 target.GrabFocus(); return;
             }
@@ -76,7 +76,7 @@ public partial class GameShell
     private void FocusNewMorning()
     {
         BoardDetailsToggle.ButtonPressed = false;
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
     }
 
     private static string StatusWords(string status) => status switch

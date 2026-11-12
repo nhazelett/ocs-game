@@ -100,7 +100,7 @@ public partial class GameShell
         if (index < 0) return;
         GetNode<OptionButton>("%ScenarioPicker").Select(index); LoadScenario(index);
         if (session.Prep is null) { frontMessage.Text = "We couldn't open this deployment. Please choose another."; return; }
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         ShowGameSurface();
     }
 

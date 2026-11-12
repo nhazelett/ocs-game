@@ -152,7 +152,7 @@ public partial class GameShell
     {
         if (session.View is not { Finished: false } view) return;
         visitContact = "j4"; j4Site = site; j4Quantity = null;
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         PeopleToggle.ButtonPressed = true; RefreshVisits(view, view.MorningBoard());
         var quantity = J4QuantityInput;
         Callable.From(() =>
@@ -189,7 +189,7 @@ public partial class GameShell
     private void FocusPerson(BoardItem item)
     {
         if (session.View is not { } view) return;
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = 0;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         var contact = contactPeople.FirstOrDefault(c => c.Value == item.LinkId).Key;
         if (contact is not null) visitContact = contact;
         PeopleToggle.ButtonPressed = true; RefreshVisits(view, view.MorningBoard());
