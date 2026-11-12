@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Policies;
+using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Sim.Tests;
 
@@ -50,6 +51,15 @@ public class NoLineWordTests
             s.AdvanceDay();
         }
         Assert.True(seen > 0, "every scenario has at least one request with a part that can be left out");
+    }
+
+    [Fact]
+    public void The_debrief_labels_never_call_a_part_of_a_buy_a_line()
+    {
+        // The game shows DebriefWords.Factor as the heading of each thing that contributed to a gap.
+        foreach (var kind in Enum.GetValues<GapFactorKind>())
+            Assert.Empty(LineWords(DebriefWords.Factor(kind)));
+        Assert.Equal("A supply was left out of the buy", DebriefWords.Factor(GapFactorKind.MissingSupplyLine));
     }
 
     public static IEnumerable<object[]> ScenarioIds() => Scenarios.Select(sc => new object[] { sc });

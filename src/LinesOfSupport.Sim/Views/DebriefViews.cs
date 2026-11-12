@@ -88,7 +88,7 @@ public static class DebriefWords
     public static string Factor(GapFactorKind kind) => kind switch
     {
         GapFactorKind.Dependency => "Went down with another gap",
-        GapFactorKind.MissingSupplyLine => "A supply line was left off",
+        GapFactorKind.MissingSupplyLine => "A supply was left out of the buy",   // DESK-36: no "line" in what the player reads
         GapFactorKind.Uncovered => "Nothing covered it",
         GapFactorKind.CoordinationWithdrawn => "A coordination fell through",
         GapFactorKind.HandshakeLost => "A handshake fell through",
