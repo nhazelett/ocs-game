@@ -118,7 +118,7 @@ Day 14
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
@@ -208,7 +208,7 @@ Day 28
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
   START     Fuel at Spoke B from the other unit began, 780 gal/day.
   START     Food service at Spoke B from the other unit began, 780 meals/day.
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   FAIL      The partner force water at Spoke A missed today's delivery.
   FAIL      The other unit's food service at Spoke B missed today's delivery.
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
@@ -263,8 +263,8 @@ Day 36
   END       Island Provisions food service at Spoke B ended.
   FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down.
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   FAIL      The other unit's food service at Spoke B missed today's delivery.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
@@ -288,7 +288,7 @@ Day 38
   DEFINITZD Harbor Equipment Co material handling equipment at Spoke C definitized at $11,880; obligation caps lifted; fully funded from the O&M line good through day 45.
   DONE      CE small buys: 8 worked today (4 h of shop time, 8 on cards).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
@@ -357,8 +357,8 @@ Day 47
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   START     Fuel at Spoke C from the other unit began, 630 gal/day.
   START     Water at Spoke A from the other unit began, 3300 gal/day.
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   FAIL      The other unit's food service at Spoke B missed today's delivery.
   OK        Ground transport at Hub restored to 100%.
   OK        Power at Spoke A restored to 100%.
@@ -378,13 +378,13 @@ Day 48
   OK        Food service at Spoke B restored to 100%.
 Day 49
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   FAIL      The other unit's food service at Spoke B missed today's delivery.
   FAIL      The other unit's water at Spoke A missed today's delivery.
   COMPLY    Harbor Equipment Co cured the performance issue with Harbor Equipment Co on power at Spoke B: the cure period ended with a corrective plan in place (1 failure day during the period). Performance is back to standard.
 Day 50
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   FAIL      The other unit's food service at Spoke B missed today's delivery.
   FAIL      The other unit's water at Spoke A missed today's delivery.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 46, reported 4 days later.
@@ -401,7 +401,7 @@ Day 52
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      North Island Power and Light power at Spoke A had equipment down.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   OK        Ground transport at Hub restored to 100%.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
@@ -426,12 +426,12 @@ Day 55
 Day 56
   DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 52, reported 4 days later.
 Day 57
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   FAIL      The other unit's fuel at Spoke B missed today's delivery.
 Day 58
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
@@ -445,7 +445,7 @@ Day 59
 Day 60
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance line, no operators line).
+  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   CONFUSED  Execution confusion on Harbor Equipment Co material handling equipment at Spoke C: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
   OK        Waste removal at Hub restored to 100%.
 
@@ -506,15 +506,15 @@ GAPS AND WHY (each traced back through its causes)
           <- day 13: North Island Power and Light power at Spoke A had equipment down.
               <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 15: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 15: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 15: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 15: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 15: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 15: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 15: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 15: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 15: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 15: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 15: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 26: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 26: Main Island Motor Pool Rentals ground transport at Hub had equipment down.
@@ -540,17 +540,17 @@ GAPS AND WHY (each traced back through its causes)
       <- day 26: Third Island Camp Services lodging at Spoke C had equipment down.
           <- day 0: Inherited: Lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60.
   Day 28: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 28: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 28: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 28: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 28: The other unit's food service at Spoke B missed today's delivery.
           <- day 16: Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
       <- day 28: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 30: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
       <- day 30: Main Island Sanitation waste removal at Hub had equipment down.
@@ -560,29 +560,29 @@ GAPS AND WHY (each traced back through its causes)
       <- day 36: Main Island Motor Pool Rentals ground transport at Hub had equipment down.
           <- day 5: Written purchase order started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers, Maintenance); quoted $80,640.
   Day 36: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 36: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 36: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 36: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 36: The other unit's food service at Spoke B missed today's delivery.
           <- day 27: Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
       <- day 36: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 38: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 38: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 38: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 38: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 38: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 38: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 38: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 38: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 36: Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
       <- day 38: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 38: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 38: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 38: Fuel at Spoke C degraded to 80%: fuel on hand ran out.
   Day 38: Material handling equipment at Spoke C degraded to 80%: fuel at 80%.
@@ -605,17 +605,17 @@ GAPS AND WHY (each traced back through its causes)
           <- day 46: North Island Power and Light power at Spoke A had equipment down.
               <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 47: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 47: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 47: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 47: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 47: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 47: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 47: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 47: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 47: The other unit's food service at Spoke B missed today's delivery.
           <- day 37: Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
       <- day 47: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 47: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 47: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 16: Written purchase order started with Harbor Equipment Co: Power at Spoke B, 400 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $27,600.
   Day 51: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 51: Main Island Motor Pool Rentals ground transport at Hub had equipment down.
@@ -680,17 +680,17 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #16 spokeBSite.fuel days 26-26, lowest 56%, 0 day(s) down: AVOIDABLE
       [avoidable] Second Island Fuel fuel at Spoke B failed on day 26 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (poor) did not report it.
   #17 spokeBSite.power days 15-15, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 15) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 17.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 15) and was bought without operators; its failure odds were higher every day it ran. The COR reported it on day 17.
   #18 spokeBSite.power days 26-26, lowest 56%, 0 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #16)
   #19 spokeBSite.power days 28-28, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 28) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 30.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 28) and was bought without operators; its failure odds were higher every day it ran. The COR reported it on day 30.
   #20 spokeBSite.power days 36-36, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 36) and had no operators line; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: cure notice day 39, cured.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 36) and was bought without operators; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: cure notice day 39, cured.
   #21 spokeBSite.power days 38-38, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 38) and had no operators line; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: cure notice day 39, cured.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 38) and was bought without operators; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: cure notice day 39, cured.
   #22 spokeBSite.power days 47-47, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 47) and had no operators line; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: cure notice day 39, cured.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 47) and was bought without operators; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: cure notice day 39, cured.
   #23 spokeBSite.lodging days 7-7, lowest 51%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full operator and maintenance coverage. The COR reported it on day 9.
   #24 spokeBSite.lodging days 15-15, lowest 64%, 0 day(s) down: AVOIDABLE
@@ -756,7 +756,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Material handling equipment depends on fuel, which was short. (see #37)
   #43 spokeCSite.mhe days 51-52, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] Material handling equipment depends on fuel, which was short. (see #38)
-      [avoidable] Harbor Equipment Co material handling equipment at Spoke C failed (first on day 52) and had no operators or maintenance line; its failure odds were higher every day it ran.
+      [avoidable] Harbor Equipment Co material handling equipment at Spoke C failed (first on day 52) and was bought without operators or maintenance; its failure odds were higher every day it ran.
 
 PASS CRITERIA
   [met] Spoke A power never down more than two days (site.spokeASite.power.downDays = 0)
@@ -765,4 +765,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.914)
 
-State hash 5ad17a3308f62edddcc1b25ad0245914527d411d9f41680ae24bad83e3061aaf
+State hash c09b52542dbcef81af2e5a333e5e707f2682f474a715a0b1747abea07e1cfebc

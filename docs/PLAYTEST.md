@@ -4,7 +4,7 @@ For Nick, after the desk redesign (docs/design/desk-redesign.md). The same cold-
 
 1. Get the build as below (Get the build). Leave Developer tools off.
 2. New game, Tutorial. Play as you did on 10 Nov, as far as you like; the full twenty days if you can.
-3. Write down every moment you did not know what you were looking at or what to do next, with the day and the screen. Your ten findings from 10 Nov are in the design doc, section 1; the pre-gate walk (docs/reviews/2026-11-11-desk-pre-gate.md) says what each one should look like now.
+3. Write down every moment you did not know what you were looking at or what to do next, with the day and the screen. Your ten findings from 10 Nov are in the design doc, section 1; the pre-gate walk (docs/reviews/2026-11-11-desk-pre-gate.md) says what each one should look like now. Your findings from the 12 Nov play are in section 6: since then each pane scrolls as one piece with its button at the bottom, a greyed button says why directly under it, the desk has five tabs that fit (Today, Requests, Vendors, Payments, Inbox), and Today lists where each request stands. Check those first.
 
 The gate question: does the desk make sense without help? Yes: the paused work resumes (Spoke B gets the team, the port-to-port shipper, better island art). No: say where, and that is redesigned first. Tell Fable in chat.
 

@@ -83,7 +83,7 @@ Day 14
   CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
   END       Coastal Provisions water at Spoke C terminated; performance ends day 14.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff).
 Day 15
   ACTION    Termination of Coastal Provisions food service at Spoke C started.
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
@@ -138,12 +138,12 @@ Day 24
   DONE      CE small buys: 6 worked today (3 h of shop time, 6 on cards).
 Day 25
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 26
   EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 27. A coordination is not a contract.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
   OBLIGATE  Third Island Water Works food service at Spoke C has incurred $116,160 against $114,998 obligated: the UCA obligation cap of 50% of NTE is reached. The vendor stops work in 3 days if this stands.
   UCA-DUE   Third Island Water Works food service at Spoke C is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 27
@@ -214,4 +214,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.925)
 
-State hash d1ae9e157dcd873b9bf36c5cdc15da08e3ef83ddb19334d65406b7bcd14b59be
+State hash 1258cfd1d9b1824348906d0a8156798f145ed7e23774e880b5653ff51a448ab4

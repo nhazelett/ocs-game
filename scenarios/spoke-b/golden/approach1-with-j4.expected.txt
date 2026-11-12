@@ -37,7 +37,7 @@ Day 5
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
   START     Fuel at Spoke B from the partner force began, 1300 gal/day.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
@@ -50,10 +50,10 @@ Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
   INBOX     Performance issue: Coastal Provisions under-delivered on water at Spoke C on days 10 and 11. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -175,4 +175,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.877)
 
-State hash 892307105e415cb49c430d331895c76128f1305625a9320eb632456b4abe6f9c
+State hash 2f662bc16fc250851f50898ee990b89cbdc03e9846d3eda9fd2ee0bdedc19bc1

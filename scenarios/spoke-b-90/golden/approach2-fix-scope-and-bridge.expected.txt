@@ -104,7 +104,7 @@ Day 29
   FAIL      The partner force fuel at Hub missed today's delivery.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 30.
 Day 31
@@ -114,12 +114,12 @@ Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 36
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 37
@@ -152,7 +152,7 @@ Day 45
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 46
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 47
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 48
@@ -171,7 +171,7 @@ Day 52
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 53
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 55
@@ -180,10 +180,10 @@ Day 56
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 57
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 58
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
 Day 59
@@ -204,7 +204,7 @@ Day 63
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 64
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 65
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -217,7 +217,7 @@ Day 66
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 68
   EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
@@ -232,7 +232,7 @@ Day 71
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 72
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 73
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -246,13 +246,13 @@ Day 76
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 77
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 80
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -317,7 +317,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 21: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 24: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 30: Power at Spoke B down to 38%: supply 180 kW against demand 468.
-      <- day 30: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 30: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment, Maintenance and repair); quoted $49,680.
   Day 31: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 37: Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -333,11 +333,11 @@ GAPS AND WHY (each traced back through its causes)
       <- day 51: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 52: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 58: Fuel at Spoke B down to 0%: fuel on hand ran out.
-      <- day 58: Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+      <- day 58: Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
           <- day 19: Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   Day 58: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
       <- day 58: Fuel at Spoke B down to 0%: fuel on hand ran out.
-          <- day 58: Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+          <- day 58: Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
               <- day 19: Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   Day 59: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 61: Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -351,7 +351,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 67: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 71: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 79: Fuel at Spoke B down to 0%: fuel on hand ran out.
-      <- day 79: Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage line).
+      <- day 79: Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
           <- day 19: Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   Day 82: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 86: Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -359,7 +359,7 @@ GAPS AND WHY (each traced back through its causes)
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 17-19, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] The coordination for fuel at Spoke B was withdrawn on day 12 and nothing contractual was in place behind it. A coordination can be withdrawn at any time; it is not a contract.
-      [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
+      [avoidable] Harbor Equipment Co power at Spoke B was bought without generator fuel supply, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
   #1 spokeBSite.fuel days 21-23, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
@@ -371,17 +371,17 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
   #5 spokeBSite.fuel days 58-58, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 58) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 58) and was bought without on-site storage; its failure odds were higher every day it ran.
   #6 spokeBSite.fuel days 61-61, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
   #7 spokeBSite.fuel days 65-65, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
   #8 spokeBSite.fuel days 71-72, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 72) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 72) and was bought without on-site storage; its failure odds were higher every day it ran.
   #9 spokeBSite.fuel days 79-79, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 79) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Port Fuel Haulers fuel at Spoke B failed (first on day 79) and was bought without on-site storage; its failure odds were higher every day it ran.
   #10 spokeBSite.fuel days 82-82, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. The survey on day 3 showed that dependency.
   #11 spokeBSite.fuel days 86-86, lowest 0%, 1 day(s) down: AVOIDABLE
@@ -390,7 +390,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 30) and had no operators line; its failure odds were higher every day it ran.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 30) and was bought without operators; its failure odds were higher every day it ran.
       [avoidable] Power depends on fuel, which was short. (see #2)
       [avoidable] Power depends on fuel, which was short. (see #3)
       [avoidable] Power depends on fuel, which was short. (see #4)
@@ -410,4 +410,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.774)
 
-State hash e12f43ef9828cef1591acf7c87789045c2afb0a65f637b9a4eafa6a2814539eb
+State hash aab562ebf2691fbdb6656c7766f9e12ae0f73f3b1dfe95be46925d5d77b72986

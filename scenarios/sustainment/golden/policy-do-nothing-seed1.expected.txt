@@ -110,7 +110,7 @@ Day 22
   SHORT     Comms backhaul at Spoke A down to 0%: no arrangement supplies comms backhaul.
 Day 23
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
@@ -353,15 +353,15 @@ GAPS AND WHY (each traced back through its causes)
               <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 22: Comms backhaul at Spoke A down to 0%: no arrangement supplies comms backhaul.
   Day 23: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-      <- day 23: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+      <- day 23: Harbor Equipment Co power at Spoke B had equipment down (no operators).
           <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 23: Lodging at Spoke B degraded to 64%: power at 64%.
       <- day 23: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 23: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 23: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 23: Food service at Spoke B degraded to 64%: power at 64%.
       <- day 23: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
-          <- day 23: Harbor Equipment Co power at Spoke B had equipment down (no operators line).
+          <- day 23: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 25: Ground transport at Hub down to 0%: no arrangement supplies ground transport.
   Day 27: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
@@ -487,7 +487,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #15 spokeBSite.fuel days 49-49, lowest 28%, 1 day(s) down: DISCOVERABLE
       [discoverable] Second Island Fuel fuel at Spoke B failed on day 49 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #16 spokeBSite.power days 23-23, lowest 64%, 0 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 23) and had no operators line; its failure odds were higher every day it ran. The COR reported it on day 25.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 23) and was bought without operators; its failure odds were higher every day it ran. The COR reported it on day 25.
   #17 spokeBSite.power days 27-60, lowest 0%, 33 day(s) down: AVOIDABLE
       [discoverable] Power depends on fuel, which was short. (see #12)
       [avoidable] Nothing supplied power at Spoke B; the site and its population were in the plan from day 1.
@@ -538,4 +538,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.559)
 
-State hash 65f04955c4dc3031d0bfab115ade4552adb7af23675a22fb4d199965764c8a7f
+State hash 9d6cca7c92365058b9f3937b47844283f80799000068dc4243249c3a8f88f5c2

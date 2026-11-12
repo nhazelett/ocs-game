@@ -79,7 +79,7 @@ Day 21
 Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage line).
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage).
 Day 23
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
@@ -162,7 +162,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and had no on-site storage line; its failure odds were higher every day it ran.
+      [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and was bought without on-site storage; its failure odds were higher every day it ran.
   #2 spokeBSite.power days 7-30, lowest 0%, 22 day(s) down: AVOIDABLE
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Harbor Equipment Co power at Spoke B did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
@@ -183,4 +183,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash 922eb77b89018e5d4069a99d309d9d9585d62548bc19d3a55bd5bfdcef436ff2
+State hash 3f7b356a1b0e010946c7482bde13115fc2983a0d4be45021aa0b0cb9a663071e

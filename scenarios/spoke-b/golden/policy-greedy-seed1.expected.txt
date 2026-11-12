@@ -32,7 +32,7 @@ Day 5
 Day 6
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Water at Spoke C from Coastal Provisions began, 1800 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 7
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 324 kW/day.
@@ -53,10 +53,10 @@ Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Food service at Spoke C from Coastal Provisions began, 360 meals/day.
   START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
-  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
@@ -96,20 +96,20 @@ Day 20
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff).
 Day 21
   COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
   SHORT     Food service at Spoke C down to 18%: food service on hand ran out; water at 75%.
 Day 22
   DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
   DONE      CE small buys: 14 worked today (7 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
 Day 23
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
   INBOX     Performance issue: Coastal Provisions under-delivered on water at Spoke C on days 22 and 23. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
@@ -117,7 +117,7 @@ Day 24
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair line, no operators line).
+  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 26
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
@@ -127,20 +127,20 @@ Day 26
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
   START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
-  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery (no food service staff).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   SHORT     Water at Spoke C down to 0%: water on hand ran out.
   SHORT     Food service at Spoke C down to 0%: food service on hand ran out; water at 0%.
 Day 28
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 29
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 Day 30
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -185,11 +185,11 @@ GAPS AND WHY (each traced back through its causes)
       <- day 10: Power at Spoke B down to 0%: fuel at 0%.
           <- day 10: Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   Day 13: Water at Spoke C down to 0%: water on hand ran out.
-      <- day 13: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+      <- day 13: Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
           <- day 1: Written purchase order started with Coastal Provisions: Water at Spoke C, 1800 gal/day for 60 days (Potable water supply); quoted $43,200.
   Day 13: Food service at Spoke C down to 0%: water at 0%.
       <- day 13: Water at Spoke C down to 0%: water on hand ran out.
-          <- day 13: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+          <- day 13: Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
               <- day 1: Written purchase order started with Coastal Provisions: Water at Spoke C, 1800 gal/day for 60 days (Potable water supply); quoted $43,200.
   Day 15: Fuel at Spoke B degraded to 88%: fuel on hand ran out.
   Day 15: Power at Spoke B degraded to 88%: fuel at 88%.
@@ -211,20 +211,20 @@ GAPS AND WHY (each traced back through its causes)
   Day 21: Food service at Spoke C down to 18%: food service on hand ran out; water at 75%.
       <- day 15: Water at Spoke C degraded to 75%: water on hand ran out.
   Day 22: Water at Spoke C down to 0%: water on hand ran out.
-      <- day 22: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+      <- day 22: Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
           <- day 1: Written purchase order started with Coastal Provisions: Water at Spoke C, 1800 gal/day for 60 days (Potable water supply); quoted $43,200.
   Day 24: Water at Spoke C degraded to 53%: water on hand ran out.
   Day 26: Food service at Spoke C degraded to 53%: water at 53%.
       <- day 24: Water at Spoke C degraded to 53%: water on hand ran out.
   Day 27: Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   Day 27: Water at Spoke C down to 0%: water on hand ran out.
-      <- day 27: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+      <- day 27: Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
           <- day 1: Written purchase order started with Coastal Provisions: Water at Spoke C, 1800 gal/day for 60 days (Potable water supply); quoted $43,200.
   Day 27: Food service at Spoke C down to 0%: food service on hand ran out; water at 0%.
-      <- day 27: Coastal Provisions food service at Spoke C missed today's delivery (no food service staff line).
+      <- day 27: Coastal Provisions food service at Spoke C missed today's delivery (no food service staff).
           <- day 3: Written purchase order started with Coastal Provisions: Food service at Spoke C, 360 meals/day for 30 days (Meal service); quoted $97,200.
       <- day 27: Water at Spoke C down to 0%: water on hand ran out.
-          <- day 27: Coastal Provisions water at Spoke C missed today's delivery (no maintenance line, no plant operators line).
+          <- day 27: Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
               <- day 1: Written purchase order started with Coastal Provisions: Water at Spoke C, 1800 gal/day for 60 days (Potable water supply); quoted $43,200.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
@@ -232,13 +232,13 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
-      [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
+      [avoidable] Harbor Equipment Co power at Spoke B was bought without generator fuel supply, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #1 spokeBSite.fuel days 15-30, lowest 0%, 11 day(s) down: AVOIDABLE
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 18.
-      [avoidable] Harbor Equipment Co power at Spoke B was bought without its generator fuel supply line, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
+      [avoidable] Harbor Equipment Co power at Spoke B was bought without generator fuel supply, and nothing else supplied fuel. The dependency checklist on the request for power for Spoke B showed fuel uncovered from day 1.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
   #2 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
@@ -246,16 +246,16 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #3 spokeBSite.power days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #1)
       [avoidable] Arrangements at Spoke B were sized for 324 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 21) and had no operators or maintenance and repair line; its failure odds were higher every day it ran.
+      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 21) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran.
   #4 spokeBSite.lodging days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #2)
   #5 spokeBSite.lodging days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #3)
   #6 spokeCSite.water days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Coastal Provisions water at Spoke C failed (first on day 13) and had no plant operators or maintenance line; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
+      [avoidable] Coastal Provisions water at Spoke C failed (first on day 13) and was bought without plant operators or maintenance; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
   #7 spokeCSite.water days 15-30, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] Arrangements at Spoke C were sized for 1800 gal a day against demand of 2400 a day. Population rose to 160 on day 15, which the plan showed from day 1.
-      [avoidable] Coastal Provisions water at Spoke C failed (first on day 22) and had no plant operators or maintenance line; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
+      [avoidable] Coastal Provisions water at Spoke C failed (first on day 22) and was bought without plant operators or maintenance; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
   #8 spokeCSite.food days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #6)
       [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
@@ -263,7 +263,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Food service depends on water, which was short. (see #7)
       [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 14: Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
       [avoidable] Arrangements at Spoke C were sized for 360 meals a day against demand of 480 a day. Population rose to 160 on day 15, which the plan showed from day 1.
-      [avoidable] Coastal Provisions food service at Spoke C failed (first on day 20) and had no food service staff line; its failure odds were higher every day it ran.
+      [avoidable] Coastal Provisions food service at Spoke C failed (first on day 20) and was bought without food service staff; its failure odds were higher every day it ran.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)
@@ -272,4 +272,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.708)
 
-State hash 7b53be5791cf4a7b95308096d080a19e132c57e92244f74ca11a6beb80901eca
+State hash f4c72151cc596a2ae2aa0908efc6fc83f76abb3f5a96199bf7c86cb23d864b63
