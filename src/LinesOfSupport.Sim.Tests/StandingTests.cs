@@ -88,7 +88,7 @@ public class StandingTests
         var first = s.View.WhereThingsStand()[0];
         Assert.Equal("Power for Spoke B", first.Title);
         Assert.Equal(RequestStanding.Short, first.State);
-        Assert.Equal("Harbor Equipment Co is meant to deliver 360 kW through day 66, but power at Spoke B was at 0% yesterday.", first.Sentence);
+        Assert.Equal("Harbor Equipment Co is meant to deliver 360 kW, but power at Spoke B was at 0% yesterday.", first.Sentence);
     }
 
     [Fact]

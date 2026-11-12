@@ -58,18 +58,18 @@ public sealed partial class Session
             var yesterday = cs is { History.Count: > 0 } ? cs.History[^1] : 1000;
             var trips = Trips(a);
             if (a.Status == ArrangementStatus.Suspended)
-                return Entry(RequestStanding.Short, $"{SupplierName(a)} is on hold; it runs through day {a.EndDay}{More(running.Count)}.{trips}", a.TripAssignee);
+                return Entry(RequestStanding.Short, $"{SupplierName(a)} is on hold{(a.EndDay >= LastDay ? "" : $"; it runs through day {a.EndDay}")}{More(running.Count)}.{trips}", a.TripAssignee);
             if (yesterday < 1000)
                 return Entry(RequestStanding.Short,
-                    $"{SupplierName(a)} is meant to deliver{Amount(a, cap)} through day {a.EndDay}{More(running.Count)}, but {Lower(cap.Label)} at {SiteName(card.SiteId)} was at {yesterday / 10}% yesterday.{trips}", a.TripAssignee);
-            return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)} through day {a.EndDay}{More(running.Count)}.{trips}", a.TripAssignee);
+                    $"{SupplierName(a)} is meant to deliver{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}, but {Lower(cap.Label)} at {SiteName(card.SiteId)} was at {yesterday / 10}% yesterday.{trips}", a.TripAssignee);
+            return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}.{trips}", a.TripAssignee);
         }
         var coming = live.Where(a => a.StartDay > Day).ToList();
         if (coming.Count > 0)
         {
             var a = coming[0];
             return Entry(RequestStanding.Arranged,
-                $"{SupplierName(a)} starts on day {a.StartDay}:{Amount(a, cap)} through day {a.EndDay}{More(coming.Count)}{(a.StartDay > from ? $". It was wanted from day {from}" : "")}.{Trips(a)}", a.TripAssignee);
+                $"{SupplierName(a)} starts on day {a.StartDay}:{Amount(a, cap)}{Through(a.EndDay)}{More(coming.Count)}{(a.StartDay > from ? $". It was wanted from day {from}" : "")}.{Trips(a)}", a.TripAssignee);
         }
 
         var buying = _work.Where(w => w.CompletedDay is null && BuysFor(w, card)).OrderBy(w => w.CreatedDay).FirstOrDefault();
@@ -125,9 +125,45 @@ public sealed partial class Session
     private static string Amount(Arrangement a, Data.CapabilityData cap)
         => a.QuantityMilli > 0 ? $" {a.QuantityMilli / 1000} {Rate(cap)}" : "";
 
+    /// <summary>" through day 8", or nothing for support that runs past the end of the game (host nation, inherited).</summary>
+    private string Through(int end) => end >= LastDay ? "" : $" through day {end}";
+
     private static string More(int count) => count switch { <= 1 => "", 2 => " (and one other arrangement)", _ => $" (and {count - 1} others)" };
 
     /// <summary>An SF 44 paid at each delivery says whose trips they are (DESK-09).</summary>
     private string Trips(Arrangement a) => a.PaidPerDelivery && a.TripAssignee is { } who && a.EndDay >= Day
         ? $" Each delivery is a trip for {MemberName(Member(who))}." : "";
+
+    /// <summary>DESK-32 (D16): what is already in place, or being bought, for this capability at this site on the days an
+    /// award would run, said first in its quote. Buying more than asked is sometimes right (D9); buying it twice by
+    /// accident never is. A soft gap, never a stop.</summary>
+    private List<string> AlreadyInPlace(AwardAction award, string siteId, string capId, int from, int to)
+    {
+        var cap = Cap(capId);
+        var where = $"{Lower(cap.Label)} at {SiteName(siteId)}";
+        var said = new List<string>();
+        foreach (var a in _arrangements.Where(x => x.Id != award.Id && x.SiteId == siteId && x.CapabilityId == capId && Live(x)
+                                                   && x.EndDay >= Day && x.StartDay <= to && x.EndDay >= from).OrderBy(x => x.StartDay))
+            said.Add(a.StartDay <= Day
+                ? $"{SupplierName(a)} already supplies {where},{Amount(a, cap)}{Through(a.EndDay)}; this would be on top of it."
+                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(a.EndDay >= LastDay ? " on" : $" to day {a.EndDay}")}; this would be on top of it.");
+        foreach (var w in _work.Where(x => x.CompletedDay is null).OrderBy(x => x.CreatedDay))
+        {
+            var text = w.Payload switch
+            {
+                AwardPayload p when p.Action.Id != award.Id && p.SiteId == siteId && p.CapabilityId == capId
+                                    && (p.Action.StartDay ?? w.CreatedDay) <= to && (p.Action.StartDay ?? w.CreatedDay) + Math.Max(1, p.Action.DurationDays) - 1 >= from
+                    => $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {p.Action.Quantity} {Rate(cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}; this would be on top of it.",
+                AcsaPayload p when p.SiteId == siteId && p.CapabilityId == capId
+                    => $"{Upper(WhoIs(w.Assignee))} already ordering {where} from {PartnerName}; this would be on top of it.",
+                HostNationPayload p when p.SiteId == siteId && p.CapabilityId == capId
+                    => $"{Upper(WhoIs(w.Assignee))} already asking {HostNationName} for {where}; this would be on top of it.",
+                VisitPayload { Kind: "j4", Extra: EngageJ4Action j } when j.Site == siteId && j.Capability == capId
+                    => $"{Upper(WhoIs(w.Assignee))} already asking the J4 to add {where} to the fuel order; this would be on top of it.",
+                _ => null,
+            };
+            if (text is not null) said.Add(text);
+        }
+        return said;
+    }
 }

@@ -330,7 +330,7 @@ public sealed partial class Session
         var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee));
         var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee));
 
-        var gaps = new List<string>();
+        var gaps = new List<string>(AlreadyInPlace(a, siteId, capId, startMin, startMax + Math.Max(1, a.DurationDays) - 1));   // DESK-32
         var cap = Cap(capId);
         var site = SiteData(siteId);
         var vendor = chk.Vendor!;

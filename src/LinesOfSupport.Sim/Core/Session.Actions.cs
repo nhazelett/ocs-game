@@ -196,7 +196,14 @@ public sealed partial class Session
         // An IDIQ order is binding on the vendor within the ceiling, so it is accepted above the vendor's capacity;
         // the shortfall plays out as a capacity event at delivery (M3-06).
         if (a.Instrument != "idiqOrder" && a.Quantity * 1000 + committed > capacity)
-            stops.Add($"{vendor.Name} can supply {offer.CapacityPerDay:0} {Cap(capId).Unit}/day in total and {committed / 1000} is already committed");
+        {
+            // DESK-32 (D15): say what is left on those days and what to do, not only the fact.
+            var left = Math.Max(0, capacity - committed) / 1000;
+            var rate = Rate(Cap(capId));
+            stops.Add(left > 0
+                ? $"{vendor.Name} can supply {offer.CapacityPerDay:0} {rate} and {committed / 1000} is already committed on those days, so {left} is left. Ask for {left} or less, or buy the rest from someone else."
+                : $"{vendor.Name} can supply {offer.CapacityPerDay:0} {rate} and all of it is already committed on those days. Buy from someone else, or pick days when they are free.");
+        }
         if (vendor.VehicleOnly && a.Instrument is not ("bpaCall" or "idiqOrder")) stops.Add($"{vendor.Name} is reachable only through its vehicle");
 
         if (_standing.TryGetValue(vendor.Id, out var standing) && standing.DeclinesWork)
