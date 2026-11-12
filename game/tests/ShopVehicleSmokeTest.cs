@@ -89,8 +89,8 @@ public partial class ShopVehicleSmokeTest : Node
                 shell.DeveloperToggle.ButtonPressed = false;
                 shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = suffix == "office-purchase" ? 2 : 0;
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-                var scroll = suffix == "office-purchase" ? (ScrollContainer)focus.GetParent().GetParent()
-                    : shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/MorningBoard");
+                var scroll = suffix == "office-purchase" ? shell.AwardScroll
+                    : shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/TodayPane/Body/Body");
                 if (suffix == "office-purchase") scroll.EnsureControlVisible(focus);
                 else scroll.EnsureControlVisible(focus);
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

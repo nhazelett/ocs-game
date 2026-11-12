@@ -225,11 +225,13 @@ public partial class GameShell
                 row.AddChild(picker); WorkAssignees[work.WorkId] = picker;
                 var give = DeskUi.Button("Give them this task", () =>
                     SendAction(new AssignAction { Day = session.View!.Day, Work = work.WorkId, To = target }));
-                give.Disabled = true; row.AddChild(give); WorkAssignButtons[work.WorkId] = give;
+                var assignment = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; row.AddChild(assignment);
+                var reason = DeskUi.ActionReason(assignment, give);
+                DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason : "Choose another teammate for this task."); WorkAssignButtons[work.WorkId] = give;
                 picker.ItemSelected += index =>
                 {
                     target = picker.GetItemMetadata((int)index).AsString();
-                    give.Disabled = view.Finished || target == member.Id;
+                    DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason : target == member.Id ? "Choose another teammate for this task." : null);
                 };
                 picker.Disabled = view.Finished;
             }

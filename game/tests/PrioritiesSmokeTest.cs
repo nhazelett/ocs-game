@@ -127,13 +127,15 @@ public partial class PrioritiesSmokeTest : Node
                 shell.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = 2;
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var toggle = shell.PriorityInputs["fast"];
-                var scroll = (ScrollContainer)toggle.GetParent().GetParent().GetParent();
+                var scroll = shell.AwardScroll;
                 scroll.EnsureControlVisible(toggle);
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 Require(shell.PriorityInputs.Values.All(t => t.GetGlobalRect().Position.X >= scroll.GetGlobalRect().Position.X
                     && t.GetGlobalRect().End.X <= scroll.GetGlobalRect().End.X), "The three toggles fit the award form.");
                 Require(shell.AwardTrade!.GetGlobalRect().End.X <= GetViewport().GetVisibleRect().End.X, "The wrapped trade stays in the preview pane.");
-                var previewScroll = (ScrollContainer)shell.AwardTrade.GetParent().GetParent();
+                var previewScroll = shell.AwardScroll;
+                previewScroll.ScrollVertical = (int)shell.AwardTrade.GetParent<Control>().Position.Y;
+                for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 Require(previewScroll.GetGlobalRect().Encloses(shell.AwardTrade.GetGlobalRect())
                     && previewScroll.GetGlobalRect().Encloses(shell.AwardTiming.GetGlobalRect()),
                     "The complete trade and shop-hours cost fit together above the preview fold.");

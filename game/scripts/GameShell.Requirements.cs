@@ -7,12 +7,13 @@ namespace LinesOfSupport.Game;
 
 public partial class GameShell
 {
+    internal Button RequirementMarketButton { get; private set; } = null!;
     internal Dictionary<string, Button> RequirementAskButtons { get; } = new(StringComparer.Ordinal);
     internal Dictionary<string, Button> RequirementAddButtons { get; } = new(StringComparer.Ordinal);
 
     private void RenderRequirementContext(SessionView? view)
     {
-        DeskUi.Clear(linkedRequirement); RequirementAskButtons.Clear(); RequirementAddButtons.Clear();
+        DeskUi.Clear(linkedRequirement); DeskUi.Clear(requirementFooter); RequirementAskButtons.Clear(); RequirementAddButtons.Clear();
         var scroll = (ScrollContainer)linkedRequirement.GetParent();
         scroll.FollowFocus = true;
         var cards = view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<RequirementEditorView>().ToArray() ?? [];
@@ -54,7 +55,8 @@ public partial class GameShell
             if (!line.CanAdd) continue;
             var add = DeskUi.Button("Add what you learned", () => AddLearnedRequirementLine(card.CardId, line.Id));
             add.TooltipText = line.Label; add.SetMeta("add_line", line.Id); add.Disabled = view!.Finished;
-            linkedRequirement.AddChild(add); RequirementAddButtons.Add(line.Id, add);
+            var addReason = DeskUi.ActionReason(linkedRequirement, add);
+            DeskUi.Gate(add, addReason, view.Finished ? DeskUi.FinishedReason : null); RequirementAddButtons.Add(line.Id, add);
         }
         if (card.WhoToAsk?.Any(option => !option.Asked && !option.Pending) == true)
             linkedRequirement.AddChild(DeskUi.Label("A request is often missing something. These people may know."));
@@ -67,15 +69,19 @@ public partial class GameShell
                 : $"Ask {option.Person.DisplayName}", () => AskAboutRequirement(card.CardId, option.Person.Id));
             ask.SetMeta("ask_person", option.Person.Id);
             ask.Disabled = view.Finished || option.Asked || option.Pending || !preview.Accepted;
-            linkedRequirement.AddChild(ask); RequirementAskButtons.Add(option.Person.Id, ask);
+            var askReason = DeskUi.ActionReason(linkedRequirement, ask);
+            DeskUi.Gate(ask, askReason, view.Finished ? DeskUi.FinishedReason : option.Pending ? "The visit is already in progress."
+                : option.Asked ? "You have already asked about this request." : preview.HardStops.FirstOrDefault()); RequirementAskButtons.Add(option.Person.Id, ask);
             if (option.Asked || option.Pending) continue;
             static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
             var timing = DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop {(preview.ShopHoursMin == 1 && preview.ShopHoursMax == 1 ? "hour" : "hours")}. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}.");
             timing.SetMeta("ask_preview", option.Person.Id); linkedRequirement.AddChild(timing);
             foreach (var stop in preview.HardStops.Concat(preview.SoftGaps)) linkedRequirement.AddChild(DeskUi.Label(stop));
         }
-        var market = DeskUi.Button("Go to market", () => GoToMarket(card.CardId));
-        market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished; linkedRequirement.AddChild(market);
+        var market = DeskUi.Button("Go to market", () => GoToMarket(card.CardId)); RequirementMarketButton = market;
+        market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished;
+        var marketReason = DeskUi.ActionReason(requirementFooter, market);
+        DeskUi.Gate(market, marketReason, view.Finished ? DeskUi.FinishedReason : null);
         linkedRequirement.AddChild(DeskUi.Label("Dependency checklist"));
         foreach (var dependency in card.Dependencies)
         {
@@ -94,7 +100,8 @@ public partial class GameShell
             {
                 var ask = DeskUi.Button("Ask the J4 about fuel for " + card.SiteName, () => OpenJ4FuelVisit(card.SiteId));
                 ask.SetMeta("dependency_visit", dependency.CapabilityId); ask.Disabled = view.Finished;
-                linkedRequirement.AddChild(ask);
+                var reason = DeskUi.ActionReason(linkedRequirement, ask);
+                DeskUi.Gate(ask, reason, view.Finished ? DeskUi.FinishedReason : null);
             }
         }
     }

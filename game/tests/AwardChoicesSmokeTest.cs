@@ -94,7 +94,7 @@ public partial class AwardChoicesSmokeTest : Node
             {
                 var tabs=shell.GetNode<TabContainer>("%DeskTabs");tabs.CurrentTab=2;
                 await Layout();
-                var scroll=(ScrollContainer)shell.FundingInput.GetParent().GetParent();
+                var scroll=shell.AwardScroll;
                 var bar=scroll.GetVScrollBar();
                 Require(bar.Visible && bar.Size.X>=14 && bar.MaxValue>bar.Page,
                     "The overflowing award form has a visible scrollbar wide enough to use.");
@@ -115,9 +115,9 @@ public partial class AwardChoicesSmokeTest : Node
                 var args=OS.GetCmdlineUserArgs();var index=Array.IndexOf(args,"--screenshots");if(index<0)return;
                 shell.DeveloperToggle.ButtonPressed=false;shell.GetNode<TabContainer>("%DeskTabs").CurrentTab=2;
                 await Layout();
-                ((ScrollContainer)focus.GetParent().GetParent()).EnsureControlVisible(focus);
+                shell.AwardScroll.EnsureControlVisible(focus);
                 await Layout();
-                var formScroll=(ScrollContainer)focus.GetParent().GetParent();
+                var formScroll=shell.AwardScroll;
                 Require(((Control)focus.GetParent()).GetGlobalRect().End.X<=formScroll.GetVScrollBar().GetGlobalRect().Position.X,
                     "Screenshot text stays clear of the form scrollbar.");
                 if(openList) { ((OptionButton)focus).ShowPopup();await Layout(); }

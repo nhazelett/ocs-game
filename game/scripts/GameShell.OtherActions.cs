@@ -6,7 +6,7 @@ namespace LinesOfSupport.Game;
 
 public partial class GameShell
 {
-    private VBoxContainer boardActions = null!;
+    private VBoxContainer boardActions = null!, coordinationFooter = null!;
     private long coordinationQuantity = 1;
     private readonly Dictionary<string, Button> surveys = [], definitizations = [], terminations = [];
     internal IReadOnlyDictionary<string, Button> SurveyButtons => surveys;
@@ -19,12 +19,13 @@ public partial class GameShell
     {
         boardActions = new VBoxContainer { Name = "SupportActions" };
         boardDetails.AddChild(boardActions);
+        coordinationFooter = new VBoxContainer { Visible = false }; boardFooter.AddChild(coordinationFooter);
         BuildContractView();
     }
 
     private void RefreshBoardActions(SessionView? view)
     {
-        DeskUi.Clear(boardActions); surveys.Clear(); PendingCoordination = null; CoordinateButton = null;
+        DeskUi.Clear(boardActions); DeskUi.Clear(coordinationFooter); coordinationFooter.Hide(); surveys.Clear(); PendingCoordination = null; CoordinateButton = null;
         if (view is null) return;
         if (session.IsReplay) boardActions.AddChild(DeskUi.Label("Taking an action takes control and stops future replay commands."));
         boardActions.AddChild(DeskUi.Label("Site investigation"));
@@ -35,7 +36,10 @@ public partial class GameShell
             var button = DeskUi.Button($"Survey {island.Name} · {tier}" + (pending ? " · pending" : ""), () =>
                 SendAction(new SurveyAction { Day = session.View!.Day, Island = island.Id }));
             button.Disabled = view.Finished || pending || tier is "surveyed" or "observed";
-            surveys.Add(island.Id, button); boardActions.AddChild(button);
+            surveys.Add(island.Id, button);
+            var reason = DeskUi.ActionReason(boardActions, button);
+            DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : pending ? "The survey is already in progress."
+                : tier is "surveyed" or "observed" ? "This island has already been surveyed." : null);
         }
         if (SelectedCapability is null) { boardActions.AddChild(DeskUi.Label("Select a capability tile to coordinate support.")); return; }
         var tile = view.MorningBoard().Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == SelectedCapability);
@@ -53,7 +57,9 @@ public partial class GameShell
         quantityBox.ValueChanged += value => { coordinationQuantity = checked((long)value); Update(); };
         boardActions.AddChild(quantityBox); Update();
         CoordinateButton = DeskUi.Button("Coordinate support", () => { if (PendingCoordination is not null) SendAction(PendingCoordination); });
-        CoordinateButton.Disabled = view.Finished; boardActions.AddChild(CoordinateButton);
+        coordinationFooter.Visible = BoardDetailsVisible;
+        var coordinateReason = DeskUi.ActionReason(coordinationFooter, CoordinateButton);
+        DeskUi.Gate(CoordinateButton, coordinateReason, view.Finished ? DeskUi.FinishedReason : null);
     }
 
     private void AddArrangementActions(VBoxContainer parent, Arrangement arrangement, SessionView view)
@@ -64,11 +70,14 @@ public partial class GameShell
         if (arrangement.Uca is not { ProposalReceived: true, Definitized: false, DefinitizationInWork: false }) return;
         var funding = view.ActionEditor(arrangement.SiteId, arrangement.CapabilityId)!.Funding;
         var selected = funding.FirstOrDefault(f => f.UsableToday)?.Id;
-        AddPick(parent, "Definitization funding", funding.Select(f => new Pick(f.Id, $"{view.FundingName(f.Id)} · {DeskUi.Money(f.RemainingCents)}", f.UsableToday ? null : "Not usable today")).ToArray(), selected, id => selected = id);
-        var button = DeskUi.Button("Definitize " + view.ArrangementName(arrangement.Id), () =>
+        Label reason = null!;
+        Button button = null!;
+        void Gate() => DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : selected is null ? "Choose usable funding for definitization." : null);
+        AddPick(parent, "Definitization funding", funding.Select(f => new Pick(f.Id, $"{view.FundingName(f.Id)} · {DeskUi.Money(f.RemainingCents)}", f.UsableToday ? null : "Not usable today")).ToArray(), selected, id => { selected = id; Gate(); });
+        button = DeskUi.Button("Definitize " + view.ArrangementName(arrangement.Id), () =>
         {
             if (selected is not null) SendAction(new DefinitizeAction { Day = session.View!.Day, Arrangement = arrangement.Id, FundingLine = selected });
         });
-        button.Disabled = view.Finished || selected is null; parent.AddChild(button); definitizations.Add(arrangement.Id, button);
+        reason = DeskUi.ActionReason(parent, button); Gate(); definitizations.Add(arrangement.Id, button);
     }
 }

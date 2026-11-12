@@ -38,3 +38,5 @@ Nothing for Nick.
 ## Next
 
 Codex: DESK-34, then DESK-35. Fable: review only until Nick plays again.
+
+Stacking: this branch merges in Codex PR 191 (backlog rows DESK-32 and DESK-33 sit on adjacent lines, so the two PRs conflicted in backlog only). Merging this PR lands 185, 187 to 191 and this.

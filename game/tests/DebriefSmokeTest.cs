@@ -34,7 +34,7 @@ public partial class DebriefSmokeTest : Node
             void GoToMarket(string card)
             {
                 OpenCard(card);
-                Buttons(shell.GetNode<TabContainer>("%DeskTabs").GetNode("Requirements/RequirementContext/Contents")).Single(b => b.HasMeta("market_card")).EmitSignal(Button.SignalName.Pressed);
+                shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
             }
             void SetLine(string card, string line)
             {

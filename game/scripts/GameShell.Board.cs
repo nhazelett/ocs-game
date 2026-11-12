@@ -7,6 +7,7 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     private VBoxContainer morningItems = null!, morningTiles = null!, linkedRequirement = null!, linkedLedger = null!;
+    private VBoxContainer requirementFooter = null!, boardContents = null!, boardFooter = null!;
     private Label morningHeading = null!, boardFocus = null!;
     internal string? SelectedCard { get; private set; }
     internal string? SelectedCapability { get; private set; }
@@ -19,13 +20,13 @@ public partial class GameShell
     private void BuildMorningDesk()
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        var board = DeskUi.Panel(tabs.GetNode<Control>("Board"), "MorningBoard");
+        var board = boardContents = DeskUi.Pane(tabs.GetNode<Control>("Board"), "TodayPane", out boardFooter);
         BuildLead(board);
         morningHeading = DeskUi.Label(); boardDetails.AddChild(morningHeading);
         boardFocus = DeskUi.Label(); boardDetails.AddChild(boardFocus);
         morningItems = new VBoxContainer { Name = "Items" }; boardDetails.AddChild(morningItems);
         morningTiles = new VBoxContainer { Name = "Tiles" }; boardDetails.AddChild(morningTiles);
-        linkedRequirement = DeskUi.Panel(tabs.GetNode<Control>("Requirements"), "RequirementContext");
+        linkedRequirement = DeskUi.Pane(tabs.GetNode<Control>("Requirements"), "RequirementPane", out requirementFooter);
         linkedLedger = DeskUi.Panel(tabs.GetNode<Control>("Ledger"), "LedgerContext");
     }
 
@@ -58,7 +59,8 @@ public partial class GameShell
             var button = DeskUi.Button($"{item.Severity} · {item.Category}\n{item.Text}", () => NavigateBoardItem(item));
             button.Disabled = item.LinkKind == BoardLinkKind.None;
             button.SetMeta("link_kind", item.LinkKind.ToString()); button.SetMeta("link_id", item.LinkId);
-            morningItems.AddChild(button);
+            var reason = DeskUi.ActionReason(morningItems, button);
+            DeskUi.Gate(button, reason, item.LinkKind == BoardLinkKind.None ? "This update has no further detail to open." : null);
         }
         foreach (var tile in board?.Tiles ?? [])
         {
