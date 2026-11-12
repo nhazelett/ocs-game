@@ -115,7 +115,7 @@ public partial class GoingToPeopleSmokeTest : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         if (flag == "--people-screenshot")
         {
-            var board = shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/MorningBoard");
+            var board = shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Board/TodayPane/Body/Body");
             board.EnsureControlVisible(shell.VisitButtons["finance"].GetParent().GetChildren().OfType<Label>().Last());
         }
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);

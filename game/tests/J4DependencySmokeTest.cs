@@ -18,7 +18,7 @@ public partial class J4DependencySmokeTest : Node
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
             shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
-            var panel = tabs.GetNode<VBoxContainer>("Requirements/RequirementContext/Contents");
+            var panel = tabs.GetNode<VBoxContainer>("Requirements/RequirementPane/Body/Body/Contents");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var expected = Session.Create(bundle, 1);
             Button? Shortcut() => panel.GetChildren().OfType<Button>().SingleOrDefault(b => b.HasMeta("dependency_visit"));
@@ -49,7 +49,7 @@ public partial class J4DependencySmokeTest : Node
                 { HardStops = preview.HardStops, SoftGaps = preview.SoftGaps }
                 && preview.HardStops.SequenceEqual(realPreview.HardStops) && preview.SoftGaps.SequenceEqual(realPreview.SoftGaps),
                 "Navigation and preview change no state; hours, timing, stock limits and caveats bind exactly to Sim.");
-            await Screenshot(shell, "--ask-screenshot", tabs.GetNode<ScrollContainer>("Board/MorningBoard"), shell.VisitButtons["j4"].GetParent().GetChildren().OfType<Label>().Last());
+            await Screenshot(shell, "--ask-screenshot", tabs.GetNode<ScrollContainer>("Board/TodayPane/Body/Body"), shell.J4QuantityInput!);
             Require(expected.Apply(action).Accepted, "The default request is within actual partner stock.");
             shell.VisitButtons["j4"].EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text == "in work", "Ask submits the exact previewed action and shows its ActionResult.");

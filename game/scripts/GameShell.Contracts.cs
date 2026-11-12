@@ -8,7 +8,7 @@ public partial class GameShell
 {
     internal PanelContainer ContractView { get; private set; } = null!;
     internal ConfirmationDialog EndContractDialog { get; private set; } = null!;
-    private VBoxContainer contractContents = null!;
+    private VBoxContainer contractContents = null!, contractFooter = null!;
     private string? contractToEnd;
 
     private void BuildContractView()
@@ -16,7 +16,7 @@ public partial class GameShell
         ContractView = new PanelContainer { Name = "ContractDetails", ZIndex = 14, Visible = false };
         AddChild(ContractView); ContractView.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         ContractView.OffsetTop = 64;
-        contractContents = DeskUi.Panel(ContractView, "ContractRecord");
+        contractContents = DeskUi.Pane(ContractView, "ContractRecord", out contractFooter);
         EndContractDialog = new ConfirmationDialog { Title = "End this contract?", Exclusive = true };
         AddChild(EndContractDialog);
         EndContractDialog.GetLabel().AutowrapMode = TextServer.AutowrapMode.WordSmart;
@@ -55,7 +55,7 @@ public partial class GameShell
 
     private void RefreshContractView(SessionView? view)
     {
-        terminations.Clear(); DeskUi.Clear(contractContents);
+        terminations.Clear(); DeskUi.Clear(contractContents); DeskUi.Clear(contractFooter);
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
         contractContents.AddChild(DeskUi.Button("Back to what we are paying for", CloseContractView));
@@ -85,8 +85,9 @@ public partial class GameShell
             EndContractDialog.PopupCentered(new Vector2I(620, 300));
             EndContractDialog.GetCancelButton().GrabFocus();
         });
-        end.Disabled = !CanEndContract(view, arrangement);
-        contractContents.AddChild(end); terminations[arrangement.Id] = end;
+        var reason = DeskUi.ActionReason(contractFooter, end);
+        DeskUi.Gate(end, reason, view.Finished ? DeskUi.FinishedReason : ending ? "Ending this contract is already in work."
+            : arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined ? "This contract is no longer providing support." : null); terminations[arrangement.Id] = end;
     }
 
     private static string ArrangementPaymentText(SessionView view, Arrangement arrangement)

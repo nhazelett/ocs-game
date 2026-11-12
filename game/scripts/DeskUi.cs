@@ -6,14 +6,48 @@ internal static class DeskUi
 {
     internal static VBoxContainer Panel(Control tab, string name)
     {
-        var scroll = new ScrollContainer { Name = name, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
+        var scroll = new ScrollContainer { Name = name, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, FollowFocus = true };
         tab.AddChild(scroll);
         scroll.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        var scrollbar = scroll.GetVScrollBar();
+        using var track = (StyleBoxFlat)scrollbar.GetThemeStylebox("scroll").Duplicate();
+        track.ContentMarginLeft = track.ContentMarginRight = 7;
+        scrollbar.AddThemeStyleboxOverride("scroll", track);
+        scroll.AddThemeConstantOverride("scrollbar_h_separation", 4);
         var box = new VBoxContainer { Name = "Contents", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
         box.AddThemeConstantOverride("separation", 10);
         scroll.AddChild(box);
         return box;
     }
+
+    // A single scrolling body and a fixed primary action area; forms never nest scrolls.
+    internal static VBoxContainer Pane(Control parent, string name, out VBoxContainer footer)
+    {
+        var layout = new VBoxContainer { Name = name };
+        parent.AddChild(layout); layout.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        var holder = new Control { Name = "Body", SizeFlagsVertical = Control.SizeFlags.ExpandFill };
+        layout.AddChild(holder);
+        var body = Panel(holder, "Body");
+        footer = new VBoxContainer { Name = "Actions" }; layout.AddChild(footer);
+        footer.AddThemeConstantOverride("separation", 6);
+        return body;
+    }
+
+    internal static Label ActionReason(VBoxContainer parent, Button button)
+    {
+        parent.AddChild(button);
+        var label = Label(); label.Visible = false;
+        label.AddThemeColorOverride("font_color", TabletopTheme.Alert);
+        parent.AddChild(label); return label;
+    }
+
+    internal static void Gate(Button button, Label reason, string? blocked)
+    {
+        button.Disabled = blocked is not null;
+        reason.Text = blocked ?? ""; reason.Visible = blocked is not null;
+    }
+
+    internal const string FinishedReason = "This deployment has ended.";
 
     internal static Label Label(string text = "") => new() { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 

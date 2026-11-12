@@ -7,7 +7,7 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     private VBoxContainer boardDetails = null!;
-    private Label leadSpeaker = null!, leadWords = null!;
+    private Label leadSpeaker = null!, leadWords = null!, leadReason = null!;
     private PersonPortrait leadPortrait=null!;
     internal LeadItem? DisplayedLead { get; private set; }
     internal Button LeadOpen { get; private set; } = null!;
@@ -28,10 +28,14 @@ public partial class GameShell
         leadPortrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};sender.AddChild(leadPortrait);
         leadSpeaker = DeskUi.Label();leadSpeaker.SizeFlagsHorizontal=SizeFlags.ExpandFill;leadSpeaker.SizeFlagsVertical=SizeFlags.ShrinkCenter;sender.AddChild(leadSpeaker);
         leadWords = DeskUi.Label(); leadWords.ThemeTypeVariation="TabletopHeading"; leadWords.AddThemeFontSizeOverride("font_size", 24); body.AddChild(leadWords);
-        LeadOpen = DeskUi.Button("Open", OpenLead); LeadOpen.CustomMinimumSize = new Vector2(0, 44); body.AddChild(LeadOpen);
+        LeadOpen = DeskUi.Button("Open", OpenLead); LeadOpen.CustomMinimumSize = new Vector2(0, 44); leadReason = DeskUi.ActionReason(body, LeadOpen);
         LeadOpen.ThemeTypeVariation="TabletopPrimary";
         BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
-        BoardDetailsToggle.Toggled += open => boardDetails.Visible = open;
+        BoardDetailsToggle.Toggled += open =>
+        {
+            boardDetails.Visible = open;
+            if (coordinationFooter is not null) coordinationFooter.Visible = open && CoordinateButton is not null;
+        };
         board.AddChild(BoardDetailsToggle);
         boardDetails = new VBoxContainer { Name = "OtherUpdates", Visible = false }; boardDetails.AddThemeConstantOverride("separation", 10); board.AddChild(boardDetails);
     }
@@ -43,7 +47,8 @@ public partial class GameShell
         leadSpeaker.Text = DisplayedLead?.Person?.WithUnit ?? ""; leadSpeaker.Visible = leadSpeaker.Text.Length > 0;
         leadWords.Text = DisplayedLead?.Text ?? (view is null ? "Your deployment has not started." : view.Finished ? "The deployment is complete." : "There is no priority message this morning.");
         LeadOpen.Visible = DisplayedLead is not null;
-        LeadOpen.Disabled = DisplayedLead is null || DisplayedLead.LinkKind == BoardLinkKind.None;
+        DeskUi.Gate(LeadOpen, leadReason, DisplayedLead?.LinkKind == BoardLinkKind.None ? "This message has no further detail to open." : null);
+        leadReason.Visible &= LeadOpen.Visible;
     }
 
     private void OpenLead()

@@ -8,6 +8,7 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     private VBoxContainer visitsPanel = null!, visitsForm = null!, visitResults = null!, mentorMessages = null!;
+    private VBoxContainer visitsFooter = null!;
     private string? visitContact, scoQuestion, j4Site;
     private long? j4Quantity;
     private int j4Sequence = 1;
@@ -25,14 +26,15 @@ public partial class GameShell
 
     private void BuildVisitsDesk()
     {
-        var board = GetNode<TabContainer>("%DeskTabs").GetNode<VBoxContainer>("Board/MorningBoard/Contents");
+        var board = boardContents;
+        visitsFooter = new VBoxContainer { Visible = false }; boardFooter.AddChild(visitsFooter);
         mentorMessages = new VBoxContainer { Name = "MentorMessages", Visible = false };
         mentorMessages.AddThemeConstantOverride("separation", 12); board.AddChild(mentorMessages); board.MoveChild(mentorMessages, 0);
         PeopleToggle = new Button { Text = "People to reach", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
         board.AddChild(PeopleToggle); board.MoveChild(PeopleToggle, 2);
         visitsPanel = new VBoxContainer { Name = "ReachPeople", Visible = false };
         visitsPanel.AddThemeConstantOverride("separation", 14); board.AddChild(visitsPanel); board.MoveChild(visitsPanel, 3);
-        PeopleToggle.Toggled += open => visitsPanel.Visible = open;
+        PeopleToggle.Toggled += open => { visitsPanel.Visible = open; visitsFooter.Visible = open; };
         visitsForm = new VBoxContainer(); visitsForm.AddThemeConstantOverride("separation", 12); visitsPanel.AddChild(visitsForm);
         visitResults = new VBoxContainer { Name = "VisitResults" }; visitResults.AddThemeConstantOverride("separation", 14); visitsPanel.AddChild(visitResults);
     }
@@ -45,7 +47,7 @@ public partial class GameShell
 
     private void RefreshVisits(SessionView? view, MorningBoardView? board)
     {
-        DeskUi.Clear(visitsForm); DeskUi.Clear(visitResults); DeskUi.Clear(mentorMessages);
+        DeskUi.Clear(visitsForm); DeskUi.Clear(visitsFooter); DeskUi.Clear(visitResults); DeskUi.Clear(mentorMessages);
         VisitButtons.Clear(); VisitOptions.Clear(); contactPeople.Clear();
         ScoQuestionInput = J4SiteInput = null; J4QuantityInput = null; ShopVehicleStatus = null;
         mentorMessages.Visible = false; PeopleToggle.Disabled = view is null;
@@ -130,7 +132,9 @@ public partial class GameShell
         var host = parent ?? visitsForm;
         var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
         var button = DeskUi.Button(text, () => SendAction(action)); button.Disabled = view.Finished || !preview.Accepted;
-        button.SetMeta("visit", key); host.AddChild(button); VisitButtons[key] = button;
+        button.SetMeta("visit", key);
+        var reason = DeskUi.ActionReason(visitsFooter, button);
+        DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault()); VisitButtons[key] = button;
         static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
         static string Hours(int min, int max) => $"{Range(min, max)} shop {(min == 1 && max == 1 ? "hour" : "hours")}";
         var saving = action is MeetVendorAction && view.HasShopVehicle && preview.ShopHoursMax < view.Rules.GoingToPeople.MeetVendor.ShopHours
@@ -174,7 +178,7 @@ public partial class GameShell
         var preview = new VBoxContainer(); preview.AddThemeConstantOverride("separation", 12); visitsForm.AddChild(preview);
         void Update()
         {
-            DeskUi.Clear(preview);
+            DeskUi.Clear(preview); DeskUi.Clear(visitsFooter);
             while (view.Arrangements.Any(a => a.Id == $"player-j4-{j4Sequence}") || view.Work.Any(w => w.SubjectId == $"player-j4-{j4Sequence}")) j4Sequence++;
             AddVisit("j4", "Ask the J4 to add fuel support", new EngageJ4Action { Day = view.Day, Id = $"player-j4-{j4Sequence}", Site = j4Site, Quantity = j4Quantity.Value }, view, preview);
         }

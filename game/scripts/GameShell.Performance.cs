@@ -50,7 +50,15 @@ public partial class GameShell
             resource.Disabled = view.Finished || !running;
             var terminate = DeskUi.Button("View contract", () => OpenContractView(issue.ArrangementId));
             terminate.Disabled = view.Finished || !running || terminating;
-            row.AddChild(cure); row.AddChild(resource); row.AddChild(terminate);
+            var cureReason = DeskUi.ActionReason(row, cure);
+            DeskUi.Gate(cure, cureReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
+                : terminating ? "Ending this contract is already in work." : curing ? "The cure notice is already in work."
+                : issue.CureNoticeDay is not null ? "A cure notice has already been issued." : null);
+            var resourceReason = DeskUi.ActionReason(row, resource);
+            DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : null);
+            var contractReason = DeskUi.ActionReason(row, terminate);
+            DeskUi.Gate(terminate, contractReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
+                : terminating ? "Ending this contract is already in work." : null);
             PerformanceChoices.Add((issue.Id, "cure"), cure);
             PerformanceChoices.Add((issue.Id, "resource"), resource);
             PerformanceChoices.Add((issue.Id, "terminate"), terminate);

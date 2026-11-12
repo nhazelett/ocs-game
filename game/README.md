@@ -89,7 +89,7 @@ Choose a submitted requirement or a site/capability, then instrument, vendor, kn
 
 Written contracts ask for two priorities: Fast, Cheap and Good. No pair is chosen for the player. The third toggle is disabled once two are selected; turn one off to change the pair. The preview shows `ActionPreview.Trade` verbatim, with the engine's price and timing. Every written `AwardAction` carries the pair; cash/card buys carry none. New targets, deployments and completed awards clear the pick. Priority controls and submission reject obsolete forms and changed state. `PrioritiesSmokeTest` checks all three trades, forced third/one/zero picks, amount changes, BPA/UCA bindings, stale/duplicate signals, save/resume, replay takeover and finished games against independent Sim results.
 
-Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview scroll independently, and Award stays in the footer. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
+Preview reruns on every change and is read-only: red hard stops block Award; amber soft gaps may be accepted. Cost, shop time, queue ahead and earliest-start range come directly from Preview. The start estimate explicitly ignores queue ahead. Inputs and preview share one scroll, and Arrange support and its disabled reason stay fixed beneath it. The button sends exactly the previewed action; the response appears in the status line. ActionSmokeTest compares live previews and the final award to direct Sim state/results.
 
 ## Other desk actions (M2-06)
 
@@ -141,3 +141,9 @@ Written awards list CORs in `SessionView.CorChoices` order with each exact `Why`
 ### The office vehicle (DESK-29)
 
 Buy on your own initiative starts with `SessionView.OwnInitiative` offers, followed by ordinary site needs. Each office offer shows its exact reason and seller names, and uses the existing award editor for its site/capability. The visits page binds `HasShopVehicle` beside the quoted visit hours; the Sim owns activation, expiry and every time saving. `ShopVehicleSmokeTest` checks a real tutorial purchase, the cheaper meeting, save/load, expiry and scenario clearing against independent Sim play.
+
+## Single-scroll desk panes (DESK-33)
+
+The award inputs and quote move together in one scroll. The primary actions for awards, vendor setup, requests, visits, coordination and contract details stay in fixed footers. A disabled desk action has its reason immediately below it: the next missing choice, the first exact Sim hard stop, or its current state. Ready actions clear the old reason. The debrief capability timeline wraps into its main scroll instead of opening another scroll area.
+
+`AwardContextSmokeTest` also runs `PaneSmokeChecks`: missing choices, exact refusal text, read-only previews, forced-submit guards, one visible scroll per pane, and primary-action containment while scrolling. Its `--screenshots <prefix>` option adds greyed, ready and refused award captures at the real window size.

@@ -112,21 +112,12 @@ public partial class GameShell
         parent.AddChild(DeskUi.Label($"{report.ScenarioTitle}, {DebriefWords.Number(report.DaysPlayed)} {(report.DaysPlayed == 1 ? "day" : "days")} played, through day {report.LastDay}."));
         var scoreText = DeskUi.Label($"Mission output {Fraction(score.MissionOutput)} · sortie generation {Fraction(score.SortieGeneration)}\nThroughput {Fraction(score.Throughput)} · endurance {Fraction(score.Endurance)} · resilience {Fraction(score.Resilience)}\nObligated {DeskUi.Money(score.ObligatedCents)} · incurred {DeskUi.Money(score.IncurredCents)} · unobligated incurred {DeskUi.Money(score.UnobligatedIncurredCents)}\nUnauthorized commitments {score.UnauthorizedCommitments} · overdue UCAs {score.UcaOverdue} · HHQ inquiries {score.HhqInquiries}\nSurveys {score.Surveys} · shop hours worked {score.ShopHoursWorked}\n{score.GapCount} gaps: {score.AvoidableGaps} avoidable · {score.DiscoverableGaps} discoverable · {score.UnforeseeableGaps} unforeseeable");
         scoreText.SetMeta("scorecard", true); parent.AddChild(scoreText);
-        parent.AddChild(DeskUi.Label("Capability by day. Scroll across to see later days; — means the site was not open."));
-        var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(0, 190), VerticalScrollMode = ScrollContainer.ScrollMode.Auto };
-        var grid = new GridContainer { Columns = report.DaysPlayed + 1 };
-        scroll.AddChild(grid); parent.AddChild(scroll);
-        grid.AddChild(new Label { Text = "Site / capability" });
-        for (var day = 1; day <= report.DaysPlayed; day++) grid.AddChild(new Label { Text = $"Day {day}", CustomMinimumSize = new Vector2(62, 0) });
+        parent.AddChild(DeskUi.Label("Capability by day; — means the site was not open."));
         foreach (var band in report.Timeline)
         {
-            grid.AddChild(new Label { Text = $"{view.NameOf(band.SiteId)} · {band.Label}" });
-            foreach (var value in band.PermilleByDay)
-            {
-                var cell = new Label { Text = value < 0 ? "—" : $"{value / 10m:0.#}%" };
-                cell.AddThemeColorOverride("font_color",value < 0 ? TabletopTheme.Muted : TabletopTheme.Alert.Lerp(TabletopTheme.Success, Math.Clamp(value / 1000f, 0, 1)));
-                grid.AddChild(cell);
-            }
+            parent.AddChild(DeskUi.Label($"{view.NameOf(band.SiteId)} · {band.Label}"));
+            parent.AddChild(DeskUi.Label(string.Join(" · ", band.PermilleByDay.Select((value, index) =>
+                $"Day {index + 1}: " + (value < 0 ? "—" : $"{value / 10m:0.#}%")))));
         }
         parent.AddChild(DeskUi.Label("What happened, day by day"));
         var dayPicker = new OptionButton(); dayPicker.AddItem("All days");

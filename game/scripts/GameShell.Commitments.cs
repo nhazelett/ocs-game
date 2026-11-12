@@ -47,7 +47,9 @@ public partial class GameShell
                 var button = DeskUi.Button(char.ToUpperInvariant(choice[0]) + choice[1..], () =>
                     SendAction(new ResolveCommitmentAction { Day = session.View!.Day, Commitment = commitment.Id, Choice = choice }));
                 button.Disabled = view.Finished;
-                buttons.AddChild(button); commitmentChoices.Add((commitment.Id, choice), button);
+                var choiceBox = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; buttons.AddChild(choiceBox);
+                var reason = DeskUi.ActionReason(choiceBox, button);
+                DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : null); commitmentChoices.Add((commitment.Id, choice), button);
             }
         }
     }
