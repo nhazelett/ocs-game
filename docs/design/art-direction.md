@@ -31,3 +31,6 @@ Nick has connected Suno to both agents and leaves it to us whether the game gets
 
 ## Nick, 10 Nov 2026 (after playing the Tabletop build)
 "It looks good, it's better than what we HAD. But I'm hoping for, like, high quality, as close to Unreal graphics as we can. We can progress slowly towards that if necessary since I don't want to mess with success so far." Higher-quality island and facility models before release (ART-10), in steps. Character models later (ART-11). The four Suno tracks are approved as they are.
+
+## Nick, 12 Nov 2026 evening (the polish pass)
+Before he plays the DESK gate again, Nick asked for the game to look more polished: Codex develops the images, Fable reviews them for quality and sends back what is not good enough ("Don't be a sycophant, if the quality isn't good, make it fix it."). The art work starts now rather than after the gate. Fable's review, the bar every ART PR is held to and the order of work are in docs/reviews/2026-11-12-art-review.md; the rows are ART-12 to ART-17. Image generation is allowed under rule 4 (tool and prompt in PROVENANCE) and must pass the review's AI check.
