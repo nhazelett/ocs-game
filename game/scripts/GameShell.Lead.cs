@@ -30,6 +30,7 @@ public partial class GameShell
         leadWords = DeskUi.Label(); leadWords.ThemeTypeVariation="TabletopHeading"; leadWords.AddThemeFontSizeOverride("font_size", 24); body.AddChild(leadWords);
         LeadOpen = DeskUi.Button("Open", OpenLead); LeadOpen.CustomMinimumSize = new Vector2(0, 44); leadReason = DeskUi.ActionReason(body, LeadOpen);
         LeadOpen.ThemeTypeVariation="TabletopPrimary";
+        BuildStandings(board);
         BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
         BoardDetailsToggle.Toggled += open =>
         {

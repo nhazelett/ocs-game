@@ -31,6 +31,8 @@ Choose an **Approach**, click **Replay**, then use **Next day** to step its auth
 
 ## Morning board (M2-01)
 
+Today shows **Where things stand** directly below the lead: one compact row per request, the asker's face and name, and `SessionView.WhereThingsStand()`'s exact sentence, in its attention-first order. Opening a row takes you to that request at its top and closes any old market pane. Rows share Today's main scroll and refresh after actions, day changes and loading a deployment; no status or assignment logic is reproduced in Game. `LeadSmokeTest` includes the standings checks for every tutorial morning, exact faces and sentences, pure navigation, obsolete controls and scenario resets. Add `-- --standing-screenshots <absolute-prefix>` in a graphical run for tutorial days 1, 4 and 9.
+
 The Today tab shows the Sim's morning items in alert-first order and its capability tiles. Linked items open their requirement, select their capability/site on the map, or select the matching arrangement in Ledger. The initial requirement/ledger destinations show real read-only context; their full editor/panel work follows in M2-03/M2-05. Items without a Sim link remain plain information. Event/island links focus their existing board text; cash/work links focus their ledger context.
 
 **Continue** now advances to the next Sim-projected lead or scenario completion (M2R-13), replacing the earlier seven-day/alert limit. It uses the same day/replay path as Next day. Its tooltip states this behavior; it does not auto-decide requests. `MorningSmokeTest.tscn` verifies the stopping rule, a seven-day quiet fixture and the three primary link destinations. A day-11 screenshot is in the M2-01 handoff.

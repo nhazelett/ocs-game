@@ -52,6 +52,7 @@ public partial class GameShell
     {
         DeskUi.Clear(morningItems); DeskUi.Clear(morningTiles);
         RefreshLead(view, board);
+        RefreshStandings(view);
         morningHeading.Text = board is null ? "No scenario loaded" :
             $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {board.Items.Count(x => x.Severity == BoardSeverity.Alert)} alerts · {board.Items.Count(x => x.Category == BoardCategory.Request)} requests";
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
@@ -98,6 +99,7 @@ public partial class GameShell
         {
             case BoardLinkKind.Card:
                 SelectedCard = item.LinkId; ShowRequests();
+                linkedRequirement.GetParent<ScrollContainer>().ScrollVertical = 0;
                 break;
             case BoardLinkKind.SiteCapability: SelectCapability(item.LinkId); break;
             case BoardLinkKind.Arrangement:

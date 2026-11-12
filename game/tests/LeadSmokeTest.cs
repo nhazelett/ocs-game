@@ -67,6 +67,7 @@ public partial class LeadSmokeTest : Node
             }
             Require(foundCommitment, "The authored replay exercised an open commitment lead.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await StandingSmokeChecks.Run(this);
             GD.Print("LEAD_SMOKE_PASS: exact day-one/later leads, collapsed details, true Continue stop and read-only decision links."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"LEAD_SMOKE_FAIL: {error}"); GetTree().Quit(1); }

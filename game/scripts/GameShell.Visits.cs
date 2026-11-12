@@ -31,9 +31,9 @@ public partial class GameShell
         mentorMessages = new VBoxContainer { Name = "MentorMessages", Visible = false };
         mentorMessages.AddThemeConstantOverride("separation", 12); board.AddChild(mentorMessages); board.MoveChild(mentorMessages, 0);
         PeopleToggle = new Button { Text = "People to reach", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
-        board.AddChild(PeopleToggle); board.MoveChild(PeopleToggle, 2);
+        board.AddChild(PeopleToggle); board.MoveChild(PeopleToggle, BoardDetailsToggle.GetIndex());
         visitsPanel = new VBoxContainer { Name = "ReachPeople", Visible = false };
-        visitsPanel.AddThemeConstantOverride("separation", 14); board.AddChild(visitsPanel); board.MoveChild(visitsPanel, 3);
+        visitsPanel.AddThemeConstantOverride("separation", 14); board.AddChild(visitsPanel); board.MoveChild(visitsPanel, PeopleToggle.GetIndex() + 1);
         PeopleToggle.Toggled += open => { visitsPanel.Visible = open; visitsFooter.Visible = open; };
         visitsForm = new VBoxContainer(); visitsForm.AddThemeConstantOverride("separation", 12); visitsPanel.AddChild(visitsForm);
         visitResults = new VBoxContainer { Name = "VisitResults" }; visitResults.AddThemeConstantOverride("separation", 14); visitsPanel.AddChild(visitResults);
