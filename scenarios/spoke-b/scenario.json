@@ -842,6 +842,7 @@
       "unit": "Meridian Site Services",
       "role": "vendorRep",
       "vendor": "vendorB",
+      "portrait": "moreau",
       "lines": {
         "greeting": "Site services out on the second island. Generators come with the job."
       }
@@ -865,6 +866,7 @@
       "unit": "Second Island Fuel",
       "role": "vendorRep",
       "vendor": "vendorD",
+      "portrait": "sato",
       "lines": {
         "greeting": "We keep the fuel on the second island. Small outfit, but we're right there."
       }
@@ -876,6 +878,7 @@
       "unit": "Third Island Water Works",
       "role": "vendorRep",
       "vendor": "vendorF",
+      "portrait": "pryce",
       "lines": {
         "greeting": "Water and meals on the third island. We have done it for years."
       }
@@ -887,6 +890,7 @@
       "unit": "Coastal Provisions",
       "role": "vendorRep",
       "vendor": "vendorG",
+      "portrait": "carvalho",
       "lines": {
         "greeting": "Water and rations, stocked right here on the third island."
       }

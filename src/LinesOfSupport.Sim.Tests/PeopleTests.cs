@@ -182,4 +182,29 @@ public class PeopleTests
         Assert.Null(ed.Person);
         Assert.Equal("Spoke B advance team", ed.SubmittedBy);
     }
+
+    /// <summary>ART-18: everyone the player meets has their own face. Each person in a scenario, and each member of
+    /// its named team, names a portrait that exists under assets/portraits, and no two of them share one. A teammate
+    /// without a face would get the game's first unused portrait, which can be someone the player meets in the same
+    /// scenario (the tutorial's junior CCO wore Maj Cole's face that way), so the team names its faces too.</summary>
+    [Theory]
+    [InlineData("tutorial")]
+    [InlineData("spoke-b")]
+    [InlineData("spoke-b-90")]
+    public void Every_person_has_their_own_portrait(string id)
+    {
+        var scenario = Repo.Load(id).Scenario;
+        Assert.NotEmpty(scenario.People);
+        var faces = scenario.People.Select(p => (p.Name, p.Portrait))
+            .Concat((scenario.Shop.Team ?? []).Select(m => (m.Name, m.Portrait))).ToList();
+        foreach (var (name, portrait) in faces)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(portrait), $"{id}: {name} has no portrait");
+            Assert.True(File.Exists(Path.Combine(Repo.Root, "assets", "portraits", portrait + ".svg")),
+                $"{id}: {name} names portrait {portrait}, which has no file");
+        }
+        var shared = faces.GroupBy(f => f.Portrait).Where(g => g.Count() > 1)
+            .Select(g => $"{g.Key} ({string.Join(", ", g.Select(f => f.Name))})").ToList();
+        Assert.True(shared.Count == 0, $"{id}: portraits shared: {string.Join("; ", shared)}");
+    }
 }
