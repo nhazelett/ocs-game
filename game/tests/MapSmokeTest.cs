@@ -115,7 +115,13 @@ public partial class MapSmokeTest : Node
                 && captions.Contains("Lodging: supplier failure reported"),
                 "Partial supply uses the reported percentage; restoration and supplier-failure wording stay specific.");
             Require(shell.Session.StateHash == hash, "Caption fixtures leave the real session unchanged.");
-            map.ShowMapDay(actual);
+            map.ShowConfidence(["spokeBSite"]);
+            map.ShowMapDay(actual with{Changes=[new MapChange("spokeBSite","power","restored",1000,null,"partial-update-test",true)]});
+            var partial=map.Tabletop!.SiteStatuses["spokeBSite"].Text;
+            Require(partial.Contains("Commander confidence lost"),"A new capability report keeps the commander's confidence loss visible.");
+            foreach(var tile in map.Tiles.Where(t=>t.SiteId=="spokeBSite"&&t.CapabilityId!="power"&&t.Status=="down"))
+                Require(partial.Contains(tile.Label+" down"),"A partial report keeps every other current outage in words.");
+            map.ShowConfidence([]);map.ShowMapDay(actual);
             File.Delete(shell.AutosavePath);
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("MAP_SMOKE_PASS: illustrated tiles, camera/site input, exact runs/closures/cargo, known filtering and pure animation."); GetTree().Quit();

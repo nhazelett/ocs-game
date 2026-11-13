@@ -84,6 +84,7 @@ public partial class TabletopMap3D:Control
             var state=SiteStatus(values,site.OpensDay);
             var title=board.Sites.Count(s=>s.Island==site.Island)==1?site.Name+" / "+board.Islands.Single(i=>i.Id==site.Island).Name:site.Name;
             SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),p+new Vector3(0,.75f,0),values.Any(t=>t.Status=="down"));
+            SiteStatuses[site.Id].SetMeta("confidence_lost",confidence?.Contains(site.Id)==true);
         }
     }
     private static string SiteStatus(IReadOnlyList<CapabilityTile> values,int opensDay)
@@ -162,7 +163,11 @@ public partial class TabletopMap3D:Control
                     var name=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support";
                     return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} {change.Permille/10m:0.#}% supplied";
                 }));
-                var label=SiteStatuses[group.Key];label.Text=changeWords;label.SetMeta("reported_change",true);
+                var label=SiteStatuses[group.Key];
+                var stillShort=capabilityTiles.Where(t=>t.SiteId==group.Key&&!group.Any(c=>c.CapabilityId==t.CapabilityId)
+                    &&t.Status is "down" or "degraded").Select(t=>t.Label+(t.Status=="down"?" down":" partly supported"));
+                var confidence=label.GetMeta("confidence_lost").AsBool()?new[]{"Commander confidence lost"}:Array.Empty<string>();
+                label.Text=string.Join("\n",new[]{changeWords}.Concat(stillShort).Concat(confidence));label.SetMeta("reported_change",true);
                 movingLabels.Add((label,marker,null));
             }
         }
