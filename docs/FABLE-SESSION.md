@@ -20,6 +20,7 @@ Every Fable session follows this, whether Nick started it in chat or the schedul
 ## 2b. Reviewing the game as a player (added after the M2 gate, 8 Nov 2026)
 - A game PR (anything under `game/`) is reviewed by opening its screenshots (`docs/handoffs/images/*.png`, plain PNG, under 400 KB, not LFS). No screenshot of what changed: comment and do not merge.
 - Before any milestone with a player-facing surface is called ready for Nick, write down what a first-time player sees in the first two minutes, from the screenshots, in the milestone review. If you cannot, it is not ready.
+- An ART PR is reviewed against the bar in docs/reviews/2026-11-12-art-review.md (Nick, 12 Nov: do not be a sycophant; if the quality is not good, send it back). Open the before and after screenshots side by side, do the squint test, and comment with every point it misses. "Better than before" is not a pass.
 - While M2R is open, no new Sim routes or scenarios start (docs/design/opening-and-guidance.md 9). Fable's items are the M2R rows.
 
 ## 3. Merge pass (after every completed task, and at session start)
