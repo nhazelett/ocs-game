@@ -628,6 +628,7 @@
       "unit": "Island Mart",
       "role": "vendorRep",
       "vendor": "islandMart",
+      "portrait": "brooks",
       "lines": {
         "greeting": "Bottled water by the pallet, and most things a camp runs short of."
       }
@@ -639,6 +640,7 @@
       "unit": "Harbor Bottling",
       "role": "vendorRep",
       "vendor": "harborBottling",
+      "portrait": "silva",
       "lines": {
         "greeting": "We bottle on the harbor road. Water by the case or the truckload."
       }
@@ -650,6 +652,7 @@
       "unit": "Coastal Rentals",
       "role": "vendorRep",
       "vendor": "coastalRentals",
+      "portrait": "haddad",
       "lines": {
         "greeting": "Forklifts and loaders to rent, by the day or the month."
       }
@@ -661,6 +664,7 @@
       "unit": "Main Island Sanitation",
       "role": "vendorRep",
       "vendor": "sanitation",
+      "portrait": "kowalski",
       "lines": {
         "greeting": "Latrines, pumping, trash haul. We keep a camp clean."
       }
@@ -672,6 +676,7 @@
       "unit": "Island Camp Services",
       "role": "vendorRep",
       "vendor": "campServices",
+      "portrait": "tan",
       "lines": {
         "greeting": "We run your billeting and the dining hall under the agreement."
       }
@@ -724,9 +729,9 @@
     "gpcMonthlyCents": 4000000,
     "payingAgentAvailableDay": 1,
     "team": [
-      { "id": "you", "role": "you", "name": "You", "hoursPerDay": 8 },
-      { "id": "avery", "role": "experienced", "name": "Joan Avery", "rank": "MSgt", "hoursPerDay": 8, "speed": 1.25 },
-      { "id": "novak", "role": "junior", "name": "Eli Novak", "rank": "SrA", "hoursPerDay": 8, "speed": 0.75 }
+      { "id": "you", "role": "you", "name": "You", "portrait": "bell", "hoursPerDay": 8 },
+      { "id": "avery", "role": "experienced", "name": "Joan Avery", "rank": "MSgt", "portrait": "brandt", "hoursPerDay": 8, "speed": 1.25 },
+      { "id": "novak", "role": "junior", "name": "Eli Novak", "rank": "SrA", "portrait": "okafor", "hoursPerDay": 8, "speed": 0.75 }
     ]
   },
   "actors": {

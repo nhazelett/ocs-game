@@ -145,8 +145,10 @@ public class TeamTests
 
         var log = s.ToInputLog();
         var again = InputLog.Load(Save(log));
-        // Avery's new name and face are logged; the junior had no face to clear, so nothing of his is.
-        Assert.Equal("avery", Assert.Single(again.Team!).Id);
+        // Avery's new name and face are logged, and so is clearing the junior's scenario face (ART-18 gave the
+        // tutorial team faces); his untouched name is not.
+        Assert.Equal(["avery", "novak"], again.Team!.Select(t => t.Id));
+        Assert.Equal((null, ""), (again.Team![1].Name, again.Team![1].Portrait));
         var replayed = Replay.Run(bundle, again, stopAfterDay: 1);
         Assert.Equal(s.View.Team.Select(m => (m.Name, m.Portrait)), replayed.View.Team.Select(m => (m.Name, m.Portrait)));
 

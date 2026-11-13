@@ -503,6 +503,7 @@
       "unit": "Meridian Site Services",
       "role": "vendorRep",
       "vendor": "vendorB",
+      "portrait": "moreau",
       "lines": {
         "greeting": "Site services out on the second island. Generators come with the job."
       }
@@ -526,6 +527,7 @@
       "unit": "Second Island Fuel",
       "role": "vendorRep",
       "vendor": "vendorD",
+      "portrait": "sato",
       "lines": {
         "greeting": "We keep the fuel on the second island. Small outfit, but we're right there."
       }
