@@ -126,11 +126,13 @@ public partial class GameShell
                 SendAction(action);
             }
         });
+        awardButton.ThemeTypeVariation="TabletopPrimary";
         var back = AwardBackButton = DeskUi.Button("Back to requests", ShowRequests);
         awardFooter.AddChild(back);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         SupplierKnowledge = null;
+        awardPanel.AddChild(DeskUi.Heading("Arrange support"));
         var targets = AwardTargets(view);
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
         if (!targets.Any(t => t.Id == awardTarget))

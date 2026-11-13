@@ -27,6 +27,15 @@ public partial class GameShell
         using var theme = TabletopTheme.Create();
         Theme = theme;
         GetNode<Button>("%NextDay").ThemeTypeVariation="TabletopPrimary";
+        foreach(var node in FindChildren("*","Button",true,false).OfType<Button>())node.Alignment=HorizontalAlignment.Left;
+        GetNode<Label>("Margin/Layout/WorkArea/BoardPanel/BoardLayout/Heading").ThemeTypeVariation="TabletopHeading";
+        GetNode<Label>("%InboxDay").ThemeTypeVariation="TabletopHeading";
+        var day=GetNode<Label>("%DayCounter");day.ThemeTypeVariation="TabletopHeading";
+        day.AddThemeFontSizeOverride("font_size",24);day.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        day.CustomMinimumSize=new Vector2(130,0);
+        GetNode<Label>("%GameTitle").CustomMinimumSize=new Vector2(0,48);
+        GetNode<Label>("%GameTitle").VerticalAlignment=VerticalAlignment.Center;
+        GetNode<Control>("Margin/Layout/TopStrip/Margin/Row/Cash").CustomMinimumSize=new Vector2(250,0);
         var background = new ColorRect { Color = TabletopTheme.Background, MouseFilter = MouseFilterEnum.Ignore };
         AddChild(background); MoveChild(background, 0); background.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         GetNode<Label>("%ShopHoursLabel").AutowrapMode = TextServer.AutowrapMode.WordSmart;

@@ -51,7 +51,7 @@ public partial class GameShell
         column.AddChild(ArtStudiesButton);
         var chrome = new HBoxContainer { Name = "Navigation", ZIndex = 20 };
         AddChild(chrome); chrome.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
-        chrome.OffsetLeft = -310; chrome.OffsetRight = -20; chrome.OffsetTop = 16; chrome.OffsetBottom = 48;
+        chrome.OffsetLeft = -310; chrome.OffsetRight = -20; chrome.OffsetTop = 16; chrome.OffsetBottom = 60;
         menuButton = DeskUi.Button("Menu", ShowFrontDoor); menuButton.Name = "Menu"; chrome.AddChild(menuButton);
         DeveloperToggle = new CheckBox { Text = "Developer tools" }; chrome.AddChild(DeveloperToggle);
         DeveloperToggle.Toggled += _ => RefreshDeveloperAccess();
