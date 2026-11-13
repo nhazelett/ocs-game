@@ -16,6 +16,7 @@ public partial class GameShell
     internal Button SpokeBGameButton { get; private set; } = null!;
     internal Button TutorialGameButton { get; private set; } = null!;
     internal bool AtFrontDoor => frontDoor.Visible;
+    internal TitleHarbor TitleArt { get; private set; } = null!;
     private bool DeveloperTools => DeveloperToggle?.ButtonPressed == true;
 
     private void BuildFrontDoor()
@@ -24,25 +25,41 @@ public partial class GameShell
         using var background = new StyleBoxFlat { BgColor = TabletopTheme.Background };
         frontDoor.AddThemeStyleboxOverride("panel", background);
         AddChild(frontDoor); frontDoor.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        var center = new CenterContainer(); frontDoor.AddChild(center);
-        var margin = new MarginContainer(); center.AddChild(margin);
-        foreach (var side in new[] { "left", "right", "top", "bottom" }) margin.AddThemeConstantOverride("margin_" + side, 30);
-        var column = new VBoxContainer { CustomMinimumSize = new Vector2(500, 0) }; column.AddThemeConstantOverride("separation", 22); margin.AddChild(column);
-        var imprint = new Label { Text = "KTHQ", SelfModulate = Colors.White }; imprint.AddThemeFontSizeOverride("font_size", 18); column.AddChild(imprint);
-        var title = new Label { Text = "OCS\nLines of Support", ThemeTypeVariation="TabletopHeading" }; title.AddThemeFontSizeOverride("font_size", 46); column.AddChild(title);
-        var accent = new ColorRect { Color = TabletopTheme.Moss, CustomMinimumSize = new Vector2(0, 3), MouseFilter = MouseFilterEnum.Ignore }; column.AddChild(accent);
+        var margin = new MarginContainer(); frontDoor.AddChild(margin);
+        foreach (var side in new[] { "left", "right", "top", "bottom" }) margin.AddThemeConstantOverride("margin_" + side, side == "top" ? 76 : 48);
+        var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 48); margin.AddChild(row);
+        var column = new VBoxContainer { Name = "TitleChoices", CustomMinimumSize = new Vector2(390, 0),
+            SizeFlagsVertical = SizeFlags.ShrinkCenter };
+        column.AddThemeConstantOverride("separation", 24); row.AddChild(column);
+        var imprint = new Label { Text = "KTHQ   /   OCS", ThemeTypeVariation = "TabletopHeading" };
+        imprint.AddThemeFontSizeOverride("font_size", 18); imprint.AddThemeColorOverride("font_color", TabletopTheme.Moss); column.AddChild(imprint);
+        var title = new Label { Name = "Title", Text = "Lines of\nSupport", ThemeTypeVariation = "TabletopHeading" };
+        title.AddThemeFontSizeOverride("font_size", 64); column.AddChild(title);
+        var accent = new ColorRect { Color = TabletopTheme.Moss, CustomMinimumSize = new Vector2(56, 3),
+            SizeFlagsHorizontal = SizeFlags.ShrinkBegin, MouseFilter = MouseFilterEnum.Ignore }; column.AddChild(accent);
         frontMessage = DeskUi.Label("Take over the contracting shop. Keep the deployment supported as the days unfold.");
-        frontMessage.CustomMinimumSize = new Vector2(500, 0); column.AddChild(frontMessage);
+        frontMessage.CustomMinimumSize = new Vector2(390, 0); column.AddChild(frontMessage);
         frontChoices = new VBoxContainer(); frontChoices.AddThemeConstantOverride("separation", 12); column.AddChild(frontChoices);
+        TitleArt = new TitleHarbor { Name = "TitleHarbor", SizeFlagsHorizontal = SizeFlags.ExpandFill,
+            SizeFlagsVertical = SizeFlags.ExpandFill };
+        row.AddChild(TitleArt);
         DeveloperWorkspaceButton = FrontButton("Open developer workspace", ShowGameSurface); column.AddChild(DeveloperWorkspaceButton);
         var skipQuietDays = GetNode<Button>("%Continue");
         skipQuietDays.Reparent(column, false);
-        skipQuietDays.ThemeTypeVariation = "TabletopPrimary";
+        skipQuietDays.ThemeTypeVariation = "";
         skipQuietDays.Alignment = HorizontalAlignment.Left;
         skipQuietDays.CustomMinimumSize = new Vector2(0, 50);
         skipQuietDays.AddThemeFontSizeOverride("font_size", 22);
-        BuildSoundControls(column);
-        BuildLookControls(column);
+        var settings = new VBoxContainer(); column.AddChild(settings);
+        BuildSoundControls(settings);
+        BuildLookControls(settings);
+        var settingsRow = new HBoxContainer(); settingsRow.AddThemeConstantOverride("separation", 24); settings.AddChild(settingsRow);
+        foreach (var button in new[] { SoundButton, LookButton })
+        {
+            button.Reparent(settingsRow, false); button.ThemeTypeVariation = "";
+            button.Flat = true; button.CustomMinimumSize = new Vector2(64, 38);
+            button.AddThemeFontSizeOverride("font_size", 18);
+        }
         ArtStudiesButton = FrontButton("ART-01 · compare art directions", () =>
         {
             var study = new Art.ArtDirections { ZIndex = 50 };
@@ -76,7 +93,9 @@ public partial class GameShell
         DeskUi.Clear(frontChoices);
         NewGameButton = FrontButton("New game", ShowNewGames); frontChoices.AddChild(NewGameButton);
         ContinueGameButton = FrontButton("Continue saved game", () => LoadSavedGame(AutosavePath));
-        ContinueGameButton.Disabled = !File.Exists(AutosavePath); frontChoices.AddChild(ContinueGameButton);
+        ContinueGameButton.Disabled = !File.Exists(AutosavePath);
+        ContinueGameButton.Visible = !ContinueGameButton.Disabled;
+        ContinueGameButton.ThemeTypeVariation = ""; frontChoices.AddChild(ContinueGameButton);
         ContinueGameButton.TooltipText = ContinueGameButton.Disabled ? "A saved deployment will appear here." : "Return to your saved deployment.";
         RefreshDeveloperAccess(); NewGameButton.GrabFocus();
     }
@@ -91,7 +110,8 @@ public partial class GameShell
         TutorialGameButton.Disabled = !scenarios.Any(s => s.Name == "tutorial");
         TutorialGameButton.TooltipText = TutorialGameButton.Disabled ? "The training deployment is not available yet." : "Learn alongside the outgoing contracting officer.";
         frontChoices.AddChild(TutorialGameButton);
-        frontChoices.AddChild(FrontButton("Back", ShowFrontDoor)); SpokeBGameButton.GrabFocus();
+        var back = FrontButton("Back", ShowFrontDoor); back.ThemeTypeVariation = "";
+        frontChoices.AddChild(back); SpokeBGameButton.GrabFocus();
     }
 
     private void BeginNewGame(string folder)
