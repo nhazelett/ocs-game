@@ -47,10 +47,7 @@ public partial class TabletopMap3D:Control
         var holder=new SubViewportContainer{Stretch=true,MouseFilter=MouseFilterEnum.Ignore};AddChild(holder);holder.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var viewport=new SubViewport{OwnWorld3D=true,Size=new Vector2I((int)Size.X,(int)Size.Y),Msaa3D=Viewport.Msaa.Msaa4X,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};holder.AddChild(viewport);
         world=new Node3D();viewport.AddChild(world);
-        using var environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color(TabletopTheme.Style.Water),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f};
-        world.AddChild(new WorldEnvironment{Environment=environment});
-        world.AddChild(new DirectionalLight3D{RotationDegrees=new Vector3(-52,-28,0),LightColor=new Color("fff0d1"),LightEnergy=.65f,ShadowEnabled=true});
-        Mesh(new PlaneMesh{Size=new Vector2(100,100)},new Vector3(0,-.15f,0),"8eafb2",true);
+        ConfigureScenery();
         var ordered=board.Islands.OrderByDescending(i=>i.IsHub).ToArray();var spokes=ordered.Length-1;
         for(var i=0;i<ordered.Length;i++) islands[ordered[i].Id]=ordered.Length==1?Vector3.Zero:i==0?new Vector3(-4,0,0):new Vector3(3.5f,0,spokes==1?0:(i-1-(spokes-1)/2f)*9);
         var radii=new Dictionary<string,float>();
@@ -64,13 +61,14 @@ public partial class TabletopMap3D:Control
             }
             radius+=(members.Length-1)*2.4f;radii[island.Id]=radius;islandRadii[island.Id]=radius;
             var p=islands[island.Id];var variant=island.Id.Sum(c=>c)%13;
-            Mesh(Island(radius,.65f,variant),p,"c0a479");Mesh(Island(radius*.9f,.12f,variant),p+new Vector3(0,.65f,0),"9ba487");
+            BuildCoast(p,radius,variant);
             for(var t=0;t<4;t++)
             {
                 var q=p+new Vector3(-1.15f+t*.75f,.77f,-radius*.65f);
                 Box(q+new Vector3(0,.25f,0),new Vector3(.08f,.5f,.08f),"71674c");Mesh(new CylinderMesh{TopRadius=0,BottomRadius=.3f,Height=.7f,RadialSegments=5},q+new Vector3(0,.7f,0),"72886c");
             }
-            Box(p+new Vector3(-radius,.1f,.5f),new Vector3(.9f,.16f,.4f),"927451");
+            Box(p+new Vector3(-radius*1.18f,.08f,.5f),new Vector3(.95f,.08f,.4f),"927451");
+            foreach(var z in new[]{.35f,.65f})Box(p+new Vector3(-radius*1.3f,-.03f,z),new Vector3(.07f,.22f,.07f),"71674c");
         }
         addingIsland=null;
         var minX=islands.Min(p=>p.Value.X-radii[p.Key]);var maxX=islands.Max(p=>p.Value.X+radii[p.Key]);
@@ -88,10 +86,10 @@ public partial class TabletopMap3D:Control
         }
         foreach(var site in board.Sites)
         {
-            addingIsland=site.Island;var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();var rows=(values.Length+3)/4;
+            addingIsland=site.Island;var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();
             for(var i=0;i<values.Length;i++)
             {
-                var q=p+new Vector3((i%4-1.5f)*1.1f,.77f,(i/4-(rows-1)/2f)*2.6f);Equipment(q,values[i]);CapabilityObjects++;
+                var q=EquipmentPoint(p,i,values.Length);Equipment(q,values[i]);CapabilityObjects++;
                 if(values[i].Status=="down")
                 {
                     var marker=new MapDownMarker{Size=new Vector2(24,24),MouseFilter=MouseFilterEnum.Ignore};
@@ -108,7 +106,7 @@ public partial class TabletopMap3D:Control
             SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),()=>SiteShoreAnchor(site.Island),values.Any(t=>t.Status=="down"),site.Island);
             SiteStatuses[site.Id].SetMeta("confidence_lost",confidence?.Contains(site.Id)==true);
         }
-        addingIsland=null;
+        FinishScenery();addingIsland=null;
     }
     private static string SiteStatus(IReadOnlyList<CapabilityTile> values,int opensDay)
     {
@@ -246,9 +244,12 @@ public partial class TabletopMap3D:Control
         var label=new Label{Size=new Vector2(width,54),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,HorizontalAlignment=HorizontalAlignment.Center,MouseFilter=MouseFilterEnum.Ignore};
         label.AddThemeFontSizeOverride("font_size",size);label.AddThemeColorOverride("font_color",color);AddChild(label);label.Size=new Vector2(width,54);captions.Add((label,point,offset));return label;
     }
+    private static Vector3 EquipmentPoint(Vector3 center,int index,int count)
+        =>center+new Vector3((index%4-1.5f)*1.1f,.77f,(index/4-((count+3)/4-1)/2f)*2.6f);
     private void Equipment(Vector3 p,CapabilityTile tile)
     {
         var model=MapEquipmentModels.Instantiate(tile.CapabilityId);
+        model.SetMeta("ground_island",addingIsland??"");
         model.SetMeta("capability_status",tile.Status);model.SetMeta("capability_id",tile.CapabilityId);
         model.Position=p;world.AddChild(model);EquipmentModels.Add(model);
         var bounds=MapEquipmentModels.Bounds(model);
@@ -260,17 +261,6 @@ public partial class TabletopMap3D:Control
         solidBounds.Add(bounds);solidIslands.Add(addingIsland);
     }
 
-    private static ArrayMesh Island(float radius,float height,int variant)
-    {
-        using var st=new SurfaceTool();st.Begin(Godot.Mesh.PrimitiveType.Triangles);
-        Vector3 Point(int i,float y,float scale=1){var a=i*Mathf.Tau/14;var r=radius*(1+.08f*Mathf.Sin(i*2.6f+variant)+.06f*Mathf.Cos(i*1.8f+variant));return new Vector3(Mathf.Cos(a)*r*scale,y,Mathf.Sin(a)*r*scale);}
-        for(var i=0;i<14;i++)
-        {
-            var a=Point(i,height);var b=Point((i+1)%14,height);var c=Point(i,0,1.12f);var d=Point((i+1)%14,0,1.12f);
-            foreach(var v in new[]{new Vector3(0,height,0),b,a,a,b,c,b,d,c})st.AddVertex(v);
-        }
-        st.GenerateNormals();return st.Commit();
-    }
     private void Box(Vector3 point,Vector3 size,string color)=>Mesh(new BoxMesh{Size=size},point,color);
     private static Color LookColor(string color)
     {

@@ -26,7 +26,9 @@ public partial class TabletopMap3D
     private readonly List<MapCallout> callouts=[];
     private readonly List<Aabb> solidBounds=[];
     private readonly List<string?> solidIslands=[];
-    internal IEnumerable<(Vector2[] Polygon,string? Island)> SolidInventory=>solidBounds.Select((s,i)=>(Project(s),solidIslands[i]));
+    private readonly Dictionary<int,Vector3[]> solidSilhouettes=[];
+    private readonly HashSet<int> reducedSilhouettes=[];
+    internal IEnumerable<(Vector2[] Polygon,string? Island)> SolidInventory=>Enumerable.Range(0,solidBounds.Count).Select(i=>(ProjectSolid(i),solidIslands[i]));
     internal IEnumerable<(Line2D Pointer,string? Island)> PointerTargets=>callouts.Where(c=>c.Pointer.Visible).Select(c=>(c.Pointer,c.Island));
     internal IEnumerable<Label> FullCalloutWords=>callouts.Where(c=>c.Card.Visible&&!c.Compact).Select(c=>c.Words);
     internal IEnumerable<string> FullCalloutText=>callouts.Where(c=>c.Card.Visible&&!c.Compact).Select(c=>c.Words.Text);
@@ -44,7 +46,7 @@ public partial class TabletopMap3D
     internal IEnumerable<Line2D> CalloutPointers=>callouts.Where(c=>c.Pointer.Visible).Select(c=>c.Pointer);
     internal IEnumerable<Control> FullCalloutCards=>callouts.Where(c=>c.Card.Visible&&!c.Compact).Select(c=>(Control)c.Card);
     internal IReadOnlyList<Line2D> ClosedLaneBarriers=>laneBarriers;
-    internal IReadOnlyList<Vector2[]> ProjectedSolids=>solidBounds.Select(Project).ToArray();
+    internal IReadOnlyList<Vector2[]> ProjectedSolids=>Enumerable.Range(0,solidBounds.Count).Select(ProjectSolid).ToArray();
 
     private Label SiteCaption(string title,string location,string status,Func<Vector3> anchor,bool alert,string island)
     {
@@ -57,13 +59,14 @@ public partial class TabletopMap3D
         var summary=new Label{Text=status,Visible=false,AutowrapMode=TextServer.AutowrapMode.Off,MouseFilter=MouseFilterEnum.Ignore};
         summary.AddThemeFontSizeOverride("font_size",17);summary.AddThemeColorOverride("font_color",alert?TabletopTheme.Alert:TabletopTheme.Ink);
         column.AddChild(summary);item.ShortWords=summary;
+        OutlineMapText(heading);OutlineMapText(summary);
         return item.Words;
     }
     private Vector3 SiteShoreAnchor(string island)
     {
         // Choose an edge of the actual projected ground footprint with room
         // for facts. The island's sides count too, especially when zoomed.
-        var outline=Project(solidBounds[solidIslands.IndexOf(island)]);
+        var outline=ProjectSolid(solidIslands.IndexOf(island));
         var min=new Vector2(outline.Min(p=>p.X),outline.Min(p=>p.Y));
         var max=new Vector2(outline.Max(p=>p.X),outline.Max(p=>p.Y));var center=(min+max)/2;
         Vector2[] shores=[new(max.X,center.Y),new(center.X,min.Y),new(center.X,max.Y),new(min.X,center.Y)];
@@ -81,7 +84,13 @@ public partial class TabletopMap3D
         var column=new VBoxContainer{MouseFilter=MouseFilterEnum.Ignore};column.AddThemeConstantOverride("separation",3);panel.AddChild(column);
         var label=new Label{Text=text,AutowrapMode=TextServer.AutowrapMode.Off,MouseFilter=MouseFilterEnum.Ignore};
         label.AddThemeFontSizeOverride("font_size",17);label.AddThemeColorOverride("font_color",alert?TabletopTheme.Alert:TabletopTheme.Ink);column.AddChild(label);
+        OutlineMapText(label);
         var item=new MapCallout(panel,label,pointer,anchor,shown,priority,dynamic);item.Width=width;item.Alert=alert;callouts.Add(item);calloutLayoutKey=null;return item;
+    }
+    private static void OutlineMapText(Label label)
+    {
+        label.AddThemeColorOverride("font_outline_color",TabletopTheme.Paper);
+        label.AddThemeConstantOverride("outline_size",1);
     }
     private void ClearMovingCallouts()
     {
@@ -103,6 +112,20 @@ public partial class TabletopMap3D
         if(!closed)return;
         closedLanes.Add(point);
         for(var i=0;i<2;i++){var stroke=new Line2D{Width=4,DefaultColor=TabletopTheme.Alert,Antialiased=true,ZIndex=1};AddChild(stroke);laneBarriers.Add(stroke);}
+    }
+    private Vector2[] ProjectSolid(int index)
+    {
+        if(!solidSilhouettes.TryGetValue(index,out var points))return Project(solidBounds[index]);
+        if(reducedSilhouettes.Add(index))
+        {
+            // Orientation is fixed: keep the true 3D silhouette vertices once.
+            // Pan and orthographic zoom preserve the hull and its winding.
+            var projected=points.Select(p=>(World:p,Screen:camera.UnprojectPosition(world.ToGlobal(p)))).ToArray();
+            var hull=Geometry2D.ConvexHull(projected.Select(p=>p.Screen).ToArray());
+            points=hull.Select(p=>projected.MinBy(q=>q.Screen.DistanceSquaredTo(p)).World).ToArray();
+            solidSilhouettes[index]=points;
+        }
+        return points.Select(p=>camera.UnprojectPosition(world.ToGlobal(p))).ToArray();
     }
     private Vector2[] Project(Aabb bounds)
         =>Geometry2D.ConvexHull(Enumerable.Range(0,8).Select(i=>camera.UnprojectPosition(world.ToGlobal(bounds.GetEndpoint(i)))).ToArray());

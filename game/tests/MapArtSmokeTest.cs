@@ -69,6 +69,7 @@ public partial class MapArtSmokeTest : Node
     {
         var tabletop=map.Tabletop!;
         tabletop._Process(0);
+        Require(tabletop.ModelsHaveGround,"Every model's actual feet stay on the flat ground inside its shaped coast.");
         Require(tabletop.EquipmentModels.Count==map.Tiles.Count,"Every capability has a loaded mesh model.");
         foreach(var model in tabletop.EquipmentModels)
         {
