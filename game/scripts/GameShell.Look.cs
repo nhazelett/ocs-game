@@ -53,6 +53,7 @@ public partial class GameShell
         Theme = theme;
         RestyleLook(this, previous, TabletopTheme.ColorsByRole());
         Map.RefreshLook();
+        TitleArt.RefreshLook();
         // Rebuild interpolated scorecard colors as well as the inherited theme.
         if (session.View?.Finished == true) { debriefHash = null; RefreshDebrief(session.View); }
         using var config = new ConfigFile();

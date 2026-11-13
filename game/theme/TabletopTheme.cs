@@ -54,6 +54,10 @@ internal static class TabletopTheme
         theme.SetTypeVariation("TabletopPrimary","Button");
         foreach(var name in new[]{"normal","pressed","hover","hover_pressed"}) SetBox(name,"TabletopPrimary",Box(Moss,10));
         foreach(var name in new[]{"font_color","font_hover_color","font_focus_color","font_pressed_color","font_hover_pressed_color"})theme.SetColor(name,"TabletopPrimary",PrimaryInk);
+        theme.SetTypeVariation("TabletopSetting","Button");
+        // Small outlined controls remain distinct from the filled deployment action.
+        using(var setting=Box(Colors.Transparent,8))theme.SetStylebox("normal","TabletopSetting",setting);
+        SetBox("hover","TabletopSetting",Box(Hover,8));SetBox("pressed","TabletopSetting",Box(Pressed,8));
         theme.SetTypeVariation("TabletopPerson","Button");
         using(var clear=new StyleBoxEmpty())theme.SetStylebox("normal","TabletopPerson",clear);
         SetBox("hover","TabletopPerson",Box(Hover,0));SetBox("pressed","TabletopPerson",Box(Pressed,0));
