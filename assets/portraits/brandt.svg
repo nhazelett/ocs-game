@@ -1,13 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="320" viewBox="0 0 256 320"><title>Original fictional cast study: brandt</title><rect width="256" height="320" rx="20" fill="#ded3bd"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="320" viewBox="0 0 256 320"><title>Original fictional tabletop cast: brandt</title><rect width="256" height="320" rx="20" fill="#ded3bd"/>
 <path d="M0 245L256 55V320H0Z" fill="#c9c7b1"/>
-<path d="M12 320L29 260L91 224H165L228 260L247 320Z" fill="#687f6d"/>
+<path d="M7 320L24 273L86 239L108 226L163 229L226 253L252 320Z" fill="#687f6d"/>
 <path d="M126 232L150 320H247L228 260L165 224Z" fill="#343d4b" opacity=".16"/>
 <path d="M103 182H153V244L128 264L103 244Z" fill="#e0ba9f"/>
+<path d="M92 235Q128 268 164 235L170 246Q128 281 86 246Z" fill="#c6c6ad"/><path d="M95 245Q128 270 161 245" fill="none" stroke="#eee6ce" stroke-width="3"/>
+<g transform="translate(0 0) rotate(-8 128 212)">
 <path d="M69 108L86 68L128 53L171 72L188 112L177 175L153 211L125 224L91 204L74 170Z" fill="#e0ba9f"/>
 <path d="M128 77L178 109L175 172L151 208L128 220Z" fill="#714f3b" opacity=".18"/>
-<path d="M80 131L105 127M151 127L174 131" stroke="#3b403a" stroke-width="5" stroke-linecap="round"/>
-<path d="M128 139L120 170L133 172" fill="none" stroke="#805e49" stroke-width="4"/>
-<path d="M110 191Q128 199 146 190" fill="none" stroke="#785343" stroke-width="4"/>
-<path d="M90 238L122 269L108 286L75 247M166 238L134 269L149 286L181 247" fill="#eee6ce"/>
-<path d="M128 269V320" stroke="#e1dcc7" stroke-width="3"/>
-<path d="M45 287H85M172 287H212" stroke="#374b47" stroke-opacity=".35" stroke-width="4"/><path d="M65 132L66 87L95 57L149 53L183 80L190 133L165 91L105 111L86 101Z" fill="#b7a179"/></svg>
+<path d="M84 118L110 121M147 121L173 117" fill="none" stroke="#3b403a" stroke-width="4" stroke-linecap="round"/>
+<ellipse cx="98" cy="135" rx="14" ry="9" fill="#eeeede" stroke="#3b403a" stroke-width="2"/><circle cx="98" cy="135" r="5" fill="#303a34"/><ellipse cx="160" cy="135" rx="14" ry="9" fill="#eeeede" stroke="#3b403a" stroke-width="2"/><circle cx="160" cy="135" r="5" fill="#303a34"/><path d="M128 144L120 170L133 172" fill="none" stroke="#805e49" stroke-width="4"/><path d="M110 191Q128 194 146 190" fill="none" stroke="#674a3c" stroke-width="4" stroke-linecap="round"/><path d="M65 132L66 87L95 57L149 53L183 80L190 133L165 91L105 111L86 101Z" fill="#b7a179"/></g></svg>
