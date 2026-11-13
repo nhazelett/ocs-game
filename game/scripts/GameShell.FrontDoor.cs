@@ -51,8 +51,8 @@ public partial class GameShell
         var settingsRow = new HBoxContainer(); settingsRow.AddThemeConstantOverride("separation", 24); settings.AddChild(settingsRow);
         foreach (var button in new[] { SoundButton, LookButton, skipQuietDays })
         {
-            button.Reparent(settingsRow, false); button.ThemeTypeVariation = "";
-            button.Flat = true; button.CustomMinimumSize = new Vector2(64, 38);
+            button.Reparent(settingsRow, false); button.ThemeTypeVariation = "TabletopSetting";
+            button.Flat = false; button.CustomMinimumSize = new Vector2(64, 38);
             button.AddThemeFontSizeOverride("font_size", 18);
         }
         ArtStudiesButton = FrontButton("ART-01 · compare art directions", () =>

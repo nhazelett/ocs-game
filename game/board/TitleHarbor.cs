@@ -3,14 +3,12 @@ using Godot;
 namespace LinesOfSupport.Game;
 
 // A decorative morning view of the same kit used on the board. No Session or game facts.
-// Render on entry/resize, then retain the texture; the title has no continuous 3D work.
+// Only the sea moves. Stop the title viewport whenever the title is hidden.
 public partial class TitleHarbor : Control
 {
     private SubViewport viewport = null!;
     private TextureRect image = null!;
-    private int renderVersion;
-    private Vector2I snapshotSize;
-    private bool hasSnapshot;
+    private MeshInstance3D sea = null!;
     internal int KitPieces { get; private set; }
 
     public override void _Ready()
@@ -18,11 +16,16 @@ public partial class TitleHarbor : Control
         MouseFilter = MouseFilterEnum.Ignore;
         ClipContents = true;
         viewport = new SubViewport { Name = "HarborViewport", OwnWorld3D = true, Size = new Vector2I(680, 680),
-            Msaa3D = Viewport.Msaa.Msaa4X, RenderTargetUpdateMode = SubViewport.UpdateMode.Once };
+            Msaa3D = Viewport.Msaa.Msaa4X, RenderTargetUpdateMode = SubViewport.UpdateMode.Disabled };
         AddChild(viewport);
         using var texture = viewport.GetTexture();
         image = new TextureRect { Texture = texture, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             StretchMode = TextureRect.StretchModeEnum.Scale, MouseFilter = MouseFilterEnum.Ignore };
+        using var fadeShader = GD.Load<Shader>("res://board/TitleHarborFade.gdshader");
+        using (var fade = new ShaderMaterial { Shader = fadeShader })
+        {
+            image.Material = fade;
+        }
         AddChild(image); image.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var world = new Node3D(); viewport.AddChild(world);
         using var environment = new Godot.Environment
@@ -38,7 +41,14 @@ public partial class TitleHarbor : Control
         var camera = new Camera3D { Projection = Camera3D.ProjectionType.Orthogonal,
             Size = 14.8f, Position = new Vector3(12, 14, 18), Current = true };
         viewport.AddChild(camera); camera.LookAt(new Vector3(0, 0, .5f));
-        Mesh(new PlaneMesh { Size = new Vector2(70, 70) }, new Vector3(0, -.12f, 0), "96b5b3", true);
+        using (var seaShader = GD.Load<Shader>("res://board/TabletopSea.gdshader"))
+        using (var material = new ShaderMaterial { Shader = seaShader })
+        using (var plane = new PlaneMesh { Size = new Vector2(70, 70), SubdivideWidth = 24, SubdivideDepth = 24 })
+        {
+            sea = new MeshInstance3D { Name = "TitleSea", Mesh = plane, MaterialOverride = material,
+                Position = new Vector3(0, -.15f, 0), CastShadow = GeometryInstance3D.ShadowCastingSetting.Off };
+            world.AddChild(sea);
+        }
         Land(new Vector3(0, 0, 0), 5.6f, 3.8f, 0);
         // A quiet quay, a connected road, and equipment staged above the beach.
         Box(new Vector3(0, .24f, 0), new Vector3(7.4f, .03f, .52f), "d5c8a5");
@@ -73,13 +83,8 @@ public partial class TitleHarbor : Control
         Box(new Vector3(.43f, .5f, -.7f), new Vector3(.02f, .16f, .3f), "617b7a", boat);
         Box(new Vector3(0, .38f, .2f), new Vector3(.7f, .34f, .6f), "a46b49", boat);
         Box(new Vector3(0, .36f, .88f), new Vector3(.7f, .3f, .5f), "72816d", boat);
-        for (var i = 0; i < 19; i++)
-        {
-            var x = -10 + i * 1.15f; var z = 6.3f + Mathf.Sin(i * 2.3f) * 2;
-            Box(new Vector3(x, -.105f, z), new Vector3(.45f + (i % 4) * .2f, .004f, .025f), "c5d4c7");
-        }
-        Resized += RenderOnce; VisibilityChanged += RenderOnce;
-        RenderOnce();
+        Resized += RefreshRendering; VisibilityChanged += RefreshRendering;
+        RefreshLook();
 
         void Kit(string capability, Vector3 position, float scale, float rotation)
         {
@@ -97,7 +102,7 @@ public partial class TitleHarbor : Control
         }
         void Land(Vector3 center, float width, float depth, int variant)
         {
-            Coast(center + Vector3.Down * .09f, width * 1.22f, depth * 1.22f, .02f, "a6c5ba");
+            Shallows(center, width, depth);
             Coast(center + Vector3.Down * .05f, width * 1.08f, depth * 1.08f, .07f, "c9b58b");
             Coast(center, width, depth, .23f, "929f7c");
             void Coast(Vector3 origin, float rx, float rz, float height, string color)
@@ -121,6 +126,32 @@ public partial class TitleHarbor : Control
                 surface.GenerateNormals(); Mesh(surface.Commit(), origin, color);
             }
         }
+        void Shallows(Vector3 center, float width, float depth)
+        {
+            using var surface = new SurfaceTool(); surface.Begin(Godot.Mesh.PrimitiveType.Triangles);
+            Vector3 Point(int i, float scale)
+            {
+                var angle = i * Mathf.Tau / 36;
+                var r = 1 + Mathf.Sin(angle * 3) * .08f + Mathf.Cos(angle * 5) * .06f;
+                return new Vector3(Mathf.Cos(angle) * width * r * scale, -.09f, Mathf.Sin(angle) * depth * r * scale);
+            }
+            void V(int i, float scale, float alpha)
+            {
+                surface.SetColor(new Color(1, 1, 1, alpha)); surface.AddVertex(Point(i, scale));
+            }
+            for (var i = 0; i < 36; i++)
+            {
+                V(i, 1.06f, .6f); V(i + 1, 1.06f, .6f); V(i, 1.42f, 0);
+                V(i + 1, 1.06f, .6f); V(i + 1, 1.42f, 0); V(i, 1.42f, 0);
+            }
+            surface.GenerateNormals();
+            using var mesh = surface.Commit();
+            using var material = new StandardMaterial3D { VertexColorUseAsAlbedo = true,
+                Transparency = BaseMaterial3D.TransparencyEnum.Alpha, ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+                CullMode = BaseMaterial3D.CullModeEnum.Disabled };
+            world.AddChild(new MeshInstance3D { Name = "TitleShallows", Mesh = mesh, MaterialOverride = material,
+                Position = center, CastShadow = GeometryInstance3D.ShadowCastingSetting.Off });
+        }
         void Box(Vector3 p, Vector3 size, string color, Node3D? parent = null) => Mesh(new BoxMesh { Size = size }, p, color, parent: parent);
         void Mesh(Godot.Mesh mesh, Vector3 p, string color, bool unshaded = false, Node3D? parent = null)
         {
@@ -132,24 +163,27 @@ public partial class TitleHarbor : Control
         }
     }
 
-    private async void RenderOnce()
+    internal void RefreshLook()
     {
         if (viewport is null) return;
-        var version = ++renderVersion;
+        using var seaMaterial = (ShaderMaterial)sea.MaterialOverride;
+        using var fadeMaterial = (ShaderMaterial)image.Material;
+        var water = new Color(TabletopTheme.Style.Water); var night = TabletopTheme.Direction == 1;
+        seaMaterial.SetShaderParameter("sea_color", TabletopTheme.Direction == 2 ? new Color("628e9a") : water.Darkened(.18f));
+        seaMaterial.SetShaderParameter("sky_color", water.Lightened(night ? .16f : .55f));
+        seaMaterial.SetShaderParameter("haze_color", water.Lightened(night ? .26f : .72f));
+        fadeMaterial.SetShaderParameter("paper_color", TabletopTheme.Background);
+        var shallows = viewport.FindChild("TitleShallows", true, false) as MeshInstance3D;
+        using var material = shallows?.MaterialOverride as StandardMaterial3D;
+        if (material is not null) material.AlbedoColor = water.Lightened(night ? .25f : .6f);
+        RefreshRendering();
+    }
+
+    private void RefreshRendering()
+    {
+        if (viewport is null) return;
         var size = new Vector2I(Math.Max(1, (int)Size.X), Math.Max(1, (int)Size.Y));
-        if (!IsVisibleInTree() || hasSnapshot && snapshotSize == size)
-        {
-            viewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Disabled; return;
-        }
         if (viewport.Size != size) viewport.Size = size;
-        viewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
-        if (DisplayServer.GetName() == "headless") return;
-        await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        if (!GodotObject.IsInstanceValid(this) || !IsInsideTree() || version != renderVersion) return;
-        // A stable image also survives renderer target invalidation during a look change.
-        using var pixels = viewport.GetTexture().GetImage();
-        using var snapshot = ImageTexture.CreateFromImage(pixels);
-        image.Texture = snapshot; snapshotSize = size; hasSnapshot = true;
+        viewport.RenderTargetUpdateMode = IsVisibleInTree() ? SubViewport.UpdateMode.Always : SubViewport.UpdateMode.Disabled;
     }
 }
