@@ -18,7 +18,7 @@ public partial class TabletopMap3D:Control
     internal IReadOnlyList<string> ReportedChangeLabels=>movingLabels.Where(x=>x.Label.HasMeta("reported_change")).Select(x=>x.Label.Text).ToArray();
     internal IReadOnlyList<(Label Label,Node3D Node,Line2D? Leader)> FactLabels=>movingLabels;
     internal Dictionary<string,Label> SiteStatuses{get;}=[];
-    internal IEnumerable<Label> CaptionLabels=>captions.Select(c=>c.Label);
+    internal IEnumerable<Label> CaptionLabels=>captions.Select(c=>c.Label).Concat(callouts.Where(c=>!c.Dynamic).Select(c=>c.Words));
     private readonly Dictionary<string,float> islandRadii=[];
     private ScenarioBoardData board=null!;
     private Node3D? motion;
@@ -70,7 +70,7 @@ public partial class TabletopMap3D:Control
             var state=links.FirstOrDefault(l=>l.FromIslandId==route.From&&l.ToIslandId==route.To&&l.Mode==route.Mode);var closed=state?.Open==false;
             var shift=route.Mode=="aircraft"?new Vector3(0,0,-.7f):Vector3.Zero;
             for(var i=0;i<18;i++){var p=a.Lerp(b,i/17f)+shift;p.Y=-.12f;Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true);}
-            Caption(mode+" lane"+(closed?" · closed":""),(a+b)/2+shift,new Vector2(-140,route.Mode=="aircraft"?-50:-30),200,16,closed?TabletopTheme.Alert:TabletopTheme.Ink);
+            LaneCaption(mode+" lane"+(closed?" · closed":""),(a+b)/2+shift,closed);
         }
         foreach(var site in board.Sites)
         {
@@ -83,8 +83,7 @@ public partial class TabletopMap3D:Control
             selections[site.Id]=Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.79f,0),"556e65",true);selections[site.Id].Visible=false;
             var state=SiteStatus(values,site.OpensDay);
             var title=board.Sites.Count(s=>s.Island==site.Island)==1?site.Name+" / "+board.Islands.Single(i=>i.Id==site.Island).Name:site.Name;
-            Caption(title,p+new Vector3(0,.75f,0),new Vector2(-170,62),340,20,TabletopTheme.Ink);
-            SiteStatuses[site.Id]=Caption(state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),p+new Vector3(0,.75f,0),new Vector2(-170,91),340,17,values.Any(t=>t.Status=="down")?TabletopTheme.Alert:TabletopTheme.Ink);
+            SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),p+new Vector3(0,.75f,0),values.Any(t=>t.Status=="down"));
         }
     }
     private static string SiteStatus(IReadOnlyList<CapabilityTile> values,int opensDay)
@@ -115,32 +114,9 @@ public partial class TabletopMap3D:Control
     {
         if(camera is null)return;
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
-        // Reserve the complete label, including wrapped lines and theme padding.
-        var occupied=captions.Select(c=>c.Label.GetRect().Grow(6)).ToList();
-        foreach(var item in movingLabels.Where(m=>m.Label.Visible))
-        {
-            if(item.Leader is not null)
-            {
-                var anchor=camera.UnprojectPosition(item.Node.GlobalPosition);
-                Vector2 Place(Vector2 offset)
-                {
-                    var p=anchor+offset;
-                    p.X=Math.Clamp(p.X,4,Math.Max(4,Size.X-item.Label.Size.X-4));
-                    p.Y=Math.Clamp(p.Y,4,Math.Max(4,Size.Y-item.Label.Size.Y-4));return p;
-                }
-                var candidates=new[]{new Vector2(-180,22),new Vector2(-260,-80),new Vector2(20,-80),new Vector2(-120,-100),new Vector2(-260,70),new Vector2(20,70),new Vector2(-180,-160),new Vector2(20,-160)}.Select(Place).ToArray();
-                var position=candidates.FirstOrDefault(p=>!occupied.Any(r=>r.Intersects(new Rect2(p,item.Label.Size))),candidates[0]);
-                item.Label.Position=position;
-                item.Leader.Points=[anchor,new Vector2(Math.Clamp(anchor.X,position.X,position.X+item.Label.Size.X),Math.Clamp(anchor.Y,position.Y,position.Y+item.Label.Size.Y))];
-                occupied.Add(item.Label.GetRect());continue;
-            }
-            var offsetY=item.Label.HasMeta("reported_change")?-item.Label.Size.Y-80:-55;
-            var point=camera.UnprojectPosition(item.Node.GlobalPosition)+new Vector2(-130,offsetY);
-            point.X=Math.Clamp(point.X,4,Math.Max(4,Size.X-264));point.Y=Math.Max(4,point.Y);
-            while(point.Y>4 && occupied.Any(r=>r.Intersects(new Rect2(point,item.Label.Size))))point.Y=Math.Max(4,point.Y-28);
-            item.Label.Position=point;occupied.Add(item.Label.GetRect());
-        }
+        LayoutCallouts();
     }
+
     internal void ShowFacts(MapDayView? day,float progress)
     {
         if(day is null)return;
@@ -148,7 +124,7 @@ public partial class TabletopMap3D:Control
         if(key!=factKey)
         {
             if(motion is not null){world.RemoveChild(motion);motion.QueueFree();}
-            foreach(var item in movingLabels){RemoveChild(item.Label);item.Label.QueueFree();if(item.Leader is not null){RemoveChild(item.Leader);item.Leader.QueueFree();}}movingLabels.Clear();runs.Clear();changeRings.Clear();
+            ClearMovingCallouts();runs.Clear();changeRings.Clear();
             motion=new Node3D();world.AddChild(motion);factKey=key;
             foreach(var run in day.Runs)
             {
@@ -181,12 +157,13 @@ public partial class TabletopMap3D:Control
                 var ring=Mesh(new TorusMesh{InnerRadius=1.6f,OuterRadius=1.66f,Rings=32,RingSegments=6},p+Vector3.Up*.81f,group.All(c=>c.Kind=="restored")?"355d48":"9f4937",true,motion);
                 changeRings.Add(ring);
                 var marker=new Node3D{Position=p+Vector3.Up*1.1f};motion.AddChild(marker);
-                MovingLabel(marker,string.Join("\n",group.Select(change=>
+                var changeWords=string.Join("\n",group.Select(change=>
                 {
                     var name=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support";
                     return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} {change.Permille/10m:0.#}% supplied";
-                })));
-                movingLabels[^1].Label.SetMeta("reported_change",true);
+                }));
+                var label=SiteStatuses[group.Key];label.Text=changeWords;label.SetMeta("reported_change",true);
+                movingLabels.Add((label,marker,null));
             }
         }
         foreach(var run in runs)
@@ -210,13 +187,10 @@ public partial class TabletopMap3D:Control
     }
     private void MovingLabel(Node3D node,string text,bool anchored=false)
     {
-        var label=new Label{Size=new Vector2(260,28),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,MouseFilter=MouseFilterEnum.Ignore,HorizontalAlignment=HorizontalAlignment.Center};
-        label.AddThemeFontSizeOverride("font_size",17);label.AddThemeColorOverride("font_color",TabletopTheme.Ink);
-        using var labelStyle=new StyleBoxFlat{BgColor=TabletopTheme.Paper,ContentMarginLeft=4,ContentMarginRight=4,ContentMarginTop=2,ContentMarginBottom=2};label.AddThemeStyleboxOverride("normal",labelStyle);
-        Line2D? leader=null;
-        if(anchored){label.Size=new Vector2(240,50);leader=new Line2D{Width=2,DefaultColor=TabletopTheme.Ink};AddChild(leader);}
-        AddChild(label);movingLabels.Add((label,node,leader));
+        var callout=PaperCallout(text,()=>node.GlobalPosition,()=>node.Visible,anchored?180:220,anchored?1:0,true);
+        movingLabels.Add((callout.Words,node,anchored?callout.Pointer:null));
     }
+
     private Label Caption(string text,Vector3 point,Vector2 offset,float width,int size,Color color)
     {
         var label=new Label{Size=new Vector2(width,54),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,HorizontalAlignment=HorizontalAlignment.Center,MouseFilter=MouseFilterEnum.Ignore};
@@ -267,6 +241,7 @@ public partial class TabletopMap3D:Control
         using(mesh)
         {
             using var material=new StandardMaterial3D{AlbedoColor=LookColor(color),Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};if(unshaded)material.ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded;
+            if(!unshaded&&parent is null)solidBounds.Add(new Aabb(mesh.GetAabb().Position+point,mesh.GetAabb().Size));
             var result=new MeshInstance3D{Mesh=mesh,Position=point,MaterialOverride=material};(parent??world).AddChild(result);return result;
         }
     }
