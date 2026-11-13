@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="320" viewBox="0 0 256 320"><title>Original fictional tabletop cast: kowalski</title><rect width="256" height="320" rx="20" fill="#ded3bd"/>
+<path d="M0 245L256 55V320H0Z" fill="#c9c7b1"/>
+<path d="M7 320L24 273L86 239L108 226L163 229L226 253L252 320Z" fill="#737880"/>
+<path d="M126 232L150 320H247L228 260L165 224Z" fill="#343d4b" opacity=".16"/>
+<path d="M103 182H153V244L128 264L103 244Z" fill="#d9b49b"/>
+<path d="M93 232L125 259L108 281L76 246M163 232L131 259L151 280L185 246" fill="#eee6ce"/><path d="M128 262V320" stroke="#ded6bf" stroke-width="3"/>
+<g transform="translate(2 0) rotate(5 128 212)">
+<path d="M69 108L86 68L128 53L171 72L188 112L177 175L153 211L125 224L91 204L74 170Z" fill="#d9b49b"/>
+<path d="M128 77L178 109L175 172L151 208L128 220Z" fill="#714f3b" opacity=".18"/>
+<path d="M84 119L110 119M147 119L173 119" fill="none" stroke="#3b403a" stroke-width="4" stroke-linecap="round"/>
+<ellipse cx="98" cy="135" rx="14" ry="9" fill="#eeeede" stroke="#3b403a" stroke-width="2"/><circle cx="100" cy="135" r="5" fill="#303a34"/><ellipse cx="160" cy="135" rx="14" ry="9" fill="#eeeede" stroke="#3b403a" stroke-width="2"/><circle cx="162" cy="135" r="5" fill="#303a34"/><path d="M128 144L120 170L133 172" fill="none" stroke="#805e49" stroke-width="4"/><path d="M80 169L100 192L126 203L152 190L177 167L167 200L128 226L91 209Z" fill="#827b6c" opacity=".72"/><path d="M110 192Q128 199 146 192" fill="none" stroke="#674a3c" stroke-width="4" stroke-linecap="round"/><path d="M68 127L70 92L86 72L105 69L103 88L81 105L81 142ZM151 68L169 74L186 94L188 139L177 130L173 104L153 88Z" fill="#827b6c"/></g></svg>
