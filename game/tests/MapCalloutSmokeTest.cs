@@ -77,6 +77,16 @@ public partial class MapCalloutSmokeTest : Node
                     &&(visible.Contains("down",StringComparison.OrdinalIgnoreCase)||visible.Contains("0% supplied")),
                     $"Every down site's visible text keeps its facts, including {tile.Label}: {visible}");
         }
+        foreach(var panel in map.Tabletop.FactPanels)
+        {
+            using var background=panel.GetThemeStylebox("panel");
+            Require(background is StyleBoxFlat paper&&paper.BgColor==TabletopTheme.Paper,
+                "Every visible fact, including compact outage summaries, has opaque paper behind it.");
+        }
+        Require(map.Tabletop.FactPanels.Count()==map.Tabletop.CalloutPointers.Count(),
+            "Every visible fact panel has a short tether to its own actual target.");
+        Require(map.Tabletop.QuietLabels.All(l=>l.GetThemeConstant("outline_size")>=4),
+            "Quiet site and lane names keep a broad contrasting halo over sea.");
         var cards=map.Tabletop.CalloutCards.ToArray();
         var badges=map.Tabletop.DownMarkers.Select(m=>m.Marker.GetRect()).ToArray();
         var stems=map.Tabletop.DownStems.SelectMany(s=>Enumerable.Range(1,s.Points.Length-1)
@@ -91,6 +101,8 @@ public partial class MapCalloutSmokeTest : Node
                 Require(!card.GetRect().Intersects(other.GetRect()),"Callout collision: "+card.GetRect()+" / "+other.GetRect());
             Require(!map.Tabletop.ProjectedSolids.Any(p=>TabletopMap3D.IntersectsSolid(card.GetRect(),p)),"Callout covers solid scenery: "+card.GetRect());
         }
+        Require(map.Tabletop.VisibleRouteDots.All(p=>cards.All(c=>!c.GetRect().Grow(6).HasPoint(p))),
+            "Route dots stop before map lettering and its halo.");
         var pointers=map.Tabletop.CalloutPointers.ToArray();
         foreach(var pointer in pointers)
         {

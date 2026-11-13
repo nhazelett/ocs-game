@@ -19,6 +19,7 @@ public partial class TabletopMap3D:Control
     internal List<Line2D> DownStems{get;}=[];
     internal List<Node3D> EquipmentModels{get;}=[];
     private readonly List<Vector3[]> equipmentExtents=[];
+    private readonly List<MeshInstance3D> routeDots=[];
     internal IEnumerable<Rect2> ModelScreenBounds=>equipmentExtents.Select(vertices=>
     {
         var points=vertices.Select(v=>camera.UnprojectPosition(world.ToGlobal(v))).ToArray();
@@ -47,10 +48,7 @@ public partial class TabletopMap3D:Control
         var holder=new SubViewportContainer{Stretch=true,MouseFilter=MouseFilterEnum.Ignore};AddChild(holder);holder.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         var viewport=new SubViewport{OwnWorld3D=true,Size=new Vector2I((int)Size.X,(int)Size.Y),Msaa3D=Viewport.Msaa.Msaa4X,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};holder.AddChild(viewport);
         world=new Node3D();viewport.AddChild(world);
-        using var environment=new Godot.Environment{BackgroundMode=Godot.Environment.BGMode.Color,BackgroundColor=new Color(TabletopTheme.Style.Water),AmbientLightSource=Godot.Environment.AmbientSource.Color,AmbientLightColor=new Color("eae3ce"),AmbientLightEnergy=.25f};
-        world.AddChild(new WorldEnvironment{Environment=environment});
-        world.AddChild(new DirectionalLight3D{RotationDegrees=new Vector3(-52,-28,0),LightColor=new Color("fff0d1"),LightEnergy=.65f,ShadowEnabled=true});
-        Mesh(new PlaneMesh{Size=new Vector2(100,100)},new Vector3(0,-.15f,0),"8eafb2",true);
+        ConfigureScenery();
         var ordered=board.Islands.OrderByDescending(i=>i.IsHub).ToArray();var spokes=ordered.Length-1;
         for(var i=0;i<ordered.Length;i++) islands[ordered[i].Id]=ordered.Length==1?Vector3.Zero:i==0?new Vector3(-4,0,0):new Vector3(3.5f,0,spokes==1?0:(i-1-(spokes-1)/2f)*9);
         var radii=new Dictionary<string,float>();
@@ -64,13 +62,14 @@ public partial class TabletopMap3D:Control
             }
             radius+=(members.Length-1)*2.4f;radii[island.Id]=radius;islandRadii[island.Id]=radius;
             var p=islands[island.Id];var variant=island.Id.Sum(c=>c)%13;
-            Mesh(Island(radius,.65f,variant),p,"c0a479");Mesh(Island(radius*.9f,.12f,variant),p+new Vector3(0,.65f,0),"9ba487");
+            BuildCoast(p,radius,variant);
             for(var t=0;t<4;t++)
             {
                 var q=p+new Vector3(-1.15f+t*.75f,.77f,-radius*.65f);
                 Box(q+new Vector3(0,.25f,0),new Vector3(.08f,.5f,.08f),"71674c");Mesh(new CylinderMesh{TopRadius=0,BottomRadius=.3f,Height=.7f,RadialSegments=5},q+new Vector3(0,.7f,0),"72886c");
             }
-            Box(p+new Vector3(-radius,.1f,.5f),new Vector3(.9f,.16f,.4f),"927451");
+            Box(p+new Vector3(-radius*1.18f,.08f,.5f),new Vector3(.95f,.08f,.4f),"927451");
+            foreach(var z in new[]{.35f,.65f})Box(p+new Vector3(-radius*1.3f,-.03f,z),new Vector3(.07f,.22f,.07f),"71674c");
         }
         addingIsland=null;
         var minX=islands.Min(p=>p.Value.X-radii[p.Key]);var maxX=islands.Max(p=>p.Value.X+radii[p.Key]);
@@ -82,16 +81,16 @@ public partial class TabletopMap3D:Control
             var state=links.FirstOrDefault(l=>l.FromIslandId==route.From&&l.ToIslandId==route.To&&l.Mode==route.Mode);var closed=state?.Open==false;
             // Distinct paths: the air route rises above the water; the barge stays on it.
             Vector3 PathPoint(float t)=>a.Lerp(b,t)+Vector3.Up*(route.Mode=="aircraft"?Mathf.Sin(t*Mathf.Pi)*2.2f:-.12f);
-            for(var i=0;i<28;i++){var p=PathPoint(i/27f);Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true);}
+            for(var i=0;i<28;i++){var p=PathPoint(i/27f);routeDots.Add(Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true));}
             laneAnchors.Add((route.From,route.To,route.Mode,PathPoint(.5f)));
             LaneCaption(mode+" lane"+(closed?" · closed":""),PathPoint(.5f),closed);
         }
         foreach(var site in board.Sites)
         {
-            addingIsland=site.Island;var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();var rows=(values.Length+3)/4;
+            addingIsland=site.Island;var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();
             for(var i=0;i<values.Length;i++)
             {
-                var q=p+new Vector3((i%4-1.5f)*1.1f,.77f,(i/4-(rows-1)/2f)*2.6f);Equipment(q,values[i]);CapabilityObjects++;
+                var q=EquipmentPoint(p,i,values.Length);Equipment(q,values[i]);CapabilityObjects++;
                 if(values[i].Status=="down")
                 {
                     var marker=new MapDownMarker{Size=new Vector2(24,24),MouseFilter=MouseFilterEnum.Ignore};
@@ -108,7 +107,7 @@ public partial class TabletopMap3D:Control
             SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),()=>SiteShoreAnchor(site.Island),values.Any(t=>t.Status=="down"),site.Island);
             SiteStatuses[site.Id].SetMeta("confidence_lost",confidence?.Contains(site.Id)==true);
         }
-        addingIsland=null;
+        FinishScenery();addingIsland=null;
     }
     private static string SiteStatus(IReadOnlyList<CapabilityTile> values,int opensDay)
     {
@@ -116,8 +115,7 @@ public partial class TabletopMap3D:Control
         if(values.All(t=>t.Status=="notOpen"))return $"Opens day {opensDay}";
         string Names(string status)
         {
-            var names=values.Where(t=>t.Status==status).Select(t=>t.Label.ToLowerInvariant()).ToArray();
-            return names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+            return CapabilityNames(values.Where(t=>t.Status==status).Select(t=>t.Label));
         }
         var clauses=new List<string>();
         if(values.Any(t=>t.Status=="down"))clauses.Add(Names("down")+" down");
@@ -125,6 +123,13 @@ public partial class TabletopMap3D:Control
         var text=clauses.Count==0?"Supported":string.Join("; ",clauses);
         return char.ToUpperInvariant(text[0])+text[1..];
     }
+    private static string CapabilityNames(IEnumerable<string> labels)
+    {
+        var names=labels.OrderBy(n=>n.Equals("power",StringComparison.OrdinalIgnoreCase)?0:1)
+            .Select(n=>n.ToLowerInvariant()).ToArray();
+        return names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+    }
+    private static string SentenceCase(string text)=>text.Length==0?text:char.ToUpperInvariant(text[0])+text[1..];
     internal void Select(string? id){foreach(var pair in selections)pair.Value.Visible=pair.Key==id;}
     internal void Fit(){world.Position=Vector3.Zero;camera.Size=fittedSize;}
     internal void Restore(Vector3 pan,float size){world.Position=pan;camera.Size=size;}
@@ -206,8 +211,7 @@ public partial class TabletopMap3D:Control
                 label.Text=string.Join("\n",new[]{changeWords}.Concat(stillShort).Concat(confidence));label.SetMeta("reported_change",true);
                 var summary=group.GroupBy(c=>(c.Kind,c.Permille)).Select(reports=>
                 {
-                    var names=reports.Select(c=>capabilityTiles.FirstOrDefault(t=>t.CapabilityId==c.CapabilityId)?.Label??"Support").ToArray();
-                    var name=names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+                    var name=SentenceCase(CapabilityNames(reports.Select(c=>capabilityTiles.FirstOrDefault(t=>t.CapabilityId==c.CapabilityId)?.Label??"Support")));
                     return reports.Key.Kind=="restored"?$"{name} restored":reports.Key.Kind=="vendorFailure"?$"{name}: supplier failure reported"
                         :reports.Key.Permille==0?$"{name} down":$"{name}\n{reports.Key.Permille/10m:0.#}% supplied";
                 });
@@ -246,9 +250,12 @@ public partial class TabletopMap3D:Control
         var label=new Label{Size=new Vector2(width,54),AutowrapMode=TextServer.AutowrapMode.WordSmart,Text=text,HorizontalAlignment=HorizontalAlignment.Center,MouseFilter=MouseFilterEnum.Ignore};
         label.AddThemeFontSizeOverride("font_size",size);label.AddThemeColorOverride("font_color",color);AddChild(label);label.Size=new Vector2(width,54);captions.Add((label,point,offset));return label;
     }
+    private static Vector3 EquipmentPoint(Vector3 center,int index,int count)
+        =>center+new Vector3((index%4-1.5f)*1.1f,.77f,(index/4-((count+3)/4-1)/2f)*2.6f);
     private void Equipment(Vector3 p,CapabilityTile tile)
     {
         var model=MapEquipmentModels.Instantiate(tile.CapabilityId);
+        model.SetMeta("ground_island",addingIsland??"");
         model.SetMeta("capability_status",tile.Status);model.SetMeta("capability_id",tile.CapabilityId);
         model.Position=p;world.AddChild(model);EquipmentModels.Add(model);
         var bounds=MapEquipmentModels.Bounds(model);
@@ -260,17 +267,6 @@ public partial class TabletopMap3D:Control
         solidBounds.Add(bounds);solidIslands.Add(addingIsland);
     }
 
-    private static ArrayMesh Island(float radius,float height,int variant)
-    {
-        using var st=new SurfaceTool();st.Begin(Godot.Mesh.PrimitiveType.Triangles);
-        Vector3 Point(int i,float y,float scale=1){var a=i*Mathf.Tau/14;var r=radius*(1+.08f*Mathf.Sin(i*2.6f+variant)+.06f*Mathf.Cos(i*1.8f+variant));return new Vector3(Mathf.Cos(a)*r*scale,y,Mathf.Sin(a)*r*scale);}
-        for(var i=0;i<14;i++)
-        {
-            var a=Point(i,height);var b=Point((i+1)%14,height);var c=Point(i,0,1.12f);var d=Point((i+1)%14,0,1.12f);
-            foreach(var v in new[]{new Vector3(0,height,0),b,a,a,b,c,b,d,c})st.AddVertex(v);
-        }
-        st.GenerateNormals();return st.Commit();
-    }
     private void Box(Vector3 point,Vector3 size,string color)=>Mesh(new BoxMesh{Size=size},point,color);
     private static Color LookColor(string color)
     {
