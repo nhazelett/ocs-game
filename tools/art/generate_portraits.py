@@ -44,7 +44,6 @@ STAGING = {
     "dunn": (3, 4, "left", "zip", "steady", -1),
     "ward": (0, -4, "right", "round", "smile", 3),
     "reyna": (-1, 4, "level", "rolled", "curious", -2),
-    "fallback": (1, 0, "level", "knit", "steady", 0),
 }
 COLLARS = {
     "open": '<path d="M93 232L125 259L108 281L76 246M163 232L131 259L151 280L185 246" fill="#eee6ce"/><path d="M128 262V320" stroke="#ded6bf" stroke-width="3"/>',
@@ -107,10 +106,20 @@ def portrait(key, spec):
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="256" height="320" viewBox="0 0 256 320"><title>Original fictional tabletop cast: {key}</title>{shapes}</svg>\n'
 
 
+def fallback_portrait():
+    """An unassigned silhouette, never a shared fictional character's face."""
+    shapes = f"""<rect width="256" height="320" rx="20" fill="#ded3bd"/>
+<path d="M0 245L256 55V320H0Z" fill="#c9c7b1"/>
+<path d="{SHOULDERS['level']}" fill="#6f8071"/>
+<path d="M126 232L150 320H247L228 260L165 224Z" fill="#343d37" opacity=".12"/>
+<path d="M103 182H153V244L128 264L103 244Z" fill="#737d71"/>
+{COLLARS['knit']}
+<path d="M69 108L86 68L128 53L171 72L188 112L177 175L153 211L125 224L91 204L74 170Z" fill="#737d71"/>"""
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="256" height="320" viewBox="0 0 256 320"><title>Unassigned tabletop portrait silhouette</title>{shapes}</svg>\n'
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     for key, spec in CAST.items():
         (OUT / f"{key}.svg").write_text(portrait(key, spec), encoding="utf-8")
-    # Neutral, unassigned identity; still visibly awake like the named cast.
-    fallback = ("a69e8d", "726f64", "6f8071", "crop", False, False)
-    (OUT / "fallback.svg").write_text(portrait("fallback", fallback), encoding="utf-8")
+    (OUT / "fallback.svg").write_text(fallback_portrait(), encoding="utf-8")
