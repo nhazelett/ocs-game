@@ -57,6 +57,8 @@ public partial class DeskHierarchySmokeTest : Node
             }
             shell.QueueFree();shell=null;
             for(var i=0;i<3;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+            GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
+            await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
             GD.Print("DESK_HIERARCHY_SMOKE_PASS: real empty/full team hours, portrait controls, headings, navigation clearance, button alignment and pure Today/request/award renders.");
             GetTree().Quit();
 
@@ -84,16 +86,20 @@ public partial class DeskHierarchySmokeTest : Node
                 Require(shell.GetNode<Label>("%CashLabel").GetLineCount()==1,"The complete cash comparison stays on one line.");
                 var heading=shell.GetNode<Label>("Margin/Layout/WorkArea/BoardPanel/BoardLayout/Heading");
                 Require(heading.GetThemeFontSize("font_size")>shell.GetThemeDefaultFontSize(),"Pane headings have a stronger type hierarchy than body text.");
-                Require(shell.GetThemeDefaultFont().GetFontName().Contains("Barlow")&&shell.GetThemeDefaultFontSize()>=20,
+                using var bodyFont=shell.GetThemeDefaultFont();
+                Require(bodyFont.GetFontName().Contains("Barlow")&&shell.GetThemeDefaultFontSize()>=20,
                     "Live body copy uses the bundled unslashed-zero typeface at a readable size.");
                 foreach(var member in shell.Session.View!.Team)
                 {
                     var button=shell.TeamButtons[member.Id];var bar=shell.TeamBars[member.Id];
-                    Require(button.Icon is not null&&button.GetThemeStylebox("normal") is StyleBoxEmpty,
+                    using var icon=button.Icon;
+                    using var nameStyle=button.GetThemeStylebox("normal");
+                    Require(icon is not null&&nameStyle is StyleBoxEmpty,
                         "A teammate is a face and name, without an input-like frame.");
                     Require(bar.Value==member.HoursSpokenForToday&&bar.MaxValue==member.HoursPerDay,
                         "Personal bar fill is exactly the Sim's occupied hours.");
-                    var fill=(StyleBoxFlat)bar.GetThemeStylebox("fill");var background=(StyleBoxFlat)bar.GetThemeStylebox("background");
+                    using var fill=(StyleBoxFlat)bar.GetThemeStylebox("fill");
+                    using var background=(StyleBoxFlat)bar.GetThemeStylebox("background");
                     Require(!fill.BgColor.IsEqualApprox(background.BgColor),"Occupied time has a distinct fill against its track.");
                 }
                 foreach(var button in new[]{shell.GetNode<Button>("%NextDay"),shell.PeopleToggle,shell.BoardDetailsToggle,shell.LeadOpen,

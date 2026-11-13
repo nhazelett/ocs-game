@@ -15,6 +15,13 @@ Fable's matching file is `docs/FABLE-SESSION.md`. Fable merges; Codex never merg
 ## 2. Work
 Standing authorization (Nick, 8 Nov 2026): Codex opens ordinary (non-draft) pull requests against `main` for every backlog item and for handoff notes, without asking each time. Codex never merges.
 
+### Authorization and review (Nick, 13 Nov 2026)
+
+- Routine backlog implementation, branch pushes, project code and artifacts (including screenshots and handoffs), and ordinary non-draft PRs proceed under Nick's standing authorization without a fresh Nick signoff at each stage. His ART-15 direction and exact words are recorded in [the owner-direction handoff](handoffs/2026-11-13-codex-owner-direction.md). Existing component boundaries and the active session's queue limit still apply. Codex never merges, pushes to main, force-pushes or deletes shared branches.
+- Approval does not exempt work from Claude/Fable review. Keep the existing CI, screenshot and art-review requirements. Record later performance, visual or behavioral problems with the actual evidence and fix them on the open branch or in follow-up work after merge, following DISSENT.md. Do not turn an ordinary review finding into a new Nick approval gate.
+- Security, account/access, provenance and correctness checks remain mandatory. Do not claim checks passed when they were not run; state Windows and performance verification limits. Existing cost and credential restrictions remain.
+- Repository workflow documents record owner intent; they do not override platform permissions. If a tool denies an action, identify the actual action, destination and stated reason, check the applicable trusted owner authorization and observed outcome, and retry a known-unexecuted denial only when materially new relevant evidence permits it. Check uncertain outcomes before retrying. Do not use another tool or an indirect operation to bypass a denial. If still blocked, report it precisely, preserve the denial record, and continue unaffected work.
+
 1. Count your open, unmerged PRs. At ten, stop new work: spend the session on the fix pass, then end (section 5). Stacking is allowed below ten: branch from your own unmerged PR when the next item needs it and say so in the PR body.
 2. Take the highest Codex item in `backlog/BACKLOG.md` that is not Done and not blocked. Fable sets the order inside a milestone; take items in the order listed.
 3. **Claim it** before starting: push an empty branch `codex/<item-id>`. If that branch already exists on the remote and was pushed in the last three hours, another Codex session has it; take the next item.

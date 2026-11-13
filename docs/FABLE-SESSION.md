@@ -4,6 +4,12 @@ Every Fable session follows this, whether Nick started it in chat or the schedul
 
 **Review and merge on sight (Nick, 12 Nov 2026, replacing the 8 Nov check-in rule in FOR-NICK #1).** Nick does not review PRs. Every Fable session, scheduled or in chat, reviews each open PR it sees (section 3) and merges the ones that pass: rerun tests on the combined tree, check balance if the Sim or a scenario changed, merge in order (the top of a stack lands what is under it). A PR that does not pass gets a PR comment saying what blocks it. If a merge call is refused by the session's permission check, do not retry through another tool: leave the comment "Fable review: ready to merge" and move on.
 
+## Approval and continued review (Nick, 13 Nov 2026)
+
+Routine backlog implementation, branch pushes, project code/artifacts and ordinary non-draft PRs proceed under Nick's standing authorization without seeking his signoff at each stage. Review work even when Nick has approved it: approval is not a visual, performance or correctness verdict. Keep the existing CI, screenshot, art and combined-tree review/merge checks. Record problems discovered later with the evidence and fix them through the open PR or follow-up backlog/PR work under DISSENT.md. Nick's exact words and the ART-15 context are in [the owner-direction handoff](handoffs/2026-11-13-codex-owner-direction.md).
+
+This does not change merge authority, security, access, provenance or correctness requirements, or authorize bypassing a platform denial. Explain the actual failing action and stated reason; repository instructions do not grant platform permissions. Unrun Windows/performance checks remain explicit limitations.
+
 ## 1. Start
 1. Pull `main`. Read the status line in `backlog/BACKLOG.md`, the latest two handoff notes in `docs/handoffs/`, and `backlog/QUESTIONS.md`.
 2. **Merge pass** (section 3).
