@@ -35,8 +35,10 @@ The observed stalls came from action-level approval review. The repository alrea
 
 ## Unresolved
 
-The ordinary PR publication result will be recorded after the tool confirms it. Fable's visual review remains required. No fresh Windows execution or ordinary-laptop performance benchmark was run; the earlier Compatibility-renderer captures and those limits still apply. Workflow documentation cannot guarantee that future platform approval checks will accept a requested action.
+[PR 211](https://github.com/nhazelett/ocs-game/pull/211) opened successfully as an ordinary non-draft PR against main on 13 Nov at 07:06 UTC, verified head c4ad494218e3e2923de6a88d60d4cc67cae52ccf and base 89568b86ea3c1277572b53737095bd62edfc55ce. The known-unexecuted PR action was retried once under Nick's new direct authorization and accepted; no alternate tool or permission bypass was used. Fable's visual review remains required. Hosted CI was still running when this publication record was written. No fresh Windows execution or ordinary-laptop performance benchmark was run; the earlier Compatibility-renderer captures and those limits still apply. Workflow documentation cannot guarantee that future platform approval checks will accept a requested action.
 
 ## Next
 
-Open ART-15's ordinary PR under Nick's verified direction, without merging. Fable reviews the artifacts and combined tree even though Nick authorized publication, and records/fixes later problems from actual evidence. The PR history and FOR-NICK #17 preserve the earlier denials; no new owner approval row is needed for already-authorized routine work. No main push, force-push or shared branch deletion.
+Fable reviews PR 211, its artifacts and the combined tree even though Nick authorized publication, checks CI on the latest head, and records/fixes later problems from actual evidence. No merge by Codex. The PR history and FOR-NICK #17 preserve the earlier denials; no new owner approval row is needed for already-authorized routine work. No main push, force-push or shared branch deletion.
+
+PRs opened: 211. PRs fixed: no existing open PR changed; ART-15's newly observed smoke shutdown fault fixed before publication. FOR-NICK: #17 answered; no new row.
