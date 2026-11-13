@@ -21,6 +21,7 @@ public partial class MapLayoutSmokeTest : Node
             void Check(string site)
             {
                 Require(map.Tabletop is not null && map.Tabletop.SiteCount==map.Data!.Sites.Count && map.Tabletop.CapabilityObjects==map.Tiles.Count,"Actual 3D renderer includes all sites and capability rows.");
+                MapArtSmokeTest.CheckModels(map);
                 var layout = map.SiteLayout(site);
                 Require(layout.Tiles.Select(t => t.Tile).SequenceEqual(map.Tiles.Where(t => t.SiteId == site)), "Every actual capability has a rendered tile.");
                 foreach (var tile in layout.Tiles)

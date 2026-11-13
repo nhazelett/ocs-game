@@ -15,6 +15,15 @@ public partial class TabletopMap3D:Control
     private readonly List<(Node3D Ship,Node3D Truck,Vector3 From,Vector3 Port,Vector3 To)> runs=[];
     private readonly List<(Label Label,Node3D Node,Line2D? Leader)> movingLabels=[];
     private readonly List<MeshInstance3D> changeRings=[];
+    internal List<(Control Marker,Node3D Model)> DownMarkers{get;}=[];
+    internal List<Node3D> EquipmentModels{get;}=[];
+    private readonly List<Aabb> equipmentBounds=[];
+    internal IEnumerable<Rect2> ModelScreenBounds=>equipmentBounds.Select(bounds=>
+    {
+        var points=Enumerable.Range(0,8).Select(i=>camera.UnprojectPosition(world.ToGlobal(bounds.GetEndpoint(i)))).ToArray();
+        var min=new Vector2(points.Min(p=>p.X),points.Min(p=>p.Y));
+        return new Rect2(min,new Vector2(points.Max(p=>p.X),points.Max(p=>p.Y))-min);
+    });
     internal IReadOnlyList<string> ReportedChangeLabels=>movingLabels.Where(x=>x.Label.HasMeta("reported_change")).Select(x=>x.Label.Text).ToArray();
     internal IReadOnlyList<(Label Label,Node3D Node,Line2D? Leader)> FactLabels=>movingLabels;
     internal Dictionary<string,Label> SiteStatuses{get;}=[];
@@ -77,10 +86,16 @@ public partial class TabletopMap3D:Control
             var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();var rows=(values.Length+2)/3;
             for(var i=0;i<values.Length;i++)
             {
-                var q=p+new Vector3((i%3-1)*.85f,.77f,(i/3-(rows-1)/2f)*.85f);Equipment(q,values[i]);CapabilityObjects++;
-                if(values[i].Status=="down")Caption("×",q+new Vector3(0,.8f,0),new Vector2(-12,-15),24,24,TabletopTheme.Alert);
+                var q=p+new Vector3((i%3-1)*1.1f,.77f,(i/3-(rows-1)/2f)*1.1f);Equipment(q,values[i]);CapabilityObjects++;
+                if(values[i].Status=="down")
+                {
+                    var marker=new MapDownMarker{Size=new Vector2(24,24),MouseFilter=MouseFilterEnum.Ignore};
+                    AddChild(marker);DownMarkers.Add((marker,EquipmentModels[^1]));
+                }
             }
             selections[site.Id]=Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.79f,0),"556e65",true);selections[site.Id].Visible=false;
+            if(values.Any(t=>t.Status=="down"))
+                Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.8f,0),"9f4937",true);
             var state=SiteStatus(values,site.OpensDay);
             var title=board.Sites.Count(s=>s.Island==site.Island)==1?site.Name+" / "+board.Islands.Single(i=>i.Id==site.Island).Name:site.Name;
             Caption(title,p+new Vector3(0,.75f,0),new Vector2(-170,62),340,20,TabletopTheme.Ink);
@@ -114,9 +129,17 @@ public partial class TabletopMap3D:Control
     public override void _Process(double delta)
     {
         if(camera is null)return;
+        var modelRects=ModelScreenBounds.ToArray();
+        foreach(var item in DownMarkers)
+        {
+            // Use the actual equipment footprint, not a projected box corner: a
+            // tall kitchen flue can otherwise put its badge over the fuel behind it.
+            var anchor=camera.UnprojectPosition(world.ToGlobal(item.Model.Position+Vector3.Up*.25f));
+            item.Marker.Position=anchor+new Vector2(0,-18);
+        }
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
         // Reserve the complete label, including wrapped lines and theme padding.
-        var occupied=captions.Select(c=>c.Label.GetRect().Grow(6)).ToList();
+        var occupied=captions.Select(c=>c.Label.GetRect().Grow(6)).Concat(modelRects.Select(r=>r.Grow(6))).Concat(DownMarkers.Select(m=>m.Marker.GetRect().Grow(4))).ToList();
         foreach(var item in movingLabels.Where(m=>m.Label.Visible))
         {
             if(item.Leader is not null)
@@ -135,9 +158,21 @@ public partial class TabletopMap3D:Control
                 occupied.Add(item.Label.GetRect());continue;
             }
             var offsetY=item.Label.HasMeta("reported_change")?-item.Label.Size.Y-80:-55;
-            var point=camera.UnprojectPosition(item.Node.GlobalPosition)+new Vector2(-130,offsetY);
-            point.X=Math.Clamp(point.X,4,Math.Max(4,Size.X-264));point.Y=Math.Max(4,point.Y);
-            while(point.Y>4 && occupied.Any(r=>r.Intersects(new Rect2(point,item.Label.Size))))point.Y=Math.Max(4,point.Y-28);
+            var anchorPoint=camera.UnprojectPosition(item.Node.GlobalPosition);
+            var preferred=anchorPoint+new Vector2(-130,offsetY);
+            preferred.X=Math.Clamp(preferred.X,4,Math.Max(4,Size.X-item.Label.Size.X-4));
+            preferred.Y=Math.Clamp(preferred.Y,4,Math.Max(4,Size.Y-item.Label.Size.Y-4));
+            var point=preferred;
+            if(occupied.Any(r=>r.Intersects(new Rect2(preferred,item.Label.Size))))
+            {
+                var factCandidates=new List<Vector2>();
+                // A top-edge site has no room above it. Try the adjacent open sea.
+                for(var y=4f;y<=Math.Max(4,preferred.Y);y+=24)
+                    for(var x=4f;x<=Math.Max(4,Size.X-item.Label.Size.X-4);x+=24)
+                        factCandidates.Add(new Vector2(x,y));
+                point=factCandidates.Where(p=>!occupied.Any(r=>r.Intersects(new Rect2(p,item.Label.Size))))
+                    .OrderBy(p=>p.DistanceSquaredTo(preferred)).FirstOrDefault(preferred);
+            }
             item.Label.Position=point;occupied.Add(item.Label.GetRect());
         }
     }
@@ -178,8 +213,11 @@ public partial class TabletopMap3D:Control
             foreach(var group in day.Changes.Where(c=>c.Known).GroupBy(c=>c.SiteId))
             {
                 if(!sites.TryGetValue(group.Key,out var p))continue;
-                var ring=Mesh(new TorusMesh{InnerRadius=1.6f,OuterRadius=1.66f,Rings=32,RingSegments=6},p+Vector3.Up*.81f,group.All(c=>c.Kind=="restored")?"355d48":"9f4937",true,motion);
-                changeRings.Add(ring);
+                if(!capabilityTiles.Any(t=>t.SiteId==group.Key&&t.Status=="down"))
+                {
+                    var ring=Mesh(new TorusMesh{InnerRadius=1.6f,OuterRadius=1.66f,Rings=32,RingSegments=6},p+Vector3.Up*.81f,group.All(c=>c.Kind=="restored")?"355d48":"9f4937",true,motion);
+                    changeRings.Add(ring);
+                }
                 var marker=new Node3D{Position=p+Vector3.Up*1.1f};motion.AddChild(marker);
                 MovingLabel(marker,string.Join("\n",group.Select(change=>
                 {
@@ -224,17 +262,11 @@ public partial class TabletopMap3D:Control
     }
     private void Equipment(Vector3 p,CapabilityTile tile)
     {
-        var dark=tile.Status is "down" or "notOpen";var color=dark?"61675d":"d5cba3";
-        if(tile.CapabilityId=="power")
-        {
-            Box(p+new Vector3(0,.22f,0),new Vector3(.58f,.44f,.4f),color);Box(p+new Vector3(.18f,.5f,0),new Vector3(.05f,.4f,.05f),"3f4949");
-            for(var i=0;i<4;i++)Box(p+new Vector3(-.16f+i*.09f,.22f,.21f),new Vector3(.035f,.23f,.015f),"394e4b");
-            Box(p+new Vector3(.21f,.22f,.21f),new Vector3(.06f,.06f,.02f),dark?"292f31":"e3bd60");
-        }
-        else if(tile.CapabilityId is "fuel" or "water")Mesh(new CylinderMesh{TopRadius=.25f,BottomRadius=.25f,Height=.55f,RadialSegments=12},p+new Vector3(0,.28f,0),dark?"61675d":tile.CapabilityId=="fuel"?"c0a36c":"72949b");
-        else if(tile.CapabilityId=="lodging"){Mesh(new PrismMesh{Size=new Vector3(.65f,.65f,.75f)},p+new Vector3(0,.33f,0),color);Box(p+new Vector3(0,.12f,.38f),new Vector3(.16f,.24f,.02f),"3e4e4a");}
-        else{Box(p+new Vector3(0,.22f,0),new Vector3(.55f,.44f,.55f),color);Mesh(new PrismMesh{Size=new Vector3(.65f,.25f,.65f)},p+new Vector3(0,.57f,0),dark?"626b5f":"7d8e77");}
+        var model=MapEquipmentModels.Instantiate(tile.CapabilityId);
+        model.SetMeta("capability_status",tile.Status);model.SetMeta("capability_id",tile.CapabilityId);
+        model.Position=p;world.AddChild(model);EquipmentModels.Add(model);equipmentBounds.Add(MapEquipmentModels.Bounds(model));
     }
+
     private static ArrayMesh Island(float radius,float height,int variant)
     {
         using var st=new SurfaceTool();st.Begin(Godot.Mesh.PrimitiveType.Triangles);

@@ -49,6 +49,11 @@ Get-ChildItem -LiteralPath (Join-Path $repoRoot 'scenarios/rules') -Filter 'rule
 
 if (Test-Path -LiteralPath (Join-Path $scenarioOutput.FullName '_stub')) { throw 'Development stub must not ship.' }
 
+# Map models are external embedded GLBs, loaded through the same AssetRoot as fonts.
+$kitOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/kit')
+Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets/kit') -Filter '*.glb' -File |
+    Copy-Item -Destination $kitOutput.FullName
+
 # Every selectable look has its runtime typefaces and redistribution licenses.
 $fontOutput = New-Item -ItemType Directory -Force -Path (Join-Path $output 'assets/art-studies/fonts')
 foreach ($font in @('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bold.ttf', 'Atkinson-OFL.txt', 'Barlow-Regular.ttf', 'Barlow-SemiBold.ttf', 'Barlow-OFL.txt', 'Bitter.ttf', 'Bitter-OFL.txt')) {

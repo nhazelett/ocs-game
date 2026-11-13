@@ -55,6 +55,7 @@ public partial class MapSmokeTest : Node
                 if (day == 10)
                 {
                     Require(map.Tiles.Single(t => t.SiteId == "spokeBSite" && t.CapabilityId == "power").Status == "down", "Day-ten generator support goes dark using Sim's status.");
+                    MapArtSmokeTest.CheckModels(map);
                     var status=map.Tabletop!.SiteStatuses["spokeBSite"].Text.ToLowerInvariant();
                     Require(new[]{"power","fuel","lodging","down"}.All(status.Contains),"The actual site caption names every down capability in words.");
                     map.Tabletop!._Process(0);
