@@ -46,6 +46,12 @@ internal static class ExportSmokeCheck
             shell.GetNode<OptionButton>("%ReplayPicker").Select(0);
             replay.EmitSignal(Button.SignalName.Pressed);
             DeskSmokeSupport.Step(shell,10);
+            foreach(var capability in new[]{"power","fuel","water","lodging","food","waste","mhe","transport","comms"})
+            {
+                var model=MapEquipmentModels.Instantiate(capability);
+                Require(MapEquipmentModels.Bounds(model).Size.Length()>0,"Every map model loads from the package outside the checkout.");
+                model.Free();
+            }
             Require(shell.Session.CompletedDay == 10 && shell.Session.View!.Capabilities.Any(c => c.SiteId == "spokeBSite" && c.CapabilityId == "power" && c.TodayPermille == 0), "Packaged approach 1 reaches day-10 power down.");
             GD.Print($"EXPORT_SMOKE_PASS: {catalog.Count} scenarios, referenced rules, real session and packaged replay.");
             shell.GetTree().Quit();
