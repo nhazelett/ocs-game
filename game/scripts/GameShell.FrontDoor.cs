@@ -45,16 +45,11 @@ public partial class GameShell
         row.AddChild(TitleArt);
         DeveloperWorkspaceButton = FrontButton("Open developer workspace", ShowGameSurface); column.AddChild(DeveloperWorkspaceButton);
         var skipQuietDays = GetNode<Button>("%Continue");
-        skipQuietDays.Reparent(column, false);
-        skipQuietDays.ThemeTypeVariation = "";
-        skipQuietDays.Alignment = HorizontalAlignment.Left;
-        skipQuietDays.CustomMinimumSize = new Vector2(0, 50);
-        skipQuietDays.AddThemeFontSizeOverride("font_size", 22);
         var settings = new VBoxContainer(); column.AddChild(settings);
         BuildSoundControls(settings);
         BuildLookControls(settings);
         var settingsRow = new HBoxContainer(); settingsRow.AddThemeConstantOverride("separation", 24); settings.AddChild(settingsRow);
-        foreach (var button in new[] { SoundButton, LookButton })
+        foreach (var button in new[] { SoundButton, LookButton, skipQuietDays })
         {
             button.Reparent(settingsRow, false); button.ThemeTypeVariation = "";
             button.Flat = true; button.CustomMinimumSize = new Vector2(64, 38);
@@ -66,7 +61,7 @@ public partial class GameShell
             study.ExitStudy = study.QueueFree; AddChild(study); study.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         });
         column.AddChild(ArtStudiesButton);
-        var chrome = new HBoxContainer { Name = "Navigation", ZIndex = 20 };
+        var chrome = new HBoxContainer { Name = "Navigation", ZIndex = 20, Alignment = BoxContainer.AlignmentMode.End };
         AddChild(chrome); chrome.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
         chrome.OffsetLeft = -310; chrome.OffsetRight = -20; chrome.OffsetTop = 16; chrome.OffsetBottom = 60;
         menuButton = DeskUi.Button("Menu", ShowFrontDoor); menuButton.Name = "Menu"; chrome.AddChild(menuButton);
@@ -87,6 +82,7 @@ public partial class GameShell
     {
         CancelEndDayCheck();
         FinishDayPlayback();
+        GetNode<Control>("Navigation").OffsetRight = -48;
         frontDoor.Show(); GetNode<Control>("Margin").Hide(); menuButton?.Hide();
         openingSurface.Hide();
         frontMessage.Text = "Take over the contracting shop. Keep the deployment supported as the days unfold.";
@@ -126,6 +122,7 @@ public partial class GameShell
 
     private void ShowGameSurface()
     {
+        GetNode<Control>("Navigation").OffsetRight = -20;
         frontDoor.Hide(); GetNode<Control>("Margin").Show(); menuButton.Show(); RefreshDeveloperAccess();
         RefreshOpeningVisibility();
         if (session.Prep is not null) StartGameButton.GrabFocus();

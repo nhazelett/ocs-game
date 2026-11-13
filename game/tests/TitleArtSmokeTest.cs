@@ -33,6 +33,14 @@ public partial class TitleArtSmokeTest : Node
             Require(!shell.ContinueGameButton.Disabled && shell.ContinueGameButton.IsVisibleInTree(), "A real autosave reveals Continue.");
             if (!baseline) Require(shell.NewGameButton.ThemeTypeVariation == "TabletopPrimary"
                 && shell.ContinueGameButton.ThemeTypeVariation != "TabletopPrimary", "New game leads and Continue is secondary.");
+            if (!baseline)
+            {
+                var quiet = shell.GetNode<Button>("%Continue");
+                Require(quiet.IsVisibleInTree() && quiet.Flat && quiet.Size.Y < shell.ContinueGameButton.Size.Y,
+                    "Skip quiet days is a small setting below the deployment actions.");
+                Require(quiet.GetParent() == shell.SoundButton.GetParent() && quiet.GetParent() == shell.LookButton.GetParent(),
+                    "Quiet-day control shares the settings row with Sound and Look.");
+            }
             await Shot("saved");
             foreach (var direction in new[] { 0, 1, 2 })
             {
@@ -78,6 +86,8 @@ public partial class TitleArtSmokeTest : Node
                     var art = shell.FindChildren("TitleHarbor", "", true, false).Cast<Control>().Single();
                     Require(screen.Encloses(art.GetGlobalRect()) && art.Size.X >= 400 && art.Size.Y >= 400,
                         "The key image occupies a substantial visible panel.");
+                    Require(Math.Abs(shell.DeveloperToggle.GetGlobalRect().End.X - art.GetGlobalRect().End.X) < 1,
+                        "Developer tools aligns with the harbor right edge.");
                     var view = art.GetNode<SubViewport>("HarborViewport");
                     Require(view.GetChild<Node3D>(0).FindChildren("TitleKit*", "", true, false).Count == 9,
                         "The title uses the actual board kit models.");

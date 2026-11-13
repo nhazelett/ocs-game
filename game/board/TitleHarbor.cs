@@ -40,7 +40,6 @@ public partial class TitleHarbor : Control
         viewport.AddChild(camera); camera.LookAt(new Vector3(0, 0, .5f));
         Mesh(new PlaneMesh { Size = new Vector2(70, 70) }, new Vector3(0, -.12f, 0), "96b5b3", true);
         Land(new Vector3(0, 0, 0), 5.6f, 3.8f, 0);
-        Land(new Vector3(-5, -.05f, -6), 1.8f, .9f, 5);
         // A quiet quay, a connected road, and equipment staged above the beach.
         Box(new Vector3(0, .24f, 0), new Vector3(7.4f, .03f, .52f), "d5c8a5");
         Box(new Vector3(2.8f, .24f, 1.4f), new Vector3(.52f, .03f, 3.2f), "d5c8a5");
