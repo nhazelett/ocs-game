@@ -95,6 +95,8 @@ jobs:
           grep -Fq 'SHELL_SMOKE_PASS:' "$RUNNER_TEMP/godot-smoke.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/FrontDoorSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-front.log"
           grep -Fq 'FRONT_DOOR_SMOKE_PASS:' "$RUNNER_TEMP/godot-front.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/TitleArtSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-title-art.log"
+          grep -Fq 'TITLE_ART_SMOKE_PASS:' "$RUNNER_TEMP/godot-title-art.log"
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/LookSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-look.log"
           grep -Fq 'LOOK_SMOKE_PASS:' "$RUNNER_TEMP/godot-look.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/TabletopThemeSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-tabletop-theme.log"
