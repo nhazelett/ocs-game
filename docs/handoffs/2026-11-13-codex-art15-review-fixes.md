@@ -40,7 +40,7 @@ Renderer: Godot 4.6.1 .NET, OpenGL Compatibility on Linux Mesa llvmpipe 25.0.7, 
 
 ## Unresolved
 
-Fable's visual re-review and hosted CI on the new PR head remain required. The map uses ART-12's current terrain/lighting; ART-13 is next. Windows/performance limits above remain. No new FOR-NICK item, permission denial or question to Codex.
+Fable's visual re-review and hosted CI on the new PR head remain required. The map uses ART-12's current terrain/lighting; ART-13 is next. Windows/performance limits above remain. Publication follow-up: the source/evidence branch update succeeded at 09bb011. Updating public PR 211's description was rejected by automatic approval for lacking specific authorization to publish that detailed communication. Checked direct owner history (Nick, 13 Nov 06:48), then retried only that known-unexecuted operation once under the newly verified standing direction; it was rejected again. The description remains unchanged, with no alternate publishing route attempted. FOR-NICK #18 requests the description-only approval; its exact prepared text is retained locally. Game implementation and other authorized work continue. No unanswered question to Codex.
 
 ## Next
 
