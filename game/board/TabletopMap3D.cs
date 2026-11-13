@@ -16,6 +16,7 @@ public partial class TabletopMap3D:Control
     private readonly List<(Label Label,Node3D Node,Line2D? Leader)> movingLabels=[];
     private readonly List<MeshInstance3D> changeRings=[];
     internal List<(Control Marker,Node3D Model)> DownMarkers{get;}=[];
+    internal List<Line2D> DownStems{get;}=[];
     internal List<Node3D> EquipmentModels{get;}=[];
     private readonly List<Aabb> equipmentBounds=[];
     internal IEnumerable<Rect2> ModelScreenBounds=>equipmentBounds.Select(bounds=>
@@ -91,6 +92,7 @@ public partial class TabletopMap3D:Control
                 {
                     var marker=new MapDownMarker{Size=new Vector2(24,24),MouseFilter=MouseFilterEnum.Ignore};
                     AddChild(marker);DownMarkers.Add((marker,EquipmentModels[^1]));
+                    var stem=new Line2D{Width=1.5f,DefaultColor=TabletopTheme.Alert,Antialiased=true};AddChild(stem);DownStems.Add(stem);
                 }
             }
             selections[site.Id]=Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.79f,0),"556e65",true);selections[site.Id].Visible=false;
@@ -130,12 +132,36 @@ public partial class TabletopMap3D:Control
     {
         if(camera is null)return;
         var modelRects=ModelScreenBounds.ToArray();
-        foreach(var item in DownMarkers)
+        var badges=new List<Rect2>();
+        for(var i=0;i<DownMarkers.Count;i++)
         {
-            // Use the actual equipment footprint, not a projected box corner: a
-            // tall kitchen flue can otherwise put its badge over the fuel behind it.
-            var anchor=camera.UnprojectPosition(world.ToGlobal(item.Model.Position+Vector3.Up*.25f));
-            item.Marker.Position=anchor+new Vector2(0,-18);
+            var item=DownMarkers[i];var index=EquipmentModels.IndexOf(item.Model);var bounds=modelRects[index];
+            var top=new Vector2(bounds.GetCenter().X,bounds.Position.Y);
+            var candidates=Enumerable.Range(0,8).SelectMany(row=>new[]{0,-28,28,-56,56}
+                .Select(offset=>top+new Vector2(offset-12,-31-row*12)));
+            Vector2 Anchor(Vector2 p)=>new(Math.Clamp(p.X+12,bounds.Position.X+1,bounds.End.X-1),bounds.Position.Y);
+            bool Clear(Vector2 p)=>!modelRects.Any(r=>r.Grow(3).Intersects(new Rect2(p,item.Marker.Size)))
+                &&!badges.Any(r=>r.Grow(4).Intersects(new Rect2(p,item.Marker.Size)));
+            Vector2[]? stem=null;var position=Vector2.Zero;
+            var sides=modelRects.SelectMany(r=>new[]{r.Position.X-4,r.End.X+4}).Distinct().ToArray();
+            foreach(var p in candidates.Where(Clear))
+            {
+                var end=p+new Vector2(12,24);
+                var anchors=new[]{Anchor(p),new Vector2(bounds.Position.X+1,bounds.GetCenter().Y),new Vector2(bounds.End.X-1,bounds.GetCenter().Y)};
+                var paths=anchors.SelectMany(a=>new[]{new[]{a,end}}.Concat(sides.Select(x=>new[]{a,new Vector2(x,a.Y),new Vector2(x,end.Y),end})));
+                float Length(Vector2[] points)=>Enumerable.Range(1,points.Length-1).Sum(j=>points[j-1].DistanceTo(points[j]));
+                stem=paths.Where(points=>Length(points)<120&&Enumerable.Range(1,points.Length-1).All(j=>
+                    !modelRects.Where((r,k)=>k!=index).Any(r=>MapDownMarker.Crosses(r,points[j-1],points[j]))))
+                    .OrderBy(Length).FirstOrDefault();
+                if(stem is not null){position=p;break;}
+            }
+            if(stem is null)
+            {
+                // Extreme crops still render safely; the tested Fit/zoom layouts use the short clear routes above.
+                position=new Vector2(top.X-12,Math.Min(modelRects.Min(r=>r.Position.Y),badges.Count==0?top.Y:badges.Min(r=>r.Position.Y))-31);
+                stem=[top,position+new Vector2(12,24)];
+            }
+            item.Marker.Position=position;badges.Add(item.Marker.GetRect());DownStems[i].Points=stem;
         }
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
         // Reserve the complete label, including wrapped lines and theme padding.

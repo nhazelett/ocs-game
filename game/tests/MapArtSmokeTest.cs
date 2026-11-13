@@ -53,6 +53,8 @@ public partial class MapArtSmokeTest : Node
             {
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                var map=shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
+                CheckModels(map);
                 var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--screenshots");
                 if (at < 0) return;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
@@ -81,8 +83,15 @@ public partial class MapArtSmokeTest : Node
         foreach(var item in tabletop.DownMarkers)
         {
             var bounds=rectangles[tabletop.EquipmentModels.IndexOf(item.Model)];
-            Require(item.Marker.GetRect().Intersects(bounds),
-                "A down badge touches its own model's footprint rather than floating over a different row.");
+            Require(item.Marker.GetRect().End.Y<bounds.Position.Y,
+                "A down badge sits above its model and leaves the silhouette visible.");
+            Require(rectangles.All(r=>!r.Intersects(item.Marker.GetRect())),"Down badges obscure no equipment, including neighbouring models.");
+            Require(tabletop.DownMarkers.Where(m=>m.Marker!=item.Marker).All(m=>!m.Marker.GetRect().Intersects(item.Marker.GetRect())),"Down badges do not cover each other.");
+            var stem=tabletop.DownStems[tabletop.DownMarkers.IndexOf(item)];
+            Require(bounds.Grow(.1f).HasPoint(stem.Points[0])&&Enumerable.Range(1,stem.Points.Length-1)
+                .Sum(j=>stem.Points[j-1].DistanceTo(stem.Points[j]))<120,"A short stem identifies an edge of the actual model below each badge.");
+            Require(Enumerable.Range(1,stem.Points.Length-1).All(j=>rectangles.Where((r,k)=>k!=tabletop.EquipmentModels.IndexOf(item.Model))
+                .All(r=>!MapDownMarker.Crosses(r,stem.Points[j-1],stem.Points[j]))),"A badge's stem never passes through a different model.");
         }
         if(map.Tiles.Select(t=>t.CapabilityId).Distinct().Count()==7)
             Require(tabletop.EquipmentModels.Select(m=>m.GetMeta("kit_model").AsString()).Distinct().Count()==7,

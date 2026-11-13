@@ -55,6 +55,19 @@ internal static class MapEquipmentModels
             if (document.AppendFromFile(path, state) != Error.Ok)
                 throw new InvalidDataException($"Cannot read map kit model {path}.");
             var source = document.GenerateScene(state);
+            // Preserve the kit silhouette and running gear; separate these two tanks
+            // from olive ground with rubber-black fuel and a pale blue-grey water shell.
+            void Finish(Node node)
+            {
+                if(node is MeshInstance3D mesh&&(name=="fuel-bladder"||name=="water-buffalo"&&node.Name=="water-buffalo-1"))
+                {
+                    using var material=new StandardMaterial3D{AlbedoColor=new Color(name=="fuel-bladder"?"202c2c":"b8ced0"),
+                        VertexColorUseAsAlbedo=false,Roughness=1,CullMode=BaseMaterial3D.CullModeEnum.Disabled};
+                    mesh.MaterialOverride=material;mesh.SetMeta("tank_finish",true);
+                }
+                foreach(var child in node.GetChildren())Finish(child);
+            }
+            Finish(source);
             try
             {
                 packed = new PackedScene();
