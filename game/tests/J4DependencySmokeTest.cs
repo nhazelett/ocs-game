@@ -52,7 +52,7 @@ public partial class J4DependencySmokeTest : Node
             await Screenshot(shell, "--ask-screenshot", tabs.GetNode<ScrollContainer>("Today/TodayPane/Body/Body"), shell.J4QuantityInput!);
             Require(expected.Apply(action).Accepted, "The default request is within actual partner stock.");
             shell.VisitButtons["j4"].EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text == "in work", "Ask submits the exact previewed action and shows its ActionResult.");
+            Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text == "The task is on your team's work list.", "Ask submits the exact previewed action and shows the complete player acknowledgement.");
             CheckOwner(true); Require(Shortcut() is null, "Pending J4 work counts as engaged and removes the duplicate checklist shortcut.");
             while (!expected.Arrangements.Any(a => a.Id == action.Id))
             {

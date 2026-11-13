@@ -55,6 +55,7 @@ public partial class MapSmokeTest : Node
                 if (day == 10)
                 {
                     Require(map.Tiles.Single(t => t.SiteId == "spokeBSite" && t.CapabilityId == "power").Status == "down", "Day-ten generator support goes dark using Sim's status.");
+                    MapArtSmokeTest.CheckModels(map);
                     var status=string.Join(" ",map.Tabletop!.SiteStatuses["spokeBSite"].GetParent().GetChildren().OfType<Label>().Select(l=>l.Text)).ToLowerInvariant();
                     Require(new[]{"power","fuel","lodging","down"}.All(status.Contains),"The actual site caption names every down capability in words.");
                     map.Tabletop!._Process(0);
@@ -74,13 +75,14 @@ public partial class MapSmokeTest : Node
                 {
                     map.Tabletop!._Process(0);
                     await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);map.Tabletop._Process(0);
+                    MapCalloutSmokeTest.Check(map);
                     var held=map.Tabletop.FactLabels.Where(l=>l.Leader is not null).ToArray();
                     Require(held.Any(l=>l.Label.Text.Replace("\n"," ")=="Fuel for Spoke B waiting: barge lane closed."),"Cargo caption names its actual capability, destination and route closure.");
                     var cargo=held.First(l=>l.Label.Text.Contains("Spoke B"));
                     var source=map.SiteScreenPoint("hubSite");var destination=map.SiteScreenPoint("spokeBSite");
                     Require(cargo.Leader!.Points.Length==2 && cargo.Leader.Points[0].DistanceTo(source)<cargo.Leader.Points[0].DistanceTo(destination)
                         && (cargo.Leader.Points[0]-source).Dot(destination-source)>0 && cargo.Leader.Points[0].DistanceTo(cargo.Label.GetGlobalRect().GetCenter())<180,
-                        "Cargo stays at the hub end of the outgoing route with a nearby tethered label.");
+                        $"Cargo stays at the hub end of the outgoing route with a nearby tethered label: points={cargo.Leader.Points.Length}, source={source}, destination={destination}, pointer={string.Join(",",cargo.Leader.Points)}, label={cargo.Label.GetGlobalRect()}, visible={cargo.Leader.Visible}.");
                     var before=cargo.Leader!.Points[0];map.PanBy(new Vector2(12,8));map.Tabletop._Process(0);
                     Require(cargo.Leader.Points[0]!=before,"The cargo label tether follows the real map camera.");map.FitMap();
                     capturedClosure = true; shell.DeveloperToggle.ButtonPressed = false; await Capture("closed");

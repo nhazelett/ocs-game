@@ -31,8 +31,8 @@ public partial class GameShell
         GetNode<Label>("Margin/Layout/WorkArea/BoardPanel/BoardLayout/Heading").ThemeTypeVariation="TabletopHeading";
         GetNode<Label>("%InboxDay").ThemeTypeVariation="TabletopHeading";
         var day=GetNode<Label>("%DayCounter");day.ThemeTypeVariation="TabletopHeading";
-        day.AddThemeFontSizeOverride("font_size",24);day.AutowrapMode=TextServer.AutowrapMode.WordSmart;
-        day.CustomMinimumSize=new Vector2(130,0);
+        day.AddThemeFontSizeOverride("font_size",22);day.AutowrapMode=TextServer.AutowrapMode.Off;
+        day.CustomMinimumSize=new Vector2(185,0);
         GetNode<Label>("%GameTitle").CustomMinimumSize=new Vector2(0,48);
         GetNode<Label>("%GameTitle").VerticalAlignment=VerticalAlignment.Center;
         GetNode<Control>("Margin/Layout/TopStrip/Margin/Row/Cash").CustomMinimumSize=new Vector2(250,0);

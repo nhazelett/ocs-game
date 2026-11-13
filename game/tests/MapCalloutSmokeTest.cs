@@ -55,6 +55,7 @@ public partial class MapCalloutSmokeTest : Node
                 for(var i=0;i<4;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 Check(map);
             }
+            Step(shell,3);await Capture("partial-supply");
             shell.QueueFree();shell=null;
             for(var i=0;i<3;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
             GD.Print("MAP_CALLOUT_SMOKE_PASS: exact tutorial/down/held/closed snapshots and pure native map layout.");GetTree().Quit();
@@ -65,20 +66,40 @@ public partial class MapCalloutSmokeTest : Node
     internal static void Check(SchematicMap map)
     {
         map.Tabletop!._Process(0);
+        Require(map.Tabletop!.CalloutLayoutFits,$"Day {map.Day?.Day}: visible cards have a complete collision-free placement: "+map.Tabletop.CalloutFailure);
+        foreach(var site in map.Tiles.Where(t=>t.Status=="down").GroupBy(t=>t.SiteId))
+        {
+            var label=map.Tabletop.SiteStatuses[site.Key];
+            var visible=string.Join("\n",label.GetParent().GetChildren().OfType<Label>()
+                .Where(l=>l.IsVisibleInTree()).Select(l=>l.Text));
+            foreach(var tile in site)
+                Require(visible.Contains(tile.Label,StringComparison.OrdinalIgnoreCase)
+                    &&(visible.Contains("down",StringComparison.OrdinalIgnoreCase)||visible.Contains("0% supplied")),
+                    $"Every down site's visible text keeps its facts, including {tile.Label}: {visible}");
+        }
         var cards=map.Tabletop.CalloutCards.ToArray();
+        var badges=map.Tabletop.DownMarkers.Select(m=>m.Marker.GetRect()).ToArray();
+        var stems=map.Tabletop.DownStems.SelectMany(s=>Enumerable.Range(1,s.Points.Length-1)
+            .Select(i=>(From:s.Points[i-1],To:s.Points[i]))).ToArray();
         foreach(var card in cards)
         {
             Require(new Rect2(Vector2.Zero,map.Tabletop.Size-new Vector2(0,map.Tabletop.BottomOcclusion)).Encloses(card.GetRect()),"Callout stays inside the map: "+card.GetRect());
+            Require(badges.All(b=>!b.Intersects(card.GetRect())),"A card or shore name never covers an outage badge.");
+            Require(stems.All(s=>!TabletopMap3D.SegmentHits(s.From,s.To,TabletopMap3D.RectanglePolygon(card.GetRect()))),
+                "A card or shore name never covers an outage badge stem.");
             foreach(var other in cards.Where(c=>c!=card))
                 Require(!card.GetRect().Intersects(other.GetRect()),"Callout collision: "+card.GetRect()+" / "+other.GetRect());
             Require(!map.Tabletop.ProjectedSolids.Any(p=>TabletopMap3D.IntersectsSolid(card.GetRect(),p)),"Callout covers solid scenery: "+card.GetRect());
         }
-        Require(map.Tabletop!.CalloutLayoutFits,"Visible cards have a complete collision-free placement: "+map.Tabletop.CalloutFailure);
         var pointers=map.Tabletop.CalloutPointers.ToArray();
         foreach(var pointer in pointers)
         {
             var a=pointer.Points[0];var b=pointer.Points[1];
             Require(pointer.Points.Length==2&&a.DistanceTo(b)>0&&a.DistanceTo(b)<=120.01f,"Fact pointers stay within 120 px of their actual target.");
+            Require(badges.All(r=>!TabletopMap3D.SegmentHits(a,b,TabletopMap3D.RectanglePolygon(r))),
+                "A callout pointer never crosses an outage badge.");
+            Require(stems.All(s=>Geometry2D.SegmentIntersectsSegment(a,b,s.From,s.To).VariantType==Variant.Type.Nil),
+                "A callout pointer never crosses an outage badge stem.");
             foreach(var other in pointers.Where(p=>p!=pointer))
                 Require(Geometry2D.SegmentIntersectsSegment(a,b,other.Points[0],other.Points[1]).VariantType==Variant.Type.Nil,"Map pointers never cross.");
             foreach(var card in cards.Where(c=>!c.GetRect().Grow(4).HasPoint(b)))

@@ -28,6 +28,11 @@ public partial class DeskHierarchySmokeTest : Node
             var tabs=shell.GetNode<TabContainer>("%DeskTabs");
             await Shot("today");
             Pick(shell.PersonContactInput,"finance");shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.TeamBars["you"].Value>0&&shell.TeamBars["you"].Value<shell.TeamBars["you"].MaxValue,
+                "The real finance visit creates a partial hours bar.");
+            if(!baseline)Require(shell.GetNode<Label>("%BuildStatus").Text=="The task is on your team's work list.",
+                "Queued work has a complete acknowledgement sentence.");
+            await Shot("partial-hours");
             Pick(shell.PersonContactInput,"meeting");shell.VisitButtons["meeting"].EmitSignal(Button.SignalName.Pressed);
             var reps=Enumerable.Range(0,shell.PersonContactInput.ItemCount).Select(i=>shell.PersonContactInput.GetItemMetadata(i).AsString())
                 .Where(id=>id.StartsWith("vendor:")).ToArray();
@@ -39,7 +44,7 @@ public partial class DeskHierarchySmokeTest : Node
             }
             Require(shell.TeamBars["you"].Value==shell.TeamBars["you"].MaxValue
                 &&shell.TeamBars.Values.Any(b=>b.Value==0),"Real queued visits show full and empty personal bars together.");
-            await Shot("hours");Step(shell,3);
+            await Shot("hours");Step(shell,3);await Shot("today-down");
             shell.NavigateBoardItem(new BoardItem("",shell.Session.View!.Day,BoardCategory.Request,
                 BoardSeverity.Info,BoardLinkKind.Card,"tutForklift","",[]));
             await Shot("request");
@@ -65,7 +70,7 @@ public partial class DeskHierarchySmokeTest : Node
             async Task Shot(string name)
             {
                 shell.DeveloperToggle.ButtonPressed=false;
-                if(name is "today" or "hours")tabs.CurrentTab=GameShell.TodayTab;
+                if(name is "today" or "hours" or "partial-hours" or "today-down")tabs.CurrentTab=GameShell.TodayTab;
                 var hash=shell.Session.StateHash;
                 for(var i=0;i<4;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 if(!baseline)CheckHierarchy();
@@ -83,6 +88,9 @@ public partial class DeskHierarchySmokeTest : Node
                 Require(!strip.GetGlobalRect().Intersects(nav.GetGlobalRect())&&viewport.Encloses(nav.GetGlobalRect()),
                     "Menu and developer navigation clear the strip and stay in the viewport.");
                 Require(viewport.Encloses(shell.GetNode<Button>("%NextDay").GetGlobalRect()),"Three faces and names leave the day action on screen.");
+                Require(shell.GetNode<Label>("%DayCounter").GetLineCount()==1,"The morning stays on one line.");
+                var map=shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
+                MapCalloutSmokeTest.Check(map);
                 Require(shell.GetNode<Label>("%CashLabel").GetLineCount()==1,"The complete cash comparison stays on one line.");
                 var heading=shell.GetNode<Label>("Margin/Layout/WorkArea/BoardPanel/BoardLayout/Heading");
                 Require(heading.GetThemeFontSize("font_size")>shell.GetThemeDefaultFontSize(),"Pane headings have a stronger type hierarchy than body text.");
