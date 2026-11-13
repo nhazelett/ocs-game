@@ -14,7 +14,7 @@ public partial class GameShell
     {
         standingPanel = new VBoxContainer { Name = "WhereThingsStand" }; board.AddChild(standingPanel);
         standingPanel.AddThemeConstantOverride("separation", 10);
-        var heading = DeskUi.Label("Where things stand"); heading.AddThemeFontSizeOverride("font_size", 22);
+        var heading = DeskUi.Heading("Where things stand");
         standingPanel.AddChild(heading);
         StandingRows = new VBoxContainer { Name = "Requests" }; standingPanel.AddChild(StandingRows);
         StandingRows.AddThemeConstantOverride("separation", 10);

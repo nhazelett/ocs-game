@@ -24,6 +24,7 @@ public partial class GameShell
         var cards = view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<RequirementEditorView>().ToArray() ?? [];
         if (cards.Length == 0) { linkedRequirement.AddChild(DeskUi.Label("No submitted requirements are available.")); return; }
         if (!cards.Any(c => c.CardId == SelectedCard)) SelectedCard = cards[0].CardId;
+        linkedRequirement.AddChild(DeskUi.Heading("Request"));
         var picker = new OptionButton { Name = "RequirementPicker", ClipText = true, SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
         foreach (var option in cards) picker.AddItem($"{option.Title} · {option.Person?.DisplayName ?? option.SubmittedBy}");
         picker.Select(Array.FindIndex(cards, c => c.CardId == SelectedCard));
@@ -84,6 +85,7 @@ public partial class GameShell
             foreach (var stop in preview.HardStops.Concat(preview.SoftGaps)) linkedRequirement.AddChild(DeskUi.Label(stop));
         }
         var market = DeskUi.Button("Go to market", () => GoToMarket(card.CardId)); RequirementMarketButton = market;
+        market.ThemeTypeVariation="TabletopPrimary";
         market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished;
         var marketReason = DeskUi.ActionReason(requirementFooter, market);
         DeskUi.Gate(market, marketReason, view.Finished ? DeskUi.FinishedReason : null);

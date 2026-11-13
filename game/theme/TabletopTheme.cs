@@ -21,7 +21,8 @@ internal static class TabletopTheme
     internal static Color Input => Direction == 2 ? new("fffdf5") : Paper;
     internal static Color Track => Direction == 2 ? new("d6d0bf") : Background;
     internal static Color PrimaryInk => Direction == 1 ? Background : Paper;
-    internal static Font Font(bool bold=false) => Art.ArtStudyStyle.LoadFont(bold ? Style.HeadingFont : Style.Font);
+    internal static Font Font(bool bold=false) => Art.ArtStudyStyle.LoadFont(Direction==2
+        ? bold ? "Barlow-SemiBold.ttf" : "Barlow-Regular.ttf" : bold ? Style.HeadingFont : Style.Font);
     internal static Color[] ColorsByRole() => [Background, Paper, Ink, Muted, Moss, Outline, Alert, Warning, Success, Hover, Pressed, Input, Track];
 
     internal static StyleBoxFlat Box(Color color,int padding=8,int radius=6)
@@ -30,13 +31,13 @@ internal static class TabletopTheme
             CornerRadiusTopLeft=radius,CornerRadiusTopRight=radius,CornerRadiusBottomLeft=radius,CornerRadiusBottomRight=radius};
     internal static Theme Create()
     {
-        using var regular=Font(); using var bold=Font(true); var theme=new Theme{DefaultFont=regular,DefaultFontSize=18};
+        using var regular=Font(); using var bold=Font(true); var theme=new Theme{DefaultFont=regular,DefaultFontSize=20};
         // SetStylebox retains the native resource. Release its managed wrapper now, before engine shutdown.
         void SetBox(string name, string type, StyleBoxFlat box)
         {
             using (box) theme.SetStylebox(name, type, box);
         }
-        theme.SetTypeVariation("TabletopHeading","Label");theme.SetFont("font","TabletopHeading",bold);theme.SetFontSize("font_size","TabletopHeading",24);
+        theme.SetTypeVariation("TabletopHeading","Label");theme.SetFont("font","TabletopHeading",bold);theme.SetFontSize("font_size","TabletopHeading",28);
         foreach(var type in new[]{"Label","Button","OptionButton","CheckBox","LineEdit","TextEdit","PopupMenu","Tree","ItemList","TabContainer","Window","TooltipLabel"})
         {
             theme.SetColor("font_color",type,Ink);theme.SetColor("font_hover_color",type,Ink);theme.SetColor("font_pressed_color",type,Ink);
@@ -53,6 +54,14 @@ internal static class TabletopTheme
         theme.SetTypeVariation("TabletopPrimary","Button");
         foreach(var name in new[]{"normal","pressed","hover","hover_pressed"}) SetBox(name,"TabletopPrimary",Box(Moss,10));
         foreach(var name in new[]{"font_color","font_hover_color","font_focus_color","font_pressed_color","font_hover_pressed_color"})theme.SetColor(name,"TabletopPrimary",PrimaryInk);
+        theme.SetTypeVariation("TabletopPerson","Button");
+        using(var clear=new StyleBoxEmpty())theme.SetStylebox("normal","TabletopPerson",clear);
+        SetBox("hover","TabletopPerson",Box(Hover,0));SetBox("pressed","TabletopPerson",Box(Pressed,0));
+        theme.SetConstant("icon_max_width","TabletopPerson",36);theme.SetConstant("h_separation","TabletopPerson",8);
+        theme.SetFontSize("font_size","TabletopPerson",18);
+        theme.SetTypeVariation("TabletopHours","ProgressBar");
+        using(var track=Box(Track,0,3))theme.SetStylebox("background","TabletopHours",track);
+        using(var fill=Box(Moss,0,3)){fill.SetBorderWidthAll(0);theme.SetStylebox("fill","TabletopHours",fill);}
         foreach(var type in new[]{"LineEdit","TextEdit"})
         {
             SetBox("normal",type,Box(Input,6));SetBox("read_only",type,Box(Background,6));

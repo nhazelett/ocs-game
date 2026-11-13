@@ -18,7 +18,7 @@ public partial class GameShell
     private void BuildLead(VBoxContainer board)
     {
         var card = new PanelContainer();
-        using var panelStyle = new StyleBoxFlat { BgColor = TabletopTheme.Paper, ContentMarginLeft = 18,
+        using var panelStyle = new StyleBoxFlat { BgColor = TabletopTheme.Paper, BorderWidthLeft=4, BorderColor=TabletopTheme.Moss, ContentMarginLeft = 18,
             ContentMarginRight = 18, ContentMarginTop = 18, ContentMarginBottom = 18, CornerRadiusTopLeft = 5,
             CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 };
         card.AddThemeStyleboxOverride("panel", panelStyle);
@@ -31,7 +31,7 @@ public partial class GameShell
         LeadOpen = DeskUi.Button("Open", OpenLead); LeadOpen.CustomMinimumSize = new Vector2(0, 44); leadReason = DeskUi.ActionReason(body, LeadOpen);
         LeadOpen.ThemeTypeVariation="TabletopPrimary";
         BuildStandings(board);
-        BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
+        BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, Alignment = HorizontalAlignment.Left, CustomMinimumSize = new Vector2(0, 42) };
         BoardDetailsToggle.Toggled += open =>
         {
             boardDetails.Visible = open;

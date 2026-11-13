@@ -152,12 +152,18 @@ public partial class GameShell
             });
             button.AutowrapMode = TextServer.AutowrapMode.Off;
             button.ClipText = true; button.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
-            button.CustomMinimumSize = new Vector2(180, 44);
+            button.CustomMinimumSize = new Vector2(180, 48);
+            button.ThemeTypeVariation = "TabletopPerson";
+            button.ExpandIcon = true;
+            var portrait = new PersonPortrait();
+            portrait.SetPerson(TeamPerson(member.Id,TeamName(member),member.Rank,member.Portrait));
+            using(var icon=portrait.Texture)button.Icon=icon;
+            portrait.Free();
             button.TooltipText = TeamName(member) + ". " + member.RoleLabel + ". " + member.Pace + " Open to hand out work.";
             card.AddChild(button); TeamButtons[member.Id] = button;
             card.AddChild(DeskUi.Label($"{member.HoursSpokenForToday} of {member.HoursPerDay} h assigned"));
             var bar = new ProgressBar { MaxValue = Math.Max(1, member.HoursPerDay), Value = member.HoursSpokenForToday,
-                ShowPercentage = false, CustomMinimumSize = new Vector2(0, 12), MouseFilter = MouseFilterEnum.Ignore,
+                ThemeTypeVariation = "TabletopHours", ShowPercentage = false, CustomMinimumSize = new Vector2(0, 14), MouseFilter = MouseFilterEnum.Ignore,
                 TooltipText = $"{member.FreeHoursToday} hours free today; {member.HoursQueued} hours of unfinished work." };
             card.AddChild(bar); TeamBars[member.Id] = bar;
         }

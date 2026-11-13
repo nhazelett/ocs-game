@@ -147,7 +147,7 @@ public partial class GameShell
         definitizations.Clear(); terminations.Clear(); CorDesignations.Clear();
         if (view is null) { linkedLedger.AddChild(DeskUi.Label("No scenario loaded.")); return; }
         linkedLedger.AddChild(DeskUi.Label($"Cash: {DeskUi.Money(view.TopStrip().CashCents)}"));
-        linkedLedger.AddChild(DeskUi.Label("Funding lines"));
+        linkedLedger.AddChild(DeskUi.Heading("Funding lines"));
         foreach (var funding in view.Funding)
         {
             var heading = SelectedFunding == funding.Id
@@ -161,7 +161,7 @@ public partial class GameShell
             row.SetMeta("funding", funding.Id); linkedLedger.AddChild(row);
         }
         if (view.Funding.Count == 0) linkedLedger.AddChild(DeskUi.Label("No funding lines."));
-        linkedLedger.AddChild(DeskUi.Label("What we are paying for"));
+        linkedLedger.AddChild(DeskUi.Heading("What we are paying for"));
         foreach (var arrangement in view.Arrangements)
         {
             var button = DeskUi.Button($"{DeskUi.ListLabel(view.ArrangementName(arrangement.Id))} · {ArrangementStatusText(arrangement.Status)}\n{ArrangementPaymentText(view, arrangement)}", () =>

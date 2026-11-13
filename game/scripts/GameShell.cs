@@ -145,6 +145,7 @@ public partial class GameShell : Control
     {
         var label = GetNode<Label>("%BuildStatus");
         var status = displayStatusDeveloperOnly && !DeveloperTools ? "" : displayStatus;
+        if(!DeveloperTools&&status=="in work")status="The task is on your team's work list.";
         label.Text = (DeveloperTools && session.View is not null ? session.IsReplay ? "Replay · " : "Your decisions · " : "")
             + status + (saveError is null ? "" : $"\nSave failed: {saveError}");
         label.Visible = label.Text.Length > 0;

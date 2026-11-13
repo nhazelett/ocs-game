@@ -30,7 +30,7 @@ public partial class GameShell
         visitsFooter = new VBoxContainer { Visible = false }; boardFooter.AddChild(visitsFooter);
         mentorMessages = new VBoxContainer { Name = "MentorMessages", Visible = false };
         mentorMessages.AddThemeConstantOverride("separation", 12); board.AddChild(mentorMessages); board.MoveChild(mentorMessages, 0);
-        PeopleToggle = new Button { Text = "People to reach", ToggleMode = true, CustomMinimumSize = new Vector2(0, 42) };
+        PeopleToggle = new Button { Text = "People to reach", ToggleMode = true, Alignment = HorizontalAlignment.Left, CustomMinimumSize = new Vector2(0, 42) };
         board.AddChild(PeopleToggle); board.MoveChild(PeopleToggle, BoardDetailsToggle.GetIndex());
         visitsPanel = new VBoxContainer { Name = "ReachPeople", Visible = false };
         visitsPanel.AddThemeConstantOverride("separation", 14); board.AddChild(visitsPanel); board.MoveChild(visitsPanel, PeopleToggle.GetIndex() + 1);

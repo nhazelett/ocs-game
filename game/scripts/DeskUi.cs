@@ -51,6 +51,9 @@ internal static class DeskUi
 
     internal static Label Label(string text = "") => new() { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 
+    internal static Label Heading(string text) => new() { Text = text, ThemeTypeVariation = "TabletopHeading",
+        AutowrapMode = TextServer.AutowrapMode.WordSmart };
+
     internal static Button Button(string text, Action pressed)
     {
         var button = new Button { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart,
