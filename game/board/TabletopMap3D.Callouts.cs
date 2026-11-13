@@ -22,6 +22,7 @@ public partial class TabletopMap3D
         internal bool Alert;
         internal string? Island;
         internal float Width;
+        internal Vector2 PlacedAnchor;
     }
     private readonly List<MapCallout> callouts=[];
     private readonly List<Aabb> solidBounds=[];
@@ -46,6 +47,9 @@ public partial class TabletopMap3D
     internal IEnumerable<Line2D> CalloutPointers=>callouts.Where(c=>c.Pointer.Visible).Select(c=>c.Pointer);
     internal IEnumerable<Control> FullCalloutCards=>callouts.Where(c=>c.Card.Visible&&!c.Compact).Select(c=>(Control)c.Card);
     internal IReadOnlyList<Line2D> ClosedLaneBarriers=>laneBarriers;
+    internal IEnumerable<PanelContainer> FactPanels=>callouts.Where(c=>c.Card.Visible&&!QuietCallout(c)).Select(c=>c.Card);
+    internal IEnumerable<Label> QuietLabels=>callouts.Where(c=>c.Card.Visible&&QuietCallout(c)).Select(c=>c.Heading??c.Words);
+    internal IEnumerable<Vector2> VisibleRouteDots=>routeDots.Where(d=>d.Visible).Select(d=>camera.UnprojectPosition(d.GlobalPosition));
     internal IReadOnlyList<Vector2[]> ProjectedSolids=>Enumerable.Range(0,solidBounds.Count).Select(ProjectSolid).ToArray();
 
     private Label SiteCaption(string title,string location,string status,Func<Vector3> anchor,bool alert,string island)
@@ -62,17 +66,17 @@ public partial class TabletopMap3D
         OutlineMapText(heading);OutlineMapText(summary);
         return item.Words;
     }
-    private Vector3 SiteShoreAnchor(string island)
+    private Vector3 SiteShoreAnchor(string island)=>SiteShoreAnchors(island)[0];
+    private Vector3[] SiteShoreAnchors(string island)
     {
-        // Choose an edge of the actual projected ground footprint with room
-        // for facts. The island's sides count too, especially when zoomed.
         var outline=ProjectSolid(solidIslands.IndexOf(island));
         var min=new Vector2(outline.Min(p=>p.X),outline.Min(p=>p.Y));
         var max=new Vector2(outline.Max(p=>p.X),outline.Max(p=>p.Y));var center=(min+max)/2;
-        Vector2[] shores=[new(max.X,center.Y),new(center.X,min.Y),new(center.X,max.Y),new(min.X,center.Y)];
+        Vector2[] sides=[new(max.X,center.Y),new(center.X,min.Y),new(center.X,max.Y),new(min.X,center.Y)];
+        var shores=sides.Select(side=>outline.MinBy(p=>p.DistanceSquaredTo(side))).ToArray();
         float Room(int i)=>i switch{0=>(Size.X-shores[i].X)/220,1=>shores[i].Y/65,
             2=>(Size.Y-BottomOcclusion-shores[i].Y)/65,_=>shores[i].X/220};
-        return camera.ProjectRayOrigin(shores[Enumerable.Range(0,4).OrderByDescending(Room).First()]);
+        return Enumerable.Range(0,4).OrderByDescending(Room).Select(i=>camera.ProjectRayOrigin(shores[i])).ToArray();
     }
     private MapCallout PaperCallout(string text,Func<Vector3> anchor,Func<bool> shown,float width,int priority,bool dynamic,bool alert=false)
     {
@@ -90,7 +94,7 @@ public partial class TabletopMap3D
     private static void OutlineMapText(Label label)
     {
         label.AddThemeColorOverride("font_outline_color",TabletopTheme.Paper);
-        label.AddThemeConstantOverride("outline_size",1);
+        label.AddThemeConstantOverride("outline_size",4);
     }
     private void ClearMovingCallouts()
     {
@@ -156,7 +160,8 @@ public partial class TabletopMap3D
     internal static Vector2[] RectanglePolygon(Rect2 r)=>[r.Position,new(r.End.X,r.Position.Y),r.End,new(r.Position.X,r.End.Y),r.Position];
     private static Vector2 PointerEnd(Vector2 anchor,Rect2 box)=>new(
         Math.Clamp(anchor.X,box.Position.X+3,box.End.X-3),Math.Clamp(anchor.Y,box.Position.Y+3,box.End.Y-3));
-    // Try a paper card, an unboxed fact summary, then the complete summary in the name.
+    // Facts always keep their paper and tether, including either summary form.
+    // Quiet names use dark ink and a broad paper halo to avoid a sea of cards.
     private void CompactCallout(MapCallout item,int form)
     {
         var compact=form>0;
@@ -171,10 +176,10 @@ public partial class TabletopMap3D
                     ||item.Words.Text.Contains("0%")?" · down":"");
         if(item.Heading is null&&compact)item.Words.Text=item.Name??item.Words.Text;
         item.Card.CustomMinimumSize=new Vector2(compact?0:item.Width,0);
-        if(compact){using var empty=new StyleBoxEmpty();item.Card.AddThemeStyleboxOverride("panel",empty);}
+        if(quiet){using var empty=new StyleBoxEmpty();item.Card.AddThemeStyleboxOverride("panel",empty);}
         else
         {
-            using var box=TabletopTheme.Box(TabletopTheme.Paper,7,3);
+            using var box=TabletopTheme.Box(TabletopTheme.Paper,compact?4:7,compact?2:3);
             box.BorderColor=item.Alert?TabletopTheme.Alert:TabletopTheme.Outline;box.BorderWidthLeft=3;
             item.Card.AddThemeStyleboxOverride("panel",box);
         }
@@ -185,7 +190,7 @@ public partial class TabletopMap3D
         var content=item.Heading is null?words:item.Heading.GetMinimumSize();
         if(body.Visible&&item.Heading is not null)
             content=new Vector2(Math.Max(content.X,words.X),content.Y+words.Y+3);
-        var padding=compact?Vector2.Zero:item.Card.GetThemeStylebox("panel").GetMinimumSize();
+        var padding=quiet?Vector2.Zero:item.Card.GetThemeStylebox("panel").GetMinimumSize();
         item.Card.CustomMinimumSize=new Vector2(Math.Max(compact?0:item.Width,content.X+padding.X),content.Y+padding.Y);
         item.Card.Size=item.Card.CustomMinimumSize;
     }
@@ -195,29 +200,41 @@ public partial class TabletopMap3D
     {
         var available=new Rect2(new Vector2(6,6),Size-new Vector2(12,BottomOcclusion+12));
         bool Shown(MapCallout item)=>item.IsShown()&&available.Grow(24).HasPoint(camera.UnprojectPosition(item.Anchor()));
+        // A delivery can be over its departure or arrival island. Identify that
+        // actual projected terrain so its short tether may leave its own ground,
+        // just like the held-cargo tether, but never cross another island.
+        foreach(var item in callouts.Where(c=>c.Dynamic&&c.Priority!=1))
+        {
+            var point=camera.UnprojectPosition(item.Anchor());
+            var ground=solidSilhouettes.Keys.FirstOrDefault(i=>Geometry2D.IsPointInPolygon(point,ProjectSolid(i)),-1);
+            item.Island=ground<0?null:solidIslands[ground];
+        }
         var active=callouts.Where(Shown).OrderBy(c=>c.Priority).ToArray();
         foreach(var item in callouts){item.Card.Visible=Shown(item);item.Pointer.Visible=false;}
-        var key=$"{BottomOcclusion}:{Size}:{world.Position}:{camera.Size}:"+string.Join(';',active.Select(c=>$"{c.Card.Size}:{c.Card.GetCombinedMinimumSize()}:{c.Words.Text}:{(camera.UnprojectPosition(c.Anchor())/3).Round()}"));
+        var key=$"{BottomOcclusion}:{Size}:{world.Position}:{camera.Size}:"+string.Join(';',active.Select(c=>$"{c.Card.Size}:{c.Card.GetCombinedMinimumSize()}:{c.Words.Text}:{c.Island}:{(camera.UnprojectPosition(c.Anchor())/3).Round()}"));
         if(key!=calloutLayoutKey)
         {
             var solids=ProjectedSolids;
-            var anchors=active.ToDictionary(c=>c,c=>camera.UnprojectPosition(c.Anchor()));
+            var anchors=active.ToDictionary(c=>c,c=>(c.Heading is not null?SiteShoreAnchors(c.Island!):new[]{c.Anchor()})
+                .Select(camera.UnprojectPosition).ToArray());
             // The fixed-size outage badges and their stems live above the imported kit.
             // Reserve them alongside 3D scenery before placing cards or quiet names.
             var markers=captions.Select(c=>c.Label.GetRect()).Concat(DownMarkers.Select(m=>m.Marker.GetRect())).ToArray();
             var stems=DownStems.SelectMany(s=>Enumerable.Range(1,s.Points.Length-1)
                 .Select(i=>(From:s.Points[i-1],To:s.Points[i]))).ToArray();
-            var choices=new Dictionary<MapCallout,List<(Rect2 Box,int Form,Vector2 End)>>(ReferenceEqualityComparer.Instance);
+            var choices=new Dictionary<MapCallout,List<(Rect2 Box,int Form,Vector2 End,Vector2 Source)>>(ReferenceEqualityComparer.Instance);
             foreach(var item in active)
             {
-                var anchor=anchors[item];
                 item.Card.TooltipText=item.Words.Text;
                 var quiet=QuietCallout(item);
                 choices[item]=[];
+                foreach(var anchor in anchors[item])
+                {
                 for(var pass=quiet?2:0;pass<(item.Dynamic&&item.Priority==1?1:3);pass++)
                 {
                     CompactCallout(item,pass);var size=item.Card.Size;
-                    var reach=pass==0?120:quiet&&item.Lane?60:item.Heading is not null?180:120;
+                    var reach=quiet&&item.Lane?60:120;
+                    var tether=!quiet;
                     var candidates=new List<Vector2>();
                     for(var y=Math.Max(available.Position.Y,anchor.Y-reach-size.Y);y<=Math.Min(available.End.Y-size.Y,anchor.Y+reach);y+=6)
                         for(var x=Math.Max(available.Position.X,anchor.X-reach-size.X);x<=Math.Min(available.End.X-size.X,anchor.X+reach);x+=6)
@@ -232,27 +249,28 @@ public partial class TabletopMap3D
                         if(anchor.DistanceTo(end)>reach||solids.Any(s=>IntersectsSolid(box.Grow(4),s))
                             ||markers.Any(r=>r.Intersects(box.Grow(5)))
                             ||stems.Any(s=>SegmentHits(s.From,s.To,RectanglePolygon(box.Grow(3)))))continue;
-                        if(pass==0&&(markers.Any(r=>SegmentHits(anchor,end,RectanglePolygon(r.Grow(2))))
+                        if(tether&&(markers.Any(r=>SegmentHits(anchor,end,RectanglePolygon(r.Grow(2))))
                             ||stems.Any(s=>Geometry2D.SegmentIntersectsSegment(anchor,end,s.From,s.To).VariantType!=Variant.Type.Nil)))continue;
-                        if(pass==0&&solids.Where((s,index)=>item.Island is null||solidIslands[index]!=item.Island).Any(s=>SegmentHits(anchor,end,s)))continue;
+                        if(tether&&solids.Where((s,index)=>item.Island is null||solidIslands[index]!=item.Island).Any(s=>SegmentHits(anchor,end,s)))continue;
                         // Keep spatially distinct nearby alternatives so a small slide or a compact tag can free a neighbour.
-                        if(samples.Any(p=>p.DistanceTo(position)<18))continue;
-                        choices[item].Add((box,pass,end));samples.Add(position);
-                        if(samples.Count==32)break;
+                        if(samples.Any(p=>p.DistanceTo(position)<12))continue;
+                        choices[item].Add((box,pass,end,anchor));samples.Add(position);
+                        if(samples.Count==64)break;
                     }
                 }
+                }
             }
-            var placed=new Dictionary<MapCallout,(Rect2 Box,int Form,Vector2 End)>(ReferenceEqualityComparer.Instance);var attempts=0;
-            bool Compatible(MapCallout item,(Rect2 Box,int Form,Vector2 End) slot)
+            var placed=new Dictionary<MapCallout,(Rect2 Box,int Form,Vector2 End,Vector2 Source)>(ReferenceEqualityComparer.Instance);var attempts=0;
+            bool Compatible(MapCallout item,(Rect2 Box,int Form,Vector2 End,Vector2 Source) slot)
             {
-                var anchor=anchors[item];
+                var anchor=slot.Source;
                 foreach(var other in placed)
                 {
                     if(slot.Box.Grow(5).Intersects(other.Value.Box))return false;
-                    var source=anchors[other.Key];
-                    if(slot.Form==0&&SegmentHits(anchor,slot.End,RectanglePolygon(other.Value.Box.Grow(3))))return false;
-                    if(other.Value.Form==0&&SegmentHits(source,other.Value.End,RectanglePolygon(slot.Box.Grow(3))))return false;
-                    if(slot.Form==0&&other.Value.Form==0&&Geometry2D.SegmentIntersectsSegment(anchor,slot.End,source,other.Value.End).VariantType!=Variant.Type.Nil)return false;
+                    var source=other.Value.Source;
+                    if(!QuietCallout(item)&&SegmentHits(anchor,slot.End,RectanglePolygon(other.Value.Box.Grow(3))))return false;
+                    if(!QuietCallout(other.Key)&&SegmentHits(source,other.Value.End,RectanglePolygon(slot.Box.Grow(3))))return false;
+                    if(!QuietCallout(item)&&!QuietCallout(other.Key)&&Geometry2D.SegmentIntersectsSegment(anchor,slot.End,source,other.Value.End).VariantType!=Variant.Type.Nil)return false;
                 }
                 return true;
             }
@@ -274,15 +292,18 @@ public partial class TabletopMap3D
             CalloutFailure=string.Join("; ",active.Where(c=>!placed.ContainsKey(c)).Select(c=>$"{c.Words.Text} at {camera.UnprojectPosition(c.Anchor())}: {choices[c].Count} slots ({string.Join(",",choices[c].GroupBy(s=>s.Form).Select(g=>$"{g.Key}:{g.Count()}"))}); summary {c.ShortWords?.Text}; {attempts} attempts in {available}"));
             foreach(var pair in placed)
             {
-                CompactCallout(pair.Key,pair.Value.Form);pair.Key.Card.Position=pair.Value.Box.Position;
+                CompactCallout(pair.Key,pair.Value.Form);pair.Key.Card.Position=pair.Value.Box.Position;pair.Key.PlacedAnchor=pair.Value.Source;
             }
             calloutLayoutKey=key;
         }
-        foreach(var item in active.Where(c=>c.Card.Visible&&!c.Compact))
+        foreach(var item in active.Where(c=>c.Card.Visible&&!QuietCallout(c)))
         {
-            var anchor=camera.UnprojectPosition(item.Anchor());
+            var anchor=item.PlacedAnchor;
             item.Pointer.Points=[anchor,PointerEnd(anchor,item.Card.GetRect())];item.Pointer.Visible=true;
         }
+        // Stop the dotted paths before lettering, including its broad halo.
+        var lettering=active.Where(c=>c.Card.Visible).Select(c=>c.Card.GetRect().Grow(8)).ToArray();
+        foreach(var dot in routeDots)dot.Visible=!lettering.Any(r=>r.HasPoint(camera.UnprojectPosition(dot.GlobalPosition)));
         for(var i=0;i<closedLanes.Count;i++)
         {
             var p=camera.UnprojectPosition(world.ToGlobal(closedLanes[i]));

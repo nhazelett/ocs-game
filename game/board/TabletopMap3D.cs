@@ -19,6 +19,7 @@ public partial class TabletopMap3D:Control
     internal List<Line2D> DownStems{get;}=[];
     internal List<Node3D> EquipmentModels{get;}=[];
     private readonly List<Vector3[]> equipmentExtents=[];
+    private readonly List<MeshInstance3D> routeDots=[];
     internal IEnumerable<Rect2> ModelScreenBounds=>equipmentExtents.Select(vertices=>
     {
         var points=vertices.Select(v=>camera.UnprojectPosition(world.ToGlobal(v))).ToArray();
@@ -80,7 +81,7 @@ public partial class TabletopMap3D:Control
             var state=links.FirstOrDefault(l=>l.FromIslandId==route.From&&l.ToIslandId==route.To&&l.Mode==route.Mode);var closed=state?.Open==false;
             // Distinct paths: the air route rises above the water; the barge stays on it.
             Vector3 PathPoint(float t)=>a.Lerp(b,t)+Vector3.Up*(route.Mode=="aircraft"?Mathf.Sin(t*Mathf.Pi)*2.2f:-.12f);
-            for(var i=0;i<28;i++){var p=PathPoint(i/27f);Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true);}
+            for(var i=0;i<28;i++){var p=PathPoint(i/27f);routeDots.Add(Mesh(new CylinderMesh{TopRadius=.04f,BottomRadius=.04f,Height=.02f,RadialSegments=6},p,closed?"9f4937":"e2e4d0",true));}
             laneAnchors.Add((route.From,route.To,route.Mode,PathPoint(.5f)));
             LaneCaption(mode+" lane"+(closed?" · closed":""),PathPoint(.5f),closed);
         }
@@ -114,8 +115,7 @@ public partial class TabletopMap3D:Control
         if(values.All(t=>t.Status=="notOpen"))return $"Opens day {opensDay}";
         string Names(string status)
         {
-            var names=values.Where(t=>t.Status==status).Select(t=>t.Label.ToLowerInvariant()).ToArray();
-            return names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+            return CapabilityNames(values.Where(t=>t.Status==status).Select(t=>t.Label));
         }
         var clauses=new List<string>();
         if(values.Any(t=>t.Status=="down"))clauses.Add(Names("down")+" down");
@@ -123,6 +123,13 @@ public partial class TabletopMap3D:Control
         var text=clauses.Count==0?"Supported":string.Join("; ",clauses);
         return char.ToUpperInvariant(text[0])+text[1..];
     }
+    private static string CapabilityNames(IEnumerable<string> labels)
+    {
+        var names=labels.OrderBy(n=>n.Equals("power",StringComparison.OrdinalIgnoreCase)?0:1)
+            .Select(n=>n.ToLowerInvariant()).ToArray();
+        return names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+    }
+    private static string SentenceCase(string text)=>text.Length==0?text:char.ToUpperInvariant(text[0])+text[1..];
     internal void Select(string? id){foreach(var pair in selections)pair.Value.Visible=pair.Key==id;}
     internal void Fit(){world.Position=Vector3.Zero;camera.Size=fittedSize;}
     internal void Restore(Vector3 pan,float size){world.Position=pan;camera.Size=size;}
@@ -204,8 +211,7 @@ public partial class TabletopMap3D:Control
                 label.Text=string.Join("\n",new[]{changeWords}.Concat(stillShort).Concat(confidence));label.SetMeta("reported_change",true);
                 var summary=group.GroupBy(c=>(c.Kind,c.Permille)).Select(reports=>
                 {
-                    var names=reports.Select(c=>capabilityTiles.FirstOrDefault(t=>t.CapabilityId==c.CapabilityId)?.Label??"Support").ToArray();
-                    var name=names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+                    var name=SentenceCase(CapabilityNames(reports.Select(c=>capabilityTiles.FirstOrDefault(t=>t.CapabilityId==c.CapabilityId)?.Label??"Support")));
                     return reports.Key.Kind=="restored"?$"{name} restored":reports.Key.Kind=="vendorFailure"?$"{name}: supplier failure reported"
                         :reports.Key.Permille==0?$"{name} down":$"{name}\n{reports.Key.Permille/10m:0.#}% supplied";
                 });
