@@ -4,6 +4,7 @@ render_mode unshaded, cull_disabled;
 uniform vec4 sea_color : source_color = vec4(0.38, 0.56, 0.60, 1.0);
 uniform vec4 sky_color : source_color = vec4(0.73, 0.82, 0.83, 1.0);
 uniform vec4 haze_color : source_color = vec4(0.84, 0.88, 0.86, 1.0);
+uniform bool draw_horizon = true;
 varying vec2 map_position;
 
 void vertex() {
@@ -19,6 +20,6 @@ void fragment() {
     // An illustrated distant horizon above the orthographic operating area.
     float horizon = smoothstep(0.09, 0.17, SCREEN_UV.y);
     vec3 sky = mix(sky_color.rgb, haze_color.rgb, smoothstep(0.0, 0.12, SCREEN_UV.y));
-    ALBEDO = mix(sky, sea, horizon);
+    ALBEDO = draw_horizon ? mix(sky, sea, horizon) : sea;
     ROUGHNESS = 1.0;
 }

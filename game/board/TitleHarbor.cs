@@ -170,8 +170,9 @@ public partial class TitleHarbor : Control
         using var fadeMaterial = (ShaderMaterial)image.Material;
         var water = new Color(TabletopTheme.Style.Water); var night = TabletopTheme.Direction == 1;
         seaMaterial.SetShaderParameter("sea_color", TabletopTheme.Direction == 2 ? new Color("628e9a") : water.Darkened(.18f));
-        seaMaterial.SetShaderParameter("sky_color", water.Lightened(night ? .16f : .55f));
-        seaMaterial.SetShaderParameter("haze_color", water.Lightened(night ? .26f : .72f));
+        // The steep title camera has no visible horizon. Let the far sea blend
+        // directly into the paper instead of painting a detached sky sliver.
+        seaMaterial.SetShaderParameter("draw_horizon", false);
         fadeMaterial.SetShaderParameter("paper_color", TabletopTheme.Background);
         var shallows = viewport.FindChild("TitleShallows", true, false) as MeshInstance3D;
         using var material = shallows?.MaterialOverride as StandardMaterial3D;

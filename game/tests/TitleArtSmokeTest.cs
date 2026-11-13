@@ -16,8 +16,18 @@ public partial class TitleArtSmokeTest : Node
             var args = OS.GetCmdlineUserArgs(); var baseline = args.Contains("--baseline");
             if (args.Contains("--screenshots"))
             {
-                GetWindow().Size = new Vector2I(1280, 800);
-                await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                // X11 can deliver its initial configure after _Ready. Wait for
+                // a rendered image at review size, not just the logical UI size.
+                for (var attempt = 0; attempt < 30; attempt++)
+                {
+                    GetWindow().Size = new Vector2I(1280, 800);
+                    await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    if (DisplayServer.GetName() == "headless") break;
+                    await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                    using var frame = GetViewport().GetTexture().GetImage();
+                    if (frame.GetWidth() == 1280 && frame.GetHeight() == 800) break;
+                    await ToSignal(GetTree().CreateTimer(.05), SceneTreeTimer.SignalName.Timeout);
+                }
             }
             using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
             shell = scene.Instantiate<GameShell>();
@@ -140,6 +150,13 @@ public partial class TitleArtSmokeTest : Node
                             }
                         Require(foreground > samples / 8, "The displayed title contains the harbor, rather than just its sea background.");
                         using var artImage = view.GetTexture().GetImage();
+                        // These points are all open sea above the island. A painted
+                        // horizon produced a bright band here despite the edge fade.
+                        var farSea = artImage.GetPixel(artImage.GetWidth() / 2, artImage.GetHeight() / 5);
+                        foreach (var fraction in new[] { .02f, .08f, .12f, .16f })
+                            Require(Distance(artImage.GetPixel(artImage.GetWidth() / 2,
+                                (int)(artImage.GetHeight() * fraction)), farSea) < .06f,
+                                "The title's far sea has no detached sky band in any look.");
                         var colors = new HashSet<Color>();
                         for (var y = 0; y < artImage.GetHeight(); y += 24)
                             for (var x = 0; x < artImage.GetWidth(); x += 24) colors.Add(artImage.GetPixel(x, y));
