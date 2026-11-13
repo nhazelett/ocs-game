@@ -75,7 +75,7 @@ public partial class MapSmokeTest : Node
                     map.Tabletop!._Process(0);
                     await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);map.Tabletop._Process(0);
                     var held=map.Tabletop.FactLabels.Where(l=>l.Leader is not null).ToArray();
-                    Require(held.Any(l=>l.Label.Text=="Fuel for Spoke B waiting: barge lane closed."),"Cargo caption names its actual capability, destination and route closure.");
+                    Require(held.Any(l=>l.Label.Text.Replace("\n"," ")=="Fuel for Spoke B waiting: barge lane closed."),"Cargo caption names its actual capability, destination and route closure.");
                     var cargo=held.First(l=>l.Label.Text.Contains("Spoke B"));
                     var source=map.SiteScreenPoint("hubSite");var destination=map.SiteScreenPoint("spokeBSite");
                     Require(cargo.Leader!.Points.Length==2 && cargo.Leader.Points[0].DistanceTo(source)<cargo.Leader.Points[0].DistanceTo(destination)
@@ -92,7 +92,7 @@ public partial class MapSmokeTest : Node
                     await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                     await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                     map.FitMap();map.Tabletop!._Process(0);
-                    var cargo=map.Tabletop.FactLabels.Single(l=>l.Leader is not null && l.Label.Text=="Fuel for Spoke B waiting: barge lane closed.");
+                    var cargo=map.Tabletop.FactLabels.Single(l=>l.Leader is not null && l.Label.Text.Replace("\n"," ")=="Fuel for Spoke B waiting: barge lane closed.");
                     Require(map.Tabletop.CaptionLabels.All(l=>!l.GetGlobalRect().Intersects(cargo.Label.GetGlobalRect().Grow(4))),
                         "Day-eighteen held cargo leaves every route, site name and status caption readable at default zoom.");
                     capturedDay18=true;

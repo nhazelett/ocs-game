@@ -73,8 +73,25 @@ public partial class MapCalloutSmokeTest : Node
                 Require(!card.GetRect().Intersects(other.GetRect()),"Callout collision: "+card.GetRect()+" / "+other.GetRect());
             Require(!map.Tabletop.ProjectedSolids.Any(p=>TabletopMap3D.IntersectsSolid(card.GetRect(),p)),"Callout covers solid scenery: "+card.GetRect());
         }
-        Require(map.Tabletop!.CalloutLayoutFits,"Visible cards have a complete collision-free placement.");
-        Require(map.Tabletop.CalloutPointers.All(p=>p.Points.Length==2&&p.Points[0].DistanceTo(p.Points[1])>0),"Every visible card has a pointer to its map target.");
+        Require(map.Tabletop!.CalloutLayoutFits,"Visible cards have a complete collision-free placement: "+map.Tabletop.CalloutFailure);
+        var pointers=map.Tabletop.CalloutPointers.ToArray();
+        foreach(var pointer in pointers)
+        {
+            var a=pointer.Points[0];var b=pointer.Points[1];
+            Require(pointer.Points.Length==2&&a.DistanceTo(b)>0&&a.DistanceTo(b)<=120.01f,"Fact pointers stay within 120 px of their actual target.");
+            foreach(var other in pointers.Where(p=>p!=pointer))
+                Require(Geometry2D.SegmentIntersectsSegment(a,b,other.Points[0],other.Points[1]).VariantType==Variant.Type.Nil,"Map pointers never cross.");
+            foreach(var card in cards.Where(c=>!c.GetRect().Grow(4).HasPoint(b)))
+                Require(!TabletopMap3D.SegmentHits(a,b,TabletopMap3D.RectanglePolygon(card.GetRect())),"A pointer never crosses another card or shore name.");
+        }
+        foreach(var target in map.Tabletop.PointerTargets)
+            foreach(var solid in map.Tabletop.SolidInventory.Where(s=>target.Island is null||s.Island!=target.Island))
+                Require(!TabletopMap3D.SegmentHits(target.Pointer.Points[0],target.Pointer.Points[1],solid.Polygon),"A pointer never crosses another island or its equipment.");
+        Require(map.Tabletop.FullCalloutText.All(t=>t!="Supported"&&t!="Air lane"&&t!="Barge lane"),"Supported sites and open lanes have only small unboxed names.");
+        Require(map.Tabletop.FullCalloutWords.All(l=>l.GetLineCount()==l.Text.Split('\n').Length),"Every reported fact occupies one complete line without wrapping.");
+        foreach(var pair in map.Tabletop.LanePoints.GroupBy(l=>(l.From,l.To)))
+            if(pair.Any(l=>l.Mode=="aircraft")&&pair.Any(l=>l.Mode=="barge"))
+                Require(pair.First(l=>l.Mode=="aircraft").Point.DistanceTo(pair.First(l=>l.Mode=="barge").Point)>24,"Air and barge paths have distinct visible targets.");
         Require(map.Tabletop.ClosedLaneBarriers.All(p=>p.Points.Length==2&&p.Points[0].DistanceTo(p.Points[1])>=19),"Closed-lane crosses keep a readable fixed screen size.");
     }
 }
