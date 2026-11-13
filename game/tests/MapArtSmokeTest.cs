@@ -55,6 +55,7 @@ public partial class MapArtSmokeTest : Node
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var map=shell.GetNode<SubViewport>("%BoardViewport").GetNode<SchematicMap>("SchematicMap");
                 CheckModels(map);
+                MapCalloutSmokeTest.Check(map);
                 var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--screenshots");
                 if (at < 0) return;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);

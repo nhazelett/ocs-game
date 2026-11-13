@@ -50,22 +50,30 @@ public partial class GameShell
         PlaybackText.Text = $"Day {day.Day} · what happened\n{movements}{held}\n" + (changes.Length==0?"No reported changes in site support.":string.Join(" ",changes));
         playbackElapsed = 0; Map.ReplayMovement(); playbackOverlay.Show(); MoveChild(playbackOverlay, -1);
         GetNode<Button>("%NextDay").Disabled = true; GetNode<Button>("%Continue").Disabled = true;
-        SkipPlaybackButton.GrabFocus();
+        RefreshMapCalloutSpace();SkipPlaybackButton.GrabFocus();
     }
 
     internal void FinishDayPlayback()
     {
         if (playbackOverlay is null) return;
-        playbackOverlay.Hide(); playbackElapsed = PlaybackSeconds; Map.SetMovementProgress(1);
+        playbackOverlay.Hide();RefreshMapCalloutSpace(); playbackElapsed = PlaybackSeconds; Map.SetMovementProgress(1);
         GetNode<Button>("%NextDay").Disabled = session.View is null || session.View.Finished;
         GetNode<Button>("%Continue").Disabled = session.View is null || session.View.Finished;
         if (!GetNode<Button>("%NextDay").Disabled) GetNode<Button>("%NextDay").GrabFocus();
     }
 
+    private void RefreshMapCalloutSpace()
+    {
+        if(Map.Tabletop is not { } tabletop)return;
+        var board=GetNode<Control>("%BoardContainer").GetGlobalRect();
+        var panel=playbackOverlay.GetChild<PanelContainer>(0).GetGlobalRect();
+        tabletop.BottomOcclusion=PlayingDay?Math.Max(0,board.End.Y-panel.Position.Y+6):0;
+    }
+
     internal void TickDayPlayback(double delta)
     {
         if (!PlayingDay) return;
-        playbackElapsed += delta; Map.SetMovementProgress((float)(playbackElapsed / PlaybackSeconds));
+        RefreshMapCalloutSpace();playbackElapsed += delta; Map.SetMovementProgress((float)(playbackElapsed / PlaybackSeconds));
         if (playbackElapsed >= PlaybackSeconds) FinishDayPlayback();
     }
     public override void _Process(double delta) { TickDayPlayback(delta); RefreshMusicContext(); }
