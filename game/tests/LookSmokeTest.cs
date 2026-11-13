@@ -78,7 +78,7 @@ public partial class LookSmokeTest : Node
                     "Changing look neither changes the deployment nor clears the current assembly.");
                 Require(map.Day == facts && map.Tiles.SequenceEqual(tiles) && map.Tabletop!.Pan == pan && map.Tabletop.CameraSize == zoom,
                     "Look retains exact MapDay facts and the player's camera.");
-                Require(map.Tabletop!.SiteStatuses["spokeBSite"].Text.Contains("down"), "Every look keeps the outage in words.");
+                Require(map.Tabletop!.SiteStatuses["spokeBSite"].GetParent().GetChildren().OfType<Label>().Any(l=>l.Text.Contains("down")), "Every look keeps the outage in words.");
                 Require(shell.GetThemeDefaultFont().GetFontName().Contains(direction == 2 ? "Atkinson" : "Barlow"),
                     "The established body font is applied immediately.");
                 Require(shell.GetThemeColor("font_color", "Label").IsEqualApprox(new Color(style.Ink)),

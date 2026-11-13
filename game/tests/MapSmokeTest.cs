@@ -42,7 +42,7 @@ public partial class MapSmokeTest : Node
             map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = false });
             Require(map.SelectedSite == "hubSite" && shell.SelectedCapability?.StartsWith("hubSite.") == true, "Clicking a site reaches its actual support details.");
             Require(shell.Session.StateHash == hash, "Site inspection is read-only.");
-            shell.DeveloperToggle.ButtonPressed = true; Replay(shell);
+            shell.DeveloperToggle.ButtonPressed = true; Replay(shell);shell.DeveloperToggle.ButtonPressed=false;
             var capturedRun = false; var capturedClosure = false; var capturedDay18 = false;
             for (var day = 1; day <= 20; day++)
             {
@@ -55,35 +55,35 @@ public partial class MapSmokeTest : Node
                 if (day == 10)
                 {
                     Require(map.Tiles.Single(t => t.SiteId == "spokeBSite" && t.CapabilityId == "power").Status == "down", "Day-ten generator support goes dark using Sim's status.");
-                    var status=map.Tabletop!.SiteStatuses["spokeBSite"].Text.ToLowerInvariant();
+                    var status=string.Join(" ",map.Tabletop!.SiteStatuses["spokeBSite"].GetParent().GetChildren().OfType<Label>().Select(l=>l.Text)).ToLowerInvariant();
                     Require(new[]{"power","fuel","lodging","down"}.All(status.Contains),"The actual site caption names every down capability in words.");
                     map.Tabletop!._Process(0);
                     Require(map.Tabletop.ReportedChangeLabels.Any(l => l.Contains("Fuel 0% supplied")),
                         "The real zero-supply caption states how much fuel is supplied, not a percentage short.");
-                    Require(map.Tabletop.FactLabels.Where(l=>l.Label.HasMeta("reported_change")).All(l=>
-                        l.Label.GetRect().End.Y <= map.SiteScreenPoint("spokeBSite").Y-30),
-                        "Reported shortfall captions sit above the site's equipment instead of covering it.");
-                    shell.DeveloperToggle.ButtonPressed = false; await Capture("day10"); shell.DeveloperToggle.ButtonPressed = true;
+                    await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                    MapCalloutSmokeTest.Check(map);
+                    shell.DeveloperToggle.ButtonPressed = false; await Capture("day10");
                 }
                 if (!capturedRun && facts.Runs.Any(r => r.SiteId == "spokeBSite"))
                 {
                     capturedRun = true; map.ReplayMovement();
                     if (shot >= 0) await ToSignal(GetTree().CreateTimer(1.8), SceneTreeTimer.SignalName.Timeout);
-                    shell.DeveloperToggle.ButtonPressed = false; await Capture("delivery"); shell.DeveloperToggle.ButtonPressed = true;
+                    shell.DeveloperToggle.ButtonPressed = false; await Capture("delivery");
                 }
                 if (!capturedClosure && facts.Held.Any(h => h.Reason == "closed"))
                 {
                     map.Tabletop!._Process(0);
+                    await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);map.Tabletop._Process(0);
                     var held=map.Tabletop.FactLabels.Where(l=>l.Leader is not null).ToArray();
-                    Require(held.Any(l=>l.Label.Text=="Fuel for Spoke B waiting: barge lane closed."),"Cargo caption names its actual capability, destination and route closure.");
+                    Require(held.Any(l=>l.Label.Text.Replace("\n"," ")=="Fuel for Spoke B waiting: barge lane closed."),"Cargo caption names its actual capability, destination and route closure.");
                     var cargo=held.First(l=>l.Label.Text.Contains("Spoke B"));
                     var source=map.SiteScreenPoint("hubSite");var destination=map.SiteScreenPoint("spokeBSite");
                     Require(cargo.Leader!.Points.Length==2 && cargo.Leader.Points[0].DistanceTo(source)<cargo.Leader.Points[0].DistanceTo(destination)
-                        && (cargo.Leader.Points[0]-source).Dot(destination-source)>0 && cargo.Leader.Points[0].DistanceTo(cargo.Label.GetRect().GetCenter())<180,
+                        && (cargo.Leader.Points[0]-source).Dot(destination-source)>0 && cargo.Leader.Points[0].DistanceTo(cargo.Label.GetGlobalRect().GetCenter())<180,
                         "Cargo stays at the hub end of the outgoing route with a nearby tethered label.");
                     var before=cargo.Leader!.Points[0];map.PanBy(new Vector2(12,8));map.Tabletop._Process(0);
                     Require(cargo.Leader.Points[0]!=before,"The cargo label tether follows the real map camera.");map.FitMap();
-                    capturedClosure = true; shell.DeveloperToggle.ButtonPressed = false; await Capture("closed"); shell.DeveloperToggle.ButtonPressed = true;
+                    capturedClosure = true; shell.DeveloperToggle.ButtonPressed = false; await Capture("closed");
                 }
                 // The morning of day 18 displays the movements completed on day 17.
                 if (day == 17)
@@ -92,12 +92,14 @@ public partial class MapSmokeTest : Node
                     await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                     await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                     map.FitMap();map.Tabletop!._Process(0);
-                    var cargo=map.Tabletop.FactLabels.Single(l=>l.Leader is not null && l.Label.Text=="Fuel for Spoke B waiting: barge lane closed.");
+                    var cargo=map.Tabletop.FactLabels.Single(l=>l.Leader is not null && l.Label.Text.Replace("\n"," ")=="Fuel for Spoke B waiting: barge lane closed.");
                     Require(map.Tabletop.CaptionLabels.All(l=>!l.GetGlobalRect().Intersects(cargo.Label.GetGlobalRect().Grow(4))),
                         "Day-eighteen held cargo leaves every route, site name and status caption readable at default zoom.");
                     capturedDay18=true;
-                    shell.DeveloperToggle.ButtonPressed=false;await Capture("day18");shell.DeveloperToggle.ButtonPressed=true;
+                    shell.DeveloperToggle.ButtonPressed=false;await Capture("day18");
                 }
+                await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                MapCalloutSmokeTest.Check(map);
                 Require(shell.Session.StateHash == hash, "Animation, rendering and snapshot queries never mutate Sim.");
             }
             Require(capturedRun && capturedClosure && capturedDay18, "Real authored approach exercises a delivery and a closed route holding cargo.");
@@ -113,7 +115,13 @@ public partial class MapSmokeTest : Node
                 && captions.Contains("Lodging: supplier failure reported"),
                 "Partial supply uses the reported percentage; restoration and supplier-failure wording stay specific.");
             Require(shell.Session.StateHash == hash, "Caption fixtures leave the real session unchanged.");
-            map.ShowMapDay(actual);
+            map.ShowConfidence(["spokeBSite"]);
+            map.ShowMapDay(actual with{Changes=[new MapChange("spokeBSite","power","restored",1000,null,"partial-update-test",true)]});
+            var partial=map.Tabletop!.SiteStatuses["spokeBSite"].Text;
+            Require(partial.Contains("Commander confidence lost"),"A new capability report keeps the commander's confidence loss visible.");
+            foreach(var tile in map.Tiles.Where(t=>t.SiteId=="spokeBSite"&&t.CapabilityId!="power"&&t.Status=="down"))
+                Require(partial.Contains(tile.Label+" down"),"A partial report keeps every other current outage in words.");
+            map.ShowConfidence([]);map.ShowMapDay(actual);
             File.Delete(shell.AutosavePath);
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("MAP_SMOKE_PASS: illustrated tiles, camera/site input, exact runs/closures/cargo, known filtering and pure animation."); GetTree().Quit();
