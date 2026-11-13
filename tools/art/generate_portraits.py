@@ -1,4 +1,4 @@
-"""ART-03 / ART-17: original fictional, faceted SVG portraits; no reference photographs."""
+"""ART-03 / ART-17 / ART-18: original fictional, faceted SVG portraits; no reference photographs."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,6 +22,17 @@ CAST = {
     "dunn": ("d0a28a", "a7a18f", "596e79", "crop", False, True),
     "ward": ("c7ae98", "b0afa6", "72836e", "wave", True, False),
     "reyna": ("c29371", "584837", "956d56", "side", False, True),
+    # ART-18: nine original identities; these appearances are authored, not
+    # inferred from the characters' names, units, surnames or nationalities.
+    "brooks": ("ab7f61", "473e37", "7f747a", "bob", False, False),
+    "silva": ("c99c78", "414c47", "5f7f86", "curl", False, True),
+    "haddad": ("d4ac8c", "3f3c37", "5c7971", "crop", True, False),
+    "kowalski": ("d9b49b", "827b6c", "737880", "recede", False, True),
+    "tan": ("9f755c", "343c37", "a08662", "wave", False, False),
+    "moreau": ("815f48", "b1aba0", "7d8c78", "crop", True, False),
+    "sato": ("e1bfa6", "775540", "738391", "pony", False, False),
+    "pryce": ("bd8b68", "524437", "92776a", "recede", False, False),
+    "carvalho": ("916950", "343b32", "6f7d89", "bob", True, False),
 }
 
 # angle, horizontal head offset, shoulder stance, collar, expression, gaze.
@@ -44,6 +55,15 @@ STAGING = {
     "dunn": (3, 4, "left", "zip", "steady", -1),
     "ward": (0, -4, "right", "round", "smile", 3),
     "reyna": (-1, 4, "level", "rolled", "curious", -2),
+    "brooks": (-10, -2, "left", "rolled", "kind", 1),
+    "silva": (9, -4, "right", "stand", "smile", -2),
+    "haddad": (-2, 6, "level", "round", "curious", -1),
+    "kowalski": (5, 2, "left", "open", "steady", 2),
+    "tan": (-9, 3, "right", "knit", "focused", 0),
+    "moreau": (10, 2, "level", "zip", "kind", -1),
+    "sato": (-4, -5, "right", "rolled", "smile", 2),
+    "pryce": (1, -6, "left", "stand", "serious", 1),
+    "carvalho": (6, -6, "level", "open", "curious", -2),
 }
 COLLARS = {
     "open": '<path d="M93 232L125 259L108 281L76 246M163 232L131 259L151 280L185 246" fill="#eee6ce"/><path d="M128 262V320" stroke="#ded6bf" stroke-width="3"/>',
@@ -98,6 +118,12 @@ def portrait(key, spec):
         shapes += f'<circle cx="166" cy="66" r="35" fill="#{hair}"/><path d="M65 136L67 90L92 59L134 50L176 74L189 131L164 94L136 91L89 111L80 140Z" fill="#{hair}"/>'
     elif cut == "curl":
         shapes += ''.join(f'<circle cx="{x}" cy="{y}" r="23" fill="#{hair}"/>' for x, y in [(76, 100), (86, 77), (112, 63), (139, 61), (164, 74), (178, 98)])
+    elif cut == "bob":
+        shapes += f'<path d="M60 201L61 93Q64 49 126 49Q192 47 197 101L200 202L177 194L172 110L145 91L106 106L83 117L80 201Z" fill="#{hair}"/>'
+    elif cut == "recede":
+        shapes += f'<path d="M68 127L70 92L86 72L105 69L103 88L81 105L81 142ZM151 68L169 74L186 94L188 139L177 130L173 104L153 88Z" fill="#{hair}"/>'
+    elif cut == "pony":
+        shapes += f'<circle cx="195" cy="76" r="22" fill="#{hair}"/><path d="M65 132L67 89L91 60Q135 39 177 73L190 127L168 99L133 89L88 111L79 140Z" fill="#{hair}"/>'
     else:
         shapes += f'<path d="M62 174L63 101Q60 48 125 48Q193 48 194 107L197 178L175 161L170 100L143 91L105 108L84 113L80 178Z" fill="#{hair}"/>'
     if glasses:
@@ -119,6 +145,10 @@ def fallback_portrait():
 
 
 if __name__ == "__main__":
+    if CAST.keys() != STAGING.keys():
+        raise ValueError("Every portrait needs authored staging")
+    if len({pose[:4] for pose in STAGING.values()}) != len(CAST):
+        raise ValueError("Each identity needs its own head pose, shoulder stance and collar combination")
     OUT.mkdir(parents=True, exist_ok=True)
     for key, spec in CAST.items():
         (OUT / f"{key}.svg").write_text(portrait(key, spec), encoding="utf-8")
