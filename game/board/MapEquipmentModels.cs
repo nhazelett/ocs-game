@@ -90,6 +90,18 @@ internal static class MapEquipmentModels
         return root;
     }
 
+    internal static Vector3[] Vertices(Node3D root)
+    {
+        var points=new List<Vector3>();
+        void Visit(Node3D node,Transform3D parent)
+        {
+            var transform=parent*node.Transform;
+            if(node is MeshInstance3D{Mesh:not null} mesh)
+                points.AddRange(mesh.Mesh.GetFaces().Select(p=>transform*p));
+            foreach(var child in node.GetChildren().OfType<Node3D>())Visit(child,transform);
+        }
+        Visit(root,Transform3D.Identity);return points.ToArray();
+    }
     internal static Aabb Bounds(Node3D root)
     {
         Aabb? result = null;

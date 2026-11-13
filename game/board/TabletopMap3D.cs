@@ -18,17 +18,18 @@ public partial class TabletopMap3D:Control
     internal List<(Control Marker,Node3D Model)> DownMarkers{get;}=[];
     internal List<Line2D> DownStems{get;}=[];
     internal List<Node3D> EquipmentModels{get;}=[];
-    private readonly List<Aabb> equipmentBounds=[];
-    internal IEnumerable<Rect2> ModelScreenBounds=>equipmentBounds.Select(bounds=>
+    private readonly List<Vector3[]> equipmentExtents=[];
+    internal IEnumerable<Rect2> ModelScreenBounds=>equipmentExtents.Select(vertices=>
     {
-        var points=Enumerable.Range(0,8).Select(i=>camera.UnprojectPosition(world.ToGlobal(bounds.GetEndpoint(i)))).ToArray();
+        var points=vertices.Select(v=>camera.UnprojectPosition(world.ToGlobal(v))).ToArray();
         var min=new Vector2(points.Min(p=>p.X),points.Min(p=>p.Y));
         return new Rect2(min,new Vector2(points.Max(p=>p.X),points.Max(p=>p.Y))-min);
     });
+    internal IEnumerable<Vector2> ModelScreenPeaks=>equipmentExtents.Select(points=>camera.UnprojectPosition(world.ToGlobal(points[2])));
     internal IReadOnlyList<string> ReportedChangeLabels=>movingLabels.Where(x=>x.Label.HasMeta("reported_change")).Select(x=>x.Label.Text).ToArray();
     internal IReadOnlyList<(Label Label,Node3D Node,Line2D? Leader)> FactLabels=>movingLabels;
     internal Dictionary<string,Label> SiteStatuses{get;}=[];
-    internal IEnumerable<Label> CaptionLabels=>captions.Where(c=>c.Label.Visible).Select(c=>c.Label).Concat(callouts.Where(c=>!c.Dynamic&&c.Words.IsVisibleInTree()).Select(c=>c.Words));
+    internal IEnumerable<Label> CaptionLabels=>captions.Where(c=>c.Label.Visible).Select(c=>c.Label).Concat(callouts.Where(c=>!c.Dynamic).SelectMany(c=>new[]{c.Heading,c.Words,c.ShortWords}).OfType<Label>().Where(l=>l.IsVisibleInTree()));
     private readonly Dictionary<string,float> islandRadii=[];
     private ScenarioBoardData board=null!;
     private Node3D? motion;
@@ -58,7 +59,7 @@ public partial class TabletopMap3D:Control
             addingIsland=island.Id;var members=board.Sites.Where(s=>s.Island==island.Id).ToArray();var radius=2.15f;
             for(var i=0;i<members.Length;i++)
             {
-                var rows=(tiles.Count(t=>t.SiteId==members[i].Id)+2)/3;radius=Math.Max(radius,rows*.48f+1);
+                var rows=(tiles.Count(t=>t.SiteId==members[i].Id)+3)/4;radius=Math.Max(radius,2.8f+(rows-2)*.65f);
                 sites[members[i].Id]=islands[island.Id]+new Vector3((i-(members.Length-1)/2f)*4.8f,0,0);
             }
             radius+=(members.Length-1)*2.4f;radii[island.Id]=radius;islandRadii[island.Id]=radius;
@@ -87,10 +88,10 @@ public partial class TabletopMap3D:Control
         }
         foreach(var site in board.Sites)
         {
-            addingIsland=site.Island;var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();var rows=(values.Length+2)/3;
+            addingIsland=site.Island;var p=sites[site.Id];var values=tiles.Where(t=>t.SiteId==site.Id).ToArray();var rows=(values.Length+3)/4;
             for(var i=0;i<values.Length;i++)
             {
-                var q=p+new Vector3((i%3-1)*1.1f,.77f,(i/3-(rows-1)/2f)*1.1f);Equipment(q,values[i]);CapabilityObjects++;
+                var q=p+new Vector3((i%4-1.5f)*1.1f,.77f,(i/4-(rows-1)/2f)*2.6f);Equipment(q,values[i]);CapabilityObjects++;
                 if(values[i].Status=="down")
                 {
                     var marker=new MapDownMarker{Size=new Vector2(24,24),MouseFilter=MouseFilterEnum.Ignore};
@@ -98,13 +99,13 @@ public partial class TabletopMap3D:Control
                     var stem=new Line2D{Width=1.5f,DefaultColor=TabletopTheme.Alert,Antialiased=true};AddChild(stem);DownStems.Add(stem);
                 }
             }
-            selections[site.Id]=Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.79f,0),"556e65",true);selections[site.Id].Visible=false;
+            selections[site.Id]=Mesh(new TorusMesh{InnerRadius=2.3f,OuterRadius=2.37f,Rings=32,RingSegments=8},p+new Vector3(0,.79f,0),"556e65",true);selections[site.Id].Visible=false;
             if(values.Any(t=>t.Status=="down"))
-                Mesh(new TorusMesh{InnerRadius=1.8f,OuterRadius=1.87f,Rings=32,RingSegments=8},p+new Vector3(0,.8f,0),"9f4937",true);
+                Mesh(new TorusMesh{InnerRadius=2.3f,OuterRadius=2.37f,Rings=32,RingSegments=8},p+new Vector3(0,.8f,0),"9f4937",true);
             var state=SiteStatus(values,site.OpensDay);
             var title=board.Sites.Count(s=>s.Island==site.Island)==1?site.Name+" / "+board.Islands.Single(i=>i.Id==site.Island).Name:site.Name;
-            // Attach to the site ring edge so zoomed captions clear the model cluster.
-            SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),p+new Vector3(1.85f,.75f,0),values.Any(t=>t.Status=="down"),site.Island);
+            // Attach at a free shore edge so every camera leaves room for facts.
+            SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),()=>SiteShoreAnchor(site.Island),values.Any(t=>t.Status=="down"),site.Island);
             SiteStatuses[site.Id].SetMeta("confidence_lost",confidence?.Contains(site.Id)==true);
         }
         addingIsland=null;
@@ -136,37 +137,14 @@ public partial class TabletopMap3D:Control
     public override void _Process(double delta)
     {
         if(camera is null)return;
-        var modelRects=ModelScreenBounds.ToArray();
-        var badges=new List<Rect2>();
+        var peaks=ModelScreenPeaks.ToArray();
         for(var i=0;i<DownMarkers.Count;i++)
         {
-            var item=DownMarkers[i];var index=EquipmentModels.IndexOf(item.Model);var bounds=modelRects[index];
-            var top=new Vector2(bounds.GetCenter().X,bounds.Position.Y);
-            var candidates=Enumerable.Range(0,8).SelectMany(row=>new[]{0,-28,28,-56,56}
-                .Select(offset=>top+new Vector2(offset-12,-31-row*12)));
-            Vector2 Anchor(Vector2 p)=>new(Math.Clamp(p.X+12,bounds.Position.X+1,bounds.End.X-1),bounds.Position.Y);
-            bool Clear(Vector2 p)=>!modelRects.Any(r=>r.Grow(3).Intersects(new Rect2(p,item.Marker.Size)))
-                &&!badges.Any(r=>r.Grow(4).Intersects(new Rect2(p,item.Marker.Size)));
-            Vector2[]? stem=null;var position=Vector2.Zero;
-            var sides=modelRects.SelectMany(r=>new[]{r.Position.X-4,r.End.X+4}).Distinct().ToArray();
-            foreach(var p in candidates.Where(Clear))
-            {
-                var end=p+new Vector2(12,24);
-                var anchors=new[]{Anchor(p),new Vector2(bounds.Position.X+1,bounds.GetCenter().Y),new Vector2(bounds.End.X-1,bounds.GetCenter().Y)};
-                var paths=anchors.SelectMany(a=>new[]{new[]{a,end}}.Concat(sides.Select(x=>new[]{a,new Vector2(x,a.Y),new Vector2(x,end.Y),end})));
-                float Length(Vector2[] points)=>Enumerable.Range(1,points.Length-1).Sum(j=>points[j-1].DistanceTo(points[j]));
-                stem=paths.Where(points=>Length(points)<120&&Enumerable.Range(1,points.Length-1).All(j=>
-                    !modelRects.Where((r,k)=>k!=index).Any(r=>MapDownMarker.Crosses(r,points[j-1],points[j]))))
-                    .OrderBy(Length).FirstOrDefault();
-                if(stem is not null){position=p;break;}
-            }
-            if(stem is null)
-            {
-                // Extreme crops still render safely; the tested Fit/zoom layouts use the short clear routes above.
-                position=new Vector2(top.X-12,Math.Min(modelRects.Min(r=>r.Position.Y),badges.Count==0?top.Y:badges.Min(r=>r.Position.Y))-31);
-                stem=[top,position+new Vector2(12,24)];
-            }
-            item.Marker.Position=position;badges.Add(item.Marker.GetRect());DownStems[i].Points=stem;
+            var item=DownMarkers[i];var top=peaks[EquipmentModels.IndexOf(item.Model)];
+            // A badge marks only the model directly below it. Equipment rows are
+            // separated to leave this short vertical stem clear of their neighbours.
+            item.Marker.Position=top-new Vector2(12,31);
+            DownStems[i].Points=[top,top-new Vector2(0,7)];
         }
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
         LayoutCallouts();
@@ -215,16 +193,25 @@ public partial class TabletopMap3D:Control
                     changeRings.Add(ring);
                 }
                 var marker=new Node3D{Position=p+Vector3.Up*1.1f};motion.AddChild(marker);
-                var changeWords=string.Join("\n",group.Select(change=>
+                string Report(MapChange change)
                 {
                     var name=capabilityTiles.FirstOrDefault(t=>t.CapabilityId==change.CapabilityId)?.Label??"Support";
                     return change.Kind=="restored"?$"{name} restored":change.Kind=="vendorFailure"?$"{name}: supplier failure reported":$"{name} {change.Permille/10m:0.#}% supplied";
-                }));
+                }
+                var changeWords=string.Join("\n",group.Select(Report));
                 var label=SiteStatuses[group.Key];
                 var stillShort=capabilityTiles.Where(t=>t.SiteId==group.Key&&!group.Any(c=>c.CapabilityId==t.CapabilityId)
                     &&t.Status is "down" or "degraded").Select(t=>t.Label+(t.Status=="down"?" down":" partly supported"));
                 var confidence=label.GetMeta("confidence_lost").AsBool()?new[]{"Commander confidence lost"}:Array.Empty<string>();
                 label.Text=string.Join("\n",new[]{changeWords}.Concat(stillShort).Concat(confidence));label.SetMeta("reported_change",true);
+                var summary=group.GroupBy(c=>(c.Kind,c.Permille)).Select(reports=>
+                {
+                    var names=reports.Select(c=>capabilityTiles.FirstOrDefault(t=>t.CapabilityId==c.CapabilityId)?.Label??"Support").ToArray();
+                    var name=names.Length<2?string.Join("",names):string.Join(", ",names[..^1])+" and "+names[^1];
+                    return reports.Key.Kind=="restored"?$"{name} restored":reports.Key.Kind=="vendorFailure"?$"{name}: supplier failure reported"
+                        :reports.Key.Permille==0?$"{name} down":$"{name}\n{reports.Key.Permille/10m:0.#}% supplied";
+                });
+                callouts.Single(c=>c.Words==label).ShortWords!.Text=string.Join("\n",summary.Concat(stillShort).Concat(confidence));
                 movingLabels.Add((label,marker,null));
             }
         }
@@ -264,7 +251,12 @@ public partial class TabletopMap3D:Control
         var model=MapEquipmentModels.Instantiate(tile.CapabilityId);
         model.SetMeta("capability_status",tile.Status);model.SetMeta("capability_id",tile.CapabilityId);
         model.Position=p;world.AddChild(model);EquipmentModels.Add(model);
-        var bounds=MapEquipmentModels.Bounds(model);equipmentBounds.Add(bounds);
+        var bounds=MapEquipmentModels.Bounds(model);
+        // Camera orientation is fixed. Cache the four real silhouette extrema
+        // once; pan/zoom only reproject these points, not every mesh vertex.
+        var projected=MapEquipmentModels.Vertices(model).Select(p=>(Point:p,Screen:camera.UnprojectPosition(world.ToGlobal(p)))).ToArray();
+        equipmentExtents.Add([projected.MinBy(p=>p.Screen.X).Point,projected.MaxBy(p=>p.Screen.X).Point,
+            projected.MinBy(p=>p.Screen.Y).Point,projected.MaxBy(p=>p.Screen.Y).Point]);
         solidBounds.Add(bounds);solidIslands.Add(addingIsland);
     }
 

@@ -89,6 +89,10 @@ public partial class MapArtSmokeTest : Node
             Require(rectangles.All(r=>!r.Intersects(item.Marker.GetRect())),"Down badges obscure no equipment, including neighbouring models.");
             Require(tabletop.DownMarkers.Where(m=>m.Marker!=item.Marker).All(m=>!m.Marker.GetRect().Intersects(item.Marker.GetRect())),"Down badges do not cover each other.");
             var stem=tabletop.DownStems[tabletop.DownMarkers.IndexOf(item)];
+            Require(stem.Points.Length==2&&Math.Abs(stem.Points[0].X-stem.Points[1].X)<.01f
+                &&Math.Abs(item.Marker.GetRect().GetCenter().X-tabletop.ModelScreenPeaks.ElementAt(tabletop.EquipmentModels.IndexOf(item.Model)).X)<.01f
+                &&stem.Points[0].DistanceTo(stem.Points[1])<=12,
+                "Every badge sits directly above its own model on one straight short stem.");
             Require(bounds.Grow(.1f).HasPoint(stem.Points[0])&&Enumerable.Range(1,stem.Points.Length-1)
                 .Sum(j=>stem.Points[j-1].DistanceTo(stem.Points[j]))<120,"A short stem identifies an edge of the actual model below each badge.");
             Require(Enumerable.Range(1,stem.Points.Length-1).All(j=>rectangles.Where((r,k)=>k!=tabletop.EquipmentModels.IndexOf(item.Model))

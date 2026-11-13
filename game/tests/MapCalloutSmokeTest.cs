@@ -55,6 +55,7 @@ public partial class MapCalloutSmokeTest : Node
                 for(var i=0;i<4;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 Check(map);
             }
+            Step(shell,3);await Capture("partial-supply");
             shell.QueueFree();shell=null;
             for(var i=0;i<3;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
             GD.Print("MAP_CALLOUT_SMOKE_PASS: exact tutorial/down/held/closed snapshots and pure native map layout.");GetTree().Quit();
@@ -65,7 +66,17 @@ public partial class MapCalloutSmokeTest : Node
     internal static void Check(SchematicMap map)
     {
         map.Tabletop!._Process(0);
-        Require(map.Tabletop!.CalloutLayoutFits,"Visible cards have a complete collision-free placement: "+map.Tabletop.CalloutFailure);
+        Require(map.Tabletop!.CalloutLayoutFits,$"Day {map.Day?.Day}: visible cards have a complete collision-free placement: "+map.Tabletop.CalloutFailure);
+        foreach(var site in map.Tiles.Where(t=>t.Status=="down").GroupBy(t=>t.SiteId))
+        {
+            var label=map.Tabletop.SiteStatuses[site.Key];
+            var visible=string.Join("\n",label.GetParent().GetChildren().OfType<Label>()
+                .Where(l=>l.IsVisibleInTree()).Select(l=>l.Text));
+            foreach(var tile in site)
+                Require(visible.Contains(tile.Label,StringComparison.OrdinalIgnoreCase)
+                    &&(visible.Contains("down",StringComparison.OrdinalIgnoreCase)||visible.Contains("0% supplied")),
+                    $"Every down site's visible text keeps its facts, including {tile.Label}: {visible}");
+        }
         var cards=map.Tabletop.CalloutCards.ToArray();
         var badges=map.Tabletop.DownMarkers.Select(m=>m.Marker.GetRect()).ToArray();
         var stems=map.Tabletop.DownStems.SelectMany(s=>Enumerable.Range(1,s.Points.Length-1)
