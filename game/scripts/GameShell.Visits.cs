@@ -99,12 +99,7 @@ public partial class GameShell
                 if (view.FinanceFoundDay is { } found) visitsForm.AddChild(DeskUi.Label($"You found the finance office on day {found}."));
                 AddVisit("finance", "Find finance", new FindFinanceAction { Day = view.Day }, view); break;
             case "meeting":
-                var meeting = view.StaffMeeting;
-                visitsForm.AddChild(DeskUi.Label(meeting.Joining ? "You are getting yourself into the staff meeting." : meeting.Attending
-                    ? $"You are attending the staff meeting. The next is on day {meeting.NextDay}." : "You are not attending the staff meeting."));
-                visitsForm.AddChild(DeskUi.Label($"Once joined, each meeting takes {view.Rules.GoingToPeople.StaffMeeting.WeeklyShopHours} shop hours."));
-                AddVisit("meeting", "Join the staff meeting", new JoinStaffMeetingAction { Day = view.Day }, view);
-                AddVisit("leave-meeting", "Stop attending", new JoinStaffMeetingAction { Day = view.Day, Attend = false }, view); break;
+                RenderStaffMeeting(view); break;
             case "sco":
                 var questions = view.ScoQuestions.Select(q => new Pick(q.Id, q.Label + (q.Pending ? " · answer pending" : ""))).ToArray();
                 ScoQuestionInput = AddPick(visitsForm, "What would you like to ask?", questions, scoQuestion, id => { scoQuestion = id; RefreshVisits(session.View, session.View?.MorningBoard()); });
@@ -125,6 +120,39 @@ public partial class GameShell
             var label = DeskUi.Label($"Day {record.Day}\n{record.Text}"); label.SetMeta("visit_record", record.Id);
             label.FocusMode = FocusModeEnum.All; visitResults.AddChild(label);
         }
+    }
+
+    private void RenderStaffMeeting(SessionView view)
+    {
+        var meeting = view.StaffMeeting;
+        var rules = view.Rules.GoingToPeople.StaffMeeting;
+        var status = DeskUi.Label(meeting.Joining ? "You are getting into the staff meeting."
+            : meeting.Attending ? $"You are attending the staff meeting. The next is on day {meeting.NextDay}."
+            : "You are not attending the staff meeting.");
+        status.SetMeta("meeting_state", meeting.Joining ? "joining" : meeting.Attending ? "attending" : "not-attending");
+        visitsForm.AddChild(status);
+        static string Hours(int hours) => $"{hours} shop {(hours == 1 ? "hour" : "hours")}";
+        var cadence = rules.EveryDays <= 1 ? "Each daily meeting" : $"Each meeting (every {rules.EveryDays} days)";
+        var cost = DeskUi.Label($"Joining takes {Hours(rules.JoinShopHours)} once. {cadence} takes {Hours(rules.WeeklyShopHours)}.");
+        cost.SetMeta("meeting_cost", true); visitsForm.AddChild(cost);
+        // Joining is pending work, not attendance: there is nothing to join again or stop attending yet.
+        if (meeting.Joining) return;
+        var key = meeting.Attending ? "leave-meeting" : "meeting";
+        var action = new JoinStaffMeetingAction { Day = view.Day, Attend = !meeting.Attending };
+        var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
+        if (!meeting.Attending && preview.Accepted)
+        {
+            var day = preview.EarliestStartMin == preview.EarliestStartMax ? preview.EarliestStartMin.ToString()
+                : $"{preview.EarliestStartMin}–{preview.EarliestStartMax}";
+            var queue = preview.QueueAheadHours > 0 ? $", after the {preview.QueueAheadHours} hours already queued" : "";
+            visitsForm.AddChild(DeskUi.Label($"The earliest result is day {day}{queue}."));
+        }
+        var button = DeskUi.Button(meeting.Attending ? "Stop attending" : "Join the staff meeting", () => SendAction(action));
+        button.SetMeta("visit", key);
+        var reason = DeskUi.ActionReason(visitsFooter, button);
+        DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
+        VisitButtons[key] = button;
+        if (preview.SoftGaps.Count > 0) visitsForm.AddChild(DeskUi.Label(string.Join("\n\n", preview.SoftGaps)));
     }
 
     private void AddVisit(string key, string text, PlayerAction action, SessionView view, VBoxContainer? parent = null)
