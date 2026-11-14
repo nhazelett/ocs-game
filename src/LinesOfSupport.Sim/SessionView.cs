@@ -168,6 +168,14 @@ public sealed class SessionView
 
     // ---------------------------------------------------------------- view-model contracts (M0-07, ADR-0006)
 
+    /// <summary>Why a capability at a site was short on the day just played, and what is in motion (DESK-38, D18): one
+    /// sentence from what the office knows (nothing bought; bought and being written by a named teammate, done about day N;
+    /// arranged to start on day N; a delivery held by the boat or the cash box; a vendor that missed, once reported; running
+    /// below need; or a capability it depends on that is short). An unreported failure reads "Nobody has told you why yet."
+    /// Null when it was supplied in full or the site is not open. The morning tiles, the map's shortfall changes and
+    /// WhereThingsStand carry the same sentence. Read only.</summary>
+    public string? WhyShort(string siteId, string capabilityId) => _s.BuildWhyShort(siteId, capabilityId);
+
     /// <summary>The always-visible strip: day, shop-hours and cash gauges, usable funds, system status.</summary>
     public TopStripView TopStrip() => _s.BuildTopStrip();
 

@@ -114,7 +114,8 @@ public sealed partial class Session
             var status = day < site.OpensDay ? "notOpen"
                 : cs.TodayPermille >= 1000 ? "ok"
                 : cs.TodayPermille < Rules.Model.DownThresholdPermille ? "down" : "degraded";
-            tiles.Add(new CapabilityTile(cs.SiteId, cs.CapabilityId, cap.Label, cs.TodayPermille, bufferDays, status, cs.Critical));
+            tiles.Add(new CapabilityTile(cs.SiteId, cs.CapabilityId, cap.Label, cs.TodayPermille, bufferDays, status, cs.Critical,
+                status is "down" or "degraded" ? BuildWhyShort(cs.SiteId, cs.CapabilityId) : null));
         }
         return tiles;
     }

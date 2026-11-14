@@ -62,7 +62,8 @@ public sealed partial class Session
                         if (dot <= 0) break;
                         var site = r.Subject[..dot]; var cap = r.Subject[(dot + 1)..];
                         var cs = _caps.FirstOrDefault(x => x.SiteId == site && x.CapabilityId == cap);
-                        changes.Add(new MapChange(site, cap, r.Kind == RecordKind.Shortfall ? "shortfall" : "restored", cs?.TodayPermille ?? 0, null, r.Id, true));
+                        changes.Add(new MapChange(site, cap, r.Kind == RecordKind.Shortfall ? "shortfall" : "restored", cs?.TodayPermille ?? 0, null, r.Id, true,
+                            r.Kind == RecordKind.Shortfall ? BuildWhyShort(site, cap) : null));
                         break;
                     }
                     case RecordKind.VendorFailure:

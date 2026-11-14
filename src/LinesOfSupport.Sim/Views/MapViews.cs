@@ -29,7 +29,9 @@ public sealed record MapShipment(string ArrangementId, string VendorId, string V
 /// <summary>A site capability that changed state on the day: went short, failed, or came back.</summary>
 /// <param name="Kind">"shortfall", "restored" or "vendorFailure".</param>
 /// <param name="Known">False when the player has not been told yet (an unreported vendor failure).</param>
-public sealed record MapChange(string SiteId, string CapabilityId, string Kind, int Permille, string? ArrangementId, string RecordId, bool Known);
+/// <param name="WhyShort">DESK-38 (D18): on a shortfall, why and what is in motion, one sentence; null otherwise.</param>
+public sealed record MapChange(string SiteId, string CapabilityId, string Kind, int Permille, string? ArrangementId, string RecordId, bool Known,
+    string? WhyShort = null);
 
 /// <summary>Everything the map needs to draw the day just played.</summary>
 public sealed record MapDayView(int Day, IReadOnlyList<MapLink> Links, IReadOnlyList<MapRun> Runs, IReadOnlyList<MapHeld> Held,

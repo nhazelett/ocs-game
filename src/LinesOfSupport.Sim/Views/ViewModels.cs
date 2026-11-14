@@ -108,7 +108,8 @@ public sealed record AssigneeChoice(
 /// <param name="Teammate">That team member as the player reads them ("you", "MSgt Joan Avery"); null when nobody is.</param>
 /// <param name="Sentence">Where it stands, in one or two sentences: the vendor, the days, who is doing what.</param>
 public sealed record RequestStanding(
-    string CardId, string Title, PersonView? From, string State, string? TeammateId, string? Teammate, string Sentence)
+    string CardId, string Title, PersonView? From, string State, string? TeammateId, string? Teammate, string Sentence,
+    string? WhyShort = null)
 {
     /// <summary>Nothing arranged and nothing in work.</summary>
     public const string Nothing = "nothing";
@@ -162,7 +163,9 @@ public sealed record BoardItem(
 /// <param name="TodayPermille">Share of demand met on the day just played, 0 to 1000.</param>
 /// <param name="BufferDays">Days of stock on hand for consumables at current demand, rounded down; null for continuous capabilities.</param>
 /// <param name="Status">"ok" (at or above the down threshold and full), "degraded", "down", or "notOpen" before the site opens.</param>
-public sealed record CapabilityTile(string SiteId, string CapabilityId, string Label, int TodayPermille, int? BufferDays, string Status, bool Critical);
+/// <param name="WhyShort">DESK-38 (D18): why it was short and what is in motion, one sentence; null when supplied in full.</param>
+public sealed record CapabilityTile(string SiteId, string CapabilityId, string Label, int TodayPermille, int? BufferDays, string Status, bool Critical,
+    string? WhyShort = null);
 
 /// <summary>The morning board: what changed overnight, sorted alerts first, plus the capability tiles and the top strip.</summary>
 /// <param name="Items">Items from the last AdvanceDay, Alert then Warning then Info, in record order within a severity. Empty on day 1.</param>
