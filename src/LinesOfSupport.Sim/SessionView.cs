@@ -202,6 +202,11 @@ public sealed class SessionView
     /// is open. Read only.</summary>
     public IReadOnlyList<string> EndOfDayCheck() => _s.BuildEndOfDayCheck();
 
+    /// <summary>The plan of the day before it ends (DESK-39, D19): each teammate's work today in the order they will do it,
+    /// with the hours each job gets and whether it should be done today; SF 44 deliveries, starts and last days due today;
+    /// then <see cref="EndOfDayCheck"/>. A forecast: events and rolls can change the day. Read only.</summary>
+    public DayPlanView DayPlan() => _s.BuildDayPlan();
+
     /// <summary>Where things stand (DESK-31, D16): one entry per request on the desk, needing attention first (late with
     /// nothing arranged, running short, nothing yet), then in hand (asking, buying, arranged, running), then done. Read only.</summary>
     public IReadOnlyList<RequestStanding> WhereThingsStand() => _s.BuildWhereThingsStand();

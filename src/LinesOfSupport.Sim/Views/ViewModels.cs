@@ -97,6 +97,32 @@ public sealed record AssigneeChoice(
     int HoursMin, int HoursMax, int? ResultDayMin, int? ResultDayMax, string Sentence, bool Current = false);
 
 /// <summary>
+/// The plan of the day before it ends (DESK-39, D19): what End the day opens. A forecast, worded as one: the hours follow
+/// the day loop's rules, but events and rolls are not known, so nothing here is a promise.
+/// </summary>
+/// <param name="People">Each team member in team order, with today's work in the order they will do it.</param>
+/// <param name="Due">Sentences: SF 44 deliveries due today (or why they will not happen), support due to start today, and
+/// support whose last day is today.</param>
+/// <param name="Open">What is still open: the DESK-04 end-of-day check.</param>
+public sealed record DayPlanView(int Day, IReadOnlyList<DayPlanPerson> People, IReadOnlyList<string> Due, IReadOnlyList<string> Open);
+
+/// <param name="MemberId">For the face and links. Never shown.</param>
+/// <param name="Name">"You", or rank and name.</param>
+/// <param name="HoursToday">Their hours for the day.</param>
+/// <param name="HoursPlanned">Hours of today that go to their work (half hours).</param>
+/// <param name="Work">Their work today in the order they will do it: SF 44 trips first, then the staff meeting, then their queue.</param>
+/// <param name="Sentence">One line: hours planned, how many jobs should finish and how many carry over, hours left for small buys.</param>
+public sealed record DayPlanPerson(string MemberId, string Name, string? Portrait, double HoursToday, double HoursPlanned,
+    IReadOnlyList<DayPlanItem> Work, string Sentence);
+
+/// <param name="WorkId">The work item, for links; null for an SF 44 trip or the staff meeting, which the day itself adds.</param>
+/// <param name="HoursToday">Hours it gets today (half hours).</param>
+/// <param name="HoursLeftAfter">Hours still to do after today; 0 when it should be done today.</param>
+/// <param name="FinishesToday">It should be done by the end of today.</param>
+/// <param name="Sentence">"Written purchase order with Harbor Bottling for water at Hub: 6 hours today, and it should be done today."</param>
+public sealed record DayPlanItem(string? WorkId, string Label, double HoursToday, double HoursLeftAfter, bool FinishesToday, string Sentence);
+
+/// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
 /// tab shows these under the lead, needing attention first.
 /// </summary>
