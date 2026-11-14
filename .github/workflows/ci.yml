@@ -127,6 +127,8 @@ jobs:
           grep -Fq 'DAY_PLAYBACK_SMOKE_PASS:' "$RUNNER_TEMP/godot-playback.log"
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/DaySummarySmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-day-summary.log"
           grep -Fq 'DAY_SUMMARY_SMOKE_PASS:' "$RUNNER_TEMP/godot-day-summary.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/DecisionsSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-decisions.log"
+          grep -Fq 'DECISIONS_SMOKE_PASS:' "$RUNNER_TEMP/godot-decisions.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/LeadSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-lead.log"
           grep -Fq 'LEAD_SMOKE_PASS:' "$RUNNER_TEMP/godot-lead.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PeopleSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-people.log"

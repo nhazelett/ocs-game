@@ -32,6 +32,7 @@ public partial class GameShell
         LeadOpen.ThemeTypeVariation="TabletopPrimary";
         BuildYesterday(board);
         BuildStandings(board);
+        BuildDecisions(board);
         BoardDetailsToggle = new Button { Text = "Other updates and sites", ToggleMode = true, Alignment = HorizontalAlignment.Left, CustomMinimumSize = new Vector2(0, 42) };
         BoardDetailsToggle.Toggled += open =>
         {
@@ -77,6 +78,7 @@ public partial class GameShell
 
     private void FocusNewMorning()
     {
+        allDecisions = false;
         BoardDetailsToggle.ButtonPressed = false;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
     }
