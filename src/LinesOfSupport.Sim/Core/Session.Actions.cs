@@ -19,6 +19,7 @@ public sealed partial class Session
         if (action.Day != 0 && action.Day != Day) return ActionResult.Stop($"action is dated day {action.Day} but the current day is {Day}");
         action = action with { Day = Day };
         _assigneeNow = action.Assignee is { } who && _team.Any(m => m.Id == who) ? who : _lead;
+        var recordsBefore = _records.Count;
         var result = AssigneeStop(action) is { } notOnTeam ? ActionResult.Stop(notOnTeam) : action switch
         {
             SurveyAction s => ApplySurvey(s),
@@ -54,6 +55,8 @@ public sealed partial class Session
         if (!result.Accepted) result = result with { HardStops = [.. result.HardStops.Select(SentenceCase)] };
         _applied.Add(action);
         _appliedRejected.Add(!result.Accepted);
+        // DESK-41: the record that says what this decision was, for the decisions list.
+        _appliedRecord.Add(result.Accepted ? _records.Skip(recordsBefore).FirstOrDefault(r => r.Kind == RecordKind.Action)?.Id : null);
         if (!result.Accepted)
         {
             _rejected++;

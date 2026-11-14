@@ -212,6 +212,10 @@ public sealed class SessionView
     /// Read only.</summary>
     public DaySummaryView? DaySummary() => _s.BuildDaySummary();
 
+    /// <summary>Your decisions, newest first (DESK-41, D21): every accepted action with its day, what it was, who it went
+    /// to, the request it was for and how it stands now. With a request, only the decisions for it. Read only.</summary>
+    public IReadOnlyList<DecisionView> Decisions(string? cardId = null) => _s.BuildDecisions(cardId);
+
     /// <summary>Where things stand (DESK-31, D16): one entry per request on the desk, needing attention first (late with
     /// nothing arranged, running short, nothing yet), then in hand (asking, buying, arranged, running), then done. Read only.</summary>
     public IReadOnlyList<RequestStanding> WhereThingsStand() => _s.BuildWhereThingsStand();
