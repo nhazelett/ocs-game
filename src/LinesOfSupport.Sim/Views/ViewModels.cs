@@ -258,6 +258,34 @@ public sealed record RequirementLine(string Id, string Label, string Kind, bool 
 /// <param name="Pending">True while the talk is in a team member's queue.</param>
 public sealed record AskOption(PersonView Person, bool Asked, bool Pending);
 
+/// <summary>
+/// Someone who can help with a request (DESK-42, D22), for the request page: what talking to them can do, the hours, and
+/// where it stands. Never the answer before it is given.
+/// </summary>
+/// <param name="Kind">"ask" (an AskAboutAction with Person), "j4" (an EngageJ4Action for the request's site and capability) or
+/// "vendor" (a MeetVendorAction with the person's vendor).</param>
+/// <param name="Person">Their face and name; null for the J4.</param>
+/// <param name="Name">As the player reads them: "SMSgt Ray Dunn", "The J4", "Dana Reyes of Main Island Sanitation".</param>
+/// <param name="Does">What talking to them can do, in a sentence, without what they will say.</param>
+/// <param name="Hours">Usual hours it takes (the assignee picker gives each teammate's own).</param>
+/// <param name="Informs">True: it tells you something for the request. False: it opens something you can then do.</param>
+/// <param name="State">One of the constants below.</param>
+/// <param name="TeammateId">Who on the team is on it while it is under way; null otherwise. Never shown.</param>
+/// <param name="Teammate">That teammate as the player reads them.</param>
+/// <param name="Day">When the answer should be in (under way), or the day it came (done); null before.</param>
+/// <param name="Answer">What they said or what it put in place, once done; null before.</param>
+/// <param name="Sentence">Where it stands in one line: "SMSgt Ray Dunn: not asked yet, about 1 hour."</param>
+public sealed record HelperView(string Kind, PersonView? Person, string Name, string Does, double Hours, bool Informs, string State,
+    string? TeammateId, string? Teammate, int? Day, string? Answer, string Sentence)
+{
+    /// <summary>Nobody has gone to them yet.</summary>
+    public const string NotAsked = "notAsked";
+    /// <summary>A teammate is on it; the answer is due on Day.</summary>
+    public const string Asking = "asking";
+    /// <summary>Done: Answer says what came of it.</summary>
+    public const string Answered = "answered";
+}
+
 /// <summary>A capability this one depends on at the same site, and whether the player has it covered.</summary>
 /// <param name="Coverage">"inRequirement" (a supplies line on this card is on), "arranged" (an arrangement at the site covers it),
 /// or "none".</param>
@@ -276,12 +304,14 @@ public sealed record RequirementDependency(string CapabilityId, string Label, st
 /// <param name="Message">What they said when they brought it, in their words.</param>
 /// <param name="HeardAt">DESK-08 (D4): for a requirement first raised at the staff meeting, one sentence on whether the
 /// shop was in the room ("...and the shop was in the room." or "...so it reached you on day 9."). Null for any other.</param>
+/// <param name="WhoCanHelp">DESK-42 (D22): the people worth asking about this request, what talking to them can do, the
+/// hours and where each stands; then the J4 when the partner force can spare it, then vendors who sell it and are not met.</param>
 public sealed record RequirementEditorView(
     string CardId, string SiteId, string SiteName, string CapabilityId, string CapabilityLabel, string Unit,
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
     IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
     string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null,
-    string? HeardAt = null);
+    string? HeardAt = null, IReadOnlyList<HelperView>? WhoCanHelp = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 
