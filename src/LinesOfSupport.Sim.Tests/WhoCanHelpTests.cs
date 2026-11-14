@@ -101,4 +101,46 @@ public class WhoCanHelpTests
             }
         }
     }
+
+    // Q25 (Codex, DESK-48): the J4 line names the capability it is about, and a line nobody is on yet carries the action
+    // that starts it, so the request page binds each line to the Sim's own target.
+    [Fact]
+    public void The_J4_line_names_its_capability_and_starts_the_J4_on_it()
+    {
+        var s = Session.Create(Repo.Load("spoke-b"), 1);
+        var power = s.View.RequirementEditor("req0007")!;
+        var j4 = Assert.Single(power.WhoCanHelp!, h => h.Kind == "j4");
+        Assert.Equal("fuel", j4.CapabilityId);
+        var start = Assert.IsType<EngageJ4Action>(j4.Start);
+        Assert.Equal("fuel", start.Capability);
+        Assert.Equal(power.SiteId, start.Site);
+        Assert.All(power.WhoCanHelp!.Where(h => h.Kind != "j4"), h => Assert.Null(h.CapabilityId));
+    }
+
+    [Fact]
+    public void Every_line_nobody_is_on_starts_an_action_the_Sim_accepts_and_the_rest_start_nothing()
+    {
+        var checkedKinds = new HashSet<string>();
+        foreach (var scenario in new[] { "spoke-b", "spoke-b-90", "sustainment", "tutorial" })
+        {
+            var s = scenario == "tutorial" ? Session.Create(Repo.Load(scenario), 1, Prep) : Session.Create(Repo.Load(scenario), 1);
+            for (var day = 0; day < 12 && !s.Finished; day++)
+            {
+                foreach (var st in s.View.WhereThingsStand())
+                    foreach (var h in s.View.RequirementEditor(st.CardId)!.WhoCanHelp!)
+                    {
+                        if (h.State != HelperView.NotAsked) { Assert.Null(h.Start); continue; }
+                        Assert.NotNull(h.Start);
+                        Assert.Equal(s.Day, h.Start!.Day);
+                        var action = h.Start is EngageJ4Action j ? j with { Id = "q25", Quantity = 1 } : h.Start;
+                        var preview = s.View.PreviewAny(action);
+                        checkedKinds.Add(h.Kind);
+                        Assert.True(preview.Accepted, $"{scenario} day {s.Day} {h.Sentence} {string.Join("; ", preview.HardStops)}");
+                    }
+                s.AdvanceDay();
+            }
+            Assert.False(s.View.PreviewAny(new MeetVendorAction { Vendor = "nobody", Day = s.Day }).Accepted);
+        }
+        Assert.Equal(new[] { "ask", "j4", "vendor" }, checkedKinds.Order());
+    }
 }

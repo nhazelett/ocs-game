@@ -276,8 +276,16 @@ public sealed record AskOption(PersonView Person, bool Asked, bool Pending);
 /// <param name="Day">When the answer should be in (under way), or the day it came (done); null before.</param>
 /// <param name="Answer">What they said or what it put in place, once done; null before.</param>
 /// <param name="Sentence">Where it stands in one line: "SMSgt Ray Dunn: not asked yet, about 1 hour."</param>
+/// <param name="CapabilityId">"j4" only: the capability the J4 would have added to the ACSA order, which is the request's own
+/// or one it runs on (power runs on fuel), whichever the partner can spare first; null for the other kinds (Q25).</param>
+/// <param name="Start">While not asked: the action that starts this help, with the Sim's targets already filled in
+/// (an <see cref="Core.AskAboutAction"/> with Card and Person, an <see cref="Core.EngageJ4Action"/> with Site and Capability, a
+/// <see cref="Core.MeetVendorAction"/> with Vendor). The game sets Day, Assignee and, for the J4, Id, Quantity and DurationDays
+/// with <c>with</c>, then previews and applies it as usual; it never works out a target itself. Null once someone is on it
+/// or it is done (Q25).</param>
 public sealed record HelperView(string Kind, PersonView? Person, string Name, string Does, double Hours, bool Informs, string State,
-    string? TeammateId, string? Teammate, int? Day, string? Answer, string Sentence)
+    string? TeammateId, string? Teammate, int? Day, string? Answer, string Sentence,
+    string? CapabilityId = null, Core.PlayerAction? Start = null)
 {
     /// <summary>Nobody has gone to them yet.</summary>
     public const string NotAsked = "notAsked";
