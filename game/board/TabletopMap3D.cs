@@ -153,6 +153,7 @@ public partial class TabletopMap3D:Control
         }
         foreach(var item in captions)item.Label.Position=camera.UnprojectPosition(world.ToGlobal(item.Point))+item.Offset;
         LayoutCallouts();
+        LayoutShortfall();
     }
 
     internal void ShowFacts(MapDayView? day,float progress)

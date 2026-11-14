@@ -40,7 +40,12 @@ public partial class GameShell
                     BoardLinkKind.Card, entry.CardId, "", [], entry.From));
             });
             open.TooltipText = "Open request"; open.SetMeta("standing_state", entry.State);
-            row.AddChild(open); StandingOpenButtons.Add(entry.CardId, open);
+            var words = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            row.AddChild(words); words.AddChild(open); StandingOpenButtons.Add(entry.CardId, open);
+            if (entry.WhyShort is { } why)
+            {
+                var reason = DeskUi.Label(why); reason.SetMeta("standing_why_short", entry.CardId); words.AddChild(reason);
+            }
         }
     }
 }

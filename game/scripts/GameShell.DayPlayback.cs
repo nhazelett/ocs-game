@@ -28,6 +28,7 @@ public partial class GameShell
 
     private void BeginDayPlayback()
     {
+        Map.Tabletop?.CloseShortfall();
         PlaybackFacts = Map.Day;
         if (PlaybackFacts is null || PlaybackFacts.Day == 0) return;
         RefreshYesterday();
