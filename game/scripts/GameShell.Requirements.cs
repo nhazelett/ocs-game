@@ -15,6 +15,7 @@ public partial class GameShell
     private void RenderRequirementContext(SessionView? view)
     {
         DeskUi.Clear(linkedRequirement); DeskUi.Clear(requirementFooter); RequirementAskButtons.Clear(); RequirementAddButtons.Clear();
+        RequestDecisionRows = null;
         var scroll = (ScrollContainer)linkedRequirement.GetParent();
         scroll.FollowFocus = true;
         var initiative = RequestInitiativeButton = DeskUi.Button("Buy on your own initiative", GoToOwnInitiative);
@@ -111,6 +112,7 @@ public partial class GameShell
                 DeskUi.Gate(ask, reason, view.Finished ? DeskUi.FinishedReason : null);
             }
         }
+        RenderRequestDecisions(view, card.CardId);
     }
 
     private void AskAboutRequirement(string card, string person)
