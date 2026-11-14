@@ -60,12 +60,17 @@ public partial class GoingToPeopleSmokeTest : Node
             var personItem = shell.Session.View!.MorningBoard().Items.Single(i => i.LinkKind == BoardLinkKind.Person);
             var beforeNavigation = shell.Session.StateHash; shell.PeopleToggle.ButtonPressed = false; shell.NavigateBoardItem(personItem);
             Require(shell.PeopleToggle.ButtonPressed && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.TodayTab && shell.Session.StateHash == beforeNavigation, "Person-linked news opens the board contact without spending time.");
-            Pick(shell.PersonContactInput, "meeting"); Submit("meeting");
+            Pick(shell.PersonContactInput, "meeting");
+            Require(shell.VisitButtons.Keys.SequenceEqual(new[] { "meeting" }), "Only Join is offered before enrollment.");
+            Submit("meeting");
+            Require(shell.VisitButtons.Count == 0 && shell.VisitOptions.Count == 0, "Pending enrollment offers no repeated Join or Stop attending.");
             while (!expected.View.StaffMeeting.Attending) Day();
+            Require(shell.VisitButtons.Keys.SequenceEqual(new[] { "leave-meeting" }), "Only Stop attending is offered after enrollment finishes.");
             var next = expected.View.StaffMeeting.NextDay!.Value;
             while (expected.Day <= next) Day();
             Require(expected.View.StaffMeeting.MeetingDays.Count >= 2, "Staff meeting recurs with the Sim's weekly cost.");
             Pick(shell.PersonContactInput, "meeting"); Submit("leave-meeting"); Require(!expected.View.StaffMeeting.Attending, "Player can stop attending.");
+            Require(shell.VisitButtons.Keys.SequenceEqual(new[] { "meeting" }), "Stopping restores only Join.");
             Pick(shell.PersonContactInput, "sco"); Pick(shell.ScoQuestionInput!, "fuel"); Submit("sco");
             Require(shell.VisitButtons["sco"].Disabled, "Pending question is gated by its real preview.");
             var sentDay = expected.Day;
