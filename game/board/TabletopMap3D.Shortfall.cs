@@ -41,19 +41,21 @@ public partial class TabletopMap3D
         ShortfallCard.AddThemeStyleboxOverride("panel", paper); AddChild(ShortfallCard);
         var body = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore }; body.AddThemeConstantOverride("separation", 7);
         ShortfallCard.AddChild(body);
-        void Words(string text, bool heading = false, string? capability = null)
+        Label Words(string text, bool heading = false, string? capability = null)
         {
             var label = new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart,
                 CustomMinimumSize = new Vector2(width - 20, 0), MouseFilter = MouseFilterEnum.Ignore };
             label.AddThemeFontSizeOverride("font_size", heading ? 20 : 17);
             label.AddThemeColorOverride("font_color", TabletopTheme.Ink);
             if (capability is not null) label.SetMeta("why_short", capability);
-            body.AddChild(label);
+            body.AddChild(label); return label;
         }
         Words(board.Sites.Single(s => s.Id == site).Name, true);
         foreach (var tile in shortTiles)
         {
-            Words($"{tile.Label} · {tile.TodayPermille / 10m:0.#}% supplied");
+            var capability = Words($"{tile.Label} · {tile.TodayPermille / 10m:0.#}% supplied");
+            capability.AddThemeColorOverride("font_color", TabletopTheme.Alert);
+            capability.SetMeta("short_capability", tile.CapabilityId);
             Words(tile.WhyShort!, capability: tile.CapabilityId);
         }
         LayoutShortfall(); return true;

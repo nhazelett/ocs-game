@@ -99,6 +99,11 @@ public partial class ShortfallSmokeTest : Node
                 foreach (var tile in tiles)
                 {
                     var reason = reasons.Single(l => l.GetMeta("why_short").AsString() == tile.CapabilityId);
+                    var capability = card.FindChildren("*", "Label", true, false).OfType<Label>()
+                        .Single(l => l.HasMeta("short_capability") && l.GetMeta("short_capability").AsString() == tile.CapabilityId);
+                    Require(capability.GetThemeColor("font_color") == TabletopTheme.Alert
+                        && reason.GetThemeColor("font_color") == TabletopTheme.Ink
+                        && capability.GetIndex() + 1 == reason.GetIndex(), "Each red short capability is immediately followed by its reason in ordinary ink.");
                     Require(reason.Text == tile.WhyShort && reason.GetThemeFontSize("font_size") == 17
                         && card.GetGlobalRect().Encloses(reason.GetGlobalRect()), "Every full Sim reason fits the opaque card at the original readable type size.");
                 }
@@ -107,8 +112,13 @@ public partial class ShortfallSmokeTest : Node
             {
                 var labels = shell!.FindChildren("*", "Label", true, false).OfType<Label>().ToArray();
                 foreach (var entry in shell.Session.View!.WhereThingsStand())
-                    Require(labels.Any(l => l.HasMeta("standing_why_short") && l.GetMeta("standing_why_short").AsString() == entry.CardId && l.Text == entry.WhyShort) == (entry.WhyShort is not null),
-                        "Today binds every request reason and omits fully supplied ones.");
+                {
+                    var request = shell.StandingOpenButtons[entry.CardId];
+                    Require(request.Text == entry.Title + (entry.From is null ? "" : " · " + entry.From.DisplayName)
+                        + "\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : ""),
+                        "The request title, state and exact shortfall reason share one clickable frame; supplied requests add no reason.");
+                    Require(request.GetParent().GetChildren().Count == 1, "No reason is left between request frames.");
+                }
                 foreach (var tile in map.Tiles)
                     Require(shell.MorningTiles.GetChildren().OfType<Label>().Any(l => l.Text == tile.WhyShort) == (tile.WhyShort is not null), "Site rows bind Sim reasons too.");
             }
