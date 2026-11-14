@@ -42,7 +42,7 @@ public partial class GameShell
             {
                 var said = DeskUi.Label(answer); said.SetMeta("helper_answer", key); row.AddChild(said);
             }
-            if (helper.State != HelperView.NotAsked)
+            if (helper.State == HelperView.Asking)
                 row.AddChild(DeskUi.Label($"This takes about {helper.Hours} shop {(helper.Hours == 1 ? "hour" : "hours")}."));
             if (helper.Start is not { } action) continue;
             var preview = action is EngageJ4Action ? null : view.PreviewAny(action);

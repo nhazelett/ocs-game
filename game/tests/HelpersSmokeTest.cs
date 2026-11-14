@@ -32,6 +32,9 @@ public partial class HelpersSmokeTest : Node
                     Require((helper.Answer is null) == !row.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.HasMeta("helper_answer")),
                         "No answer is exposed before Sim provides it.");
                     if (helper.Answer is not null) Require(words.Contains(helper.Answer), "Completed help keeps the exact answer.");
+                    var cost = $"This takes about {helper.Hours} shop {(helper.Hours == 1 ? "hour" : "hours")}.";
+                    Require(words.Contains(cost) == (helper.State == HelperView.Asking),
+                        "The work-hours line appears only while someone is on it; an answered entry ends with its answer.");
                     Require(row.FindChildren("*", "Button", true, false).Count == (helper.Start is null ? 0 : 1), "Pending and completed help have no duplicate start.");
                 }
             }
