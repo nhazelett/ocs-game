@@ -35,6 +35,7 @@ public partial class GameShell : Control
         BuildFrontDoor();
         BuildDayPlayback();
         BuildEndDayCheck();
+        BuildDaySummary();
         BuildTeamDesk();
         RefreshDisplay("No scenario loaded.");
         PopulateScenarios();
@@ -71,7 +72,7 @@ public partial class GameShell : Control
 
     private void LoadScenario(long index)
     {
-        FinishDayPlayback();
+        FinishDayPlayback(false);
         ResetDeskSelection();
         saveError = null;
         session.Clear();
@@ -97,7 +98,7 @@ public partial class GameShell : Control
 
     private void OnNextDay()
     {
-        if (ReadingTurnover || PlayingDay || AtFrontDoor || session.View is not { Finished: false } view) return;
+        if (ReadingTurnover || PlayingDay || ReadingDaySummary || AtFrontDoor || session.View is not { Finished: false } view) return;
         if (EndDayDialog.Visible) return;
         ShowDayPlan(view);
     }
@@ -112,7 +113,7 @@ public partial class GameShell : Control
 
     private void OnReplay()
     {
-        FinishDayPlayback();
+        FinishDayPlayback(false);
         var index = GetNode<OptionButton>("%ReplayPicker").Selected;
         if (index < 0 || index >= replays.Length) return;
         try
@@ -193,5 +194,7 @@ public partial class GameShell : Control
         RefreshPrepVisibility();
         RefreshSaveControls();
         RefreshTeam();
+        RefreshYesterday();
+        RefreshDayAdvanceControls();
     }
 }

@@ -82,7 +82,7 @@ internal static class DeskSmokeSupport
     {
         for (var i = 0; i < days; i++)
         {
-            shell.FinishDayPlayback(); EndDay(shell); shell.FinishDayPlayback();
+            shell.FinishDayPlayback(); shell.CloseDaySummary(); EndDay(shell); shell.FinishDayPlayback(); shell.CloseDaySummary();
         }
     }
 

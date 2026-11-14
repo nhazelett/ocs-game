@@ -22,7 +22,7 @@ public partial class GameShell
         panel.OffsetLeft = 16; panel.OffsetRight = -16; panel.OffsetTop = -112; panel.OffsetBottom = -16;
         var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 16); panel.AddChild(row);
         PlaybackText = DeskUi.Label(""); PlaybackText.SizeFlagsHorizontal = SizeFlags.ExpandFill; row.AddChild(PlaybackText);
-        SkipPlaybackButton = DeskUi.Button("Skip playback", FinishDayPlayback); row.AddChild(SkipPlaybackButton);
+        SkipPlaybackButton = DeskUi.Button("Skip playback", () => FinishDayPlayback()); row.AddChild(SkipPlaybackButton);
         SkipPlaybackButton.SizeFlagsHorizontal = SizeFlags.ShrinkCenter; SkipPlaybackButton.CustomMinimumSize = new Vector2(180,0);
     }
 
@@ -30,6 +30,7 @@ public partial class GameShell
     {
         PlaybackFacts = Map.Day;
         if (PlaybackFacts is null || PlaybackFacts.Day == 0) return;
+        RefreshYesterday();
         var day = PlaybackFacts;
         var movements = day.Runs.Count == 0 ? "No deliveries crossed today." : $"{day.Runs.Count} {(day.Runs.Count == 1 ? "delivery crossed" : "deliveries crossed")} today.";
         var held = day.Held.Count == 0 ? "" : day.Held.Any(h => h.Reason == "closed") ? " Cargo waited at a closed route." : " Cargo waited for a scheduled service.";
@@ -53,12 +54,13 @@ public partial class GameShell
         RefreshMapCalloutSpace();SkipPlaybackButton.GrabFocus();
     }
 
-    internal void FinishDayPlayback()
+    internal void FinishDayPlayback(bool showResults = true)
     {
         if (playbackOverlay is null) return;
+        var wasPlaying = PlayingDay;
         playbackOverlay.Hide();RefreshMapCalloutSpace(); playbackElapsed = PlaybackSeconds; Map.SetMovementProgress(1);
-        GetNode<Button>("%NextDay").Disabled = session.View is null || session.View.Finished;
-        GetNode<Button>("%Continue").Disabled = session.View is null || session.View.Finished;
+        RefreshDayAdvanceControls();
+        if (wasPlaying && showResults) ShowDaySummary();
         if (!GetNode<Button>("%NextDay").Disabled) GetNode<Button>("%NextDay").GrabFocus();
     }
 

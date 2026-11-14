@@ -44,7 +44,7 @@ public partial class MapCalloutSmokeTest : Node
             Require(map.Tiles.Any(t=>t.Status=="down"),"Real replay contains a down site.");await Capture("spoke-day11");
             Step(shell,6);EndDay(shell);
             Require(shell.PlayingDay&&map.Day!.Held.Any(h=>h.Reason=="closed"),"Actual closed barge lane holds cargo during playback.");
-            await Capture("held-playback");shell.FinishDayPlayback();await Capture("closed-lane");
+            await Capture("held-playback");shell.FinishDayPlayback();shell.CloseDaySummary();await Capture("closed-lane");
             foreach(var direction in new[]{0,1,2})
             {
                 shell.LookPicker.Select(direction);shell.LookPicker.EmitSignal(OptionButton.SignalName.ItemSelected,direction);

@@ -59,7 +59,7 @@ public partial class EndDaySmokeTest : Node
             var hash = shell.Session.StateHash;
             end.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash, "Playback prevents a second hidden advance.");
-            shell.FinishDayPlayback();
+            shell.FinishDayPlayback(); shell.CloseDaySummary();
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
             Require(skip.IsVisibleInTree() && !skip.Disabled, "The explicit skip command is available from Menu during a deployment.");
             Require(skip.Alignment == shell.NewGameButton.Alignment
@@ -68,7 +68,7 @@ public partial class EndDaySmokeTest : Node
             Require(skip.GetGlobalRect().End.Y <= 800, "The Menu shortcut stays on screen at 1280 by 800.");
             skip.EmitSignal(Button.SignalName.Pressed);
             Require(!shell.AtFrontDoor && shell.Session.CompletedDay > 1, "Menu skipping returns to the live deployment.");
-            shell.FinishDayPlayback();
+            shell.FinishDayPlayback(); shell.CloseDaySummary();
 
             // The tutorial's idle teammates and due water request are the cold-start check.
             Scenario(shell, "tutorial");
@@ -99,7 +99,7 @@ public partial class EndDaySmokeTest : Node
             hash = shell.Session.StateHash;
             shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(shell.Session.StateHash == hash, "A duplicate confirmation cannot advance again.");
-            shell.FinishDayPlayback();
+            shell.FinishDayPlayback(); shell.CloseDaySummary();
 
             end.EmitSignal(Button.SignalName.Pressed);
             Pick(shell.PersonContactInput, "finance"); shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);

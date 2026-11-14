@@ -12,6 +12,7 @@ internal sealed class GameSessionBridge
     private Session? session;
     private InputLog? log;
     internal SessionView? View => session?.View;
+    internal DaySummaryView? CompletedSummary { get; private set; }
     internal event Action<SessionView>? DayAdvanced;
     internal event Action<SessionView>? DeploymentStarted;
     internal event Action<PlayerAction>? ActionAccepted;
@@ -36,13 +37,19 @@ internal sealed class GameSessionBridge
         // Validate and replay before replacing the current game: a refused save leaves it intact.
         var loaded = ScenarioBundle.Load(path);
         var resumed = Replay.Resume(loaded, save);
+        // Morning actions may change work holders or the live shortfall explanation.
+        // Read the completed day's snapshot before those actions, using Sim's replay.
+        var summary = save.SavedDay is { } day && save.Actions.Any(a => a.Day == day)
+            ? Replay.Run(loaded, save, stopAfterDay: day - 1).View.DaySummary()
+            : resumed.View.DaySummary();
         bundle = loaded;
         session = resumed;
+        CompletedSummary = summary;
         log = null;
     }
     internal int CompletedDay => session is null ? 0 : (int)session.Metrics["day"];
 
-    internal void Clear() { bundle = null; session = null; log = null; }
+    internal void Clear() { bundle = null; session = null; log = null; CompletedSummary = null; }
 
     internal void LoadScenario(string path)
     {
@@ -57,6 +64,7 @@ internal sealed class GameSessionBridge
         var check = CheckPrep(chosen);
         if (!check.Accepted) throw new InvalidDataException(string.Join("; ", check.Stops));
         session = Session.Create(bundle!, 1, chosen, team);
+        CompletedSummary = null;
         log = null;
         DeploymentStarted?.Invoke(session.View);
     }
@@ -66,6 +74,7 @@ internal sealed class GameSessionBridge
         if (bundle is null) throw new InvalidDataException("Load a scenario before choosing a replay.");
         session = null;
         log = null;
+        CompletedSummary = null;
         InputLog loaded;
         try { loaded = InputLog.Load(path); }
         catch (NotSupportedException error) { throw new InvalidDataException("The replay action format is not supported.", error); }
@@ -80,6 +89,7 @@ internal sealed class GameSessionBridge
         if (log is not null)
             foreach (var action in log.Actions.Where(a => a.Day == session.Day)) session.Apply(action);
         session.AdvanceDay();
+        CompletedSummary = session.View.DaySummary();
         DayAdvanced?.Invoke(session.View);
         return true;
     }
