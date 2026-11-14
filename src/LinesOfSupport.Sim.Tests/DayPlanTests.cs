@@ -23,12 +23,29 @@ public class DayPlanTests
         Assert.True(visit.FinishesToday);
         Assert.Equal(0, visit.HoursLeftAfter);
         Assert.EndsWith("and it should be done today.", visit.Sentence);
-        Assert.StartsWith("MSgt Joan Avery: ", avery.Sentence);
+        Assert.DoesNotContain("Avery", avery.Sentence);
         Assert.Contains("One job should finish today", avery.Sentence);
         var novak = plan.People.Single(p => p.MemberId == "novak");
         Assert.Empty(novak.Work);
-        Assert.Contains("nothing to work on today", novak.Sentence);
+        Assert.Equal("Nothing to work on today; 8 hours go to walk-in small buys.", novak.Sentence);
         Assert.Equal(s.View.EndOfDayCheck(), plan.Open);
+    }
+
+    [Fact]
+    public void Planned_and_left_over_add_up_to_the_day_as_shown()
+    {
+        // PR 242's screenshot read "2 hours of 8 hours planned" and "6.5 hours left over": both halves rounded up.
+        var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
+        while (s.Day < 3) s.AdvanceDay();
+        Assert.True(s.Apply(new MeetVendorAction { Vendor = "sanitation", Assignee = "avery" }).Accepted);
+        foreach (var p in s.View.DayPlan().People.Where(p => p.Work.Count > 0))
+        {
+            Assert.Equal(p.Work.Sum(w => w.HoursToday), p.HoursPlanned);
+            var left = p.HoursToday - p.HoursPlanned;
+            Assert.StartsWith($"{p.HoursPlanned:0.#} of {p.HoursToday:0.#} hours planned.", p.Sentence);
+            if (left > 0) Assert.Contains($" {left:0.#} hour{(left == 1 ? "" : "s")} left over", p.Sentence);
+            else Assert.DoesNotContain("left over", p.Sentence);
+        }
     }
 
     [Fact]
@@ -91,7 +108,7 @@ public class DayPlanTests
                 }
                 Assert.All(plan.Due.Concat(plan.People.Select(p => p.Sentence)), x =>
                 {
-                    Assert.True(char.IsUpper(x[0]), x);
+                    Assert.True(char.IsUpper(x[0]) || char.IsDigit(x[0]), x);
                     Assert.DoesNotContain("  ", x, StringComparison.Ordinal);
                     Assert.DoesNotContain("..", x, StringComparison.Ordinal);
                 });
