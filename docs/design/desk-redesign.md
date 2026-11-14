@@ -101,3 +101,65 @@ Sim notes (Fable):
 - Capacity refusal (D15): says what is left on those days and the next step.
 
 Order: Fable builds DESK-31 (where things stand) and DESK-32 (the quote says what is in place; refusals say what to do). Codex builds DESK-33 (one scroll, the button and its reason) and DESK-34 (five tabs) now, and DESK-35 (where things stand on Today) after DESK-31. Then Nick plays again, and the UI and UX pass he asked for starts with him. DESK-11, DESK-12, ART-10 and other Sim depth stay paused until then.
+
+## 7. Nick's next replay: findings for the UI/UX specification (13 Nov 2026, Eastern)
+
+Nick is reviewing the Windows demo linked from successful CI run [43544621253](https://github.com/nhazelett/ocs-game/actions/runs/43544621253), build `1394445`. The supplied screenshot shows **Morning of day 4** at **Hub**, in Night watch. The screenshot and these observations came directly from Nick in chat; no save or input log was supplied. The download link establishes the offered build, rather than independently proving the executable's version.
+
+His overall verdict: "It's not 'bad'" and "It's getting there", but the game still feels "juggly" and needs a UI/UX overhaul to make it easier to follow. This is new playtest evidence for Fable to turn into design decisions, read contracts and ordered backlog rows. It is not a passed DESK gate or an implementation spec already agreed between the agents.
+
+### 7.1 Available teammate hours where work is assigned
+
+Nick cannot see how many hours a teammate has available while assigning work and wants to know whether he is overtasking them. The screenshot's top strip shows **8 of 8 h assigned** for each of the three people; that global strip has not solved the decision at the point of assignment.
+
+Design outcome requested: the assignment UI makes each person's capacity, work already assigned and hours still available today readable before committing another task. Make the effect of the proposed assignment and any work carried beyond today clear. Fable should distinguish today's hours, the person's queued work and their different work speeds; the screenshot does not prove that the Sim actually over-allocates anyone.
+
+### 7.2 Explain water and food shortfalls
+
+Nick does not understand why water is not supplied, and has the same problem with food. In the screenshot the map says **Hub · down**, **Water 0% supplied**, **Food service 0% supplied**, without a nearby explanation or next step.
+
+Design outcome requested: from each shortfall, show what the player knows about the cause, what support is already running or being arranged, who is working on it, and what the player can do or wait for next. Distinguish an absent buy, unfinished shop work, a future start, a held delivery or another actual cause using Sim facts. No cause is diagnosed from this image alone; a supply-rule bug remains unconfirmed.
+
+### 7.3 Make prior decisions easy to find
+
+Nick says, "I don't know what decisions I've made easily." The overall flow feels "juggly": he cannot readily connect what he chose, what the team is doing and what the sites are receiving.
+
+Design outcome requested: an accessible, persistent account of the player's decisions and commitments, linked to the relevant request, person and current outcome. It must be easy to tell an instruction already accepted from an action still being composed, work in progress, and support actually delivered. Fable should define the surface and retention without assuming the existing Today request lines are sufficient.
+
+### 7.4 Review the whole day's planned work before ending it
+
+Nick asks for "something to show everything that you're executing on the day before ending the day" and "An update of everything you're gonna accomplish".
+
+Design outcome requested: before advancing, let the player review the day's planned execution across the whole team, including who will do what, the capacity it consumes, likely completions, carryover and unresolved needs. The existing warning about unused hours or untouched requests is narrower than this request. Label forecasts and uncertainties honestly: a preview cannot promise a delivery or completion the Sim has not produced.
+
+### 7.5 An end-of-day summary of actual results
+
+Nick separately asks for "just an end of day summary".
+
+Design outcome requested: after advancement, summarize what actually finished, progressed, slipped or remained undone; what changed in water, food and other support; and what carries into the next day. Connect the result to the earlier plan and player decisions. Keep this retrospective distinct from the pre-advance forecast, and base it on actual recorded outcomes. Fable decides its timing and placement alongside the morning board.
+
+### 7.6 Rework requests and conversations as a legible flow
+
+Nick wants to "re-attack requests and whatnot" because he does not know what unlocks by talking to specific people.
+
+Design outcome requested: make the relationship between a request, the relevant people, what a conversation can help with, the time it takes, what was learned, and the resulting available action understandable. Show when a visit is queued, completed or has already supplied useful information. Fable should preserve discovery while giving enough context for a purposeful choice; distinguish learning information from actually unlocking a permission or action rather than treating every conversation as a hard gate.
+
+### 7.7 Replace every character picture; prefer a 3D look
+
+Nick's verdict on the current characters is "Ugly." His request is "new pictures for all of them, preferably something 3d."
+
+Design outcome requested: a replacement direction covering the whole cast, including teammates, with a preference for a 3D appearance. A further small revision of the current portrait set does not satisfy the requested replacement. Fable should define the visual bar, consistency across small UI portraits and larger views, and whether this means rendered 3D portraits or real-time character models. The preference does not by itself choose a renderer, asset vendor or paid service. Reconcile this new owner request with D12 and ART-11's earlier "later" status when ordering the work.
+
+### 7.8 Day-four screenshot: repeated and confusing task state
+
+The screenshot also makes several concrete presentation problems available for Fable's review:
+
+- The staff-meeting pane says the shop is already getting into the meeting, shows the same warning both above and below a disabled **Join the staff meeting** button, and also offers **Stop attending**.
+- The visible content includes both **This takes 2 shop hours** and **This takes 0 shop hours**, each with an earliest result of day 4 and **154 hours already queued**. This describes what is visible, not proof that the two previews concern the same operation or that the queue is calculated incorrectly.
+- All three top bars are full at **8 of 8 h assigned** while the task pane gives that large queue total without showing how it relates to a chosen teammate or today's work.
+
+Design outcome requested: one coherent current status per task, clear context for each cost/queue/preview and its action, and understandable controls for a pending enrollment versus an active recurring meeting. Review duplicate notices and the explanation of that 154-hour figure against the actual state. The image proves confusing presentation, not the root cause or a contradictory Sim state.
+
+### Fable follow-through
+
+[Q22](../../backlog/QUESTIONS.md) routes this evidence to Fable. Update the specification/design decisions and add acceptance-scoped Sim and Codex rows for these findings, then order them. Reconsider section 6's explicit exclusion of a task list or separate status surface in light of Nick's new request for a daily execution review and decision history. Keep earlier decisions as history and state what the new pass supersedes. The UI gate remains unresolved; do not interpret this feedback as approval to resume the paused depth work.
