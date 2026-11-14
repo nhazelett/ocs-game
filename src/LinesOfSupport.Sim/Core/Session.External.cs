@@ -191,8 +191,7 @@ public sealed partial class Session
         int Prepared(int shopDays)
         {
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = WorkDays(PersonHours(hours, r.Assignee), r.Assignee);
-            return Day + Scenario.Actors.Fm.CertificationLagDays + Math.Max(0, days - 1);
+            return FinishDay(PersonHours(hours, r.Assignee), r.Assignee, Day + Scenario.Actors.Fm.CertificationLagDays);
         }
         var startMin = Math.Max(r.StartDay ?? 0, Prepared(inst.ShopDays.Min) + approval.Min + 1 + mobilization.Min);
         var startMax = Math.Max(r.StartDay ?? 0, Prepared(inst.ShopDays.Max) + approval.Max + 1 + mobilization.Max);

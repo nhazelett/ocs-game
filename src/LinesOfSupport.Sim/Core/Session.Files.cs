@@ -184,8 +184,8 @@ public sealed partial class Session
         var (files, stops) = CheckReviewFiles(r);
         var queue = QueueHours(r.Assignee);
         var hours = CeilHours(PersonHours(Fixed.Milli(Rules.FileReview.HoursPerArrangement) * files.Count, r.Assignee));
-        // Findings are ready the day the hours are worked, ignoring the queue ahead.
-        var ready = Day + Math.Max(0, WorkDays(hours * 1000L, r.Assignee) - 1);
+        // Findings are ready the day the hours are worked, behind the assignee's queue (DESK-37).
+        var ready = FinishDay(hours * 1000L, r.Assignee, Day);
         return new ActionPreview(stops.Count == 0, stops, [], 0, 0, 0, hours, hours, ready, ready, queue);
     }
 

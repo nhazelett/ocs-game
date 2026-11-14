@@ -86,8 +86,47 @@ public sealed partial class Session
         return perDay <= 0 ? 0 : (int)((personMilli + perDay - 1) / perDay);
     }
 
-    /// <summary>The last day a job of the usual size would be worked, starting today with nothing ahead of it.</summary>
-    private int DoneDay(long usualMilli, string? who) => Day + Math.Max(0, WorkDays(PersonHours(usualMilli, who), who) - 1);
+    /// <summary>
+    /// DESK-37 (D17): plays this person's queue forward the way the day loop works it (their own hours, in the order the
+    /// work was given, each item only from the day it is ready), with a new job of <paramref name="extraMilli"/> of their
+    /// hours ready on <paramref name="fromDay"/> added at the back. Returns the day the new job is done, or with no new job
+    /// the day the last of their work is; null when they hold nothing. The purchase card program, which takes only what the
+    /// queue leaves, and the M2-14 reordering behind a lost-confidence site are left out.
+    /// </summary>
+    private int? PlayQueue(TeamMember m, long extraMilli, int fromDay)
+    {
+        var items = _work.Where(w => w.CompletedDay is null && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id)
+                         .Select(w => (Wait: w.WaitUntilDay, Left: w.HoursRemainingMilli)).ToList();
+        if (extraMilli > 0) items.Add((fromDay, extraMilli));
+        if (items.Count == 0) return null;
+        if (m.HoursPerDayMilli <= 0) return Math.Max(Day, items.Max(i => i.Wait));
+        var done = new int?[items.Count];
+        var lastWait = items.Max(i => i.Wait);
+        for (var d = Day; done.Any(x => x is null); d++)
+        {
+            var left = m.HoursPerDayMilli;
+            for (var i = 0; i < items.Count; i++)
+            {
+                if (done[i] is not null || items[i].Wait > d) continue;
+                var spend = Math.Min(left, items[i].Left);
+                items[i] = (items[i].Wait, items[i].Left - spend);
+                left -= spend;
+                if (items[i].Left <= 0) done[i] = d;
+            }
+            if (d > Math.Max(lastWait, Day) + 1000) break;   // cannot happen with positive hours; a guard, not a rule
+        }
+        return extraMilli > 0 ? done[^1] : done.Max();
+    }
+
+    /// <summary>
+    /// DESK-37: the last day a job of so many of this person's own hours would be worked if given to them now and ready on
+    /// <paramref name="fromDay"/>, behind the work already queued ahead of it. A job of no hours is done the day it is ready.
+    /// </summary>
+    private int FinishDay(long personMilli, string? who, int fromDay)
+        => personMilli <= 0 ? fromDay : PlayQueue(Member(who), personMilli, fromDay) ?? fromDay;
+
+    /// <summary>DESK-37: the last day this person works on what they already hold, or null when they hold nothing.</summary>
+    private int? QueueClearsDay(TeamMember m) => PlayQueue(m, 0, Day);
 
     /// <summary>Hours of unfinished work this person holds.</summary>
     private int QueueHours(string? who)
@@ -158,9 +197,60 @@ public sealed partial class Session
                 w.WaitUntilDay > Day ? w.WaitUntilDay : null)).ToList();
             result.Add(new TeamMemberView(m.Id, m.Role, m.Role == "you" ? "You" : m.Name, m.Rank, m.Portrait,
                 m.Role switch { "you" => "You", "experienced" => "Experienced contracting officer", _ => "Junior contracting officer" },
-                Pace(m.SpeedPermille), perDay, today, Math.Max(0, perDay - today), HalfHours(open.Sum(w => w.HoursRemainingMilli)), work));
+                Pace(m.SpeedPermille), perDay, today, Math.Max(0, perDay - today), HalfHours(open.Sum(w => w.HoursRemainingMilli)), work,
+                QueueClearsDay(m)));
         }
         return result;
+    }
+
+    // ------------------------------------------------------------------ who could take it (DESK-37, D17)
+
+    /// <summary>The preview of any action that has one, for the assignee picker.</summary>
+    private ActionPreview PreviewAny(PlayerAction a) => a switch
+    {
+        AwardAction x => BuildPreview(x),
+        EstablishBpaAction x => BuildEstablishPreview(x),
+        EstablishIdiqAction x => BuildEstablishIdiqPreview(x),
+        HostNationRequestAction x => BuildHostNationPreview(x),
+        AcsaOrderAction x => BuildAcsaPreview(x),
+        RequestExternalSupportAction x => BuildExternalSupportPreview(x),
+        ReviewFilesAction x => BuildReviewFilesPreview(x),
+        _ => BuildVisitPreview(a),
+    };
+
+    internal IReadOnlyList<AssigneeChoice> BuildAssigneeChoices(PlayerAction action)
+    {
+        var team = BuildTeam();
+        var result = new List<AssigneeChoice>();
+        // A buy's preview day is when support starts; anything else's is when the work's result is in.
+        var starts = action is AwardAction or HostNationRequestAction or AcsaOrderAction or RequestExternalSupportAction;
+        foreach (var m in team)
+        {
+            var p = Said(PreviewAny(action with { Assignee = m.Id }));
+            var who = m.Role == "you" ? "You" : m.Rank is { Length: > 0 } r ? $"{r} {m.Name}" : m.Name;
+            var them = m.Role == "you" ? "you" : "them";
+            var load = m.HoursQueued <= 0
+                ? $"{who}: {Hrs(m.FreeHoursToday)} free today, nothing queued."
+                : m.FreeHoursToday > 0
+                    ? $"{who}: {Hrs(m.FreeHoursToday)} free today, {Hrs(m.HoursQueued)} queued, clear by day {m.QueueClearsDay}."
+                    : $"{who}: no hours free today, {Hrs(m.HoursQueued)} queued, clear by day {m.QueueClearsDay}.";
+            string? when = null;
+            if (p.Accepted)
+            {
+                var days = p.EarliestStartMin == p.EarliestStartMax ? $"day {p.EarliestStartMin}" : $"day {p.EarliestStartMin} to {p.EarliestStartMax}";
+                var hours = p.ShopHoursMax <= 0 ? null
+                    : p.ShopHoursMin == p.ShopHoursMax ? Hrs(p.ShopHoursMax) : $"{p.ShopHoursMin} to {p.ShopHoursMax} hours";
+                var lead = hours is null ? "With " + them : $"This takes {them} {hours}";
+                when = starts ? $"{lead}; it could start {days}." : $"{lead}; it would be done {days}.";
+            }
+            result.Add(new AssigneeChoice(m.Id, who, m.Portrait, m.FreeHoursToday, m.HoursQueued, m.QueueClearsDay,
+                p.Accepted ? p.ShopHoursMin : 0, p.Accepted ? p.ShopHoursMax : 0,
+                p.Accepted ? p.EarliestStartMin : null, p.Accepted ? p.EarliestStartMax : null,
+                when is null ? load : $"{load} {when}"));
+        }
+        return result;
+
+        static string Hrs(double h) => h == 1 ? "1 hour" : $"{h:0.#} hours";
     }
 
     private static string LowerLabel(string s) => s.Length > 1 && char.IsUpper(s[1]) ? s : Lower(s);

@@ -319,15 +319,14 @@ public sealed partial class Session
         if (chk.Instrument is not { } inst || chk.Offer is not { } offer || chk.SiteId is not { } siteId || chk.CapabilityId is not { } capId)
             return new ActionPreview(false, chk.Stops, [], 0, 0, 0, 0, 0, 0, 0, queue);
 
-        // Timing, best and worst roll, ignoring the queue ahead.
+        // Timing, best and worst roll, behind the work already queued for the assignee (DESK-37).
         var immediate = a.Instrument is "sf44" or "gpc";
         int Completion(int shopDays, int approvalLag)
         {
             if (immediate) return Day;
             var wait = Day + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0);
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = WorkDays(PersonHours(hours, a.Assignee), a.Assignee);
-            return wait + Math.Max(0, days - 1);
+            return FinishDay(PersonHours(hours, a.Assignee), a.Assignee, wait);
         }
         var compete = CompeteDays(PickKey(a.Priorities));   // DESK-06
         var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min);

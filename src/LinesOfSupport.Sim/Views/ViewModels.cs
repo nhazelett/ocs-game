@@ -68,9 +68,31 @@ public sealed record TopStripView(
 /// <param name="FreeHoursToday">Hours of today with nothing of theirs to do (they go to walk-in small buys).</param>
 /// <param name="HoursQueued">All of this person's unfinished work, including work still waiting on an outside lag.</param>
 /// <param name="Work">This person's unfinished work, in queue order.</param>
+/// <param name="QueueClearsDay">DESK-37 (D17): the last day they work on what they already hold; null when they hold nothing.</param>
 public sealed record TeamMemberView(
     string Id, string Role, string Name, string? Rank, string? Portrait, string RoleLabel, string Pace,
-    double HoursPerDay, double HoursSpokenForToday, double FreeHoursToday, double HoursQueued, IReadOnlyList<TeamWorkView> Work);
+    double HoursPerDay, double HoursSpokenForToday, double FreeHoursToday, double HoursQueued, IReadOnlyList<TeamWorkView> Work,
+    int? QueueClearsDay = null);
+
+/// <summary>
+/// One teammate as a choice for a piece of work (DESK-37, D17): how free they are and when the work would come out if it
+/// went to them, behind what they already hold. Shown wherever work is handed out, in team order.
+/// </summary>
+/// <param name="MemberId">For the action's Assignee. Never shown.</param>
+/// <param name="Name">As the player reads them: "You", or rank and name.</param>
+/// <param name="Portrait">Face key; null means the fallback face.</param>
+/// <param name="FreeHoursToday">Today's hours with nothing of theirs to do, before this work (half hours, DESK-14).</param>
+/// <param name="HoursQueued">Their unfinished work in their own hours (half hours).</param>
+/// <param name="QueueClearsDay">The last day they work on what they already hold; null when they hold nothing.</param>
+/// <param name="HoursMin">Hours this work would take them, best roll; 0 when it cannot go to them.</param>
+/// <param name="HoursMax">Hours this work would take them, worst roll.</param>
+/// <param name="ResultDayMin">The preview's earliest day with them (first day of support for a buy, the day the result is
+/// in for anything else), behind their queue; null when the preview refuses the action.</param>
+/// <param name="ResultDayMax">The same at the worst roll.</param>
+/// <param name="Sentence">One or two sentences: how free they are, and when this would come out with them.</param>
+public sealed record AssigneeChoice(
+    string MemberId, string Name, string? Portrait, double FreeHoursToday, double HoursQueued, int? QueueClearsDay,
+    int HoursMin, int HoursMax, int? ResultDayMin, int? ResultDayMax, string Sentence);
 
 /// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
@@ -313,8 +335,9 @@ public sealed record InheritedFileView(
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return
 /// (the action is refused); SoftGaps are legal but carry a consequence the sim will play out.
 /// </summary>
-/// <param name="EarliestStartMin">Earliest first day of performance at the best roll, ignoring work already queued ahead of it.</param>
-/// <param name="QueueAheadHours">Shop hours of unfinished work already in the queue.</param>
+/// <param name="EarliestStartMin">Earliest first day of performance at the best roll, behind the work already queued for the
+/// assignee (DESK-37: each person works their queue in the order it was given).</param>
+/// <param name="QueueAheadHours">Hours of unfinished work the assignee already holds; the earliest days already count it.</param>
 /// <param name="Trade">The fast, cheap, good pick's trade in one sentence with this award's numbers (DESK-06); null with no pick.</param>
 public sealed record ActionPreview(
     bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps,
