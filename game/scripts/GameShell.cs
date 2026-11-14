@@ -99,19 +99,7 @@ public partial class GameShell : Control
     {
         if (ReadingTurnover || PlayingDay || AtFrontDoor || session.View is not { Finished: false } view) return;
         if (EndDayDialog.Visible) return;
-        var open = view.EndOfDayCheck();
-        if (open.Count > 0)
-        {
-            endDayCheckHash = session.StateHash;
-            EndDayDialog.GetLabel().SetAnchorsPreset(LayoutPreset.TopLeft);
-            EndDayDialog.GetLabel().Size = new Vector2(600, 0);
-            EndDayDialog.DialogText = "Before you end the day\n\n" + string.Join("\n\n", open);
-            EndDayDialog.ResetSize();
-            EndDayDialog.PopupCentered(new Vector2I(660, 0));
-            EndDayDialog.GetCancelButton().GrabFocus();
-            return;
-        }
-        AdvanceDayFromDesk();
+        ShowDayPlan(view);
     }
 
     private void AdvanceDayFromDesk()
