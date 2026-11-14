@@ -275,7 +275,7 @@ public sealed record AskOption(PersonView Person, bool Asked, bool Pending);
 /// <param name="Teammate">That teammate as the player reads them.</param>
 /// <param name="Day">When the answer should be in (under way), or the day it came (done); null before.</param>
 /// <param name="Answer">What they said or what it put in place, once done; null before.</param>
-/// <param name="Sentence">Where it stands in one line: "SMSgt Ray Dunn: not asked yet, about 1 hour."</param>
+/// <param name="Sentence">Where it stands in one line, read under the helper's name, so it does not repeat it: "Not asked yet, about 1 hour."</param>
 /// <param name="CapabilityId">"j4" only: the capability the J4 would have added to the ACSA order, which is the request's own
 /// or one it runs on (power runs on fuel), whichever the partner can spare first; null for the other kinds (Q25).</param>
 /// <param name="Start">While not asked: the action that starts this help, with the Sim's targets already filled in
