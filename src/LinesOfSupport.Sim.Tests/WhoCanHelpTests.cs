@@ -25,7 +25,7 @@ public class WhoCanHelpTests
         Assert.Equal("dunn", dunn.Person!.Id);
         Assert.True(dunn.Informs);
         Assert.Equal(HelperView.NotAsked, dunn.State);
-        Assert.Equal("SMSgt Ray Dunn: not asked yet, about 1 hour.", dunn.Sentence);
+        Assert.Equal("Not asked yet, about 1 hour.", dunn.Sentence);
         Assert.Null(dunn.Answer);
         var says = Repo.Load("tutorial").Scenario.RequirementCards.First(c => c.Id == "tutForklift").KnownBy["operator"].Says;
         Assert.All(helpers, h => Assert.DoesNotContain(says, h.Does + h.Sentence));
@@ -39,7 +39,7 @@ public class WhoCanHelpTests
         var asking = s.View.RequirementEditor("tutForklift")!.WhoCanHelp!.First(h => h.Kind == "ask");
         Assert.Equal(HelperView.Asking, asking.State);
         Assert.Equal("novak", asking.TeammateId);
-        Assert.Equal($"SMSgt Ray Dunn: SrA Eli Novak is on it; the answer should be in on day {asking.Day}.", asking.Sentence);
+        Assert.Equal($"SrA Eli Novak is on it; the answer should be in on day {asking.Day}.", asking.Sentence);
         while (s.Day <= asking.Day) s.AdvanceDay();
         var answered = s.View.RequirementEditor("tutForklift")!.WhoCanHelp!.First(h => h.Kind == "ask");
         Assert.Equal(HelperView.Answered, answered.State);
@@ -94,6 +94,8 @@ public class WhoCanHelpTests
                         Assert.EndsWith(".", h.Does, StringComparison.Ordinal);
                         Assert.EndsWith(".", h.Sentence, StringComparison.Ordinal);
                         Assert.DoesNotContain(st.CardId, h.Sentence + h.Does, StringComparison.Ordinal);
+                        // The line sits under the helper's own name and face, so it does not say the name again.
+                        Assert.DoesNotContain(h.Name, h.Sentence, StringComparison.Ordinal);
                         Assert.True(h.Hours > 0, h.Sentence);
                     });
                 }
