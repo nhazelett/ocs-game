@@ -33,6 +33,7 @@ public partial class GameShell
     private void ResetDeskSelection()
     {
         CancelEndDayCheck();
+        ResetDaySummary();
         ResetOpening();
         TeamPanel?.Hide();
         CloseContractView();
@@ -179,7 +180,7 @@ public partial class GameShell
 
     private void OnContinue()
     {
-        if (ReadingTurnover || PlayingDay) return;
+        if (ReadingTurnover || PlayingDay || ReadingDaySummary) return;
         ShowGameSurface();
         var count = 0;
         var reason = "deployment complete";

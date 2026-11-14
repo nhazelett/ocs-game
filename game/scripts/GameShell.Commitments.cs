@@ -18,6 +18,7 @@ public partial class GameShell
 
     internal ActionResult SendAction(PlayerAction action)
     {
+        if (ReadingDaySummary) return ActionResult.Stop("Close the day’s results before giving new work.");
         var wasReplay = session.IsReplay;
         var result = session.Apply(action);
         RefreshDisplay(result.Message + (wasReplay && result.Accepted ? " You are now in control; future replay actions are stopped." : ""));

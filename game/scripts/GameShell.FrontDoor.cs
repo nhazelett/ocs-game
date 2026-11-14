@@ -81,7 +81,8 @@ public partial class GameShell
     private void ShowFrontDoor()
     {
         CancelEndDayCheck();
-        FinishDayPlayback();
+        FinishDayPlayback(false);
+        CloseDaySummary(false);
         GetNode<Control>("Navigation").OffsetRight = -48;
         frontDoor.Show(); GetNode<Control>("Margin").Hide(); menuButton?.Hide();
         openingSurface.Hide();

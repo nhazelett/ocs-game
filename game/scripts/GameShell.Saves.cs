@@ -60,7 +60,7 @@ public partial class GameShell
 
     internal void LoadSavedGame(string path)
     {
-        FinishDayPlayback();
+        FinishDayPlayback(false);
         // File input is a UI boundary. Malformed or incompatible saves must never destroy the open game.
         try
         {

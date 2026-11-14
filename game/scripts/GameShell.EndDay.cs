@@ -36,7 +36,7 @@ public partial class GameShell
         {
             var checkedHash = endDayCheckHash;
             CancelEndDayCheck();
-            if (checkedHash is null || checkedHash != session.StateHash || ReadingTurnover || PlayingDay
+            if (checkedHash is null || checkedHash != session.StateHash || ReadingTurnover || PlayingDay || ReadingDaySummary
                 || AtFrontDoor || session.View is not { Finished: false }) return;
             AdvanceDayFromDesk();
         };

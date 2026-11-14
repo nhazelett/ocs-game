@@ -21,7 +21,9 @@ public partial class DayPlaybackSmokeTest : Node
             Require(new[]{"fuel","power","lodging"}.All(shell.PlaybackText.Text.Contains) && !shell.PlaybackText.Text.Contains("more in"),"Playback names all three reported shortfalls rather than hiding two behind a count.");
             await Capture("shortfall");
             shell.SkipPlaybackButton.EmitSignal(Button.SignalName.Pressed);
-            Require(!shell.PlayingDay && !next.Disabled && hash==shell.Session.StateHash,"Skip finishes only the presentation and restores controls.");
+            Require(!shell.PlayingDay && shell.ReadingDaySummary && next.Disabled && hash==shell.Session.StateHash,"Skip finishes playback into the results without advancing.");
+            shell.CloseDaySummary();
+            Require(!next.Disabled,"Closing results restores the day control.");
             var sawRun=false;var sawClosure=false;
             for(var i=0;i<15;i++)
             {
@@ -33,7 +35,8 @@ public partial class DayPlaybackSmokeTest : Node
                 map.ShowMapDay(facts with{Changes=[..facts.Changes,new MapChange("hubSite","power","vendorFailure",0,null,"hidden-test",false)]});
                 Require(map.Tabletop!.ReportedChangeLabels.Count==facts.Changes.Where(c=>c.Known).Select(c=>c.SiteId).Distinct().Count(),"Unreported failures produce no marker.");map.ShowMapDay(facts);
                 shell.TickDayPlayback(6);
-                Require(!shell.PlayingDay && hash==shell.Session.StateHash,"Clock completion does not simulate another day.");
+                Require(!shell.PlayingDay && shell.ReadingDaySummary && hash==shell.Session.StateHash,"Clock completion shows results without simulating another day.");
+                shell.CloseDaySummary();
             }
             Require(sawRun && sawClosure,"Real authored replay exercises delivery and closed-route hold.");
             File.Delete(shell.AutosavePath);shell.QueueFree();
