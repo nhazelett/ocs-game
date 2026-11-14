@@ -42,8 +42,10 @@ public sealed partial class Session
         var to = Math.Min(LastDay, card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1);
         var cap = Cap(card.CapabilityId);
         bool Overlaps(int s, int e) => s <= to && e >= from;
+        var whyShort = card.RequestedStartDay < Day ? BuildWhyShort(card.SiteId, card.CapabilityId) : null;   // DESK-38
         RequestStanding Entry(string state, string sentence, string? who = null)
-            => new(card.Id, title, asker, state, who, who is null ? null : MemberName(Member(who)), SentenceCase(sentence));
+            => new(card.Id, title, asker, state, who, who is null ? null : MemberName(Member(who)), SentenceCase(sentence),
+                   state == RequestStanding.Ended ? null : whyShort);
 
         // What covers it: support tied to the request, or any support for the same thing at the same site on its days.
         var covering = _arrangements
@@ -112,22 +114,33 @@ public sealed partial class Session
     }
 
     /// <summary>Unfinished work that will put support in place for this request's capability at its site.</summary>
-    private bool BuysFor(WorkItem w, CardState card) => w.Payload switch
+    private bool BuysFor(WorkItem w, CardState card)
+        => (w.Payload is AwardPayload p && p.Action.Card == card.Id) || BuysFor(w, card.SiteId, card.CapabilityId);
+
+    /// <summary>Unfinished work that will put support in place for this capability at this site (DESK-38).</summary>
+    private static bool BuysFor(WorkItem w, string siteId, string capId) => w.Payload switch
     {
-        AwardPayload p => p.Action.Card == card.Id || (p.SiteId == card.SiteId && p.CapabilityId == card.CapabilityId),
-        AcsaPayload p => p.SiteId == card.SiteId && p.CapabilityId == card.CapabilityId,
-        HostNationPayload p => p.SiteId == card.SiteId && p.CapabilityId == card.CapabilityId,
-        VisitPayload { Kind: "j4", Extra: EngageJ4Action j } => j.Site == card.SiteId && j.Capability == card.CapabilityId,
+        AwardPayload p => p.SiteId == siteId && p.CapabilityId == capId,
+        AcsaPayload p => p.SiteId == siteId && p.CapabilityId == capId,
+        HostNationPayload p => p.SiteId == siteId && p.CapabilityId == capId,
+        VisitPayload { Kind: "j4", Extra: EngageJ4Action j } => j.Site == siteId && j.Capability == capId,
         _ => false,
     };
 
     private string BuyingWords(WorkItem w) => w.Payload switch
     {
-        AwardPayload p => $"writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"}",
+        AwardPayload p => $"writing the {InstrumentWords(p.Action.Instrument)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"}",
         AcsaPayload => $"ordering it from {PartnerName}",
         HostNationPayload => $"asking {HostNationName} for it",
         _ => "asking the J4 to add it to the fuel order",
     };
+
+    /// <summary>"purchase order", not "written purchase order": you are already writing it (DESK-38).</summary>
+    private string InstrumentWords(string instrument)
+    {
+        var label = LowerLabel(Rules.Instruments[instrument].Label);
+        return label.StartsWith("written ", StringComparison.Ordinal) ? label["written ".Length..] : label;
+    }
 
     private static string Amount(Arrangement a, Data.CapabilityData cap)
         => a.QuantityMilli > 0 ? $" {a.QuantityMilli / 1000} {Rate(cap)}" : "";
