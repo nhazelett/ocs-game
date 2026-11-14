@@ -11,6 +11,8 @@ public partial class GameShell
     private VBoxContainer visitsFooter = null!;
     private string? visitContact, scoQuestion, j4Site;
     private long? j4Quantity;
+    private string j4Capability = "fuel";
+    private EngageJ4Action? j4Start;
     private int j4Sequence = 1;
     private readonly Dictionary<string, string?> contactPeople = [];
     internal Button PeopleToggle { get; private set; } = null!;
@@ -41,7 +43,7 @@ public partial class GameShell
 
     private void ResetVisits()
     {
-        visitContact = scoQuestion = j4Site = null; j4Quantity = null; j4Sequence = 1;
+        visitContact = scoQuestion = j4Site = null; j4Quantity = null; j4Sequence = 1; j4Capability = "fuel"; j4Start = null;
         PeopleToggle.ButtonPressed = false;
     }
 
@@ -177,9 +179,12 @@ public partial class GameShell
     }
 
     private void OpenJ4FuelVisit(string site)
+        => OpenJ4Support(new EngageJ4Action { Site = site, Capability = "fuel" });
+
+    internal void OpenJ4Support(EngageJ4Action start)
     {
         if (session.View is not { Finished: false } view) return;
-        visitContact = "j4"; j4Site = site; j4Quantity = null;
+        visitContact = "j4"; j4Site = start.Site; j4Capability = start.Capability; j4Start = start; j4Quantity = null;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         PeopleToggle.ButtonPressed = true; RefreshVisits(view, view.MorningBoard());
         var quantity = J4QuantityInput;
@@ -195,10 +200,10 @@ public partial class GameShell
     {
         if (j4Site is null && SelectedCard is { } card) j4Site = view.RequirementEditor(card)?.SiteId;
         var sites = view.Scenario.Sites.Select(s => new Pick(s.Id, s.Name)).ToArray();
-        J4SiteInput = AddPick(visitsForm, "Which site needs fuel?", sites, j4Site, id => { j4Site = id; j4Quantity = null; RefreshVisits(session.View, session.View?.MorningBoard()); });
+        J4SiteInput = AddPick(visitsForm, "Which site needs " + CapabilityName(view, j4Capability).ToLowerInvariant() + "?", sites, j4Site, id => { j4Site = id; j4Quantity = null; RefreshVisits(session.View, session.View?.MorningBoard()); });
         j4Site = Picked(J4SiteInput); if (j4Site is null) return;
-        var editor = view.ActionEditor(j4Site, "fuel");
-        if (editor is null) { visitsForm.AddChild(DeskUi.Label("Fuel support is not available here.")); return; }
+        var editor = view.ActionEditor(j4Site, j4Capability);
+        if (editor is null) { visitsForm.AddChild(DeskUi.Label("This support is not available here.")); return; }
         j4Quantity ??= Math.Max(1, editor.PeakDemandUnits);
         visitsForm.AddChild(DeskUi.Label($"Daily quantity ({editor.Unit})"));
         J4QuantityInput = new SpinBox { MinValue = 1, MaxValue = 9007199254740991, Step = 1, Value = j4Quantity.Value };
@@ -208,7 +213,7 @@ public partial class GameShell
         {
             DeskUi.Clear(preview); DeskUi.Clear(visitsFooter);
             while (view.Arrangements.Any(a => a.Id == $"player-j4-{j4Sequence}") || view.Work.Any(w => w.SubjectId == $"player-j4-{j4Sequence}")) j4Sequence++;
-            AddVisit("j4", "Ask the J4 to add fuel support", new EngageJ4Action { Day = view.Day, Id = $"player-j4-{j4Sequence}", Site = j4Site, Quantity = j4Quantity.Value }, view, preview);
+            AddVisit("j4", "Ask the J4 to add " + editor.CapabilityLabel.ToLowerInvariant() + " support", (j4Start ?? new EngageJ4Action()) with { Day = view.Day, Id = $"player-j4-{j4Sequence}", Site = j4Site, Capability = j4Capability, Quantity = j4Quantity.Value }, view, preview);
         }
         J4QuantityInput.ValueChanged += value => { j4Quantity = checked((long)value); Update(); };
         Update();
