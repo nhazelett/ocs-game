@@ -33,7 +33,7 @@ public partial class GameShell
             portrait.SetPerson(entry.From); row.AddChild(portrait);
             portrait.CustomMinimumSize = new Vector2(40, 50);
             var open = DeskUi.Button(entry.Title + (entry.From is null ? "" : " · " + entry.From.DisplayName)
-                + "\n" + entry.Sentence, () =>
+                + "\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : ""), () =>
             {
                 if (observedHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay) return;
                 NavigateBoardItem(new BoardItem("", session.View!.Day, BoardCategory.Request, BoardSeverity.Info,
@@ -42,10 +42,6 @@ public partial class GameShell
             open.TooltipText = "Open request"; open.SetMeta("standing_state", entry.State);
             var words = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
             row.AddChild(words); words.AddChild(open); StandingOpenButtons.Add(entry.CardId, open);
-            if (entry.WhyShort is { } why)
-            {
-                var reason = DeskUi.Label(why); reason.SetMeta("standing_why_short", entry.CardId); words.AddChild(reason);
-            }
         }
     }
 }
