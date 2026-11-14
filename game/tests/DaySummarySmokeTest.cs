@@ -30,6 +30,7 @@ public partial class DaySummarySmokeTest : Node
             Require(hash == shell.Session.StateHash && saved.SequenceEqual(File.ReadAllBytes(shell.AutosavePath)),
                 "Reading, duplicate advances and rejected background actions change neither state nor save.");
             Require(shell.DisplayedDaySummary!.Short.Count == 0, "The quiet fixture was fully supplied.");
+            Require(shell.DaySummaryContents.GetChildCount() == 1, "A day with no results is its headline alone, without empty groups.");
             await Capture("quiet");
             shell.DaySummaryDialog.EmitSignal(AcceptDialog.SignalName.Confirmed);
             Require(!shell.ReadingDaySummary && !end.Disabled && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.TodayTab,
@@ -42,6 +43,28 @@ public partial class DaySummarySmokeTest : Node
             Require(!shell.ReadingDaySummary && !end.Disabled, "Escape/cancel returns to the desk too.");
             await Capture("today");
 
+            DeveloperWorkspace(shell); Scenario(shell, "tutorial");
+            foreach (var action in new PlayerAction[] {
+                new FindFinanceAction { Day = 1 },
+                new AskAboutAction { Day = 1, Card = "tutWater", Person = shell.Session.View!.RequirementEditor("tutWater")!.WhoToAsk!.First().Person.Id },
+                new MeetVendorAction { Day = 1, Vendor = "sanitation" },
+                new MeetVendorAction { Day = 1, Vendor = "harborBottling" },
+                new JoinStaffMeetingAction { Day = 1, Attend = true } })
+            {
+                var result = shell.SendAction(action);
+                Require(result.Accepted, "Real overflow work " + action.GetType().Name + ": " + result.Message);
+            }
+            EndDay(shell); shell.FinishDayPlayback(); CheckSummary();
+            await Capture("overflow");
+            var scrollbar = shell.DaySummaryScroll.GetVScrollBar();
+            Require(scrollbar.IsVisibleInTree() && scrollbar.Size.X >= 14
+                && scrollbar.MaxValue > scrollbar.Page, "Overflow always has a visible, usable scrollbar.");
+            shell.DaySummaryScroll.ScrollVertical = (int)scrollbar.MaxValue;
+            for (var i = 0; i < 3; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(shell.DaySummaryScroll.ScrollVertical > 0
+                && shell.DaySummaryContents.GetChildren().OfType<Control>().Last().GetGlobalRect().End.Y
+                    <= shell.DaySummaryScroll.GetGlobalRect().End.Y + 1, "The last result can be reached without moving the close control.");
+            shell.CloseDaySummary();
             DeveloperWorkspace(shell); Scenario(shell, "tutorial");
             Require(!shell.YesterdayButton.Visible && !shell.ReadingDaySummary, "A fresh deployment clears the previous results.");
             Step(shell, 2);
@@ -129,9 +152,14 @@ public partial class DaySummarySmokeTest : Node
                 Require(shell.DaySummaryScroll.GetChildCount() == 1
                     && shell.DaySummaryDialog.Size.X <= 1280 && shell.DaySummaryDialog.Size.Y <= 800,
                     "One scrolling body and its close control fit the release viewport.");
-                void Check(string kind, IEnumerable<string> sentences) => Require(labels.Where(l => l.HasMeta("summary_kind")
-                    && l.GetMeta("summary_kind").AsString() == kind).Select(l => l.Text).SequenceEqual(sentences),
-                    "Every actual " + kind + " result keeps Sim wording and order.");
+                void Check(string kind, IEnumerable<string> sentences)
+                {
+                    var actual = sentences.ToArray();
+                    Require(labels.Where(l => l.HasMeta("summary_kind") && l.GetMeta("summary_kind").AsString() == kind)
+                        .Select(l => l.Text).SequenceEqual(actual), "Every actual " + kind + " result keeps Sim wording and order.");
+                    Require(labels.Count(l => l.HasMeta("summary_group") && l.GetMeta("summary_group").AsString() == kind)
+                        == (actual.Length == 0 ? 0 : 1), "Only nonempty result groups have headings.");
+                }
             }
             async Task Capture(string name)
             {
