@@ -36,7 +36,8 @@ public sealed partial class Session
                 list.Add(new HelperView("ask", p, p.DisplayName, does, HalfHours(askHours), true, HelperView.Answered, null, null, asked?.CompletedDay, answer,
                     $"{p.DisplayName}: asked on day {asked?.CompletedDay}.{next}"));
             }
-            else list.Add(Pending("ask", p, p.DisplayName, does, askHours, true, work));
+            else list.Add(Pending("ask", p, p.DisplayName, does, askHours, true, work,
+                start: new AskAboutAction { Card = card.Id, Person = p.Id, Day = Day }));
         }
 
         // The J4, when the partner force can spare this or something it runs on (fuel for power, R10): they can have the
@@ -52,8 +53,10 @@ public sealed partial class Session
             var done = _arrangements.FirstOrDefault(a => a.SiteId == card.SiteId && a.CapabilityId == stocked && a.Instrument == AcsaInstrument && a.CreatedDay > 0);
             list.Add(done is not null && work is null
                 ? new HelperView("j4", null, "The J4", does, HalfHours(hours), false, HelperView.Answered, null, null, done.CreatedDay,
-                    $"{Upper(PartnerName)} supplies {item} at {site} from day {done.StartDay}.", $"The J4: {PartnerName} added {site} to the {item} order.")
-                : Pending("j4", null, "The J4", does, hours, false, work));
+                    $"{Upper(PartnerName)} supplies {item} at {site} from day {done.StartDay}.", $"The J4: {PartnerName} added {site} to the {item} order.",
+                    CapabilityId: stocked)
+                : Pending("j4", null, "The J4", does, hours, false, work, stocked,
+                    new EngageJ4Action { Site = card.SiteId, Capability = stocked, Day = Day }));
         }
 
         // Vendors who sell it and whom the office has not met: a meeting fills in their price and how they are paid.
@@ -63,19 +66,24 @@ public sealed partial class Session
             if (BuildPerson(rep) is not { } person) continue;
             var does = $"Sells {what}. Sitting down with them fills in their vendor card: their price, how they are paid and where they deliver.";
             var hours = WithShopVehicle(Fixed.Milli(People.MeetVendor.ShopHours), Day);
-            list.Add(Pending("vendor", person, $"{person.DisplayName} of {v.Name}", does, PersonHours(hours, null), false, VisitWork("vendor", v.Id)));
+            list.Add(Pending("vendor", person, $"{person.DisplayName} of {v.Name}", does, PersonHours(hours, null), false, VisitWork("vendor", v.Id),
+                start: new MeetVendorAction { Vendor = v.Id, Day = Day }));
         }
         return list;
     }
 
-    private HelperView Pending(string kind, PersonView? person, string name, string does, long hoursMilli, bool informs, WorkItem? work)
+    // Q25: the J4 line carries the capability it is about, and a line nobody is on yet carries the action that starts it,
+    // so the game binds the line to the Sim's own target instead of working one out.
+    private HelperView Pending(string kind, PersonView? person, string name, string does, long hoursMilli, bool informs, WorkItem? work,
+        string? capabilityId = null, PlayerAction? start = null)
     {
         if (work is null)
             return new HelperView(kind, person, name, does, HalfHours(hoursMilli), informs, HelperView.NotAsked, null, null, null, null,
-                $"{name}: {(kind == "vendor" ? "not met yet" : "not asked yet")}, about {HoursSaid(hoursMilli)}.");
+                $"{name}: {(kind == "vendor" ? "not met yet" : "not asked yet")}, about {HoursSaid(hoursMilli)}.", capabilityId, start);
         var due = PlayQueue(Member(work.Assignee), 0, Day, work, work.HoursRemainingMilli);
         var who = Member(work.Assignee);
         return new HelperView(kind, person, name, does, HalfHours(hoursMilli), informs, HelperView.Asking, who.Id, MemberName(who), due, null,
-            $"{name}: {WhoIs(who.Id)} on it; {(kind == "vendor" ? "the meeting should be done" : "the answer should be in")} on day {due}.");
+            $"{name}: {WhoIs(who.Id)} on it; {(kind == "vendor" ? "the meeting should be done" : "the answer should be in")} on day {due}.",
+            capabilityId);
     }
 }
