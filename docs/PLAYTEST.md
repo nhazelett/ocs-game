@@ -1,5 +1,7 @@
 # DESK playtest (backlog DESK-28)
 
+Latest replay feedback: Nick's 13 Nov 2026 (Eastern) findings and day-four screenshot observations are recorded in [desk-redesign.md, section 7](design/desk-redesign.md#7-nicks-next-replay-findings-for-the-uiux-specification-13-nov-2026-eastern). The UI/UX gate remains unresolved; Fable turns those findings into the next specification and backlog pass.
+
 For Nick, after the desk redesign (docs/design/desk-redesign.md). The same cold-start play as on 10 Nov: the tutorial, with no help from outside the game.
 
 1. Get the build as below (Get the build). Leave Developer tools off.
