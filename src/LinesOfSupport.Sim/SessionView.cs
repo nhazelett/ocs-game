@@ -177,8 +177,17 @@ public sealed class SessionView
 
     /// <summary>Who could take this action (DESK-37, D17): one choice per team member, in team order, with their free and
     /// queued hours and the day the result would come with them, behind their queue. Any action a preview takes (a buy,
-    /// a BPA or IDIQ, host nation, ACSA or external support, a file review, a visit). Read only.</summary>
+    /// a BPA or IDIQ, host nation, ACSA or external support, a file review, a visit, a survey, coordination, definitizing,
+    /// a termination, a cure notice, a decision on a commitment). For handing work over (AssignAction, DESK-50) each choice
+    /// is that person as To, the work keeps its place in the order it was given, and the person holding it now is marked
+    /// Current with the day it is done where it is. Read only.</summary>
     public IReadOnlyList<AssigneeChoice> AssigneeChoices(PlayerAction action) => _s.BuildAssigneeChoices(action);
+
+    /// <summary>What any action would take (DESK-50, Q23): hard stops, the assignee's hours (min and max) and the result
+    /// day behind their queue, as the specific previews give them. For a survey the result is the day the findings are
+    /// due; for a termination, the last day the arrangement runs; for coordination, the first day of support; for handing
+    /// work over, the day it would be done with To. Changes nothing.</summary>
+    public ActionPreview PreviewAny(PlayerAction action) => Session.Said(_s.PreviewAny(action));
 
     /// <summary>What is still open before the day ends (DESK-04, D1), as sentences to show beside "End the day": a request
     /// due within three days (or late) with nothing arranged or in work, then a teammate with free hours. Empty when nothing
