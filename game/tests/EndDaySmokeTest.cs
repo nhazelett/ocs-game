@@ -29,10 +29,32 @@ public partial class EndDaySmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Screenshot saved.");
             }
+            IEnumerable<Label> Labels(Node node) => node.GetChildren().SelectMany(child =>
+                (child is Label label ? new[] { label } : Enumerable.Empty<Label>()).Concat(Labels(child)));
+            string AllText() => string.Join("\n",Labels(shell.DayPlanContents).Select(l=>l.Text));
+            IEnumerable<string> PlanOpen() => Labels(shell.DayPlanContents).Where(l=>l.HasMeta("plan_open")).Select(l=>l.Text);
+            void CheckPlan(LinesOfSupport.Sim.Views.DayPlanView plan)
+            {
+                var rows=shell.DayPlanContents.GetChildren().OfType<HBoxContainer>().ToArray();
+                Require(rows.Select(r=>r.GetMeta("plan_person").AsString()).SequenceEqual(plan.People.Select(p=>p.MemberId)),
+                    "The whole team is shown in the exact Sim order.");
+                foreach(var person in plan.People)
+                {
+                    var row=rows.Single(r=>r.GetMeta("plan_person").AsString()==person.MemberId);
+                    Require(Labels(row).Select(l=>l.Text).SequenceEqual(new[]{person.Name,person.Sentence}.Concat(person.Work.Select(w=>w.Sentence))),
+                        "Every person's forecast and their tasks keep Sim wording and queue order.");
+                    Require(row.GetChildren().OfType<PersonPortrait>().Single().PortraitKey==(person.Portrait??"fallback"),
+                        "The forecast uses the teammate's declared face.");
+                }
+                Require(Labels(shell.DayPlanContents).Where(l=>l.HasMeta("plan_due")).Select(l=>l.Text).SequenceEqual(plan.Due)
+                    && PlanOpen().SequenceEqual(plan.Open),"Due deliveries/starts/ends and open items bind verbatim to DayPlan.");
+            }
             await Capture("desk");
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             expected.AdvanceDay();
             end.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.EndDayDialog.Visible && shell.Session.CompletedDay == 0, "Even a quiet day opens its plan before it runs.");
+            shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(shell.Session.CompletedDay == 1 && shell.Session.StateHash == expected.StateHash(), "End the day advances exactly one real day.");
             var hash = shell.Session.StateHash;
             end.EmitSignal(Button.SignalName.Pressed);
@@ -53,18 +75,19 @@ public partial class EndDaySmokeTest : Node
             var tutorial = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial")), 1);
             hash = shell.Session.StateHash;
             end.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.EndDayDialog.Visible && shell.EndDayDialog.DialogText == "Before you end the day\n\n" + string.Join("\n\n", tutorial.View.EndOfDayCheck())
+            Require(shell.EndDayDialog.Visible && PlanOpen().SequenceEqual(tutorial.View.DayPlan().Open)
                 && shell.Session.StateHash == hash && shell.Session.CompletedDay == 0 && !shell.PlayingDay,
                 "The exact Sim sentences appear before any state change, autosave or playback.");
-            Require(shell.EndDayDialog.DialogText.Contains("Water for Hub") && shell.EndDayDialog.DialogText.Contains("MSgt Joan Avery")
-                && shell.EndDayDialog.DialogText.Contains("SrA Eli Novak"), "The check names the due request and both free teammates.");
+            Require(string.Join(" ",PlanOpen()).Contains("Water for Hub") && AllText().Contains("MSgt Joan Avery")
+                && AllText().Contains("SrA Eli Novak"), "The check names the due request and both free teammates.");
             end.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash, "Repeated clicks cannot advance behind the check.");
             await Capture("check");
-            Require(shell.EndDayDialog.Size.Y < 400, "The short check fits a compact dialog instead of leaving a large empty panel.");
+            CheckPlan(tutorial.View.DayPlan());
+            Require(shell.EndDayDialog.Size.Y <= 800 && shell.EndDayDialog.Size.X <= 1280,
+                "The plan stays inside the release viewport.");
             Require(shell.EndDayDialog.GetCancelButton().HasFocus(), "Returning to the desk is the focused choice.");
-            Require(shell.EndDayDialog.GetLabel().GetRect().End.X <= shell.EndDayDialog.Size.X,
-                "The wrapped check fits its dialog.");
+            Require(shell.DayPlanScroll.GetChildCount() == 1, "The plan uses one scrolling body.");
             shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
             Require(!shell.EndDayDialog.Visible && shell.Session.StateHash == hash, "Cancel closes the check without ending the day.");
             shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
@@ -91,12 +114,45 @@ public partial class EndDaySmokeTest : Node
                 "Starting another deployment invalidates the old confirmation.");
             Step(shell, 5); hash = shell.Session.StateHash;
             end.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.EndDayDialog.Visible && shell.EndDayDialog.DialogText == "Before you end the day\n\n" + string.Join("\n\n", shell.Session.View!.EndOfDayCheck())
-                && shell.EndDayDialog.DialogText.Contains("was wanted from day 5"), "An overdue request retains the exact late wording.");
+            Require(shell.EndDayDialog.Visible && PlanOpen().SequenceEqual(shell.Session.View!.DayPlan().Open)
+                && string.Join(" ",PlanOpen()).Contains("was wanted from day 5"), "An overdue request retains the exact late wording.");
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
             shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(!shell.EndDayDialog.Visible && shell.AtFrontDoor && shell.Session.StateHash == hash,
                 "Leaving the desk invalidates the check without advancing.");
+            DeveloperWorkspace(shell); Scenario(shell,"tutorial");
+            shell.DeveloperToggle.ButtonPressed=false;
+            while (shell.Session.View!.Day<9) Step(shell);
+            Require(shell.SendAction(new AwardAction { Day=9, Id="plan-order", Instrument="purchaseOrder", Vendor="sanitation",
+                Card="tutWaste", Quantity=3600, StartDay=13, DurationDays=8, FundingLine="om1" }).Accepted,
+                "A real order supplies a carry-over fixture.");
+            Step(shell);
+            Require(shell.SendAction(new MeetVendorAction { Day=10, Vendor="sanitation", Assignee="avery" }).Accepted,
+                "A free teammate has a small job that should finish today.");
+            hash=shell.Session.StateHash;
+            end.EmitSignal(Button.SignalName.Pressed);
+            var loadedPlan=shell.Session.View!.DayPlan();
+            Require(loadedPlan.People.SelectMany(p=>p.Work).Any(w=>w.FinishesToday)
+                && loadedPlan.People.SelectMany(p=>p.Work).Any(w=>!w.FinishesToday),
+                "The plan includes actual finishes and carry-overs together.");
+            CheckPlan(loadedPlan);
+            Require(shell.Session.StateHash==hash, "Reading every planned person and task is pure.");
+            await Capture("plan-work");
+            shell.DayPlanScroll.ScrollVertical=(int)shell.DayPlanScroll.GetVScrollBar().MaxValue;
+            await Capture("plan-due");
+            shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
+            Require(shell.Session.StateHash==hash, "Backing out of a loaded plan does not run it.");
+            DeveloperWorkspace(shell); Scenario(shell,"spoke-b"); Replay(shell);
+            shell.DeveloperToggle.ButtonPressed=false;
+            while (shell.Session.View!.DayPlan().Due.Count==0 && shell.Session.View.Day<20) Step(shell);
+            var deliveryPlan=shell.Session.View!.DayPlan();
+            Require(deliveryPlan.Due.Count>0, "An authored replay has actual support or deliveries due today.");
+            hash=shell.Session.StateHash;
+            end.EmitSignal(Button.SignalName.Pressed); CheckPlan(deliveryPlan);
+            shell.DayPlanScroll.ScrollVertical=(int)shell.DayPlanScroll.GetVScrollBar().MaxValue;
+            await Capture("plan-deliveries");
+            Require(shell.Session.StateHash==hash, "Reading delivery forecasts also preserves exact state.");
+            shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
             shell.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
