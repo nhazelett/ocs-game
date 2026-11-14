@@ -71,7 +71,8 @@ public partial class GameShell
             else
             {
                 // Office-wide decisions have no request destination; they remain readable entries.
-                row.AddChild(DeskUi.Label(decision.Sentence)); row.AddChild(DeskUi.Label(now));
+                var frame = new PanelContainer(); row.AddChild(frame);
+                frame.AddChild(DeskUi.Label(decision.Sentence + "\n" + now));
             }
             row.SetMeta("decision_now", decision.Now);
             row.SetMeta("decision_teammate", decision.Teammate);

@@ -39,7 +39,7 @@ public partial class DecisionsSmokeTest : Node
             shell.AllDecisionsButton.EmitSignal(Button.SignalName.Pressed);
             Match(shell.DecisionRows, shell.Session.View.Decisions());
             Require(shell.AllDecisionsButton.Text == "Recent decisions", "All decisions expands in the same Today scroll and can return to the short list.");
-            Require(Rows(shell.DecisionRows).Any(r => !r.GetChildren().OfType<Button>().Any()),
+            Require(Rows(shell.DecisionRows).Any(r => !r.FindChildren("*", "Button", true, false).OfType<Button>().Any()),
                 "An office-wide decision has readable text instead of a dead request link.");
             await Capture("all");
             var requestButton = shell.DecisionRows.FindChildren("*", "Button", true, false).OfType<Button>()
@@ -116,7 +116,15 @@ public partial class DecisionsSmokeTest : Node
             "History keeps exact Sim sentences and newest-first order.");
         for (var i = 0; i < rows.Length; i++)
         {
-            var words = string.Join("\n", rows[i].GetChildren().Select(c => c is Button b ? b.Text : c is Label l ? l.Text : ""));
+            if (!rows[i].FindChildren("*", "Button", true, false).OfType<Button>().Any())
+            {
+                var frame = rows[i].GetChildren().OfType<PanelContainer>().Single();
+                var block = frame.GetChildren().OfType<Label>().Single().Text;
+                Require(block.Contains(all[i].Sentence) && block.Contains(all[i].Now),
+                    "A decision without a request and its status share one framed text block.");
+            }
+            var words = string.Join("\n", rows[i].FindChildren("*", "Control", true, false)
+                .Select(c => c is Button b ? b.Text : c is Label l ? l.Text : ""));
             Require(words.Contains(all[i].Sentence) && words.Contains(all[i].Now) && words.Contains(all[i].Teammate),
                 "The visible controls show the exact decision, current status and teammate.");
         }

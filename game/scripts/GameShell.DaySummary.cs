@@ -27,6 +27,7 @@ public partial class GameShell
         DaySummaryScroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill,
             HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, FollowFocus = true };
         page.AddChild(DaySummaryScroll);
+        DeskUi.ShowScrollTrack(DaySummaryScroll);
         DaySummaryContents = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
         DaySummaryContents.AddThemeConstantOverride("separation", 16);
         DaySummaryScroll.AddChild(DaySummaryContents);
@@ -55,12 +56,12 @@ public partial class GameShell
         DisplayedDaySummary = summary;
         DeskUi.Clear(DaySummaryContents);
         DaySummaryContents.AddChild(DeskUi.Heading(summary.Sentence));
-        People("Work finished", summary.Finished, "finished", "No team jobs finished today.");
-        Lines("Support started", summary.Started, "started", "No support started today.");
-        Lines("Support ended", summary.Ended, "ended", "No support ended today.");
-        Lines("Short or missed", summary.Short, "short", "Everything was supplied in full today.");
-        People("Slipped against the plan", summary.Slipped, "slipped", "Nothing slipped against the morning's plan.");
-        People("Carried into tomorrow", summary.CarriedOver, "carried", "No work in progress carried over today.");
+        People("Work finished", summary.Finished, "finished");
+        Lines("Support started", summary.Started, "started");
+        Lines("Support ended", summary.Ended, "ended");
+        Lines("Short or missed", summary.Short, "short");
+        People("Slipped against the plan", summary.Slipped, "slipped");
+        People("Carried into tomorrow", summary.CarriedOver, "carried");
         DaySummaryScroll.ScrollVertical = 0;
         DaySummaryDialog.GetOkButton().Text = session.View?.Finished == true ? "Back to the debrief" : "Back to Today";
         var viewport = GetViewportRect().Size;
@@ -68,16 +69,18 @@ public partial class GameShell
         RefreshDayAdvanceControls();
         DaySummaryDialog.GetOkButton().GrabFocus();
 
-        void Lines(string title, IReadOnlyList<string> lines, string kind, string empty)
+        void Lines(string title, IReadOnlyList<string> lines, string kind)
         {
-            DaySummaryContents.AddChild(DeskUi.Heading(title));
-            if (lines.Count == 0) DaySummaryContents.AddChild(DeskUi.Label(empty));
+            if (lines.Count == 0) return;
+            var heading = DeskUi.Heading(title); heading.SetMeta("summary_group", kind);
+            DaySummaryContents.AddChild(heading);
             foreach (var sentence in lines) AddLine(DaySummaryContents, sentence, kind);
         }
-        void People(string title, IReadOnlyList<DaySummaryLine> lines, string kind, string empty)
+        void People(string title, IReadOnlyList<DaySummaryLine> lines, string kind)
         {
-            DaySummaryContents.AddChild(DeskUi.Heading(title));
-            if (lines.Count == 0) DaySummaryContents.AddChild(DeskUi.Label(empty));
+            if (lines.Count == 0) return;
+            var heading = DeskUi.Heading(title); heading.SetMeta("summary_group", kind);
+            DaySummaryContents.AddChild(heading);
             foreach (var line in lines)
             {
                 var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 14);
