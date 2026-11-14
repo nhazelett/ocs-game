@@ -207,6 +207,11 @@ public sealed class SessionView
     /// then <see cref="EndOfDayCheck"/>. A forecast: events and rolls can change the day. Read only.</summary>
     public DayPlanView DayPlan() => _s.BuildDayPlan();
 
+    /// <summary>What happened on the day just played (DESK-40, D20): what finished and who did it, what started and ended,
+    /// what was short and why, what slipped against the plan the day began with, and what carries over. Null on day 1.
+    /// Read only.</summary>
+    public DaySummaryView? DaySummary() => _s.BuildDaySummary();
+
     /// <summary>Where things stand (DESK-31, D16): one entry per request on the desk, needing attention first (late with
     /// nothing arranged, running short, nothing yet), then in hand (asking, buying, arranged, running), then done. Read only.</summary>
     public IReadOnlyList<RequestStanding> WhereThingsStand() => _s.BuildWhereThingsStand();

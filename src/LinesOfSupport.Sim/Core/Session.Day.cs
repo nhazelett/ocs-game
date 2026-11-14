@@ -19,6 +19,7 @@ public sealed partial class Session
         _overnightFrom = _records.Count;
         _dayRuns.Clear();
         _dayHeld.Clear();
+        KeepPlan();   // DESK-40: what the day began with, so its summary can say what slipped
 
         FireEvents(d);
         UnitHabits(d);
