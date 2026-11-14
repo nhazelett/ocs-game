@@ -9,15 +9,20 @@ internal static class DeskUi
         var scroll = new ScrollContainer { Name = name, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, FollowFocus = true };
         tab.AddChild(scroll);
         scroll.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        ShowScrollTrack(scroll);
+        var box = new VBoxContainer { Name = "Contents", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        box.AddThemeConstantOverride("separation", 10);
+        scroll.AddChild(box);
+        return box;
+    }
+
+    internal static void ShowScrollTrack(ScrollContainer scroll)
+    {
         var scrollbar = scroll.GetVScrollBar();
         using var track = (StyleBoxFlat)scrollbar.GetThemeStylebox("scroll").Duplicate();
         track.ContentMarginLeft = track.ContentMarginRight = 7;
         scrollbar.AddThemeStyleboxOverride("scroll", track);
         scroll.AddThemeConstantOverride("scrollbar_h_separation", 4);
-        var box = new VBoxContainer { Name = "Contents", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-        box.AddThemeConstantOverride("separation", 10);
-        scroll.AddChild(box);
-        return box;
     }
 
     // A single scrolling body and a fixed primary action area; forms never nest scrolls.
