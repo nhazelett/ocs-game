@@ -18,7 +18,7 @@ public partial class GameShell
     internal Dictionary<string, LineEdit> TeamNameInputs { get; } = [];
     internal Dictionary<string, OptionButton> TeamFaceInputs { get; } = [];
     internal Dictionary<string, PersonPortrait> TeamFaces { get; } = [];
-    internal Dictionary<string, OptionButton> WorkAssignees { get; } = [];
+    internal Dictionary<string, AssigneePicker> WorkAssignees { get; } = [];
     internal Dictionary<string, Button> WorkAssignButtons { get; } = [];
     private readonly Dictionary<string, TeamPick> teamPicks = [];
     private HBoxContainer teamStrip = null!;
@@ -219,27 +219,25 @@ public partial class GameShell
             {
                 card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {work.HoursLeft} hours left" +
                     (work.Ready ? "" : $" · waiting until day {work.WaitsUntilDay}")));
-                var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 12); card.AddChild(row);
-                var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, 44) };
-                var target = member.Id;
-                foreach (var candidate in view.Team)
-                {
-                    picker.AddItem($"{TeamName(candidate)} · {view.HoursIfAssigned(work.WorkId, candidate.Id)} hours at their pace");
-                    picker.SetItemMetadata(picker.ItemCount - 1, candidate.Id);
-                    if (candidate.Id == member.Id) picker.Select(picker.ItemCount - 1);
-                }
-                row.AddChild(picker); WorkAssignees[work.WorkId] = picker;
+                var action = new AssignAction { Day = view.Day, Work = work.WorkId };
+                var choices = view.AssigneeChoices(action);
+                var picker = new AssigneePicker(choices, member.Id, view.Finished);
+                card.AddChild(picker); WorkAssignees[work.WorkId] = picker;
+                var assignmentHash = session.StateHash;
                 var give = DeskUi.Button("Give them this task", () =>
-                    SendAction(new AssignAction { Day = session.View!.Day, Work = work.WorkId, To = target }));
-                var assignment = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; row.AddChild(assignment);
-                var reason = DeskUi.ActionReason(assignment, give);
-                DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason : "Choose another teammate for this task."); WorkAssignButtons[work.WorkId] = give;
-                picker.ItemSelected += index =>
                 {
-                    target = picker.GetItemMetadata((int)index).AsString();
-                    DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason : target == member.Id ? "Choose another teammate for this task." : null);
-                };
-                picker.Disabled = view.Finished;
+                    if (assignmentHash != session.StateHash || PlayingDay) return;
+                    SendAction(action with { To = picker.Selected });
+                });
+                var reason = DeskUi.ActionReason(card, give);
+                void GateAssignment()
+                {
+                    var preview = view.PreviewAny(action with { To = picker.Selected });
+                    DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason
+                        : picker.Selected == member.Id ? "Choose another teammate for this task." : preview.HardStops.FirstOrDefault());
+                }
+                picker.SelectionChanged = GateAssignment;
+                GateAssignment(); WorkAssignButtons[work.WorkId] = give;
             }
         }
     }

@@ -67,7 +67,7 @@ internal static class DeskUi
         foreach (var child in parent.GetChildren()) { parent.RemoveChild(child); child.QueueFree(); }
     }
 
-    internal static string QueueClause(int hours) => hours > 0 ? $", not counting the {hours} hours already queued" : "";
+    internal static string QueueClause(int hours) => hours > 0 ? $", after the {hours} hours already queued" : "";
 
     internal static string ListLabel(string name) => name.Length == 0 ? name : char.ToUpperInvariant(name[0]) + name[1..];
 

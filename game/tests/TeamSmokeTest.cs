@@ -89,10 +89,14 @@ public partial class TeamSmokeTest : Node
             Require(shell.TeamPanel.Visible && shell.Session.StateHash==hash, "Opening the team and inspecting paces is read only.");
             Require(shell.WorkAssignButtons[work.WorkId].Disabled, "Giving a task to its current owner is unavailable.");
             var picker=shell.WorkAssignees[work.WorkId];
-            Require(picker.ItemCount==3 && Enumerable.Range(0,picker.ItemCount).Any(i=>picker.GetItemText(i)
-                .Contains(expected.View.HoursIfAssigned(work.WorkId,experienced.Id)+" hours at their pace")),
-                "The assignment picker offers the roster and the Sim's per-person work estimate.");
-            Pick(picker,experienced.Id);
+            var choices = expected.View.AssigneeChoices(new AssignAction { Day = expected.Day, Work = work.WorkId });
+            Require(picker.Choices.SequenceEqual(choices) && choices.Count == 3
+                && choices.All(c => picker.ChoiceButtons[c.MemberId].Text == c.Sentence
+                    && picker.ChoiceButtons[c.MemberId].Icon is not null && c.ResultDayMin is not null),
+                "Every teammate has their face and exact Sim load, pace and completion forecast.");
+            picker.ChoiceButtons[experienced.Id].EmitSignal(Button.SignalName.Pressed);
+            Require(!shell.WorkAssignButtons[work.WorkId].Disabled && picker.Selected == experienced.Id
+                && shell.Session.StateHash == hash, "Choosing a free teammate only selects; it does not apply work.");
             await Capture("work");
             shell.WorkAssignButtons[work.WorkId].EmitSignal(Button.SignalName.Pressed);
             Require(expected.Apply(new AssignAction{Day=expected.Day,Work=work.WorkId,To=experienced.Id}).Accepted
@@ -120,6 +124,43 @@ public partial class TeamSmokeTest : Node
             DeveloperWorkspace(shell);Scenario(shell,"spoke-b");
             Require(shell.TeamBars.Count==1 && shell.TeamButtons["you"].Text=="You"
                 && !shell.TeamCustomizeButton.Visible,"An older single-person scenario keeps its actual roster and total hours.");
+            Scenario(shell,"tutorial");
+            shell.DeveloperToggle.ButtonPressed=false;
+            while (shell.Session.View!.Day < 9) Step(shell);
+            expected=LinesOfSupport.Sim.Replay.Resume(bundle,shell.Session.CreateSave());
+            var order=new AwardAction { Day=9, Id="assignment-check", Instrument="purchaseOrder", Vendor="sanitation",
+                Card="tutWaste", Quantity=3600, StartDay=13, DurationDays=8, FundingLine="om1" };
+            Require(expected.Apply(order).Accepted && shell.SendAction(order).Accepted, "A real written order loads the player's queue.");
+            Step(shell);expected.AdvanceDay();
+            var busy=shell.Session.View!.Team.Single(m=>m.Role=="you");
+            work=busy.Work.Single();
+            Require(busy.HoursQueued>busy.HoursPerDay, "The fixture overloads the player beyond one day's hours.");
+            shell.TeamButtons[busy.Id].EmitSignal(Button.SignalName.Pressed);
+            picker=shell.WorkAssignees[work.WorkId];
+            choices=expected.View.AssigneeChoices(new AssignAction { Day=expected.Day, Work=work.WorkId });
+            var free=choices.Single(c=>c.MemberId==experienced.Id);
+            var overloaded=choices.Single(c=>c.Current);
+            Require(free.FreeHoursToday>0 && free.HoursQueued==0 && overloaded.HoursQueued>8
+                && free.ResultDayMin<overloaded.ResultDayMin && overloaded.QueueClearsDay is not null,
+                "Free and overloaded choices have genuinely different Sim forecasts.");
+            Require(picker.ChoiceButtons.All(pair=>pair.Value.Text==choices.Single(c=>c.MemberId==pair.Key).Sentence),
+                "Overloaded queues and current-owner timing are also Sim's exact sentences.");
+            await Capture("overloaded");
+            picker.ChoiceButtons[free.MemberId].EmitSignal(Button.SignalName.Pressed);
+            Require(picker.ChoiceButtons.Values.Count(b=>b.ButtonPressed)==1 && picker.ChoiceButtons[free.MemberId].ButtonPressed,
+                "Keyboard or pointer selection has a single visible choice.");
+            await Capture("free");
+            var stale=shell.WorkAssignButtons[work.WorkId];
+            stale.EmitSignal(Button.SignalName.Pressed);
+            Require(expected.Apply(new AssignAction { Day=expected.Day, Work=work.WorkId, To=free.MemberId }).Accepted
+                && shell.Session.StateHash==expected.StateHash(), "The overloaded handoff sends the exact selected Sim action.");
+            var reassignedHash=shell.Session.StateHash;
+            stale.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash==reassignedHash, "An old handoff control cannot apply a second action.");
+            shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
+            while (expected.Day<=free.ResultDayMax) { Step(shell);expected.AdvanceDay(); }
+            Require(shell.Session.StateHash==expected.StateHash() && !shell.Session.View!.Team.SelectMany(m=>m.Work).Any(w=>w.WorkId==work.WorkId),
+                "The task finishes on the quoted day through the actual day loop.");
             shell.QueueFree();shell=null!;
             await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
             GC.Collect();GC.WaitForPendingFinalizers();await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
