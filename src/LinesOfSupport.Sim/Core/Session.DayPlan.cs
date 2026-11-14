@@ -64,7 +64,7 @@ public sealed partial class Session
             }
             foreach (var t in trips.Where(t => t.Who.Id == m.Id)) Take(null, t.Label, t.Milli);
             if (meeting?.Id == m.Id) Take(null, "Staff meeting", PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), m.Id));
-            foreach (var w in order.Where(w => Member(w.Assignee).Id == m.Id)) Take(w.Id, w.Label, w.HoursRemainingMilli);
+            foreach (var w in order.Where(w => Member(w.Assignee).Id == m.Id)) Take(w.Id, WorkName(w), w.HoursRemainingMilli);
             var waiting = _work.Count(w => w.CompletedDay is null && w.WaitUntilDay > d && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id);
 
             var name = m.Role == "you" ? "You" : MemberName(m);

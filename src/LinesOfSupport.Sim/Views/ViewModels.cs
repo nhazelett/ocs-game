@@ -123,6 +123,23 @@ public sealed record DayPlanPerson(string MemberId, string Name, string? Portrai
 public sealed record DayPlanItem(string? WorkId, string Label, double HoursToday, double HoursLeftAfter, bool FinishesToday, string Sentence);
 
 /// <summary>
+/// What happened on the day just played (DESK-40, D20): the page after the map playback, and behind Today's Yesterday link.
+/// From the day's records and work, never from the forecast.
+/// </summary>
+/// <param name="Sentence">"Day 4: one job finished, one thing was short and one job slipped."</param>
+/// <param name="Finished">What the team finished, with who.</param>
+/// <param name="Started">Support that started.</param>
+/// <param name="Ended">Support that ended.</param>
+/// <param name="Short">Each capability below full, at what level, and why (DESK-38).</param>
+/// <param name="Slipped">Work the day's plan said would be done and was not.</param>
+/// <param name="CarriedOver">Work someone put hours into that goes on tomorrow, with the hours left and when it should be done.</param>
+public sealed record DaySummaryView(int Day, string Sentence, IReadOnlyList<DaySummaryLine> Finished, IReadOnlyList<string> Started,
+    IReadOnlyList<string> Ended, IReadOnlyList<string> Short, IReadOnlyList<DaySummaryLine> Slipped, IReadOnlyList<DaySummaryLine> CarriedOver);
+
+/// <param name="TeammateId">Whose work it is, for their face. Never shown.</param>
+public sealed record DaySummaryLine(string TeammateId, string Sentence);
+
+/// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
 /// tab shows these under the lead, needing attention first.
 /// </summary>
