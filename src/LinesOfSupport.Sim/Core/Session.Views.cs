@@ -220,7 +220,7 @@ public sealed partial class Session
             card.Id, site.Id, site.Name, cap.Id, cap.Label, cap.Unit, person?.WithUnit ?? card.SubmittedBy, card.SubmittedDay,
             card.RequestedStartDay, card.DurationDays, card.QuantityHint,
             (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied,
-            CardTitle(card), person, card.Message, BuildWhoToAsk(card), HeardSentence(card));
+            CardTitle(card), person, card.Message, BuildWhoToAsk(card), HeardSentence(card), BuildWhoCanHelp(card));
     }
 
     // ------------------------------------------------------------------ action editor
