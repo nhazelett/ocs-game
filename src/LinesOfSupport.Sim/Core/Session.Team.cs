@@ -92,14 +92,22 @@ public sealed partial class Session
     /// hours ready on <paramref name="fromDay"/> added at the back. Returns the day the new job is done, or with no new job
     /// the day the last of their work is; null when they hold nothing. The purchase card program, which takes only what the
     /// queue leaves, and the M2-14 reordering behind a lost-confidence site are left out.
+    /// DESK-50 (Q23): with <paramref name="moved"/>, that work item is played as theirs at its own place in the order, with
+    /// <paramref name="movedMilli"/> of their hours left, and the day it is done is returned.
     /// </summary>
-    private int? PlayQueue(TeamMember m, long extraMilli, int fromDay)
+    private int? PlayQueue(TeamMember m, long extraMilli, int fromDay, WorkItem? moved = null, long movedMilli = 0)
     {
-        var items = _work.Where(w => w.CompletedDay is null && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id)
-                         .Select(w => (Wait: w.WaitUntilDay, Left: w.HoursRemainingMilli)).ToList();
-        if (extraMilli > 0) items.Add((fromDay, extraMilli));
+        var items = new List<(int Wait, long Left)>();
+        var target = -1;
+        foreach (var w in _work)
+        {
+            if (w.CompletedDay is not null || w.Kind == WorkKind.GpcProgram) continue;
+            if (ReferenceEquals(w, moved)) { target = items.Count; items.Add((w.WaitUntilDay, movedMilli)); }
+            else if (Member(w.Assignee).Id == m.Id) items.Add((w.WaitUntilDay, w.HoursRemainingMilli));
+        }
+        if (extraMilli > 0) { target = items.Count; items.Add((fromDay, extraMilli)); }
         if (items.Count == 0) return null;
-        if (m.HoursPerDayMilli <= 0) return Math.Max(Day, items.Max(i => i.Wait));
+        if (m.HoursPerDayMilli <= 0) return Math.Max(Day, target >= 0 ? items[target].Wait : items.Max(i => i.Wait));
         var done = new int?[items.Count];
         var lastWait = items.Max(i => i.Wait);
         for (var d = Day; done.Any(x => x is null); d++)
@@ -115,7 +123,7 @@ public sealed partial class Session
             }
             if (d > Math.Max(lastWait, Day) + 1000) break;   // cannot happen with positive hours; a guard, not a rule
         }
-        return extraMilli > 0 ? done[^1] : done.Max();
+        return target >= 0 ? done[target] : done.Max();
     }
 
     /// <summary>
@@ -171,8 +179,15 @@ public sealed partial class Session
         var w = _work.FirstOrDefault(x => x.Id == workId && x.CompletedDay is null);
         var to = _team.FirstOrDefault(m => m.Id == memberId);
         if (w is null || to is null) return null;
+        return HalfHours(HoursIfAssignedMilli(w, to));
+    }
+
+    /// <summary>The hours left on a work item in this person's own hours, as ApplyAssign would re-reckon them.</summary>
+    private long HoursIfAssignedMilli(WorkItem w, TeamMember to)
+    {
         var from = Member(w.Assignee);
-        return HalfHours(w.HoursRemainingMilli <= 0 ? 0 : (w.HoursRemainingMilli * from.SpeedPermille + to.SpeedPermille - 1) / to.SpeedPermille);
+        return w.HoursRemainingMilli <= 0 || from.Id == to.Id ? Math.Max(0, w.HoursRemainingMilli)
+            : (w.HoursRemainingMilli * from.SpeedPermille + to.SpeedPermille - 1) / to.SpeedPermille;
     }
 
     /// <summary>Milli-hours shown to the player, rounded up to the half hour (DESK-14), so a faster teammate's 2.4 hours
@@ -205,28 +220,19 @@ public sealed partial class Session
 
     // ------------------------------------------------------------------ who could take it (DESK-37, D17)
 
-    /// <summary>The preview of any action that has one, for the assignee picker.</summary>
-    private ActionPreview PreviewAny(PlayerAction a) => a switch
-    {
-        AwardAction x => BuildPreview(x),
-        EstablishBpaAction x => BuildEstablishPreview(x),
-        EstablishIdiqAction x => BuildEstablishIdiqPreview(x),
-        HostNationRequestAction x => BuildHostNationPreview(x),
-        AcsaOrderAction x => BuildAcsaPreview(x),
-        RequestExternalSupportAction x => BuildExternalSupportPreview(x),
-        ReviewFilesAction x => BuildReviewFilesPreview(x),
-        _ => BuildVisitPreview(a),
-    };
-
     internal IReadOnlyList<AssigneeChoice> BuildAssigneeChoices(PlayerAction action)
     {
         var team = BuildTeam();
         var result = new List<AssigneeChoice>();
         // A buy's preview day is when support starts; anything else's is when the work's result is in.
-        var starts = action is AwardAction or HostNationRequestAction or AcsaOrderAction or RequestExternalSupportAction;
+        var starts = action is AwardAction or HostNationRequestAction or AcsaOrderAction or RequestExternalSupportAction or CoordinateAction;
+        // Handing work over (Q23) is chosen by To, not Assignee, and the person who holds it now is shown as such.
+        var handOver = action as AssignAction;
+        var holder = handOver is null ? null : _work.FirstOrDefault(w => w.Id == handOver.Work && w.CompletedDay is null)?.Assignee;
         foreach (var m in team)
         {
-            var p = Said(PreviewAny(action with { Assignee = m.Id }));
+            var current = holder is not null && Member(holder).Id == m.Id;
+            var p = Said(PreviewAny(handOver is null ? action with { Assignee = m.Id } : handOver with { To = m.Id }));
             var who = m.Role == "you" ? "You" : m.Rank is { Length: > 0 } r ? $"{r} {m.Name}" : m.Name;
             var them = m.Role == "you" ? "you" : "them";
             var load = m.HoursQueued <= 0
@@ -235,7 +241,9 @@ public sealed partial class Session
                     ? $"{who}: {Hrs(m.FreeHoursToday)} free today, {Hrs(m.HoursQueued)} queued, clear by day {m.QueueClearsDay}."
                     : $"{who}: no hours free today, {Hrs(m.HoursQueued)} queued, clear by day {m.QueueClearsDay}.";
             string? when = null;
-            if (p.Accepted)
+            if (current)
+                when = $"{(m.Role == "you" ? "You are" : "They are")} on it now; it would be done day {p.EarliestStartMin} where it is.";
+            else if (p.Accepted)
             {
                 var days = p.EarliestStartMin == p.EarliestStartMax ? $"day {p.EarliestStartMin}" : $"day {p.EarliestStartMin} to {p.EarliestStartMax}";
                 var hours = p.ShopHoursMax <= 0 ? null
@@ -243,10 +251,11 @@ public sealed partial class Session
                 var lead = hours is null ? "With " + them : $"This takes {them} {hours}";
                 when = starts ? $"{lead}; it could start {days}." : $"{lead}; it would be done {days}.";
             }
+            var shown = p.Accepted || current;
             result.Add(new AssigneeChoice(m.Id, who, m.Portrait, m.FreeHoursToday, m.HoursQueued, m.QueueClearsDay,
-                p.Accepted ? p.ShopHoursMin : 0, p.Accepted ? p.ShopHoursMax : 0,
-                p.Accepted ? p.EarliestStartMin : null, p.Accepted ? p.EarliestStartMax : null,
-                when is null ? load : $"{load} {when}"));
+                shown ? p.ShopHoursMin : 0, shown ? p.ShopHoursMax : 0,
+                shown ? p.EarliestStartMin : null, shown ? p.EarliestStartMax : null,
+                when is null ? load : $"{load} {when}", current));
         }
         return result;
 

@@ -84,14 +84,8 @@ public sealed partial class Session
 
     private ActionResult ApplyCureNotice(CureNoticeAction c)
     {
-        var i = _issues.FirstOrDefault(x => x.Id == c.Issue);
-        if (i is null) return ActionResult.Stop($"{NameOf(c.Issue)} does not exist");
-        if (i.CureNoticeDay is not null) return ActionResult.Stop($"a cure notice on {NameOf(i.Id)} was already issued on day {i.CureNoticeDay}");
-        if (_work.Any(w => w.CompletedDay is null && w.Kind == WorkKind.CureNotice && (string?)w.Payload == i.Id))
-            return ActionResult.Stop($"a cure notice on {NameOf(i.Id)} is already in work");
-        var a = _arrangements.First(x => x.Id == i.ArrangementId);
-        if (a.Status is not (ArrangementStatus.Active or ArrangementStatus.Suspended))
-            return ActionResult.Stop($"{NameOf(a.Id)} is not running");
+        if (CheckCureNotice(c) is { } stop) return ActionResult.Stop(stop);
+        var i = _issues.First(x => x.Id == c.Issue);
         var rec = AddRecord(Day, RecordKind.Action, i.Id, $"Cure notice on {NameOf(i.Id)} started: {Perf.CureNoticeShopHours} shop hours.", [i.CauseId]);
         AddWork(WorkKind.CureNotice, $"Cure notice {NameOf(i.Id)}", Fixed.Milli(Perf.CureNoticeShopHours), Day, i.Id, rec);
         return ActionResult.Ok("in work");

@@ -87,13 +87,8 @@ public sealed partial class Session
 
     private ActionResult ApplyResolve(ResolveCommitmentAction r)
     {
-        var c = _commitments.FirstOrDefault(x => x.Id == r.Commitment);
-        if (c is null) return ActionResult.Stop($"commitment {r.Commitment} does not exist");
-        if (!c.Unresolved) return ActionResult.Stop($"{NameOf(c.Id)} is already {c.Decision.ToString().ToLowerInvariant()}");
-        var allowed = c.Kind == CommitmentKind.Handshake ? new[] { "ratify", "park", "refuse" } : ["ratify", "deny"];
-        if (!allowed.Contains(r.Choice)) return ActionResult.Stop($"{r.Choice} is not a choice for {NameOf(c.Id)}; choose {string.Join(", ", allowed)}");
-        if (r.FundingLine is not null && !_funding.Any(f => f.Id == r.FundingLine)) return ActionResult.Stop($"{NameOf(r.FundingLine)} does not exist");
-        if (c.Decision == CommitmentDecision.Parked && r.Choice == "park") return ActionResult.Stop($"{NameOf(c.Id)} is already parked");
+        if (CheckResolve(r) is { } stop) return ActionResult.Stop(stop);
+        var c = _commitments.First(x => x.Id == r.Commitment);
 
         var arr = _arrangements.First(a => a.Id == c.ArrangementId);
         var vendor = VendorData(c.VendorId)?.Name ?? "the vendor";

@@ -90,9 +90,11 @@ public sealed record TeamMemberView(
 /// in for anything else), behind their queue; null when the preview refuses the action.</param>
 /// <param name="ResultDayMax">The same at the worst roll.</param>
 /// <param name="Sentence">One or two sentences: how free they are, and when this would come out with them.</param>
+/// <param name="Current">Handing work over (AssignAction, DESK-50): this person holds it now. Their hours and result days are
+/// for the work where it is; handing it to them is refused.</param>
 public sealed record AssigneeChoice(
     string MemberId, string Name, string? Portrait, double FreeHoursToday, double HoursQueued, int? QueueClearsDay,
-    int HoursMin, int HoursMax, int? ResultDayMin, int? ResultDayMax, string Sentence);
+    int HoursMin, int HoursMax, int? ResultDayMin, int? ResultDayMax, string Sentence, bool Current = false);
 
 /// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today

@@ -118,11 +118,7 @@ public sealed partial class Session
 
     private ActionResult ApplySurvey(SurveyAction s)
     {
-        var k = _knowledge.FirstOrDefault(x => x.IslandId == s.Island);
-        if (k is null) return ActionResult.Stop($"island {s.Island} does not exist");
-        if (k.Tier is "surveyed" or "observed") return ActionResult.Stop($"{IslandData(s.Island).Name} is already surveyed");
-        if (k.SurveyReturnsDay is not null || _work.Any(w => w.Kind == WorkKind.Survey && w.CompletedDay is null && (string?)w.Payload == s.Island))
-            return ActionResult.Stop($"a survey of {IslandData(s.Island).Name} is already in work");
+        if (CheckSurvey(s) is { } stop) return ActionResult.Stop(stop);
         var rec = AddRecord(Day, RecordKind.Action, $"survey {s.Island}", $"Ordered a site survey of {IslandData(s.Island).Name}.", []);
         AddWork(WorkKind.Survey, $"Survey {IslandData(s.Island).Name}", Fixed.Milli(Rules.Model.Work.SurveyShopHours), Day, s.Island, rec);
         _surveys++;
@@ -456,12 +452,7 @@ public sealed partial class Session
 
     private ActionResult ApplyCoordinate(CoordinateAction c)
     {
-        var stops = new List<string>();
-        if (string.IsNullOrWhiteSpace(c.Id) || _arrangements.Any(x => x.Id == c.Id)) stops.Add("coordination needs a new id");
-        if (!Scenario.Sites.Any(s => s.Id == c.Site)) stops.Add($"site {c.Site} does not exist");
-        if (!Scenario.Sites.Any(s => s.Id == c.FromSite)) stops.Add($"site {c.FromSite} does not exist");
-        if (!_capData.ContainsKey(c.Capability)) stops.Add($"capability {c.Capability} does not exist");
-        if (c.Quantity <= 0) stops.Add("quantity must be positive");
+        var stops = CheckCoordinate(c);
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
         var from = SiteData(c.FromSite);
         var lag = _rngWork.NextInt(Rules.Instruments["coordination"].StartLagDays);
@@ -480,13 +471,8 @@ public sealed partial class Session
 
     private ActionResult ApplyDefinitize(DefinitizeAction d)
     {
-        var arr = _arrangements.FirstOrDefault(x => x.Id == d.Arrangement);
-        if (arr?.Uca is not { } u) return ActionResult.Stop($"{NameOf(d.Arrangement)} is not a UCA");
-        if (u.Definitized) return ActionResult.Stop($"{NameOf(d.Arrangement)} is already definitized");
-        if (u.DefinitizationInWork) return ActionResult.Stop($"definitization of {NameOf(d.Arrangement)} is already in work");
-        if (!u.ProposalReceived) return ActionResult.Stop($"{VendorData(arr.VendorId)!.Name} has not submitted a qualifying proposal yet");
-        if (_funding.FirstOrDefault(f => f.Id == d.FundingLine) is not { } dl) return ActionResult.Stop($"{NameOf(d.FundingLine)} does not exist");
-        if (!dl.Pays(arr.CapabilityId)) return ActionResult.Stop([.. FundingStops(dl, arr.CapabilityId, null, 0)]);
+        if (CheckDefinitize(d) is { Count: > 0 } stops) return ActionResult.Stop([.. stops]);
+        var u = _arrangements.First(x => x.Id == d.Arrangement).Uca!;
         u.DefinitizationInWork = true;
         var rec = AddRecord(Day, RecordKind.Action, d.Arrangement, $"Definitization of {NameOf(d.Arrangement)} started; to be funded from {NameOf(d.FundingLine)}.", []);
         AddWork(WorkKind.Definitize, $"Definitize {NameOf(d.Arrangement)}", Hours(_rngWork.NextInt(Rules.Uca.DefinitizationShopDays), true), Day, d, rec);
@@ -497,13 +483,8 @@ public sealed partial class Session
 
     private ActionResult ApplyTerminate(TerminateAction t)
     {
-        var arr = _arrangements.FirstOrDefault(x => x.Id == t.Arrangement);
-        if (arr is null) return ActionResult.Stop($"{NameOf(t.Arrangement)} does not exist");
-        if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return ActionResult.Stop($"{NameOf(t.Arrangement)} is not running");
-        if (NotOursToEnd(arr) is { } notOurs) return ActionResult.Stop(notOurs);
-        if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == t.Arrangement))
-            return ActionResult.Stop($"termination of {NameOf(t.Arrangement)} is already in work");
-        if (t.WithNotice && arr.NoticeDays is not > 0) return ActionResult.Stop($"{NameOf(t.Arrangement)} has no termination notice clause");
+        if (CheckTerminate(t) is { } stop) return ActionResult.Stop(stop);
+        var arr = _arrangements.First(x => x.Id == t.Arrangement);
         var rec = AddRecord(Day, RecordKind.Action, t.Arrangement,
             t.WithNotice ? $"Termination of {NameOf(t.Arrangement)} with {arr.NoticeDays} days' notice started." : $"Termination of {NameOf(t.Arrangement)} started.", []);
         var hours = arr.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true);
