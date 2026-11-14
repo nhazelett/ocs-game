@@ -188,8 +188,7 @@ public sealed partial class Session
         int Done(int shopDays)
         {
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            var days = WorkDays(PersonHours(hours, o.Assignee), o.Assignee);
-            return Day + lagFm + Math.Max(0, days - 1);
+            return FinishDay(PersonHours(hours, o.Assignee), o.Assignee, Day + lagFm);
         }
         var startMin = Math.Max(o.StartDay ?? 0, Done(inst.ShopDays.Min) + 1 + inst.StartLagDays.Min);
         var startMax = Math.Max(o.StartDay ?? 0, Done(inst.ShopDays.Max) + 1 + inst.StartLagDays.Max);

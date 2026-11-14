@@ -101,7 +101,7 @@ public sealed class SessionView
     public IReadOnlyList<InheritedFileView> InheritedFiles() => _s.BuildInheritedFiles();
 
     /// <summary>What a file review would take (M3-17): hard stops, shop hours (min and max equal) and in
-    /// EarliestStartMin/Max the day the findings would come in, ignoring the queue ahead. Changes nothing.</summary>
+    /// EarliestStartMin/Max the day the findings would come in, behind the assignee's queue. Changes nothing.</summary>
     public ActionPreview PreviewReviewFiles(ReviewFilesAction review) => Session.Said(_s.BuildReviewFilesPreview(review));
 
     // Going to people (M2R-04, docs/design/opening-and-guidance.md 6.2 and 6.2a). Each visit is an action with a shop-hour
@@ -174,6 +174,11 @@ public sealed class SessionView
     /// <summary>The office, one entry per person in team order, with their hours today and their unfinished work (DESK-02).
     /// Hand work over with <see cref="AssignAction"/>; give new work to someone with any action's Assignee.</summary>
     public IReadOnlyList<TeamMemberView> Team => _s.BuildTeam();
+
+    /// <summary>Who could take this action (DESK-37, D17): one choice per team member, in team order, with their free and
+    /// queued hours and the day the result would come with them, behind their queue. Any action a preview takes (a buy,
+    /// a BPA or IDIQ, host nation, ACSA or external support, a file review, a visit). Read only.</summary>
+    public IReadOnlyList<AssigneeChoice> AssigneeChoices(PlayerAction action) => _s.BuildAssigneeChoices(action);
 
     /// <summary>What is still open before the day ends (DESK-04, D1), as sentences to show beside "End the day": a request
     /// due within three days (or late) with nothing arranged or in work, then a teammate with free hours. Empty when nothing

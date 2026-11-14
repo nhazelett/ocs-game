@@ -196,7 +196,7 @@ public sealed partial class Session
         var (stops, hours) = CheckVisit(action);
         var queue = QueueHours(action.Assignee);
         hours = PersonHours(hours, action.Assignee);
-        var done = Day + Math.Max(0, WorkDays(hours, action.Assignee) - 1);
+        var done = FinishDay(hours, action.Assignee, Day);   // DESK-37: behind the assignee's queue
         var ready = action switch
         {
             AskScoAction => done + ScoLag().Min,
