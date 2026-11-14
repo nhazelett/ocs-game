@@ -4,6 +4,8 @@ namespace LinesOfSupport.Game;
 
 public partial class TabletopMap3D
 {
+    private string? shortfallLayoutKey;
+
     internal string? OpenShortfallSite { get; private set; }
     internal PanelContainer? ShortfallCard { get; private set; }
     internal Line2D? ShortfallTether { get; private set; }
@@ -66,16 +68,82 @@ public partial class TabletopMap3D
         if (ShortfallCard is not null) { RemoveChild(ShortfallCard); ShortfallCard.QueueFree(); ShortfallCard = null; }
         if (ShortfallTether is not null) { RemoveChild(ShortfallTether); ShortfallTether.QueueFree(); ShortfallTether = null; }
         OpenShortfallSite = null;
+        shortfallLayoutKey = null;
     }
 
     private void LayoutShortfall()
     {
         if (ShortfallCard is not { } card || OpenShortfallSite is not { } site) return;
         var resting = callouts.Single(c => c.Words == SiteStatuses[site]);
-        card.Size = new Vector2(card.CustomMinimumSize.X, card.GetCombinedMinimumSize().Y);
-        var available = Size - new Vector2(6, BottomOcclusion + 6);
-        card.Position = new Vector2(Math.Clamp(resting.Card.Position.X, 6, Math.Max(6, available.X - card.Size.X)),
-            Math.Clamp(resting.Card.Position.Y, 6, Math.Max(6, available.Y - card.Size.Y)));
-        ShortfallTether!.Points = [resting.PlacedAnchor, PointerEnd(resting.PlacedAnchor, card.GetRect())];
+        var key = $"{Size}|{BottomOcclusion}|{world.Position}|{camera.Size}|{resting.Heading!.GetGlobalRect()}";
+        if (key == shortfallLayoutKey) return;
+        var available = new Rect2(new Vector2(6, 6), Size - new Vector2(12, BottomOcclusion + 12));
+        var island = board.Sites.Single(s => s.Id == site).Island;
+        var outline = SolidInventory.Where(s => s.Island == island).SelectMany(s => s.Polygon).ToArray();
+        var min = new Vector2(outline.Min(p => p.X), outline.Min(p => p.Y));
+        var max = new Vector2(outline.Max(p => p.X), outline.Max(p => p.Y));
+        // Keep the selected shore, ring and name together in view. The resting
+        // callouts keep their own placement; only this expanded card moves.
+        var ground = new Rect2(min, max - min);
+        if (!available.Encloses(ground)) { MakeRoomForShortfall(); return; }
+        var name = new Rect2(resting.Heading!.GlobalPosition - GlobalPosition, resting.Heading.Size);
+        var protectedArea = ground.Merge(name).Grow(10);
+        var regions = new[]
+        {
+            new Rect2(available.Position, new Vector2(protectedArea.Position.X - available.Position.X, available.Size.Y)),
+            new Rect2(new Vector2(protectedArea.End.X, available.Position.Y), new Vector2(available.End.X - protectedArea.End.X, available.Size.Y)),
+            new Rect2(available.Position, new Vector2(available.Size.X, protectedArea.Position.Y - available.Position.Y)),
+            new Rect2(new Vector2(available.Position.X, protectedArea.End.Y), new Vector2(available.Size.X, available.End.Y - protectedArea.End.Y))
+        };
+        var body = card.GetChild<VBoxContainer>(0);
+        var labels = body.GetChildren().OfType<Label>().ToArray();
+        using var paper = card.GetThemeStylebox("panel");
+        var padding = paper.GetMinimumSize();
+        var anchor = SitePoint(site);
+        var candidates = new List<Rect2>();
+        foreach (var raw in regions.Where(r => r.Size.X >= 160 && r.Size.Y > 0))
+        {
+            var region = raw.Intersection(available);
+            var width = Math.Min(360, Mathf.Floor(region.Size.X));
+            if (width < 160) continue;
+            var height = padding.Y + (labels.Length - 1) * body.GetThemeConstant("separation");
+            foreach (var label in labels)
+            {
+                using var font = label.GetThemeFont("font");
+                height += Mathf.Ceil(font.GetMultilineStringSize(label.Text, width: width - padding.X,
+                    fontSize: label.GetThemeFontSize("font_size"),
+                    brkFlags: TextServer.LineBreakFlag.Mandatory | TextServer.LineBreakFlag.WordBound
+                        | TextServer.LineBreakFlag.Adaptive).Y);
+            }
+            if (height > region.Size.Y) continue;
+            var position = new Vector2(Math.Clamp(anchor.X - width / 2, region.Position.X, region.End.X - width),
+                Math.Clamp(anchor.Y - height / 2, region.Position.Y, region.End.Y - height));
+            candidates.Add(new Rect2(position, new Vector2(width, height)));
+        }
+        if (candidates.Count == 0)
+        {
+            // A close zoom can leave no side wide enough for readable type.
+            // Make room in the presentation camera rather than covering the site.
+            MakeRoomForShortfall(); return;
+        }
+        shortfallLayoutKey = key;
+        // Prefer less wrapping, then the shortest tether to the actual site.
+        var chosen = candidates.OrderByDescending(r => r.Size.X)
+            .ThenBy(r => anchor.DistanceSquaredTo(PointerEnd(anchor, r))).First();
+        foreach (var label in labels)
+        {
+            label.CustomMinimumSize = new Vector2(chosen.Size.X - padding.X, 0);
+            label.Size = new Vector2(chosen.Size.X - padding.X, 0);
+        }
+        card.CustomMinimumSize = new Vector2(chosen.Size.X, 0);
+        card.Size = chosen.Size;
+        card.Position = chosen.Position;
+        ShortfallTether!.Points = [anchor, PointerEnd(anchor, card.GetRect())];
+    }
+
+    private void MakeRoomForShortfall()
+    {
+        world.Position = Vector3.Zero;
+        camera.Size = Math.Min(50, camera.Size * 1.12f);
     }
 }
