@@ -65,7 +65,7 @@ public partial class MarketSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash(), "Arrange support sends exactly the previewed action.");
             var queuedHours = shell.AwardPreview!.QueueAheadHours;
             timing = shell.AwardTiming;
-            Require(queuedHours > 0 && timing.Text.Contains($", not counting the {queuedHours} hours already queued.")
+            Require(queuedHours > 0 && timing.Text.Contains($", after the {queuedHours} hours already queued.")
                 && !timing.Text.Contains("before allowing"), "A queued award states exactly the Sim's pending hours in ordinary prose.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("MARKET_SMOKE_PASS: requirement entry, explicit who/then-how, pure exact quote/warnings and exact award."); GetTree().Quit();

@@ -58,7 +58,7 @@ public partial class MapLayoutSmokeTest : Node
             await Screenshot("--visit-screenshot", shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body"), Labels(visitPanel).Single(l => l.Text.StartsWith("This takes ")));
             shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
             var hours = shell.VisitOptions["finance"].Preview.QueueAheadHours;
-            Require(hours > 0 && VisitText().Contains($", not counting the {hours} hours already queued."), "A queued visit states the exact pending hours.");
+            Require(hours > 0 && VisitText().Contains($", after the {hours} hours already queued."), "A queued visit states the exact pending hours.");
             foreach (var scenario in new[] { "spoke-b", "spoke-b-90", "sustainment" })
             {
                 DeveloperWorkspace(shell); Scenario(shell, scenario);
