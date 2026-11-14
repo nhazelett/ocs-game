@@ -69,11 +69,16 @@ public partial class ShortfallSmokeTest : Node
             {
                 map.Tabletop!.CloseShortfall(); Click(map.SiteScreenPoint(site)); await Frames(); CheckOpen(site);
             }
+            var spokeHash = shell.Session.StateHash;
             foreach (var look in new[] { 0, 1, 2 })
             {
                 shell.LookPicker.Select(look); shell.LookPicker.EmitSignal(OptionButton.SignalName.ItemSelected, look);
                 map.FitMap(); await Frames(); Click(CardPoint(spoke)); await Frames(); CheckOpen(spoke);
                 map.ZoomAt(map.GetViewportRect().Size / 2, 1.15f); map.PanBy(new Vector2(12, 8)); await Frames(); CheckOpen(spoke);
+                map.ZoomAt(map.SiteScreenPoint(spoke), 2.5f);
+                for (var i = 0; i < 24; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                CheckOpen(spoke);
+                Require(spokeHash == shell.Session.StateHash, "Zooming and fitting the opened reason preserve the simulation.");
                 map.Tabletop!.CloseShortfall(); MapCalloutSmokeTest.Check(map);
             }
             shell.QueueFree(); shell = null; await Frames();
@@ -90,6 +95,16 @@ public partial class ShortfallSmokeTest : Node
                 var card = table.ShortfallCard!;
                 Require(new Rect2(Vector2.Zero, table.Size - new Vector2(0, table.BottomOcclusion)).Encloses(card.GetRect()),
                     "The complete open card is inside the map: " + card.GetRect() + " in " + table.Size);
+                var island = map.Data!.Sites.Single(s => s.Id == site).Island;
+                var mapBounds = new Rect2(Vector2.Zero, table.Size - new Vector2(0, table.BottomOcclusion));
+                Require(table.SolidInventory.Where(s => s.Island == island)
+                    .All(s => s.Polygon.All(mapBounds.HasPoint) && !TabletopMap3D.IntersectsSolid(card.GetRect(), s.Polygon)),
+                    "The opened card leaves its entire island and red ring visible: " + site);
+                var name = table.SiteStatuses[site].GetParent().GetChildren().OfType<Label>().First();
+                Require(!card.GetGlobalRect().Intersects(name.GetGlobalRect()), "The site's name remains visible beside its opened card.");
+                Require(table.ShortfallTether!.Points[0].IsEqualApprox(map.SiteScreenPoint(site))
+                    && !card.GetRect().HasPoint(table.ShortfallTether.Points[0]),
+                    "The visible tether reaches the actual site, outside the card.");
                 using var style = card.GetThemeStylebox("panel");
                 Require(style is StyleBoxFlat paper && paper.BgColor == TabletopTheme.Paper && card.ZIndex > table.CalloutCards.Max(c => c.ZIndex)
                     && table.ShortfallTether!.ZIndex < card.ZIndex && table.ShortfallTether.ZIndex > table.CalloutCards.Max(c => c.ZIndex), "Opaque paper and tether draw above every resting fact.");
