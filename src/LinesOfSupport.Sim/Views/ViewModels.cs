@@ -109,9 +109,10 @@ public sealed record DayPlanView(int Day, IReadOnlyList<DayPlanPerson> People, I
 /// <param name="MemberId">For the face and links. Never shown.</param>
 /// <param name="Name">"You", or rank and name.</param>
 /// <param name="HoursToday">Their hours for the day.</param>
-/// <param name="HoursPlanned">Hours of today that go to their work (half hours).</param>
+/// <param name="HoursPlanned">Hours of today that go to their work: the sum of the work lines as shown, at most <c>HoursToday</c>.</param>
 /// <param name="Work">Their work today in the order they will do it: SF 44 trips first, then the staff meeting, then their queue.</param>
-/// <param name="Sentence">One line: hours planned, how many jobs should finish and how many carry over, hours left for small buys.</param>
+/// <param name="Sentence">One line under the name (it does not repeat it): hours planned, how many jobs should finish and how many carry over,
+/// hours left for small buys; planned and left over add up to the day.</param>
 public sealed record DayPlanPerson(string MemberId, string Name, string? Portrait, double HoursToday, double HoursPlanned,
     IReadOnlyList<DayPlanItem> Work, string Sentence);
 

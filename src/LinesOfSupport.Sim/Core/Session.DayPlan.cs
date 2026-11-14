@@ -68,15 +68,20 @@ public sealed partial class Session
             var waiting = _work.Count(w => w.CompletedDay is null && w.WaitUntilDay > d && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id);
 
             var name = m.Role == "you" ? "You" : MemberName(m);
-            var used = m.HoursPerDayMilli - left;
+            // The page puts the name above this line, so the line does not repeat it. Hours are the ones the player can
+            // add up on the page: planned is the sum of the work lines as shown, and what is left over is the day less
+            // that, so "2 of 8 hours planned" never sits beside "6.5 hours left over" (Fable's PR 242 review).
+            var perDay = HalfHours(m.HoursPerDayMilli);
+            var shown = Math.Min(perDay, items.Sum(i => i.HoursToday));
+            var leftShown = perDay - shown;
             var done = items.Count(i => i.FinishesToday);
             var carried = items.Count - done;
             var sentence = items.Count == 0
-                ? $"{name}: nothing to work on today; {HoursSaid(m.HoursPerDayMilli)} go to walk-in small buys."
-                : $"{name}: {HoursSaid(used)} of {HoursSaid(m.HoursPerDayMilli)} planned. {Jobs(done)} should finish today{(carried > 0 ? $", and {Jobs(carried).ToLowerInvariant()} carr{(carried == 1 ? "ies" : "y")} over" : "")}."
-                  + (left > 0 ? $" {HoursSaid(left)} left over go to walk-in small buys." : "");
+                ? $"Nothing to work on today; {Said(perDay)} go to walk-in small buys."
+                : $"{HoursText(shown)} of {Said(perDay)} planned. {Jobs(done)} should finish today{(carried > 0 ? $", and {Jobs(carried).ToLowerInvariant()} carr{(carried == 1 ? "ies" : "y")} over" : "")}."
+                  + (leftShown > 0 ? $" {Said(leftShown)} left over {(leftShown == 1 ? "goes" : "go")} to walk-in small buys." : "");
             if (waiting > 0) sentence += $" {(waiting == 1 ? "One more job is" : $"{waiting} more jobs are")} not ready until a later day.";
-            people.Add(new DayPlanPerson(m.Id, name, m.Portrait, HalfHours(m.HoursPerDayMilli), HalfHours(used), items, sentence));
+            people.Add(new DayPlanPerson(m.Id, name, m.Portrait, perDay, shown, items, sentence));
         }
 
         // Support due to start or to end today.
@@ -92,6 +97,7 @@ public sealed partial class Session
         return new DayPlanView(d, people, [.. due.Select(SentenceCase)], BuildEndOfDayCheck());
 
         static string Jobs(int n) => n switch { 0 => "Nothing", 1 => "One job", _ => $"{n} jobs" };
+        static string Said(double h) => h == 1 ? "1 hour" : $"{HoursText(h)} hours";
     }
 
     /// <summary>"1 hour", "2.5 hours", rounded up to the half hour as every view rounds (DESK-14).</summary>
