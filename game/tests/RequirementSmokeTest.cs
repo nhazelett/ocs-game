@@ -66,23 +66,23 @@ public partial class RequirementSmokeTest : Node
             Require(shell.RequirementAskButtons.Keys.SequenceEqual(before.WhoToAsk!.Select(a => a.Person.Id)),
                 "Who to ask comes from the Sim.");
             Require(before.WhoToAsk!.All(option => shell.RequirementAskButtons[option.Person.Id].Text == $"Ask {option.Person.DisplayName}")
-                && panel.GetChildren().OfType<Label>().Any(l => l.Text == "A request is often missing something. These people may know."),
+                && before.WhoCanHelp!.All(h => shell.RequestHelperRows.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text == h.Does)),
                 "Before the first ask, the button names the person and the request explains why to ask.");
             var askAction = new AskAboutAction { Day = expected.Day, Card = "req0007", Person = "ruiz" };
             var preview = expected.View.PreviewVisit(askAction);
-            Require(panel.GetChildren().OfType<Label>().Any(l => l.HasMeta("ask_preview") && l.Text.Contains(preview.ShopHoursMin.ToString())
+            Require(shell.RequestHelperRows.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.HasMeta("ask_preview") && l.Text.Contains(preview.ShopHoursMin.ToString())
                 && l.Text.Contains($"day {preview.EarliestStartMin}")), "Visit hours and timing come from the Sim preview.");
             Require(hash == shell.Session.StateHash, "Reading the request and visit preview changes no state.");
             var ask = shell.RequirementAskButtons["ruiz"];
             Require(expected.Apply(askAction).Accepted, "Independent ask is accepted.");
             ask.EmitSignal(Button.SignalName.Pressed); Matches(expected);
-            Require(actions.Last() is AskAboutAction a && a == askAction && shell.RequirementAskButtons["ruiz"].Disabled
-                && shell.RequirementAskButtons["ruiz"].Text == "Visit in progress", "Ask submits the exact typed action and shows pending.");
+            Require(actions.Last() is AskAboutAction a && a == askAction && !shell.RequirementAskButtons.ContainsKey("ruiz")
+                && shell.Session.View!.RequirementEditor("req0007")!.WhoCanHelp!.First(h => h.Person?.Id == "ruiz").State == HelperView.Asking, "Ask submits the exact typed action and shows pending.");
             hash = shell.Session.StateHash; var count = actions.Count;
             ask.EmitSignal(Button.SignalName.Pressed);
             Require(hash == shell.Session.StateHash && count == actions.Count, "A queued stale click cannot duplicate the visit.");
             ResumeMatches(); Step(shell); expected.AdvanceDay(); Matches(expected); KnownLines("req0007"); ResumeMatches();
-            Require(shell.RequirementAskButtons["ruiz"].Disabled && expected.View.RequirementEditor("req0007")!.WhoToAsk![0].Asked,
+            Require(!shell.RequirementAskButtons.ContainsKey("ruiz") && expected.View.RequirementEditor("req0007")!.WhoToAsk![0].Asked,
                 "A completed visit is shown as already asked.");
             foreach (var line in new[] { "operator", "maintenance" })
             {
@@ -108,7 +108,7 @@ public partial class RequirementSmokeTest : Node
             Open("req0012");
             shell.RequirementAskButtons["okafor"].EmitSignal(Button.SignalName.Pressed); Step(shell);
             KnownLines("req0012");
-            Require(shell.RequirementAddButtons.Count == 0 && shell.RequirementAskButtons["okafor"].Disabled
+            Require(shell.RequirementAddButtons.Count == 0 && !shell.RequirementAskButtons.ContainsKey("okafor")
                 && !shell.RequirementAskButtons["ruiz"].Disabled, "Asking someone who knows nothing leaves the knowledgeable person available.");
 
             // The tutorial is the gate path: operators are learned from Dunn, then deliberately added.

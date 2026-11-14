@@ -65,26 +65,7 @@ public partial class GameShell
             var addReason = DeskUi.ActionReason(linkedRequirement, add);
             DeskUi.Gate(add, addReason, view.Finished ? DeskUi.FinishedReason : null); RequirementAddButtons.Add(line.Id, add);
         }
-        if (card.WhoToAsk?.Any(option => !option.Asked && !option.Pending) == true)
-            linkedRequirement.AddChild(DeskUi.Label("A request is often missing something. These people may know."));
-        foreach (var option in card.WhoToAsk ?? [])
-        {
-            linkedRequirement.AddChild(DeskUi.Label(option.Person.WithUnit));
-            var action = new AskAboutAction { Day = view!.Day, Card = card.CardId, Person = option.Person.Id };
-            var preview = view.PreviewVisit(action);
-            var ask = DeskUi.Button(option.Pending ? "Visit in progress" : option.Asked ? "Already asked about this request"
-                : $"Ask {option.Person.DisplayName}", () => AskAboutRequirement(card.CardId, option.Person.Id));
-            ask.SetMeta("ask_person", option.Person.Id);
-            ask.Disabled = view.Finished || option.Asked || option.Pending || !preview.Accepted;
-            var askReason = DeskUi.ActionReason(linkedRequirement, ask);
-            DeskUi.Gate(ask, askReason, view.Finished ? DeskUi.FinishedReason : option.Pending ? "The visit is already in progress."
-                : option.Asked ? "You have already asked about this request." : preview.HardStops.FirstOrDefault()); RequirementAskButtons.Add(option.Person.Id, ask);
-            if (option.Asked || option.Pending) continue;
-            static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
-            var timing = DeskUi.Label($"This takes {Range(preview.ShopHoursMin, preview.ShopHoursMax)} shop {(preview.ShopHoursMin == 1 && preview.ShopHoursMax == 1 ? "hour" : "hours")}. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}.");
-            timing.SetMeta("ask_preview", option.Person.Id); linkedRequirement.AddChild(timing);
-            foreach (var stop in preview.HardStops.Concat(preview.SoftGaps)) linkedRequirement.AddChild(DeskUi.Label(stop));
-        }
+        RenderRequestHelpers(view!, card);
         var market = DeskUi.Button("Go to market", () => GoToMarket(card.CardId)); RequirementMarketButton = market;
         market.ThemeTypeVariation="TabletopPrimary";
         market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished;
@@ -113,14 +94,6 @@ public partial class GameShell
             }
         }
         RenderRequestDecisions(view, card.CardId);
-    }
-
-    private void AskAboutRequirement(string card, string person)
-    {
-        if (session.View is not { Finished: false } view || PlayingDay || SelectedCard != card
-            || view.RequirementEditor(card)?.WhoToAsk?.Any(a => a.Person.Id == person && !a.Asked && !a.Pending) != true) return;
-        var action = new AskAboutAction { Day = view.Day, Card = card, Person = person };
-        if (view.PreviewVisit(action).Accepted) SendAction(action);
     }
 
     private void AddLearnedRequirementLine(string card, string line)
