@@ -140,6 +140,18 @@ public sealed record DaySummaryView(int Day, string Sentence, IReadOnlyList<DayS
 public sealed record DaySummaryLine(string TeammateId, string Sentence);
 
 /// <summary>
+/// One thing the office decided (DESK-41, D21), for the list under Where things stand and on the request page. Only actions
+/// that were accepted; nothing being composed.
+/// </summary>
+/// <param name="Sentence">"Day 2: water at Hub from Harbor Bottling, 4500 gal/day for 7 days on a purchase order, given to you."</param>
+/// <param name="TeammateId">Who it went to (or who holds the work now), for their face. Never shown.</param>
+/// <param name="Teammate">That person as the player reads them ("you", "MSgt Joan Avery").</param>
+/// <param name="CardId">The request it was for, for opening it; null when it was for none. Never shown.</param>
+/// <param name="Request">That request's title ("Water for Hub"); null when none.</param>
+/// <param name="Now">How it stands now: "In work: done about day 23.", "Arranged: starts on day 5.", "Running through day 8.", "Done on day 4."</param>
+public sealed record DecisionView(int Day, string Sentence, string TeammateId, string Teammate, string? CardId, string? Request, string Now);
+
+/// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
 /// tab shows these under the lead, needing attention first.
 /// </summary>
