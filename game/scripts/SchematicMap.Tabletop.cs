@@ -10,7 +10,7 @@ public partial class SchematicMap
     private void RefreshTabletop()
     {
         if(Data is null || Tiles.Count==0)return;
-        var signature=TabletopTheme.Direction+Data.Id+string.Join(";",Tiles.Select(t=>$"{t.SiteId}:{t.CapabilityId}:{t.Status}:{t.TodayPermille}"))+string.Join(";",Day?.Links.Select(l=>$"{l.Id}:{l.Open}")??[])+string.Join(";",LostConfidenceSites.Order());
+        var signature=TabletopTheme.Direction+Data.Id+string.Join(";",Tiles.Select(t=>$"{t.SiteId}:{t.CapabilityId}:{t.Status}:{t.TodayPermille}:{t.WhyShort}"))+string.Join(";",Day?.Links.Select(l=>$"{l.Id}:{l.Open}")??[])+string.Join(";",LostConfidenceSites.Order());
         if(signature==tabletopSignature)return;
         Vector3? pan=Tabletop?.Pan;float? size=Tabletop?.CameraSize;
         if(Tabletop is not null){RemoveChild(Tabletop);Tabletop.QueueFree();}

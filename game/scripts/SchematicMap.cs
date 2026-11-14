@@ -22,7 +22,7 @@ public partial class SchematicMap : Node2D
     private readonly Dictionary<string, Vector2> islands = new(StringComparer.Ordinal), sites = new(StringComparer.Ordinal);
     private Vector2 worldSize = new(1500, 1000), offset, dragStart;
     private float zoom = .5f, animationSeconds;
-    private bool dragging, cameraTouched;
+    private bool dragging, dragged, cameraTouched;
     internal void SelectSite(string? id) { SelectedSite = id; Tabletop?.Select(id);QueueRedraw(); }
     internal void ShowConfidence(IEnumerable<string> values) { LostConfidenceSites = values.ToHashSet(StringComparer.Ordinal);RefreshTabletop(); QueueRedraw(); }
     internal void ShowConditions(IReadOnlyDictionary<string, SiteCondition> values) { Conditions = values; QueueRedraw(); }
@@ -32,7 +32,7 @@ public partial class SchematicMap : Node2D
         if (Day?.Day != value?.Day) animationSeconds = 0;
         Day = value; KnownChanges = value?.Changes.Where(c => c.Known).ToArray() ?? []; RefreshTabletop();Tabletop?.ShowFacts(Day,Math.Clamp(animationSeconds/5f,0,1));QueueRedraw();
     }
-    internal void ReplayMovement() { animationSeconds = 0; QueueRedraw(); }
+    internal void ReplayMovement() { Tabletop?.CloseShortfall(); animationSeconds = 0; QueueRedraw(); }
     internal void SetMovementProgress(float progress) { animationSeconds=Math.Clamp(progress,0,1)*5;Tabletop?.ShowFacts(Day,Math.Clamp(progress,0,1));QueueRedraw(); }
     internal Vector2 SiteScreenPoint(string id) => Tabletop?.SitePoint(id) ?? sites[id] * zoom + offset;
     internal void ShowScenario(ScenarioBoardData? data)
@@ -73,27 +73,47 @@ public partial class SchematicMap : Node2D
     public override void _Process(double delta) { if (Day is not null && animationSeconds < 6) { animationSeconds += (float)delta;Tabletop?.ShowFacts(Day,Math.Clamp(animationSeconds/5f,0,1)); QueueRedraw(); } }
     public override void _Input(InputEvent input)
     {
+        if (input is InputEventKey { Pressed: true, Keycode: Key.Escape } && Tabletop?.OpenShortfallSite is not null)
+        { Tabletop.CloseShortfall(); GetViewport().SetInputAsHandled(); return; }
         if (input is InputEventMouseButton mouse)
         {
-            if (!GetViewportRect().HasPoint(mouse.Position)) return;
+            if (!GetViewportRect().HasPoint(mouse.Position)) { if (!mouse.Pressed) dragging = false; return; }
             if (mouse.Pressed && mouse.ButtonIndex is MouseButton.WheelUp or MouseButton.WheelDown)
             { ZoomAt(mouse.Position, mouse.ButtonIndex == MouseButton.WheelUp ? 1.15f : 1 / 1.15f); GetViewport().SetInputAsHandled(); }
             if (mouse.ButtonIndex is MouseButton.Left or MouseButton.Middle)
             {
-                if (mouse.Pressed) { dragging = true; dragStart = mouse.Position; }
+                if (mouse.Pressed) { dragging = true; dragged = false; dragStart = mouse.Position; }
                 else
                 {
-                    var wasDragging = dragging; dragging = false;
-                    if (wasDragging && sites.Count > 0 && mouse.ButtonIndex == MouseButton.Left && dragStart.DistanceTo(mouse.Position) < 7)
+                    var click = dragging && !dragged && dragStart.DistanceTo(mouse.Position) < 7;
+                    dragging = false;
+                    if (click && mouse.ButtonIndex == MouseButton.Left)
                     {
-                        var target = sites.MinBy(s => SiteScreenPoint(s.Key).DistanceSquaredTo(mouse.Position));
-                        if (target.Key is not null && SiteScreenPoint(target.Key).DistanceTo(mouse.Position) < 100 * zoom)
-                        { SelectSite(target.Key); SitePicked?.Invoke(target.Key); }
+                        if (Tabletop is { } tabletop)
+                        {
+                            var site = tabletop.SiteAt(mouse.Position);
+                            if (site is not null)
+                            {
+                                SelectSite(site);
+                                if (!tabletop.ToggleShortfall(site)) SitePicked?.Invoke(site);
+                            }
+                            else tabletop.CloseShortfall();
+                        }
+                        else if (sites.Count > 0)
+                        {
+                            var target = sites.MinBy(s => SiteScreenPoint(s.Key).DistanceSquaredTo(mouse.Position));
+                            if (target.Key is not null && SiteScreenPoint(target.Key).DistanceTo(mouse.Position) < 100 * zoom)
+                            { SelectSite(target.Key); SitePicked?.Invoke(target.Key); }
+                        }
                     }
                 }
             }
         }
-        if (input is InputEventMouseMotion motion && dragging && motion.ButtonMask != 0) PanBy(motion.Relative);
+        if (input is InputEventMouseMotion motion && dragging && motion.ButtonMask != 0)
+        {
+            dragged |= dragStart.DistanceTo(motion.Position) >= 7;
+            PanBy(motion.Relative);
+        }
     }
     public override void _Draw()
     {

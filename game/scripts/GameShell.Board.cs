@@ -74,6 +74,10 @@ public partial class GameShell
             var button = DeskUi.Button($"{name} · {tile.Label}: {tile.TodayPermille / 10m:0.#}% · {StatusWords(tile.Status)}{(view.LostConfidenceSites.Contains(tile.SiteId) ? " · commander confidence lost" : "")}", () => SelectCapability(key));
             button.ToggleMode = true; button.ButtonPressed = SelectedCapability == key;
             button.SetMeta("capability", key); morningTiles.AddChild(button);
+            if (tile.WhyShort is { } why)
+            {
+                var reason = DeskUi.Label(why); reason.SetMeta("tile_why_short", key); morningTiles.AddChild(reason);
+            }
         }
         var caption = GetNode<Label>("%BoardCaption");
         caption.Text = ""; caption.Visible = false;

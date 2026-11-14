@@ -178,6 +178,8 @@ public partial class GameShell : Control
         Map.ShowConfidence(view?.LostConfidenceSites ?? []);
         Map.ShowCapabilities(board?.Tiles ?? []);
         Map.ShowMapDay(view?.MapDay());
+        MapHint.Text = Map.Tiles.Any(t => t.WhyShort is not null)
+            ? "Click a site to see why it is short." : "Drag to move. Scroll to zoom.";
         GetNode<Label>("%InboxDay").Text = view is null ? "No deployment started" : session.CompletedDay == 0 ? "Your first morning" : $"What happened on day {session.CompletedDay}";
         var records = (board?.Items ?? []).Where(r => DeveloperTools || r.Category != LinesOfSupport.Sim.Views.BoardCategory.Request || r.LinkKind != LinesOfSupport.Sim.Views.BoardLinkKind.Card).ToArray();
         GetNode<RichTextLabel>("%InboxRecords").Text = records.Length == 0 ? "No other news for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
