@@ -2,66 +2,93 @@ using Godot;
 using LinesOfSupport.Sim;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Data;
+using LinesOfSupport.Sim.Views;
 using System.Security.Cryptography;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
 
 namespace LinesOfSupport.Game.Tests;
 
-public partial class PortraitSmokeTest:Node
+public partial class PortraitSmokeTest : Node
 {
     public override async void _Ready()
     {
         try
         {
-            var people=Directory.GetDirectories(GamePaths.ScenarioRoot).Where(p=>File.Exists(Path.Combine(p,"scenario.json")))
-                .SelectMany(p=>Session.Create(ScenarioBundle.Load(p),1).View.People).GroupBy(p=>p.Portrait).Select(g=>g.First()).ToList();
-            string[] first=["ruiz","cole","whitfield","mills"];
-            people=people.OrderBy(p=>Array.IndexOf(first,p.Portrait) is var i && i>=0?i:99).ThenBy(p=>p.DisplayName).ToList();
-            var hashes=new HashSet<string>();
-            using var theme=TabletopTheme.Create();
-            var gallery=new Control{Theme=theme};AddChild(gallery);gallery.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-            var bg=new ColorRect{Color=TabletopTheme.Background,MouseFilter=Control.MouseFilterEnum.Ignore};gallery.AddChild(bg);bg.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-            Art.ArtDirections.Label(gallery,"Tabletop / the people you meet",new Rect2(24,18,900,40),28,"343d4b");
-            Art.ArtDirections.Label(gallery,"Original fictional character designs · no photographs or unit marks",new Rect2(24,59,1100,30),18,"66716d");
-            for(var i=0;i<=people.Count;i++)
+            var sessions = Directory.GetDirectories(GamePaths.ScenarioRoot)
+                .Where(p => File.Exists(Path.Combine(p, "scenario.json")))
+                .Select(p => Session.Create(ScenarioBundle.Load(p), 1)).ToArray();
+            var thumbnails = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var key in PersonPortrait.CastKeys.Append("fallback"))
             {
-                var cell=Art.ArtDirections.Panel(gallery,new Rect2(24+i%5*245,106+i/5*158,232,146),"faf5ea");
-                var portrait=new PersonPortrait();portrait.SetPerson(i<people.Count?people[i]:people[0] with{Portrait="missing-study-key"});cell.AddChild(portrait);portrait.Position=new Vector2(76,5);portrait.Size=new Vector2(80,100);
-                Require(portrait.PortraitKey==(i<people.Count?people[i].Portrait??"fallback":"fallback"),"Every declared cast key loads; unknown keys use the neutral fallback.");
-                using var image=portrait.Texture!.GetImage();if(portrait.PortraitKey!="fallback")Require(hashes.Add(Convert.ToHexString(SHA256.HashData(image.GetData()))),"Every named cast portrait is visually distinct.");
-                if (portrait.PortraitKey == "fallback")
-                {
-                    var face = image.GetPixel(128, 140);
-                    for (var y = 114; y < 178; y++)
-                        for (var x = 90; x < 166; x++)
-                            Require(image.GetPixel(x, y).IsEqualApprox(face),
-                                "Unknown people have a featureless silhouette, never a shared face.");
-                }
-                else for (var side = 0; side < 2; side++)
-                {
-                    var whites = 0; var pupils = 0;
-                    for (var y = 110; y < 166; y++)
-                        for (var x = side == 0 ? 60 : 128; x < (side == 0 ? 128 : 200); x++)
-                        {
-                            var pixel = image.GetPixel(x, y);
-                            if (pixel.R > .82f && pixel.G > .82f && pixel.B > .72f) whites++;
-                            if (pixel.R < .32f && pixel.G < .35f && pixel.B < .32f) pupils++;
-                        }
-                    Require(whites > 32 && pupils > 20,
-                        "Each eye renders with a visible light opening and dark pupil, including glasses: " + portrait.PortraitKey);
-                }
-                Art.ArtDirections.Label(cell,i<people.Count?people[i].DisplayName:"Unassigned portrait",new Rect2(6,112,220,30),18,"343d4b",align:HorizontalAlignment.Center);
+                var face = new PersonPortrait();
+                face.SetPerson(Person(key)); AddChild(face);
+                Require(face.PortraitKey == key, "Every catalog key, including the neutral fallback, loads.");
+                using var source = face.Texture!.GetImage();
+                using var image = (Image)source.Duplicate();
+                image.Convert(Image.Format.Rgba8);
+                Require(image.GetWidth() == 256 && image.GetHeight() == 320, "Portraits use the bounded 256 by 320 render.");
+                Require(image.HasMipmaps(), "Small UI faces have mipmaps in the native imported texture.");
+                Require(image.GetPixel(0, 0).A == 0 && image.GetPixel(128, 150).A > .99,
+                    "The bust is opaque and the surrounding canvas transparent for every look.");
+                if (key != "fallback") CheckEyes(image, key);
+                image.Resize(48, 60, Image.Interpolation.Lanczos);
+                Require(thumbnails.TryAdd(key, Convert.ToHexString(SHA256.HashData(image.GetData()))), "Unique cast key.");
+                // Small result rows choose 40x50 explicitly; Ready must preserve that size.
+                var small = new PersonPortrait { CustomMinimumSize = new Vector2(40, 50) };
+                small.SetPerson(Person(key)); AddChild(small);
+                Require(small.CustomMinimumSize == new Vector2(40, 50), "The result row keeps its smaller portrait size.");
+                small.QueueFree(); face.QueueFree();
             }
-            Require(people.Count>=17,"Every current scenario's cast is represented, including the four requested leads.");
-            var args=OS.GetCmdlineUserArgs();var shot=Array.IndexOf(args,"--screenshot");
-            if(shot>=0)
+            Require(thumbnails.Values.Distinct().Count() == thumbnails.Count,
+                "All 26 busts and the silhouette remain different after rendering down to 48 pixels.");
+            foreach (var session in sessions)
             {
-                await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
-                using var image=GetViewport().GetTexture().GetImage();Require(image.SavePng(args[shot+1])==Error.Ok,"Gallery screenshot saved.");
+                var keys = session.View.People.Select(p => p.Portrait)
+                    .Concat(session.View.Team.Select(p => p.Portrait)).Where(p => p is not null).Cast<string>().ToArray();
+                Require(keys.All(PersonPortrait.CastKeys.Contains), "Every scenario person and default teammate uses the new cast.");
             }
-            gallery.QueueFree();await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
-            GD.Print("PORTRAIT_SMOKE_PASS: all casts, distinct native renders, declared keys and neutral missing-key fallback.");GetTree().Quit();
+            foreach (var invalid in new string?[] { null, "", "../ruiz", "ruiz.png", "res://art/cast/ruiz", "missing-study-key" })
+            {
+                var face = new PersonPortrait(); face.SetPerson(Person(invalid));
+                Require(face.PortraitKey == "fallback", "Missing and malformed keys resolve to the same unassigned sculpt.");
+                face.Free();
+            }
+            using var fallback = PersonPortrait.LoadPortrait(null);
+            using var neutral = fallback.GetImage();
+            Require(neutral.GetWidth() == 256 && neutral.GetHeight() == 320,
+                "Thumbnail inspection never mutates the shared imported texture, including with the headless renderer.");
+            var brightEyes = 0;
+            for (var y = 100; y < 180; y++)
+                for (var x = 70; x < 180; x++)
+                {
+                    var pixel = neutral.GetPixel(x, y);
+                    if (pixel.R > .8f && pixel.G > .8f && pixel.B > .7f) brightEyes++;
+                }
+            Require(brightEyes == 0, "The fallback is a featureless unassigned sculpt, never a shared named face.");
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GD.Print("PORTRAIT_SMOKE_PASS: complete rendered cast, all scenario/team keys, mipmaps, 48px uniqueness, open eyes, safe neutral fallback.");
+            GetTree().Quit();
         }
-        catch(Exception e){GD.PushError($"PORTRAIT_SMOKE_FAIL: {e}");GetTree().Quit(1);}
+        catch (Exception error) { GD.PushError($"PORTRAIT_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
+    }
+
+    private static PersonView Person(string? key) => new("test", "Test", "", "", "", key, new Dictionary<string, string>());
+
+    private static void CheckEyes(Image image, string key)
+    {
+        for (var side = 0; side < 2; side++)
+        {
+            var light = 0; var dark = 0;
+            // The eye line of the fixed orthographic kit, including glasses; not the collar or hair.
+            for (var y = 105; y < 148; y++)
+                for (var x = side == 0 ? 65 : 130; x < (side == 0 ? 127 : 193); x++)
+                {
+                    var pixel = image.GetPixel(x, y);
+                    if (pixel.R > .75f && pixel.G > .73f && pixel.B > .63f) light++;
+                    if (pixel.R < .32f && pixel.G < .35f && pixel.B < .32f && pixel.A > .99f) dark++;
+                }
+            Require(light > 12 && dark > 8, "Both eyes have a light opening and dark iris at native size: " + key);
+        }
     }
 }

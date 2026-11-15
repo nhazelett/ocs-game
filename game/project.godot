@@ -22,3 +22,8 @@ project/assembly_name="LinesOfSupport.Game"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.12, 0.12, 0.12, 1)
+
+[importer_defaults]
+texture={
+"mipmaps/generate": true
+}

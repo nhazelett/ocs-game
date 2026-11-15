@@ -3,30 +3,45 @@ using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Game;
 
-// Original fictional designs are keyed by the scenario's portrait reference, never guessed from names.
+// Scenario and saved-team keys are stable. All live portraits use the same original 3D cast.
 public partial class PersonPortrait : TextureRect
 {
+    internal static IReadOnlyList<string> CastKeys { get; } = Array.AsReadOnly(new[]
+    {
+        "bell", "brandt", "brooks", "carvalho", "cole", "delgado", "dunn", "haddad", "hale",
+        "kowalski", "lin", "mensah", "mills", "moreau", "nair", "okafor", "ortiz", "park",
+        "pryce", "reyna", "ruiz", "sato", "silva", "tan", "ward", "whitfield"
+    });
     internal string PortraitKey { get; private set; } = "fallback";
+
     public override void _Ready()
     {
-        CustomMinimumSize = new Vector2(80,100); ExpandMode = ExpandModeEnum.IgnoreSize;
-        StretchMode = StretchModeEnum.KeepAspectCentered; MouseFilter = MouseFilterEnum.Ignore;
+        if (CustomMinimumSize == Vector2.Zero) CustomMinimumSize = new Vector2(80, 100);
+        ExpandMode = ExpandModeEnum.IgnoreSize;
+        StretchMode = StretchModeEnum.KeepAspectCentered;
+        TextureFilter = TextureFilterEnum.LinearWithMipmaps;
+        MouseFilter = MouseFilterEnum.Ignore;
         using var current = Texture;
-        if(current is null) SetPerson(null);
+        if (current is null) SetPerson(null);
     }
+
+    internal static Texture2D LoadPortrait(string? key)
+        => GD.Load<Texture2D>($"res://art/cast/{(key is not null && CastKeys.Contains(key) ? key : "fallback")}.png")
+            ?? throw new InvalidDataException("The packaged character cast is incomplete.");
+
     internal void SetPerson(PersonView? person)
     {
-        var key=person?.Portrait ?? "fallback";
-        var root=Path.Combine(GamePaths.AssetRoot,"portraits");
-        var candidate=Path.Combine(root,key+".svg");
-        // A portrait key is an identifier, never an arbitrary filesystem path.
-        if(key.Any(c=>!char.IsLetterOrDigit(c)&&c!='-'&&c!='_') || !File.Exists(candidate)) key="fallback";
+        var key = person?.Portrait;
+        // An explicit catalog, never an arbitrary filesystem or resource path.
+        if (key is null || !CastKeys.Contains(key)) key = "fallback";
         using var current = Texture;
-        if(current is not null && PortraitKey==key){TooltipText=person?.WithUnit ?? "No portrait available";return;}
-        using var image=new Image();
-        if(image.LoadSvgFromString(File.ReadAllText(Path.Combine(root,key+".svg")))!=Error.Ok) throw new InvalidDataException("Portrait could not render: "+key);
-        using var texture = ImageTexture.CreateFromImage(image);
-        Texture=texture;PortraitKey=key;SetMeta("portrait_key",key);
-        TooltipText=person?.WithUnit ?? "No portrait available";
+        if (current is null || PortraitKey != key)
+        {
+            using var texture = LoadPortrait(key);
+            Texture = texture;
+            PortraitKey = key;
+            SetMeta("portrait_key", key);
+        }
+        TooltipText = person?.WithUnit ?? "No portrait available";
     }
 }

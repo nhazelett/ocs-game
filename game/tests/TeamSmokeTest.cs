@@ -32,6 +32,20 @@ public partial class TeamSmokeTest : Node
             Require(shell.TeamFaces.Values.All(face => face.PortraitKey != "fallback")
                 && shell.TeamFaces.Values.Select(face => face.PortraitKey).Distinct().Count() == 3,
                 "A first deployment starts with three distinct people, not empty silhouettes.");
+            foreach (var pickerFace in shell.TeamFaceInputs.Values)
+            {
+                Require(pickerFace.ItemCount == PersonPortrait.CastKeys.Count + 1,
+                    "The face picker offers the whole new cast plus the unassigned sculpt.");
+                for (var i = 0; i < pickerFace.ItemCount; i++)
+                {
+                    var key = pickerFace.GetItemMetadata(i).AsString();
+                    using var icon = pickerFace.GetItemIcon(i);
+                    using var expectedIcon = PersonPortrait.LoadPortrait(key);
+                    Require(icon is not null && icon.ResourcePath == expectedIcon.ResourcePath
+                        && pickerFace.GetPopup().GetItemIconMaxWidth(i) == 32,
+                        "Every face choice previews the same imported texture that will be worn in play.");
+                }
+            }
             var members = shell.Session.PrepTeam;
             var lead = members.Single(m => m.Role == "you");
             var experienced = members.Single(m => m.Role == "experienced");
@@ -43,6 +57,18 @@ public partial class TeamSmokeTest : Node
             shell.TeamNameInputs[experienced.Id].Text = "Robin Hayes";
             shell.TeamNameInputs[junior.Id].Text = "Sam Reed";
             var face = shell.TeamFaceInputs[experienced.Id];
+            face.Select(4); face.EmitSignal(OptionButton.SignalName.ItemSelected, 4);
+            face.ShowPopup();
+            for (var i = 0; i < 3; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            using (var popup = face.GetPopup())
+            {
+                Require(popup.Visible && popup.Size.Y <= 520 && popup.Size.X <= 640,
+                    "The opened face menu stays bounded even with all 27 portrait choices.");
+                popup.EmitSignal(PopupMenu.SignalName.IndexPressed, face.ItemCount - 1);
+                popup.Hide();
+            }
+            Require(shell.TeamFaces[experienced.Id].PortraitKey == face.GetItemMetadata(face.ItemCount - 1).AsString(),
+                "Choosing the last face through the real popup updates the same live portrait.");
             face.Select(4); face.EmitSignal(OptionButton.SignalName.ItemSelected, 4);
             var faceKey = face.GetItemMetadata(4).AsString();
             Require(shell.TeamFaces[experienced.Id].PortraitKey == faceKey, "The selected face is rendered from the existing portrait set.");

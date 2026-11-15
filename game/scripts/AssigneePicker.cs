@@ -22,6 +22,7 @@ internal partial class AssigneePicker : VBoxContainer
             button.ToggleMode = true; button.ButtonPressed = choice.MemberId == selected;
             button.Disabled = disabled; button.CustomMinimumSize = new Vector2(0, 88);
             button.ThemeTypeVariation = "TabletopPerson";
+            button.TextureFilter = TextureFilterEnum.LinearWithMipmaps;
             button.ExpandIcon = true; button.AddThemeConstantOverride("icon_max_width", 48);
             var portrait = new PersonPortrait();
             portrait.SetPerson(new PersonView(choice.MemberId, choice.Name, "", "Contracting shop", "team", choice.Portrait, new Dictionary<string, string>()));

@@ -52,9 +52,7 @@ public partial class GameShell
         TeamBackButton = DeskUi.Button("Back to the desk", CloseTeam); footer.AddChild(TeamBackButton);
         TeamApplyButton = DeskUi.Button("Use these names and faces", ApplyTeamChoices);
         TeamApplyButton.ThemeTypeVariation = "TabletopPrimary"; footer.AddChild(TeamApplyButton);
-        teamPortraits = Directory.GetFiles(Path.Combine(GamePaths.AssetRoot, "portraits"), "*.svg")
-            .Select(Path.GetFileNameWithoutExtension).Where(x => x is not null && x != "fallback")
-            .Cast<string>().Order(StringComparer.Ordinal).Prepend("").ToArray();
+        teamPortraits = PersonPortrait.CastKeys.Prepend("").ToArray();
     }
 
     private void PrepareTeamChoices()
@@ -154,6 +152,7 @@ public partial class GameShell
             button.ClipText = true; button.TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis;
             button.CustomMinimumSize = new Vector2(180, 48);
             button.ThemeTypeVariation = "TabletopPerson";
+            button.TextureFilter = TextureFilterEnum.LinearWithMipmaps;
             button.ExpandIcon = true;
             var portrait = new PersonPortrait();
             portrait.SetPerson(TeamPerson(member.Id,TeamName(member),member.Rank,member.Portrait));
@@ -199,6 +198,19 @@ public partial class GameShell
                 {
                     face.AddItem(i == 0 ? "No portrait" : "Face " + i); face.SetItemMetadata(i, teamPortraits[i]);
                     if (teamPortraits[i] == pick.Portrait) face.Select(i);
+                }
+                face.TextureFilter = TextureFilterEnum.LinearWithMipmaps;
+                face.GetPopup().CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.LinearWithMipmaps;
+                face.ExpandIcon = true;
+                face.AddThemeConstantOverride("icon_max_width", 32);
+                face.GetPopup().AddThemeConstantOverride("icon_max_width", 32);
+                face.GetPopup().MaxSize = new Vector2I(640, 520);
+                face.GetPopup().ShrinkHeight = true;
+                for (var i = 0; i < teamPortraits.Length; i++)
+                {
+                    using var icon = PersonPortrait.LoadPortrait(teamPortraits[i]);
+                    face.SetItemIcon(i, icon);
+                    face.GetPopup().SetItemIconMaxWidth(i, 32);
                 }
                 face.ItemSelected += index => portrait.SetPerson(TeamPerson(member.Id, name.Text, member.Rank, teamPortraits[(int)index]));
                 details.AddChild(face); TeamFaceInputs[member.Id] = face;
