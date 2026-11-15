@@ -168,21 +168,26 @@ layout_mode = 2
 text = ""
 autowrap_mode = 2
 
-[node name="DeskTabs" type="TabContainer" parent="Margin/Layout/WorkArea"]
-unique_name_in_owner = true
-clip_tabs = false
+[node name="DeskPanel" type="VBoxContainer" parent="Margin/Layout/WorkArea"]
 custom_minimum_size = Vector2(440, 300)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Today" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="DeskTabs" type="TabContainer" parent="Margin/Layout/WorkArea/DeskPanel"]
+unique_name_in_owner = true
+clip_tabs = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Today" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs"]
 layout_mode = 2
 
-[node name="Requests" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Requests" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="Market" type="Control" parent="Margin/Layout/WorkArea/DeskTabs/Requests"]
+[node name="Market" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs/Requests"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -191,19 +196,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Vendors" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Vendors" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="Payments" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Payments" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="Inbox" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Inbox" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="Contents" type="ScrollContainer" parent="Margin/Layout/WorkArea/DeskTabs/Inbox"]
+[node name="Contents" type="ScrollContainer" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs/Inbox"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -214,16 +219,16 @@ offset_right = -12.0
 offset_bottom = -12.0
 horizontal_scroll_mode = 0
 
-[node name="Items" type="VBoxContainer" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents"]
+[node name="Items" type="VBoxContainer" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs/Inbox/Contents"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="InboxDay" type="Label" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents/Items"]
+[node name="InboxDay" type="Label" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs/Inbox/Contents/Items"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="InboxRecords" type="RichTextLabel" parent="Margin/Layout/WorkArea/DeskTabs/Inbox/Contents/Items"]
+[node name="InboxRecords" type="RichTextLabel" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs/Inbox/Contents/Items"]
 unique_name_in_owner = true
 layout_mode = 2
 fit_content = true
@@ -231,11 +236,11 @@ scroll_active = false
 bbcode_enabled = false
 selection_enabled = true
 
-[node name="Debrief" type="Control" parent="Margin/Layout/WorkArea/DeskTabs"]
+[node name="Debrief" type="Control" parent="Margin/Layout/WorkArea/DeskPanel/DeskTabs"]
 visible = false
 layout_mode = 2
 
-[node name="BuildStatus" type="Label" parent="Margin/Layout"]
+[node name="BuildStatus" type="Label" parent="Margin/Layout/WorkArea/DeskPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "No scenario loaded."
