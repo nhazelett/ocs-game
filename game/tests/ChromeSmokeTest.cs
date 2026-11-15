@@ -81,6 +81,32 @@ public partial class ChromeSmokeTest : Node
             Require(shell.Session.StateHash == selectionHash, "Vendor label formatting changes no Sim state.");
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.SelectedCapability is null && !caption.Visible && caption.Text == "", "Continue starts with no stale map selection.");
+            // A real accepted action must never borrow height from the operating area.
+            foreach (var look in Enumerable.Range(0, 3))
+            {
+                shell.LookPicker.Select(look); shell.LookPicker.EmitSignal(OptionButton.SignalName.ItemSelected, look);
+                DeveloperWorkspace(shell); Scenario(shell, "tutorial"); Step(shell, 3);
+                shell.DeveloperToggle.ButtonPressed = false;
+                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
+                await Capture($"status-{look}-before");
+                var mapArea = shell.GetNode<Control>("%BoardContainer");
+                var controls = shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel/BoardLayout/MapControls");
+                var mapRect = mapArea.GetGlobalRect(); var controlsRect = controls.GetGlobalRect();
+                Pick(shell.PersonContactInput, "finance"); shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
+                await Capture($"status-{look}-after");
+                var status = shell.GetNode<Label>("%BuildStatus");
+                Require(status.IsVisibleInTree() && status.Text == "The task is on your team's work list."
+                    && status.GetLineCount() <= 2 && GetViewport().GetVisibleRect().Encloses(status.GetGlobalRect()),
+                    "The complete action acknowledgement stays readable at the foot of the desk.");
+                Require(mapArea.GetGlobalRect() == mapRect && controls.GetGlobalRect() == controlsRect,
+                    "Showing the action status never changes the map or its buttons' bounds.");
+                var tabsRect = shell.GetNode<Control>("%DeskTabs").GetGlobalRect();
+                Require(status.GetGlobalRect().Position.Y >= tabsRect.End.Y && !status.GetGlobalRect().Intersects(mapRect),
+                    "The status clears the desk's scroll and fixed actions as well as the map.");
+                Step(shell); await Capture($"status-{look}-cleared");
+                Require(!status.Visible && mapArea.GetGlobalRect() == mapRect && controls.GetGlobalRect() == controlsRect,
+                    "Clearing the acknowledgement after the day also leaves the map steady.");
+            }
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("CHROME_SMOKE_PASS: normal preparation/morning, whole-dollar cash on one line, actual map selection and reset, capitalised partner labels and unchanged Sim actions."); GetTree().Quit();
         }
