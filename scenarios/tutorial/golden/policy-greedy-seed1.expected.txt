@@ -26,58 +26,59 @@ Day 3
   DONE      CE small buys: 2 worked today (1 h of shop time).
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 4
-  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
-  DONE      Government purchase card awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 8, ends day 20. Obligated $8,580.
+  ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); quoted $7,020.
   EVENT     Harbor Equipment Co is short of forklifts this week
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 5
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 6
+  DECLINED  Harbor Equipment Co declined the BPA call for material handling equipment at Hub. A BPA is not binding; the vendor may decline any call.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 7
+  ACTION    Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
+  DONE      Government purchase card awarded to Coastal Rentals for material handling equipment at Hub; performance starts day 9, ends day 21. Obligated $8,580.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 8
   EVENT     The host nation pulls its honey trucks. Main Island Utilities: we need our honey trucks back after day 12.
   WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) material handling equipment at Hub ended.
-  START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
+  SHORT     Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
 Day 9
   ACTION    SF 44 cash purchase to Main Island Sanitation: Waste removal at Hub, 3600 gal/day for 8 days (Removal and disposal). Paid in cash at each delivery, $144 a day, about $1,152 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated as each delivery is paid.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
   END       Island Mart water at Hub ended.
+  START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
+  OK        Material handling equipment at Hub restored to 100%.
 Day 10
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery.
+  FAIL      Main Island Utilities (host nation) water at Hub missed today's delivery.
+  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
+  SHORT     Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
 Day 12
   DONE      CE small buys: 2 worked today (1 h of shop time).
+  OK        Material handling equipment at Hub restored to 100%.
 Day 13
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) waste removal at Hub ended.
   START     Waste removal at Hub from Main Island Sanitation began, 3600 gal/day.
 Day 14
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  FAIL      Main Island Utilities (host nation) power at Hub had equipment down.
-  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
-  SHORT     Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
+  FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery.
 Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  OK        Material handling equipment at Hub restored to 100%.
 Day 16
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 17
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 18
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
-  SHORT     Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
 Day 19
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  OK        Material handling equipment at Hub restored to 100%.
 Day 20
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 
@@ -90,35 +91,35 @@ Hub Water                 ....................
 Hub Lodging               ....................
 Hub Food service          ....................
 Hub Waste removal         ....................
-Hub Material handling equ .............5...5..
+Hub Material handling equ .......X..5.........
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 99% (sortie generation 100%, throughput 95%, endurance 100%, resilience 100%)
-  Obligated $643,466; incurred $331,466; incurred but not obligated $0
+  Mission output 98% (sortie generation 100%, throughput 93%, endurance 100%, resilience 100%)
+  Obligated $643,466; incurred $330,806; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 37; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 0
-  hubSite.mhe: 0 day(s) down, 2 degraded, lowest 50%
+  Surveys 0; shop hours worked 51; payment errors 0; execution-confusion days 1; vendor failures 3; declined BPA calls 1
+  hubSite.mhe: 1 day(s) down, 1 degraded, lowest 0%
 
 GAPS AND WHY (each traced back through its causes)
-  Day 14: Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
-      <- day 14: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
-          <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
-  Day 18: Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
-      <- day 18: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
-          <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
+  Day 8: Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
+  Day 11: Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
+      <- day 11: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
+          <- day 7: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
-  #0 hubSite.mhe days 14-14, lowest 50%, 0 day(s) down: DISCOVERABLE
-      [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 14) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
-  #1 hubSite.mhe days 18-18, lowest 50%, 0 day(s) down: DISCOVERABLE
-      [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 18) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
+  #0 hubSite.mhe days 8-8, lowest 0%, 1 day(s) down: AVOIDABLE
+      [discoverable] Inherited host nation support for material handling equipment at Hub was withdrawn by the host nation on day 3 (last day of support 7) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
+      [unforeseeable] The BPA call for material handling equipment at Hub was declined on day 6. A BPA is not binding; any call can be declined.
+      [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7. Coastal Rentals material handling equipment at Hub did not start until day 9.
+  #1 hubSite.mhe days 11-11, lowest 50%, 0 day(s) down: DISCOVERABLE
+      [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 11) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
 
 PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
-  [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 0)
+  [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 1)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 95% (mission.output = 0.987)
+  [met] Mission output at least 95% (mission.output = 0.981)
 
-State hash 76034e1a333e9346c78586df8f6c6e4540186556110663828aaac3d27c744d32
+State hash af5b5bf5295a4f421e6636bda2da524580244e7c7700411cb14b89ee13f84250

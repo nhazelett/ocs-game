@@ -74,7 +74,7 @@ public class WhoKnewTests
         Assert.Equal(GapTag.Discoverable, f.Tag);
         Assert.Contains("SMSgt Ray Dunn knew it needed operators, and nobody asked.", f.Text, StringComparison.Ordinal);
         Assert.Contains("Asking about the request for material handling equipment for Hub before the buy", f.Text, StringComparison.Ordinal);
-        var gap = greedy.View.Debrief().Gaps.First(g => g.CapabilityId == "mhe");
+        var gap = greedy.View.Debrief().Gaps.First(g => g.CapabilityId == "mhe" && g.Factors.Any(x => x.Kind == GapFactorKind.VendorFailure));
         Assert.Equal(GapTag.Discoverable, gap.Tag);
     }
 

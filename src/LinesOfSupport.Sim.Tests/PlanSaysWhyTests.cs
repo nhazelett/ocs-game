@@ -88,10 +88,11 @@ public class PlanSaysWhyTests
     [Fact]
     public void A_vendor_failure_says_there_is_nothing_for_you_to_do()
     {
-        // Day 14 in the greedy tutorial: Coastal Rentals' forklifts are down for the day, and the vendor puts it right.
+        // The greedy tutorial: on the first day Coastal Rentals' forklifts are down, the vendor puts it right.
         var bundle = Repo.Load("tutorial");
-        var log = Replay.Run(bundle, 1, PolicyCatalog.Create("greedy")).ToSave();
-        var greedy = Replay.Run(bundle, log with { SavedDay = null }, stopAfterDay: 14);
+        var played = Replay.Run(bundle, 1, PolicyCatalog.Create("greedy"));
+        var day = played.Records.First(r => r.Kind == RecordKind.VendorFailure && r.Text.StartsWith("Coastal Rentals", StringComparison.Ordinal)).Day;
+        var greedy = Replay.Run(bundle, played.ToSave() with { SavedDay = null }, stopAfterDay: day);
         var why = greedy.View.WhyShort("hubSite", "mhe");
         Assert.Equal("Coastal Rentals' equipment was down (no operators); it is the vendor's to put right, and there is nothing for you to do unless it happens again.", why);
     }
