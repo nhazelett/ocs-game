@@ -105,7 +105,10 @@
       },
       "person": "ortiz",
       "message": "There's a heat advisory on and the base water point is down for repairs until day 9. We need bottled water from tomorrow, about forty-five hundred gallons a day.",
-      "flaggedEnduring": false
+      "flaggedEnduring": false,
+      "confirms": {
+        "ortiz": "Bottled water is all we need; nobody has to run anything for it. Forty-five hundred gallons a day from day 2, until the water point is back on day 9."
+      }
     },
     {
       "id": "tutForklift",
@@ -144,7 +147,10 @@
         "fromDay": 6,
         "says": "The mayor's office tells me Main Island Utilities wants its honey trucks back before long. When they go, the latrines still get pumped every day, no gap. Contracting, that one is yours. Capt Ruiz has the numbers."
       },
-      "flaggedEnduring": false
+      "flaggedEnduring": false,
+      "confirms": {
+        "ruizT": "Pumping the latrines and hauling it away is the whole job; whoever does it brings their own trucks and crews. Every day from day 13, no gaps."
+      }
     }
   ],
   "vendors": [

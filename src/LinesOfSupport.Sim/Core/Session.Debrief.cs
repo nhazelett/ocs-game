@@ -258,9 +258,12 @@ public sealed partial class Session
                                 hn.RecordId is null ? [r.Id] : [r.Id, hn.RecordId]));
                             break;
                         }
+                        // DESK-58 (D25): a part only someone else knew about, and nobody asked them, was discoverable, not in
+                        // front of you; asked and still left out stays avoidable.
+                        var knew = missing.Count > 0 && !a.IsCoordination ? WhoKnew(a, cap, d) : null;
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
-                            ? new GapFactor(GapFactorKind.VendorFailure, GapTag.Avoidable, d,
-                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
+                            ? new GapFactor(GapFactorKind.VendorFailure, knew is null ? GapTag.Avoidable : GapTag.Discoverable, d,
+                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{knew}{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
                                 $"{Upper(NameOf(a.Id))} failed on day {d} with full operator and maintenance coverage.{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;

@@ -246,24 +246,24 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #3 spokeBSite.power days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #1)
       [avoidable] Arrangements at Spoke B were sized for 324 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 21) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran.
+      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 21) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request.
   #4 spokeBSite.lodging days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #2)
   #5 spokeBSite.lodging days 15-30, lowest 0%, 15 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #3)
-  #6 spokeCSite.water days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Coastal Provisions water at Spoke C failed (first on day 13) and was bought without plant operators or maintenance; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
+  #6 spokeCSite.water days 13-13, lowest 0%, 1 day(s) down: DISCOVERABLE
+      [discoverable] Coastal Provisions water at Spoke C failed (first on day 13) and was bought without plant operators or maintenance; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed plant operators and maintenance, and nobody asked. Asking about the request for water for Spoke C before the buy would have put that in the request. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
   #7 spokeCSite.water days 15-30, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] Arrangements at Spoke C were sized for 1800 gal a day against demand of 2400 a day. Population rose to 160 on day 15, which the plan showed from day 1.
-      [avoidable] Coastal Provisions water at Spoke C failed (first on day 22) and was bought without plant operators or maintenance; its failure odds were higher every day it ran. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
-  #8 spokeCSite.food days 13-13, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Food service depends on water, which was short. (see #6)
+      [discoverable] Coastal Provisions water at Spoke C failed (first on day 22) and was bought without plant operators or maintenance; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed plant operators and maintenance, and nobody asked. Asking about the request for water for Spoke C before the buy would have put that in the request. The performance issue with Coastal Provisions on water at Spoke C opened day 23; decision: no decision.
+  #8 spokeCSite.food days 13-13, lowest 0%, 1 day(s) down: DISCOVERABLE
+      [discoverable] Food service depends on water, which was short. (see #6)
       [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #9 spokeCSite.food days 15-30, lowest 0%, 10 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #7)
       [discoverable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. A survey of Third Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 14: Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
       [avoidable] Arrangements at Spoke C were sized for 360 meals a day against demand of 480 a day. Population rose to 160 on day 15, which the plan showed from day 1.
-      [avoidable] Coastal Provisions food service at Spoke C failed (first on day 20) and was bought without food service staff; its failure odds were higher every day it ran.
+      [discoverable] Coastal Provisions food service at Spoke C failed (first on day 20) and was bought without food service staff; its failure odds were higher every day it ran. MSgt Lena Brandt knew it needed food service staff, and nobody asked. Asking about the request for food service for Spoke C before the buy would have put that in the request.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)

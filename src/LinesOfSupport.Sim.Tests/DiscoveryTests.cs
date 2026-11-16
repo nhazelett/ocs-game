@@ -58,7 +58,7 @@ public class DiscoveryTests
         Assert.True(s.Apply(new AskAboutAction { Card = "req0012", Person = "okafor" }).Accepted);
         s.AdvanceDay();
         var said = s.Records.Last(r => r.Kind == RecordKind.Visit).Text;
-        Assert.EndsWith("\"Nothing I can add on the request for water for Spoke C.\"", said, StringComparison.Ordinal);
+        Assert.EndsWith("\"As far as I know, nothing is missing from the request for water for Spoke C.\"", said, StringComparison.Ordinal);
         Assert.DoesNotContain("req0012", said, StringComparison.Ordinal);
         Assert.All(s.View.RequirementEditor("req0012")!.Lines.Where(l => l.Kind != "core"), l => Assert.False(l.Known));
 

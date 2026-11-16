@@ -390,7 +390,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Power depends on fuel, which was short. (see #0)
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 30) and was bought without operators; its failure odds were higher every day it ran.
+      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 30) and was bought without operators; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request.
       [avoidable] Power depends on fuel, which was short. (see #2)
       [avoidable] Power depends on fuel, which was short. (see #3)
       [avoidable] Power depends on fuel, which was short. (see #4)

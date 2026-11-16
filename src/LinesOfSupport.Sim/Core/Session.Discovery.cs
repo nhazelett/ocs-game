@@ -1,3 +1,4 @@
+using LinesOfSupport.Sim.Data;
 using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Sim.Core;
@@ -50,7 +51,10 @@ public sealed partial class Session
             _learnedLines.TryAdd((card.Id, line), (day, a.Person));
             told.Add(k.Says);
         }
-        var said = told.Count > 0 ? string.Join(" ", told) : $"Nothing I can add on {CardName(card.Id)}.";
+        // DESK-58 (D25): an ask that finds nothing missing says what it confirmed, so asking never reads as wasted time.
+        var said = told.Count > 0 ? string.Join(" ", told)
+            : data.Confirms.TryGetValue(a.Person, out var confirmed) ? confirmed
+            : $"As far as I know, nothing is missing from {CardName(card.Id)}.";
         AddRecord(day, RecordKind.Visit, PersonSubject(a.Person, card.Id), $"{Who(a.Person, "They")}: \"{said}\"", [cause]);
     }
 
@@ -77,6 +81,40 @@ public sealed partial class Session
         => _learnedLines.TryGetValue((card.Id, line), out var r)
             ? (Scenario.RequirementCards.First(c => c.Id == card.Id).KnownBy[line].Says, BuildPerson(r.Person))
             : null;
+
+    /// <summary>
+    /// DESK-58 (D25): the order form's warning about an operator or maintenance part the request leaves out names the
+    /// person the request came from as the one to ask, until they have been asked or the part is known. It says this for
+    /// every such part, not only the ones somebody knows about, so it marks no ask as the one that pays off.
+    /// </summary>
+    private string AskFirst(CardState? card, CapabilityLineData line)
+    {
+        if (card is null || line.Kind is not ("operator" or "maintenance") || LineKnown(card, line.Id)) return "";
+        if (BuildPerson(card.PersonId) is not { } p) return "";
+        if (_askedAbout.TryGetValue(card.Id, out var asked) && asked.Contains(p.Id)) return "";
+        return $" {p.DisplayName} asked for this: ask about {(line.Label ?? line.Id).ToLowerInvariant()} before you buy.";
+    }
+
+    /// <summary>
+    /// DESK-58 (D25): for a vendor failure on an arrangement bought without an operator or maintenance part, who knew the
+    /// request needed it when nobody had asked them by the failure day; null when nobody knew, or when one of the missing
+    /// parts had been learned by then (the gap stays avoidable).
+    /// </summary>
+    private string? WhoKnew(Arrangement a, CapabilityData cap, int failDay)
+    {
+        if (a.CardId is not { } cardId || _cards.FirstOrDefault(c => c.Id == cardId) is not { } card) return null;
+        var data = Scenario.RequirementCards.First(c => c.Id == cardId);
+        var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).ToList();
+        if (missing.Any(l => _learnedLines.TryGetValue((cardId, l.Id), out var learned) && learned.Day <= failDay)) return null;
+        var knew = missing.Where(l => data.KnownBy.ContainsKey(l.Id))
+                          .GroupBy(l => data.KnownBy[l.Id].Person)
+                          .Select(g => $"{BuildPerson(g.Key)?.DisplayName ?? "someone"} knew it needed {Parts(g.Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList())}")
+                          .ToList();
+        if (knew.Count == 0) return null;
+        // "operators as well as maintenance and repair": keeps a label that has its own "and" in one piece.
+        static string Parts(List<string> p) => string.Join(p.Any(x => x.Contains(" and ", StringComparison.Ordinal)) ? " as well as " : " and ", p);
+        return $" {string.Join("; ", knew)}, and nobody asked. Asking about {CardName(card.Id)} before the buy would have put that in the request.";
+    }
 
     /// <summary>People worth asking about a request: whoever brought it, then anyone who knows a part it left out.</summary>
     internal IReadOnlyList<AskOption> BuildWhoToAsk(CardState card)

@@ -223,6 +223,11 @@ public sealed class ScenarioBundle
                 Need(people.ContainsKey(k.Person), $"card {c.Id} knownBy person {k.Person} not found");
                 Need(k.Says.Length > 0, $"card {c.Id} knownBy {line} says nothing");
             }
+            foreach (var (who, says) in c.Confirms)   // DESK-58
+            {
+                Need(people.ContainsKey(who), $"card {c.Id} confirms person {who} not found");
+                Need(says.Length > 0, $"card {c.Id} confirms for {who} says nothing");
+            }
             if (c.HeardAtStaffMeeting is { } h)
             {
                 Need(h.FromDay >= 1 && h.FromDay < c.SubmittedDay, $"card {c.Id} heardAtStaffMeeting.fromDay must be at least 1 and before submittedDay");

@@ -177,6 +177,8 @@ public sealed record RequirementCardData
     public bool FlaggedEnduring { get; init; }
     /// <summary>DESK-03: line id to who knows it is needed and what they say when asked about this request.</summary>
     public Dictionary<string, CardKnowledgeData> KnownBy { get; init; } = [];
+    /// <summary>DESK-58 (D25): person id to what they say when asked and they know of nothing missing (what they confirmed).</summary>
+    public Dictionary<string, string> Confirms { get; init; } = [];
     /// <summary>DESK-08 (D4): a requirement first raised at the commander's staff meeting. Null: it just arrives.</summary>
     public StaffMeetingHearingData? HeardAtStaffMeeting { get; init; }
 }
