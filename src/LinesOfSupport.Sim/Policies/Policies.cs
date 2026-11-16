@@ -51,9 +51,12 @@ public sealed class GreedyPolicy : IPolicy
             if (Helpers.CardCovered(v, card.Id)) continue;
             var lines = card.Lines.Where(kv => kv.Value).Select(kv => kv.Key).ToList();
             var qty = Math.Max(1, v.PeakDemandUnits(card.SiteId, card.CapabilityId, card.RequestedStartDay, card.RequestedStartDay));
-            var choice = Helpers.FastestRoute(v, card.SiteId, card.CapabilityId, lines, qty, card.DurationDays, preferIsland: null);
+            // DESK-61: a vendor that turned this request down is not asked again; the next buy goes elsewhere.
+            var declined = v.Arrangements.Where(a => a.CardId == card.Id && a.Status == ArrangementStatus.Declined && a.VendorId is not null)
+                            .Select(a => a.VendorId!).ToHashSet(StringComparer.Ordinal);
+            var choice = Helpers.FastestRoute(v, card.SiteId, card.CapabilityId, lines, qty, card.DurationDays, preferIsland: null, exclude: declined);
             if (choice is null) continue;
-            yield return choice with { Id = $"g-{card.Id}", Card = card.Id, Lines = lines, StartDay = card.RequestedStartDay };
+            yield return choice with { Id = declined.Count == 0 ? $"g-{card.Id}" : $"g-{card.Id}-{declined.Count + 1}", Card = card.Id, Lines = lines, StartDay = card.RequestedStartDay };
         }
     }
 }
@@ -95,6 +98,11 @@ public sealed class TextbookPolicy : IPolicy
         // real); deny payment for out-of-scope work under an active contract.
         // Day 1: if purchase cards exist, start the card program so CE's small buys leave the shop (design doc 6.1).
         if (v.Day == 1 && v.GpcAvailableDay is not null && _done.Add("gpcProgram")) actions.Add(new StandUpGpcProgramAction());
+        // DESK-61: get into the commander's staff meeting on day 1, where requirements come up before anyone submits them
+        // (D4). Only where the scenario raises requirements there.
+        if (v.Day == 1 && v.Scenario.RequirementCards.Any(c => c.HeardAtStaffMeeting is not null)
+            && v.StaffMeeting is { Attending: false, Joining: false } && _done.Add("staffMeeting"))
+            actions.Add(new JoinStaffMeetingAction());
         // A contracted vendor that under-delivers gets a cure notice the morning the issue arrives.
         foreach (var i in v.PerformanceIssues.Where(i => i.CureNoticeDay is null && i.Outcome == CureOutcome.None))
             if (_done.Add($"cure:{i.Id}")) actions.Add(new CureNoticeAction { Issue = i.Id });
@@ -164,7 +172,9 @@ public sealed class TextbookPolicy : IPolicy
                 {
                     var total = sized * turnkey.Offer.UnitPriceCents * card.DurationDays;
                     total += (long)(total * turnkey.Offer.MobilizationFraction);
-                    var instrument = total > v.Rules.Thresholds.SimplifiedAcquisitionCents || card.RequestedStartDay - v.Day < 20 ? "uca" : "purchaseOrder";
+                    // DESK-61: a UCA only above the simplified acquisition threshold. Below it a purchase order is as fast
+                    // (no approval to wait for) and has no obligation cap to stop the work before a proposal arrives.
+                    var instrument = total > v.Rules.Thresholds.SimplifiedAcquisitionCents ? "uca" : "purchaseOrder";
                     var line = Helpers.Funding(v, instrument == "uca" ? 1 : total, card.CapabilityId);
                     if (line is not null && Helpers.HasCapacity(v, turnkey.Vendor, card.CapabilityId, sized))
                         actions.Add(new AwardAction
@@ -383,12 +393,19 @@ internal static class Helpers
     /// Fastest legal route for a buy: BPA call if a known BPA covers it, then cash or card under the micro-purchase
     /// threshold, then a written purchase order. Vendors on preferIsland come first when given.
     /// </summary>
-    public static AwardAction? FastestRoute(SessionView v, string siteId, string capability, List<string> lines, long qty, int days, string? preferIsland)
+    public static AwardAction? FastestRoute(SessionView v, string siteId, string capability, List<string> lines, long qty, int days, string? preferIsland,
+                                            IReadOnlyCollection<string>? exclude = null)
     {
+        // DESK-61: a vendor with a BPA that covers the buy comes first, as this summary always said; before, the lead time
+        // sorted first and a call was made only when the BPA holder also happened to be the fastest.
+        bool HasBpa(VendorData vendor) => v.Vehicles.Any(b => b.Kind == "bpa" && b.VisibleOnDay1 && b.Vendor == vendor.Id
+                                                             && v.Day <= b.OrderingPeriodEndDay && lines.All(b.ScopeTags.Contains));
         var candidates = Vendors(v, capability, lines)
             .Where(x => !x.Vendor.VehicleOnly || v.Vehicles.Any(b => b.Vendor == x.Vendor.Id))
             .Where(x => HasCapacity(v, x.Vendor, capability, qty))
-            .OrderBy(x => preferIsland is not null && (x.Offer.SourceIsland ?? x.Vendor.Island) == preferIsland ? 0 : 1)
+            .Where(x => exclude is null || !exclude.Contains(x.Vendor.Id))
+            .OrderBy(x => HasBpa(x.Vendor) ? 0 : 1)
+            .ThenBy(x => preferIsland is not null && (x.Offer.SourceIsland ?? x.Vendor.Island) == preferIsland ? 0 : 1)
             .ThenBy(x => x.Offer.LeadTimeDays).ThenBy(x => x.Offer.UnitPriceCents).ThenBy(x => x.Vendor.Id)
             .ToList();
         foreach (var (vendor, offer) in candidates)
