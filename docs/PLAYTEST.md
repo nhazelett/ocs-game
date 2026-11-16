@@ -22,7 +22,7 @@ The gate has four checks and one question. Do them in order: the first check onl
 
 1. On GitHub, open **Actions, CI, Run workflow**, choose **main**, and run it. After the checks pass, `export-windows` creates the build. Other branches do not export through this button.
    Tag route: Releases, Draft a new release, choose a new `v...` tag on `main`, and publish. The tag also runs CI; its verified zip is attached to that release.
-2. When the run finishes, download its artifact `LinesOfSupport-<short-commit>-windows-x86_64` (button route) or `LinesOfSupport-<tag>-windows-x86_64` (tag route). Unzip until `LinesOfSupport.exe` and its sibling `scenarios` folder are together, then run the exe. No install or setup.
+2. When the run finishes, download its artifact `LinesOfSupport-<short-commit>-windows-x86_64` (button route) or `LinesOfSupport-<tag>-windows-x86_64` (tag route). Unzip until `LinesOfSupport.exe` and its sibling `scenarios` folder are together, then run the exe. No install or setup. Delete the previous build's zip and folder first; each new build replaces the old one, so only one copy sits on the computer.
 3. If Windows SmartScreen warns about an unknown publisher: More info, Run anyway. The build is not code-signed yet.
 
 Leave the Developer tools switch on the title screen off for the whole playtest.

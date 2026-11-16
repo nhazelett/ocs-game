@@ -29,6 +29,9 @@ This does not change merge authority, security, access, provenance or correctnes
 - An ART PR is reviewed against the bar in docs/reviews/2026-11-12-art-review.md (Nick, 12 Nov: do not be a sycophant; if the quality is not good, send it back). Open the before and after screenshots side by side, do the squint test, and comment with every point it misses. "Better than before" is not a pass.
 - While M2R is open, no new Sim routes or scenarios start (docs/design/opening-and-guidance.md 9). Fable's items are the M2R rows.
 
+## 2c. Claude plays the game (Nick, 16 Nov 2026)
+Once a day, after PLAY-01, a fresh agent plays the tutorial cold through the play driver and Fable sorts what it found into rows: docs/PLAYTEST-CLAUDE.md. Nick's own plays stay the gate.
+
 ## 3. Merge pass (after every completed task, and at session start)
 
 Every session merges what passes the rules below (Nick, 12 Nov 2026). Only if the merge call is refused, leave a PR comment `Fable review: ready to merge`; a PR that does not pass gets a comment saying what blocks it.
