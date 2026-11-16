@@ -34,7 +34,7 @@ The sort follows section 5: defect, design, known, model. A row named here is ne
 | 4 | Prep | Nothing says what each choice does later | Known: D7 and the prep briefing; the debrief names what a choice cost | none |
 | 5 | Turnover | Mills says "ask me anything" and there is no way to ask; the speech switches to a narrator | Defect, scenario text | DESK-60 |
 | 6 | Turnover | Calling 4,500 gal a day for a week "small" | Model. The card buy came to $9,734, under the threshold, which is Mills' point | none |
-| 7 | Day 1, Today | "Decisions · 0 unresolved" while a request waits | Design: the count only counts your decisions | DESK-57 |
+| 7 | Day 1, Today | "Decisions · 0 unresolved" while a request waits | Design: the heading counts unauthorized commitments only and does not say so | DESK-63 |
 | 8 | Day 1, Requests | "Buy on your own initiative" against "Go to market" was unclear | Design: the labels do not say what each is for | DESK-63 |
 | 9 | Day 1, Requests | The ask and the vendor meeting went on its own hours; handing work over was found by accident | Known: D17 (who is free where work is handed out); the hand-over worked | none |
 | 10 | Day 1, editor | The card buy asked for day 2 and starts day 3; day 2 was never mentioned again | Design. Water was full on day 2: the site holds two days of stock. Nothing on screen says the stock covered the late start, so a correct day reads as a hidden gap | DESK-60 |
@@ -47,7 +47,7 @@ The sort follows section 5: defect, design, known, model. A row named here is ne
 | 17 | Day 4, editor | "Vehicle: Choose a vehicle…" meant the BPA, beside a "vehicle for the contracting office" | Defect, label | DESK-63 |
 | 18 | Day 4, editor | Pick two of fast, cheap and good on a call against set BPA prices; fast added 15% | Design: pick two was written for open-market buys | DESK-65 (D27) |
 | 19 | Day 4, plan | "One more job is not ready until a later day" with an empty queue and no reason | Defect in the Sim view: the call waits for finance to certify the funds on day 5, which the request's state line says but the day's plan does not | DESK-60 |
-| 20 | Day 5, Today | Lodging at 50%; "Open" only lit the map; there was nothing to do and nothing said so | Known: D18 says why a shortfall is short; it does not yet say "nothing for you to do" when the vendor is fixing it | DESK-57 |
+| 20 | Day 5, Today | Lodging at 50%; "Open" only lit the map; there was nothing to do and nothing said so | Known: D18 says why a shortfall is short; it does not yet say "nothing for you to do" when the vendor is fixing it | DESK-60 |
 | 21 | Day 5 and 6, results | Harbor Equipment declined the call; day 5 said "done by MSgt Joan Avery" and "everything was supplied in full"; found on day 6 at the foot of the request | Defect, the most important one. The Sim records the decline on day 5; the results page drops it ([picture](plays/2026-11-16/day5-declined-hidden.png)) | DESK-57 |
 | 22 | Day 6, plan | Right after the purchase order, the plan said nothing was arranged or in work for forklifts | Defect in the Sim view, confirmed in its text file: the order waits for finance to certify the funds, and "Still open" counts waiting work as nothing (the same on day 10 for waste removal) | DESK-60 |
 | 23 | Day 9, request | "The shop was not in the room" at the staff meeting; it never found how to attend | Design: attending is in People to reach, behind a picker; the request that blames you for missing it does not say where it is | DESK-64 |

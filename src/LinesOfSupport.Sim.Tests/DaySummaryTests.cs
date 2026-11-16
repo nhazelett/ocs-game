@@ -63,6 +63,58 @@ public class DaySummaryTests
         Assert.Contains("Island Mart started water at Hub 4500 gal/day.", s.View.DaySummary()!.Started);
     }
 
+    // DESK-57: the 16 Nov Claude play (docs/reviews/2026-11-16-claude-play.md, note 21). Harbor Equipment declined the
+    // forklift call on day 5 and the page said "done by MSgt Joan Avery" and "everything was supplied in full".
+    private static Session DeclinedCall()
+    {
+        var s = Session.Create(Repo.Load("tutorial"), 20261116,
+            ["gpcAccounts", "cashAndPayingAgent", "systemAccess", "pullVehicles", "vendorLists", "partnerAgreements"]);
+        Assert.True(s.Apply(new AwardAction
+        {
+            Id = "water", Instrument = "gpc", Vendor = "islandMart", Card = "tutWater", Quantity = 4500, StartDay = 2, DurationDays = 7,
+        }).Accepted);
+        while (s.Day < 4) s.AdvanceDay();
+        Assert.True(s.Apply(new AwardAction
+        {
+            Id = "call", Instrument = "bpaCall", Vendor = "harborEquipment", Vehicle = "equipBpa", Card = "tutForklift", Quantity = 3,
+            StartDay = 8, DurationDays = 13, FundingLine = "om1", Cor = "corPratt", Priorities = ["fast", "good"], Assignee = "avery",
+        }).Accepted);
+        s.AdvanceDay();
+        s.AdvanceDay();
+        return s;
+    }
+
+    [Fact]
+    public void A_declined_call_is_said_with_what_it_leaves_uncovered()
+    {
+        var summary = DeclinedCall().View.DaySummary()!;
+        Assert.Equal(5, summary.Day);
+        Assert.Equal("Day 5: one job finished, a vendor turned down a call and no site was short.", summary.Sentence);
+        var call = Assert.Single(summary.Finished);
+        Assert.Equal("BPA call with Harbor Equipment Co for material handling equipment at Hub: sent by MSgt Joan Avery, and the vendor turned it down.", call.Sentence);
+        Assert.Equal("Harbor Equipment Co turned down the BPA call for material handling equipment at Hub. Nothing is arranged for material handling equipment at Hub from day 8; it needs another buy.",
+            summary.Short[0]);
+        Assert.DoesNotContain("in full", summary.Sentence, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_declined_call_with_cover_says_who_still_supplies()
+    {
+        var s = Session.Create(Repo.Load("tutorial"), 20261116,
+            ["gpcAccounts", "cashAndPayingAgent", "systemAccess", "pullVehicles", "vendorLists", "partnerAgreements"]);
+        while (s.Day < 4) s.AdvanceDay();
+        Assert.True(s.Apply(new AwardAction
+        {
+            Id = "call", Instrument = "bpaCall", Vendor = "harborEquipment", Vehicle = "equipBpa", Card = "tutForklift", Quantity = 3,
+            StartDay = 5, DurationDays = 3, FundingLine = "om1", Priorities = ["fast", "good"], Assignee = "avery",
+        }).Accepted);
+        s.AdvanceDay();
+        s.AdvanceDay();
+        var summary = s.View.DaySummary()!;
+        Assert.Contains(summary.Short, x => x.StartsWith("Harbor Equipment Co turned down the BPA call", StringComparison.Ordinal)
+                                            && x.EndsWith("still supplies material handling equipment there on day 6.", StringComparison.Ordinal));
+    }
+
     public static IEnumerable<object[]> Scenarios() => [["spoke-b"], ["spoke-b-90"], ["sustainment"], ["tutorial"]];
 
     [Theory]
@@ -90,7 +142,8 @@ public class DaySummaryTests
                 var done = s.Work.Count(w => w.CompletedDay == d && !w.Label.StartsWith("Staff meeting", StringComparison.Ordinal)
                                              && !w.Label.StartsWith("SF 44 delivery", StringComparison.Ordinal));
                 Assert.Equal(done, summary.Finished.Count);
-                Assert.Equal(s.View.MorningBoard().Tiles.Count(t => t.Status is "down" or "degraded"), summary.Short.Count);
+                Assert.Equal(s.View.MorningBoard().Tiles.Count(t => t.Status is "down" or "degraded")
+                             + s.Records.Count(r => r.Day == d && r.Kind == RecordKind.Declined), summary.Short.Count);
                 Assert.Empty(summary.Slipped);   // the plan's hours are the day's hours (DayPlanTests), so nothing slips here
                 Assert.All(summary.Finished.Concat(summary.Slipped).Concat(summary.CarriedOver).Select(x => x.Sentence)
                                .Concat(summary.Started).Concat(summary.Ended).Concat(summary.Short).Append(summary.Sentence), x =>
