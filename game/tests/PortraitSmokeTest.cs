@@ -30,6 +30,10 @@ public partial class PortraitSmokeTest : Node
                 Require(image.HasMipmaps(), "Small UI faces have mipmaps in the native imported texture.");
                 Require(image.GetPixel(0, 0).A == 0 && image.GetPixel(128, 150).A > .99,
                     "The bust is opaque and the surrounding canvas transparent for every look.");
+                var headPixels = Enumerable.Range(0, image.GetWidth())
+                    .Count(x => image.GetPixel(x, 154).A > .99f);
+                Require(headPixels >= 154,
+                    "The head fills at least three fifths of the frame at the eye line, including at strip size: " + key);
                 if (key != "fallback") CheckEyes(image, key);
                 image.Resize(48, 60, Image.Interpolation.Lanczos);
                 Require(thumbnails.TryAdd(key, Convert.ToHexString(SHA256.HashData(image.GetData()))), "Unique cast key.");
@@ -81,8 +85,8 @@ public partial class PortraitSmokeTest : Node
         {
             var light = 0; var dark = 0;
             // The eye line of the fixed orthographic kit, including glasses; not the collar or hair.
-            for (var y = 105; y < 148; y++)
-                for (var x = side == 0 ? 65 : 130; x < (side == 0 ? 127 : 193); x++)
+            for (var y = 130; y < 180; y++)
+                for (var x = side == 0 ? 50 : 130; x < (side == 0 ? 127 : 206); x++)
                 {
                     var pixel = image.GetPixel(x, y);
                     if (pixel.R > .75f && pixel.G > .73f && pixel.B > .63f) light++;
