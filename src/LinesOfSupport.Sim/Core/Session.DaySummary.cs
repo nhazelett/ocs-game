@@ -20,10 +20,26 @@ public sealed partial class Session
         var d = Day - 1;
         if (d < 1 || _planAtStart is not { } plan || plan.Day != d) return null;
 
+        // Turned down (DESK-57, the 16 Nov Claude play): a BPA call the vendor declined today. The play's day 5 read "done by
+        // MSgt Joan Avery" and "everything was supplied in full" while Harbor Equipment had said no; the player found out a
+        // day later at the foot of the request. A declined call is listed first under short or missed, with what it leaves
+        // uncovered, and its work line says it was turned down.
+        var turnedDown = new List<string>();
+        var declined = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var r in _records.Where(r => r.Day == d && r.Kind == RecordKind.Declined))
+        {
+            if (_arrangements.FirstOrDefault(a => a.Id == r.Subject && a.Status == ArrangementStatus.Declined) is not { } arr) continue;
+            declined.Add(arr.Id);
+            var call = _work.Select(w => w.Payload).OfType<AwardPayload>().FirstOrDefault(p => p.Action.Id == arr.Id)?.Action;
+            turnedDown.Add($"{VendorData(arr.VendorId)!.Name} turned down the BPA call for {Lower(CapLabel(arr.CapabilityId))} at {SiteName(arr.SiteId)}. {Uncovered(arr, Math.Max(call?.StartDay ?? Day, Day))}");
+        }
+
         // Finished: everything the team completed that day, in the order given, except the trips and the meeting, which the
         // day adds and finishes by itself.
         var finished = _work.Where(w => w.CompletedDay == d && w.Payload is not VisitPayload { Kind: "meeting" or "sf44Trip" })
-                            .Select(w => new DaySummaryLine(Member(w.Assignee).Id, $"{WorkName(w)}: done by {MemberName(Member(w.Assignee))}."))
+                            .Select(w => new DaySummaryLine(Member(w.Assignee).Id, w.Payload is AwardPayload p && declined.Contains(p.Action.Id)
+                                ? $"{WorkName(w)}: sent by {MemberName(Member(w.Assignee))}, and the vendor turned it down."
+                                : $"{WorkName(w)}: done by {MemberName(Member(w.Assignee))}."))
                             .ToList();
 
         var started = new List<string>();
@@ -65,22 +81,39 @@ public sealed partial class Session
                 $"{WorkName(w)}: {HoursSaid(w.HoursRemainingMilli)} left with {MemberName(Member(w.Assignee))}{(done is { } dd ? $", done about day {dd}" : "")}."));
         }
 
-        var sentence = SummarySentence(d, finished.Count, started.Count, shortLines.Count, slipped.Count);
+        var sentence = SummarySentence(d, finished.Count, started.Count, shortLines.Count, slipped.Count, turnedDown.Count);
         return new DaySummaryView(d, sentence,
             [.. finished.Select(Said)], [.. started.Select(SentenceCase)], [.. ended.Select(SentenceCase)],
-            [.. shortLines.Select(SentenceCase)], [.. slipped.Select(Said)], [.. carried.Select(Said)]);
+            [.. turnedDown.Concat(shortLines).Select(SentenceCase)], [.. slipped.Select(Said)], [.. carried.Select(Said)]);
 
         static DaySummaryLine Said(DaySummaryLine l) => l with { Sentence = SentenceCase(l.Sentence) };
     }
 
-    private static string SummarySentence(int d, int finished, int started, int shortCount, int slipped)
+    /// <summary>What a declined call leaves uncovered from the day it was to start: another live arrangement that supplies
+    /// the site then, another buy for it still in work, or nothing.</summary>
+    private string Uncovered(Arrangement declined, int from)
+    {
+        var cap = Lower(CapLabel(declined.CapabilityId));
+        var site = SiteName(declined.SiteId);
+        if (_arrangements.FirstOrDefault(a => a.Id != declined.Id && a.SiteId == declined.SiteId && Supplies(a, declined.CapabilityId)
+                && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active && a.StartDay <= from && from <= a.EndDay) is { } other)
+            return $"{SupplierName(other)} still supplies {cap} there on day {from}.";
+        if (_work.Any(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Id != declined.Id
+                           && p.SiteId == declined.SiteId && p.CapabilityId == declined.CapabilityId))
+            return $"Another buy for {cap} at {site} is in work.";
+        return $"Nothing is arranged for {cap} at {site} from day {from}; it needs another buy.";
+    }
+
+    private static string SummarySentence(int d, int finished, int started, int shortCount, int slipped, int turnedDown = 0)
     {
         var parts = new List<string>
         {
             finished switch { 0 => "nothing finished", 1 => "one job finished", _ => $"{finished} jobs finished" },
         };
         if (started > 0) parts.Add(started == 1 ? "one support started" : $"{started} supports started");
-        parts.Add(shortCount switch { 0 => "everything was supplied in full", 1 => "one thing was short", _ => $"{shortCount} things were short" });
+        if (turnedDown > 0) parts.Add(turnedDown == 1 ? "a vendor turned down a call" : $"vendors turned down {turnedDown} calls");
+        // "Everything was supplied in full" on a day a call was turned down read as all is well (the 16 Nov play, day 5).
+        parts.Add(shortCount switch { 0 when turnedDown > 0 => "no site was short", 0 => "everything was supplied in full", 1 => "one thing was short", _ => $"{shortCount} things were short" });
         if (slipped > 0) parts.Add(slipped == 1 ? "one job slipped" : $"{slipped} jobs slipped");
         var list = parts.Count == 1 ? parts[0] : string.Join(", ", parts.Take(parts.Count - 1)) + " and " + parts[^1];
         return $"Day {d}: {list}.";
