@@ -197,3 +197,34 @@ Sim notes (Fable):
 - Who can help (D22): `RequirementEditorView` asks gain what the person can tell or do, the hours, the state with the answer day, the answer once given, and whether it informs or opens an action. Built (DESK-42) as `RequirementEditorView.WhoCanHelp`: the people to ask, then the J4 where the partner force can spare the capability or one it runs on, then vendors who sell it and are not met yet. Left out: a dialogue tree, relationship scores, and anyone with nothing to add. Each line carries its own target (DESK-51, Codex's Q25): `CapabilityId` on a J4 line, and `Start`, the action that starts a line nobody is on yet, so the game never works out who or what a line is about.
 
 Order: Codex builds DESK-49 (the staff meeting pane) and ART-20 (the new cast) now, with no Sim change. Fable builds DESK-37, then DESK-38, DESK-39, DESK-40, DESK-41 and DESK-42, one PR each; each Codex screen row (DESK-43 to DESK-48) follows its Sim row. Then Nick plays the tutorial again. DESK-11, DESK-12, ART-10 and other Sim depth still wait.
+
+## 9. The first Claude play: D25 to D27 (16 Nov 2026)
+
+The first daily play by a blind agent (docs/reviews/2026-11-16-claude-play.md) won the tutorial and was misled three times by the game. A declined BPA call was missing from the day's results, which DESK-57 fixes as a defect against D20. The other two need decisions; Fable's, built unless Nick strikes one. Nick's plays stay the gate.
+
+D25. **Asking is worth it, and the debrief says who knew.** D3 makes asking the right person the way a request becomes complete. The play showed three ways the tutorial undercut it:
+
+- The first two asks the tutorial invites (Ortiz on water, Ruiz on waste) answer "Nothing I can add". Both are correct, since nothing was missing, but they teach that asking is wasted time just before the one ask that matters (Dunn on the forklifts).
+- The order form says "Without operators, it fails more often" and nothing more.
+- The debrief calls the resulting gap "Avoidable: what you needed to know was in front of you", but it was never in front of you. Only Dunn knew, and nobody asked him.
+
+So:
+
+- An ask that finds nothing missing says what it confirmed, in the person's voice ("Bottled water is all we need; nobody has to run anything for it.").
+- A warning about a part the request leaves out names who the request came from as the person to ask, while that ask has not been made ("SMSgt Dunn asked for this; ask him who will drive them.").
+- A gap that came from a part someone knew about and nobody asked is tagged discoverable, not avoidable, and the debrief says who knew and what asking would have added.
+
+Left out: a hint system, marking which asks will pay off, and any change to what each person knows.
+
+D26. **Goods delivered carry no plant risk.** Operators and maintenance are the parts of a service that runs at the site: a plant, a generator, a forklift. Bottled water from a shop is goods: Island Mart sells water and offers no operators or maintenance, yet the buy carried both failure risks and both warnings. An arrangement for a consumable capability (water, fuel, food) from a vendor whose offer leaves out an operator or maintenance part carries neither that risk nor its warning: the vendor's own plant is the vendor's business. Continuous capabilities (power, forklifts, lodging, transport) keep the risk whatever the vendor offers. Forklifts without drivers still break down, which is the forklift lesson. Left out: a goods-or-service flag per vendor, and any change to delivery misses, which stay the vendor's reliability.
+
+D27. **Pick two only where price is open.** Fast, cheap and good is the trade a contracting officer makes when buying on the open market. A call against a BPA, or an order against an IDIQ, is priced by the agreement: "cheap" cannot make it cheaper, and paying 15% for "fast" on a set price reads as wrong (note 18 of the play). So a call or an order shows no pick two. Its speed is the vehicle's ordering time, and its price is the vehicle's price. Open-market buys (card, cash, purchase order, contract) keep pick two as it is. Left out: competing a call among several BPA holders; the scenarios have one holder per BPA.
+
+Sim notes (Fable):
+
+- Results (DESK-57): `DaySummary` gains the day's declined calls and refusals with what each leaves uncovered and from which day; the headline never says "supplied in full" or "everything" on a day a call was declined. Today's waiting count counts requests with nothing arranged or in work and declined calls, not only your decisions.
+- Who knew (DESK-58): `GapFactor` for a vendor failure checks each missing part against the card's `knownBy`. If someone knew and the ask was never made, the tag is discoverable and the text names them; if the ask was made and the part was still left out, the tag stays avoidable. The editor's soft gap for a missing operator or maintenance part adds the ask line from the card's person while `knownBy` has not been revealed. The "Nothing I can add" answer (Session.Discovery) becomes an optional per-person line in the scenario (what they confirmed), with a plain fallback that says nothing is missing.
+- Plant risk (D26, DESK-59): in the day loop's failure roll and in `GapIfOff`, a missing operator or maintenance part counts only if the capability is continuous or the vendor's offer for it carries that part. Goldens move where a water or fuel buy from a goods vendor rolled a failure; each moved row is stated.
+- Pick two (D27, DESK-65): `bpaCall` and `idiqOrder` take no priorities; the preview drops the premium and the pick-two text for them; old logs that carry priorities on a call still load and ignore them.
+
+Order: Fable builds DESK-57, DESK-58, DESK-59, DESK-60, DESK-61 and DESK-65, one PR each. Codex takes DESK-62 (the preparation screen) first, then DESK-63 and DESK-64. The daily play continues; Nick plays when he chooses.
