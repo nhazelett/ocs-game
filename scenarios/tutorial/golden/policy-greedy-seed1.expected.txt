@@ -109,10 +109,10 @@ GAPS AND WHY (each traced back through its causes)
           <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
-  #0 hubSite.mhe days 14-14, lowest 50%, 0 day(s) down: AVOIDABLE
-      [avoidable] Coastal Rentals material handling equipment at Hub failed (first on day 14) and was bought without operators; its failure odds were higher every day it ran.
-  #1 hubSite.mhe days 18-18, lowest 50%, 0 day(s) down: AVOIDABLE
-      [avoidable] Coastal Rentals material handling equipment at Hub failed (first on day 18) and was bought without operators; its failure odds were higher every day it ran.
+  #0 hubSite.mhe days 14-14, lowest 50%, 0 day(s) down: DISCOVERABLE
+      [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 14) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
+  #1 hubSite.mhe days 18-18, lowest 50%, 0 day(s) down: DISCOVERABLE
+      [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 18) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
 
 PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)

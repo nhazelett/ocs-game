@@ -333,6 +333,11 @@
               }
             }
           },
+          "confirms": {
+            "type": "object",
+            "description": "DESK-58 (D25): person id to what they say when asked about this request and they know of nothing missing from it, in their words. Without an entry the answer is a plain one that says nothing is missing.",
+            "additionalProperties": { "type": "string", "minLength": 1 }
+          },
           "lines": {
             "type": "object",
             "description": "Scope line id to on/off. Line ids come from the capability card catalog (cards.json, M1).",

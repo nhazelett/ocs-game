@@ -343,7 +343,7 @@ public sealed partial class Session
         var site = SiteData(siteId);
         var vendor = chk.Vendor!;
         foreach (var l in cap.Lines.Where(l => l.Kind != "core" && !chk.Lines.Contains(l.Id)))
-            if (GapIfOff(cap, l) is { } g) gaps.Add(g);
+            if (GapIfOff(cap, l) is { } g) gaps.Add(g + AskFirst(chk.Card, l));
         var end = startMax + Math.Max(1, a.DurationDays) - 1;
         var peak = (PeakDemandMilli(siteId, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay)) + 999) / 1000;
         if (a.Quantity < peak)
