@@ -12,3 +12,6 @@ docs/handoffs/images/*.png -filter -diff -merge text=unset
 assets/audio/*.wav -filter -diff -merge -text
 # Music and ambience ship as plain Ogg so reviewers and CI without LFS can play them; each is about 2 MB or less.
 assets/audio/music/*.ogg -filter -diff -merge -text
+
+# ART-20 portraits are small imported runtime textures; review and CI need no LFS.
+game/art/cast/*.png -filter -diff -merge -text
