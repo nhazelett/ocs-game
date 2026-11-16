@@ -11,8 +11,9 @@ public partial class GameShell
     private readonly HashSet<string> awardPriorities = [];
     internal Dictionary<string, CheckBox> PriorityInputs { get; } = [];
     internal Label? AwardTrade { get; private set; }
+    // DESK-65 (D27): only open-market written buys pick two; a BPA call or an IDIQ order is priced by its vehicle.
     private bool WrittenAward => session.View?.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) == true
-        && instrument.WrittenTerms;
+        && instrument.PicksTwo;
 
     private void BuildAwardPriorities(SessionView view)
     {

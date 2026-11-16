@@ -20,8 +20,7 @@ internal static class PaneSmokeChecks
             Pick(shell.VendorInput, "harborEquipment"); Blocked("Choose an available arrangement.");
             Pick(shell.InstrumentInput, "bpaCall"); Blocked("Choose an available vehicle.");
             Pick(shell.VehicleInput, "equipBpa");
-            Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Text == shell.AwardPreview!.HardStops[0], "Missing priorities use the first exact Sim stop.");
-            PickPriorities(shell, "fast", "good");
+            Require(shell.PriorityInputs.Count == 0, "A BPA call offers no fast, cheap and good (DESK-65).");
             Require(!shell.AwardButton.Disabled && !shell.AwardBlockedReason.Visible, "A ready award has no stale disabled reason.");
             Require(hash == shell.Session.StateHash, "Choosing terms and reading reasons remain read only.");
             await Frames(); await Capture("ready", true);
