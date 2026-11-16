@@ -344,7 +344,7 @@ public sealed partial class Session
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
             return FinishDay(PersonHours(hours, a.Assignee), a.Assignee, wait);
         }
-        var compete = CompeteDays(PickKey(a.Priorities));   // DESK-06
+        var compete = CompeteDays(PickFor(a, inst));   // DESK-06, DESK-65
         var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min);
         var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max);
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
@@ -404,6 +404,6 @@ public sealed partial class Session
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
-                                 hMin, hMax, startMin, startMax, queue, PickTrade(a, chk.TotalCents));
+                                 hMin, hMax, startMin, startMax, queue, PickTrade(a, inst, chk.TotalCents));
     }
 }

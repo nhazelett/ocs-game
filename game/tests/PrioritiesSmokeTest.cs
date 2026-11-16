@@ -46,9 +46,16 @@ public partial class PrioritiesSmokeTest : Node
             }
             // Instrument metadata, rather than a list of ids in Game, controls the UI on written orders.
             Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
-            PickPriorities(shell, "fast", "good");
-            Require(shell.PendingAward!.Priorities is { Count: 2 } && shell.AwardTrade!.Text == expected.View.Preview(shell.PendingAward).Trade,
-                "A written BPA call uses the same typed pair and engine trade.");
+            shell.QuantityInput.Value = 360;
+            // DESK-65 (D27): a call is priced and timed by its BPA, so it offers no pair and says the vehicle's terms instead.
+            Require(shell.PriorityInputs.Count == 0 && shell.PendingAward!.Priorities is null, "A BPA call offers no fast, cheap and good.");
+            Require(shell.AwardTrade!.Visible && shell.AwardTrade.Text == expected.View.Preview(shell.PendingAward).Trade
+                && shell.AwardTrade.Text.Contains("sets the price", StringComparison.Ordinal)
+                && shell.AwardTrade.Text.Contains("the time to place a call", StringComparison.Ordinal),
+                "A BPA call's preview gives the vehicle's price and ordering time.");
+            Require(!shell.AwardButton.Disabled || shell.AwardPreview!.HardStops.All(x => !x.Contains("fast, cheap", StringComparison.OrdinalIgnoreCase)),
+                "No pick-two stop can block a call.");
+            await CaptureCall();
             Written(); Pick(shell.InstrumentInput, "uca"); PickPriorities(shell, "cheap", "good");
             Require(shell.PendingAward!.Priorities is { Count: 2 } && shell.AwardTrade!.Text == expected.View.Preview(shell.PendingAward).Trade,
                 "A written UCA uses the same typed pair and engine trade.");
@@ -119,6 +126,26 @@ public partial class PrioritiesSmokeTest : Node
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
             GD.Print("PRIORITIES_SMOKE_PASS: all three exact Sim trades, required pairs, price updates, pure edits, stale/duplicate guards, cash clearing, save/resume, replay takeover and finished games.");
             GetTree().Quit();
+
+            async Task CaptureCall()
+            {
+                var args = OS.GetCmdlineUserArgs(); var index = Array.IndexOf(args, "--screenshots");
+                if (index < 0) return;
+                shell.DeveloperToggle.ButtonPressed = false; shell.ShowMarket();
+                for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                // Two pictures: the form where pick two used to be, then the preview's first lines.
+                shell.AwardScroll.EnsureControlVisible(shell.VehicleInput);
+                for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using (var form = GetViewport().GetTexture().GetImage())
+                    Require(form.SavePng(args[index + 1] + "-call-form.png") == Error.Ok, "Native call form screenshot saved.");
+                shell.AwardScroll.ScrollVertical = (int)shell.AwardTrade!.GetParent<Control>().Position.Y;
+                for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[index + 1] + "-call.png") == Error.Ok, "Native call screenshot saved.");
+                shell.DeveloperToggle.ButtonPressed = true;
+            }
 
             async Task Capture(string suffix)
             {

@@ -7,6 +7,9 @@ namespace LinesOfSupport.Sim.Core;
 // premium. Fast and cheap: you took the first quote, so the vendor is more likely to fall down later. Three rule numbers
 // (rules pickTwo). No pick (old logs, the policies) means none of this, so nothing that ran before moves. Built to be
 // stripped: delete this file, AwardAction.Priorities, Arrangement.Pick and the calls marked DESK-06.
+// DESK-65 (D27): pick two is the open market's trade. A call against a BPA or an order against an IDIQ is priced and timed by
+// its vehicle, so it has no pick: its priorities are ignored (old logs that carry them still load) and its preview says the
+// vehicle's price and ordering time instead.
 public sealed partial class Session
 {
     private static readonly string[] PickWords = ["fast", "cheap", "good"];
@@ -25,9 +28,12 @@ public sealed partial class Session
 
     internal static string PickWordsText(string key) => key.Replace("+", " and ");
 
+    /// <summary>The pick that counts on this award: none on a call or an order (DESK-65), whatever the action carries.</summary>
+    internal static string? PickFor(AwardAction a, InstrumentData inst) => inst.PicksTwo ? PickKey(a.Priorities) : null;
+
     private IEnumerable<string> PickStops(AwardAction a, InstrumentData inst)
     {
-        if (a.Priorities is null) yield break;
+        if (a.Priorities is null || inst.PricedByVehicle) yield break;   // DESK-65: ignored on a call or an order
         if (!inst.WrittenTerms) { yield return "fast, cheap or good is picked on written contracts only"; yield break; }
         if (PickKey(a.Priorities) is null) yield return "pick two of fast, cheap and good";
     }
@@ -40,10 +46,12 @@ public sealed partial class Session
     private int FirstQuoteReliability(string? key, int reliabilityPermille)
         => key == FirstQuotePick ? Math.Max(0, reliabilityPermille - PickTwo.FirstQuoteFailurePermille) : reliabilityPermille;
 
-    /// <summary>The trade in one sentence for the preview, with this award's numbers; null without a pick.</summary>
-    internal string? PickTrade(AwardAction a, long totalCents)
+    /// <summary>The trade in one sentence for the preview, with this award's numbers; null without a pick. On a call or an
+    /// order, the vehicle's price and ordering time instead (DESK-65).</summary>
+    internal string? PickTrade(AwardAction a, InstrumentData inst, long totalCents)
     {
-        switch (PickKey(a.Priorities))
+        if (inst.PricedByVehicle) return VehicleTerms(a);
+        switch (PickFor(a, inst))
         {
             case CompetedPick:
                 return $"Cheap and good: you compete it among vendors, which adds about {Plural(PickTwo.CompeteShopDays, "day")} of shop work before award.";
@@ -57,6 +65,14 @@ public sealed partial class Session
             default:
                 return null;
         }
+    }
+
+    private string VehicleTerms(AwardAction a)
+    {
+        // The timing and cost lines under it give the numbers; this says where they come from, in the shop-hours unit they use.
+        var call = a.Instrument == "bpaCall" ? "a call" : "an order";
+        var vehicle = _vehicles.Any(v => v.Id == a.Vehicle) ? NameOf(a.Vehicle) : a.Instrument == "bpaCall" ? "the BPA" : "the IDIQ";
+        return $"{Upper(vehicle)} sets the price and the time to place {call}, shown below, so there is no fast, cheap or good to pick on {call}.";
     }
 
     /// <summary>What the debrief adds when the pick explains a failure or a late start; empty otherwise.</summary>

@@ -92,8 +92,10 @@ internal static class DeskSmokeSupport
         if (shell.EndDayDialog.Visible) shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
     }
 
+    /// <summary>Picks a pair on a form that offers pick two; a BPA call or an IDIQ order offers none (DESK-65), so nothing.</summary>
     internal static void PickPriorities(GameShell shell, params string[] priorities)
     {
+        if (shell.PriorityInputs.Count == 0) return;
         foreach (var toggle in shell.PriorityInputs.Values) toggle.ButtonPressed = false;
         foreach (var priority in priorities) shell.PriorityInputs[priority].ButtonPressed = true;
     }

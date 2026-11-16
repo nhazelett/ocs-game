@@ -218,7 +218,7 @@ public sealed partial class Session
                                                && x.Status == ArrangementStatus.Active);
         var mob = incumbent ? 0 : Fixed.MulPermille(baseCost, Fixed.Permille(offer.MobilizationFraction));
         // DESK-06: fast and good pays a premium (computed on base and mobilization separately so the total adds up).
-        var pick = PickKey(a.Priorities);
+        var pick = PickFor(a, inst);   // DESK-65: none on a call or an order
         stops.AddRange(PickStops(a, inst));
         daily = WithPremium(pick, daily); baseCost = WithPremium(pick, baseCost); mob = WithPremium(pick, mob);
         if (a.Instrument == "gpc")
@@ -318,7 +318,7 @@ public sealed partial class Session
         var startLag = _rngWork.NextInt(inst.StartLagDays);
         // Off-island goods add strategic lift to the vendor's lead time, drawn after the work stream so local awards are unchanged.
         var lead = offer.LeadTimeDays + (vendor.OffIsland ? DrawLift(a.Lift!) : 0);
-        var pick = PickKey(a.Priorities);   // DESK-06
+        var pick = PickFor(a, inst);   // DESK-06, DESK-65
         var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead,
                                        FirstQuoteReliability(pick, Fixed.Permille(vendor.Reliability)), StockIsland(vendor, capId));
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
@@ -412,7 +412,7 @@ public sealed partial class Session
             Lines = p.Lines, SupplierIslandId = p.SupplierIsland, QuantityMilli = a.Quantity * 1000, DailyCostCents = p.DailyCostCents,
             MobilizationCents = p.MobilizationCents, ObligatedCents = obligated, FundingLineId = a.FundingLine, FromGuaranteeCents = fromGuarantee,
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
-            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor, Pick = PickKey(a.Priorities),
+            StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor, Pick = PickFor(a, Rules.Instruments[a.Instrument]),
             PaidPerDelivery = PerDelivery(a), TripAssignee = PerDelivery(a) ? Member(_assigneeNow).Id : null,
         };
         foreach (var lineId in p.Lines)
