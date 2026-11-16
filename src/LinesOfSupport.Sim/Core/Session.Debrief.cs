@@ -239,7 +239,7 @@ public sealed partial class Session
                 {
                     case RecordKind.VendorFailure:
                     {
-                        var missing = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id)).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
+                        var missing = MissingPlantParts(a, cap).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();   // DESK-59
                         // Slips that opened a performance issue, then an authored drop the player's action would have
                         // prevented (M3-18).
                         if (missing.Count == 0 && DropFactor(a, d, r.Id) is { } drop)
@@ -254,7 +254,7 @@ public sealed partial class Session
                             && HiddenNote(a.Id, d, $"its real delivery record ({ReliabilityShownByReview(a) / 10}% on time, not the {reported / 10}% reported at handover)") is { } hn)
                         {
                             yield return ($"fail|{a.Id}|hidden|{hn.Tag}", new GapFactor(GapFactorKind.VendorFailure, hn.Tag, d,
-                                $"{Upper(NameOf(a.Id))} failed on day {d} with full operator and maintenance coverage.{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
+                                $"{FailedCovered(a, cap, d)}{hn.Note}{(hn.Tag == GapTag.Avoidable ? " A cure notice or a second source would have covered it." : "")}{CorNote(a, d)}{IssueNote(a.Id)}",
                                 hn.RecordId is null ? [r.Id] : [r.Id, hn.RecordId]));
                             break;
                         }
@@ -265,7 +265,7 @@ public sealed partial class Session
                             ? new GapFactor(GapFactorKind.VendorFailure, knew is null ? GapTag.Avoidable : GapTag.Discoverable, d,
                                 $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{knew}{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{Upper(NameOf(a.Id))} failed on day {d} with full operator and maintenance coverage.{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
+                                $"{FailedCovered(a, cap, d)}{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:

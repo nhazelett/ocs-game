@@ -267,8 +267,9 @@ public sealed partial class Session
 
             var cap = Cap(a.CapabilityId);
             var failPm = 1000 - a.ReliabilityPermille;
-            var missingOperator = cap.Lines.Any(l => l.Kind == "operator") && !a.Lines.Any(l => cap.Lines.First(x => x.Id == l).Kind == "operator");
-            var missingMaintenance = cap.Lines.Any(l => l.Kind == "maintenance") && !a.Lines.Any(l => cap.Lines.First(x => x.Id == l).Kind == "maintenance");
+            var missingParts = MissingPlantParts(a, cap);   // DESK-59: goods carry no plant risk
+            var missingOperator = missingParts.Any(l => l.Kind == "operator");
+            var missingMaintenance = missingParts.Any(l => l.Kind == "maintenance");
             if (!a.IsCoordination && missingOperator) failPm += f.MissingOperatorPermillePerDay;
             if (!a.IsCoordination && missingMaintenance)
                 failPm += Math.Min(f.MissingMaintenanceCapPermille, Math.Max(0, a.DaysActive - f.MissingMaintenanceGraceDays) * f.MissingMaintenancePermillePerDayAfterGrace);

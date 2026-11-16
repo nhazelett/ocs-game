@@ -37,7 +37,7 @@ Day 5
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
 Day 7
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
@@ -60,7 +60,7 @@ Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
   START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 14
@@ -203,4 +203,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.741)
 
-State hash e6e7c0d744eb371cc1f5e3dddfaf2243d1a247736711ae7b47a92bf95b8e6672
+State hash 4bd6993ba24d60316a1e5b5945d4b728c4d8468a3192bfb10f7d99e0b6e7d87a
