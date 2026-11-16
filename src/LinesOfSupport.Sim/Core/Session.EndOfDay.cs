@@ -35,6 +35,8 @@ public sealed partial class Session
     {
         if (_arrangements.Any(a => a.CardId == card.Id && a.Status != ArrangementStatus.Declined)) return true;
         if (_work.Any(w => w.CompletedDay is null && (w.SubjectId?.Contains(card.Id, StringComparison.Ordinal) ?? false))) return true;
+        // DESK-60 (Claude play note 22): a buy still waiting for finance is in work, whatever its action id says.
+        if (_work.Any(w => w.CompletedDay is null && BuysFor(w, card))) return true;
         var day = Math.Max(card.RequestedStartDay, Day);
         return _arrangements.Any(a => a.SiteId == card.SiteId && a.CapabilityId == card.CapabilityId && Live(a)
                                       && a.StartDay <= day && a.EndDay >= day);

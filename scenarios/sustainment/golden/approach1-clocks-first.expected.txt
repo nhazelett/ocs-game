@@ -228,7 +228,7 @@ Day 34
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Island Provisions food service at Spoke B missed today's delivery.
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
@@ -284,7 +284,7 @@ Day 39
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
   OK        Fuel at Spoke C restored to 100%.
-  SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1 forklifts against demand 2.
+  SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
   COR       COR report (SSG Park): Second Island Fuel fuel at Spoke B missed its delivery on day 37, reported 2 days later.
 Day 40
   DONE      CE small buys: 10 worked today (5 h of shop time).
@@ -307,7 +307,7 @@ Day 42
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   START     Water at Spoke A from North Island Water Works began, 3500 gal/day.
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
@@ -330,7 +330,7 @@ Day 44
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   SHORT     Fuel at Spoke B degraded to 56%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 29%: supply 165 kW against demand 312; fuel at 56%.
   SHORT     Lodging at Spoke B down to 29%: power at 29%.
@@ -354,7 +354,7 @@ Day 45
 Day 46
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   OK        Fuel at Spoke C restored to 100%.
   OK        Material handling equipment at Spoke C restored to 100%.
   COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 44, reported 2 days later.
@@ -369,7 +369,7 @@ Day 47
   SHORT     Power at Spoke B degraded to 56%: fuel at 56%.
   SHORT     Lodging at Spoke B degraded to 56%: power at 56%.
   SHORT     Food service at Spoke B degraded to 56%: power at 56%.
-  SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1 forklifts against demand 2.
+  SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
 Day 48
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      North Island Water Works water at Spoke A missed today's delivery.
@@ -427,12 +427,12 @@ Day 54
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   OK        Ground transport at Hub restored to 100%.
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   SHORT     Fuel at Spoke B down to 28%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 28%: fuel at 28%.
   SHORT     Lodging at Spoke B down to 28%: power at 28%.
   SHORT     Food service at Spoke B down to 28%: power at 28%.
-  SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1 forklifts against demand 2.
+  SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
   COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 54.
   FUNDING   Comptroller released the O&M line from day 46: $3,000,000 usable from day 55, 9 days later than planned.
 Day 55
@@ -621,7 +621,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 33: Fuel at Spoke B down to 0%: fuel on hand ran out.
               <- day 33: Second Island Fuel fuel at Spoke B missed today's delivery.
                   <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 34: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 34: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 34: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 14: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   Day 35: Fuel at Spoke B down to 28%: fuel on hand ran out.
@@ -664,7 +664,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 38: Fuel at Spoke C down to 0%: fuel on hand ran out.
   Day 38: Material handling equipment at Spoke C down to 0%: fuel at 0%.
       <- day 38: Fuel at Spoke C down to 0%: fuel on hand ran out.
-  Day 39: Material handling equipment at Spoke C degraded to 71%: supply 1 forklifts against demand 2.
+  Day 39: Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
       <- day 39: Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
           <- day 15: Written purchase order started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 forklifts/day for 33 days (Forklifts); quoted $17,820.
   Day 40: Food service at Spoke B degraded to 56%: food service on hand ran out.
@@ -682,7 +682,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 41: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
               <- day 41: Second Island Fuel fuel at Spoke B missed today's delivery.
                   <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 42: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 42: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 42: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 14: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   Day 43: Power at Spoke B degraded to 52%: supply 165 kW against demand 312.
@@ -696,7 +696,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 43: Power at Spoke B degraded to 52%: supply 165 kW against demand 312.
           <- day 43: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 12: BPA call started with Harbor Equipment Co: Power at Spoke B, 330 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $22,770.
-  Day 44: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 44: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 44: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 14: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   Day 44: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
@@ -728,7 +728,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 45: Fuel at Spoke C down to 0%: fuel on hand ran out.
   Day 45: Material handling equipment at Spoke C down to 0%: fuel at 0%.
       <- day 45: Fuel at Spoke C down to 0%: fuel on hand ran out.
-  Day 46: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 46: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 46: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 14: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   Day 47: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
@@ -748,7 +748,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 47: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
               <- day 47: Second Island Fuel fuel at Spoke B missed today's delivery.
                   <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 47: Material handling equipment at Spoke C degraded to 71%: supply 1 forklifts against demand 2.
+  Day 47: Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
       <- day 47: Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
           <- day 15: Written purchase order started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 forklifts/day for 33 days (Forklifts); quoted $17,820.
   Day 48: Water at Spoke A down to 36%: water on hand ran out.
@@ -794,7 +794,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 53: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
       <- day 53: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
           <- day 14: Written purchase order started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640.
-  Day 54: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 54: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 54: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 14: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   Day 54: Fuel at Spoke B down to 28%: fuel on hand ran out.
@@ -814,7 +814,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 54: Fuel at Spoke B down to 28%: fuel on hand ran out.
               <- day 54: Second Island Fuel fuel at Spoke B missed today's delivery.
                   <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
-  Day 54: Material handling equipment at Spoke C degraded to 71%: supply 1 forklifts against demand 2.
+  Day 54: Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
       <- day 54: Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
           <- day 15: Written purchase order started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 forklifts/day for 33 days (Forklifts); quoted $17,820.
   Day 57: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
@@ -1064,4 +1064,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [not met] Mission output at least 88% (mission.output = 0.877)
 
-State hash 7f8ce86fa993b6932ede54ccbbf18bbf135d27acd8ccc3cc6ca9e76470f72c86
+State hash 30556af9d5bbc3d6c3ab89e0746b84dbcdd921002323239f5e35e9fc672b9b3e

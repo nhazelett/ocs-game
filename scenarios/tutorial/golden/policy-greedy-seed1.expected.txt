@@ -63,7 +63,7 @@ Day 14
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Main Island Utilities (host nation) power at Hub had equipment down.
   FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
-  SHORT     Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
+  SHORT     Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
 Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time).
   OK        Material handling equipment at Hub restored to 100%.
@@ -74,7 +74,7 @@ Day 17
 Day 18
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Coastal Rentals material handling equipment at Hub had equipment down (no operators).
-  SHORT     Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
+  SHORT     Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
 Day 19
   DONE      CE small buys: 2 worked today (1 h of shop time).
   OK        Material handling equipment at Hub restored to 100%.
@@ -101,10 +101,10 @@ SCORECARD
   hubSite.mhe: 0 day(s) down, 2 degraded, lowest 50%
 
 GAPS AND WHY (each traced back through its causes)
-  Day 14: Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
+  Day 14: Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
       <- day 14: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
           <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
-  Day 18: Material handling equipment at Hub degraded to 50%: supply 1 forklifts against demand 3.
+  Day 18: Material handling equipment at Hub degraded to 50%: supply 1.5 forklifts against demand 3.
       <- day 18: Coastal Rentals material handling equipment at Hub had equipment down (no operators).
           <- day 4: Government purchase card to Coastal Rentals: Material handling equipment at Hub, 3 forklifts/day for 13 days (Forklifts, Maintenance); $8,580 paid on the spot.
 
@@ -121,4 +121,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.987)
 
-State hash f6b20d6f527fcfb65fe04340e560b50134222c457e19d374cccb84cf530db19d
+State hash 76034e1a333e9346c78586df8f6c6e4540186556110663828aaac3d27c744d32

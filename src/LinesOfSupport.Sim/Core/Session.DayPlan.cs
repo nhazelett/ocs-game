@@ -65,7 +65,8 @@ public sealed partial class Session
             foreach (var t in trips.Where(t => t.Who.Id == m.Id)) Take(null, t.Label, t.Milli);
             if (meeting?.Id == m.Id) Take(null, "Staff meeting", PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), m.Id));
             foreach (var w in order.Where(w => Member(w.Assignee).Id == m.Id)) Take(w.Id, WorkName(w), w.HoursRemainingMilli);
-            var waiting = _work.Count(w => w.CompletedDay is null && w.WaitUntilDay > d && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id);
+            var waiting = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay > d && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id)
+                               .OrderBy(w => w.WaitUntilDay).ToList();
 
             var name = m.Role == "you" ? "You" : MemberName(m);
             // The page puts the name above this line, so the line does not repeat it. Hours are the ones the player can
@@ -80,7 +81,8 @@ public sealed partial class Session
                 ? $"Nothing to work on today; {Said(perDay)} go to walk-in small buys."
                 : $"{HoursText(shown)} of {Said(perDay)} planned. {Jobs(done)} should finish today{(carried > 0 ? $", and {Jobs(carried).ToLowerInvariant()} carr{(carried == 1 ? "ies" : "y")} over" : "")}."
                   + (leftShown > 0 ? $" {Said(leftShown)} left over {(leftShown == 1 ? "goes" : "go")} to walk-in small buys." : "");
-            if (waiting > 0) sentence += $" {(waiting == 1 ? "One more job is" : $"{waiting} more jobs are")} not ready until a later day.";
+            // DESK-60 (D19; Claude play note 19): say why a job waits, not "not ready until a later day".
+            foreach (var w in waiting) sentence += $" {WorkName(w)} {WaitReason(w)}.";
             people.Add(new DayPlanPerson(m.Id, name, m.Portrait, perDay, shown, items, sentence));
         }
 
@@ -99,6 +101,16 @@ public sealed partial class Session
         static string Jobs(int n) => n switch { 0 => "Nothing", 1 => "One job", _ => $"{n} jobs" };
         static string Said(double h) => h == 1 ? "1 hour" : $"{HoursText(h)} hours";
     }
+
+    /// <summary>Why a work item cannot be worked yet, without a final period: "waits for finance to certify the funds on day 5".</summary>
+    internal string WaitReason(WorkItem w) => w.Kind switch
+    {
+        WorkKind.Award when w.Payload is AwardPayload { Action.Instrument: "uca" } =>
+            $"waits for finance to certify the funds and for the UCA to be approved, until day {w.WaitUntilDay}",
+        WorkKind.Award or WorkKind.AcsaOrder or WorkKind.HostNationRequest or WorkKind.ExternalSupportRequest =>
+            $"waits for finance to certify the funds on day {w.WaitUntilDay}",
+        _ => $"can start on day {w.WaitUntilDay}",
+    };
 
     /// <summary>"1 hour", "2.5 hours", rounded up to the half hour as every view rounds (DESK-14).</summary>
     private static string HoursSaid(long milli) => HalfHours(milli) is var h && h == 1 ? "1 hour" : $"{HoursText(HalfHours(milli))} hours";

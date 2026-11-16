@@ -111,7 +111,7 @@ public class StandingTests
         var first = s.View.WhereThingsStand()[0];
         Assert.Equal("Power for Spoke B", first.Title);
         Assert.Equal(RequestStanding.Arranged, first.State);
-        Assert.Equal("Meridian Site Services starts on day 17: 470 kW. It was wanted from day 7.", first.Sentence);
+        Assert.Equal("Meridian Site Services starts on day 17: 470 kW. It was wanted from day 7. Nothing covers day 16.", first.Sentence);
 
         s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 16);
         var power = s.View.WhereThingsStand().Single(x => x.Title == "Power for Spoke B");

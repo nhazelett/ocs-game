@@ -75,7 +75,7 @@ public sealed partial class Session
         {
             var a = coming[0];
             return Entry(RequestStanding.Arranged,
-                $"{SupplierName(a)} starts on day {a.StartDay}:{Amount(a, cap)}{Through(a.EndDay)}{More(coming.Count)}{(a.StartDay > from ? $". It was wanted from day {from}" : "")}.{Trips(a)}", a.TripAssignee);
+                $"{SupplierName(a)} starts on day {a.StartDay}:{Amount(a, cap)}{Through(a.EndDay)}{More(coming.Count)}{(a.StartDay > from ? $". It was wanted from day {from}" : "")}.{(BeforeStartCover(card, a.StartDay) is { } cover ? " " + cover : "")}{Trips(a)}", a.TripAssignee);
         }
 
         var buying = _work.Where(w => w.CompletedDay is null && BuysFor(w, card)).OrderBy(w => w.CreatedDay).FirstOrDefault();
@@ -83,7 +83,7 @@ public sealed partial class Session
         {
             var hours = Plural(CeilHours(buying.HoursRemainingMilli), "hour");
             return Entry(RequestStanding.Buying, buying.WaitUntilDay > Day
-                ? $"{Upper(WhoIs(buying.Assignee))} {BuyingWords(buying)}. It waits for finance to certify the funds on day {buying.WaitUntilDay}, then about {hours} of work."
+                ? $"{Upper(WhoIs(buying.Assignee))} {BuyingWords(buying)}. It {WaitReason(buying)}, then about {hours} of work."
                 : $"{Upper(WhoIs(buying.Assignee))} {BuyingWords(buying)}, about {hours} of work left.", buying.Assignee);
         }
 

@@ -73,7 +73,8 @@ public sealed partial class Session
             {
                 if (!FailureKnown(failure)) return null;
                 var missing = failure.Text.IndexOf(" (", StringComparison.Ordinal) is var i and > 0 ? failure.Text[i..].TrimEnd('.') : "";
-                return cap.Delivery == "consumable" ? $"{who} missed the delivery{missing}" : $"{Possessive(who)} equipment was down{missing}";
+                var what = cap.Delivery == "consumable" ? $"{who} missed the delivery{missing}" : $"{Possessive(who)} equipment was down{missing}";
+                return what + NextStep(a);
             }
             if (CapacityShort(a.Id, d))
                 return $"{who} has more on order than it can supply, so {NameOf(a.Id)} came up short; a second source covers the rest";
@@ -86,7 +87,8 @@ public sealed partial class Session
         if (supply < demand)
         {
             var named = running.Count == 1 ? SupplierName(running[0]) : "What is arranged";
-            return $"{named} supplies {Amount(supply / 1000, cap)}, and {site.Name} needs {Amount((demand + 999) / 1000, cap)}{BuyingNote(site.Id, capId)}";
+            var perDay = cap.Delivery == "consumable" ? "/day" : "";
+            return $"{named} supplies {CountSaid(supply, cap)}{perDay}, and {site.Name} needs {Amount((demand + 999) / 1000, cap)}{BuyingNote(site.Id, capId)}";
         }
         return null;   // its own supply covered the day: the cause is something it depends on, or not known
     }
@@ -125,6 +127,21 @@ public sealed partial class Session
         if (w is null) return "";
         var done = PlayQueue(Member(w.Assignee), 0, Day, w, w.HoursRemainingMilli) ?? Day;
         return $"; {WhoIs(w.Assignee)} {BuyingWords(w)}, done about day {done}";
+    }
+
+    /// <summary>
+    /// After a vendor failure, what is the player's to do (DESK-60, Claude play note 20: lodging at 50% and nothing to do,
+    /// with nothing saying so): an open performance issue waits in the inbox; otherwise the vendor puts it right.
+    /// </summary>
+    private string NextStep(Arrangement a)
+    {
+        if (a.IsCoordination || a.VendorId is null) return "";
+        var issue = _issues.LastOrDefault(i => i.ArrangementId == a.Id);
+        if (issue is { Outcome: CureOutcome.None, CureNoticeDay: null } && IssueDecision(issue) == "no decision")
+            return "; its performance issue is in your inbox for a decision";
+        if (issue is { Outcome: CureOutcome.None, CureEndsDay: { } end } && end >= Day)
+            return $"; the cure period runs to day {end}, so there is nothing for you to do yet";
+        return "; it is the vendor's to put right, and there is nothing for you to do unless it happens again";
     }
 
     /// <summary>A vendor failure the office knows about: one it can see, or one a COR or the unit has reported.</summary>

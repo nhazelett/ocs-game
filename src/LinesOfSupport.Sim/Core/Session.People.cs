@@ -436,8 +436,8 @@ public sealed partial class Session
             var cap = Cap(o.Capability);
             var from = o.SourceIsland is { } si && si != v.Island ? $" from {IslandData(si).Name}" : "";
             return cap.Delivery == "consumable"
-                ? $"{Lower(cap.Label)}, up to {o.CapacityPerDay:0} {cap.Unit} a day at {Money(o.UnitPriceCents)} each{from}, on {NoticeText(o.LeadTimeDays)}"
-                : $"{Lower(cap.Label)} for up to {o.CapacityPerDay:0} {cap.Unit} at {Money(o.UnitPriceCents)} each a day{from}, on {NoticeText(o.LeadTimeDays)}";
+                ? $"{Lower(cap.Label)}, up to {o.CapacityPerDay:0} {cap.Unit} a day at {UnitMoney(o.UnitPriceCents)} {PerUnit(cap.Unit)}{from}, on {NoticeText(o.LeadTimeDays)}"
+                : $"{Lower(cap.Label)} for up to {o.CapacityPerDay:0} {cap.Unit} at {UnitMoney(o.UnitPriceCents)} {PerUnit(cap.Unit)} a day{from}, on {NoticeText(o.LeadTimeDays)}";
         }).ToList();
         var offerText = offers.Count == 0 ? "They have nothing to offer you directly." : $"They offer {string.Join("; ", offers)}.";
         // A vendor wants to be paid: an undefinitized UCA the handover did not mention is the old contract they raise.
