@@ -1,0 +1,18 @@
+Native play-driver review: plan
+
+[Dialog]
+The day's plan
+This is a forecast. Work should finish as shown; events and deliveries can change what happens. Go back to the desk to change assignments.
+scroll "Dialog" (up: False, more below: True)
+Day 1
+You
+1 of 8 hours planned. One job should finish today. 7 hours left over go to walk-in small buys.
+Asking MSgt Carla Ortiz, 3 FSS about the request for water for Hub: 1 hour today, and it should be done today.
+MSgt Morgan Test
+Nothing to work on today; 8 hours go to walk-in small buys.
+SrA Eli Novak
+Nothing to work on today; 8 hours go to walk-in small buys.
+Deliveries and support due today
+No deliveries or support starts or ends are due today.
+button "Back" [enabled]
+button "End the day" [enabled]

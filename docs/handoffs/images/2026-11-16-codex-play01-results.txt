@@ -1,0 +1,9 @@
+Native play-driver review: results
+
+[Dialog]
+What happened today
+scroll "Dialog" (up: False, more below: False)
+Day 1: one job finished and everything was supplied in full.
+Work finished
+Asking MSgt Carla Ortiz, 3 FSS about the request for water for Hub: done by you.
+button "Back to Today" [enabled]
