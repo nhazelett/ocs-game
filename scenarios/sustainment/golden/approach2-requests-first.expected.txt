@@ -271,7 +271,7 @@ Day 45
 Day 46
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   SHORT     Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
   SHORT     Material handling equipment at Spoke C down to 0%: fuel at 0%.
   COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 46.
@@ -306,7 +306,7 @@ Day 49
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   SHORT     Ground transport at Hub down to 0%: Main Island Motor Pool Rentals ground transport at Hub stopped work (unpaid UCA); supply 0 vehicles against demand 13.
   SHORT     Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
-  SHORT     Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
+  SHORT     Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2.2; power at 0%.
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Lodging at Spoke C down to 0%: Third Island Camp Services lodging at Spoke C stopped work (unpaid UCA); supply 0 beds against demand 210.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 45, reported 4 days later.
@@ -480,7 +480,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 45: Fuel at Spoke C degraded to 66%: fuel on hand ran out; no arrangement supplies fuel.
   Day 45: Material handling equipment at Spoke C degraded to 66%: fuel at 66%.
       <- day 45: Fuel at Spoke C degraded to 66%: fuel on hand ran out; no arrangement supplies fuel.
-  Day 46: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 46: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 46: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 2: Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100. Approval request routed through the SCO; answer expected in 2 days.
   Day 46: Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
@@ -496,7 +496,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 5: Undefinitized contract action started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640. Approval request routed through the SCO; answer expected in 3 days.
   Day 49: Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
       <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  Day 49: Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2; power at 0%.
+  Day 49: Comms backhaul at Spoke A down to 0%: North Island Telecom comms backhaul at Spoke A stopped work (unpaid UCA); supply 0 links against demand 2.2; power at 0%.
       <- day 2: Undefinitized contract action started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100. Approval request routed through the SCO; answer expected in 2 days.
       <- day 49: Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
           <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
@@ -626,4 +626,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 6399000)
   [not met] Mission output at least 88% (mission.output = 0.681)
 
-State hash 476ac9c2347338825ac0242107a1aee8712b0c3af9b2041b768278fa86040fc2
+State hash ae1e55c8d897d47515317b364b7035ec9e8c408f587bea271979d65c8988134d

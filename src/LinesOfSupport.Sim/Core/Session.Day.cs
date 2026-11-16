@@ -385,7 +385,7 @@ public sealed partial class Session
                 else
                 {
                     permille = Fixed.Ratio(supply, demand);
-                    if (permille < 1000 && contributors > 0) reasons.Add($"supply {supply / 1000} {cap.Unit} against demand {demand / 1000}");
+                    if (permille < 1000 && contributors > 0) reasons.Add($"supply {CountSaid(supply, cap)} against demand {NumberSaid(demand)}");   // DESK-60: 1.5, not "1 forklifts"
                 }
                 if (contributors == 0 && permille < 1000) reasons.Add($"no arrangement supplies {cap.Label.ToLowerInvariant()}");
 

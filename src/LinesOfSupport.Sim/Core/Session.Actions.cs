@@ -620,6 +620,20 @@ public sealed partial class Session
     }
 
     internal static string Money(long cents) => (cents / 100m).ToString("$#,##0", System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>A unit price: cents shown when it is not whole dollars ("$0.25", "$220"), so a price under a dollar never
+    /// reads "$0" (DESK-60, Claude play note 5).</summary>
+    internal static string UnitMoney(long cents) => cents % 100 == 0 ? Money(cents)
+        : (cents / 100m).ToString("$#,##0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>"a gallon", "a forklift", "a kW": the rate word after a unit price.</summary>
+    internal static string PerUnit(string unit) => unit switch
+    {
+        "gal" => "a gallon",
+        "kW" => "a kW",
+        _ when unit.Length > 3 && unit.EndsWith('s') && unit.All(char.IsLower) => $"a {unit[..^1]}",
+        _ => $"a {unit}",
+    };
 }
 
 /// <summary>Result of <see cref="Session.CheckAward"/>. Stops empty means the award would be accepted today.</summary>

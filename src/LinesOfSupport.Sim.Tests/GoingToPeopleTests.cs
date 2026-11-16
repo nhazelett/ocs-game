@@ -159,7 +159,7 @@ public class GoingToPeopleTests
         Assert.True(s.Apply(new MeetVendorAction { Vendor = "vendorE" }).Accepted);
         s.AdvanceDay();
         var rep = Visits(s).Last();
-        Assert.StartsWith("Met Mr. Kofi Mensah of Port Fuel Haulers. They offer fuel, up to 4000 gal a day at $6 each, on a day's notice.", rep.Text);
+        Assert.StartsWith("Met Mr. Kofi Mensah of Port Fuel Haulers. They offer fuel, up to 4000 gal a day at $6 a gallon, on a day's notice.", rep.Text);
         Assert.Equal("Mr. Kofi Mensah", s.View.RecordPerson(rep)!.DisplayName);
         Assert.Contains(s.View.VendorReps, p => p.Name == "Kofi Mensah");
     }

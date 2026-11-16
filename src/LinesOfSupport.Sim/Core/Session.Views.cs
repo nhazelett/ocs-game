@@ -17,6 +17,21 @@ public sealed partial class Session
         return cap.Delivery == "consumable" ? $"{n} {unit}/day" : $"{n} {unit}";
     }
 
+    /// <summary>
+    /// A quantity in thousandths in the capability's unit, matching the percent beside it: "1.5 forklifts", "1 forklift",
+    /// "360 kW" (DESK-60, Claude play note 24: half of three forklifts read "supply 1 forklifts" at 50%).
+    /// </summary>
+    private static string CountSaid(long milli, CapabilityData cap)
+    {
+        if (milli % 1000 == 0 || milli >= 100_000) return $"{Amount((milli + 500) / 1000, cap).Replace("/day", "", StringComparison.Ordinal)}";
+        return $"{NumberSaid(milli)} {cap.Unit}";
+    }
+
+    /// <summary>A quantity in thousandths as a number: whole when it is whole or large, else to one decimal ("2.2").</summary>
+    private static string NumberSaid(long milli)
+        => milli % 1000 == 0 || milli >= 100_000 ? ((milli + 500) / 1000).ToString(System.Globalization.CultureInfo.InvariantCulture)
+            : (milli / 1000m).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
+
     internal TopStripView BuildTopStrip()
     {
         var perDay = CeilHours(_hoursPerDayMilli);
@@ -352,7 +367,7 @@ public sealed partial class Session
         if (chk.Card is { } card)
         {
             if (startMin > card.RequestedStartDay)
-                gaps.Add($"Earliest start is day {startMin}; the requirement asks for day {card.RequestedStartDay}.");
+                gaps.Add($"Earliest start is day {startMin}; the requirement asks for day {card.RequestedStartDay}.{(BeforeStartCover(card, startMin) is { } cover ? " " + cover : "")}");   // DESK-60
             var need = card.RequestedStartDay + card.DurationDays - 1;
             if (startMin + a.DurationDays - 1 < Math.Min(need, LastDay))
                 gaps.Add($"Performance ends by day {startMin + a.DurationDays - 1}; the requirement runs to day {need}.");

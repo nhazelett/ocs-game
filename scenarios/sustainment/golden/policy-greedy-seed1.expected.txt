@@ -142,7 +142,7 @@ Day 28
   FAIL      North Island Power and Light power at Spoke A had equipment down.
   FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
-  SHORT     Ground transport at Hub degraded to 50%: supply 6 vehicles against demand 13.
+  SHORT     Ground transport at Hub degraded to 50%: supply 6.5 vehicles against demand 13.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
@@ -170,7 +170,7 @@ Day 30
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
-  SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.
+  SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.1.
 Day 31
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
@@ -218,15 +218,15 @@ Day 37
 Day 38
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   SHORT     Fuel at Spoke C down to 0%: fuel on hand ran out.
-  SHORT     Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2; fuel at 0%.
+  SHORT     Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2.1; fuel at 0%.
 Day 39
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       The partner force water at Spoke A ended.
   OK        Comms backhaul at Spoke A restored to 100%.
   OK        Fuel at Spoke C restored to 100%.
-  SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.
+  SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.1.
 Day 40
   DONE      CE small buys: 10 worked today (5 h of shop time).
   START     Lodging at Spoke B from Second Island Camp Services began, 260 beds/day.
@@ -259,13 +259,13 @@ Day 46
   OK        Power at Spoke A restored to 100%.
   OK        Comms backhaul at Spoke A restored to 100%.
   SHORT     Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
-  SHORT     Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2; fuel at 0%.
+  SHORT     Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2.1; fuel at 0%.
   OBLIGATE  North Island Power and Light power at Spoke A has incurred $120,060 against $117,450 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
   OBLIGATE  Third Island Camp Services lodging at Spoke C has incurred $294,400 against $288,000 obligated: The O&M line good through day 45 expired on day 45. The vendor stops work in 3 days if this stands.
 Day 47
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
-  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
 Day 48
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
@@ -277,7 +277,7 @@ Day 49
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
-  SHORT     Ground transport at Hub degraded to 50%: supply 6 vehicles against demand 13.
+  SHORT     Ground transport at Hub degraded to 50%: supply 6.5 vehicles against demand 13.
   SHORT     Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
   SHORT     Comms backhaul at Spoke A down to 0%: power at 0%.
   SHORT     Fuel at Spoke B degraded to 66%: fuel on hand ran out.
@@ -396,7 +396,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 27: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
           <- day 27: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
-  Day 28: Ground transport at Hub degraded to 50%: supply 6 vehicles against demand 13.
+  Day 28: Ground transport at Hub degraded to 50%: supply 6.5 vehicles against demand 13.
       <- day 28: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
           <- day 5: Written purchase order started with Main Island Motor Pool Rentals: Ground transport at Hub, 13 vehicles/day for 36 days (Vehicles, Drivers); quoted $74,880.
   Day 28: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
@@ -422,7 +422,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 29: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
   Day 30: Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
-  Day 30: Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.
+  Day 30: Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.1.
   Day 31: Power at Spoke B down to 0%: no arrangement supplies power.
   Day 31: Lodging at Spoke B down to 0%: supply 135 beds against demand 260; power at 0%.
       <- day 31: Second Island Camp Services lodging at Spoke B had equipment down.
@@ -438,13 +438,13 @@ GAPS AND WHY (each traced back through its causes)
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 32: Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
   Day 37: Fuel at Spoke C degraded to 85%: fuel on hand ran out.
-  Day 38: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 38: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 38: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 2: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   Day 38: Fuel at Spoke C down to 0%: fuel on hand ran out.
-  Day 38: Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2; fuel at 0%.
+  Day 38: Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2.1; fuel at 0%.
       <- day 38: Fuel at Spoke C down to 0%: fuel on hand ran out.
-  Day 39: Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.
+  Day 39: Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.1.
   Day 42: Water at Spoke A down to 0%: water on hand ran out; no arrangement supplies water.
   Day 45: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
       <- day 45: North Island Power and Light power at Spoke A had equipment down.
@@ -455,12 +455,12 @@ GAPS AND WHY (each traced back through its causes)
               <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
   Day 45: Fuel at Spoke C degraded to 66%: fuel on hand ran out; no arrangement supplies fuel.
   Day 46: Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
-  Day 46: Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2; fuel at 0%.
+  Day 46: Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2.1; fuel at 0%.
       <- day 46: Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
-  Day 47: Comms backhaul at Spoke A degraded to 68%: supply 1 links against demand 2.
+  Day 47: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
       <- day 47: North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
           <- day 2: Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
-  Day 49: Ground transport at Hub degraded to 50%: supply 6 vehicles against demand 13.
+  Day 49: Ground transport at Hub degraded to 50%: supply 6.5 vehicles against demand 13.
       <- day 49: Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
           <- day 5: Written purchase order started with Main Island Motor Pool Rentals: Ground transport at Hub, 13 vehicles/day for 36 days (Vehicles, Drivers); quoted $74,880.
   Day 49: Power at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); supply 0 kW against demand 264.
@@ -589,4 +589,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.71)
 
-State hash b0c1880c62e3739b3b85a5f3b4329c94e01938963d442e775f9a7932f28ab6df
+State hash 7ad56bec53dbf8ff5f8a179b7c7c09ef9df5e4b6c65888d93f1531739b91d7ef
