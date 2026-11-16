@@ -62,19 +62,6 @@ public class WhoKnewTests
         Assert.DoesNotContain(after, g => g.Contains("asked for this", StringComparison.Ordinal));
     }
 
-    [Fact]
-    public void The_ask_line_names_whoever_brought_the_request_even_when_nobody_else_knows_more()
-    {
-        // The hint does not single out the ask that pays off (D25 left out a hint system): the water request names Ortiz
-        // for its plant operators too, and she confirms that bottled water needs nobody to run it.
-        var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
-        var gaps = s.View.Preview(new AwardAction
-        {
-            Id = "water", Instrument = "gpc", Vendor = "islandMart", Card = "tutWater", Quantity = 4500, StartDay = 2, DurationDays = 7,
-        }).SoftGaps;
-        Assert.Contains(gaps, g => g.EndsWith("MSgt Carla Ortiz asked for this: ask about plant operators before you buy.", StringComparison.Ordinal));
-    }
-
     private static GapFactor ForkliftFailure(Session s)
         => s.View.Debrief().Gaps.Where(g => g.CapabilityId == "mhe")
             .SelectMany(g => g.Factors).First(f => f.Kind == GapFactorKind.VendorFailure);

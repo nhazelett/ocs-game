@@ -37,7 +37,7 @@ Day 5
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
   START     Fuel at Spoke B from the partner force began, 1300 gal/day.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
@@ -50,11 +50,9 @@ Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery (no maintenance, no plant operators).
-  INBOX     Performance issue: Coastal Provisions under-delivered on water at Spoke C on days 10 and 11. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
@@ -137,7 +135,7 @@ SCORECARD
   Mission output 88% (sortie generation 96%, throughput 96%, endurance 96%, resilience 44%)
   Obligated $264,180; incurred $186,852; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 193; payment errors 0; execution-confusion days 0; vendor failures 5; declined BPA calls 0
+  Surveys 0; shop hours worked 193; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
   spokeBSite.power: 1 day(s) down, 11 degraded, lowest 0%
   spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 1 day(s) down, 11 degraded, lowest 0%
@@ -156,9 +154,6 @@ GAPS AND WHY (each traced back through its causes)
   Day 20: Lodging at Spoke B degraded to 76%: power at 76%.
       <- day 20: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 
-PERFORMANCE ISSUES (FAR 49.402-3)
-  pi1 (day 11): waterBridge at spokeCSite.water, failed days 10, 11. Decision: no decision.
-
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 19-19, lowest 0%, 1 day(s) down: DISCOVERABLE
       [discoverable] The partner force fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it. On day 16: Weather stops the barge. Harbor master: no barge movements for the next three days.
@@ -175,4 +170,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.877)
 
-State hash 2f662bc16fc250851f50898ee990b89cbdc03e9846d3eda9fd2ee0bdedc19bc1
+State hash a4a952551cfe3998dbb3ba691546f81cd3ed20c9737b474f5f636702843ad58b

@@ -66,7 +66,7 @@ Day 21
 Day 22
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 23
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
@@ -287,7 +287,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Port Fuel Haulers fuel at Spoke B was left unresolved and the vendor walked off on day 15.
       [avoidable] Nobody owned fuel at Spoke B. Fuel is usually the J4's: the ACSA manager draws on the partner force's stock, or DLA Energy supplies it. The J4 was never asked, and the partner force had 4,000 gal a day to spare under the ACSA. Buying fuel yourself is the stopgap, not the plan.
       [avoidable] Arrangements at Spoke B were sized for 700 gal a day against demand of 1170 a day. Population rose to 260 on day 20, which the plan showed from day 1.
-      [avoidable] Second Island Fuel fuel at Spoke B failed (first on day 22) and was bought without on-site storage; its failure odds were higher every day it ran.
+      [unforeseeable] Second Island Fuel fuel at Spoke B missed a delivery on day 22. It delivers goods, so the miss is its own delivery record, not a part left out.
       [avoidable] Second Island Fuel fuel at Spoke B was left unresolved and the vendor walked off on day 36.
       [avoidable] No funding line with money could pay for fuel on day 76 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 days late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
   #2 spokeBSite.power days 7-90, lowest 0%, 77 day(s) down: AVOIDABLE
@@ -309,4 +309,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash 19dff8b8cd97c5f0da9c7601caca89f19f7db9d2d7c5e2a85c3d9cdc06c07306
+State hash 8f20233155f71440c88ba3105ede7ea19da091530672d17366446b4b5de4bff4
