@@ -104,7 +104,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -125,7 +125,7 @@ Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
@@ -197,7 +197,7 @@ Day 73
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $146,871 never obligated can no longer pay for anything new.
@@ -227,7 +227,7 @@ Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 87
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 88
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 89
@@ -259,4 +259,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.933)
 
-State hash 9e78e01a7694def7b137e14a5b862284bf359057177a769fbca92528e660b44c
+State hash 9fe62e9f435506d1abd34ade1833ed61e835631809d0bd0756fede782804471e

@@ -99,6 +99,27 @@ public sealed partial class Session
             [cause]);
     }
 
+    /// <summary>Failure records of missed consumable deliveries whose day the site's stock still met in full (DESK-87).</summary>
+    private readonly HashSet<string> _stockCovered = [];
+
+    /// <summary>
+    /// DESK-87: a missed consumable delivery on a day the site's stock still met demand says so, in the record the day's
+    /// results, the COR report and the debrief all read. The tutorial's dining hall slips on days 11 and 12 over three days
+    /// of food stock; without this the COR report said "missed" and the debrief's grid said 100%.
+    /// </summary>
+    private void StockCoveredFailures(Dictionary<string, Today> today)
+    {
+        foreach (var (id, t) in today)
+        {
+            if (!t.Failed || t.FailureRecord is not { } recId) continue;
+            var a = _arrangements.First(x => x.Id == id);
+            if (Cap(a.CapabilityId).Delivery != "consumable" || CapState(a.SiteId, a.CapabilityId) is not { TodayPermille: >= 1000 }) continue;
+            var i = _records.FindIndex(r => r.Id == recId);
+            _records[i] = _records[i] with { Text = _records[i].Text + " The stock on hand covered today's demand." };
+            _stockCovered.Add(recId);
+        }
+    }
+
     /// <summary>After supply resolves: schedule reports of today's failures, deliver the ones due, open issues on them.</summary>
     private void CorReporting(int d, Dictionary<string, Today> today)
     {
@@ -124,7 +145,8 @@ public sealed partial class Session
         {
             var a = _arrangements.First(x => x.Id == r.ArrangementId);
             var what = Cap(a.CapabilityId).Delivery == "consumable" ? "missed its delivery" : "had equipment down";
-            var late = d > r.FailureDay ? $", reported {Plural(d - r.FailureDay, "day")} later" : "";
+            var late = (d > r.FailureDay ? $", reported {Plural(d - r.FailureDay, "day")} later" : "")
+                       + (_stockCovered.Contains(r.FailureRecordId) ? "; the stock on hand covered it" : "");   // DESK-87
             r.RecordId = CorOf(r.CorId) is { } cor
                 ? AddRecord(d, RecordKind.CorReport, a.Id, $"COR report ({cor.Name}): {NameOf(a.Id)} {what} on day {r.FailureDay}{late}.", [r.FailureRecordId])
                 : AddRecord(d, RecordKind.CorReport, a.Id,

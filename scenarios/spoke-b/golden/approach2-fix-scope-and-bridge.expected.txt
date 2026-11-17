@@ -93,7 +93,7 @@ Day 19
   EVENT     Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Third Island Water Works food service at Spoke C missed today's delivery.
+  FAIL      Third Island Water Works food service at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 20
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
@@ -231,4 +231,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.831)
 
-State hash 5f8f6bba8d787aeb4b382c3a53d89608ce445a7317157fb18701cdb5916a4f06
+State hash 7a317e52cb71139d58c184900f4950e27f361fe21c5e97c92b16b2d2ca3c2f0b

@@ -101,7 +101,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -122,7 +122,7 @@ Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
@@ -194,7 +194,7 @@ Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $254,736 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.878)
 
-State hash 7218fe2db80fe1be781df1bad2b259617e85cf08b8532217be2045610e2650ce
+State hash a4dc651ea1b011a0ce66fc070a7f14902f282fec23875b768c1e3109967d4a6d

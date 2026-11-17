@@ -102,7 +102,7 @@ Day 17
 Day 18
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   END       Harbor Equipment Co power at Spoke B ended.
-  FAIL      Third Island Water Works water at Spoke C missed today's delivery.
+  FAIL      Third Island Water Works water at Spoke C missed today's delivery. The stock on hand covered today's demand.
   SHORT     Food service at Spoke C down to 30%: food service on hand ran out.
 Day 19
   ACTION    Coordinated with the Hub unit for 480 meals/day of Food service to Spoke C. Not a contract; they can withdraw it.
@@ -143,7 +143,7 @@ Day 26
   EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 27. A coordination is not a contract.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 27
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
 Day 28
@@ -151,7 +151,7 @@ Day 28
   END       The other unit's fuel at Spoke B ended.
 Day 29
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 30
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 
@@ -216,4 +216,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.92)
 
-State hash 39604750391ad85a4f3232a53f8d7f7edddc7a4509d00931d9a68ef92c79d564
+State hash 5f1f42b03264b1f33d413a43ba2085a4e2c9545b873cfc8e1d034bf12b50cb97

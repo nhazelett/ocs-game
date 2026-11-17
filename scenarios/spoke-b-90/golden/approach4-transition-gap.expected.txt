@@ -107,7 +107,7 @@ Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
@@ -130,7 +130,7 @@ Day 41
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Meridian Site Services power at Spoke B ended.
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
   TRANSIT   The hand-off of power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 41 and The external contract's power at Spoke B is not expected before day 47. Power at Spoke B has nothing behind it. Gap owner: CCO seat.
 Day 43
@@ -216,7 +216,7 @@ Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 80
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 81
@@ -278,4 +278,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.911)
 
-State hash c608eb18b7413f44c99739da31a25b79a30ca9aca975bc1663ac0fe8e22594b5
+State hash 969a4faa5eb7f615eba53fbcf0ecb26b70383e4d7b621878bd4e44581d403337

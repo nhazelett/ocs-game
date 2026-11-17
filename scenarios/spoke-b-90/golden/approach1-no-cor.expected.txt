@@ -93,7 +93,7 @@ Day 29
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
@@ -104,17 +104,17 @@ Day 32
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
   COR       Unit report from Spoke B: power fell short on day 31 and the unit blames Harbor Equipment Co, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 36
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -135,7 +135,7 @@ Day 41
   INBOX     Performance issue: Harbor Equipment Co under-delivered on power at Spoke B on days 36 and 38 (unit reports; no COR). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 42
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 43
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 44
@@ -153,7 +153,7 @@ Day 46
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 47
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 48
   DONE      CE small buys: 6 worked today (3 h of shop time).
   COR       Unit report from Spoke B: power fell short on day 45 and the unit blames Harbor Equipment Co, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
@@ -173,7 +173,7 @@ Day 53
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 55
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 56
@@ -187,7 +187,7 @@ Day 58
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
 Day 59
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 60
@@ -224,11 +224,11 @@ Day 68
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 70
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 71
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 50%: fuel on hand ran out.
@@ -242,7 +242,7 @@ Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
   FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $794,160 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
@@ -270,12 +270,12 @@ Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 87
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 88
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
+  FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 89
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 90
@@ -410,4 +410,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.76)
 
-State hash 4dc3b96a98ab057100ec851afd810c1d9d6510a826675192957aedcd74f0a145
+State hash ea5fc0528bce8fa0f36bebc828b2e02d6b46b8f8f0470bf79c5e22fdce383713

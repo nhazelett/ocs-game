@@ -45,7 +45,7 @@ Day 5
   DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 6
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 13, ends day 72. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 14 waiting.
@@ -78,7 +78,7 @@ Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 16
   ACTION    Ratification of the extra work Harbor Equipment Co did on power at Spoke B started: 2 shop days. Harbor Equipment Co is told it will be paid.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
@@ -100,7 +100,7 @@ Day 20
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 21
   UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -114,7 +114,7 @@ Day 24
   DONE      CE small buys: none worked today (no hours left); 22 waiting.
 Day 25
   DONE      CE small buys: 29 worked today (14.5 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
   SHORT     Food service at Spoke C degraded to 85%: food service on hand ran out.
@@ -171,4 +171,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.915)
 
-State hash d43a8355292c79532041816287486cc5a6ee0e7b925e2d43fe4c5b690a8c454a
+State hash 84d7b343f1fdc513f91c56980e8bfb56edfee06bfe96494abdf52c2f74541a28

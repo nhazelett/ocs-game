@@ -37,7 +37,7 @@ Day 5
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 7
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
@@ -61,7 +61,7 @@ Day 12
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
   START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
   START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -100,7 +100,7 @@ Day 20
 Day 21
   COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: none worked today (no hours left); 7 waiting.
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 22
   UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
@@ -117,7 +117,7 @@ Day 26
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 15 worked today (7.5 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 27
   DONE      CE small buys: 8 worked today (4 h of shop time).
   START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
@@ -213,4 +213,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.74)
 
-State hash 1a6ef6f601fb63ea8aa383188d230c44fbe20c8c2dd4d7f9a3a58fd2a9770ac0
+State hash ee460e12279f861727d9896337237372a3b9289612609083f39592def1e511e4

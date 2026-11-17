@@ -37,7 +37,7 @@ Day 5
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
   START     Fuel at Spoke B from the partner force began, 1300 gal/day.
   START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
@@ -50,7 +50,7 @@ Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 12
@@ -77,7 +77,7 @@ Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
@@ -95,7 +95,7 @@ Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 23
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 25
@@ -170,4 +170,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.877)
 
-State hash a4a952551cfe3998dbb3ba691546f81cd3ed20c9737b474f5f636702843ad58b
+State hash ab70a1df4c10470e54688cb581f7e9c9f2f5f6773514e5792bec2c8da8ce2aa6
