@@ -13,6 +13,9 @@ public class PrepTests
         var b = Repo.Load("spoke-b");
         var v = PrepScreen.View(b);
         Assert.Equal(b.Rules.PrepChoices.Count, v.Options.Count);
+        // DESK-76 (D32): Spoke B sets no warrant, so the warrant request changes nothing there and is not offered.
+        Assert.DoesNotContain(v.Offered, o => o.Id == "warrantOrThreshold");
+        Assert.True(v.OfferedDays > v.BudgetDays, "picking everything offered should not fit");
         Assert.Equal(14, v.BudgetDays);
         Assert.True(v.AllChoicesDays > v.BudgetDays, "picking everything should not fit");
         Assert.All(v.Options, o => Assert.NotEmpty(o.Effects));

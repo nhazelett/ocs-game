@@ -53,7 +53,10 @@ public sealed partial class Session
             return new(card.Id, title, asker, state, who, who is null ? null : MemberName(Member(who)), SentenceCase(sentence),
                    state == RequestStanding.Ended ? null : whyShort,
                    state is RequestStanding.Nothing or RequestStanding.Asking ? OrderBy(card) : null,   // DESK-73 (D29)
-                   [.. still.Select(l => LineLabel(card.CapabilityId, l).ToLowerInvariant())]);
+                   [.. still.Select(l => LineLabel(card.CapabilityId, l).ToLowerInvariant())])
+            {
+                OnFile = state is RequestStanding.Nothing or RequestStanding.Asking or RequestStanding.Short ? OnFile(card) : [],   // DESK-76 (D32)
+            };
         }
 
         // What covers it: support tied to the request, or any support for the same thing at the same site on its days.

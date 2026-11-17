@@ -169,7 +169,8 @@ public static class Prep
     {
         "shop.gpcAvailableDay", "shop.payingAgentAvailableDay", "shop.cashReplenishLagDays", "shop.systemOnlineDay",
         "model.manualContractTimeFactorOverride", "shop.warrantCents",
-        // Recorded for the debrief; no mechanical effect in v0 (docs/assumptions.md).
+        // Information only (DESK-76, D32): pulled agreements, the vendor list and confirmed partner agreements show what
+        // the Sim already knows. Vetting is recorded for the debrief.
         "vehicles.infoTier", "vendors.infoTierUpgrade", "vetting.shopDaysFactor", "actors.partnersConfirmed",
     };
 
@@ -186,7 +187,10 @@ public static class Prep
                 s.PrepSetManualFactor(e.Value is { ValueKind: JsonValueKind.Number } f ? f.GetDouble() : 1.0); break;
             case "shop.warrantCents":
                 s.PrepSetWarrant(e.Value is { ValueKind: JsonValueKind.Number } w ? w.GetInt64() : null); break;
-            case "vehicles.infoTier": case "vendors.infoTierUpgrade": case "vetting.shopDaysFactor": case "actors.partnersConfirmed":
+            case "vehicles.infoTier": s.PrepPullAgreements(); break;
+            case "vendors.infoTierUpgrade": s.PrepBringVendorList(); break;
+            case "actors.partnersConfirmed": s.PrepConfirmPartners(); break;
+            case "vetting.shopDaysFactor":
                 break;
             default:
                 throw new InvalidDataException($"prep effect {e.Kind} is not implemented");

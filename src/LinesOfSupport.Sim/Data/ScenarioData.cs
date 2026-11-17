@@ -105,6 +105,8 @@ public sealed record PrepBriefingData
     /// <summary>people[] id of who sends the message.</summary>
     public string From { get; init; } = "";
     public string Intro { get; init; } = "";
+    /// <summary>Where the player is going, two sentences (DESK-76, D32); shown before the choices.</summary>
+    public string? Where { get; init; }
     /// <summary>Prep choice id to what that person says about it.</summary>
     public Dictionary<string, string> Choices { get; init; } = [];
     /// <summary>The picks shown preselected; must fit the prep budget.</summary>

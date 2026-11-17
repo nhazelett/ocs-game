@@ -214,6 +214,11 @@ public sealed record RequestStanding(
 {
     /// <summary>Never null for a reader.</summary>
     public IReadOnlyList<string> StillToFind { get; init; } = StillToFind ?? [];
+    /// <summary>What is already on file that could serve it, one sentence each (DESK-76, D32): existing BPAs and IDIQs
+    /// when the player pulled them in preparation, and what the partner force and host nation can spare when the player
+    /// confirmed those agreements. Given while nothing covers the request in full (nothing, asking, short); empty
+    /// otherwise.</summary>
+    public IReadOnlyList<string> OnFile { get; init; } = [];
     /// <summary>Nothing arranged and nothing in work.</summary>
     public const string Nothing = "nothing";
     /// <summary>Someone on the team is asking a person about the request; nothing bought yet.</summary>

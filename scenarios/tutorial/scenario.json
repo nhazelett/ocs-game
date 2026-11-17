@@ -712,15 +712,17 @@
   },
   "prepBriefing": {
     "from": "cole",
-    "intro": "You have fourteen days before wheels up. Here's what you can get done from here. You can't do all of it, so pick what you'll miss least on the ground.",
+    "intro": "You have fourteen days before wheels up. Here's what you can get done from here; pick what you think will help most on the ground.",
+    "where": "You're going to the hub on the main island: three hundred people, already open, with the host nation running most of what keeps it going. Water is the first thing on anyone's mind, and the cargo yard will want forklifts once the flights pick up.",
     "choices": {
       "gpcAccounts": "Purchase cards take about five days to set up from home. Out there, they take weeks.",
       "cashAndPayingAgent": "Finance can line up a paying agent and cash for you now, or you can find them when you land.",
       "systemAccess": "Get your contract-writing system account started now and it may be working when you arrive.",
-      "templatesAndKit": "Bring templates and a paper kit, and the manual work goes faster until the system's up."
+      "templatesAndKit": "Bring templates and a paper kit, and the manual work goes faster until the system's up.",
+      "pullVehicles": "I can pull the agreements the last rotation left you, so you can see which requests they cover before you land.",
+      "vendorLists": "I can send you our vendor list with the terms we have, so you know who takes cash and who takes the card."
     },
     "defaults": [
-      "gpcAccounts",
       "cashAndPayingAgent",
       "systemAccess"
     ]
