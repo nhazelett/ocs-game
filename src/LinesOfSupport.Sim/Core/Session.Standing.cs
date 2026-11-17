@@ -44,9 +44,17 @@ public sealed partial class Session
         bool Overlaps(int s, int e) => s <= to && e >= from;
         var whyShort = card.RequestedStartDay < Day ? BuildWhyShort(card.SiteId, card.CapabilityId) : null;   // DESK-38
         RequestStanding Entry(string state, string sentence, string? who = null)
-            => new(card.Id, title, asker, state, who, who is null ? null : MemberName(Member(who)), SentenceCase(sentence),
+        {
+            // DESK-77 (D34): covered in part names what is still to find.
+            var still = state is RequestStanding.Arranged or RequestStanding.Running or RequestStanding.Short or RequestStanding.Buying
+                ? StillToFind(card) : [];
+            if (still.Count > 0)
+                sentence += $" It leaves out {PartsLabels(card.CapabilityId, still)}, still to find.";
+            return new(card.Id, title, asker, state, who, who is null ? null : MemberName(Member(who)), SentenceCase(sentence),
                    state == RequestStanding.Ended ? null : whyShort,
-                   state is RequestStanding.Nothing or RequestStanding.Asking ? OrderBy(card) : null);   // DESK-73 (D29)
+                   state is RequestStanding.Nothing or RequestStanding.Asking ? OrderBy(card) : null,   // DESK-73 (D29)
+                   [.. still.Select(l => LineLabel(card.CapabilityId, l).ToLowerInvariant())]);
+        }
 
         // What covers it: support tied to the request, or any support for the same thing at the same site on its days.
         var covering = _arrangements

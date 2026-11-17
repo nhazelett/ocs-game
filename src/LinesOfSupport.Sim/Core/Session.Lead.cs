@@ -20,7 +20,7 @@ public sealed partial class Session
 
     private bool CardCoveredNow(CardState c) =>
         _arrangements.Any(a => a.CardId == c.Id && a.Status != ArrangementStatus.Declined && a.Status != ArrangementStatus.Ended)
-        || _work.Any(w => w.CompletedDay is null && w.Payload is AwardPayload p && p.Action.Card == c.Id)
+        || _work.Any(w => w.CompletedDay is null && BuysFor(w, c))   // DESK-77: a buy for its site and capability, from anywhere
         || _arrangements.Any(a => a.SiteId == c.SiteId && a.CapabilityId == c.CapabilityId && Live(a)
                                   && a.StartDay <= Math.Max(c.RequestedStartDay, Day) + LeadClockDays && a.EndDay >= Math.Max(c.RequestedStartDay, Day));
 

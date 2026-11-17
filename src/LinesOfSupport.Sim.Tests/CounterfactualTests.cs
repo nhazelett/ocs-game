@@ -82,14 +82,18 @@ public class CounterfactualTests
     }
 
     [Fact]
-    public void A_line_switched_on_before_the_award_breaks_its_scope_and_the_view_names_it()
+    public void A_line_switched_on_before_the_award_is_left_out_of_it_and_still_to_find()
     {
         var bundle = Repo.Load("spoke-b");
         var log = Golden("spoke-b", "approach1-as-written");
         var gens = IndexOf(log, a => a is AwardAction { Id: "gens" });
+        // DESK-77 (D34): a buy from the request takes what the vendor brings. Harbor Equipment brings no fuel, so the call
+        // still goes in, meeting the request in part, and the request says fuel is still to find.
         var before = Counterfactual.Run(bundle, log, CounterfactualChange.Insert(1, new SetLineAction { Card = "req0007", Line = "fuelSupply", On = true }, gens));
-        Assert.Contains(before.View.NoLongerApplied, s => s.StartsWith("Day 1: bpaCall gens: ", StringComparison.Ordinal));
-        Assert.True(before.View.MissionOutputDelta < 0);
+        Assert.DoesNotContain(before.View.NoLongerApplied, s => s.Contains("gens", StringComparison.Ordinal));
+        Assert.DoesNotContain("fuelSupply", before.Alternative.Arrangements.Single(a => a.Id == "gens").Lines);
+
+        Assert.Contains(before.Alternative.View.WhereThingsStand(), r => r.CardId == "req0007" && r.StillToFind.Contains("generator fuel supply"));
 
         // After the award, the same line changes nothing about the award.
         var after = Counterfactual.Run(bundle, log, CounterfactualChange.Insert(1, new SetLineAction { Card = "req0007", Line = "fuelSupply", On = true }));

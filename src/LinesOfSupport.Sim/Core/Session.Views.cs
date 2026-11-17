@@ -217,7 +217,8 @@ public sealed partial class Session
             return new RequirementLine(
                 l.Id, l.Label ?? l.Id, l.Kind, on, l.Supplies, GapIfOff(cap, l),
                 l.Supplies is { } sup && _capData.TryGetValue(sup, out var supCap) ? supCap.UsualOwner : null,
-                Known: on || learned is not null, CanAdd: !on && learned is not null, Learned: learned?.Says, LearnedFrom: learned?.From);
+                Known: on || learned is not null, CanAdd: !on && learned is not null, Learned: learned?.Says, LearnedFrom: learned?.From,
+                IfAdded: !on && learned is not null && l.Kind != "core" ? IfAdded(card, l) : null);   // DESK-77
         }).ToList();
         var deps = cap.DependsOn.Select(dep =>
         {
@@ -357,6 +358,8 @@ public sealed partial class Session
         var cap = Cap(capId);
         var site = SiteData(siteId);
         var vendor = chk.Vendor!;
+        if (chk.Card is { } partCard && LeftOut(partCard, chk.Lines) is { Count: > 0 } left)   // DESK-77 (D34)
+            gaps.Insert(0, PartsLeftOut(partCard, vendor.Name, left));
         foreach (var l in cap.Lines.Where(l => l.Kind != "core" && !chk.Lines.Contains(l.Id)))
             if ((l.Kind is not ("operator" or "maintenance") || PlantPartAtRisk(cap, l, vendor.Id))   // DESK-59
                 && GapIfOff(cap, l) is { } g) gaps.Add(g + AskFirst(chk.Card, l));
