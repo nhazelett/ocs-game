@@ -33,7 +33,8 @@ public partial class GameShell
             portrait.SetPerson(entry.From); row.AddChild(portrait);
             portrait.CustomMinimumSize = new Vector2(40, 50);
             var open = DeskUi.Button(entry.Title + (entry.From is null ? "" : " · " + entry.From.DisplayName)
-                + "\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : ""), () =>
+                + "\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : "")
+                + (entry.OrderBy is { } order ? "\n" + order.Sentence : ""), () =>
             {
                 if (observedHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay) return;
                 NavigateBoardItem(new BoardItem("", session.View!.Day, BoardCategory.Request, BoardSeverity.Info,

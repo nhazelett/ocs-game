@@ -39,6 +39,10 @@ public partial class GameShell
         {
             var reason = DeskUi.Label(whyShort); reason.SetMeta("request_why_short", card.CardId); linkedRequirement.AddChild(reason);
         }
+        if (view.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId)?.OrderBy is { } order)
+        {
+            var deadline = DeskUi.Label(order.Sentence); deadline.SetMeta("request_order_by", card.CardId); linkedRequirement.AddChild(deadline);
+        }
         if (card.Message is { Length: > 0 } message) linkedRequirement.AddChild(DeskUi.Label(message));
         if (card.HeardAt is { } heardAt)
         {

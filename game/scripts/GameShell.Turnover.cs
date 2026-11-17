@@ -79,14 +79,7 @@ public partial class GameShell
     private void FinishTurnover()
     {
         DisplayedTurnover = null; turnoverIndex = 0; RefreshOpeningVisibility();
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = InboxTab;
-        var first = session.View!.Cards.FirstOrDefault(c => RequestOpenButtons.ContainsKey(c.Id));
-        if (first is not null)
-        {
-            var button = RequestOpenButtons[first.Id];
-            GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(button);
-            button.GrabFocus();
-        }
+        FocusNewMorning();
     }
 
     private void ResetOpening()

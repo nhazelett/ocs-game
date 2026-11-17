@@ -22,7 +22,6 @@ public partial class GameShell
         var tabs = GetNode<TabContainer>("%DeskTabs");
         var board = boardContents = DeskUi.Pane(tabs.GetNode<Control>("Today"), "TodayPane", out boardFooter);
         BuildLead(board);
-        morningHeading = DeskUi.Label(); boardDetails.AddChild(morningHeading);
         boardFocus = DeskUi.Label(); boardDetails.AddChild(boardFocus);
         morningItems = new VBoxContainer { Name = "Items" }; boardDetails.AddChild(morningItems);
         morningTiles = new VBoxContainer { Name = "Tiles" }; boardDetails.AddChild(morningTiles);
@@ -53,11 +52,12 @@ public partial class GameShell
     private void RefreshMorningDesk(SessionView? view, MorningBoardView? board)
     {
         DeskUi.Clear(morningItems); DeskUi.Clear(morningTiles);
+        RefreshMorningBrief(board);
         RefreshLead(view, board);
         RefreshStandings(view);
         RefreshDecisions(view);
         morningHeading.Text = board is null ? "No scenario loaded" :
-            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {board.Items.Count(x => x.Severity == BoardSeverity.Alert)} alerts · {board.Items.Count(x => x.Category == BoardCategory.Request)} requests";
+            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {board.Items.Count(x => x.Severity == BoardSeverity.Alert)} alerts · {board.OpenRequests} open requests";
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
         foreach (var item in board?.Items ?? [])
         {
@@ -71,7 +71,7 @@ public partial class GameShell
         {
             var key = tile.SiteId + "." + tile.CapabilityId;
             var name = view!.Scenario.Sites.Single(s => s.Id == tile.SiteId).Name;
-            var button = DeskUi.Button($"{name} · {tile.Label}: {tile.TodayPermille / 10m:0.#}% · {StatusWords(tile.Status)}{(view.LostConfidenceSites.Contains(tile.SiteId) ? " · commander confidence lost" : "")}", () => SelectCapability(key));
+            var button = DeskUi.Button($"{name} · {tile.Label}: {TileLevel(tile)}{(view.LostConfidenceSites.Contains(tile.SiteId) ? " · commander confidence lost" : "")}", () => SelectCapability(key));
             button.ToggleMode = true; button.ButtonPressed = SelectedCapability == key;
             button.SetMeta("capability", key); morningTiles.AddChild(button);
             if (tile.WhyShort is { } why)
@@ -91,7 +91,7 @@ public partial class GameShell
                 var population = view.Population(tile.SiteId, day);
                 var planned = view.PlannedPopulation(tile.SiteId, day);
                 caption.Text = $"Selected: {tile.Label} at {name}"; caption.Visible = true;
-                boardFocus.Text = $"Selected: {tile.Label} at {name} · {StatusWords(tile.Status)} · {tile.TodayPermille / 10m:0.#}%\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
+                boardFocus.Text = $"Selected: {tile.Label} at {name} · {TileLevel(tile)}\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
             }
         }
         RenderRequirementContext(view);

@@ -9,6 +9,7 @@ public partial class GameShell
     private VBoxContainer boardDetails = null!;
     private Label leadSpeaker = null!, leadWords = null!, leadReason = null!;
     private PersonPortrait leadPortrait=null!;
+    private PanelContainer leadCard = null!;
     internal LeadItem? DisplayedLead { get; private set; }
     internal Button LeadOpen { get; private set; } = null!;
     internal Button BoardDetailsToggle { get; private set; } = null!;
@@ -17,7 +18,8 @@ public partial class GameShell
 
     private void BuildLead(VBoxContainer board)
     {
-        var card = new PanelContainer();
+        BuildMorningBrief(board);
+        var card = leadCard = new PanelContainer();
         using var panelStyle = new StyleBoxFlat { BgColor = TabletopTheme.Paper, BorderWidthLeft=4, BorderColor=TabletopTheme.Moss, ContentMarginLeft = 18,
             ContentMarginRight = 18, ContentMarginTop = 18, ContentMarginBottom = 18, CornerRadiusTopLeft = 5,
             CornerRadiusTopRight = 5, CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5 };
@@ -46,6 +48,7 @@ public partial class GameShell
     private void RefreshLead(SessionView? view, MorningBoardView? board)
     {
         DisplayedLead = board?.Lead;
+        leadCard.Visible = DisplayedLead is not null || board?.New.Count is null or 0;
         leadPortrait.Visible=DisplayedLead?.Person is not null;if(leadPortrait.Visible)leadPortrait.SetPerson(DisplayedLead!.Person);
         leadSpeaker.Text = DisplayedLead?.Person?.WithUnit ?? ""; leadSpeaker.Visible = leadSpeaker.Text.Length > 0;
         leadWords.Text = DisplayedLead?.Text ?? (view is null ? "Your deployment has not started." : view.Finished ? "The deployment is complete." : "There is no priority message this morning.");
@@ -78,9 +81,18 @@ public partial class GameShell
 
     private void FocusNewMorning()
     {
+        if (session.View?.Finished == true) return;
         allDecisions = false;
         BoardDetailsToggle.ButtonPressed = false;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
+        var morningDay = session.View?.Day;
+        Callable.From(() =>
+        {
+            if (!IsInsideTree() || session.View?.Day != morningDay || AtFrontDoor || ReadingTurnover
+                || GetNode<TabContainer>("%DeskTabs").CurrentTab != TodayTab) return;
+            GetNode<TabContainer>("%DeskTabs").GetTabBar().GrabFocus();
+            GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").ScrollVertical = 0;
+        }).CallDeferred();
     }
 
     private static string StatusWords(string status) => status switch
