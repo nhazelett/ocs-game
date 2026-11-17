@@ -1,0 +1,185 @@
+{
+  "scenario": "spoke-b",
+  "rulesVersion": "2025-10",
+  "seed": 20261117,
+  "prepChoices": [
+    "gpcAccounts",
+    "cashAndPayingAgent",
+    "pullVehicles",
+    "vendorLists",
+    "templatesAndKit",
+    "warrantOrThreshold",
+    "partnerAgreements"
+  ],
+  "actions": [
+    {
+      "kind": "engageJ4",
+      "id": "player-j4-1",
+      "site": "spokeBSite",
+      "capability": "fuel",
+      "quantity": 1170,
+      "day": 1
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorB",
+      "day": 1
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorA",
+      "day": 1
+    },
+    {
+      "kind": "askAbout",
+      "card": "req0007",
+      "person": "ruiz",
+      "day": 1
+    },
+    {
+      "kind": "askAbout",
+      "card": "req0012",
+      "person": "ruiz",
+      "day": 1
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorG",
+      "day": 1
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorF",
+      "day": 1
+    },
+    {
+      "kind": "askAbout",
+      "card": "req0012",
+      "person": "okafor",
+      "day": 1
+    },
+    {
+      "kind": "addLine",
+      "card": "req0007",
+      "line": "operator",
+      "day": 2
+    },
+    {
+      "kind": "addLine",
+      "card": "req0007",
+      "line": "maintenance",
+      "day": 2
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorC",
+      "day": 2
+    },
+    {
+      "kind": "addLine",
+      "card": "req0012",
+      "line": "operator",
+      "day": 2
+    },
+    {
+      "kind": "addLine",
+      "card": "req0012",
+      "line": "maintenance",
+      "day": 2
+    },
+    {
+      "kind": "award",
+      "id": "player-award-1",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorF",
+      "card": "req0012",
+      "site": "spokeCSite",
+      "capability": "water",
+      "quantity": 2400,
+      "startDay": 5,
+      "durationDays": 60,
+      "fundingLine": "om1",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 2
+    },
+    {
+      "kind": "askSco",
+      "question": "vehicles",
+      "day": 2
+    },
+    {
+      "kind": "askSco",
+      "question": "thresholds",
+      "day": 2
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorE",
+      "day": 2
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "vendorD",
+      "day": 2
+    },
+    {
+      "kind": "joinStaffMeeting",
+      "attend": true,
+      "day": 2
+    },
+    {
+      "kind": "award",
+      "id": "player-award-2",
+      "instrument": "bpaCall",
+      "vendor": "vendorC",
+      "vehicle": "bosBpa",
+      "site": "spokeBSite",
+      "capability": "power",
+      "quantity": 468,
+      "startDay": 7,
+      "durationDays": 60,
+      "fundingLine": "om1",
+      "day": 3
+    },
+    {
+      "kind": "award",
+      "id": "player-award-3",
+      "instrument": "gpc",
+      "vendor": "vendorG",
+      "site": "spokeCSite",
+      "capability": "water",
+      "quantity": 2400,
+      "startDay": 7,
+      "durationDays": 4,
+      "day": 3
+    },
+    {
+      "kind": "award",
+      "id": "player-award-4",
+      "instrument": "purchaseOrder",
+      "vendor": "vendorG",
+      "card": "req0014",
+      "site": "spokeCSite",
+      "capability": "food",
+      "quantity": 480,
+      "startDay": 12,
+      "durationDays": 30,
+      "fundingLine": "om1",
+      "priorities": [
+        "cheap",
+        "good"
+      ],
+      "day": 3
+    },
+    {
+      "kind": "resolveCommitment",
+      "commitment": "oos1",
+      "choice": "ratify",
+      "day": 16
+    }
+  ],
+  "savedDay": 17
+}

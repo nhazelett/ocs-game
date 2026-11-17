@@ -1,0 +1,205 @@
+{
+  "scenario": "tutorial",
+  "rulesVersion": "2025-10",
+  "seed": 4471,
+  "prepChoices": [
+    "gpcAccounts",
+    "cashAndPayingAgent",
+    "systemAccess",
+    "vendorLists",
+    "warrantOrThreshold"
+  ],
+  "actions": [
+    {
+      "kind": "award",
+      "id": "player-award-1",
+      "instrument": "gpc",
+      "vendor": "islandMart",
+      "card": "tutWater",
+      "site": "hubSite",
+      "capability": "water",
+      "quantity": 4500,
+      "startDay": 2,
+      "durationDays": 7,
+      "day": 1
+    },
+    {
+      "kind": "award",
+      "id": "player-award-2",
+      "instrument": "gpc",
+      "vendor": "islandMart",
+      "card": "tutWater",
+      "site": "hubSite",
+      "capability": "water",
+      "quantity": 1500,
+      "startDay": 2,
+      "durationDays": 7,
+      "day": 1
+    },
+    {
+      "kind": "terminate",
+      "arrangement": "player-award-2",
+      "withNotice": false,
+      "day": 1
+    },
+    {
+      "kind": "assign",
+      "work": "w1",
+      "to": "avery",
+      "day": 1
+    },
+    {
+      "kind": "award",
+      "id": "player-award-3",
+      "instrument": "uca",
+      "vendor": "harborBottling",
+      "card": "tutWater",
+      "site": "hubSite",
+      "capability": "water",
+      "quantity": 4500,
+      "startDay": 2,
+      "durationDays": 7,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "cheap",
+        "good"
+      ],
+      "day": 1
+    },
+    {
+      "kind": "assign",
+      "work": "w2",
+      "to": "avery",
+      "day": 1
+    },
+    {
+      "kind": "findFinance",
+      "day": 4
+    },
+    {
+      "kind": "award",
+      "id": "player-award-4",
+      "instrument": "bpaCall",
+      "vendor": "harborEquipment",
+      "vehicle": "equipBpa",
+      "card": "tutForklift",
+      "site": "hubSite",
+      "capability": "mhe",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "day": 7
+    },
+    {
+      "kind": "askAbout",
+      "card": "tutForklift",
+      "person": "dunn",
+      "day": 7
+    },
+    {
+      "kind": "award",
+      "id": "player-award-5",
+      "instrument": "gpc",
+      "vendor": "coastalRentals",
+      "site": "hubSite",
+      "capability": "shopVehicle",
+      "quantity": 1,
+      "startDay": 8,
+      "durationDays": 20,
+      "day": 8
+    },
+    {
+      "kind": "award",
+      "id": "player-award-6",
+      "instrument": "purchaseOrder",
+      "vendor": "coastalRentals",
+      "card": "tutForklift",
+      "site": "hubSite",
+      "capability": "mhe",
+      "quantity": 3,
+      "startDay": 9,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 9
+    },
+    {
+      "kind": "addLine",
+      "card": "tutForklift",
+      "line": "operator",
+      "day": 9
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "sanitation",
+      "day": 10
+    },
+    {
+      "kind": "askAbout",
+      "card": "tutWaste",
+      "person": "ruizT",
+      "day": 10
+    },
+    {
+      "kind": "assign",
+      "work": "w7",
+      "to": "avery",
+      "day": 10
+    },
+    {
+      "kind": "assign",
+      "work": "w8",
+      "to": "novak",
+      "day": 10
+    },
+    {
+      "kind": "assign",
+      "work": "w6",
+      "to": "avery",
+      "day": 10
+    },
+    {
+      "kind": "award",
+      "id": "player-award-7",
+      "instrument": "purchaseOrder",
+      "vendor": "sanitation",
+      "card": "tutWaste",
+      "site": "hubSite",
+      "capability": "waste",
+      "quantity": 3600,
+      "startDay": 13,
+      "durationDays": 8,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 11
+    },
+    {
+      "kind": "assign",
+      "work": "w9",
+      "to": "avery",
+      "day": 11
+    },
+    {
+      "kind": "cureNotice",
+      "issue": "pi1",
+      "day": 14
+    }
+  ],
+  "team": [
+    {
+      "id": "you",
+      "name": "Sam Reyes"
+    }
+  ]
+}
