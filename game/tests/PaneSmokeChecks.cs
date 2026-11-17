@@ -37,7 +37,7 @@ internal static class PaneSmokeChecks
                 var scrolls = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Where(s => s.IsVisibleInTree()).ToArray();
                 Require(scrolls.Length <= 1, "A desk pane has at most one visible scroll, including the full debrief.");
             }
-            tabs.CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true; await Frames();
+            tabs.CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true; Pick(shell.PersonContactInput, "finance"); await Frames();
             var today = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Single(s => s.IsVisibleInTree());
             today.EnsureControlVisible(shell.VisitButtons["finance"]); await Frames();
             Require(today.GetGlobalRect().Encloses(shell.VisitButtons["finance"].GetGlobalRect()), "The People to reach action scrolls into view inside its section.");

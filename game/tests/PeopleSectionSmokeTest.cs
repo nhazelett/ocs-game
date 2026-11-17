@@ -18,6 +18,14 @@ public partial class PeopleSectionSmokeTest : Node
             shell.StartGameButton.EmitSignal(Button.SignalName.Pressed); FinishOpening(shell);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.TodayTab;
             var section = PlayScreen.Descendants(shell).Single(n => n.Name == "ReachPeople");
+            Require(shell.Session.View!.MorningBoard().OpenRequests == 1 && shell.MorningHeading.Text.EndsWith("1 open request"),
+                "The tutorial's first open request uses the singular count.");
+            shell.PeopleToggle.ButtonPressed = true;
+            Require(shell.PersonContactInput.Selected == -1 && shell.PersonContactInput.Text == "Choose someone to reach…"
+                && shell.VisitButtons.Count == 0, "People to reach opens with an explicit prompt and no unchosen action.");
+            await Frames();
+            tabs.GetNode<ScrollContainer>("Today/TodayPane/Body/Body").EnsureControlVisible(shell.PersonContactInput);
+            await Capture("people-prompt");
             var contacts = Enumerable.Range(0, shell.PersonContactInput.ItemCount)
                 .Select(i => shell.PersonContactInput.GetItemMetadata(i).AsString()).ToArray();
             foreach (var contact in contacts)

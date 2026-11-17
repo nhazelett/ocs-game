@@ -72,6 +72,14 @@ internal static class DeskUi
         foreach (var child in parent.GetChildren()) { parent.RemoveChild(child); child.QueueFree(); }
     }
 
+    internal static string Count(double count, string singular, string? plural = null)
+        => $"{count} {(count == 1 ? singular : plural ?? singular + "s")}";
+
+    internal static string SingleUnit(string unit) => unit switch
+    {
+        "beds" => "bed", "forklifts" => "forklift", "links" => "link", "meals" => "meal", "vehicles" => "vehicle", _ => unit
+    };
+
     internal static string DaySpan(int start, int end) => start == end ? $"day {start}" : $"days {start}–{end}";
 
     internal static string QueueClause(int hours) => hours > 0 ? $", after the {hours} hours already queued" : "";

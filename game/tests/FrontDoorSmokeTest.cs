@@ -43,9 +43,14 @@ public partial class FrontDoorSmokeTest : Node
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
             Require(shell.LeaveGameDialog.Visible && !shell.AtFrontDoor && shell.Session.StateHash == hash,
                 "Menu asks before leaving and preserves the open deployment.");
-            Require(shell.LeaveGameDialog.DialogText == "Leave this game? It is saved.", "The prompt says the deployment is saved.");
+            Require(shell.LeaveGameDialog.DialogText == "Leave this game?\n\nYour game is saved.", "The prompt says the deployment is saved.");
             Require(GameSaveStore.Read(shell.AutosavePath).SavedDay == shell.Session.View!.Day, "The prompt follows a successful current-morning save.");
             await Capture("-leave");
+            Require(shell.LeaveGameDialog.Borderless && shell.LeaveGameDialog.Title.Length == 0,
+                "The leave prompt has one heading inside its frame.");
+            var promptCenter = (Vector2)shell.LeaveGameDialog.Position + (Vector2)shell.LeaveGameDialog.Size / 2;
+            Require(promptCenter.DistanceTo(GetViewport().GetVisibleRect().GetCenter()) <= 1,
+                "The leave prompt is centered in the whole player window.");
             shell.LeaveGameDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
             Require(!shell.AtFrontDoor && !shell.LeaveGameDialog.Visible && shell.Session.StateHash == hash, "Keep playing preserves the game.");
             shell.LeaveGameDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);

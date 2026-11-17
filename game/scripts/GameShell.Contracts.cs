@@ -10,6 +10,7 @@ public partial class GameShell
     internal ConfirmationDialog EndContractDialog { get; private set; } = null!;
     private VBoxContainer contractContents = null!, contractFooter = null!;
     private string? contractToEnd;
+    internal Dictionary<(string Id, string Choice), Button> ContractPerformanceChoices { get; } = [];
 
     private void BuildContractView()
     {
@@ -42,7 +43,7 @@ public partial class GameShell
 
     internal void CloseContractView()
     {
-        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear();
+        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear();
     }
 
     internal void OpenContractView(string id)
@@ -55,7 +56,7 @@ public partial class GameShell
 
     private void RefreshContractView(SessionView? view)
     {
-        terminations.Clear(); DeskUi.Clear(contractContents); DeskUi.Clear(contractFooter);
+        terminations.Clear(); ContractPerformanceChoices.Clear(); DeskUi.Clear(contractContents); DeskUi.Clear(contractFooter);
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
         contractContents.AddChild(DeskUi.Button("Back to what we are paying for", CloseContractView));
@@ -71,6 +72,11 @@ public partial class GameShell
         contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement)));
         if (arrangement.NoticeDays is { } days)
             contractContents.AddChild(DeskUi.Label($"The contract requires {days} days of notice."));
+        foreach (var issue in view.PerformanceIssues.Where(i => i.ArrangementId == arrangement.Id && i.Outcome != CureOutcome.Cured))
+        {
+            contractContents.AddChild(DeskUi.Heading(DeskUi.ListLabel(view.NameOf(issue.Id))));
+            AddPerformanceActions(contractContents, view, issue, ContractPerformanceChoices, includeContractLink: false);
+        }
         var blocked = view.TerminateBlocked(arrangement.Id);
         if (blocked is not null) { contractContents.AddChild(DeskUi.Label(blocked)); return; }
         if (arrangement.IsCoordination) return;
@@ -100,7 +106,7 @@ public partial class GameShell
             return arrangement.Instrument == "hostNation"
                 ? "Provided under the host nation agreement; this office has no recorded costs."
                 : "Provided by the J4 under the ACSA; this office has no recorded costs.";
-        return $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
+        return (arrangement.Instrument == "gpc" ? "Paid from the card program.\n" : "") + $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
     }
 
     private static string ArrangementStatusText(ArrangementStatus status) => status switch

@@ -77,7 +77,7 @@ public partial class GameShell
         RefreshStandings(view);
         RefreshDecisions(view);
         morningHeading.Text = board is null ? "No scenario loaded" :
-            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {board.Items.Count(x => x.Severity == BoardSeverity.Alert)} alerts · {board.OpenRequests} open requests";
+            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {DeskUi.Count(board.Items.Count(x => x.Severity == BoardSeverity.Alert), "alert")} · {DeskUi.Count(board.OpenRequests, "open request")}";
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
         foreach (var item in board?.Items ?? [])
         {

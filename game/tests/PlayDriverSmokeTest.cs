@@ -49,7 +49,7 @@ public partial class PlayDriverSmokeTest : Node
             await Click("I'm ready to leave");
             Require(shell.Session.CreateSave().Seed == 20261116, "The requested seed reaches the ordinary New game session.");
             for (var i = 0; i < 10 && shell.ReadingTurnover; i++)
-                await Click(screen.Read().Any(e => e.Text == "Let's meet them") ? "Let's meet them" : "Continue");
+                await Click(screen.Read().Any(e => e.Text == "Open the desk and meet people") ? "Open the desk and meet people" : "Continue");
             Require(!shell.ReadingTurnover, "Turnover uses only the visible Continue choices.");
             await Click("Requests");
             for (var i = 0; i < 12 && !screen.Read().Any(e => e.Kind == "button" && e.Text == "Ask MSgt Carla Ortiz"); i++)
