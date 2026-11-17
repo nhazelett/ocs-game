@@ -13,6 +13,49 @@ public partial class PerformanceSmokeTest : Node
         try
         {
             var shell = Shell(this);
+            Scenario(shell, "tutorial");
+            while (shell.Session.View!.PerformanceIssues.Count == 0 && shell.Session.View.Day < 13) Step(shell);
+            var firstIssue = shell.Session.View!.PerformanceIssues.First();
+            Require(shell.Session.View.MorningBoard().New.Any(n => n.RecordId == firstIssue.CauseId)
+                && shell.MorningBrief.IsAncestorOf(shell.TodayPerformanceLinks[firstIssue.Id]),
+                "The first vendor report carries its decision link inside New since yesterday.");
+            Step(shell, 13 - shell.Session.View.Day); shell.DeveloperToggle.ButtonPressed = false;
+            var tutorialIssue = shell.Session.View!.PerformanceIssues.First(i => i.CureNoticeDay is null);
+            var tutorialHash = shell.Session.StateHash;
+            Require(shell.Session.View.Day == 13 && shell.TodayPerformanceLinks.ContainsKey(tutorialIssue.Id),
+                "Tutorial morning 13 carries its actual vendor decision on Today.");
+            var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
+            async Task Capture(string suffix)
+            {
+                for (var frame = 0; frame < 10; frame++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                if (shot < 0) return;
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Vendor-decision screenshot saved.");
+            }
+            var link = shell.TodayPerformanceLinks[tutorialIssue.Id];
+            var todayScroll = shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body");
+            await Capture("day13-before"); todayScroll.EnsureControlVisible(link); await Capture("day13-today");
+            Require(todayScroll.GetGlobalRect().Encloses(link.GetGlobalRect()), "Today's vendor decision is reachable inside its scroll.");
+            link.EmitSignal(Button.SignalName.Pressed); await Capture("day13-inbox");
+            var inbox = shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents");
+            var cureChoice = shell.PerformanceChoices[(tutorialIssue.Id, "cure")];
+            var resourceChoice = shell.PerformanceChoices[(tutorialIssue.Id, "resource")];
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab
+                && inbox.GetGlobalRect().Encloses(cureChoice.GetGlobalRect())
+                && inbox.GetGlobalRect().Encloses(resourceChoice.GetGlobalRect()), $"The link opens Inbox scrolled to both actual decisions: scroll {inbox.ScrollVertical}/{inbox.GetVScrollBar().MaxValue}; viewport {inbox.GetGlobalRect()}, cure {cureChoice.GetGlobalRect()}, re-source {resourceChoice.GetGlobalRect()}.");
+            Require(shell.Session.StateHash == tutorialHash, "Opening the vendor decision is pure navigation.");
+            Step(shell); Require(shell.TodayPerformanceLinks.ContainsKey(tutorialIssue.Id), "An undecided vendor problem remains on the next morning.");
+            Require(shell.TodayPerformanceRows.Visible, "An older decision stays below New since yesterday.");
+            var oldLink = shell.TodayPerformanceLinks[tutorialIssue.Id];
+            await Capture("day14-before"); todayScroll.EnsureControlVisible(oldLink); await Capture("day14-today");
+            cureChoice = shell.PerformanceChoices[(tutorialIssue.Id, "cure")];
+            cureChoice.EmitSignal(Button.SignalName.Pressed);
+            Require(!shell.TodayPerformanceLinks.ContainsKey(tutorialIssue.Id), "A cure already in work no longer asks for the same decision on Today.");
+            var afterCure = shell.Session.StateHash;
+            oldLink.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == afterCure && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.TodayTab,
+                "A stale Today link does not navigate or send another action.");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b-90"));
             var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach1-as-written.json"));
             Session Issue()
@@ -62,7 +105,7 @@ public partial class PerformanceSmokeTest : Node
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             Require(!GetChildren().OfType<GameShell>().Any(), "The full shell is gone before process shutdown.");
-            GD.Print("PERFORMANCE_SMOKE_PASS: persistent issue, pure re-source navigation, cure timing/outcome and exact termination."); GetTree().Quit();
+            GD.Print("PERFORMANCE_SMOKE_PASS: new and persistent Today links, visible Inbox decisions, stale navigation guard, pure re-source, cure timing/outcome and exact termination."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"PERFORMANCE_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
     }

@@ -30,6 +30,7 @@ public partial class GameShell
     {
         var panel = new PanelContainer(); parent.AddChild(panel);
         panel.SetMeta("new_kind", item.Kind.ToString());
+        panel.SetMeta("news_record", item.RecordId ?? "");
         var row = new VBoxContainer(); row.AddThemeConstantOverride("separation", 6); panel.AddChild(row);
         var label = DeskUi.Label(item.Text); label.SetMeta("news_surface", surface); row.AddChild(label);
         if (surface == "summary") label.SetMeta("summary_kind", item.Kind == NewKind.Answer ? "said" : "news");
