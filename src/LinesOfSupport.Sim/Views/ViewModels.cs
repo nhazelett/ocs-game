@@ -557,3 +557,28 @@ public sealed record AwardChoicesView(
     string? VendorId, string? InstrumentId,
     IReadOnlyList<ChoiceOption> Instruments, IReadOnlyList<ChoiceOption> Vendors,
     IReadOnlyList<ChoiceOption> Vehicles, IReadOnlyList<ChoiceOption> Funding);
+
+// ------------------------------------------------------------------ the commander's bar (DESK-74, D28)
+
+/// <summary>Where a pass line stands: met so far, one more bad day misses it (or a running measure is under the bar
+/// while days remain), or missed.</summary>
+public enum BarState { Met, AtRisk, Missed }
+
+/// <summary>One of the commander's pass lines as it stands.</summary>
+/// <param name="Id">The pass line's id. Never shown.</param>
+/// <param name="Says">The commander's words for it ("Water is never out more than a day.").</param>
+/// <param name="Text">The count, as Today shows it: "Water at Hub: out 0 days so far.", "Mission output: 98% so far, against
+/// 95%."; without "so far" once the scenario is over.</param>
+/// <param name="Count">The count itself (days out, commitments, or the output as a fraction).</param>
+public sealed record BarLine(string Id, string Says, string Text, double Count, BarState State);
+
+/// <summary>
+/// The commander's bar (DESK-74, D28): what the commander expects, how long the player is there, and each line's count.
+/// The turnover's last page says Spoken; Today shows the lines; the debrief opens with them as the verdict.
+/// </summary>
+/// <param name="From">The commander; null when the cast has none.</param>
+/// <param name="Days">How long the player is there.</param>
+/// <param name="Final">True once the scenario is over: the states are the verdict.</param>
+/// <param name="Spoken">The commander's lines in order, then the length ("That's for the 20 days you're here.").</param>
+public sealed record BarView(PersonView? From, int Days, bool Final, string Spoken, IReadOnlyList<BarLine> Lines);
+

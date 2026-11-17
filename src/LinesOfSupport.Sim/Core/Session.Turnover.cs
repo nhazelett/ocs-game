@@ -161,6 +161,6 @@ public sealed partial class Session
             new(TurnoverSectionKind.Vendors, Para(t?.VendorList, vendorSentences)),
             new(TurnoverSectionKind.Money, Para(t?.Money, moneySentences)),
         };
-        return new TurnoverView(from, from?.Line("greeting"), briefing, sections, contracts, vendors, money, from?.Line("farewell"));
+        return new TurnoverView(from, from?.Line("greeting"), briefing, sections, contracts, vendors, money, from?.Line("farewell"), BuildBar());
     }
 }

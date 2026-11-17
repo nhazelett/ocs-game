@@ -32,10 +32,11 @@ public sealed record TurnoverMoney(
 /// <param name="From">The outgoing CCO, or null when the scenario has none.</param>
 /// <param name="Briefing">Null when the scenario has no briefing.</param>
 /// <param name="Sections">Shop, Contracts, Vendors, Money, always all four, in that order.</param>
+/// <param name="Bar">DESK-74 (D28): the commander's pass lines and how long the player is there, for the last page.</param>
 public sealed record TurnoverView(
     PersonView? From, string? Greeting, BriefingView? Briefing, IReadOnlyList<TurnoverSection> Sections,
     IReadOnlyList<TurnoverContract> Contracts, IReadOnlyList<TurnoverVendor> Vendors, IReadOnlyList<TurnoverMoney> Money,
-    string? LastLine)
+    string? LastLine, BarView? Bar = null)
 {
     public string Text(TurnoverSectionKind kind) => Sections.First(s => s.Kind == kind).Text;
 }

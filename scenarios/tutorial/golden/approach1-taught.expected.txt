@@ -1,4 +1,4 @@
-Week one at the hub / approach1-taught
+First weeks at the hub / approach1-taught
 The taught path: water on the card from Island Mart (Harbor Bottling takes only cash, and the cash box is small); the forklift as a call on the Harbor Equipment BPA, which Harbor turns down, then a card buy from Coastal Rentals; waste as a written purchase order with a COR, in time for the host nation pulling its trucks.
 Scenario tutorial, rules 2025-10, seed 1, 20 days.
 Prep: gpcAccounts, cashAndPayingAgent, systemAccess.
@@ -103,7 +103,6 @@ PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
   [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 0)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
-  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
 State hash ac715d7e7a2bf8a7e71191f0d18202a9dc98aceef31ce459135c655c89d593f9

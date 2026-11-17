@@ -231,6 +231,9 @@ public sealed class SessionView
     /// <summary>What changed during the last AdvanceDay, alerts first, with the capability tiles and the top strip.</summary>
     public MorningBoardView MorningBoard() => _s.BuildMorningBoard();
 
+    /// <summary>DESK-74 (D28): the commander's bar, one line per pass line with its count so far and its state.</summary>
+    public BarView Bar() => _s.BuildBar();
+
     /// <summary>The requirement editor for one card; null if the card does not exist or has not been submitted yet.</summary>
     public RequirementEditorView? RequirementEditor(string cardId) => _s.BuildRequirementEditor(cardId);
 
