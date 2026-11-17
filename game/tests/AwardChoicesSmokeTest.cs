@@ -35,14 +35,14 @@ public partial class AwardChoicesSmokeTest : Node
             Require(!shell.InstrumentChoiceReason.Visible && shell.InstrumentChoiceReason.Text=="",
                 "A valid BPA selection has no unrelated cash or card reason under it.");
             var unavailableVendors = shell.CurrentAwardChoices.Vendors.Count(v=>!v.Available);
-            Require(unavailableVendors>1 && shell.VendorChoiceReason.Text==$"{unavailableVendors} choices are unavailable; point at one to see why.",
+            Require(unavailableVendors>1 && shell.VendorChoiceReason.Text==$"{unavailableVendors} choices are unavailable.",
                 "The unselected supplier list describes all unavailable choices instead of one arbitrary supplier.");
             var blockedVendor=shell.CurrentAwardChoices.Vendors.First(v=>!v.Available);
             var blockedIndex=Index(shell.VendorInput,blockedVendor.Id);
             shell.VendorInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,blockedIndex);
             Require(shell.VendorChoiceReason.Text==blockedVendor.Reason,"Pointing at a disabled supplier shows that supplier's exact reason.");
             shell.VendorInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,Index(shell.VendorInput,"vendorC"));
-            Require(shell.VendorChoiceReason.Text==$"{unavailableVendors} choices are unavailable; point at one to see why.",
+            Require(shell.VendorChoiceReason.Text==$"{unavailableVendors} choices are unavailable.",
                 "Moving to an available supplier clears the unrelated hover reason.");
             shell.InstrumentInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,Index(shell.InstrumentInput,"sf44"));
             Require(shell.InstrumentChoiceReason.Text==shell.CurrentAwardChoices.Instruments.Single(i=>i.Id=="sf44").Reason,
@@ -120,7 +120,13 @@ public partial class AwardChoicesSmokeTest : Node
                 var formScroll=shell.AwardScroll;
                 Require(((Control)focus.GetParent()).GetGlobalRect().End.X<=formScroll.GetVScrollBar().GetGlobalRect().Position.X,
                     "Screenshot text stays clear of the form scrollbar.");
-                if(openList) { ((OptionButton)focus).ShowPopup();await Layout(); }
+                if(openList)
+                {
+                    ((OptionButton)focus).ShowPopup(); await Layout();
+                    var popup = ((OptionButton)focus).GetPopup();
+                    Require(new Rect2I(0,0,1280,800).Encloses(new Rect2I(popup.Position,popup.Size)),
+                        $"Complete supplier explanations fit in the native window: {popup.Position}, {popup.Size}.");
+                }
                 await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[index+1]+"-"+name+".png")==Error.Ok,"Native choice screenshot saved.");
                 if(openList) ((OptionButton)focus).GetPopup().Hide();
