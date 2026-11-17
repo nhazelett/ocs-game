@@ -123,6 +123,7 @@ public partial class GameShell
 
     private void ShowFrontDoor()
     {
+        CloseRequestWorkspace(restore: false);
         LeaveGameDialog.Hide(); leaveGameHash = null;
         CancelEndDayCheck();
         FinishDayPlayback(false);

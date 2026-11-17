@@ -36,9 +36,9 @@ internal static class StandingSmokeChecks
                     Require(portrait.PortraitKey == (entry.From?.Portrait ?? "fallback"), "Each row uses the asker's declared face, with a neutral fallback.");
                     Require(button.GetGlobalRect().End.X <= scroll.GetGlobalRect().End.X, "Long sentences wrap inside the main scroll.");
                     button.EmitSignal(Button.SignalName.Pressed);
-                    Require(tabs.CurrentTab == GameShell.RequestsTab && shell.SelectedCard == entry.CardId && !shell.MarketOpen,
+                    Require(shell.RequestWorkspace.Visible && shell.SelectedCard == entry.CardId && shell.RequestWorkspace.Visible,
                         "Each standing opens its own request, including after market editing.");
-                    tabs.CurrentTab = GameShell.TodayTab;
+                    shell.CloseRequestWorkspace(); tabs.CurrentTab = GameShell.TodayTab;
                 }
                 Require(shell.Session.StateHash == hash, "Rendering and opening every standing never changes Sim state.");
                 if (morning is 1 or 4 or 9) await Capture(morning);

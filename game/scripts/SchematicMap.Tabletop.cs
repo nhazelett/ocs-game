@@ -2,8 +2,14 @@ using Godot;
 
 namespace LinesOfSupport.Game;
 
+internal sealed record MapRequestLink(string Card, string Site, string Capability, string Title);
+
 public partial class SchematicMap
 {
+    private IReadOnlyList<MapRequestLink> requestLinks = [];
+    internal event Action<string>? RequestPicked;
+    internal void ShowRequestLinks(IReadOnlyList<MapRequestLink> links)
+    { requestLinks = links; if (Tabletop is not null) Tabletop.RequestLinks = links; }
     internal TabletopMap3D? Tabletop{get;private set;}
     private string? tabletopSignature;
     internal void RefreshLook() { tabletopSignature=null;RefreshTabletop();QueueRedraw(); }
@@ -15,6 +21,7 @@ public partial class SchematicMap
         Vector3? pan=Tabletop?.Pan;float? size=Tabletop?.CameraSize;
         if(Tabletop is not null){RemoveChild(Tabletop);Tabletop.QueueFree();}
         Tabletop=new TabletopMap3D{Size=GetViewportRect().Size};AddChild(Tabletop);
+        Tabletop.RequestLinks = requestLinks; Tabletop.RequestPicked += card => RequestPicked?.Invoke(card);
         Tabletop.Configure(Data,Tiles,Day?.Links??[],MapFont,LostConfidenceSites);Tabletop.Select(SelectedSite);Tabletop.ShowFacts(Day,Math.Clamp(animationSeconds/5f,0,1));
         if(pan is not null&&size is not null)Tabletop.Restore(pan.Value,size.Value);
         tabletopSignature=signature;

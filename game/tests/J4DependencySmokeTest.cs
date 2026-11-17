@@ -18,7 +18,7 @@ public partial class J4DependencySmokeTest : Node
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
             shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
-            var panel = tabs.GetNode<VBoxContainer>("Requests/RequirementPane/Body/Body/Contents");
+            var panel = shell.RequestContents;
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var expected = Session.Create(bundle, 1);
             Button? Shortcut() => panel.GetChildren().OfType<Button>().SingleOrDefault(b => b.HasMeta("dependency_visit"));

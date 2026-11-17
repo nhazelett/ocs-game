@@ -144,6 +144,7 @@ public partial class GameShell : Control
     {
         if (endDayCheckHash is not null && endDayCheckHash != session.StateHash) CancelEndDayCheck();
         var view = session.View;
+        if (view?.Finished == true) CloseRequestWorkspace(restore: false);
         var strip = view?.TopStrip();
         var board = view?.MorningBoard();
         displayStatus = status; displayStatusDeveloperOnly = developerOnly; RefreshBuildStatus();
@@ -175,6 +176,8 @@ public partial class GameShell : Control
         }
         Map.ShowConditions(conditions);
         Map.ShowConfidence(view?.LostConfidenceSites ?? []);
+        Map.ShowRequestLinks(view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<LinesOfSupport.Sim.Views.RequirementEditorView>()
+            .Select(c => new MapRequestLink(c.CardId, c.SiteId, c.CapabilityId, c.Title)).ToArray() ?? []);
         Map.ShowCapabilities(board?.Tiles ?? []);
         Map.ShowMapDay(view?.MapDay());
         var moves = Map.Day is { } mapDay && (mapDay.Runs.Count > 0 || mapDay.Shipments.Any(s => !s.CustomsHeld));

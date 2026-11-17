@@ -37,7 +37,7 @@ public partial class MorningSmokeTest : Node
             Require(map.SelectedSite == tile.SiteId && shell.SelectedCapability == "spokeBSite.power", "Capability link selects the actual tile and highlights its site.");
             var card = shell.Session.View.Cards.First();
             shell.NavigateBoardItem(new BoardItem("test", 10, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, card.Id, "", []));
-            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab && shell.SelectedCard == card.Id, "Card link opens the selected requirement.");
+            Require(shell.RequestWorkspace.Visible && shell.SelectedCard == card.Id, "Card link opens the selected requirement.");
             var arrangement = shell.Session.View.Arrangements.First();
             shell.NavigateBoardItem(new BoardItem("test", 10, BoardCategory.Delivery, BoardSeverity.Info, BoardLinkKind.Arrangement, arrangement.Id, "", []));
             var rows = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents").GetChildren().OfType<Button>();

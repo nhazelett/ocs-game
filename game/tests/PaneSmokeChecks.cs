@@ -44,7 +44,7 @@ internal static class PaneSmokeChecks
             shell.PeopleToggle.ButtonPressed = false; await Frames();
             Require(!shell.VisitButtons["finance"].IsVisibleInTree(), "Closing People to reach hides its actions.");
             shell.ShowRequests(); await Frames(); CheckFooter(shell.RequirementMarketButton);
-            var request = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Single(s => s.IsVisibleInTree());
+            var request = shell.RequestScroll;
             request.ScrollVertical = 100000; await Frames(); CheckFooter(shell.RequirementMarketButton);
             tabs.CurrentTab = GameShell.VendorsTab;
             shell.EstablishVendorButtons["harborEquipment"].EmitSignal(Button.SignalName.Pressed);

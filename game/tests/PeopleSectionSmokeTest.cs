@@ -48,10 +48,10 @@ public partial class PeopleSectionSmokeTest : Node
             var missed = shell.Session.View!.Cards.First(c => c.Heard is not null && c.RaisedInRoomDay is null);
             shell.NavigateBoardItem(new BoardItem("", shell.Session.View.Day, BoardCategory.Request, BoardSeverity.Info,
                 BoardLinkKind.Card, missed.Id, "", []));
-            var link = PlayScreen.Descendants(tabs.GetNode("Requests/RequirementPane")).OfType<Button>()
+            var link = PlayScreen.Descendants(shell.RequestColumn).OfType<Button>()
                 .Single(b => b.HasMeta("staff_meeting_link"));
             Require(link.GetMeta("staff_meeting_link").AsString() == missed.Id, "The missed meeting's request carries the exact link.");
-            await Frames(); tabs.GetNode<ScrollContainer>("Requests/RequirementPane/Body/Body").EnsureControlVisible(link);
+            await Frames(); shell.RequestScroll.EnsureControlVisible(link);
             await Capture("request-link");
             var hash = shell.Session.StateHash;
             link.EmitSignal(Button.SignalName.Pressed); await Frames();

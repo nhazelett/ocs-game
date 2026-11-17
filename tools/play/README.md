@@ -41,3 +41,5 @@ python3 -m unittest discover -s tools/play -p 'test_*.py'
 ```
 
 The native smoke test follows a short GUI command list through a real helper action and day 1, checks modal blocking and Escape, duplicate text fields, popup selection, clipped words, the native image size, and exact state equality after replaying the resulting log. Its Sim oracle lives in the test, separately from the driver. This is a Linux player-screen test; Windows execution, sound, motion quality and human judgment remain outside its evidence.
+
+Requests now lists one entry per request. Open an entry to read its full page; the independently scrolling columns are named `Request` and `Buy` in the visible-control output. `Back to the desk` or Escape returns to the originating tab and scroll position.

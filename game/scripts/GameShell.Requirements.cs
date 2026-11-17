@@ -23,19 +23,30 @@ public partial class GameShell
         DeskUi.Gate(initiative, initiativeReason, view is null ? "Start a deployment to buy support."
             : view.Finished ? DeskUi.FinishedReason : null);
         requirementFooter.AddChild(DeskUi.Label("Arrange support nobody has requested."));
+        if (view is not null && awardTarget is not null && !view.Cards.Any(c => c.Id == awardTarget))
+        {
+            linkedRequirement.AddChild(DeskUi.Heading("Buy on your own initiative"));
+            var target = AwardTargets(view).FirstOrDefault(t => t.Id == awardTarget);
+            if (target is not null)
+            {
+                linkedRequirement.AddChild(DeskUi.Label(target.Label));
+                var explanation = view.OwnInitiative.FirstOrDefault(t => t.SiteId == target.Site && t.CapabilityId == target.Capability);
+                linkedRequirement.AddChild(DeskUi.Label(explanation?.Why ?? "Arrange support nobody has requested for this site and capability."));
+            }
+            return;
+        }
         var cards = view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<RequirementEditorView>().ToArray() ?? [];
         if (cards.Length == 0) { linkedRequirement.AddChild(DeskUi.Label("No submitted requirements are available.")); return; }
         if (!cards.Any(c => c.CardId == SelectedCard)) SelectedCard = cards[0].CardId;
         var card = cards.Single(c => c.CardId == SelectedCard);
         linkedRequirement.AddChild(DeskUi.Heading(card.Title));
         RenderRequestDecisions(view!, card.CardId);
-        var picker = new OptionButton { Name = "RequirementPicker", ClipText = true, SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
-        foreach (var option in cards) picker.AddItem($"{option.Title} · {option.Person?.DisplayName ?? option.SubmittedBy}");
-        picker.Select(Array.FindIndex(cards, c => c.CardId == SelectedCard));
-        picker.ItemSelected += index => { SelectedCard = cards[(int)index].CardId; scroll.ScrollVertical = 0; RenderRequirementContext(session.View); };
-        linkedRequirement.AddChild(picker);
         linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
         var standing = view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId);
+        if (standing is not null)
+        {
+            var state = DeskUi.Label(standing.Sentence); state.SetMeta("request_standing", card.CardId); linkedRequirement.AddChild(state);
+        }
         if (standing?.WhyShort is { } whyShort)
         {
             var reason = DeskUi.Label(whyShort); reason.SetMeta("request_why_short", card.CardId); linkedRequirement.AddChild(reason);

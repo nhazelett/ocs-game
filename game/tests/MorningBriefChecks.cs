@@ -82,10 +82,10 @@ internal static class MorningBriefChecks
                 {
                     var request = board.New.First();
                     PlayScreen.Descendants(shell.MorningBrief).OfType<Button>().Single(b => b.GetMeta("news_link").AsString() == request.LinkId).EmitSignal(Button.SignalName.Pressed);
-                    Require(shell.SelectedCard == request.LinkId && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab,
+                    Require(shell.SelectedCard == request.LinkId && shell.RequestWorkspace.Visible,
                         "The new request opens its exact card without changing the simulation.");
                     if (view.WhereThingsStand().Single(e => e.CardId == request.LinkId).OrderBy is { } order)
-                        Require(PlayScreen.Descendants(shell.GetNode("%DeskTabs/Requests/RequirementPane")).OfType<Label>().Any(l => l.Text == order.Sentence), "The request itself repeats its exact order deadline.");
+                        Require(PlayScreen.Descendants(shell.RequestColumn).OfType<Label>().Any(l => l.Text == order.Sentence), "The request itself repeats its exact order deadline.");
                 }
                 shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed);
                 var summary = shell.DisplayedDaySummary!;
