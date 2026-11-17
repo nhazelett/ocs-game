@@ -46,12 +46,6 @@ public partial class GameShell
                 row.AddChild(DeskUi.Label($"This takes about {helper.Hours} shop {(helper.Hours == 1 ? "hour" : "hours")}."));
             if (helper.Start is not { } action) continue;
             var preview = action is EngageJ4Action ? null : view.PreviewAny(action);
-            if (preview is not null)
-            {
-                var timing = DeskUi.Label($"The earliest result is day {preview.EarliestStartMin}" +
-                    (preview.EarliestStartMin == preview.EarliestStartMax ? "" : $"–{preview.EarliestStartMax}") + DeskUi.QueueClause(preview.QueueAheadHours) + ".");
-                timing.SetMeta("ask_preview", helper.Person?.Id ?? key); row.AddChild(timing);
-            }
             var text = action is MeetVendorAction ? "Meet " + helper.Person!.DisplayName : action is EngageJ4Action ? "Ask the J4" : "Ask " + helper.Person!.DisplayName;
             var button = DeskUi.Button(text, () =>
             {
@@ -67,6 +61,12 @@ public partial class GameShell
             var reason = DeskUi.ActionReason(row, button);
             DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview?.HardStops.FirstOrDefault());
             RequestHelperButtons[key] = button;
+            if (preview is not null)
+            {
+                var cost = AddActionCost(row, view, action, action is MeetVendorAction ? "Meets them to learn their terms." : "Asks " + helper.Person!.DisplayName + " about " + card.Title + ".", preview);
+                cost.SetMeta("ask_preview", helper.Person?.Id ?? key);
+            }
+            else row.AddChild(DeskUi.Label("Opens the support quantity form; no work is sent yet."));
             if (action is AskAboutAction ask) RequirementAskButtons[ask.Person] = button;
         }
     }

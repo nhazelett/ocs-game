@@ -21,7 +21,7 @@ public partial class GameShell
         if (ReadingDaySummary) return ActionResult.Stop("Close the day’s results before giving new work.");
         var wasReplay = session.IsReplay;
         var result = session.Apply(action);
-        var message = result.Accepted && action is (AwardAction or AssignAction) && session.View?.Decisions().FirstOrDefault() is { } decision
+        var message = result.Accepted && action is (AwardAction or AssignAction or CoordinateAction) && session.View?.Decisions().FirstOrDefault() is { } decision
             ? decision.Sentence + " " + decision.Now : result.Message;
         RefreshDisplay(message + (wasReplay && result.Accepted ? " You are now in control; future replay actions are stopped." : ""));
         return result;
@@ -44,15 +44,24 @@ public partial class GameShell
             if (commitment.Kind == CommitmentKind.OutOfScope) row.AddChild(DeskUi.Label($"Invoice: {DeskUi.Money(commitment.AmountCents)}"));
             if (!commitment.Unresolved) continue;
             var choices = commitment.Kind == CommitmentKind.Handshake ? new[] { "ratify", "park", "refuse" } : ["deny", "ratify"];
-            var buttons = new HBoxContainer(); row.AddChild(buttons);
+            var buttons = new VBoxContainer(); row.AddChild(buttons);
             foreach (var choice in choices)
             {
-                var button = DeskUi.Button(char.ToUpperInvariant(choice[0]) + choice[1..], () =>
-                    SendAction(new ResolveCommitmentAction { Day = session.View!.Day, Commitment = commitment.Id, Choice = choice }));
+                var action = new ResolveCommitmentAction { Day = view.Day, Commitment = commitment.Id, Choice = choice };
+                var preview = view.PreviewAny(action);
+                var button = DeskUi.Button(char.ToUpperInvariant(choice[0]) + choice[1..], () => SendAction(action));
                 button.Disabled = view.Finished;
                 var choiceBox = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill }; buttons.AddChild(choiceBox);
                 var reason = DeskUi.ActionReason(choiceBox, button);
-                DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : null); commitmentChoices.Add((commitment.Id, choice), button);
+                DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
+                AddActionCost(choiceBox, view, action, choice switch
+                {
+                    "ratify" => "Puts ratification of this commitment in work.",
+                    "deny" => "Denies payment for the out-of-scope work.",
+                    "refuse" => "Refuses the handshake and stops its support.",
+                    _ => "Leaves the commitment unresolved."
+                }, preview);
+                commitmentChoices.Add((commitment.Id, choice), button);
             }
         }
     }

@@ -14,7 +14,7 @@ public partial class GameShell
     private Control vendorSetupPane = null!;
     private Label establishReason = null!;
     private ScrollContainer vendorCardsScroll = null!, vendorSetupScroll = null!;
-    private Label bpaPreviewText = null!;
+    private Label bpaPreviewText = null!, bpaCommitmentText = null!;
     private string? bpaVendor, bpaCapability, idiqFunding, setupHash, selectedVendor;
     private bool settingIdiq;
     private readonly HashSet<string> bpaScope = new(StringComparer.Ordinal);
@@ -153,7 +153,7 @@ public partial class GameShell
                 DeskUi.Gate(meet, meetReason, view.Finished ? DeskUi.FinishedReason : card.MeetingSetUp ? "The meeting is already in work."
                     : card.MetDay is not null ? "You have already met this vendor." : visit.HardStops.FirstOrDefault()); VendorMeetButtons[card.Id] = meet;
                 if (card.MetDay is null && !card.MeetingSetUp)
-                    details.AddChild(DeskUi.Label(visit.Accepted ? $"About {VendorRange(visit.ShopHoursMin, visit.ShopHoursMax)} shop hours; back day {VendorRange(visit.EarliestStartMin, visit.EarliestStartMax)}{DeskUi.QueueClause(visit.QueueAheadHours)}." : string.Join("\n", visit.HardStops)));
+                    AddActionCost(details, view, new MeetVendorAction { Day = view.Day, Vendor = card.Id }, "Meets " + card.Name + " to learn their terms.", visit);
             }
             if (offers.Any(o => o.Vendor.Id == card.Id))
             {
@@ -222,6 +222,7 @@ public partial class GameShell
         if (session.IsReplay) bpaForm.AddChild(DeskUi.Label("Setting this up takes control and stops future replay actions."));
         bpaPreviewText = DeskUi.Label(); bpaForm.AddChild(bpaPreviewText);
         EstablishButton = DeskUi.Button(settingIdiq ? "Establish IDIQ" : "Establish BPA", () => SubmitVendorSetup(version)); establishReason = DeskUi.ActionReason(vendorSetupFooter, EstablishButton);
+        bpaCommitmentText = DeskUi.Label(); vendorSetupFooter.AddChild(bpaCommitmentText);
         UpdateEstablishPreview();
     }
 
@@ -251,6 +252,8 @@ public partial class GameShell
             PendingEstablish = new EstablishBpaAction { Day = view.Day, Id = prefix + bpaSequence, Vendor = bpaVendor, Capability = bpaCapability, ScopeLines = scope, CallLimitCents = bpaCallLimit };
             EstablishPreview = view.PreviewEstablish(PendingEstablish); PendingIdiq = null;
         }
+        bpaCommitmentText.Text = ActionCostText(view, (PlayerAction?)PendingEstablish ?? PendingIdiq!,
+            settingIdiq ? "Establishes an IDIQ with this scope and ceiling." : "Establishes a BPA for calls within this scope.", EstablishPreview);
         setupHash = session.StateHash;
         bpaPreviewText.Text = $"About {VendorRange(EstablishPreview.ShopHoursMin, EstablishPreview.ShopHoursMax)} shop hours; ready day {VendorRange(EstablishPreview.EarliestStartMin, EstablishPreview.EarliestStartMax)}{DeskUi.QueueClause(EstablishPreview.QueueAheadHours)}."
             + (settingIdiq ? "\nMinimum guarantee to obligate: " + DeskUi.Money(EstablishPreview.TotalCents) : "")

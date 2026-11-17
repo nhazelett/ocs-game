@@ -38,9 +38,8 @@ public partial class GameShell
         ClearUnavailable(ref awardInstrument, choices.Instruments);
         choices = Read();
         ClearUnavailable(ref awardVehicle, choices.Vehicles);
-        ClearUnavailable(ref awardFunding, choices.Funding);
+        if (awardInstrument is not ("sf44" or "gpc")) ClearUnavailable(ref awardFunding, choices.Funding);
         if (awardInstrument is not ("bpaCall" or "idiqOrder")) awardVehicle = "";
-        if (awardInstrument is "sf44" or "gpc") awardFunding = "";
         if (reasons.Count > 0) awardChoiceNotice = string.Join(" ", reasons.Distinct());
         CurrentAwardChoices = choices;
         return choices;
@@ -71,13 +70,10 @@ public partial class GameShell
         var index = options.Select((o, i) => (o, i)).Where(x => x.o.Id == selected && x.o.Available).Select(x => x.i + 1).DefaultIfEmpty(0).First();
         picker.Select(index);
         var unavailable = options.Where(o => !o.Available).ToArray();
-        var reasonText = index > 0 ? "" : unavailable.Length switch
-        {
-            1 => unavailable[0].Reason ?? "",
-            > 1 => $"{unavailable.Length} choices are unavailable.",
-            _ => ""
-        };
-        reasonText = notice ?? reasonText;
+        // All refusals remain visible without opening the popup or hovering a pointer.
+        var reasonText = string.Join("\n\n", unavailable.Select(o => o.Reason ?? $"{o.Label} is unavailable today.").Distinct());
+        if (!string.IsNullOrEmpty(notice) && !reasonText.Contains(notice, StringComparison.Ordinal))
+            reasonText += (reasonText.Length > 0 ? "\n\n" : "") + notice;
         var reasonLabel = DeskUi.Label(reasonText);
         reasonLabel.Visible = reasonLabel.Text.Length > 0;
         picker.ItemSelected += i =>
@@ -91,19 +87,32 @@ public partial class GameShell
             changed(picker.GetItemMetadata((int)i).AsString());
             RefreshActionDesk(session.View);
         };
-        picker.GetPopup().IdFocused += id =>
-        {
-            if (id < 0 || id >= picker.ItemCount) return;
-            var option = options.FirstOrDefault(o => o.Id == picker.GetItemMetadata((int)id).AsString());
-            reasonLabel.Text = option is { Available: false, Reason: { } reason } ? reason : reasonText;
-            reasonLabel.Visible = reasonLabel.Text.Length > 0;
-        };
-        picker.GetPopup().PopupHide += () =>
-        {
-            reasonLabel.Text = reasonText;
-            reasonLabel.Visible = reasonLabel.Text.Length > 0;
-        };
         awardPanel.AddChild(picker); awardPanel.AddChild(reasonLabel); explanation = reasonLabel;
         return picker;
     }
+    // Ask the same read projection about other structural selections. This is navigation guidance, never Game-side
+    // eligibility: the Sim still owns every unavailable reason and the amount-dependent preview.
+    private static string? AwardPickerNotice(SessionView view, AwardTarget target, string kind, AwardChoicesView choices, string? notice = null)
+    {
+        var options = kind switch { "supplier" => choices.Vendors, "arrangement" => choices.Instruments,
+            "vehicle" => choices.Vehicles, _ => choices.Funding };
+        if (options.Any(o => o.Available)) return notice;
+        var alternatives = new List<string>();
+        foreach (var instrument in view.AwardChoices(target.Site, target.Capability, target.Card)!.Instruments.Where(i => i.Available))
+        {
+            var other = view.AwardChoices(target.Site, target.Capability, target.Card, instrumentId: instrument.Id)!;
+            foreach (var vendor in other.Vendors.Where(v => v.Available))
+            {
+                var pair = view.AwardChoices(target.Site, target.Capability, target.Card, vendor.Id, instrument.Id)!;
+                if (!pair.Instruments.Any(i => i.Id == instrument.Id && i.Available)) continue;
+                if (kind == "vehicle" && !pair.Vehicles.Any(v => v.Available)) continue;
+                if (kind == "funding" && instrument.Id is not ("sf44" or "gpc") && !pair.Funding.Any(f => f.Available)) continue;
+                alternatives.Add(instrument.Label + " with " + vendor.Label);
+            }
+        }
+        var hint = alternatives.Count > 0 ? "To open available choices, choose " + string.Join("; or ", alternatives.Distinct().Take(3)) + "."
+            : "No available combination today. Read the reasons above before choosing another request or waiting.";
+        return string.IsNullOrEmpty(notice) ? hint : notice + " " + hint;
+    }
+
 }

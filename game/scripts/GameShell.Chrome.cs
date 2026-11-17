@@ -12,6 +12,7 @@ public partial class GameShell
         GetNode<Control>("%DeskTabs/Requests/RequirementPane").Hide();
         GetNode<Control>("%DeskTabs/Requests/Market").Show();
         GetNode<TabContainer>("%DeskTabs").CurrentTab = RequestsTab;
+        AwardScroll.ScrollVertical = 0;
     }
 
     internal void ShowRequests()

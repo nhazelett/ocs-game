@@ -85,9 +85,12 @@ public partial class GameShell
             EndContractDialog.PopupCentered(new Vector2I(620, 300));
             EndContractDialog.GetCancelButton().GrabFocus();
         });
+        var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
+        var preview = view.PreviewAny(action);
         var reason = DeskUi.ActionReason(contractFooter, end);
+        AddActionCost(contractFooter, view, action, "Ends this contract's support when the work and any notice are complete.", preview);
         DeskUi.Gate(end, reason, view.Finished ? DeskUi.FinishedReason : ending ? "Ending this contract is already in work."
-            : arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined ? "This contract is no longer providing support." : null); terminations[arrangement.Id] = end;
+            : arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined ? "This contract is no longer providing support." : preview.HardStops.FirstOrDefault()); terminations[arrangement.Id] = end;
     }
 
     private static string ArrangementPaymentText(SessionView view, Arrangement arrangement)

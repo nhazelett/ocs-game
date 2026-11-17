@@ -26,7 +26,7 @@ public partial class OtherActionsSmokeTest : Node
             Require(shell.PendingCoordination is not null && shell.CoordinateButton is not null, "Selected capability offers support coordination.");
             result = expected.Apply(shell.PendingCoordination!); Require(result.Accepted, "The fixture accepts coordination.");
             shell.CoordinateButton!.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "Coordination and its result match Sim.");
+            Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text.Contains(expected.View.Decisions().First().Sentence), "Coordination and its result match Sim.");
 
             Scenario(shell, "spoke-b"); Replay(shell); Step(shell, 8);
             var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach1-as-written.json"));
