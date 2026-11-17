@@ -2,7 +2,7 @@
 
 Nick asked in chat on 16 Nov (evening, Eastern) for a thorough review of the gameplay, beyond the daily play. This is it. It does not replace the 17 Nov daily play (docs/PLAYTEST-CLAUDE.md), which still runs.
 
-- Build: `main` at 76c69ca (PR 276), Godot 4.6.1 .NET, 1280 by 800, Xvfb, Dummy audio.
+- Build: `main` at 76c69ca (PR 276), Godot 4.6.1 .NET, 1280 by 800, Xvfb, Dummy audio. DESK-63 (PR 277) and DESK-64 (PR 278) merged while the plays ran, so the plays are from before them; where a finding is one they address, it says so.
 - Three blind players, each a fresh agent that saw only the screen through the play driver and never read the repository.
 - Fable's own pass: every note checked against the Sim and the game code, the three logs replayed through the harness, 200 seeds of every scenario, and a count of what each day asks of the player.
 - Logs, the players' own notes and four pictures: [plays/2026-11-17-review/](plays/2026-11-17-review/).
@@ -23,7 +23,7 @@ The game teaches well in the moments where something is at stake, and for most o
 2. **The player is never told what they are playing for, or how they did.** The scenario's pass lines are never on screen, during play or after. The careful player won and wrote "I do not believe I earned it"; the hasty player missed three lines of five and was not told. The only statement of the goal is one sentence from the commander, four clicks deep.
 3. **What the player pays hours to learn does not reach them.** The answers from asks, vendor meetings, the J4 and the SCO are not on the day's results page. In Spoke B both SCO answers, the J4's answer, the notice that 64 more people were coming and both weather closures never appeared on any screen the player saw.
 4. **The first decision of the game is half empty.** Four of the eight preparation choices change nothing in the Sim, and in the tutorial two of the three pre-ticked ones change nothing either. The choice is also made before the player knows where they are going.
-5. **Buying still misleads at the moment of commitment.** A finished buy reads as a refusal (DESK-63, open), so the hasty player bought water twice. Costs appear after the click (ratifying took a whole shop day, ending a contract took a whole day, the staff meeting is a standing hour). A warning and the thing that fixes it sit on different screens.
+5. **Buying misleads at the moment of commitment.** On this build a finished buy read as a refusal, so the hasty player bought water twice (DESK-63, merged since). Costs appear after the click (ratifying took a whole shop day, ending a contract took a whole day, the staff meeting is a standing hour). A warning and the thing that fixes it sit on different screens.
 
 Under those sits one balance finding: in Spoke B, leaving out the operators and maintenance the player was told about costs about two bad days, and the equipment-only buy ($64,584) passes every line where the textbook's full-service answer ($693,900) leaves no money for food. The main scenario's main lesson is almost free to ignore.
 
@@ -93,18 +93,18 @@ Decision D32. Rows DESK-76, DESK-79.
 
 ## 5. Committing to something
 
-Known and open (DESK-63): after Arrange support the form stays, the button greys and the player's own buy shows as a red refusal. In this review that caused a real mistake: the hasty player read the red as a rejection, did what it said ("ask for 1500 or less") and bought water twice. Every player called it out again. DESK-63 is the most valuable open row.
+Known, and merged while this review ran (DESK-63, PR 277): after Arrange support the form stayed, the button greyed and the player's own buy showed as a red refusal. In this review that caused a real mistake: the hasty player read the red as a rejection, did what it said ("ask for 1500 or less") and bought water twice. Every player called it out. The 17 Nov daily play is the first blind check of the fix.
 
 New in this review:
 
 - **Costs after the click.** Ratifying $2,400 of unauthorized work took 16 hours, the whole shop day, and the buttons were bare "Deny" and "Ratify". Ending a contract "uses shop time", which was 14 hours. Joining the staff meeting shows no cost on the button and is a standing hour a day. "Find finance" queued three hours and paid back one line. The Sim already previews all of these (`PreviewAny`); the buttons do not show it.
-- **Reasons behind a pointer.** With two or more unavailable choices a picker says "2 choices are unavailable; point at one to see why" ([picture](plays/2026-11-17-review/point-at-one.png)). The driver cannot hover, and neither can a touch screen. Greyed arrangements (cash, card, BPA call) and greyed suppliers gave no visible reason in any of the three plays. D15 says the reason is under the button.
+- **Reasons behind a pointer.** With two or more unavailable choices a picker says "2 choices are unavailable; point at one to see why" ([picture](plays/2026-11-17-review/point-at-one.png)). The driver cannot hover, and neither can a touch screen. Greyed arrangements (cash, card, BPA call) and greyed suppliers gave no visible reason in any of the three plays. D15 says the reason is under the button. DESK-63 now puts a supplier's reason in the list and DESK-66 finishes that; the other pickers are DESK-71.
 - **The warning is not where the fix is.** Every forklift quote warns "Without operators, it fails more often" and the form has no way to add them; the fix is "Add what you learned", below the fold on the request. The hasty player bought first and found the button a day later. The careful player nearly did the same after spending a day finding out.
 - **Comparing costs you the form.** Switching the arrangement to compare a card buy with a written order wipes the funding line, the pick and the COR. The careful player called that comparison "the first interesting thing in the game" and needed about a dozen actions to make it each time.
 - **"Coordinate support"** in Spoke B took a default quantity of 1 from a field inside a collapsed section and answered with the single word "coordinated". The player moved 1 kW a day and never knew.
 - **Nothing sums the commitment up.** The hasty player's worst buy (56 shop hours for water starting day 10 for a need that ended day 9) showed every warning, below the fold, in the same weight as everything else.
 
-Decision D33. Rows DESK-63 (open), DESK-71.
+Decision D33. Row DESK-71 (with DESK-63 merged and DESK-66 open).
 
 ## 6. Learning what a request leaves out closes doors without saying so
 
@@ -115,7 +115,7 @@ The Spoke B player asked Capt Ruiz, learned the generators need operators and ma
 - There is no way to take a line back off, to meet a request in parts, or to change a contract already running. The hasty player in the tutorial, with forklifts running and no drivers: "there is no way to amend a live contract to add operators... The mistake was unfixable and the game never said so."
 - The textbook policy's own Spoke B answer (the cheap sets as a bridge beside Meridian) cannot be bought from the request page once the lines are added.
 
-This is the game's central lesson (D3: the request is not the requirement) turning into a trap at the moment the player does the right thing. Decision D34, row DESK-77. Changing a running contract is a new action and is Nick's call: FOR-NICK #19.
+This is the game's central lesson (D3: the request is not the requirement) turning into a trap at the moment the player does the right thing. Decision D34, row DESK-77. Changing a running contract is a new action and is Nick's call: FOR-NICK #20.
 
 ## 7. What is on screen and wrong
 
@@ -129,14 +129,14 @@ Checked in the code; each is a defect. Sim ones are in DESK-78 unless a row is n
 - A card buy with "Notice: 0 days" and "0 shop hours" quoted "earliest start day 2 to 3" and started on day 3; nothing says what decides the range.
 - "Already set to supply... this would be on top of it" on a buy that overlapped by one day, or not at all.
 - The Spoke B turnover says "there are two of you"; the team is the player alone, and the team page still draws "Give them this task" in grey with nobody to give it to (game, DESK-68).
-- After an accepted ask to the J4 the form stays and previews a second, identical ask, shown as a red refusal (game, DESK-63's family, added to DESK-71).
+- After an accepted ask to the J4 the form stays and previews a second, identical ask, shown as a red refusal (game, the fault DESK-63 fixed on the buying form; DESK-71).
 - "Morning of day 1 · 0 alerts · 0 requests" with two requests open; a site not yet open shows "Power: 100%".
 - No record when the contract-writing system comes back.
 - The debrief's record files each morning's news under the day before, stops at day 13, and marks every day "Known then: Main Island observed".
 - "1 hours", "a 8-day service".
 - A vendor's own words at the meeting ("from Main Island") reach neither their card nor the quote, so a supplier on the site's island whose stock crosses the water gives no transport warning until a survey that is itself inside a collapsed section.
 
-Game-side, in DESK-68: Menu leaves the game with no question; a "Developer tools" box is on every player screen, title included (three players clicked it or wanted to); "Show today's movement" does nothing visible on a day with no movement; Today and the Inbox open scrolled; buttons from People to reach stay pinned to the foot of Today for the rest of the game (DESK-64, open; on day 17 of Spoke B two of them took a fifth of the pane, [picture](plays/2026-11-17-review/spoke-b-day17.png)); the scenario choice lists Spoke B above Tutorial with no word on either.
+Game-side, in DESK-68: Menu leaves the game with no question; a "Developer tools" box is on every player screen, title included (three players clicked it or wanted to); "Show today's movement" does nothing visible on a day with no movement; Today and the Inbox open scrolled; buttons from People to reach stayed pinned to the foot of Today for the rest of the game (DESK-64, merged since; on day 17 of Spoke B two of them took a fifth of the pane, [picture](plays/2026-11-17-review/spoke-b-day17.png)); the scenario choice lists Spoke B above Tutorial with no word on either.
 
 ## 8. The map and the pane
 
@@ -144,7 +144,7 @@ In the tutorial the map takes about 60% of the screen. On a good day it shows on
 
 Everything the player reads and decides is in the right-hand pane, about a third of the width. One request was five to seven scrolls. The buying form is five scrolls with the price last. The Spoke B player: "Day 1 cost about 105 steps. The actual decisions were six clicks." Some of that is the driver's short scroll steps; the fold is real for a person too, and every warning that went unread in these plays was below it.
 
-The screens the players praised are the full pages: the team page, the day's plan, the contract page, the debrief. That points at a layout change (a request and its buying form open as a full page; the map is where you see state), which is larger than a row and belongs to the UI pass Nick said starts with him: FOR-NICK #20.
+The screens the players praised are the full pages: the team page, the day's plan, the contract page, the debrief. That points at a layout change (a request and its buying form open as a full page; the map is where you see state), which is larger than a row and belongs to the UI pass Nick said starts with him: FOR-NICK #21.
 
 ## 9. The Sim pass
 
@@ -186,4 +186,4 @@ Asked what the game was trying to teach, the Spoke B player named it right (the 
 
 ## 12. What follows
 
-Decisions D28 to D34 are in docs/design/desk-redesign.md section 10. Rows DESK-67 to DESK-81 are in the backlog. Two questions for Nick are FOR-NICK #19 and #20. The order: Codex fixes the preparation screen (DESK-67), then DESK-63; Fable builds the day's answers and news (DESK-73) and the commander's bar (DESK-74) first.
+Decisions D28 to D34 are in docs/design/desk-redesign.md section 10. Rows DESK-67 to DESK-81 are in the backlog. Two questions for Nick are FOR-NICK #20 and #21. The order: Codex fixes the preparation screen (DESK-67), then DESK-66; Fable builds the day's answers and news (DESK-73) and the commander's bar (DESK-74) first.

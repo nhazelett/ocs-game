@@ -4,7 +4,7 @@ Expected look of this build and why: nothing in the game changed. This session i
 
 ## PRs reviewed this session
 
-None were open at the start of the run or at its end.
+None were open when this run started. While it ran, the 04:45 run merged DESK-63 (PR 277) and DESK-64 (PR 278) and added DESK-66; this review's plays are from before those merges, and its rows were renumbered to DESK-67 to DESK-81 to make room.
 
 ## Changed
 
@@ -12,7 +12,7 @@ None were open at the start of the run or at its end.
 - docs/reviews/plays/2026-11-17-review/: each play's commands, input log and the player's own notes, and four pictures.
 - docs/design/desk-redesign.md section 10: decisions D28 to D34.
 - backlog/BACKLOG.md: rows DESK-67 to DESK-81 and the status line.
-- backlog/FOR-NICK.md: #19 (changing a running contract) and #20 (requests and buying as full pages).
+- backlog/FOR-NICK.md: #20 (changing a running contract) and #21 (requests and buying as full pages).
 - docs/PLAYTEST-CLAUDE.md: the brief no longer says "from New game" (the driver opens inside it, and Back then led to a screen with no way out); a notes file for the player; two games at most on two CPUs; section 6b for a review on request.
 - .gitattributes: pictures under docs/reviews/plays/ are plain files, as the playtest doc says. The 16 Nov play's four pictures had gone to LFS; they are plain now.
 
@@ -32,10 +32,10 @@ Nick, in chat: "I think we need a thorough review of the gameplay. You're author
 - The first attempt at both tutorial plays ended on the preparation screen with no way out (DESK-67). They were rerun with the players told not to press Back.
 - The Spoke B play stopped at the morning of day 17, at its step limit, when the driver stopped answering. The Sim did not hang; three games on two CPUs most likely outran the driver's 30 seconds. Unproven: Fable stopped that game before looking at it.
 - D30 (skip ahead) amends Nick's D1, and D31 changes the tutorial's length. Both are written as built unless he strikes them, and they are the two for him to look at first.
-- FOR-NICK #19 and #20 wait on Nick.
+- FOR-NICK #20 and #21 wait on Nick.
 
 ## Next
 
-- Codex: DESK-67 first (it blocks any replay, Nick's included), then DESK-63, DESK-64, DESK-71, DESK-68.
+- Codex: DESK-67 first (it blocks any replay, Nick's included), then DESK-66, DESK-71, DESK-68.
 - Fable: DESK-73 (answers and news reach the player), then DESK-74, DESK-77, DESK-78, DESK-76, DESK-75, DESK-80.
 - The 17 Nov daily play is still due with the first run at or after 14:00 UTC. Its brief is the corrected one.

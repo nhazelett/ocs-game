@@ -52,10 +52,18 @@ public partial class GameShell
         awardPanel.AddChild(DeskUi.Label(label));
         var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true };
         picker.AddItem(prompt); picker.SetItemMetadata(0, "");
+        static string ListReason(ChoiceOption option)
+        {
+            var reason = option.Reason ?? "Unavailable today.";
+            if (reason.StartsWith(option.Label + " ", StringComparison.OrdinalIgnoreCase))
+                reason = reason[(option.Label.Length + 1)..];
+            var sentenceEnd = reason.IndexOf(". ", StringComparison.Ordinal);
+            return DeskUi.ListLabel(sentenceEnd < 0 ? reason : reason[..(sentenceEnd + 1)]);
+        }
         foreach (var option in options)
         {
             var i = picker.ItemCount;
-            picker.AddItem(DeskUi.ListLabel(option.Label) + (option.Available ? "" : " (unavailable)"));
+            picker.AddItem(DeskUi.ListLabel(option.Label) + (option.Available ? "" : " — " + ListReason(option)));
             picker.SetItemMetadata(i, option.Id);
             picker.SetItemDisabled(i, !option.Available);
             picker.SetItemTooltip(i, option.Reason ?? "");

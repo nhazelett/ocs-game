@@ -52,6 +52,7 @@ public partial class ShopVehicleSmokeTest : Node
             Require(expected.Apply(action).Accepted && !shell.AwardButton.Disabled, "Independent Sim accepts the office vehicle purchase.");
             var submit = shell.AwardButton; submit.EmitSignal(Button.SignalName.Pressed); submit.EmitSignal(Button.SignalName.Pressed); Matches();
             while (!shell.Session.View!.HasShopVehicle && shell.Session.View.Day < 7) { Step(shell); expected.AdvanceDay(); Matches(); }
+            shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.View.HasShopVehicle && shell.Session.View.OwnInitiative.Single().Have
                 && shell.InitiativeDetails!.Text.Contains("The office has one running today."), "The own-initiative model refreshes only when the vehicle actually runs.");
             VendorVisit();

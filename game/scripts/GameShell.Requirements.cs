@@ -22,16 +22,18 @@ public partial class GameShell
         var initiativeReason = DeskUi.ActionReason(requirementFooter, initiative);
         DeskUi.Gate(initiative, initiativeReason, view is null ? "Start a deployment to buy support."
             : view.Finished ? DeskUi.FinishedReason : null);
+        requirementFooter.AddChild(DeskUi.Label("Arrange support nobody has requested."));
         var cards = view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<RequirementEditorView>().ToArray() ?? [];
         if (cards.Length == 0) { linkedRequirement.AddChild(DeskUi.Label("No submitted requirements are available.")); return; }
         if (!cards.Any(c => c.CardId == SelectedCard)) SelectedCard = cards[0].CardId;
-        linkedRequirement.AddChild(DeskUi.Heading("Request"));
+        var card = cards.Single(c => c.CardId == SelectedCard);
+        linkedRequirement.AddChild(DeskUi.Heading(card.Title));
+        RenderRequestDecisions(view!, card.CardId);
         var picker = new OptionButton { Name = "RequirementPicker", ClipText = true, SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false };
         foreach (var option in cards) picker.AddItem($"{option.Title} · {option.Person?.DisplayName ?? option.SubmittedBy}");
         picker.Select(Array.FindIndex(cards, c => c.CardId == SelectedCard));
         picker.ItemSelected += index => { SelectedCard = cards[(int)index].CardId; scroll.ScrollVertical = 0; RenderRequirementContext(session.View); };
         linkedRequirement.AddChild(picker);
-        var card = cards.Single(c => c.CardId == SelectedCard);
         linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {card.PeakDemandUnits} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
         if (view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId)?.WhyShort is { } whyShort)
         {
@@ -41,6 +43,18 @@ public partial class GameShell
         if (card.HeardAt is { } heardAt)
         {
             var heard = DeskUi.Label(heardAt); heard.SetMeta("heard_at", card.CardId); linkedRequirement.AddChild(heard);
+            // The public card records whether the shop heard this request in the room; do not parse its prose.
+            if (view.Cards.First(c => c.Id == card.CardId).RaisedInRoomDay is null)
+            {
+                var observedHash = session.StateHash;
+                var meeting = DeskUi.Button("Find the staff meeting in People to reach", () =>
+                {
+                    if (observedHash == session.StateHash) OpenStaffMeeting();
+                });
+                meeting.SetMeta("staff_meeting_link", card.CardId);
+                var blocked = DeskUi.ActionReason(linkedRequirement, meeting);
+                DeskUi.Gate(meeting, blocked, view.Finished ? DeskUi.FinishedReason : null);
+            }
         }
         if (session.IsReplay) linkedRequirement.AddChild(DeskUi.Label("Asking about this request or adding what you learned takes control and stops future replay actions."));
 
@@ -75,6 +89,7 @@ public partial class GameShell
         market.SetMeta("market_card", card.CardId); market.Disabled = view!.Finished;
         var marketReason = DeskUi.ActionReason(requirementFooter, market);
         DeskUi.Gate(market, marketReason, view.Finished ? DeskUi.FinishedReason : null);
+        requirementFooter.AddChild(DeskUi.Label("Find a supplier for this request."));
         linkedRequirement.AddChild(DeskUi.Label("Dependency checklist"));
         foreach (var dependency in card.Dependencies)
         {
@@ -97,7 +112,6 @@ public partial class GameShell
                 DeskUi.Gate(ask, reason, view.Finished ? DeskUi.FinishedReason : null);
             }
         }
-        RenderRequestDecisions(view, card.CardId);
     }
 
     private void AddLearnedRequirementLine(string card, string line)

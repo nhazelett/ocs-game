@@ -21,7 +21,9 @@ public partial class GameShell
         if (ReadingDaySummary) return ActionResult.Stop("Close the day’s results before giving new work.");
         var wasReplay = session.IsReplay;
         var result = session.Apply(action);
-        RefreshDisplay(result.Message + (wasReplay && result.Accepted ? " You are now in control; future replay actions are stopped." : ""));
+        var message = result.Accepted && action is (AwardAction or AssignAction) && session.View?.Decisions().FirstOrDefault() is { } decision
+            ? decision.Sentence + " " + decision.Now : result.Message;
+        RefreshDisplay(message + (wasReplay && result.Accepted ? " You are now in control; future replay actions are stopped." : ""));
         return result;
     }
 
@@ -29,7 +31,7 @@ public partial class GameShell
     {
         DeskUi.Clear(commitmentRows); commitmentChoices.Clear();
         var all = view?.Commitments.OrderByDescending(c => c.Unresolved).ThenBy(c => c.OpenedDay).ThenBy(c => c.Id, StringComparer.Ordinal).ToArray() ?? [];
-        commitmentRows.AddChild(DeskUi.Label($"Decisions · {all.Count(c => c.Unresolved)} unresolved"));
+        commitmentRows.AddChild(DeskUi.Label($"Unauthorized commitments to decide · {all.Count(c => c.Unresolved)} unresolved"));
         if (session.IsReplay) commitmentRows.AddChild(DeskUi.Label("Making a decision takes control and stops future replay actions."));
         foreach (var commitment in all)
         {

@@ -38,9 +38,11 @@ internal static class PaneSmokeChecks
                 Require(scrolls.Length <= 1, "A desk pane has at most one visible scroll, including the full debrief.");
             }
             tabs.CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true; await Frames();
-            CheckFooter(shell.VisitButtons["finance"]);
             var today = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Single(s => s.IsVisibleInTree());
-            today.ScrollVertical = 100000; await Frames(); CheckFooter(shell.VisitButtons["finance"]);
+            today.EnsureControlVisible(shell.VisitButtons["finance"]); await Frames();
+            Require(today.GetGlobalRect().Encloses(shell.VisitButtons["finance"].GetGlobalRect()), "The People to reach action scrolls into view inside its section.");
+            shell.PeopleToggle.ButtonPressed = false; await Frames();
+            Require(!shell.VisitButtons["finance"].IsVisibleInTree(), "Closing People to reach hides its actions.");
             shell.ShowRequests(); await Frames(); CheckFooter(shell.RequirementMarketButton);
             var request = Walk(tabs.GetCurrentTabControl()).OfType<ScrollContainer>().Single(s => s.IsVisibleInTree());
             request.ScrollVertical = 100000; await Frames(); CheckFooter(shell.RequirementMarketButton);

@@ -123,7 +123,14 @@ public partial class GameShell
             {
                 var action = PendingAward;
                 awardPriorities.Clear(); // DESK-26: each new written contract gets its own pick.
-                SendAction(action);
+                if (SendAction(action).Accepted)
+                {
+                    if (action.Card is not null) SelectedCard = action.Card;
+                    ResetAwardForm(); RefreshActionDesk(session.View);
+                    ShowRequests();
+                    GetNode<ScrollContainer>("%DeskTabs/Requests/RequirementPane/Body/Body").ScrollVertical = 0;
+                    if (action.Card is null) GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
+                }
             }
         });
         awardButton.ThemeTypeVariation="TabletopPrimary";
@@ -179,7 +186,7 @@ public partial class GameShell
             awardPanel.AddChild(SupplierKnowledge);
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
-        vehicleInput = AddAwardChoice("Vehicle", needsVehicle ? "Choose a vehicle…" : "No vehicle needed", choices.Vehicles, awardVehicle,
+        vehicleInput = AddAwardChoice("Contract vehicle", needsVehicle ? "Choose a contract vehicle…" : "No contract vehicle needed", choices.Vehicles, awardVehicle,
             id => awardVehicle = id, out var vehicleReason);
         vehicleInput.Disabled = !needsVehicle;
         if (!needsVehicle) { vehicleReason.Text = ""; vehicleReason.Hide(); }
