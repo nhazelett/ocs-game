@@ -65,16 +65,20 @@ public sealed partial class Session
             SetLineAction l => l.Card,
             _ => null,
         } ?? arr?.CardId;
-        if (card is null && work?.Payload is HostNationPayload or AcsaPayload or VisitPayload { Kind: "j4" })
+        // A buy made without naming a request, for a request's site and capability, is that request's buy (DESK-77, D34):
+        // an own-initiative award, a J4 ask, a host nation or ACSA request.
+        if (card is null && action is AwardAction or CoordinateAction or HostNationRequestAction or AcsaOrderAction
+                                      or RequestExternalSupportAction or EngageJ4Action)
         {
-            var (site, cap) = work.Payload switch
+            var (site, cap) = work?.Payload switch
             {
                 HostNationPayload p => (p.SiteId, p.CapabilityId),
                 AcsaPayload p => (p.SiteId, p.CapabilityId),
                 VisitPayload { Extra: EngageJ4Action j } => (j.Site, j.Capability),
-                _ => ("", ""),
+                AwardPayload p => (p.SiteId, p.CapabilityId),
+                _ => (arr?.SiteId ?? "", arr?.CapabilityId ?? ""),
             };
-            card = _cards.Where(c => c.SiteId == site && c.CapabilityId == cap).OrderBy(c => c.SubmittedDay).LastOrDefault()?.Id;
+            card = _cards.Where(c => c.SiteId == site && c.CapabilityId == cap && c.SubmittedDay <= Day).OrderBy(c => c.SubmittedDay).LastOrDefault()?.Id;
         }
         return card is not null && _cards.Any(c => c.Id == card) ? card : null;
     }

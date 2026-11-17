@@ -204,12 +204,16 @@ public sealed record DecisionView(int Day, string Sentence, string TeammateId, s
 /// <param name="TeammateId">The team member on it (writing it, asking about it, or making its SF 44 trips), for their face; null when nobody is.</param>
 /// <param name="Teammate">That team member as the player reads them ("you", "MSgt Joan Avery"); null when nobody is.</param>
 /// <param name="Sentence">Where it stands, in one or two sentences: the vendor, the days, who is doing what.</param>
+/// <param name="StillToFind">DESK-77 (D34): the parts of the request that what covers it leaves out ("operators",
+/// "maintenance"), when something covers it; empty otherwise. The sentence names them too.</param>
 /// <param name="OrderBy">DESK-73 (D29): for a request with nothing bought or in work, the last day to order and the route that
 /// assumes; null otherwise, or when the shop knows no route.</param>
 public sealed record RequestStanding(
     string CardId, string Title, PersonView? From, string State, string? TeammateId, string? Teammate, string Sentence,
-    string? WhyShort = null, OrderByView? OrderBy = null)
+    string? WhyShort = null, OrderByView? OrderBy = null, IReadOnlyList<string>? StillToFind = null)
 {
+    /// <summary>Never null for a reader.</summary>
+    public IReadOnlyList<string> StillToFind { get; init; } = StillToFind ?? [];
     /// <summary>Nothing arranged and nothing in work.</summary>
     public const string Nothing = "nothing";
     /// <summary>Someone on the team is asking a person about the request; nothing bought yet.</summary>
@@ -300,8 +304,10 @@ public sealed record LeadItem(LeadKind Kind, string Text, BoardLinkKind LinkKind
 /// <param name="CanAdd">True when someone told you about it and it is not in the request yet: offer "add what you learned".</param>
 /// <param name="Learned">What the person said about it, once they have.</param>
 /// <param name="LearnedFrom">Who said it.</param>
+/// <param name="IfAdded">DESK-77 (D34): while it can be added, who could still meet all of the request with it ("With
+/// operators, only Meridian Site Services can meet all of it; others can still meet it in part."); null otherwise.</param>
 public sealed record RequirementLine(string Id, string Label, string Kind, bool On, string? Supplies, string? GapIfOff, string? UsualOwner = null,
-    bool Known = true, bool CanAdd = false, string? Learned = null, PersonView? LearnedFrom = null);
+    bool Known = true, bool CanAdd = false, string? Learned = null, PersonView? LearnedFrom = null, string? IfAdded = null);
 
 /// <summary>Someone worth asking about a request (DESK-03): whoever brought it, then anyone who knows a part it left out.</summary>
 /// <param name="Asked">True once the talk has happened.</param>

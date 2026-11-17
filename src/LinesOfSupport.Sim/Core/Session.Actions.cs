@@ -177,6 +177,9 @@ public sealed partial class Session
         if (vendor is null) return AwardCheck.Fail($"vendor {a.Vendor} does not exist");
         var offer = vendor.Offers.FirstOrDefault(o => o.Capability == capId);
         if (offer is null) return AwardCheck.Fail($"{vendor.Name} does not offer {CapLabel(capId)}");
+        // DESK-77 (D34): a buy from the request takes the parts the vendor brings, when it brings every core part; the
+        // preview names what it leaves out. A buy that lists its own parts (the policies, older logs) is checked as written.
+        if (a.Lines is null && card is not null) lines = LinesBrought(offer, capId, lines);
         foreach (var l in lines)
             if (!offer.Lines.Contains(l)) stops.Add($"{vendor.Name} does not offer {LineLabel(capId, l)}");
         if (a.Quantity <= 0) stops.Add("quantity must be positive");

@@ -39,7 +39,7 @@ public sealed partial class Session
 
         var vehicles = _vehicles.Where(v => v.VisibleOnDay1 && offering.Any(o => o.Id == v.Vendor)).Select(v =>
         {
-            var reason = VehicleReason(v, vendor, instId, siteId, capId, lines);
+            var reason = VehicleReason(v, vendor, instId, siteId, capId, VendorData(v.Vendor) is { } vv ? LinesBrought(vv, capId, lines) : lines);
             return new ChoiceOption(v.Id, NameOf(v.Id), reason is null, reason);
         }).ToList();
 
@@ -71,10 +71,28 @@ public sealed partial class Session
         if (_standing.TryGetValue(v.Id, out var standing) && standing.DeclinesWork)
             return $"{v.Name} declines work from this office after walking off an unpaid handshake.";
         var offer = v.Offers.First(o => o.Capability == capId);
-        var missing = lines.Where(l => !offer.Lines.Contains(l)).Select(l => LineLabel(capId, l).ToLowerInvariant()).ToList();
+        // DESK-77 (D34): a vendor who brings part of a request stays selectable; only a missing core part refuses it.
+        var missing = LinesBrought(offer, capId, lines).Where(l => !offer.Lines.Contains(l)).Select(l => LineLabel(capId, l).ToLowerInvariant()).ToList();
         if (missing.Count > 0) return $"{v.Name} does not offer {JoinWords(missing)}.";
         return null;
     }
+
+    /// <summary>
+    /// DESK-77 (D34): what a vendor brings of a request's parts. All of them when it offers all; the ones it offers when it
+    /// offers every core part (a buy meets the request in part, and the quote names what it leaves out); otherwise all of
+    /// them, so the check refuses the core part it lacks.
+    /// </summary>
+    internal List<string> LinesBrought(VendorOfferData offer, string capId, List<string> lines)
+    {
+        var missing = lines.Where(l => !offer.Lines.Contains(l)).ToList();
+        if (missing.Count == 0) return lines;
+        var cap = Cap(capId);
+        if (missing.Any(l => cap.Lines.FirstOrDefault(x => x.Id == l)?.Kind == "core")) return lines;
+        return lines.Where(offer.Lines.Contains).ToList();
+    }
+
+    private List<string> LinesBrought(VendorData v, string capId, List<string> lines)
+        => v.Offers.FirstOrDefault(o => o.Capability == capId) is { } offer ? LinesBrought(offer, capId, lines) : lines;
 
     /// <summary>
     /// Why a host nation vendor is not a purchase (M2R-37). Only points at a host nation request when the scenario has an
@@ -94,6 +112,7 @@ public sealed partial class Session
     private string? PairReason(VendorData v, string instId, string siteId, string capId, List<string> lines)
     {
         if (VendorReason(v, siteId, capId, lines) is { } own) return own;
+        lines = LinesBrought(v, capId, lines);   // DESK-77: a vehicle's scope is checked against what the vendor brings
         switch (instId)
         {
             case "sf44" when !v.AcceptsCash: return $"{v.Name} does not take cash.";

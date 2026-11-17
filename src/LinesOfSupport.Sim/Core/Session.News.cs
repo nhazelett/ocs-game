@@ -129,6 +129,7 @@ public sealed partial class Session
         foreach (var v in Scenario.Vendors)
         {
             if (v.Offers.FirstOrDefault(o => o.Capability == card.CapabilityId) is not { } offer) continue;
+            if (!lines.All(offer.Lines.Contains)) continue;   // DESK-77: a buy that meets it only in part does not make the day
             if (VendorReason(v, card.SiteId, card.CapabilityId, lines) is not null) continue;
             foreach (var inst in new[] { "sf44", "gpc", "purchaseOrder", "bpaCall", "idiqOrder" })
             {
