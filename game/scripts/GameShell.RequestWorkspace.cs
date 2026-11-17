@@ -11,7 +11,6 @@ public partial class GameShell
     internal Control RequestBuyColumn { get; private set; } = null!;
     internal VBoxContainer RequestContents => linkedRequirement;
     internal ScrollContainer RequestScroll => linkedRequirement.GetParent<ScrollContainer>();
-    private VBoxContainer requestTargetHost = null!;
     internal Button RequestBackButton { get; private set; } = null!;
     internal Dictionary<string, Button> RequestListButtons { get; } = [];
     internal Dictionary<string, Label> RequestPartLabels { get; } = [];
@@ -51,7 +50,6 @@ public partial class GameShell
         RequestBackButton.AutowrapMode = TextServer.AutowrapMode.Off;
         RequestBackButton.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
         var header = new HBoxContainer(); header.AddThemeConstantOverride("separation", 24); layout.AddChild(header); header.AddChild(RequestBackButton);
-        requestTargetHost = new VBoxContainer { Name = "RequestTarget", SizeFlagsHorizontal = SizeFlags.ExpandFill }; header.AddChild(requestTargetHost);
         var columns = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
         columns.AddThemeConstantOverride("separation", 24); layout.AddChild(columns);
         RequestColumn = new Control { Name = "Request", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = .9f };
@@ -60,8 +58,7 @@ public partial class GameShell
         void Fit()
         {
             RequestWorkspace.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-            RequestWorkspace.OffsetLeft = 24; RequestWorkspace.OffsetRight = -24; RequestWorkspace.OffsetBottom = -16;
-            RequestWorkspace.OffsetTop = GetNode<Control>("Margin/Layout/WorkArea").GlobalPosition.Y - GlobalPosition.Y;
+            RequestWorkspace.OffsetTop = GetNode<Control>("Margin/Layout/TopStrip").GetGlobalRect().End.Y - GlobalPosition.Y;
             foreach (var host in new[] { RequestColumn, RequestBuyColumn })
                 foreach (var pane in host.GetChildren().OfType<Control>())
                 { pane.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); }
@@ -122,7 +119,8 @@ public partial class GameShell
             var request = view!.RequirementEditor(card.Id);
             if (request is null) continue;
             var standing = standings.FirstOrDefault(s => s.CardId == card.Id);
-            var text = request.Title + " · " + request.SiteName + "\n" + (standing?.Sentence ?? "Open this request to review its support.");
+            var title = request.Title.Contains(request.SiteName, StringComparison.OrdinalIgnoreCase) ? request.Title : request.Title + " · " + request.SiteName;
+            var text = title + "\n" + (standing?.Sentence ?? "Open this request to review its support.");
             if (standing?.OrderBy is { } order) text += "\n" + order.Sentence;
             var button = DeskUi.Button(text, () =>
             {

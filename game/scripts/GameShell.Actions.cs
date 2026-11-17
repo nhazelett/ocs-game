@@ -29,7 +29,7 @@ public partial class GameShell
     internal AwardAction? PendingAward { get; private set; }
     internal ActionPreview? AwardPreview { get; private set; }
     internal ActionEditorView? CurrentActionEditor { get; private set; }
-    internal OptionButton AwardRequestInput { get; private set; } = null!;
+    internal Label BuyRequestLabel { get; private set; } = null!;
     internal OptionButton? InitiativeTargetInput { get; private set; }
     internal Label? InitiativeDetails { get; private set; }
     internal OptionButton InstrumentInput => instrumentInput;
@@ -124,7 +124,7 @@ public partial class GameShell
 
     private void RefreshActionDesk(SessionView? view)
     {
-        DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter); DeskUi.Clear(requestTargetHost);
+        DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
         awardChoiceReasons.Clear(); priorityHelp = null;
         PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
         PriorityInputs.Clear(); AwardTrade = null; // DESK-26
@@ -163,17 +163,13 @@ public partial class GameShell
         void ChooseTarget(string id)
         {
             if (formVersion != awardFormVersion || formHash != session.StateHash) return;
-            SelectedCard = targets.Single(t => t.Id == id).Card;
-            awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
-            awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
+            SelectAwardTarget(id);
         }
         var target = targets.Single(t => t.Id == awardTarget);
         SelectedCard = target.Card; RenderRequirementContext(view);
         var ownTargets = targets.Where(t => t.Card is null).ToArray();
-        var requestOptions = targets.Where(t => t.Card is not null).Select(t => new Pick(t.Id, t.Label)).ToList();
-        if (ownTargets.Length > 0) requestOptions.Add(new Pick("own-initiative", "Buy on your own initiative"));
-        AwardRequestInput = AddPick(requestTargetHost, "Request", requestOptions,
-            target.Card ?? "own-initiative", id => ChooseTarget(id == "own-initiative" ? ownTargets[0].Id : id), inline: true);
+        BuyRequestLabel = DeskUi.Label(target.Card is null ? target.Label : view.RequirementEditor(target.Card)!.Title);
+        BuyRequestLabel.SetMeta("buy_request", target.Id); awardPanel.AddChild(BuyRequestLabel);
         if (target.Card is null)
             InitiativeTargetInput = AddPick(awardPanel, "What would you buy on your own initiative?",
                 ownTargets.Select(t => new Pick(t.Id, t.Label)).ToArray(), target.Id, ChooseTarget, inline: true);
@@ -317,7 +313,14 @@ public partial class GameShell
         }
     }
 
-    private void GoToOwnInitiative()
+    internal void SelectAwardTarget(string id)
+    {
+        if (session.View is not { } view || !AwardTargets(view).Any(t => t.Id == id)) return;
+        ResetAwardForm(); awardTarget = id; SelectedCard = AwardTargets(view).Single(t => t.Id == id).Card;
+        RefreshActionDesk(view);
+    }
+
+    internal void GoToOwnInitiative()
     {
         if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay) return;
         ResetAwardForm(); awardTarget = AwardTargets(view).FirstOrDefault(t => t.Card is null)?.Id;

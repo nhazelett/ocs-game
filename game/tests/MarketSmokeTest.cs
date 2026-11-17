@@ -21,10 +21,8 @@ public partial class MarketSmokeTest : Node
             shell.NavigateBoardItem(new LinesOfSupport.Sim.Views.BoardItem("", 1, LinesOfSupport.Sim.Views.BoardCategory.Request, LinesOfSupport.Sim.Views.BoardSeverity.Info, LinesOfSupport.Sim.Views.BoardLinkKind.Card, card.Id, "", []));
             Require(shell.RequestWorkspace.Visible && shell.CurrentActionEditor!.CardId == card.Id, "Requirement leads directly to its own market.");
             Require(shell.VendorInput.GetItemMetadata(shell.VendorInput.Selected).AsString() == "" && shell.PendingAward is null && shell.AwardButton.Disabled, "No vendor is ever preselected, including vehicle-only or refused suppliers.");
-            var requests=shell.AwardRequestInput;
-            Require(Enumerable.Range(0,requests.ItemCount).All(i=>!requests.GetItemText(i).Contains("without a request",StringComparison.OrdinalIgnoreCase)),
-                "Customer requests are not mixed with unrequested support.");
-            Pick(requests,"own-initiative");
+            Require(shell.RequestListButtons.Keys.All(id => shell.Session.View!.Cards.Any(c => c.Id == id)), "The request list contains only actual customer requests.");
+            shell.GoToOwnInitiative();
             var targetPicker=shell.InitiativeTargetInput!;
             var lodging=Enumerable.Range(0,targetPicker.ItemCount).Single(i=>targetPicker.GetItemMetadata(i).AsString()=="spokeBSite.lodging");
             Require(targetPicker.GetItemText(lodging)=="Spoke B lodging", "Own-initiative targets use ordinary capability names.");
@@ -39,7 +37,7 @@ public partial class MarketSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(captureArgs[labelsShot+1])==Error.Ok,"Native target-list screenshot saved.");
                 targetPicker.GetPopup().Hide();
             }
-            Pick(shell.AwardRequestInput,card.Id);
+            PickAwardTarget(shell,card.Id);
             Pick(shell.VendorInput, "vendorC");
             Require(shell.InstrumentInput.GetItemMetadata(shell.InstrumentInput.Selected).AsString() == "" && shell.PendingAward is null, "Who is selected before how; no instrument silently chosen.");
             Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");

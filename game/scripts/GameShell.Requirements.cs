@@ -33,6 +33,7 @@ public partial class GameShell
         if (cards.Length == 0) { linkedRequirement.AddChild(DeskUi.Label("No submitted requirements are available.")); return; }
         if (!cards.Any(c => c.CardId == SelectedCard)) SelectedCard = cards[0].CardId;
         var card = cards.Single(c => c.CardId == SelectedCard);
+        var requester = DeskUi.Label(card.Person?.WithUnit ?? card.SubmittedBy); requester.SetMeta("request_asker", card.CardId); linkedRequirement.AddChild(requester);
         linkedRequirement.AddChild(DeskUi.Heading(card.Title));
         var standing = view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId);
         if (standing is not null)
@@ -40,7 +41,7 @@ public partial class GameShell
             var state = DeskUi.Label(standing.Sentence); state.SetMeta("request_standing", card.CardId); linkedRequirement.AddChild(state);
         }
         RenderRequestDecisions(view!, card.CardId);
-        linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
+        linkedRequirement.AddChild(DeskUi.Label($"Peak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
         if (standing?.WhyShort is { } whyShort)
         {
             var reason = DeskUi.Label(whyShort); reason.SetMeta("request_why_short", card.CardId); linkedRequirement.AddChild(reason);

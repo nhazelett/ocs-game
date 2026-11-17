@@ -67,14 +67,7 @@ internal static class DeskSmokeSupport
 
     internal static void PickAwardTarget(GameShell shell, string id)
     {
-        var requests = shell.AwardRequestInput;
-        if (Enumerable.Range(0, requests.ItemCount).Any(i => requests.GetItemMetadata(i).AsString() == id))
-            Pick(requests, id);
-        else
-        {
-            Pick(requests, "own-initiative");
-            Pick(shell.InitiativeTargetInput!, id);
-        }
+        shell.SelectAwardTarget(id);
     }
 
     internal static void Replay(GameShell shell, string name = "approach1 as written")
