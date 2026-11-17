@@ -17,6 +17,10 @@ public class NewsTests
 
     private static Session SpokeB(int throughDay) => Play("spoke-b", "spoke-b", throughDay);
 
+    /// <summary>The 17 Nov daily play (docs/reviews/2026-11-17-claude-play.md).</summary>
+    private static InputLog TodaysPlay()
+        => InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-17", "input-log.json"));
+
     /// <summary>The hasty play without the vendor list it brought (DESK-76: the list fills in the listed vendors' cards,
     /// so the fastest route the shop knows changes). Information only, so the replay is otherwise the same.</summary>
     private static Session HastyWithoutVendorList(int throughDay)
@@ -126,37 +130,70 @@ public class NewsTests
     [Fact]
     public void An_open_request_gives_its_last_day_to_order_and_the_route()
     {
-        // The hasty player: forklifts wanted day 8; the shop knows a cash buy from Harbor Equipment on two days' notice.
+        // The hasty player: forklifts wanted day 8. A BPA call with Harbor Equipment has written terms and starts three
+        // days after it goes in on any roll, so the last sure day is 5 (D35).
         var s = HastyWithoutVendorList(3);
-        var forklift = s.View.WhereThingsStand().Single(r => r.CardId == "tutForklift");
-        var ob = forklift.OrderBy!;
-        Assert.Equal(6, ob.Day);
-        Assert.Equal("Order by day 6: a cash buy from Harbor Equipment Co starts 2 days after it goes in.", ob.Sentence);
+        var ob = s.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        Assert.Equal(5, ob.Day);
+        Assert.Equal("Order by day 5: a BPA call with Harbor Equipment Co starts 3 days after it goes in.", ob.Sentence);
 
-        // Placed on that day by that route, it starts on the day wanted.
-        var later = HastyWithoutVendorList(5);
+        // Placed on day 5 by that route, it starts by the day wanted even on the slow roll.
+        var later = HastyWithoutVendorList(4);
         var today = later.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
-        Assert.Equal("Order today to start on day 8: a cash buy from Harbor Equipment Co starts 2 days after it goes in.", today.Sentence);
+        Assert.Equal("Order today to start by day 8: a BPA call with Harbor Equipment Co starts 3 days after it goes in.", today.Sentence);
         var preview = later.View.Preview(new AwardAction
         {
-            Id = "forecastCheck", Instrument = today.InstrumentId, Vendor = today.VendorId, Card = "tutForklift", Quantity = 1,
-            DurationDays = 13, Day = later.Day,
+            Id = "forecastCheck", Instrument = today.InstrumentId, Vendor = today.VendorId, Vehicle = "equipBpa", Card = "tutForklift",
+            Quantity = 3, DurationDays = 13, Day = later.Day, FundingLine = "om1",
         });
         Assert.True(preview.Accepted, string.Join(" ", preview.HardStops));
-        Assert.Equal(8, preview.EarliestStartMin);
+        Assert.True(preview.EarliestStartMax <= 8);
 
-        // A day later no route makes day 8, and it says the soonest start instead.
-        var late = HastyWithoutVendorList(6).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
-        Assert.True(late.Day < 7);
-        Assert.Equal("Too late for day 8 by any route the shop knows: a cash buy from Harbor Equipment Co starts 2 days after it goes in, so the soonest start is day 9.", late.Sentence);
+        // A day later (day 6) no route the shop knows makes day 8, and it says when it would start and what covers the gap.
+        var late = HastyWithoutVendorList(5).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        Assert.True(late.Day < 6);
+        Assert.Equal("Too late for day 8 by any route the shop knows: a BPA call with Harbor Equipment Co starts on day 9. Nothing covers day 8.", late.Sentence);
     }
 
     [Fact]
     public void The_vendor_list_widens_the_routes_the_shop_knows()
     {
-        // The hasty player brought the vendor list: Coastal Rentals' card is filled in from day 1, and its card buy is faster.
-        var ob = Play("tutorial-hasty", "tutorial", 3).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
-        Assert.Equal("Order by day 7: a card buy from Coastal Rentals starts 1 day after it goes in.", ob.Sentence);
+        // The hasty player brought the vendor list: Coastal Rentals' card is filled in from day 1. On day 6 the BPA call
+        // can no longer make day 8; the card buy can, and it says it has no written terms.
+        var ob = Play("tutorial-hasty", "tutorial", 5).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        Assert.Equal("Order today to start by day 8: a card buy from Coastal Rentals starts 1 or 2 days after it goes in, with no written terms.", ob.Sentence);
+    }
+
+    [Fact]
+    public void The_last_day_to_order_is_set_by_the_slow_roll_and_says_what_covers_the_gap()
+    {
+        // D35, Claude play 17 Nov note 7: on day 1 the card buy from Island Mart starts on day 2 or 3. The line no longer
+        // promises day 2; it gives the window and the stock that covers day 2.
+        var s = Replay.Run(Repo.Load("tutorial"), TodaysPlay() with { Actions = [] }, stopAfterDay: 0);
+        var ob = s.View.WhereThingsStand().Single(r => r.CardId == "tutWater").OrderBy!;
+        Assert.Equal("Order today: a card buy from Island Mart starts on day 2 or 3, with no written terms; it is wanted from day 2. The water stock on hand should cover day 2.", ob.Sentence);
+        Assert.Equal((1, 2), (ob.LeadDays, ob.LeadDaysMax));
+        var preview = s.View.Preview(new AwardAction
+        {
+            Id = "forecastCheck", Instrument = ob.InstrumentId, Vendor = ob.VendorId, Card = "tutWater", Quantity = 4500, DurationDays = 7, Day = s.Day,
+        });
+        Assert.Equal((2, 3), (preview.EarliestStartMin, preview.EarliestStartMax));
+    }
+
+    [Fact]
+    public void A_route_with_written_terms_comes_first_when_it_makes_the_day()
+    {
+        // D35: on day 4 the card buy from Coastal Rentals is faster (day 5 or 6) but has no written terms on a 13-day
+        // service; the BPA call makes day 8 on any roll, so it is named.
+        var s = Replay.Run(Repo.Load("tutorial"), TodaysPlay(), stopAfterDay: 3);
+        var ob = s.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        Assert.Equal("bpaCall", ob.InstrumentId);
+        Assert.DoesNotContain("no written terms", ob.Sentence, StringComparison.Ordinal);
+
+        // Note 30: on day 9 no route with written terms is sure of day 13 (a purchase order starts between day 12 and
+        // day 14), so it names the cash buy and says it has no written terms, beside Mills' advice.
+        var waste = Replay.Run(Repo.Load("tutorial"), TodaysPlay(), stopAfterDay: 8).View.WhereThingsStand().Single(r => r.CardId == "tutWaste").OrderBy!;
+        Assert.Equal("Order by day 10: a cash buy from Main Island Sanitation starts 2 or 3 days after it goes in, with no written terms.", waste.Sentence);
     }
 
     [Fact]

@@ -112,11 +112,15 @@ public sealed partial class Session
     // ------------------------------------------------------------------ the last day to order
 
     /// <summary>
-    /// The last day an order can go in and still start on the day a request is wanted, by the fastest route the shop
-    /// knows (D29). A forecast: best rolls, today's queue, the funding and cash the shop has today. A route is one the
-    /// shop could place today (the award check passes) with a vendor whose terms it knows or holds an agreement with; a
-    /// letter contract is not offered as a route, since it is for when nothing else will do. Null when the request is
-    /// covered or in work, its days are over, or the shop knows no route.
+    /// The last day an order can go in and still start on the day a request is wanted (D29), one the player can trust
+    /// (D35): the day is set by the slow roll, and the sentence gives the window. Among the routes that make the wanted
+    /// day on the slow roll it names one whose quote carries no warning of missing written terms, then the fastest; when
+    /// it names a route with no written terms on a service long enough to suffer for it, it says so. When no route is
+    /// sure of the day, it names the one that starts soonest on the slow roll and says what covers the days before it
+    /// (DESK-60). A forecast from today's queue, funding and cash. A route is one the shop could place today (the award
+    /// check passes) with a vendor whose terms it knows or holds an agreement with; a letter contract is not offered as a
+    /// route, since it is for when nothing else will do. Null when the request is covered or in work, its days are over,
+    /// or the shop knows no route.
     /// </summary>
     internal OrderByView? OrderBy(CardState card)
     {
@@ -125,7 +129,7 @@ public sealed partial class Session
         var from = Math.Max(card.RequestedStartDay, Day);
         var need = Math.Max(1, (PeakDemandMilli(card.SiteId, card.CapabilityId, from, to) + 999) / 1000);
         var lines = card.Lines.Where(kv => kv.Value).Select(kv => kv.Key).ToList();
-        (int Lead, long Cost, string Route, string Inst, string Vendor)? best = null;
+        var routes = new List<(int Lead, int LeadMax, long Cost, string Route, string Inst, string Vendor, bool NoTerms)>();
         foreach (var v in Scenario.Vendors)
         {
             if (v.Offers.FirstOrDefault(o => o.Capability == card.CapabilityId) is not { } offer) continue;
@@ -141,6 +145,7 @@ public sealed partial class Session
                 if (PairReason(v, inst, card.SiteId, card.CapabilityId, lines) is not null) continue;
                 var written = Rules.Instruments[inst].RequiresSystemOrManual;
                 var line = written ? _funding.FirstOrDefault(f => f.UsableOn(Day) && f.Pays(card.CapabilityId) && f.RemainingCents > 0)?.Id : null;
+                var noTerms = !Rules.Instruments[inst].WrittenTerms && to - from + 1 >= Rules.Model.ExecutionConfusionMinDurationDays;
                 foreach (var lift in v.OffIsland ? new string?[] { "airlift", "sealift" } : new string?[] { null })
                 {
                     var a = new AwardAction
@@ -152,19 +157,34 @@ public sealed partial class Session
                     var p = BuildPreview(a);
                     if (!p.Accepted) continue;
                     var lead = Math.Max(1, p.EarliestStartMin - Day);
-                    if (best is null || lead < best.Value.Lead || (lead == best.Value.Lead && p.TotalCents < best.Value.Cost))
-                        best = (lead, p.TotalCents, RouteName(inst, v.Name), inst, v.Id);
+                    routes.Add((lead, Math.Max(lead, p.EarliestStartMax - Day), p.TotalCents, RouteName(inst, v.Name), inst, v.Id, noTerms));
                 }
             }
         }
-        if (best is not { } b) return null;
-        var by = card.RequestedStartDay - b.Lead;
-        var takes = $"{b.Route} starts {Plural(b.Lead, "day")} after it goes in";
+        if (routes.Count == 0) return null;
+        var want = card.RequestedStartDay;
+        var sure = routes.Where(r => Day + r.LeadMax <= want).OrderBy(r => r.LeadMax).ThenBy(r => r.Cost).ToList();
+        var b = sure.Where(r => !r.NoTerms).Concat(sure).Concat(
+            routes.OrderBy(r => r.LeadMax).ThenBy(r => r.NoTerms).ThenBy(r => r.Lead).ThenBy(r => r.Cost)).First();
+        var by = want - b.LeadMax;
+        var terms = b.NoTerms ? ", with no written terms" : "";
+        var takes = $"{b.Route} starts {LeadSaid(b.Lead, b.LeadMax)} after it goes in{terms}";
+        var (first, last) = (Day + b.Lead, Day + b.LeadMax);
         var sentence = by > Day ? $"Order by day {by}: {takes}."
-            : by == Day ? $"Order today to start on day {card.RequestedStartDay}: {takes}."
-            : $"Too late for day {card.RequestedStartDay} by any route the shop knows: {takes}, so the soonest start is day {Day + b.Lead}.";
-        return new OrderByView(by, b.Route, b.Lead, SentenceCase(sentence), b.Inst, b.Vendor);
+            : by == Day ? $"Order today to start by day {want}: {takes}."
+            : first <= want ? $"Order today: {b.Route} starts {StartSaid(first, last)}{terms}; it is wanted from day {want}."
+            : $"Too late for day {want} by any route the shop knows: {b.Route} starts {StartSaid(first, last)}{terms}.";
+        if (by < Day && BeforeStartCover(card, last) is { } cover) sentence += " " + cover;
+        return new OrderByView(by, b.Route, b.Lead, SentenceCase(sentence), b.Inst, b.Vendor, b.LeadMax);
     }
+
+    /// <summary>"1 day", "1 or 2 days", "2 to 4 days".</summary>
+    private static string LeadSaid(int lead, int leadMax)
+        => leadMax <= lead ? Plural(lead, "day") : leadMax == lead + 1 ? $"{lead} or {leadMax} days" : $"{lead} to {leadMax} days";
+
+    /// <summary>"on day 3", "on day 2 or 3", "between day 12 and day 14".</summary>
+    private static string StartSaid(int first, int last)
+        => last <= first ? $"on day {first}" : last == first + 1 ? $"on day {first} or {last}" : $"between day {first} and day {last}";
 
     private static string RouteName(string inst, string vendor) => inst switch
     {
