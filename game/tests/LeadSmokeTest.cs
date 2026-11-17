@@ -24,6 +24,9 @@ public partial class LeadSmokeTest : Node
             async Task Capture(string name)
             {
                 if (shot < 0) return;
+                for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").EnsureControlVisible(shell.LeadOpen);
+                for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(shell.LeadOpen.GetGlobalRect().End.Y <= GetViewport().GetVisibleRect().Size.Y, "Lead Open is on screen.");
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1] + "-" + name + ".png") == Error.Ok, "Screenshot saved.");

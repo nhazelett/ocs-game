@@ -130,7 +130,7 @@ public partial class ShortfallSmokeTest : Node
                 {
                     var request = shell.StandingOpenButtons[entry.CardId];
                     Require(request.Text == entry.Title + (entry.From is null ? "" : " · " + entry.From.DisplayName)
-                        + "\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : ""),
+                        + "\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : "") + (entry.OrderBy is { } order ? "\n" + order.Sentence : ""),
                         "The request title, state and exact shortfall reason share one clickable frame; supplied requests add no reason.");
                     Require(request.GetParent().GetChildren().Count == 1, "No reason is left between request frames.");
                 }

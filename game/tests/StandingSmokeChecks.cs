@@ -29,7 +29,7 @@ internal static class StandingSmokeChecks
                 {
                     var entry = entries[i]; seen.Add(entry.State);
                     var button = shell.StandingOpenButtons[entry.CardId];
-                    Require(button.Text.EndsWith("\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : "")) && button.Text.StartsWith(entry.Title)
+                    Require(button.Text.EndsWith("\n" + entry.Sentence + (entry.WhyShort is { } why ? "\n" + why : "") + (entry.OrderBy is { } order ? "\n" + order.Sentence : "")) && button.Text.StartsWith(entry.Title)
                         && (entry.From is null || button.Text.Contains(entry.From.DisplayName)), "Each row keeps its exact request, asker and Sim sentence.");
                     Require(button.GetMeta("standing_state").AsString() == entry.State, "Status comes directly from Sim.");
                     var portrait = rows[i].GetChildren().OfType<PersonPortrait>().Single();

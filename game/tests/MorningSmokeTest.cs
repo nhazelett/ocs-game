@@ -50,6 +50,8 @@ public partial class MorningSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }
 
+            await MorningBriefChecks.Run(shell);
+
             // Author a quiet temporary fixture using only existing scenario fields; production data is untouched.
             var dir = Path.Combine(temporary, "quiet"); Directory.CreateDirectory(dir);
             Directory.CreateDirectory(Path.Combine(temporary, "rules"));

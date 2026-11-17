@@ -146,6 +146,7 @@ public partial class DaySummarySmokeTest : Node
                 Require(shell.DisplayedDaySummary!.Day == expected.Day, "Results name the exact completed day.");
                 var labels = Labels(shell.DaySummaryContents).ToArray();
                 Require(labels.First().Text == expected.Sentence, "The result summary comes verbatim from Sim.");
+                Check("said", expected.Said.Select(n => n.Text)); Check("news", expected.News.Select(n => n.Text));
                 Check("finished", expected.Finished.Select(l => l.Sentence));
                 Check("started", expected.Started); Check("ended", expected.Ended); Check("short", expected.Short);
                 Check("slipped", expected.Slipped.Select(l => l.Sentence)); Check("carried", expected.CarriedOver.Select(l => l.Sentence));

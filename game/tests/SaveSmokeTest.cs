@@ -106,7 +106,8 @@ public partial class SaveSmokeTest : Node
             var finished = LinesOfSupport.Sim.Replay.Run(bundle, log);
             GameSaveStore.Write(chosenPath, finished.ToSave());
             shell.LoadSavedGame(chosenPath);
-            Require(shell.Session.StateHash == finished.StateHash() && shell.GetNode<Button>("%NextDay").Disabled, "Finished saves restore the completed game without another day.");
+            Require(shell.Session.StateHash == finished.StateHash() && shell.GetNode<Button>("%NextDay").Disabled
+                && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.DebriefTab, "Finished saves restore the debrief without another day or a new morning.");
             shell.SaveButton.EmitSignal(Button.SignalName.Pressed);
             Require(GameSaveStore.Read(path).SavedDay is null, "Finished game saves keep the Sim's null SavedDay convention.");
             GD.Print("SAVE_SMOKE_PASS: process restart, day/cash/power, same-day decisions, autosave, chosen file, refused saves, write failure and finished games.");

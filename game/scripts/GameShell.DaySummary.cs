@@ -56,6 +56,8 @@ public partial class GameShell
         DisplayedDaySummary = summary;
         DeskUi.Clear(DaySummaryContents);
         DaySummaryContents.AddChild(DeskUi.Heading(summary.Sentence));
+        News("What people told you", summary.Said, "said");
+        News("The day's news", summary.News, "news");
         People("Work finished", summary.Finished, "finished");
         Lines("Support started", summary.Started, "started");
         Lines("Support ended", summary.Ended, "ended");
@@ -69,6 +71,12 @@ public partial class GameShell
         RefreshDayAdvanceControls();
         DaySummaryDialog.GetOkButton().GrabFocus();
 
+        void News(string title, IReadOnlyList<NewItem> items, string kind)
+        {
+            if (items.Count == 0) return;
+            var heading = DeskUi.Heading(title); heading.SetMeta("summary_group", kind); DaySummaryContents.AddChild(heading);
+            foreach (var item in items) AddNewsItem(DaySummaryContents, item, "summary");
+        }
         void Lines(string title, IReadOnlyList<string> lines, string kind)
         {
             if (lines.Count == 0) return;
@@ -113,7 +121,6 @@ public partial class GameShell
         else
         {
             FocusNewMorning();
-            if (YesterdayButton.IsVisibleInTree()) YesterdayButton.GrabFocus();
         }
     }
 
