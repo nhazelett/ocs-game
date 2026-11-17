@@ -407,8 +407,9 @@ public sealed partial class Session
         var opening = first
             ? Member(who).Role == "you" ? "You got yourself into the commander's staff meeting." : $"{Upper(MemberName(Member(who)))} got the shop into the commander's staff meeting."
             : Member(who).Role == "you" ? "Staff meeting." : $"Staff meeting, with {MemberName(Member(who))} there for the shop.";
-        AddRecord(day, RecordKind.Visit, PersonSubject(cmd, "staffMeeting"),
+        var said = AddRecord(day, RecordKind.Visit, PersonSubject(cmd, "staffMeeting"),
             $"{opening} {WhoDoes(cmd, "The commander")} ran it.{priorities}{news}", cause.Length == 0 ? [] : [cause]);
+        if (first || heard.Count > 0) _meetingForShop.Add(said);   // DESK-73: only a meeting with something for the shop is news
     }
 
     /// <summary>DESK-08: how a requirement tagged heardAtStaffMeeting reached the shop, in a sentence; null for any other.</summary>
