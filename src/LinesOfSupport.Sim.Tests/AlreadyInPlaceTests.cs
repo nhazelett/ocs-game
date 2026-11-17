@@ -20,14 +20,14 @@ public class AlreadyInPlaceTests
     {
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
         // The host nation's water point opens on day 9; the quote says so, and nothing from Harbor Bottling is in place yet.
-        Assert.Equal("Main Island Utilities (host nation) is already set to supply water at Hub, 8000 gal/day from day 9 on; this would be on top of it.",
+        Assert.Equal("Main Island Utilities (host nation) is already set to supply water at Hub, 8,000 gal/day from day 9 on; this would be on top of it.",
             s.View.Preview(Water("first", 4500)).SoftGaps[0]);
         Assert.True(s.Apply(Water("first", 4500)).Accepted);
 
         var again = s.View.Preview(Water("second", 4500));
         Assert.False(again.Accepted);
-        Assert.Equal("Harbor Bottling is already set to supply water at Hub, 4500 gal/day from day 3 to day 9; this would be on top of it.", again.SoftGaps[0]);
-        Assert.Equal("Harbor Bottling has 500 gal/day left on those days, after 4500 already committed. Ask for 500 or less, or buy the rest from someone else.",
+        Assert.Equal("Harbor Bottling is already set to supply water at Hub, 4,500 gal/day from day 3 to day 9; this would be on top of it.", again.SoftGaps[0]);
+        Assert.Equal("Harbor Bottling has 500 gal/day left on those days, after 4,500 already committed. Ask for 500 or less, or buy the rest from someone else.",
             Assert.Single(again.HardStops));
         Assert.True(s.View.Preview(Water("second", 500)).Accepted);
     }
@@ -37,7 +37,7 @@ public class AlreadyInPlaceTests
     {
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
         Assert.True(s.Apply(Water("first", 5000)).Accepted);
-        Assert.Equal("Harbor Bottling has nothing left on those days, with all 5000 gal/day already committed. Buy from someone else, or pick days when they are free.",
+        Assert.Equal("Harbor Bottling has nothing left on those days, with all 5,000 gal/day already committed. Buy from someone else, or pick days when they are free.",
             Assert.Single(s.View.Preview(Water("second", 100)).HardStops));
     }
 
@@ -47,7 +47,7 @@ public class AlreadyInPlaceTests
         // The DESK-33 screenshot read "can supply 5 forklifts and 0 is already committed", which says nothing useful.
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
         var stop = Assert.Single(s.View.Preview(Water("first", 6000)).HardStops);
-        Assert.Equal("Harbor Bottling has 5000 gal/day in all. Ask for 5000 or less, or buy the rest from someone else.", stop);
+        Assert.Equal("Harbor Bottling has 5,000 gal/day in all. Ask for 5,000 or less, or buy the rest from someone else.", stop);
         Assert.DoesNotContain("0 is already committed", stop);
     }
 
@@ -59,7 +59,7 @@ public class AlreadyInPlaceTests
         s.AdvanceDay();
         s.AdvanceDay();
         var more = s.View.Preview(Water("second", 500) with { Vendor = "islandMart", StartDay = 4, DurationDays = 5 });
-        Assert.Equal("Harbor Bottling already supplies water at Hub, 4500 gal/day through day 9; this would be on top of it.", more.SoftGaps[0]);
+        Assert.Equal("Harbor Bottling already supplies water at Hub, 4,500 gal/day through day 9; this would be on top of it.", more.SoftGaps[0]);
     }
 
     [Fact]

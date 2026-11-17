@@ -39,7 +39,7 @@ Day 12
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $56,160 obligated from the O&M line good through day 75. Port Fuel Haulers keeps delivering; deliveries after day 19 are owed and not obligated until a contract covers the need.
   DONE      CE small buys: none worked today (no hours left); 5 waiting.
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
 Day 13
   DONE      CE small buys: 11 worked today (5.5 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -413,4 +413,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.76)
 
-State hash 5538a7309e2a9bf209d5372beb952ce29f799093278a98765a33d0cbf702e121
+State hash e0042df54f47d660160ebee450f5a9a62a2b33159cbc47105cb3b11fec09ef63

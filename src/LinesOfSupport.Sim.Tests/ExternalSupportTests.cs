@@ -100,7 +100,7 @@ public class ExternalSupportTests
         Assert.Contains(Stops(Request(days: 30)), h => h.Contains("at least 60 days"));
         Assert.Contains(Stops(Request() with { Lines = ["generation", "fuelSupply", "maintenance"] }), h => h.Contains("self-managed") && h.Contains("operators"));
         Assert.Contains(Stops(Request() with { Lines = ["generation", "operator", "maintenance", "nope"] }), h => h.Contains("is not a power line"));
-        Assert.Contains(Stops(Request(qty: 2500)), h => h.Contains("2000 kW/day"));
+        Assert.Contains(Stops(Request(qty: 2500)), h => h.Contains("2,000 kW/day"));
         Assert.Contains(Stops(Request() with { FundingLine = "om2" }), h => h.Contains("not usable on day 1"));
         Assert.Contains(Stops(Request() with { FundingLine = "" }), h => h.Contains("needs a funding line"));
         Assert.Contains(Stops(Request(qty: 1900)), h => h.Contains("left for an estimated"));

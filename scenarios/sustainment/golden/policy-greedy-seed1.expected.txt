@@ -319,7 +319,7 @@ Day 58
 Day 59
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   COR       Unit report from Spoke A: comms backhaul fell short on day 56 and the unit blames North Island Telecom, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
   INBOX     Performance issue: North Island Telecom under-delivered on comms backhaul at Spoke A on days 55 and 56 (unit reports; no COR). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 60
@@ -478,7 +478,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 54: Fuel at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); fuel on hand ran out.
       <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  Day 59: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 59: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 59: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
 
@@ -589,4 +589,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.71)
 
-State hash 87d311c44a20cdeefe7722b1652fc977968c231ffb3defac0ba3f9315e08138f
+State hash f2b88467ddb253da857fea0d3cb5ee99384f1ed2284b855056b511fe04658d8a

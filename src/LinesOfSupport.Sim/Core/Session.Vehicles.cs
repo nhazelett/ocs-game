@@ -195,7 +195,7 @@ public sealed partial class Session
         int Ready(int hours) => FinishDay(hours * 1000L, e.Assignee, Day);   // DESK-37: behind the assignee's queue
         var gaps = new List<string> { $"The minimum guarantee of {Money(min)} is obligated at award and owed to the vendor whether or not it is ordered." };
         if (vendor?.Offers.FirstOrDefault(o => o.Capability == e.Capability) is { } offer)
-            gaps.Add($"Binding, but {vendor.Name}'s capacity is still about {offer.CapacityPerDay:0} {Cap(e.Capability).Unit}/day in total: orders above it are accepted and delivered short.");
+            gaps.Add($"Binding, but {vendor.Name}'s capacity is still about {Qty(offer.CapacityPerDay)} {Cap(e.Capability).Unit}/day in total: orders above it are accepted and delivered short.");
         if (Day < _systemOnlineDay) gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: set-up takes longer.");
         // Ready-day range goes in the start fields: the first day orders can be placed. TotalCents is the guarantee obligated.
         return new ActionPreview(stops.Count == 0, stops, gaps, 0, 0, min, hMin, hMax, Ready(hMin) + 1, Ready(hMax) + 1, queue);
@@ -242,8 +242,8 @@ public sealed partial class Session
                 {
                     var unit = Cap(capId).Unit;
                     rec = AddRecord(d, RecordKind.VendorCapacity, a.Id,
-                        $"Capacity event: {vendor.Name} can supply about {offer.CapacityPerDay:0} {unit}/day of {CapLabel(capId).ToLowerInvariant()} and has {load / 1000} {unit}/day on order. "
-                        + $"{Upper(NameOf(a.Id))} gets {give / 1000} of its {a.QuantityMilli / 1000} {unit}/day. A binding order does not add capacity: a second source or a supplementary buy covers the rest.",
+                        $"Capacity event: {vendor.Name} can supply about {Qty(offer.CapacityPerDay)} {unit}/day of {CapLabel(capId).ToLowerInvariant()} and has {Qty(load / 1000)} {unit}/day on order. "
+                        + $"{Upper(NameOf(a.Id))} gets {Qty(give / 1000)} of its {Qty(a.QuantityMilli / 1000)} {unit}/day. A binding order does not add capacity: a second source or a supplementary buy covers the rest.",
                         [a.CauseId]);
                     _capacityEpisode[a.Id] = rec;
                 }

@@ -18,7 +18,7 @@ Day 1
   ACTION    Ordered a review of the inherited contract files: Island Camp Services lodging at Hub, Island Camp Services food service at Hub.
   ACTION    The request for water for Hub: Plant operators switched on.
   ACTION    The request for water for Hub: Maintenance switched on.
-  ACTION    Government purchase card to Island Mart: Water at Hub, 4950 gal/day for 7 days (Potable water supply); $10,707 paid on the spot.
+  ACTION    Government purchase card to Island Mart: Water at Hub, 4,950 gal/day for 7 days (Potable water supply); $10,707 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $10,707.
   EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
   VISIT     MSgt Joan Avery got the shop into the commander's staff meeting. Col Helen Ward, Hub commander, ran it. If we run short, Hub comes first. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
@@ -29,7 +29,7 @@ Day 2
   SURVEY    File review: lodging at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review: food service at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Island Mart began, 4950 gal/day.
+  START     Water at Hub from Island Mart began, 4,950 gal/day.
 Day 3
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
   EVENT     The host nation takes its forklift back. Main Island Utilities: our forklift goes back to the port after day 7.
@@ -54,8 +54,8 @@ Day 6
   DECLINED  Harbor Equipment Co declined the BPA call for material handling equipment at Hub. A BPA is not binding; the vendor may decline any call.
   DONE      CE small buys: 2 worked today (1 h of shop time, 1 on cards).
 Day 7
-  ACTION    Written purchase order started with Main Island Sanitation: Waste removal at Hub, 3960 gal/day for 8 days (Removal and disposal); quoted $1,267.
-  ! sf44 t-tutWaste-bridge: Rejected: Main Island Sanitation has 2040 gal left on those days, after 3960 already committed. Ask for 2040 or less, or buy the rest from someone else.
+  ACTION    Written purchase order started with Main Island Sanitation: Waste removal at Hub, 3,960 gal/day for 8 days (Removal and disposal); quoted $1,267.
+  ! sf44 t-tutWaste-bridge: Rejected: Main Island Sanitation has 2,040 gal left on those days, after 3,960 already committed. Ask for 2,040 or less, or buy the rest from someone else.
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
 Day 8
@@ -69,7 +69,7 @@ Day 8
 Day 9
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
-  START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
+  START     Water at Hub from Main Island Utilities (host nation) began, 8,000 gal/day.
   END       Island Mart water at Hub ended.
 Day 10
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
@@ -93,7 +93,7 @@ Day 13
   DONE      Cure notice on the performance issue with Island Camp Services on food service at Hub delivered to Island Camp Services: 10 days to cure, ending day 23.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
   END       Main Island Utilities (host nation) waste removal at Hub ended.
-  START     Waste removal at Hub from Main Island Sanitation began, 3960 gal/day.
+  START     Waste removal at Hub from Main Island Sanitation began, 3,960 gal/day.
 Day 14
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
@@ -132,4 +132,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash c0d94b2fdd90d3601e3e7db10f60fdfbca8e2602d6d8e615081fa54f9abacf73
+State hash a525c5da8f48e9f19b0bc5eaed24854d0d34f754b3375cd7ebd41a85c4301034

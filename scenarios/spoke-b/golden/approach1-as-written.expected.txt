@@ -19,8 +19,8 @@ Day 1
 Day 2
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day.
-  ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day.
+  ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2,640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
@@ -33,7 +33,7 @@ Day 4
 Day 5
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
-  START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
+  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
@@ -58,9 +58,9 @@ Day 12
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $56,160 obligated from the O&M line. Port Fuel Haulers keeps delivering; deliveries after day 19 are owed and not obligated until a contract covers the need.
   DONE      CE small buys: none worked today (no hours left); 6 waiting.
-  START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
   START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
   FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 12 worked today (6 h of shop time).
@@ -237,7 +237,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #5 spokeBSite.lodging days 15-30, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #3)
   #6 spokeCSite.water days 28-30, lowest 78%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 2400 gal a day fell short of 3360 a day. Nothing before the notice showed it coming.
+      [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 2,400 gal a day fell short of 3360 a day. Nothing before the notice showed it coming.
   #7 spokeCSite.food days 28-30, lowest 78%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Food service depends on water, which was short. (see #6)
       [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
@@ -249,4 +249,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash 87c42a6f30c2bb5121554820c58240d43d144a16992107be04e4b22d03944a46
+State hash dc096264364389973719352890ac71c5583c83c0ef8c902d7e77d202ccb0d4aa

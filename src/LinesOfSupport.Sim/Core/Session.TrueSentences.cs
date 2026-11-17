@@ -31,7 +31,7 @@ public sealed partial class Session
         var first = (DemandMilli(site, cap.Id, from) + 999) / 1000;
         if (peak == first) return null;
         var now = from <= Day ? "today" : $"on day {from}";
-        return $"Demand peaks at {Amount(peak, cap)} on day {day}, when {PopulationOn(site, day)} people are at {site.Name}; {now} it is {Amount(first, cap)}, for {PopulationOn(site, from)}.";
+        return $"Demand peaks at {Amount(peak, cap)} on day {day}, when {Qty(PopulationOn(site, day))} people are at {site.Name}; {now} it is {Amount(first, cap)}, for {PopulationOn(site, from)}.";
     }
 
     /// <summary>What decides an earliest-start range, without a final period: the vendor's days to start after the order,

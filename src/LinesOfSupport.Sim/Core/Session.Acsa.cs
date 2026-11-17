@@ -65,7 +65,7 @@ public sealed partial class Session
         var start = Math.Max(o.StartDay ?? Day, Day);
         var committed = AcsaCommittedMilli(capId, start, start + Math.Max(1, o.DurationDays) - 1);
         if (o.Quantity * 1000 + committed > Fixed.Milli(stock))
-            stops.Add($"{PartnerName} can spare {stock:0} {Cap(capId).Unit}/day of {CapLabel(capId).ToLowerInvariant()} and {committed / 1000} is already ordered");
+            stops.Add($"{PartnerName} can spare {Qty(stock)} {Cap(capId).Unit}/day of {CapLabel(capId).ToLowerInvariant()} and {Qty(committed / 1000)} is already ordered");
         var lines = Cap(capId).Lines.Where(l => l.Kind != "supplies").Select(l => l.Id).ToList();
         var daily = o.Quantity * partner.UnitPriceCents.GetValueOrDefault(capId);
         var total = daily * Math.Max(0, o.DurationDays);
@@ -89,7 +89,7 @@ public sealed partial class Session
         var lag = _rngAcsa.NextInt(inst.StartLagDays);
         var capId = chk.CapabilityId!;
         var rec = AddRecord(Day, RecordKind.Action, o.Id,
-            $"ACSA order to {PartnerName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {o.Quantity} {Cap(capId).Unit}/day for {o.DurationDays} days; reimbursable {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}; {Plural(shopDays, "shop day")}.", []);
+            $"ACSA order to {PartnerName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {Qty(o.Quantity)} {Cap(capId).Unit}/day for {o.DurationDays} days; reimbursable {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}; {Plural(shopDays, "shop day")}.", []);
         AddWork(WorkKind.AcsaOrder, $"ACSA order for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual), Day + Scenario.Actors.Fm.CertificationLagDays,
                 new AcsaPayload(o, chk.SiteId!, capId, chk.Lines, chk.DailyCents, chk.TotalCents, lag), rec);
         return ActionResult.Ok("in work");
@@ -170,7 +170,7 @@ public sealed partial class Session
             if (GapIfOff(cap, l) is { } g) gaps.Add(g);
         var peak = (PeakDemandMilli(siteId, capId, Math.Min(startMin, LastDay), Math.Min(startMax + Math.Max(1, o.DurationDays) - 1, LastDay)) + 999) / 1000;
         if (o.Quantity < peak)
-            gaps.Add($"{o.Quantity} {Rate(cap)} against peak demand of {peak} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
+            gaps.Add($"{Qty(o.Quantity)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
         if (chk.Card is { } card && startMin > card.RequestedStartDay)
             gaps.Add($"Earliest start is day {startMin}; the requirement asks for day {card.RequestedStartDay}.");
         if (Partner?.Island is { } island && island != site.Island)

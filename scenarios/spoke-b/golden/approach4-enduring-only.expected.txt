@@ -24,8 +24,8 @@ Day 1
 Day 2
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 days.
-  ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2640 gal/day for 12 days (Potable water supply); quoted $12,672.
+  ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 3 days.
+  ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2,640 gal/day for 12 days (Potable water supply); quoted $12,672.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
@@ -37,7 +37,7 @@ Day 4
 Day 5
   DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $697,950; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: none worked today (no hours left); 9 waiting.
-  START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
+  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
 Day 6
   DONE      CE small buys: none worked today (no hours left); 14 waiting.
   FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
@@ -68,7 +68,7 @@ Day 14
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 15
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
 Day 16
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -172,4 +172,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash a20be8e9f8a65c325bec2224ece6d798bf4c002beccf45d52be3f25d6308f1ff
+State hash cf30b4e992333e1367ed5e6b1cbb9f0af2faf739d360b2ed408bda4330d55ae4

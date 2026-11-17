@@ -49,10 +49,10 @@ public sealed partial class Session
             if (Partner is { } partner)
                 foreach (var c in new[] { card.CapabilityId }.Concat(cap.DependsOn))
                     if (partner.Stock.TryGetValue(c, out var n) && n > 0)
-                        said.Add($"Under the ACSA, {PartnerName} can spare up to {Math.Floor(n)} {Rate(Cap(c))} of {Lower(CapLabel(c))}; the J4 asks for it.");
+                        said.Add($"Under the ACSA, {PartnerName} can spare up to {Qty(Math.Floor(n))} {Rate(Cap(c))} of {Lower(CapLabel(c))}; the J4 asks for it.");
             if (Agreement is { } hn && (hn.Sites.Count == 0 || hn.Sites.Contains(card.SiteId))
                 && hn.Capacity.TryGetValue(card.CapabilityId, out var hc) && hc > 0)
-                said.Add($"Under the host nation agreement, {HostNationName} can supply up to {Math.Floor(hc)} {Rate(cap)} of {what}.");
+                said.Add($"Under the host nation agreement, {HostNationName} can supply up to {Qty(Math.Floor(hc))} {Rate(cap)} of {what}.");
         }
         return said;
     }

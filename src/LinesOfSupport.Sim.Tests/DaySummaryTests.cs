@@ -60,7 +60,7 @@ public class DaySummaryTests
         }).Accepted);
         s.AdvanceDay();
         s.AdvanceDay();
-        Assert.Contains("Island Mart started water at Hub 4500 gal/day.", s.View.DaySummary()!.Started);
+        Assert.Contains("Island Mart started water at Hub 4,500 gal/day.", s.View.DaySummary()!.Started);
     }
 
     // DESK-57: the 16 Nov Claude play (docs/reviews/2026-11-16-claude-play.md, note 21). Harbor Equipment declined the

@@ -104,7 +104,7 @@ public class HostNationTests
         var s = Session.Create(WithAgreement(), 1);
         var hash = s.StateHash();
         string[] Stops(HostNationRequestAction o) => [.. s.View.PreviewHostNation(o).HardStops];
-        Assert.Contains(Stops(Request(qty: 1600)), h => h.Contains("provides 1500 gal/day"));
+        Assert.Contains(Stops(Request(qty: 1600)), h => h.Contains("provides 1,500 gal/day"));
         Assert.Contains(Stops(Request(cap: "water")), h => h.Contains("does not cover water"));
         Assert.Contains(Stops(Request(site: "hubSite")), h => h.Contains("does not cover"));
         Assert.Contains(Stops(Request(line: "om2")), h => h.Contains("not usable on day 1"));
@@ -117,7 +117,7 @@ public class HostNationTests
         Assert.Equal(Stops(Request(qty: 1600)), refused.HardStops);
         // Capacity is shared by requests on the same days, including ones still in shop work.
         Assert.True(s.Apply(Request()).Accepted);
-        Assert.Contains(Stops(Request("second", qty: 400)), h => h.Contains("1170 is already requested"));
+        Assert.Contains(Stops(Request("second", qty: 400)), h => h.Contains("1,170 is already requested"));
         Assert.Contains(Stops(Request()), h => h.Contains("already exists"));
         Assert.True(s.View.PreviewHostNation(Request("second", qty: 330)).Accepted);
     }

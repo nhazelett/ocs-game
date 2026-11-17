@@ -109,7 +109,7 @@ Day 13
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
   COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 13.
 Day 14
-  ACTION    Coordinated with the Hub unit for 3300 gal/day of Water to Spoke A. Not a contract; they can withdraw it.
+  ACTION    Coordinated with the Hub unit for 3,300 gal/day of Water to Spoke A. Not a contract; they can withdraw it.
   EVENT     Higher HQ declines to extend the BPAs. Regional contracting office: the equipment and food BPAs will not be extended past day 20. Calls already placed run to their end; anything after needs another vehicle.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   OK        Power at Spoke A restored to 100%.
@@ -117,7 +117,7 @@ Day 14
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  START     Water at Spoke A from the other unit began, 3300 gal/day.
+  START     Water at Spoke A from the other unit began, 3,300 gal/day.
   FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 days later; the stock on hand covered it.
 Day 16
@@ -141,7 +141,7 @@ Day 20
   EVENT     Second Island Fuel falls behind
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 21
-  ACTION    Written purchase order started with Island Provisions: Food service at Spoke B, 1000 meals/day for 25 days (Meal service, Food service staff); quoted $275,000.
+  ACTION    Written purchase order started with Island Provisions: Food service at Spoke B, 1,000 meals/day for 25 days (Meal service, Food service staff); quoted $275,000.
   DONE      BPA call awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 34. Obligated $2,520.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 22
@@ -173,7 +173,7 @@ Day 27
   FAIL      Third Island Camp Services lodging at Spoke C had equipment down.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   SHORT     Lodging at Spoke C degraded to 53%: supply 80 beds against demand 150.
 Day 28
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
@@ -236,7 +236,7 @@ Day 36
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   END       Island Provisions food service at Spoke B ended.
-  START     Food service at Spoke B from Island Provisions began, 1000 meals/day.
+  START     Food service at Spoke B from Island Provisions began, 1,000 meals/day.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 days later; the stock on hand covered it.
   INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 31 and 32 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 37
@@ -468,7 +468,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 13: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
           <- day 13: North Island Power and Light power at Spoke A had equipment down.
               <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  Day 27: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 27: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 27: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
   Day 27: Lodging at Spoke C degraded to 53%: supply 80 beds against demand 150.
@@ -666,4 +666,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.914)
 
-State hash add8562884f274ba1cf9cb43fd5ca728a568e49a0796d669c924966a3f79e1a6
+State hash ecc2639bb5c02c8b3a62ed90f86ea29ce1b0c987f8a191c9bcd6b26135ded3b1

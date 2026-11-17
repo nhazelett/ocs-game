@@ -217,7 +217,7 @@ public sealed partial class Session
         {
             var late = d >= jump.ArrivalDay + PopulationJumpReactDays;
             var perDay = cap.Delivery == "consumable" ? " a day" : "";
-            var text = $"{jump.Extra} unplanned personnel arrived at {site.Name} on day {jump.ArrivalDay} on {jump.ArrivalDay - jump.NoticeDay} days' notice (day {jump.NoticeDay}); arrangements sized for the plan's {planned / 1000} {cap.Unit}{perDay} fell short of {demand / 1000}{perDay}.";
+            var text = $"{Qty(jump.Extra)} unplanned personnel arrived at {site.Name} on day {jump.ArrivalDay} on {jump.ArrivalDay - jump.NoticeDay} days' notice (day {jump.NoticeDay}); arrangements sized for the plan's {Qty(planned / 1000)} {cap.Unit}{perDay} fell short of {demand / 1000}{perDay}.";
             yield return (late ? $"jump|{jump.RecordId}|late" : $"jump|{jump.RecordId}", late
                 ? new GapFactor(GapFactorKind.PopulationJump, GapTag.Avoidable, d, text + $" Still short {PopulationJumpReactDays} days after they arrived: the notice left time to resize.", [jump.RecordId])
                 : new GapFactor(GapFactorKind.PopulationJump, GapTag.Unforeseeable, d, text + " Nothing before the notice showed it coming.", [jump.RecordId]));
@@ -228,7 +228,7 @@ public sealed partial class Session
             var growth = step is { Day: > 1 } ? $" Population rose to {step.Count} on day {step.Day}, which the plan showed from day 1." : "";
             var perDay = cap.Delivery == "consumable" ? " a day" : "";
             yield return ($"demand|{step?.Day}", new GapFactor(GapFactorKind.DemandAboveSupply, GapTag.Avoidable, d,
-                $"Arrangements at {site.Name} were sized for {supplyCap / 1000} {cap.Unit}{perDay} against demand of {demand / 1000}{perDay}.{growth}", contributors.Select(a => a.CauseId).ToList()));
+                $"Arrangements at {site.Name} were sized for {Qty(supplyCap / 1000)} {cap.Unit}{perDay} against demand of {Qty(demand / 1000)}{perDay}.{growth}", contributors.Select(a => a.CauseId).ToList()));
         }
 
         foreach (var a in contributors)

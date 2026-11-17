@@ -205,9 +205,9 @@ public sealed partial class Session
             var cap = Cap(capId);
             var all = capacity / 1000;
             stops.Add(committed == 0
-                ? $"{vendor.Name} has {Amount(all, cap)} in all. Ask for {left} or less, or buy the rest from someone else."
+                ? $"{vendor.Name} has {Amount(all, cap)} in all. Ask for {Qty(left)} or less, or buy the rest from someone else."
                 : left > 0
-                ? $"{vendor.Name} has {Amount(left, cap)} left on those days, after {committed / 1000} already committed. Ask for {left} or less, or buy the rest from someone else."
+                ? $"{vendor.Name} has {Amount(left, cap)} left on those days, after {Qty(committed / 1000)} already committed. Ask for {Qty(left)} or less, or buy the rest from someone else."
                 : $"{vendor.Name} has nothing left on those days, with all {Amount(all, cap)} already committed. Buy from someone else, or pick days when they are free.");
         }
         if (vendor.VehicleOnly && a.Instrument is not ("bpaCall" or "idiqOrder")) stops.Add($"{vendor.Name} is reachable only through its vehicle");
@@ -334,7 +334,7 @@ public sealed partial class Session
                 // DESK-09 (D11): paid in cash at each delivery, and each delivery is a trip (Sf44Deliveries).
                 var trip = CeilHours(TripMilli(siteId, StockIsland(vendor, capId), Day));
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
-                    $"{inst.Label} to {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}). Paid in cash at each delivery, {Money(daily)} a day{(mob > 0 ? $" and {Money(mob)} with the first" : "")}, about {Money(total)} in all. Each delivery is a trip for {(Member(_assigneeNow).Role == "you" ? "you" : MemberName(Member(_assigneeNow)))} and the paying agent: {Plural(trip, "shop hour")}.", []);
+                    $"{inst.Label} to {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}). Paid in cash at each delivery, {Money(daily)} a day{(mob > 0 ? $" and {Money(mob)} with the first" : "")}, about {Money(total)} in all. Each delivery is a trip for {(Member(_assigneeNow).Role == "you" ? "you" : MemberName(Member(_assigneeNow)))} and the paying agent: {Plural(trip, "shop hour")}.", []);
                 CompleteAward(payload, Day, rec);
                 return ActionResult.Ok("bought");
             }
@@ -343,7 +343,7 @@ public sealed partial class Session
             {
                 if (a.Instrument == "sf44") { _cash -= total; ScheduleReplenish(); }
                 else _gpcSpend.Add((Day, total));
-                var rec = AddRecord(Day, RecordKind.Action, a.Id, $"{inst.Label} to {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); {Money(total)} paid on the spot.", []);
+                var rec = AddRecord(Day, RecordKind.Action, a.Id, $"{inst.Label} to {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); {Money(total)} paid on the spot.", []);
                 CompleteAward(payload, Day, rec);
                 return ActionResult.Ok("bought");
             }
@@ -359,7 +359,7 @@ public sealed partial class Session
                     approval = $" Approval request routed through the SCO; answer expected in {Plural(lag, "day")}.";
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
-                    $"{inst.Label} started with {vendor.Name}: {where}, {a.Quantity} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);
+                    $"{inst.Label} started with {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);
                 AddWork(WorkKind.Award, $"{inst.Label} with {vendor.Name} for {Lower(CapLabel(capId))} at {SiteName(siteId)}", Hours(shopDays, inst.RequiresSystemOrManual), wait, payload, rec);
                 return ActionResult.Ok("in work");
             }
@@ -462,7 +462,7 @@ public sealed partial class Session
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
         var from = SiteData(c.FromSite);
         var lag = _rngWork.NextInt(Rules.Instruments["coordination"].StartLagDays);
-        var rec = AddRecord(Day, RecordKind.Action, c.Id, $"Coordinated with the {from.Name} unit for {c.Quantity} {Cap(c.Capability).Unit}/day of {CapLabel(c.Capability)} to {SiteName(c.Site)}. Not a contract; they can withdraw it.", []);
+        var rec = AddRecord(Day, RecordKind.Action, c.Id, $"Coordinated with the {from.Name} unit for {Qty(c.Quantity)} {Cap(c.Capability).Unit}/day of {CapLabel(c.Capability)} to {SiteName(c.Site)}. Not a contract; they can withdraw it.", []);
         var core = Cap(c.Capability).Lines.First(l => l.Kind == "core").Id;
         _arrangements.Add(new Arrangement
         {

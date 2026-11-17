@@ -160,7 +160,7 @@ Day 27
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
@@ -183,7 +183,7 @@ Day 30
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      North Island Power and Light power at Spoke A had equipment down.
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
@@ -310,7 +310,7 @@ Day 47
 Day 48
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 46, reported 2 days later.
 Day 49
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -346,7 +346,7 @@ Day 54
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
   FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   OK        Comms backhaul at Spoke A restored to 100%.
   FUNDING   Comptroller released the O&M line from day 46: $3,000,000 usable from day 55, 9 days later than planned.
 Day 55
@@ -436,7 +436,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 18: Lodging at Spoke C degraded to 53%: supply 80 beds against demand 150.
       <- day 18: Third Island Camp Services lodging at Spoke C had equipment down.
           <- day 0: Inherited: Lodging at Spoke C from Third Island Camp Services (undefinitized contract action), days -119 to 60.
-  Day 27: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 27: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 27: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
   Day 27: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
@@ -453,7 +453,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 27: Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
           <- day 27: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 0: Inherited: Power at Spoke B from Harbor Equipment Co (BPA call), days -29 to 30.
-  Day 30: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 30: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 30: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
   Day 30: Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
@@ -531,7 +531,7 @@ GAPS AND WHY (each traced back through its causes)
       <- day 46: Power at Spoke B degraded to 52%: supply 165 kW against demand 312.
           <- day 46: Harbor Equipment Co power at Spoke B had equipment down (no operators).
               <- day 12: BPA call started with Harbor Equipment Co: Power at Spoke B, 330 kW/day for 30 days (Generation equipment, Maintenance and repair); quoted $22,770.
-  Day 48: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 48: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 48: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
   Day 49: Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
@@ -549,7 +549,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 53: Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
       <- day 53: Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
           <- day 15: Written purchase order started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 forklifts/day for 33 days (Forklifts); quoted $17,820.
-  Day 54: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 54: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 54: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
   Day 57: Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
@@ -669,4 +669,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.895)
 
-State hash 6ccc72ab7edada9dc39ec88cfb2bbf4d41ed247bf257fb53c3f923109a7c3f00
+State hash aedffb5799313f160254a5341224efcc9c0cede102d755f047dffbaa420a191f

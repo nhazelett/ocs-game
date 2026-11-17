@@ -71,7 +71,7 @@ public sealed partial class Session
         var req = J4Request(siteId, capId);
         string text; List<string> ids = [];
         if (req is null)
-            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {PartnerName} had {stock:#,0} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
+            text = $"Nobody owned {what} at {where}. {Capitalize(what)} is usually {cap.UsualOwner.TrimEnd('.')}. The J4 was never asked, and {PartnerName} had {Qty(stock)} {cap.Unit} a day to spare under the ACSA. Buying {what} yourself is the stopgap, not the plan.";
         else
         {
             var (asked, start, id) = req.Value;
@@ -179,7 +179,7 @@ public sealed partial class Session
                                                   .Select(w => (EngageJ4Action)((VisitPayload)w.Payload!).Extra!)
                                                   .Where(o => o.Capability == j.Capability).Sum(o => o.Quantity * 1000));
         if (j.Quantity * 1000 + committed > Fixed.Milli(stock))
-            stops.Add($"{PartnerName} can spare {stock:0} {Cap(j.Capability).Unit} a day of {what} and {committed / 1000} is already spoken for");
+            stops.Add($"{PartnerName} can spare {Qty(stock)} {Cap(j.Capability).Unit} a day of {what} and {Qty(committed / 1000)} is already spoken for");
         return stops;
     }
 
@@ -275,7 +275,7 @@ public sealed partial class Session
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
         var cap = Cap(j.Capability);
         return StartVisit(j, "j4", j.Id, j.Id,
-            $"Asked the J4, through the OCS seat, to have the ACSA manager add {SiteName(j.Site)} to the {cap.Label.ToLowerInvariant()} order: {j.Quantity} {cap.Unit} a day.", j);
+            $"Asked the J4, through the OCS seat, to have the ACSA manager add {SiteName(j.Site)} to the {cap.Label.ToLowerInvariant()} order: {Qty(j.Quantity)} {cap.Unit} a day.", j);
     }
 
     // ------------------------------------------------------------------ the day
@@ -437,8 +437,8 @@ public sealed partial class Session
             var cap = Cap(o.Capability);
             var from = o.SourceIsland is { } si && si != v.Island ? $" from {IslandData(si).Name}" : "";
             return cap.Delivery == "consumable"
-                ? $"{Lower(cap.Label)}, up to {o.CapacityPerDay:0} {cap.Unit} a day at {UnitMoney(o.UnitPriceCents)} {PerUnit(cap.Unit)}{from}, on {NoticeText(o.LeadTimeDays)}"
-                : $"{Lower(cap.Label)} for up to {o.CapacityPerDay:0} {cap.Unit} at {UnitMoney(o.UnitPriceCents)} {PerUnit(cap.Unit)} a day{from}, on {NoticeText(o.LeadTimeDays)}";
+                ? $"{Lower(cap.Label)}, up to {Qty(o.CapacityPerDay)} {cap.Unit} a day at {UnitMoney(o.UnitPriceCents)} {PerUnit(cap.Unit)}{from}, on {NoticeText(o.LeadTimeDays)}"
+                : $"{Lower(cap.Label)} for up to {Qty(o.CapacityPerDay)} {cap.Unit} at {UnitMoney(o.UnitPriceCents)} {PerUnit(cap.Unit)} a day{from}, on {NoticeText(o.LeadTimeDays)}";
         }).ToList();
         var offerText = offers.Count == 0 ? "They have nothing to offer you directly." : $"They offer {string.Join("; ", offers)}.";
         // A vendor wants to be paid: an undefinitized UCA the handover did not mention is the old contract they raise.
@@ -477,7 +477,7 @@ public sealed partial class Session
             CreatedDay = day, CauseId = cause, StartDay = start, EndDay = Math.Min(end, LastDay),
         });
         AddRecord(day, RecordKind.Visit, j.Id,
-            $"The J4's ACSA manager is adding {SiteName(j.Site)} to the {cap.Label.ToLowerInvariant()} order with {PartnerName}: {j.Quantity} {cap.Unit} a day from day {start}. The reimbursement is the J4's, not the shop's. {Upper(PartnerName)} can cut it back when its own needs rise.", [cause]);
+            $"The J4's ACSA manager is adding {SiteName(j.Site)} to the {cap.Label.ToLowerInvariant()} order with {PartnerName}: {Qty(j.Quantity)} {cap.Unit} a day from day {start}. The reimbursement is the J4's, not the shop's. {Upper(PartnerName)} can cut it back when its own needs rise.", [cause]);
     }
 
     // ------------------------------------------------------------------ views
@@ -507,7 +507,7 @@ public sealed partial class Session
         if (Partner is { } p && p.Stock.TryGetValue("fuel", out var stock) && stock > 0 && !Withdrawn("fuel"))
         {
             var from = p.Island is { } i ? $" on {IslandData(i).Name}" : "";
-            return $"{bulk} Here the partner is {p.Name}{from}, which can spare {stock:0} {unit} a day; the J4 can add a site to that order. A local fuel vendor is the stopgap, at the vendor's price.";
+            return $"{bulk} Here the partner is {p.Name}{from}, which can spare {Qty(stock)} {unit} a day; the J4 can add a site to that order. A local fuel vendor is the stopgap, at the vendor's price.";
         }
         return $"{bulk} There is no ACSA fuel here right now, so a local fuel vendor is the stopgap, at the vendor's price, until DLA Energy is set up.";
     }
