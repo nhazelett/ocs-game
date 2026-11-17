@@ -40,6 +40,10 @@ public partial class AwardFeedbackSmokeTest : Node
             var rows = shell.RequestDecisionRows!;
             Require(rows.GetChildren().First().GetMeta("decision_sentence").AsString() == decision.Sentence,
                 "The new decision is first on its request.");
+            var decisionText = string.Join("\n", PlayScreen.Descendants(rows).Select(n => n is Button b ? b.Text : n is Label l ? l.Text : ""));
+            Require(decisionText.Contains(decision.Now) && decisionText.Contains(decision.Teammate, StringComparison.OrdinalIgnoreCase)
+                && !decisionText.Contains("With " + decision.Teammate + "."),
+                "The completed immediate buy names its teammate without implying work is still waiting on them.");
             var requestScroll = tabs.GetNode<ScrollContainer>("Requests/RequirementPane/Body/Body");
             stale.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.CreateSave().Actions.Count == before + 1, "A stale button cannot submit a duplicate arrangement.");
@@ -57,6 +61,17 @@ public partial class AwardFeedbackSmokeTest : Node
                 && !shell.VendorInput.GetItemText(index).Contains("(unavailable)")
                 && shell.VendorInput.GetItemTooltip(index) == blocked.Reason,
                 "The disabled supplier row states the Sim's actual refusal.");
+            foreach (var refusal in shell.CurrentAwardChoices.Vendors.Where(v => !v.Available))
+            {
+                var item = Enumerable.Range(1, shell.VendorInput.ItemCount - 1)
+                    .Single(i => shell.VendorInput.GetItemMetadata(i).AsString() == refusal.Id);
+                var reason = refusal.Reason ?? "Unavailable today.";
+                if (reason.StartsWith(refusal.Label + " ", StringComparison.OrdinalIgnoreCase)) reason = reason[(refusal.Label.Length + 1)..];
+                Require(shell.VendorInput.GetItemText(item).EndsWith(DeskUi.ListLabel(reason)), "Every supplier refusal is complete in the list.");
+            }
+            Require(!shell.VendorChoiceReason.Text.Contains("point at one"), "The count does not tell players to hover for an explanation.");
+            Require(shell.CurrentAwardChoices.Vendors.Any(v => v.Reason?.Contains("This office cannot buy from it or add to that support.") == true),
+                "The real host-nation refusal includes the sentence that was lost.");
             Require(PlayScreen.Descendants(tabs.GetNode("Requests/Market")).OfType<Label>().Any(l => l.Text == "Contract vehicle"),
                 "The ordering vehicle cannot be mistaken for the office's truck.");
             await Frames(); shell.AwardScroll.EnsureControlVisible(shell.VendorInput); await Frames();
@@ -66,7 +81,7 @@ public partial class AwardFeedbackSmokeTest : Node
                 shell.VendorInput.ShowPopup(); await Frames();
                 var popup = shell.VendorInput.GetPopup();
                 Require(new Rect2I(0, 0, 1280, 800).Encloses(new Rect2I(popup.Position, popup.Size)),
-                    "The supplier explanations fit inside the native window.");
+                    $"The supplier explanations fit inside the native window: {popup.Position}, {popup.Size}.");
                 await Capture("supplier-reasons"); shell.VendorInput.GetPopup().Hide();
             }
             await Frames(); shell.AwardScroll.EnsureControlVisible(shell.VehicleInput); await Capture("contract-vehicle");

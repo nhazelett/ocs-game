@@ -51,14 +51,14 @@ public partial class GameShell
     {
         awardPanel.AddChild(DeskUi.Label(label));
         var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true };
+        picker.GetPopup().AddThemeFontSizeOverride("font_size", 18);
         picker.AddItem(prompt); picker.SetItemMetadata(0, "");
         static string ListReason(ChoiceOption option)
         {
             var reason = option.Reason ?? "Unavailable today.";
             if (reason.StartsWith(option.Label + " ", StringComparison.OrdinalIgnoreCase))
                 reason = reason[(option.Label.Length + 1)..];
-            var sentenceEnd = reason.IndexOf(". ", StringComparison.Ordinal);
-            return DeskUi.ListLabel(sentenceEnd < 0 ? reason : reason[..(sentenceEnd + 1)]);
+            return DeskUi.ListLabel(reason);
         }
         foreach (var option in options)
         {
@@ -74,7 +74,7 @@ public partial class GameShell
         var reasonText = index > 0 ? "" : unavailable.Length switch
         {
             1 => unavailable[0].Reason ?? "",
-            > 1 => $"{unavailable.Length} choices are unavailable; point at one to see why.",
+            > 1 => $"{unavailable.Length} choices are unavailable.",
             _ => ""
         };
         reasonText = notice ?? reasonText;

@@ -54,8 +54,8 @@ public partial class GameShell
         {
             any = true;
             var row = new VBoxContainer(); row.SetMeta("decision_sentence", decision.Sentence); parent.AddChild(row);
-            var now = decision.Now + (decision.Sentence.Contains(decision.Teammate, StringComparison.OrdinalIgnoreCase)
-                ? "" : " With " + decision.Teammate + ".");
+            var now = (decision.Sentence.Contains(decision.Teammate, StringComparison.OrdinalIgnoreCase)
+                ? "" : DeskUi.ListLabel(decision.Teammate) + " · ") + decision.Now;
             if (openRequest && decision.CardId is { } card)
             {
                 var button = DeskUi.Button(decision.Sentence + "\n" + now, () =>

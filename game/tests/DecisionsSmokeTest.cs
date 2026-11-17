@@ -125,7 +125,7 @@ public partial class DecisionsSmokeTest : Node
             }
             var words = string.Join("\n", rows[i].FindChildren("*", "Control", true, false)
                 .Select(c => c is Button b ? b.Text : c is Label l ? l.Text : ""));
-            Require(words.Contains(all[i].Sentence) && words.Contains(all[i].Now) && words.Contains(all[i].Teammate),
+            Require(words.Contains(all[i].Sentence) && words.Contains(all[i].Now) && words.Contains(all[i].Teammate, StringComparison.OrdinalIgnoreCase),
                 "The visible controls show the exact decision, current status and teammate.");
         }
         Require(rows.Select(r => r.GetMeta("decision_now").AsString()).SequenceEqual(all.Select(d => d.Now))
