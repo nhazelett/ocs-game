@@ -1,3 +1,5 @@
+using LinesOfSupport.Sim.Views;
+
 namespace LinesOfSupport.Sim.Core;
 
 // The end-of-day check (DESK-04, docs/design/desk-redesign.md D1). Before the one "End the day" button ends the day, the
@@ -19,14 +21,30 @@ public sealed partial class Session
                 ? $"{title} was wanted from day {card.RequestedStartDay} and nothing is arranged or in work."
                 : $"{title} is wanted from day {card.RequestedStartDay} and nothing is arranged or in work yet.");
         }
+        var waiting = WaitingForSomeone();
         foreach (var m in BuildTeam().Where(m => m.Role != "you" && m.FreeHoursToday > 0))
         {
             var name = m.Rank is { Length: > 0 } r ? $"{r} {m.Name}" : m.Name;
+            // DESK-75 (D30): idle hours on a day that is not quiet say what they cost.
+            var what = waiting.FirstOrDefault(x => x.Holder != m.Id).Text is { } t ? $", and {t}" : "";
             open.Add(m.FreeHoursToday >= m.HoursPerDay
-                ? $"{name} has nothing to work on today; their {HoursText(m.HoursPerDay)} hours go to walk-in small buys."
-                : $"{name} has {HoursText(m.FreeHoursToday)} free hour{(m.FreeHoursToday == 1 ? "" : "s")} today.");
+                ? $"{name} has nothing to work on today{what}; their {HoursText(m.HoursPerDay)} hours go to walk-in small buys."
+                : $"{name} has {HoursText(m.FreeHoursToday)} free hour{(m.FreeHoursToday == 1 ? "" : "s")} today{what}.");
         }
         return open;
+    }
+
+    /// <summary>What an idle teammate could be doing (DESK-75): a request nobody is on, then someone else's ready work that
+    /// carries over today. Holder is the teammate whose queue holds it, so nobody is told their own work waits.</summary>
+    private List<(string? Holder, string Text)> WaitingForSomeone()
+    {
+        var list = new List<(string?, string)>();
+        foreach (var r in BuildWhereThingsStand().Where(r => r.State == RequestStanding.Nothing))
+            list.Add((null, $"nobody is on {Lower(r.Title)}"));
+        var (people, _) = PlanPeople();
+        foreach (var p in people.Where(p => p.Work.Any(w => w.WorkId is not null && !w.FinishesToday)))
+            list.Add((p.MemberId, $"{(p.Name == "You" ? "your" : p.Name + "'s")} work carries over"));
+        return list;
     }
 
     /// <summary>Something is under way for the request: an arrangement tied to it, work for it, or live support for its
