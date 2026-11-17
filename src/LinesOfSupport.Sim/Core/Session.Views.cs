@@ -10,11 +10,17 @@ public sealed partial class Session
     private static int CeilHours(long milli) => (int)((milli + 999) / 1000);
     private static string Rate(CapabilityData cap) => cap.Delivery == "consumable" ? $"{cap.Unit}/day" : cap.Unit;
 
+    /// <summary>A whole quantity as the player reads it, with thousands separators whatever the machine's culture:
+    /// "4,500", not "4500" (DESK-99).</summary>
+    internal static string Qty(long n) => n.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture);
+    internal static string Qty(double n) => n.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture);
+    internal static string Qty(decimal n) => n.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture);
+
     /// <summary>A count in the capability's unit, singular for one ("1 forklift", "500 gal/day").</summary>
     private static string Amount(long n, CapabilityData cap)
     {
         var unit = n == 1 && cap.Unit.Length > 3 && cap.Unit.EndsWith('s') && cap.Unit.All(char.IsLower) ? cap.Unit[..^1] : cap.Unit;
-        return cap.Delivery == "consumable" ? $"{n} {unit}/day" : $"{n} {unit}";
+        return cap.Delivery == "consumable" ? $"{Qty(n)} {unit}/day" : $"{Qty(n)} {unit}";
     }
 
     /// <summary>
@@ -29,7 +35,7 @@ public sealed partial class Session
 
     /// <summary>A quantity in thousandths as a number: whole when it is whole or large, else to one decimal ("2.2").</summary>
     private static string NumberSaid(long milli)
-        => milli % 1000 == 0 || milli >= 100_000 ? ((milli + 500) / 1000).ToString(System.Globalization.CultureInfo.InvariantCulture)
+        => milli % 1000 == 0 || milli >= 100_000 ? Qty((milli + 500) / 1000)
             : (milli / 1000m).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
 
     internal TopStripView BuildTopStrip()
@@ -371,7 +377,7 @@ public sealed partial class Session
         if (a.Quantity < peak)
         {
             var pd = PeakDay(site, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay));
-            gaps.Add($"{a.Quantity} {Rate(cap)} against peak demand of {peak} {Rate(cap)} at {site.Name} on day {pd}, when {PopulationOn(site, pd)} people are there; the difference is a shortfall unless another arrangement covers it.");
+            gaps.Add($"{Qty(a.Quantity)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} at {site.Name} on day {pd}, when {Qty(PopulationOn(site, pd))} people are there; the difference is a shortfall unless another arrangement covers it.");
         }
         if (startMax > startMin && StartRange(a, inst, hMin, hMax, lift) is { } range)   // DESK-78: what decides the range
             gaps.Add($"Earliest start is day {startMin} to {startMax}: {range}.");
@@ -392,7 +398,7 @@ public sealed partial class Session
         {
             var free = Math.Max(0, Fixed.Milli(offer.CapacityPerDay) - CommittedMilli(vendor.Id, capId, startMin, Math.Min(end, LastDay)));
             if (a.Quantity * 1000 > free)
-                gaps.Add($"{vendor.Name} has about {free / 1000} {Rate(cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
+                gaps.Add($"{vendor.Name} has about {Qty(free / 1000)} {Rate(cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
             if (Idiq(a.Vehicle) is { GuaranteeUnorderedCents: > 0 } q)
                 gaps.Add($"{Money(Math.Min(chk.TotalCents, Math.Max(0, q.GuaranteeUnorderedCents - PendingOrderCents(q.VehicleId))))} of this order comes from {NameOf(q.VehicleId)}'s minimum guarantee, already obligated.");
         }

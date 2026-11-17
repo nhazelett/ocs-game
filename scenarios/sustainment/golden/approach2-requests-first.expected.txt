@@ -340,7 +340,7 @@ Day 58
 Day 59
   DONE      CE small buys: 10 worked today (5 h of shop time).
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
 Day 60
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Waste removal at Hub restored to 100%.
@@ -507,7 +507,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
   Day 54: Fuel at Spoke A down to 0%: North Island Power and Light power at Spoke A stopped work (unpaid UCA); fuel on hand ran out.
       <- day 0: Inherited: Power at Spoke A from North Island Power and Light (undefinitized contract action), days -49 to 70. UCA issued day -140, NTE $340,000, $130,000 obligated before day 1; definitization due by day 40 or at 50% of NTE obligated; qualifying proposal in hand.
-  Day 59: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 59: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 59: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
 
@@ -626,4 +626,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 6399000)
   [not met] Mission output at least 88% (mission.output = 0.681)
 
-State hash 1813fa6d5ea8be7cad3020e4bb0d970e9789b9f00b0a6f0217054f05160fe628
+State hash dc846676b3bec38354f59fe27cf6c66f79118ea19fff3a304369441fa2cce039

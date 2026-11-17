@@ -41,11 +41,11 @@ public class StandingTests
         }).Accepted);
         var water = Assert.Single(s.View.WhereThingsStand());
         Assert.Equal(RequestStanding.Arranged, water.State);
-        Assert.Equal("Island Mart starts on day 2: 4500 gal/day through day 8.", water.Sentence);
+        Assert.Equal("Island Mart starts on day 2: 4,500 gal/day through day 8.", water.Sentence);
         s.AdvanceDay();
         water = Assert.Single(s.View.WhereThingsStand());
         Assert.Equal(RequestStanding.Running, water.State);
-        Assert.Equal("Island Mart is delivering 4500 gal/day through day 8.", water.Sentence);
+        Assert.Equal("Island Mart is delivering 4,500 gal/day through day 8.", water.Sentence);
     }
 
     [Fact]

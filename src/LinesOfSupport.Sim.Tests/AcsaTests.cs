@@ -85,7 +85,7 @@ public class AcsaTests
         var s = Session.Create(WithPartner(), 1);
         var hash = s.StateHash();
         string[] Stops(AcsaOrderAction o) => [.. s.View.PreviewAcsa(o).HardStops];
-        Assert.Contains(Stops(Order(qty: 1600)), h => h.Contains("can spare 1500 gal/day"));
+        Assert.Contains(Stops(Order(qty: 1600)), h => h.Contains("can spare 1,500 gal/day"));
         Assert.Contains(Stops(Order() with { Capability = "power" }), h => h.Contains("no power to spare"));
         Assert.Contains(Stops(Order(line: "om2")), h => h.Contains("not usable on day 1"));
         Assert.Contains(Stops(Order(line: "")), h => h.Contains("needs a funding line"));
@@ -97,7 +97,7 @@ public class AcsaTests
         Assert.Equal(Stops(Order(qty: 1600)), refused.HardStops);
         // Stock is shared by orders on the same days, including ones still in shop work.
         Assert.True(s.Apply(Order()).Accepted);
-        Assert.Contains(Stops(Order("second", qty: 400)), h => h.Contains("1170 is already ordered"));
+        Assert.Contains(Stops(Order("second", qty: 400)), h => h.Contains("1,170 is already ordered"));
         Assert.Contains(Stops(Order()), h => h.Contains("already exists"));
         Assert.True(s.View.PreviewAcsa(Order("second", qty: 330)).Accepted);
     }

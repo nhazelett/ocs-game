@@ -16,7 +16,7 @@ Before day 1
   START     Inherited: Waste removal at Spoke C from Main Island Utilities (host nation), days 1 to 400.
 Day 1
   ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
-  ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1287 gal a day.
+  ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1,287 gal a day.
   ACTION    Ordered a site survey of Second Island.
   ACTION    Ordered a site survey of Third Island.
   ACTION    The request for power for Spoke B: Operators switched on.
@@ -25,10 +25,10 @@ Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
-  ACTION    Written purchase order started with Third Island Water Works: Water at Spoke C, 2640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480.
-  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
+  ACTION    Written purchase order started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2,640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated as each delivery is paid.
-  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
+  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1,287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      Survey team dispatched to Third Island; findings due day 3.
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
@@ -51,8 +51,8 @@ Day 4
   DONE      CE small buys: none worked today (no hours left); 16 waiting.
 Day 5
   DONE      CE small buys: none worked today (no hours left); 21 waiting.
-  START     Water at Spoke C from Coastal Provisions began, 2640 gal/day.
-  START     Fuel at Spoke B from the partner force began, 1287 gal/day.
+  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
+  START     Fuel at Spoke B from the partner force began, 1,287 gal/day.
   CONFUSED  Execution confusion on Coastal Provisions water at Spoke C: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 6
   DONE      CE small buys: none worked today (no hours left); 26 waiting.
@@ -71,7 +71,7 @@ Day 11
 Day 12
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     Food service at Spoke C from Coastal Provisions began, 528 meals/day.
-  START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
 Day 13
   SURVEY    Forecast from your Third Island survey contacts: Weather closes the Third Island crossing. No that arrangement sailings days 14 to 15.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -112,7 +112,7 @@ Day 19
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
 Day 20
-  ACTION    Coordinated with the Hub unit for 1170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
+  ACTION    Coordinated with the Hub unit for 1,170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
@@ -126,7 +126,7 @@ Day 21
   DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 23, ends day 31. Obligated as each delivery is paid.
   ACTION    Coordinated with the Hub unit for 672 meals/day of Food service to Spoke C. Not a contract; they can withdraw it.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  START     Fuel at Spoke B from the other unit began, 1170 gal/day.
+  START     Fuel at Spoke B from the other unit began, 1,170 gal/day.
 Day 22
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   START     Food service at Spoke C from the other unit began, 672 meals/day.
@@ -216,4 +216,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.92)
 
-State hash 5f1f42b03264b1f33d413a43ba2085a4e2c9545b873cfc8e1d034bf12b50cb97
+State hash 11378773db35879e54b9750567baf3e447e3e1b47c65a27a827bba38eeb9d196

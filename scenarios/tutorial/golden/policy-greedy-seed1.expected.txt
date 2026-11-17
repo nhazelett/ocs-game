@@ -11,14 +11,14 @@ Before day 1
   START     Inherited: Lodging at Hub from Island Camp Services (BPA call), days -20 to 40.
   START     Inherited: Food service at Hub from Island Camp Services (BPA call), days -20 to 40.
 Day 1
-  ACTION    Government purchase card to Island Mart: Water at Hub, 4500 gal/day for 7 days (Potable water supply); $9,734 paid on the spot.
+  ACTION    Government purchase card to Island Mart: Water at Hub, 4,500 gal/day for 7 days (Potable water supply); $9,734 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $9,734.
   EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
   EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Island Mart began, 4500 gal/day.
+  START     Water at Hub from Island Mart began, 4,500 gal/day.
 Day 3
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
   EVENT     The host nation takes its forklift back. Main Island Utilities: our forklift goes back to the port after day 7.
@@ -45,10 +45,10 @@ Day 8
   END       Main Island Utilities (host nation) material handling equipment at Hub ended.
   SHORT     Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
 Day 9
-  ACTION    SF 44 cash purchase to Main Island Sanitation: Waste removal at Hub, 3600 gal/day for 8 days (Removal and disposal). Paid in cash at each delivery, $144 a day, about $1,152 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
+  ACTION    SF 44 cash purchase to Main Island Sanitation: Waste removal at Hub, 3,600 gal/day for 8 days (Removal and disposal). Paid in cash at each delivery, $144 a day, about $1,152 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated as each delivery is paid.
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
+  START     Water at Hub from Main Island Utilities (host nation) began, 8,000 gal/day.
   END       Island Mart water at Hub ended.
   START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
   OK        Material handling equipment at Hub restored to 100%.
@@ -71,7 +71,7 @@ Day 12
 Day 13
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) waste removal at Hub ended.
-  START     Waste removal at Hub from Main Island Sanitation began, 3600 gal/day.
+  START     Waste removal at Hub from Main Island Sanitation began, 3,600 gal/day.
   OK        Material handling equipment at Hub restored to 100%.
 Day 14
   DONE      CE small buys: 2 worked today (1 h of shop time).
@@ -123,4 +123,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 0.968)
 
-State hash 4ae6edc4ad53c0871f67cebede9028212fe1be9646fa36298cd3fca23e222548
+State hash 42b65333df0f03ca50c9b5248bb6ead945b210e0fa4c0ad904102acce5bd35ab

@@ -62,7 +62,7 @@ public sealed partial class Session
             var bought = running.Min(a => Math.Max(1, a.CreatedDay));
             var then = PopulationOn(site, Math.Min(Math.Max(bought, site.OpensDay), LastDay));
             var more = pop > then && then > 0 ? $", {pop - then} more than on day {bought}, when it was bought" : "";
-            qty = $"{named} supplies {CountSaid(supply, cap)}{perDay}, and {site.Name} needs {Amount((demand + 999) / 1000, cap)} for its {pop} people{more}{BuyingNote(site.Id, capId)}";
+            qty = $"{named} supplies {CountSaid(supply, cap)}{perDay}, and {site.Name} needs {Amount((demand + 999) / 1000, cap)} for its {Qty(pop)} people{more}{BuyingNote(site.Id, capId)}";
             // When the level is what was arranged against what was needed, that is the whole story; a held delivery or a
             // failure is named only when it took the level lower still.
             if (CapState(site.Id, capId) is { } level && level.TodayPermille >= supply * 1000 / demand - 10) return qty;

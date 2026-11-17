@@ -34,7 +34,7 @@ Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
 Day 10
   DONE      CE small buys: 6 worked today (3 h of shop time).
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -281,4 +281,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.789)
 
-State hash d17b255c1ce965e0ed9c0a6b78984cb73d689e3da86c84b951822e30f57e649c
+State hash ec780a1e1ad82a64eee13db0ee89e6e4a2601ff4c0137e49136940f2a50dad88

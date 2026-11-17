@@ -246,7 +246,7 @@ Day 35
   COR       COR report (SSG Park): Second Island Fuel fuel at Spoke B missed its delivery on day 33, reported 2 days later.
   FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $208,090 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
-  ACTION    Written purchase order started with North Island Water Works: Water at Spoke A, 3500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
+  ACTION    Written purchase order started with North Island Water Works: Water at Spoke A, 3,500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
   EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
   WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
@@ -305,7 +305,7 @@ Day 41
   COR       COR report (SGT Oyelaran): Harbor Equipment Co material handling equipment at Spoke C had equipment down on day 39, reported 2 days later.
 Day 42
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  START     Water at Spoke A from North Island Water Works began, 3500 gal/day.
+  START     Water at Spoke A from North Island Water Works began, 3,500 gal/day.
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
   SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
   OK        Fuel at Spoke B restored to 100%.
@@ -484,7 +484,7 @@ Day 60
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   FAIL      Main Island Sanitation waste removal at Hub had equipment down.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
-  SHORT     Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  SHORT     Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
   SHORT     Fuel at Spoke B degraded to 56%: fuel on hand ran out.
   SHORT     Power at Spoke B degraded to 56%: fuel at 56%.
@@ -753,7 +753,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 15: Written purchase order started with Harbor Equipment Co: Material handling equipment at Spoke C, 3 forklifts/day for 33 days (Forklifts); quoted $17,820.
   Day 48: Water at Spoke A down to 36%: water on hand ran out.
       <- day 48: North Island Water Works water at Spoke A missed today's delivery.
-          <- day 36: Written purchase order started with North Island Water Works: Water at Spoke A, 3500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
+          <- day 36: Written purchase order started with North Island Water Works: Water at Spoke A, 3,500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
   Day 49: Fuel at Spoke B down to 28%: fuel on hand ran out.
       <- day 49: Second Island Fuel fuel at Spoke B missed today's delivery.
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
@@ -822,7 +822,7 @@ GAPS AND WHY (each traced back through its causes)
           <- day 14: Written purchase order started with Main Island Motor Pool Rentals: Ground transport at Hub, 14 vehicles/day for 36 days (Vehicles, Drivers); quoted $80,640.
   Day 57: Water at Spoke A down to 48%: water on hand ran out.
       <- day 57: North Island Water Works water at Spoke A missed today's delivery.
-          <- day 36: Written purchase order started with North Island Water Works: Water at Spoke A, 3500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
+          <- day 36: Written purchase order started with North Island Water Works: Water at Spoke A, 3,500 gal/day for 21 days (Potable water supply, Plant operators, Maintenance); quoted $25,725.
   Day 57: Fuel at Spoke B degraded to 56%: fuel on hand ran out.
       <- day 57: Second Island Fuel fuel at Spoke B missed today's delivery.
           <- day 0: Inherited: Fuel at Spoke B from Second Island Fuel (written purchase order), days -39 to 60. Termination needs 15 days' notice.
@@ -846,7 +846,7 @@ GAPS AND WHY (each traced back through its causes)
   Day 59: Fuel at Spoke C down to 19%: fuel on hand ran out.
   Day 59: Material handling equipment at Spoke C down to 19%: fuel at 19%.
       <- day 59: Fuel at Spoke C down to 19%: fuel on hand ran out.
-  Day 60: Waste removal at Hub degraded to 51%: supply 4000 gal against demand 7800.
+  Day 60: Waste removal at Hub degraded to 51%: supply 4,000 gal against demand 7,800.
       <- day 60: Main Island Sanitation waste removal at Hub had equipment down.
           <- day 0: Inherited: Waste removal at Hub from Main Island Sanitation (written purchase order), days -14 to 75.
   Day 60: Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
@@ -1064,4 +1064,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [not met] Mission output at least 88% (mission.output = 0.877)
 
-State hash 72b553ab51fe521fc2fca3ec5f138a4f6af737b74e8d5260c08efd469c30cef0
+State hash bfc2df7b18de8951c4ecee51dd366a6ffa41cd3cf5a79f62eae3235fca2c0fa4

@@ -42,7 +42,7 @@ Day 8
   SHORT     Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
 Day 9
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Main Island Utilities (host nation) began, 8000 gal/day.
+  START     Water at Hub from Main Island Utilities (host nation) began, 8,000 gal/day.
   OK        Water at Hub restored to 100%.
   OK        Food service at Hub restored to 100%.
 Day 10
@@ -120,4 +120,4 @@ PASS CRITERIA
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash e78c7756fcdb90396b9026cbb4a2acd8f8d0a8120e5e30eb4e579fc47e14fc60
+State hash d6fe57946e1e3f9e81820dc3e3413f49b96d4d7389e490d77aac6a3037cb8181

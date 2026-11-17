@@ -20,7 +20,7 @@ public class DecisionsTests
             DurationDays = 7, FundingLine = "om1",
         }).Accepted);
         var d = Assert.Single(s.View.Decisions());
-        Assert.Equal("Day 1: Water at Hub from Island Mart, 4500 gal/day for 7 days on a government purchase card.", d.Sentence);
+        Assert.Equal("Day 1: Water at Hub from Island Mart, 4,500 gal/day for 7 days on a government purchase card.", d.Sentence);
         Assert.Equal("tutWater", d.CardId);
         Assert.Equal("Water for Hub", d.Request);
         Assert.Equal("Arranged: starts on day 2.", d.Now);

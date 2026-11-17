@@ -9,13 +9,13 @@ Before day 1
   START     Inherited: Fuel at Hub from the partner force (acquisition and cross-servicing agreement order), days 1 to 400.
 Day 1
   ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
-  ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1287 gal a day.
+  ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1,287 gal a day.
   ACTION    Ordered a site survey of Second Island.
   ACTION    The request for power for Spoke B: Operators switched on.
   ACTION    The request for power for Spoke B: Maintenance and repair switched on.
   ACTION    Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 60 days (Generation equipment, Operators, Maintenance and repair); quoted $693,900.
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
-  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
+  VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1,287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 2
@@ -31,7 +31,7 @@ Day 4
 Day 5
   DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
   DONE      CE small buys: 4 worked today (2 h of shop time); 17 still waiting.
-  START     Fuel at Spoke B from the partner force began, 1287 gal/day.
+  START     Fuel at Spoke B from the partner force began, 1,287 gal/day.
 Day 6
   DONE      CE small buys: 18 worked today (9 h of shop time, 3 on cards).
 Day 7
@@ -74,13 +74,13 @@ Day 19
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 20
-  ACTION    Coordinated with the Hub unit for 1170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
+  ACTION    Coordinated with the Hub unit for 1,170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 21
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  START     Fuel at Spoke B from the other unit began, 1170 gal/day.
+  START     Fuel at Spoke B from the other unit began, 1,170 gal/day.
 Day 22
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 23
@@ -277,4 +277,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash 9d3c89d9c8deede468eb184b2f3fe04dc2406c8cd779f2c195c9607bb84e71cd
+State hash 5a865c67a0941ac723a4b6bfc3b3d9ac3c5ae9a22ef72ebf1b0bfafb9c8e0a1b

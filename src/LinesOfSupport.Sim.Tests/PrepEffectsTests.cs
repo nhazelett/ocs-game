@@ -86,6 +86,6 @@ public class PrepEffectsTests
         var b = Repo.Load("spoke-b");
         string[] Power(string[] prep) => [.. Session.Create(b, 1, prep).View.WhereThingsStand().Single(r => r.CardId == "req0007").OnFile];
         Assert.Empty(Power(["systemAccess"]));
-        Assert.Contains("Under the ACSA, the partner force can spare up to 4000 gal/day of fuel; the J4 asks for it.", Power(["systemAccess", "partnerAgreements"]));
+        Assert.Contains("Under the ACSA, the partner force can spare up to 4,000 gal/day of fuel; the J4 asks for it.", Power(["systemAccess", "partnerAgreements"]));
     }
 }

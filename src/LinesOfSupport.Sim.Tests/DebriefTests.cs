@@ -63,7 +63,7 @@ public class DebriefTests
         var water = GapOn(d, "spokeCSite.water", 15);
         Assert.Equal(GapTag.Avoidable, water.Tag);
         Assert.Contains(water.Factors, f => f.Kind == GapFactorKind.DemandAboveSupply
-                                            && f.Text.Contains("1800 gal a day against demand of 2400 a day")
+                                            && f.Text.Contains("1,800 gal a day against demand of 2,400 a day")
                                             && f.Text.Contains("day 15"));
     }
 

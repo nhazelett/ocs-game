@@ -80,7 +80,7 @@ public sealed partial class Session
         var capacity = Fixed.Milli(offer.CapacityPerDay);
         var committed = ExternalCommittedMilli(capId);
         if (r.Quantity * 1000 + committed > capacity)
-            stops.Add($"the external support contract can provide {offer.CapacityPerDay:0} {cap.Unit}/day of {CapLabel(capId).ToLowerInvariant()} in total and {committed / 1000} is already requested");
+            stops.Add($"the external support contract can provide {Qty(offer.CapacityPerDay)} {cap.Unit}/day of {CapLabel(capId).ToLowerInvariant()} in total and {Qty(committed / 1000)} is already requested");
 
         var daily = r.Quantity * offer.UnitPriceCents;
         var baseCost = daily * Math.Max(0, r.DurationDays);
@@ -112,7 +112,7 @@ public sealed partial class Session
         var where = $"{CapLabel(capId)} at {SiteName(chk.SiteId!)}";
         var lineText = string.Join(", ", chk.Lines.Select(l => LineLabel(capId, l)));
         var rec = AddRecord(Day, RecordKind.Action, r.Id,
-            $"External support request started: {where}, {r.Quantity} {Cap(capId).Unit}/day for {r.DurationDays} days ({lineText}), estimated {Money(chk.TotalCents)} from {NameOf(r.FundingLine)}; {Plural(shopDays, "shop day")} to prepare, then the SCO and the external office.", []);
+            $"External support request started: {where}, {Qty(r.Quantity)} {Cap(capId).Unit}/day for {r.DurationDays} days ({lineText}), estimated {Money(chk.TotalCents)} from {NameOf(r.FundingLine)}; {Plural(shopDays, "shop day")} to prepare, then the SCO and the external office.", []);
         _external.Add(new ExternalSupportState
         {
             Id = r.Id, SiteId = chk.SiteId!, CapabilityId = capId, Lines = chk.Lines, QuantityMilli = r.Quantity * 1000,
@@ -175,7 +175,7 @@ public sealed partial class Session
             }
             _arrangements.Add(arr);
             AddRecord(d, RecordKind.ExternalSupport, r.Id,
-                $"The external office awarded {NameOf(r.Id)} to {ExternalProvider} after {d - r.SubmittedDay} days in approval: {CapLabel(r.CapabilityId)} at {SiteName(r.SiteId)}, {r.QuantityMilli / 1000} {Cap(r.CapabilityId).Unit}/day. Obligated {Money(r.TotalCents)} from {NameOf(line.Id)}. The contractor mobilizes for {r.MobilizationDays} days; performance starts day {start}, ends day {arr.EndDay}.",
+                $"The external office awarded {NameOf(r.Id)} to {ExternalProvider} after {d - r.SubmittedDay} days in approval: {CapLabel(r.CapabilityId)} at {SiteName(r.SiteId)}, {Qty(r.QuantityMilli / 1000)} {Cap(r.CapabilityId).Unit}/day. Obligated {Money(r.TotalCents)} from {NameOf(line.Id)}. The contractor mobilizes for {r.MobilizationDays} days; performance starts day {start}, ends day {arr.EndDay}.",
                 [r.CauseId]);
         }
     }
@@ -209,7 +209,7 @@ public sealed partial class Session
         var end = startMax + Math.Max(1, r.DurationDays) - 1;
         var peak = (PeakDemandMilli(siteId, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay)) + 999) / 1000;
         if (r.Quantity < peak)
-            gaps.Add($"{r.Quantity} {Rate(cap)} against peak demand of {peak} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
+            gaps.Add($"{Qty(r.Quantity)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
         if (chk.Card is { } card && startMin > card.RequestedStartDay)
             gaps.Add($"Earliest start is day {startMin}; the requirement asks for day {card.RequestedStartDay}.");
         gaps.Add($"The external office obligates the task order from {NameOf(r.FundingLine)} when it awards, around day {Prepared(inst.ShopDays.Min) + approval.Min} to {Prepared(inst.ShopDays.Max) + approval.Max}: the line needs {Money(chk.TotalCents)} left then, or the award fails and the request starts over.");
