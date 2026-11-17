@@ -127,6 +127,8 @@ public partial class TeamSmokeTest : Node
             shell.WorkAssignButtons[work.WorkId].EmitSignal(Button.SignalName.Pressed);
             Require(expected.Apply(new AssignAction{Day=expected.Day,Work=work.WorkId,To=experienced.Id}).Accepted
                 && shell.Session.StateHash==expected.StateHash(), "Giving a task sends the exact AssignAction, with no Game-side work arithmetic.");
+            Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(shell.Session.View!.Decisions().First().Sentence),
+                "A handoff is acknowledged with its actual decision sentence, not a raw result token.");
             Require(shell.Session.View.Team.Single(m=>m.Id==experienced.Id).Work.Single().WorkId==work.WorkId
                 && shell.TeamBars[lead.Id].Value==0 && shell.TeamBars[experienced.Id].Value==expected.View.Team.Single(m=>m.Id==experienced.Id).HoursSpokenForToday,
                 "The task and occupied hours move to the selected person.");
