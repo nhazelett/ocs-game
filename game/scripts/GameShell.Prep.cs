@@ -18,6 +18,12 @@ public partial class GameShell
         prepPanel = new VBoxContainer { Name = "PrepScreen" };
         pages.AddChild(prepPanel);
         prepPanel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        // A hidden rebuild can keep a temporary height measured before wrapping.
+        // Refit to the opening page on each visit, after its layout is queued.
+        prepPanel.VisibilityChanged += () =>
+        {
+            if (prepPanel.IsVisibleInTree()) prepPanel.SetDeferred(Control.PropertyName.Size, pages.Size);
+        };
         prepPanel.AddThemeConstantOverride("separation", 10);
         BuildTurnoverPage(pages);
     }
@@ -60,7 +66,7 @@ public partial class GameShell
         prepPanel.AddChild(prepCheckLabel);
         AddTeamPreparation(prepPanel);
         var buttons = new HBoxContainer(); prepPanel.AddChild(buttons);
-        buttons.AddChild(DeskUi.Button("Back", ShowFrontDoor)); buttons.AddChild(StartGameButton);
+        buttons.AddChild(DeskUi.Button("Back", () => { ShowFrontDoor(); ShowNewGames(); })); buttons.AddChild(StartGameButton);
         StartGameButton.CustomMinimumSize = new Vector2(220, 46); StartGameButton.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         UpdatePrepCheck();
     }
