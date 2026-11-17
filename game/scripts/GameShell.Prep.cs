@@ -18,12 +18,17 @@ public partial class GameShell
         prepPanel = new VBoxContainer { Name = "PrepScreen" };
         pages.AddChild(prepPanel);
         prepPanel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-        // A hidden rebuild can keep a temporary height measured before wrapping.
-        // Refit to the opening page on each visit, after its layout is queued.
-        prepPanel.VisibilityChanged += () =>
+        // Hidden rebuilds can measure wrapping before the opening page has its final width.
+        void Refit()
         {
-            if (prepPanel.IsVisibleInTree()) prepPanel.SetDeferred(Control.PropertyName.Size, pages.Size);
-        };
+            if (!GodotObject.IsInstanceValid(prepPanel) || !prepPanel.IsInsideTree() || !prepPanel.IsVisibleInTree()) return;
+            prepPanel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            prepPanel.Size = pages.Size;
+        }
+        void QueueRefit() => Callable.From(Refit).CallDeferred();
+        prepPanel.VisibilityChanged += QueueRefit;
+        prepPanel.MinimumSizeChanged += QueueRefit;
+        pages.Resized += QueueRefit;
         prepPanel.AddThemeConstantOverride("separation", 10);
         BuildTurnoverPage(pages);
     }
@@ -35,6 +40,10 @@ public partial class GameShell
         var sender=new HBoxContainer();prepPanel.AddChild(sender);
         if(prep.From is not null){var portrait=new PersonPortrait{SizeFlagsVertical=SizeFlags.ShrinkBegin};portrait.SetPerson(prep.From);sender.AddChild(portrait);}
         var name=DeskUi.Label(prep.From?.WithUnit ?? "Before you leave");name.SizeFlagsHorizontal=SizeFlags.ExpandFill;name.SizeFlagsVertical=SizeFlags.ShrinkCenter;sender.AddChild(name);
+        if (prep.Where is { Length: > 0 } where)
+        {
+            var place = DeskUi.Label(where); place.SetMeta("prep_where", true); prepPanel.AddChild(place);
+        }
         var intro = DeskUi.Label(prep.Intro ?? $"You have {prep.BudgetDays} days before you leave. Choose what you want to put in place before you go.");
         intro.AddThemeFontSizeOverride("font_size", 22); prepPanel.AddChild(intro);
         prepCheckLabel = DeskUi.Label();
@@ -47,7 +56,7 @@ public partial class GameShell
         var choices = DeskUi.Panel(holder, "PreparationChoices");
         PrepScroll = (ScrollContainer)choices.GetParent();
         choices.AddThemeConstantOverride("separation", 12);
-        foreach (var choice in prep.Options)
+        foreach (var choice in prep.Offered)
         {
             var toggle = new CheckBox { Text = $"{choice.Says ?? choice.Label} ({choice.PrepDays} {(choice.PrepDays == 1 ? "day" : "days")})", ButtonPressed = choice.Default,
                 AutowrapMode = TextServer.AutowrapMode.WordSmart, ThemeTypeVariation = "TabletopPrepChoice",
@@ -55,12 +64,11 @@ public partial class GameShell
             var row = new VBoxContainer(); row.AddThemeConstantOverride("separation", 3);
             choices.AddChild(row);
             PrepChoices.Add(choice.Id, toggle); row.AddChild(toggle);
-            var reason = DeskUi.Label(); reason.Hide();
+            var changes = DeskUi.Label(choice.Changes ?? ""); changes.SetMeta("prep_changes", choice.Id); row.AddChild(changes);
+            var reason = DeskUi.Label(); reason.SetMeta("prep_reason", choice.Id); reason.Hide();
             reason.AddThemeFontSizeOverride("font_size", 18);
             reason.AddThemeColorOverride("font_color", TabletopTheme.Muted);
             row.AddChild(reason); prepChoiceReasons.Add(choice.Id, reason);
-            toggle.TooltipText = string.Join("\n\n", choice.Effects.Select(effect => effect.With + " " + effect.Without +
-                (effect.HasEffect ? "" : " This preparation is recorded in your debrief; it has no modeled effect yet.")));
             toggle.Toggled += _ => UpdatePrepCheck();
         }
         prepPanel.AddChild(prepCheckLabel);
@@ -79,7 +87,7 @@ public partial class GameShell
         StartGameButton.Disabled = !check.Accepted;
         if (session.Prep is not { } prep) return;
         var chosen = ChosenPrep.ToArray();
-        foreach (var choice in prep.Options)
+        foreach (var choice in prep.Offered)
         {
             var toggle = PrepChoices[choice.Id];
             toggle.Disabled = !toggle.ButtonPressed && !session.CheckPrep(chosen.Append(choice.Id)).Accepted;
