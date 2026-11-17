@@ -384,7 +384,7 @@ public sealed partial class Session
         var claims = _claims.Select(c => new ClaimLine(c.ArrangementId, c.FiledDay, c.AmountCents, c.SettledDay,
                                                        _records.First(r => r.Id == c.FiledRecordId).Text)).ToList();
         return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims,
-                               BuildDebriefSummary(played, gaps, score));
+                               BuildDebriefSummary(played, gaps, score), BuildBar());   // DESK-74: opens with the verdict
     }
 
     // ------------------------------------------------------------------ the debrief's opening (M2R-27)

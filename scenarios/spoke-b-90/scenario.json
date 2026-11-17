@@ -834,28 +834,32 @@
       "label": "Spoke B power never down more than one day",
       "metric": "site.spokeBSite.power.downDays",
       "comparator": "<=",
-      "value": 1
+      "value": 1,
+      "says": "Spoke B never goes without power more than a day."
     },
     {
       "id": "fuelUp",
       "label": "Spoke B fuel never out more than one day",
       "metric": "site.spokeBSite.fuel.downDays",
       "comparator": "<=",
-      "value": 1
+      "value": 1,
+      "says": "Its fuel the same."
     },
     {
       "id": "noUc",
       "label": "No unauthorized commitments",
       "metric": "compliance.unauthorizedCommitments",
       "comparator": "==",
-      "value": 0
+      "value": 0,
+      "says": "Not one unauthorized commitment: nobody out there buys what only a contracting officer can."
     },
     {
       "id": "mission",
       "label": "Mission output at least 90%",
       "metric": "mission.output",
       "comparator": ">=",
-      "value": 0.9
+      "value": 0.9,
+      "says": "And we keep ninety percent of the mission going, at least."
     }
   ],
   "modelAssumptions": [

@@ -1,4 +1,4 @@
-Week one at the hub / approach2-cash-for-waste
+First weeks at the hub / approach2-cash-for-waste
 The trap: waste paid for on SF 44 cash buys because it was faster. No written terms and no COR; the unit and the vendor argue about what was ordered.
 Scenario tutorial, rules 2025-10, seed 1, 20 days.
 Prep: gpcAccounts, cashAndPayingAgent, systemAccess.
@@ -103,7 +103,6 @@ PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
   [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 0)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
-  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
 State hash c432e970ab8cc8f454b225fe139b9a4e4f67c294e6319b6007ee86312dd2e7e2

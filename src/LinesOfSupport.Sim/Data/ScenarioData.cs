@@ -481,6 +481,8 @@ public sealed record PassCriterionData
     public string Metric { get; init; } = "";
     public string Comparator { get; init; } = "";
     public double Value { get; init; }
+    /// <summary>DESK-74 (D28): the commander's words for the line, as the turnover's last page and Today say it.</summary>
+    public string? Says { get; init; }
 }
 
 // ---------------- rules ----------------

@@ -1,4 +1,4 @@
-Week one at the hub / policy greedy
+First weeks at the hub / policy greedy
 Scenario tutorial, rules 2025-10, seed 1, 20 days.
 
 TIMELINE
@@ -119,7 +119,6 @@ PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
   [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 1)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
-  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 95% (mission.output = 0.981)
 
 State hash af5b5bf5295a4f421e6636bda2da524580244e7c7700411cb14b89ee13f84250

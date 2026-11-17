@@ -68,7 +68,7 @@ public sealed record DebriefView(
     IReadOnlyList<CapabilityBand> Timeline, IReadOnlyList<TimelineEvent> Events,
     IReadOnlyList<DecisionEntry> Decisions, IReadOnlyList<GapView> Gaps,
     ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments,
-    IReadOnlyList<ClaimLine>? Claims = null, DebriefSummary? Summary = null);
+    IReadOnlyList<ClaimLine>? Claims = null, DebriefSummary? Summary = null, BarView? Bar = null);
 
 /// <summary>The debrief's opening paragraph in a person's words (M2R-27, R9): the SCO's staff, else the commander; null
 /// From when the cast has neither. Text is prose, no lists or labels. LeadGap indexes Gaps for the gap the paragraph is about

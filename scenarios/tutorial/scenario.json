@@ -1,7 +1,7 @@
 {
   "schemaVersion": 0,
   "id": "tutorial",
-  "title": "Week one at the hub",
+  "title": "First weeks at the hub",
   "summary": "Tutorial. The hub island only, 20 days, 300 personnel, already open with the basics running. Three requests arrive on days 1, 4 and 9: bottled water while the water point is down in a heat advisory, a forklift rental after the host nation takes its forklift back, and a waste contract when the host nation pulls its honey trucks. Each teaches one instrument: a card or cash buy (who takes which, and cash on hand), a BPA call the vendor turns down (a BPA is not a promise), and a written purchase order with a COR (a service needs terms). The outgoing contracting officer stays three days as the mentor.",
   "rulesVersion": "2025-10",
   "days": 20,
@@ -590,7 +590,7 @@
       "site": "hubSite",
       "portrait": "ward",
       "lines": {
-        "greeting": "Keep the hub running. That's the whole job this week."
+        "greeting": "Keep the hub running. That's the whole job while you're here."
       }
     },
     {
@@ -689,9 +689,9 @@
     }
   ],
   "briefing": {
-    "title": "Your first week at the hub",
+    "title": "Your first weeks at the hub",
     "situation": "You're the contracting officer for the hub on the main island, three hundred people, already open. The host nation runs the power, the fuel point, the water point and the honey trucks; billeting and dining run on a blanket purchase agreement the last rotation set up.",
-    "due": "Nothing is on fire yet. Requests will come to you as the week goes, and the outgoing contracting officer is here for your first three days."
+    "due": "Nothing is on fire yet. Requests will come to you as the days go, and the outgoing contracting officer is here for your first three days."
   },
   "turnover": {
     "from": "mills",
@@ -881,35 +881,32 @@
       "label": "Hub water never out more than one day",
       "metric": "site.hubSite.water.downDays",
       "comparator": "<=",
-      "value": 1
+      "value": 1,
+      "says": "Water is never out more than a day."
     },
     {
       "id": "mheUp",
       "label": "Forklifts never out more than one day",
       "metric": "site.hubSite.mhe.downDays",
       "comparator": "<=",
-      "value": 1
+      "value": 1,
+      "says": "Forklifts the same: never out more than a day."
     },
     {
       "id": "wasteUp",
       "label": "Waste removal never out",
       "metric": "site.hubSite.waste.downDays",
       "comparator": "<=",
-      "value": 0
-    },
-    {
-      "id": "noUc",
-      "label": "No unauthorized commitments",
-      "metric": "compliance.unauthorizedCommitments",
-      "comparator": "==",
-      "value": 0
+      "value": 0,
+      "says": "The latrines get pumped every day, not one day missed."
     },
     {
       "id": "mission",
       "label": "Mission output at least 95%",
       "metric": "mission.output",
       "comparator": ">=",
-      "value": 0.95
+      "value": 0.95,
+      "says": "And the jets keep flying: ninety-five percent of what we're tasked, at least."
     }
   ],
   "modelAssumptions": [

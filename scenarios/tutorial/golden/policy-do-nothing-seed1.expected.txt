@@ -1,4 +1,4 @@
-Week one at the hub / policy do-nothing
+First weeks at the hub / policy do-nothing
 Scenario tutorial, rules 2025-10, seed 1, 20 days.
 
 TIMELINE
@@ -119,7 +119,6 @@ PASS CRITERIA
   [not met] Hub water never out more than one day (site.hubSite.water.downDays = 6)
   [not met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 13)
   [not met] Waste removal never out (site.hubSite.waste.downDays = 8)
-  [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 95% (mission.output = 0.787)
 
 State hash b6219de2553e181190638948c0d75c91c0b2b41316926ef4f55264354a938352
