@@ -51,24 +51,36 @@ public sealed record KnownIsland(string IslandId, string Tier);
 /// <summary>A player action with what was known when it was taken.</summary>
 public sealed record DecisionEntry(int Day, string RecordId, string Text, bool Rejected, IReadOnlyList<KnownIsland> Known);
 
-/// <summary>SPEC 4 scorecard. Fractions are 0 to 1.</summary>
+/// <summary>SPEC 4 scorecard. Fractions are 0 to 1. InheritedObligatedCents (DESK-91) is the part of ObligatedCents that
+/// sits on the calls and contracts the last rotation left (they count from day 1, before the player has done anything).</summary>
 public sealed record ScorecardView(
     double MissionOutput, double SortieGeneration, double Throughput, double Endurance, double Resilience,
     long ObligatedCents, long IncurredCents, long UnobligatedIncurredCents,
     int UnauthorizedCommitments, int UcaOverdue, int HhqInquiries, int Surveys, int ShopHoursWorked,
     int GapCount, int AvoidableGaps, int DiscoverableGaps, int UnforeseeableGaps,
-    int Claims = 0, long ClaimCents = 0);
+    int Claims = 0, long ClaimCents = 0, long InheritedObligatedCents = 0);
 
 /// <summary>An unauthorized commitment and how it was decided (ADR-0007).</summary>
 public sealed record CommitmentLine(string Id, string Kind, int OpenedDay, string Decision, int? DecidedDay, bool WalkedOff, bool InquiryDrawn, string Text);
 
-/// <summary>The debrief. Valid mid-game (covers days played so far) and at the end.</summary>
+/// <summary>The debrief. Valid mid-game (covers days played so far) and at the end. Inherited (DESK-91) says in one sentence
+/// how much of the obligated total sits on what the last rotation left, and on what; null when none of it does.</summary>
 public sealed record DebriefView(
     string ScenarioTitle, int DaysPlayed, int LastDay,
     IReadOnlyList<CapabilityBand> Timeline, IReadOnlyList<TimelineEvent> Events,
     IReadOnlyList<DecisionEntry> Decisions, IReadOnlyList<GapView> Gaps,
     ScorecardView Scorecard, IReadOnlyList<CommitmentLine> Commitments,
-    IReadOnlyList<ClaimLine>? Claims = null, DebriefSummary? Summary = null, BarView? Bar = null);
+    IReadOnlyList<ClaimLine>? Claims = null, DebriefSummary? Summary = null, BarView? Bar = null,
+    string? Inherited = null, IReadOnlyList<RunningCure>? Cures = null)
+{
+    /// <summary>Never null: the cure periods still running when the debrief was built (DESK-91), earliest end first.</summary>
+    public IReadOnlyList<RunningCure> Cures { get; init; } = Cures ?? [];
+}
+
+/// <summary>A cure period still running at the end (DESK-91): the issue, the arrangement, the cure period's last day and one
+/// sentence saying what decides it ("Island Camp Services has until day 23 to cure its food service at Hub; if it does not,
+/// you can terminate for default.").</summary>
+public sealed record RunningCure(string IssueId, string ArrangementId, int LastDay, string Text);
 
 /// <summary>The debrief's opening paragraph in a person's words (M2R-27, R9): the SCO's staff, else the commander; null
 /// From when the cast has neither. Text is prose, no lists or labels. LeadGap indexes Gaps for the gap the paragraph is about
