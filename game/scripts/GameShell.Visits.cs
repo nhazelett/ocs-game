@@ -194,7 +194,7 @@ public partial class GameShell
             FindFinanceAction => "Finds the finance office and its cash and payment arrangements.",
             AskScoAction ask => "Sends the SCO your question: " + view.ScoQuestions.First(q => q.Id == ask.Question).Label + ".",
             MeetVendorAction meet => "Meets " + view.NameOf(meet.Vendor) + " to learn their terms.",
-            EngageJ4Action j4 => $"Asks the J4 for {j4.Quantity} {view.ActionEditor(j4.Site, j4.Capability)!.Unit} a day of {CapabilityName(view, j4.Capability).ToLowerInvariant()} at {view.NameOf(j4.Site)}.",
+            EngageJ4Action j4 => $"Asks the J4 for {DeskUi.Quantity(j4.Quantity)} {view.ActionEditor(j4.Site, j4.Capability)!.Unit} a day of {CapabilityName(view, j4.Capability).ToLowerInvariant()} at {view.NameOf(j4.Site)}.",
             _ => text + "."
         };
         var timing = AddActionCost(visitsFooter, view, action, effect, preview);

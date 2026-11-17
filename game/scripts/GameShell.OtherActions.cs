@@ -69,7 +69,7 @@ public partial class GameShell
             if (coordinateReason is null) return;
             DeskUi.Gate(CoordinateButton, coordinateReason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
             coordinateCost.Text = ActionCostText(view, PendingCoordination,
-                $"Requests {coordinationQuantity} {editor.Unit} a day of {tile.Label.ToLowerInvariant()} from {view.NameOf(source)} for {view.NameOf(tile.SiteId)}. Coordination can be withdrawn.", preview);
+                $"Requests {DeskUi.Quantity(coordinationQuantity)} {editor.Unit} a day of {tile.Label.ToLowerInvariant()} from {view.NameOf(source)} for {view.NameOf(tile.SiteId)}. Coordination can be withdrawn.", preview);
         }
         var fields = new HBoxContainer(); fields.AddThemeConstantOverride("separation", 12); coordinationFooter.AddChild(fields);
         var from = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };

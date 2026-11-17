@@ -51,7 +51,7 @@ public partial class RequirementSmokeTest : Node
                 }
                 Require(shell.RequirementAddButtons.Keys.All(id => model.Lines.Any(l => l.Id == id && l.Known && l.CanAdd)),
                     "Unknown scope has no add control.");
-                Require(panel.GetChildren().OfType<Label>().Any(l => l.Text.Contains($"Peak demand: {model.PeakDemandUnits} {model.Unit}")),
+                Require(panel.GetChildren().OfType<Label>().Any(l => l.Text.Contains($"Peak demand: {model.PeakDemandUnits.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} {model.Unit}")),
                     "Peak demand and units remain visible.");
             }
             void ResumeMatches()
@@ -125,6 +125,7 @@ public partial class RequirementSmokeTest : Node
 
             // Exact provenance for both an attended and a missed meeting.
             Scenario(shell, "tutorial"); Step(shell, 8); Open("tutWaste"); HeardAt(false);
+            Require(panel.GetChildren().OfType<Label>().Any(l => l.Text.Contains("Peak demand: 3,600 gal")), "The request prints a real large demand with commas.");
             shell.DeveloperToggle.ButtonPressed = false; await Frames(); await Frames();
             var dayNineAsk = shell.RequirementAskButtons.Values.First(b => !b.Disabled);
             dayNineAsk.EmitSignal(Button.SignalName.Pressed);

@@ -34,7 +34,7 @@ public partial class GameShell
         picker.Select(Array.FindIndex(cards, c => c.CardId == SelectedCard));
         picker.ItemSelected += index => { SelectedCard = cards[(int)index].CardId; scroll.ScrollVertical = 0; RenderRequirementContext(session.View); };
         linkedRequirement.AddChild(picker);
-        linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {card.PeakDemandUnits} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
+        linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
         var standing = view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId);
         if (standing?.WhyShort is { } whyShort)
         {

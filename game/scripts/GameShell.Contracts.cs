@@ -64,7 +64,7 @@ public partial class GameShell
         title.AddThemeFontSizeOverride("font_size", 28); contractContents.AddChild(title);
         var site = view.NameOf(arrangement.SiteId);
         var unit = view.ActionEditor(arrangement.SiteId, arrangement.CapabilityId)?.Unit ?? "units";
-        var supplies = $"{arrangement.QuantityMilli / 1000m:N0} {unit} a day at {site}, days {arrangement.StartDay} to {arrangement.EndDay}";
+        var supplies = $"{DeskUi.Quantity(arrangement.QuantityMilli / 1000m)} {unit} a day at {site}, days {arrangement.StartDay} to {arrangement.EndDay}";
         var scope = string.Join(", ", view.Rules.Model.Capabilities.Single(c => c.Id == arrangement.CapabilityId).Lines
             .Where(line => arrangement.Lines.Contains(line.Id)).Select(line => line.Label?.ToLowerInvariant() ?? "support"));
         contractContents.AddChild(DeskUi.Label($"{ArrangementStatusText(arrangement.Status)}. Supplies {supplies}."));
@@ -75,6 +75,7 @@ public partial class GameShell
         foreach (var issue in view.PerformanceIssues.Where(i => i.ArrangementId == arrangement.Id && i.Outcome != CureOutcome.Cured))
         {
             contractContents.AddChild(DeskUi.Heading(DeskUi.ListLabel(view.NameOf(issue.Id))));
+            AddPerformanceRecord(contractContents, view, issue);
             AddPerformanceActions(contractContents, view, issue, ContractPerformanceChoices, includeContractLink: false);
         }
         var blocked = view.TerminateBlocked(arrangement.Id);
@@ -93,8 +94,9 @@ public partial class GameShell
         });
         var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
         var preview = view.PreviewAny(action);
-        var reason = DeskUi.ActionReason(contractFooter, end);
-        AddActionCost(contractFooter, view, action, "Ends this contract's support when the work and any notice are complete.", preview);
+        var endPanel = ContractPerformanceChoices.Count > 0 ? contractContents : contractFooter;
+        var reason = DeskUi.ActionReason(endPanel, end);
+        AddActionCost(endPanel, view, action, "Ends this contract's support when the work and any notice are complete.", preview);
         DeskUi.Gate(end, reason, view.Finished ? DeskUi.FinishedReason : ending ? "Ending this contract is already in work."
             : arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined ? "This contract is no longer providing support." : preview.HardStops.FirstOrDefault()); terminations[arrangement.Id] = end;
     }
