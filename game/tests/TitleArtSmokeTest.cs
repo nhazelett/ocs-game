@@ -57,11 +57,8 @@ public partial class TitleArtSmokeTest : Node
                 && shell.ContinueGameButton.ThemeTypeVariation != "TabletopPrimary", "New game leads and Continue is secondary.");
             if (!baseline)
             {
-                var quiet = shell.GetNode<Button>("%Continue");
-                Require(quiet.IsVisibleInTree() && quiet.ThemeTypeVariation == "TabletopSetting" && quiet.Size.Y < shell.ContinueGameButton.Size.Y,
-                    "Skip quiet days is a small setting below the deployment actions.");
-                Require(quiet.GetParent() == shell.SoundButton.GetParent() && quiet.GetParent() == shell.LookButton.GetParent(),
-                    "Quiet-day control shares the settings row with Sound and Look.");
+                Require(!PlayScreen.Descendants(shell.GetNode("FrontDoor")).OfType<Button>().Any(b => b.Text == "Skip quiet days"),
+                    "The title does not offer the removed quiet-day shortcut.");
             }
             await Shot("saved");
             foreach (var direction in new[] { 0, 1, 2 })
@@ -120,7 +117,7 @@ public partial class TitleArtSmokeTest : Node
                     foreach (var button in new[] { shell.NewGameButton, shell.SoundButton, shell.LookButton })
                         if (GodotObject.IsInstanceValid(button) && button.IsVisibleInTree())
                             Require(screen.Encloses(button.GetGlobalRect()), "Title actions stay in the viewport.");
-                    foreach (var setting in new[] { shell.SoundButton, shell.LookButton, shell.GetNode<Button>("%Continue") })
+                    foreach (var setting in new[] { shell.SoundButton, shell.LookButton })
                     {
                         using var normal = (StyleBoxFlat)setting.GetThemeStylebox("normal");
                         using var hover = (StyleBoxFlat)setting.GetThemeStylebox("hover");

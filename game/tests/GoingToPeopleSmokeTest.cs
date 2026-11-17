@@ -34,11 +34,11 @@ public partial class GoingToPeopleSmokeTest : Node
                 if (day == 1) await Screenshot(shell, "--mentor-screenshot");
             }
             Step(shell); Require(!shell.MentorMessages.Visible, "The mentor leaves after the authored third day.");
-            // The taught path covers the first need; Continue must still stop at a mentor note, even without a lead.
+            // The taught path covers the first need; A single day must still stop at a mentor note, even without a lead.
             Scenario(shell, "tutorial"); Replay(shell, "approach1 taught");
             var startingDay = shell.Session.View!.Day;
-            shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.View!.Day == startingDay + 1 && shell.MentorMessages.Visible, "Continue stops for mentor news rather than skipping it.");
+            Step(shell);
+            Require(shell.Session.View!.Day == startingDay + 1 && shell.MentorMessages.Visible, "A single day stops for mentor news rather than skipping it.");
 
             Scenario(shell, "spoke-b"); shell.DeveloperToggle.ButtonPressed = false; shell.PeopleToggle.ButtonPressed = true;
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
@@ -95,17 +95,17 @@ public partial class GoingToPeopleSmokeTest : Node
             Require(((EngageJ4Action)shell.VisitOptions["j4"].Action).Id != j4.Id, "A second request cannot reuse the pending internal id.");
             while (!expected.Arrangements.Any(a => a.Id == j4.Id)) Day();
             Require(shell.Session.View!.Arrangements.Any(a => a.Id == j4.Id && a.SiteId == "spokeBSite" && a.Instrument == "acsa"), "The J4 request creates the real ACSA support, not a local award.");
-            // Continue stops on returned finance news even in an otherwise quiet game.
+            // A single day stops on returned finance news even in an otherwise quiet game.
             Scenario(shell, "tutorial"); Replay(shell, "approach1 taught"); Step(shell, 5);
             Pick(shell.PersonContactInput, "finance"); var prior = shell.Session.View!.Day;
             shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
-            shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.View!.Day == prior + 1 && shell.Session.View.MorningBoard().Items.Any(i => shell.Session.View.Records.Any(r => r.Id == i.RecordId && r.Kind == RecordKind.Visit)), "Continue stops on returned visit facts.");
+            Step(shell);
+            Require(shell.Session.View!.Day == prior + 1 && shell.Session.View.MorningBoard().Items.Any(i => shell.Session.View.Records.Any(r => r.Id == i.RecordId && r.Kind == RecordKind.Visit)), "A single day stops on returned visit facts.");
             while (!shell.Session.View.Finished) Step(shell);
             Require(shell.VisitButtons.Values.All(b => b.Disabled), "Finished games gate every visit submission.");
             shell.QueueFree(); shell = null;
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            GD.Print("GOING_TO_PEOPLE_SMOKE_PASS: cold tutorial, exact mentor days/words, finance, recurring meeting, SCO lag, vendor confidence, J4 stock and support, pure previews, person navigation and Continue stops."); GetTree().Quit();
+            GD.Print("GOING_TO_PEOPLE_SMOKE_PASS: cold tutorial, exact mentor days/words, finance, recurring meeting, SCO lag, vendor confidence, J4 stock and support, pure previews, person navigation and news after single-day advances."); GetTree().Quit();
         }
         catch (Exception error) { shell?.QueueFree(); GD.PushError($"GOING_TO_PEOPLE_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
         finally { if (Directory.Exists(temporary)) Directory.Delete(temporary, true); }

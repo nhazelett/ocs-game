@@ -255,7 +255,4 @@ public partial class GameShell
         }).CallDeferred();
     }
 
-    private static bool HasPeopleNews(SessionView view, MorningBoardView board)
-        => board.Items.Any(i => view.Scenario.Tutorial && i.Person?.Role == "outgoingCco"
-            || view.Records.Any(r => r.Id == i.RecordId && r.Kind == RecordKind.Visit));
 }

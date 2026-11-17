@@ -51,7 +51,7 @@ public partial class GameShell
         }).ToArray();
         PlaybackText.Text = $"Day {day.Day} · what happened\n{movements}{held}\n" + (changes.Length==0?"No reported changes in site support.":string.Join(" ",changes));
         playbackElapsed = 0; Map.ReplayMovement(); playbackOverlay.Show(); MoveChild(playbackOverlay, -1);
-        GetNode<Button>("%NextDay").Disabled = true; GetNode<Button>("%Continue").Disabled = true;
+        GetNode<Button>("%NextDay").Disabled = true;
         RefreshMapCalloutSpace();SkipPlaybackButton.GrabFocus();
     }
 

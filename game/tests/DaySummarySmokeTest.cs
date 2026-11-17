@@ -24,7 +24,7 @@ public partial class DaySummarySmokeTest : Node
             CheckSummary();
             Require(end.Disabled && shell.DaySummaryDialog.GetOkButton().HasFocus(), "Results hold day input and focus their close control.");
             end.EmitSignal(Button.SignalName.Pressed);
-            shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
+            shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed);
             Require(!shell.SendAction(new FindFinanceAction { Day = shell.Session.View!.Day }).Accepted,
                 "A stale action cannot change the morning behind the results.");
             Require(hash == shell.Session.StateHash && saved.SequenceEqual(File.ReadAllBytes(shell.AutosavePath)),

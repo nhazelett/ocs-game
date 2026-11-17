@@ -39,8 +39,8 @@ public partial class LeadSmokeTest : Node
             Require(shell.BoardDetailsVisible, "Player can still inspect all other work and sites.");
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             do { expected.AdvanceDay(); } while (!expected.Finished && expected.View.MorningBoard().Lead is null);
-            shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.StateHash == expected.StateHash() && !shell.BoardDetailsVisible, "Continue stops at the next actual Sim lead and returns to the uncluttered morning.");
+            Step(shell, expected.Day - 1);
+            Require(shell.Session.StateHash == expected.StateHash() && !shell.BoardDetailsVisible, "Single-day controls reach the next actual Sim lead and returns to the uncluttered morning.");
             shell.DeveloperToggle.ButtonPressed = true; Replay(shell); Step(shell, 10); shell.DeveloperToggle.ButtonPressed = false;
             lead = shell.Session.View!.MorningBoard().Lead!; hash = shell.Session.StateHash;
             Require(!shell.GetNode<Label>("%BuildStatus").Visible, "Replay and day-result diagnostics disappear when developer tools are turned off.");
@@ -71,7 +71,7 @@ public partial class LeadSmokeTest : Node
             Require(foundCommitment, "The authored replay exercised an open commitment lead.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await StandingSmokeChecks.Run(this);
-            GD.Print("LEAD_SMOKE_PASS: exact day-one/later leads, collapsed details, true Continue stop and read-only decision links."); GetTree().Quit();
+            GD.Print("LEAD_SMOKE_PASS: exact day-one/later leads, collapsed details, exact single-day progression and read-only decision links."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"LEAD_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
         finally { if (Directory.Exists(temporary)) Directory.Delete(temporary, recursive: true); }

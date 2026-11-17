@@ -184,22 +184,4 @@ public partial class GameShell
         if (ContractView?.Visible == true) RefreshContractView(view);
     }
 
-    private void OnContinue()
-    {
-        if (ReadingTurnover || PlayingDay || ReadingDaySummary) return;
-        ShowGameSurface();
-        var count = 0;
-        var reason = "deployment complete";
-        while (AdvanceAndAutosave())
-        {
-            count++;
-            var board = session.View!.MorningBoard();
-            if (HasPeopleNews(session.View!, board)) { reason = "new messages have arrived"; break; }
-            if (board.Lead is not null) { reason = "the next priority item is ready"; break; }
-        }
-        if (session.View?.Finished == true) reason = "scenario complete";
-        else if (count > 0) FocusNewMorning();
-        RefreshDisplay($"Continued {count} days: {reason}. Results through day {session.CompletedDay}.", developerOnly: true);
-        if (count > 0) BeginDayPlayback();
-    }
 }

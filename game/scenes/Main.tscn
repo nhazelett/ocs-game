@@ -245,9 +245,3 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "No scenario loaded."
 autowrap_mode = 2
-
-[node name="Continue" type="Button" parent="."]
-unique_name_in_owner = true
-visible = false
-text = "Skip quiet days"
-tooltip_text = "Advance until someone has news, a priority item is ready, or the deployment ends."

@@ -16,10 +16,9 @@ public partial class EndDaySmokeTest : Node
             shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             Require(!shell.GetNode<Label>("%BuildStatus").Visible, "Developer diagnostics stay off the player desk.");
             var end = shell.GetNode<Button>("%NextDay");
-            var skip = shell.GetNode<Button>("%Continue");
+            var skip = shell.SkipAheadButton;
             Require(end.Text == "End the day", "The day control says what it does.");
-            Require(skip.Text == "Skip quiet days" && !skip.IsVisibleInTree()
-                && skip.GetParent() != end.GetParent(), "Quiet-day skipping is absent from the desk strip.");
+            Require(skip.Text == "Skip ahead" && !skip.IsVisibleInTree(), "A busy day's plan offers no skip.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string suffix)
             {
@@ -61,14 +60,11 @@ public partial class EndDaySmokeTest : Node
             Require(shell.Session.StateHash == hash, "Playback prevents a second hidden advance.");
             shell.FinishDayPlayback(); shell.CloseDaySummary();
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
-            Require(skip.IsVisibleInTree() && !skip.Disabled, "The explicit skip command is available from Menu during a deployment.");
-            Require(skip.Alignment == shell.NewGameButton.Alignment
-                && shell.ContinueGameButton.Text == "Continue saved game", "Menu commands align consistently and resuming names the saved game.");
+            Require(!skip.IsVisibleInTree() && !PlayScreen.Descendants(shell.GetNode("FrontDoor")).OfType<Button>()
+                .Any(b => b.Text == "Skip quiet days"), "The Menu has no quiet-day shortcut.");
             await Capture("menu");
-            Require(skip.GetGlobalRect().End.Y <= 800, "The Menu shortcut stays on screen at 1280 by 800.");
-            skip.EmitSignal(Button.SignalName.Pressed);
-            Require(!shell.AtFrontDoor && shell.Session.CompletedDay > 1, "Menu skipping returns to the live deployment.");
-            shell.FinishDayPlayback(); shell.CloseDaySummary();
+            shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
+            Require(!shell.AtFrontDoor && shell.Session.CompletedDay == 1, "Continue resumes the saved morning without ending a day.");
 
             // The tutorial's idle teammates and due water request are the cold-start check.
             Scenario(shell, "tutorial");
@@ -156,7 +152,7 @@ public partial class EndDaySmokeTest : Node
             shell.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            GD.Print("END_DAY_SMOKE_PASS: exact Sim check, named free teammates, overdue request, cancel-first focus, stale/duplicate guards, one-day hash, playback and Menu skip.");
+            GD.Print("END_DAY_SMOKE_PASS: exact Sim check, named free teammates, overdue request, cancel-first focus, stale/duplicate guards, one-day hash, playback, no title shortcut.");
             GetTree().Quit();
         }
         catch (Exception error) { GD.PushError("END_DAY_SMOKE_FAIL: " + error); GetTree().Quit(1); }

@@ -88,7 +88,7 @@ public partial class GameShell
         var morningDay = session.View?.Day;
         Callable.From(() =>
         {
-            if (!IsInsideTree() || session.View?.Day != morningDay || AtFrontDoor || ReadingTurnover
+            if (!GodotObject.IsInstanceValid(this) || IsQueuedForDeletion() || !IsInsideTree() || session.View?.Day != morningDay || AtFrontDoor || ReadingTurnover
                 || GetNode<TabContainer>("%DeskTabs").CurrentTab != TodayTab) return;
             GetNode<TabContainer>("%DeskTabs").GetTabBar().GrabFocus();
             GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").ScrollVertical = 0;

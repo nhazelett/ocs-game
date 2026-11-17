@@ -84,9 +84,9 @@ public partial class SaveSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text.Contains("Save failed:"), "Unwritable autosave reports failure while leaving the game playable.");
             Require(File.ReadAllText(path) == retained, "Failed autosave preserves the previous valid save.");
             shell.AutosavePathOverride = path;
-            shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
+            EndDay(shell);
             var continued = shell.Session.CreateSave();
-            Require(GameSaveStore.Read(path).ToJson() == continued.ToJson() && continued.SavedDay > good.SavedDay, "Continue-until-event autosaves too.");
+            Require(GameSaveStore.Read(path).ToJson() == continued.ToJson() && continued.SavedDay > good.SavedDay, "The next successful day autosaves too.");
             Require(!shell.GetNode<Label>("%BuildStatus").Text.Contains("Save failed:"), "A successful autosave clears the error.");
 
             var longBundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b-90"));
