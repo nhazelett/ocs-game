@@ -76,7 +76,8 @@ public sealed partial class Session
                 return new VendorCardOffer(o.Capability, cap.Label, cap.Unit,
                     supply ? (int)Math.Floor(o.CapacityPerDay) : null,
                     terms ? UnitPriceFor(v, o) : null,
-                    terms ? o.LeadTimeDays : null);
+                    terms ? o.LeadTimeDays : null,
+                    supply && o.SourceIsland is { } src && src != v.Island ? IslandData(src).Name : null);   // DESK-78
             }).ToList();
             var rep = VendorRep(v.Id);
             var met = VendorMetDay(v.Id);

@@ -68,7 +68,9 @@ public class WhyShortTests
         var log = InputLog.Load(Path.Combine(Repo.Scenario("spoke-b-90"), "golden", "approach1-no-cor.json"));
         var s = Replay.Run(Repo.Load("spoke-b-90"), log, stopAfterDay: 28);
         Assert.Contains(s.Records, r => r.Kind == RecordKind.VendorFailure && r.Day == 28);
-        Assert.Equal("The site reports it short. Nobody has told you why yet.", s.View.WhyShort("spokeBSite", "power"));
+        // DESK-78: what the office does know comes first (what it bought against what the site needs), then the fog.
+        Assert.Equal("Harbor Equipment Co supplies 360 kW, and Spoke B needs 468 kW for its 260 people, 80 more than on day 2, when it was bought. The site reports it lower still, and nobody has told you why yet.",
+            s.View.WhyShort("spokeBSite", "power"));
     }
 
     [Fact]

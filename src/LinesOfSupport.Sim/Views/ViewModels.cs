@@ -267,16 +267,20 @@ public sealed record BoardItem(
 /// <param name="BufferDays">Days of stock on hand for consumables at current demand, rounded down; null for continuous capabilities.</param>
 /// <param name="Status">"ok" (at or above the down threshold and full), "degraded", "down", or "notOpen" before the site opens.</param>
 /// <param name="WhyShort">DESK-38 (D18): why it was short and what is in motion, one sentence; null when supplied in full.</param>
+/// <param name="OpensDay">DESK-78: the day the site opens, while it is not open; a not-open tile has no level to show
+/// (TodayPermille is not a reading then).</param>
 public sealed record CapabilityTile(string SiteId, string CapabilityId, string Label, int TodayPermille, int? BufferDays, string Status, bool Critical,
-    string? WhyShort = null);
+    string? WhyShort = null, int? OpensDay = null);
 
 /// <summary>The morning board: what changed overnight, sorted alerts first, plus the capability tiles and the top strip.</summary>
 /// <param name="Items">Items from the last AdvanceDay, Alert then Warning then Info, in record order within a severity. Empty on day 1.</param>
 /// <param name="Lead">The one thing the day leads with (M2R-05), or null on a quiet day.</param>
+/// <param name="OpenRequests">DESK-78: requests on the desk whose days are not over, for the morning's heading (the
+/// review's "0 requests" counted board items, not requests).</param>
 /// <param name="New">DESK-73 (D29): everything new since yesterday in one ordered list: new requests, then what people
 /// answered, then news. Empty on a morning with nothing new.</param>
 public sealed record MorningBoardView(int Day, TopStripView Strip, IReadOnlyList<BoardItem> Items, IReadOnlyList<CapabilityTile> Tiles,
-    LeadItem? Lead = null, IReadOnlyList<NewItem>? New = null)
+    LeadItem? Lead = null, IReadOnlyList<NewItem>? New = null, int OpenRequests = 0)
 {
     /// <summary>Never null for a reader.</summary>
     public IReadOnlyList<NewItem> New { get; init; } = New ?? [];
@@ -361,6 +365,8 @@ public sealed record RequirementDependency(string CapabilityId, string Label, st
 
 /// <summary>The requirement editor's view of one card: what it asks for, its lines, and what it depends on.</summary>
 /// <param name="PeakDemandUnits">Peak daily demand for the capability at the site over the card's window, from population.</param>
+/// <param name="PeakSaid">DESK-78: when the peak is and whose headcount it is ("Demand peaks at 468 kW on day 20, when 260
+/// people are at Spoke B; 324 kW today, for 180."); null when demand is flat over the request's days.</param>
 /// <param name="SubmittedBy">Who brought it, as shown: the person's rank, name and unit, or the card's free text.</param>
 /// <param name="CoveredBy">Arrangements (any status but declined) already tied to this card.</param>
 /// <param name="Title">What and where, e.g. "Power for Spoke B": the card's name on screen (M2R-01).</param>
@@ -375,7 +381,7 @@ public sealed record RequirementEditorView(
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
     IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
     string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null,
-    string? HeardAt = null, IReadOnlyList<HelperView>? WhoCanHelp = null);
+    string? HeardAt = null, IReadOnlyList<HelperView>? WhoCanHelp = null, string? PeakSaid = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 
@@ -408,7 +414,10 @@ public sealed record VendorOption(
 /// <param name="CapacityPerDay">Units a day they can supply; null until met, dealt with, or their island surveyed.</param>
 /// <param name="UnitPriceCents">Their price per unit per day; null until met or dealt with.</param>
 /// <param name="LeadTimeDays">Days' notice they need; null until met or dealt with.</param>
-public sealed record VendorCardOffer(string CapabilityId, string Label, string Unit, int? CapacityPerDay, long? UnitPriceCents, int? LeadTimeDays);
+/// <param name="ShipsFrom">DESK-78: the island they ship this from, when it is not their own and the office has been told
+/// (met, dealt with, or surveyed); null otherwise.</param>
+public sealed record VendorCardOffer(string CapabilityId, string Label, string Unit, int? CapacityPerDay, long? UnitPriceCents, int? LeadTimeDays,
+    string? ShipsFrom = null);
 
 /// <summary>
 /// One vendor's card (DESK-05, D6), for the Vendors tab that replaces the Directory and Vehicles tabs. Every vendor the
