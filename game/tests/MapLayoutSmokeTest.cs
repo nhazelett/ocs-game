@@ -51,14 +51,23 @@ public partial class MapLayoutSmokeTest : Node
             shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab;
             shell.PeopleToggle.ButtonPressed = true; Pick(shell.PersonContactInput, "finance");
             var visitPanel = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Today/TodayPane/Body/Body");
-            string VisitText() => Labels(visitPanel).Single(l => l.Text.StartsWith("This takes ")).Text;
-            Require(shell.VisitOptions["finance"].Preview.QueueAheadHours == 0 && !VisitText().Contains("queue"), "An empty visit queue adds no clause.");
+            Label VisitLabel(string key) => Labels(visitPanel).Single(l => l.HasMeta("visit_timing") && l.GetMeta("visit_timing").AsString() == key);
+            static string ResultDays(ActionPreview preview) => preview.EarliestStartMin == preview.EarliestStartMax
+                ? preview.EarliestStartMin.ToString() : $"{preview.EarliestStartMin} to {preview.EarliestStartMax}";
+            var finance = shell.VisitOptions["finance"].Preview;
+            Require(finance.Accepted && finance.QueueAheadHours == 0 && !VisitLabel("finance").Text.Contains("queue"), "An empty visit queue adds no clause.");
             var visitHash = shell.Session.StateHash;
-            Require(VisitText().Contains("earliest result is day ") && visitHash == shell.Session.StateHash, "Visit preview still shows the real timing without spending time.");
-            await Screenshot("--visit-screenshot", shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body"), Labels(visitPanel).Single(l => l.Text.StartsWith("This takes ")));
+            Require(VisitLabel("finance").Text.Contains($"Earliest result: day {ResultDays(finance)}.") && visitHash == shell.Session.StateHash, "Visit preview still shows the exact real timing without spending time.");
+            await Screenshot("--visit-screenshot", shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body"), VisitLabel("finance"));
             shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
-            var hours = shell.VisitOptions["finance"].Preview.QueueAheadHours;
-            Require(hours > 0 && VisitText().Contains($", after the {hours} hours already queued."), "A queued visit states the exact pending hours.");
+            Require(shell.VisitButtons["finance"].Disabled, "The finance visit cannot be duplicated while it is pending.");
+            // Preview a different available visit behind finance, rather than a refused duplicate of finance.
+            var queuedHash = shell.Session.StateHash;
+            Pick(shell.PersonContactInput, "sco");
+            var sco = shell.VisitOptions["sco"].Preview;
+            var hours = sco.QueueAheadHours;
+            Require(sco.Accepted && hours > 0 && VisitLabel("sco").Text.Contains($"Earliest result: day {ResultDays(sco)}, after the {hours} hours already queued."), "A queued visit states the exact result range and pending hours.");
+            Require(queuedHash == shell.Session.StateHash, "Reading the queued visit preview changes no simulation state.");
             foreach (var scenario in new[] { "spoke-b", "spoke-b-90", "sustainment" })
             {
                 DeveloperWorkspace(shell); Scenario(shell, scenario);
