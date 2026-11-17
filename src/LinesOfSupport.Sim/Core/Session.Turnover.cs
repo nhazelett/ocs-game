@@ -39,12 +39,13 @@ public sealed partial class Session
 
     // What the shop knows about a vendor, said once for everyone at that tier (M2R-19): one sentence per tier, in the order
     // the outgoing CCO would vouch for them, instead of the same phrase after every name.
-    private static readonly string[] ConfidenceOrder = ["observed", "surveyed", "estimated", "assumed"];
+    private static readonly string[] ConfidenceOrder = ["observed", "surveyed", "listed", "estimated", "assumed"];
 
     private static string ConfidenceSentence(string tier, IReadOnlyList<string> names) => tier switch
     {
         "observed" => $"I've seen the work of {Join(names)} myself.",
         "surveyed" => $"We've been out to look at {Join(names)}.",
+        "listed" => $"The vendor list you brought has the terms for {Join(names)}.",   // DESK-87: not "estimates" once known
         "estimated" => $"I've talked to {Join(names)}, but the prices are estimates.",
         _ => names.Count == 1
             ? $"{names[0]} is just a name on a list; I've never called them."
@@ -119,7 +120,8 @@ public sealed partial class Session
         // Vendor list, with how much the shop knows about each. Support reached only through someone else's agreement (the
         // host nation's utilities, the partner force under the ACSA) is in the contracts paragraph, not a vendor you call.
         var vendors = Scenario.Vendors.Where(v => !v.VehicleOnly).Select(v => new TurnoverVendor(
-            v.Id, v.Name, IslandName(v.Island), v.Offers.Select(o => CapLabel(o.Capability)).Distinct().ToList(), v.InfoTier, v.Vetted,
+            v.Id, v.Name, IslandName(v.Island), v.Offers.Select(o => CapLabel(o.Capability)).Distinct().ToList(),
+            ListedTermsKnown(v) && v.InfoTier != "observed" ? "listed" : v.InfoTier, v.Vetted,
             remarks.Vendors.TryGetValue(v.Id, out var r) ? r : null)).ToList();
         // Where they are first (the map is how the player finds them), then what the shop knows, then the remarks.
         var vendorSentences = new List<string>();

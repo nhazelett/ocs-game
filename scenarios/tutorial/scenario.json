@@ -691,7 +691,7 @@
   "briefing": {
     "title": "Your first weeks at the hub",
     "situation": "You're the contracting officer for the hub on the main island, three hundred people, already open. The host nation runs the power, the fuel point, the water point and the honey trucks; billeting and dining run on a blanket purchase agreement the last rotation set up.",
-    "due": "Nothing is on fire yet. Requests will come to you as the days go, and the outgoing contracting officer is here for your first three days."
+    "due": "Nothing is on fire yet. Requests will come to you as the days go, and I'm here for your first three days."
   },
   "turnover": {
     "from": "mills",
@@ -792,7 +792,7 @@
         }
       ],
       "from": "mills",
-      "playerVisibleAs": "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+      "playerVisibleAs": "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
     },
     {
       "id": "mentorDay3",

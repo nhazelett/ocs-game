@@ -37,7 +37,7 @@ Day 5
 Day 6
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
   DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 7
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
@@ -61,7 +61,7 @@ Day 12
   START     Water at Spoke C from Third Island Water Works began, 2640 gal/day.
   START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
   START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 12 worked today (6 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -95,7 +95,7 @@ Day 20
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Third Island Water Works water at Spoke C missed today's delivery.
+  FAIL      Third Island Water Works water at Spoke C missed today's delivery. The stock on hand covered today's demand.
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   SHORT     Lodging at Spoke B degraded to 76%: power at 76%.
@@ -117,7 +117,7 @@ Day 23
   SHORT     Lodging at Spoke B down to 38%: power at 38%.
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  FAIL      Third Island Water Works water at Spoke C missed today's delivery.
+  FAIL      Third Island Water Works water at Spoke C missed today's delivery. The stock on hand covered today's demand.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   SHORT     Lodging at Spoke B degraded to 76%: power at 76%.
 Day 25
@@ -249,4 +249,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.803)
 
-State hash 44739e39152e12d515e6661c11ff7f5f5f78121a578576933627e74276f98d83
+State hash 87c42a6f30c2bb5121554820c58240d43d144a16992107be04e4b22d03944a46

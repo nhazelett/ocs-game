@@ -89,7 +89,7 @@ Day 24
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 25
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      The partner force fuel at Spoke B missed today's delivery.
+  FAIL      The partner force fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 26
   EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 27. A coordination is not a contract.
@@ -105,7 +105,7 @@ Day 30
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 31
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 32
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 33
@@ -153,10 +153,10 @@ Day 52
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 53
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 54
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FAIL      The partner force fuel at Hub missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 55
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 56
@@ -277,4 +277,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash f2538105be90a8dd0486de3a636cb11cc93a7afd312bfd02d6089882ed229543
+State hash 9d3c89d9c8deede468eb184b2f3fe04dc2406c8cd779f2c195c9607bb84e71cd

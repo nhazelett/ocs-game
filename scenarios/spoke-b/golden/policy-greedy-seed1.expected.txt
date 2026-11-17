@@ -32,7 +32,7 @@ Day 5
 Day 6
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Water at Spoke C from Coastal Provisions began, 1800 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 7
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 324 kW/day.
@@ -53,7 +53,7 @@ Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Food service at Spoke C from Coastal Provisions began, 360 meals/day.
   START     Fuel at Spoke B from Port Fuel Haulers began, 1170 gal/day.
-  FAIL      Coastal Provisions food service at Spoke C missed today's delivery.
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -259,4 +259,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.712)
 
-State hash 619c2b315ec38b147272b5a22ba0b6840548fd2ad85efd8c5dbdb56c90b87072
+State hash 4dbf8cab41b0aff6f0c979d1a2ea01920675f7b4b5e439fb09017eb89bbe4608

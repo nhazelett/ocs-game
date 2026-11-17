@@ -20,7 +20,7 @@ Before day 1
   START     Inherited: Lodging at Spoke B from Second Island Camp Services (written purchase order), days -28 to 31.
 Day 1
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 2
   ACTION    Written purchase order started with North Island Telecom: Comms backhaul at Spoke A, 3 links/day for 39 days (Backhaul circuits); quoted $35,100.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -30,7 +30,7 @@ Day 3
   DONE      Written purchase order awarded to North Island Telecom for comms backhaul at Spoke A; performance starts day 22, ends day 60. Obligated $35,100.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   OK        Ground transport at Hub restored to 100%.
-  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 1, reported 2 days later.
+  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 1, reported 2 days later; the stock on hand covered it.
 Day 4
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 5
@@ -39,11 +39,11 @@ Day 5
 Day 6
   DONE      Written purchase order awarded to Main Island Motor Pool Rentals for ground transport at Hub; performance starts day 25, ends day 60. Obligated $74,880.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery.
-  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke C missed its delivery on day 6.
+  FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery. The stock on hand covered today's demand.
+  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke C missed its delivery on day 6; the stock on hand covered it.
 Day 7
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   FAIL      Second Island Camp Services lodging at Spoke B had equipment down.
   SHORT     Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
 Day 8
@@ -53,14 +53,14 @@ Day 8
 Day 9
   ACTION    BPA call started with Harbor Equipment Co: Material handling equipment at Spoke C, 2 forklifts/day for 33 days (Forklifts); quoted $11,880.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 days later.
+  COR       COR report (SFC Duarte): Second Island Fuel fuel at Spoke B missed its delivery on day 7, reported 2 days later; the stock on hand covered it.
   COR       COR report (SGT Oyelaran): Second Island Camp Services lodging at Spoke B had equipment down on day 7, reported 2 days later.
 Day 10
   EVENT     SFC Duarte rotates home. S1: SFC Duarte's orders home came through; he leaves today. His relief has not been to COR training.
   COR       SFC Duarte rotates home. An untrained relief takes over as COR on Second Island Fuel fuel at Spoke B, Main Island Sanitation waste removal at Hub (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      BPA call awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 60. Obligated $11,880.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 11
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 12
@@ -70,7 +70,7 @@ Day 13
   DONE      Response to higher HQ on Third Island Camp Services lodging at Spoke C sent.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      North Island Power and Light power at Spoke A had equipment down.
-  FAIL      Island Provisions food service at Spoke B missed today's delivery.
+  FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
   SHORT     Water at Spoke A degraded to 54%: power at 54%.
   SHORT     Comms backhaul at Spoke A degraded to 54%: power at 54%.
@@ -83,48 +83,48 @@ Day 14
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 15
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Island Provisions food service at Spoke B missed today's delivery.
-  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 days later.
+  FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 days later; the stock on hand covered it.
 Day 16
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   UCA-DUE   North Island Power and Light power at Spoke A is due for definitization (50% of NTE obligated; the schedule calls for definitization by 50% or 180 days). Not definitized.
 Day 17
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 15, reported 2 days later.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 15, reported 2 days later; the stock on hand covered it.
   INBOX     Performance issue: Island Provisions under-delivered on food service at Spoke B on days 13 and 15 (COR SGT Oyelaran). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 18
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Island Provisions food service at Spoke B missed today's delivery.
+  FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 19
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 20
   EVENT     Second Island Fuel falls behind
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 18, reported 2 days later.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
+  COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 18, reported 2 days later; the stock on hand covered it.
 Day 21
   COMPLY    Higher HQ asked why North Island Power and Light power at Spoke A is past due for definitization. A response is now shop work.
   DONE      Response to higher HQ on North Island Power and Light power at Spoke A sent.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 22
   EVENT     Spoke C grows by 60. Spoke C: an aviation detachment of 60 arrives day 30 to stay.
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       North Island Telecom comms backhaul at Spoke A ended.
   START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 23
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 24
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 25
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Main Island Motor Pool Rentals ground transport at Hub ended.
   START     Ground transport at Hub from Main Island Motor Pool Rentals began, 13 vehicles/day.
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 days later.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 days later; the stock on hand covered it.
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 27
@@ -133,14 +133,14 @@ Day 27
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 23, reported 4 days later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 23, reported 4 days later; the stock on hand covered it.
   INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 21 and 23 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 28
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   END       Harbor Equipment Co material handling equipment at Spoke C ended.
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
   FAIL      North Island Power and Light power at Spoke A had equipment down.
-  FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery.
+  FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery. The stock on hand covered today's demand.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
   SHORT     Ground transport at Hub degraded to 50%: supply 6.5 vehicles against demand 13.
   SHORT     Power at Spoke A degraded to 54%: supply 145 kW against demand 264.
@@ -150,7 +150,7 @@ Day 28
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
   COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 28.
-  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke C missed its delivery on day 28.
+  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke C missed its delivery on day 28; the stock on hand covered it.
 Day 29
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
@@ -161,11 +161,11 @@ Day 29
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 25, reported 4 days later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 25, reported 4 days later; the stock on hand covered it.
   COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 27, reported 2 days later.
 Day 30
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
   OK        Food service at Spoke B restored to 100%.
@@ -198,8 +198,8 @@ Day 34
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 35
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery.
-  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke A missed its delivery on day 35.
+  FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery. The stock on hand covered today's demand.
+  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke A missed its delivery on day 35; the stock on hand covered it.
   FUNDING   Comptroller: the O&M line good through day 45 reaches its fiscal-year end with day 45, $1,108,490 still unobligated. Awards, definitizations and ratifications that complete after day 45 need another line; a service awarded before then may run up to 12 months past it.
 Day 36
   EVENT     The partner force needs its water back. Partner force logistics officer: the dry spell has cut our own wells. We need our water trucks back in three days.
@@ -210,10 +210,10 @@ Day 36
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 days later.
 Day 37
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery.
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery. The stock on hand covered today's demand.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   SHORT     Fuel at Spoke C degraded to 85%: fuel on hand ran out.
-  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke A missed its delivery on day 37.
+  COR       COR report (SSG Mensah): Port Fuel Haulers fuel at Spoke A missed its delivery on day 37; the stock on hand covered it.
   INBOX     Performance issue: Port Fuel Haulers under-delivered on fuel at Spoke A on days 35 and 37 (COR SSG Mensah). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 38
   DONE      CE small buys: 10 worked today (5 h of shop time).
@@ -255,7 +255,7 @@ Day 45
   FUNDING   No funding line has money usable from day 46: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 46, expected day 55.
 Day 46
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   OK        Power at Spoke A restored to 100%.
   OK        Comms backhaul at Spoke A restored to 100%.
   SHORT     Fuel at Spoke C down to 0%: fuel on hand ran out; no arrangement supplies fuel.
@@ -268,7 +268,7 @@ Day 47
   SHORT     Comms backhaul at Spoke A degraded to 68%: supply 1.5 links against demand 2.2.
 Day 48
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   FAIL      Second Island Camp Services lodging at Spoke B had equipment down (no maintenance).
   OK        Comms backhaul at Spoke A restored to 100%.
   STOPWORK  North Island Power and Light stopped work on North Island Power and Light power at Spoke A: costs incurred are not obligated.
@@ -294,7 +294,7 @@ Day 51
   COR       Unit report from Spoke B: lodging fell short on day 48 and the unit blames Second Island Camp Services, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 52
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 48, reported 4 days later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 48, reported 4 days later; the stock on hand covered it.
   COR       Unit report from Hub: ground transport fell short on day 49 and the unit blames Main Island Motor Pool Rentals, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 53
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -308,7 +308,7 @@ Day 55
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
 Day 56
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
+  FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
   COR       Unit report from Spoke B: lodging fell short on day 53 and the unit blames Second Island Camp Services, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 57
@@ -326,7 +326,7 @@ Day 60
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
   FAIL      North Island Telecom comms backhaul at Spoke A had equipment down (no maintenance).
   OK        Waste removal at Hub restored to 100%.
-  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 56, reported 4 days later.
+  COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 56, reported 4 days later; the stock on hand covered it.
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3    3    4    4    5    5    6
@@ -589,4 +589,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.71)
 
-State hash 7ad56bec53dbf8ff5f8a179b7c7c09ef9df5e4b6c65888d93f1531739b91d7ef
+State hash 87d311c44a20cdeefe7722b1652fc977968c231ffb3defac0ba3f9315e08138f
