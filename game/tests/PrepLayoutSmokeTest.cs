@@ -18,17 +18,23 @@ public partial class PrepLayoutSmokeTest : Node
             {
                 for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             }
-            void Footer()
+            Button Footer()
             {
                 var page = PlayScreen.Descendants(shell).OfType<Control>().Single(c => c.Name == "PrepScreen");
                 var back = PlayScreen.Descendants(page).OfType<Button>().Single(b => b.Text == "Back");
                 var viewport = GetViewport().GetVisibleRect();
+                if (!viewport.Encloses(back.GetGlobalRect()))
+                    for (Node? node = back; node is not null; node = node.GetParent())
+                        if (node is Control c) GD.Print($"LAYOUT {c.GetPath()}: rect={c.GetGlobalRect()} min={c.GetCombinedMinimumSize()} offset={c.OffsetTop},{c.OffsetBottom}");
                 foreach (var button in new[] { back, shell.StartGameButton }.Concat(
                     shell.Session.PrepTeam.Count > 0 ? new[] { shell.TeamCustomizeButton } : Array.Empty<Button>()))
                     Require(button.IsVisibleInTree() && viewport.Encloses(button.GetGlobalRect()),
                         $"Preparation footer stays wholly on screen: {button.Text}, {button.GetGlobalRect()}.");
+                var count = PlayScreen.Descendants(page).OfType<Label>().Single(l => l.Text.StartsWith("You've planned "));
+                Require(count.IsVisibleInTree() && viewport.Encloses(count.GetGlobalRect()), "The day count stays in view on every visit.");
                 Require(shell.PrepScroll.GetGlobalRect().End.Y <= back.GlobalPosition.Y,
                     "The scrolling body cannot cover departure controls.");
+                return back;
             }
             void Choose(int days)
             {
@@ -89,7 +95,29 @@ public partial class PrepLayoutSmokeTest : Node
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
             shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             foreach (var days in Enumerable.Range(0, 15)) { Choose(days); await Settle(); Footer(); }
-            GD.Print("PREP_LAYOUT_SMOKE_PASS: all day totals, fixed footer, choice reasons, checked hover, refused input, team and departure.");
+            foreach (var tutorial in new[] { false, true })
+            {
+                if (tutorial)
+                {
+                    Footer().EmitSignal(Button.SignalName.Pressed); await Settle();
+                    shell.TutorialGameButton.EmitSignal(Button.SignalName.Pressed); await Settle();
+                }
+                Choose(14); await Settle(); Footer();
+                Footer().EmitSignal(Button.SignalName.Pressed); await Settle();
+                Require(shell.AtFrontDoor && shell.TutorialGameButton.IsVisibleInTree() && shell.SpokeBGameButton.IsVisibleInTree(),
+                    "Preparation Back returns to scenario choice.");
+                (tutorial ? shell.TutorialGameButton : shell.SpokeBGameButton).EmitSignal(Button.SignalName.Pressed);
+                await Capture(tutorial ? "tutorial-second-back" : "spoke-b-second-back");
+                foreach (var days in Enumerable.Range(0, 15)) { Choose(days); await Settle(); Footer(); }
+                shell.StartGameButton.EmitSignal(Button.SignalName.Pressed); FinishOpening(shell); Step(shell);
+                shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+                shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
+                (tutorial ? shell.TutorialGameButton : shell.SpokeBGameButton).EmitSignal(Button.SignalName.Pressed);
+                await Capture(tutorial ? "tutorial-second-menu" : "spoke-b-second-menu");
+                foreach (var days in Enumerable.Range(0, 15)) { Choose(days); await Settle(); Footer(); }
+            }
+            shell.QueueFree(); await Settle();
+            GD.Print("PREP_LAYOUT_SMOKE_PASS: all day totals, fixed footer, choice reasons, checked hover, refused input, team, departure and both same-scenario re-entry routes.");
             GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"PREP_LAYOUT_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
