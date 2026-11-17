@@ -55,7 +55,7 @@ public partial class RequestWorkspaceSmokeTest : Node
             shell.RequestScroll.EnsureControlVisible(shell.RequirementAddButtons["operator"]); await Capture("forklifts");
             shell.RequirementAddButtons["operator"].EmitSignal(Button.SignalName.Pressed); await Frames(); Page("tutForklift");
             Require(!shell.RequirementAddButtons.ContainsKey("operator") && shell.CurrentActionEditor!.SelectedLines.Contains("operator"), "Adding the learned part refreshes both columns in place.");
-            shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            shell.CloseRequestWorkspace(); tabs.CurrentTab = GameShell.RequestsTab; shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
             Require(shell.CurrentActionEditor!.CardId is null && shell.RequestContents.GetChildren().OfType<Label>().Any(l => l.Text == "Buy on your own initiative"), "Own-initiative buying uses the same page and explains what it is for on the left.");
             shell.CloseRequestWorkspace(); await Frames();
             Open("tutForklift"); await Frames(); shell.RequestBackButton.EmitSignal(Button.SignalName.Pressed); await Frames();

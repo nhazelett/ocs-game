@@ -48,7 +48,9 @@ public partial class GameShell
     private OptionButton AddAwardChoice(string label, string prompt, IReadOnlyList<ChoiceOption> options,
         string? selected, Action<string> changed, out Label explanation, string? notice = null)
     {
-        awardPanel.AddChild(DeskUi.Label(label));
+        var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 12); awardPanel.AddChild(row);
+        var caption = DeskUi.Label(label); caption.AutowrapMode = TextServer.AutowrapMode.Off;
+        caption.CustomMinimumSize = new Vector2(150, 0); caption.SizeFlagsVertical = SizeFlags.ShrinkCenter; row.AddChild(caption);
         var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true };
         picker.GetPopup().AddThemeFontSizeOverride("font_size", 18);
         picker.AddItem(prompt); picker.SetItemMetadata(0, "");
@@ -87,7 +89,7 @@ public partial class GameShell
             changed(picker.GetItemMetadata((int)i).AsString());
             RefreshActionDesk(session.View);
         };
-        awardPanel.AddChild(picker); awardPanel.AddChild(reasonLabel); explanation = reasonLabel;
+        row.AddChild(picker); awardChoiceReasons.Add(reasonLabel); explanation = reasonLabel;
         return picker;
     }
     // Ask the same read projection about other structural selections. This is navigation guidance, never Game-side

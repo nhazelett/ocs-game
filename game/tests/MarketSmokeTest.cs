@@ -19,8 +19,6 @@ public partial class MarketSmokeTest : Node
             var hash = shell.Session.StateHash;
             var card = shell.Session.View!.Cards.First(c => shell.Session.View.RequirementEditor(c.Id)?.CapabilityId == "power");
             shell.NavigateBoardItem(new LinesOfSupport.Sim.Views.BoardItem("", 1, LinesOfSupport.Sim.Views.BoardCategory.Request, LinesOfSupport.Sim.Views.BoardSeverity.Info, LinesOfSupport.Sim.Views.BoardLinkKind.Card, card.Id, "", []));
-            var go = shell.RequirementMarketButton;
-            go.EmitSignal(Button.SignalName.Pressed);
             Require(shell.RequestWorkspace.Visible && shell.CurrentActionEditor!.CardId == card.Id, "Requirement leads directly to its own market.");
             Require(shell.VendorInput.GetItemMetadata(shell.VendorInput.Selected).AsString() == "" && shell.PendingAward is null && shell.AwardButton.Disabled, "No vendor is ever preselected, including vehicle-only or refused suppliers.");
             var requests=shell.AwardRequestInput;
@@ -64,7 +62,7 @@ public partial class MarketSmokeTest : Node
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "Arrange support sends exactly the previewed action.");
             Require(shell.RequestWorkspace.Visible, "A committed award keeps its request open.");
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.VendorInput, candidate.Vendor); Pick(shell.InstrumentInput, candidate.Instrument);
             if (candidate.Vehicle is not null) Pick(shell.VehicleInput, candidate.Vehicle);
             PickPriorities(shell, "fast", "cheap");

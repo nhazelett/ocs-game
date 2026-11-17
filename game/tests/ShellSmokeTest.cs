@@ -34,7 +34,7 @@ public partial class ShellSmokeTest : Node
             shell.NavigateBoardItem(request);
             Require(shell.RequestWorkspace.Visible && shell.MarketOpen, "A request link opens its full page.");
             await Capture("request");
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            shell.GoToMarket(shell.SelectedCard!); await Frames();
             Require(shell.RequestWorkspace.Visible && shell.MarketOpen && shell.CurrentActionEditor!.CardId == card,
                 "Go to market focuses the same request's buy form.");
             Require(shell.AwardButton.IsVisibleInTree(), "The market action remains reachable.");

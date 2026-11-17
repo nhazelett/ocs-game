@@ -97,7 +97,7 @@ public partial class RequirementSmokeTest : Node
             KnownLines("req0007"); ResumeMatches();
             Require(!panel.GetChildren().OfType<Label>().Any(l => l.HasMeta("requirement_line") && l.GetMeta("requirement_line").AsString() == "fuelSupply")
                 && panel.GetChildren().OfType<Button>().Any(b => b.HasMeta("dependency_visit")), "Spoke B fuel stays undiscovered; the J4 shortcut remains.");
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Require(shell.CurrentActionEditor?.CardId == "req0007" && shell.CurrentActionEditor.SelectedLines.Contains("operator")
                 && shell.CurrentActionEditor.SelectedLines.Contains("maintenance"), "Go to market uses the updated request scope.");
 
@@ -168,10 +168,10 @@ public partial class RequirementSmokeTest : Node
                 Require(pane.Size.IsEqualApprox(page.Size), "A request rebuild refits the whole pane to the tab without another navigation.");
                 Require(scroll.GetVScrollBar().IsVisibleInTree() && scroll.GetVScrollBar().MaxValue > scroll.Size.Y,
                     "The rebuilt long request keeps its usable scroll bar.");
-                Require(page.GetGlobalRect().Encloses(shell.RequirementMarketButton.GetGlobalRect())
-                    && page.GetGlobalRect().Encloses(shell.RequestInitiativeButton.GetGlobalRect()),
-                    "Both request navigation buttons stay wholly in view after the action.");
-                Require(scroll.GetGlobalRect().End.Y <= shell.RequestInitiativeButton.GlobalPosition.Y,
+                Require(shell.RequestWorkspace.GetGlobalRect().Encloses(shell.AwardButton.GetGlobalRect())
+                    && shell.RequestWorkspace.GetGlobalRect().Encloses(shell.RequestBackButton.GetGlobalRect()),
+                    "The buy action and Back stay wholly in view after the action.");
+                Require(scroll.GetGlobalRect().End.Y <= page.GetGlobalRect().End.Y,
                     "The request text remains clipped above its pinned actions.");
                 var hashBefore = shell.Session.StateHash;
                 scroll.ScrollVertical = 0;
@@ -190,7 +190,7 @@ public partial class RequirementSmokeTest : Node
                 var stateBefore = shell!.Session.StateHash;
                 Require(shell.Session.View!.RequirementEditor("tutForklift")!.Unit == "forklifts"
                     && shell.TeamBars.Count == 3, "Gate captures use plain forklift units and the three-person tutorial team.");
-                shell!.DeveloperToggle.ButtonPressed = false; shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.RequestsTab;
+                shell!.DeveloperToggle.ButtonPressed = false; shell.ShowRequests();
                 var scroll = (ScrollContainer)panel.GetParent(); scroll.ScrollVertical = 0;
                 await Frames(); if (focus is not null) scroll.EnsureControlVisible(focus); await Frames();
                 Require(panel.GetGlobalRect().End.X <= scroll.GetGlobalRect().End.X

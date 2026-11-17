@@ -11,8 +11,32 @@ public partial class GameShell
     internal Control RequestBuyColumn { get; private set; } = null!;
     internal VBoxContainer RequestContents => linkedRequirement;
     internal ScrollContainer RequestScroll => linkedRequirement.GetParent<ScrollContainer>();
+    private VBoxContainer requestTargetHost = null!;
     internal Button RequestBackButton { get; private set; } = null!;
     internal Dictionary<string, Button> RequestListButtons { get; } = [];
+    internal Dictionary<string, Label> RequestPartLabels { get; } = [];
+    internal Dictionary<string, Label> RequestBuyWarnings { get; } = [];
+    private void RefreshRequestBuyWarnings()
+    {
+        var editor = CurrentActionEditor;
+        var card = editor?.CardId is { } id && id == SelectedCard ? session.View?.RequirementEditor(id) : null;
+        var vendor = editor?.Vendors.FirstOrDefault(v => v.Id == PendingAward?.Vendor);
+        foreach (var (lineId, label) in RequestPartLabels)
+        {
+            var line = card?.Lines.FirstOrDefault(l => l.Id == lineId && l.Known);
+            // Associate the displayed quote with the same known part IDs. No warning prose is parsed and no
+            // eligibility, coverage, delivery or outcome rule is evaluated here.
+            var missingFromSupplier = AwardPreview?.SoftGaps.Count > 0 && line?.On == true
+                && vendor is not null && !vendor.Lines.Contains(lineId);
+            var learnedWarning = AwardAddButtons.ContainsKey(lineId);
+            var warning = RequestBuyWarnings[lineId];
+            warning.Text = missingFromSupplier ? "The selected supplier does not list this part."
+                : learnedWarning ? "The quote flags this part." : "";
+            warning.Visible = warning.Text.Length > 0;
+            label.AddThemeColorOverride("font_color", warning.Visible ? TabletopTheme.Warning : TabletopTheme.Ink);
+            label.SetMeta("buy_warning", warning.Visible);
+        }
+    }
     private VBoxContainer requestList = null!, requestListFooter = null!;
     private int requestReturnTab;
     private Control? requestReturnFocus;
@@ -25,11 +49,13 @@ public partial class GameShell
         var layout = new VBoxContainer(); layout.AddThemeConstantOverride("separation", 12); RequestWorkspace.AddChild(layout);
         RequestBackButton = DeskUi.Button("Back to the desk", () => CloseRequestWorkspace());
         RequestBackButton.AutowrapMode = TextServer.AutowrapMode.Off;
-        RequestBackButton.SizeFlagsHorizontal = SizeFlags.ShrinkBegin; layout.AddChild(RequestBackButton);
+        RequestBackButton.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
+        var header = new HBoxContainer(); header.AddThemeConstantOverride("separation", 24); layout.AddChild(header); header.AddChild(RequestBackButton);
+        requestTargetHost = new VBoxContainer { Name = "RequestTarget", SizeFlagsHorizontal = SizeFlags.ExpandFill }; header.AddChild(requestTargetHost);
         var columns = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
         columns.AddThemeConstantOverride("separation", 24); layout.AddChild(columns);
-        RequestColumn = new Control { Name = "Request", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-        RequestBuyColumn = new Control { Name = "Buy", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+        RequestColumn = new Control { Name = "Request", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = .9f };
+        RequestBuyColumn = new Control { Name = "Buy", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = 1.1f };
         columns.AddChild(RequestColumn); columns.AddChild(RequestBuyColumn);
         void Fit()
         {
@@ -106,7 +132,7 @@ public partial class GameShell
             button.SetMeta("request_card", card.Id); requestList.AddChild(button); RequestListButtons.Add(card.Id, button);
         }
         if (RequestListButtons.Count == 0) requestList.AddChild(DeskUi.Label("No requests have arrived."));
-        var initiative = DeskUi.Button("Buy on your own initiative", GoToOwnInitiative);
+        var initiative = RequestInitiativeButton = DeskUi.Button("Buy on your own initiative", GoToOwnInitiative);
         var reason = DeskUi.ActionReason(requestListFooter, initiative);
         DeskUi.Gate(initiative, reason, view is null ? "Start a deployment to buy support." : view.Finished ? DeskUi.FinishedReason : null);
         requestListFooter.AddChild(DeskUi.Label("Arrange support nobody has requested."));

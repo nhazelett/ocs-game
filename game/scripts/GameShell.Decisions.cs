@@ -43,7 +43,7 @@ public partial class GameShell
         RequestDecisionRows = new VBoxContainer { Name = "RequestDecisions" };
         RequestDecisionRows.AddThemeConstantOverride("separation", 10);
         linkedRequirement.AddChild(RequestDecisionRows);
-        RenderDecisionRows(RequestDecisionRows, view.Decisions(card), false);
+        if (view.Decisions(card).Count > 0) RenderDecisionRows(RequestDecisionRows, view.Decisions(card), false);
     }
 
     private void RenderDecisionRows(VBoxContainer parent, IEnumerable<DecisionView> decisions, bool openRequest)

@@ -48,7 +48,7 @@ public partial class DeskHierarchySmokeTest : Node
             shell.NavigateBoardItem(new BoardItem("",shell.Session.View!.Day,BoardCategory.Request,
                 BoardSeverity.Info,BoardLinkKind.Card,"tutForklift","",[]));
             await Shot("request");
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.VendorInput,"harborEquipment");Pick(shell.InstrumentInput,"bpaCall");Pick(shell.VehicleInput,"equipBpa");
             PickPriorities(shell,"fast","good");
             shell.AwardScroll.ScrollVertical=0;await Shot("award");
@@ -111,7 +111,7 @@ public partial class DeskHierarchySmokeTest : Node
                     Require(!fill.BgColor.IsEqualApprox(background.BgColor),"Occupied time has a distinct fill against its track.");
                 }
                 foreach(var button in new[]{shell.GetNode<Button>("%NextDay"),shell.PeopleToggle,shell.BoardDetailsToggle,shell.LeadOpen,
-                    shell.AwardButton,shell.RequirementMarketButton})
+                    shell.AwardButton,shell.RequestBackButton})
                     Require(button.Alignment==HorizontalAlignment.Left,"Desk actions consistently align their labels to the left.");
             }
         }
