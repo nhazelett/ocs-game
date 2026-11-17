@@ -23,7 +23,7 @@ The brief, word for word:
 ## 4. Running it
 
 1. Godot 4.6.1 .NET under the authenticated TCP-loopback Xvfb display the smoke tests use, Dummy audio, built from `main`. Godot, the build and every screenshot go in the session's scratch directory, never in the repository.
-2. Start the driver (PLAY-01) on the tutorial with a seed (the date as YYYYMMDD), then hand the player the brief. Give the player one file of its own to keep notes in, outside the repository, so its early notes survive a long play. Until DESK-66 and DESK-67 are merged, also tell it not to click Menu: both leave the game, and a second visit to the preparation screen has no way out (the 17 Nov review lost two plays to it). Run at most two games at once on a two-CPU machine; three starved the driver.
+2. Start the driver (PLAY-01) on the tutorial with a seed (the date as YYYYMMDD), then hand the player the brief. Give the player one file of its own to keep notes in, outside the repository, so its early notes survive a long play. Until DESK-67 and DESK-68 are merged, also tell it not to click Menu: both leave the game, and a second visit to the preparation screen has no way out (the 17 Nov review lost two plays to it). Run at most two games at once on a two-CPU machine; three starved the driver.
 3. After the play, replay the driver's `input-log.json` through the harness (`run tutorial --log ...`) and read the debrief: a finding that is really a Sim result (a 0% that should not be one, a refusal that is wrong) is checked against the report.
 4. Sim pass: `batch tutorial --seeds 200` with the three policies. Note anything where do-nothing or greedy beats textbook, or a measure no policy moves.
 

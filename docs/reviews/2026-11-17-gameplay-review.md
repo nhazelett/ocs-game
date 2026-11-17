@@ -33,7 +33,7 @@ What earned its place, by the players' own account: the team page's sentences ("
 
 Open the Tutorial, press Back, choose the Tutorial again: the preparation screen has all eight items and no footer. There is no day count, no "Your team", no "Back" and no "I'm ready to leave" ([picture](plays/2026-11-17-review/prep-footer-gone.png)). Scrolling and Escape do nothing. Both tutorial players hit it within five steps and stopped.
 
-A person meets it on any second visit to the same scenario in one sitting, which includes Menu, New game and the same scenario to play again. From the code (not reproduced by hand): the page is rebuilt while hidden, its labels measure tall at zero width, and the panel keeps that height when the second build measures the same. The 16 Nov play's stuck screen was most likely this and not the 14 of 14 count (that player had pressed Back too), and DESK-62 removed the accident that got that player out. The smoke test re-enters only into the other scenario. Row DESK-66, Codex, first.
+A person meets it on any second visit to the same scenario in one sitting, which includes Menu, New game and the same scenario to play again. From the code (not reproduced by hand): the page is rebuilt while hidden, its labels measure tall at zero width, and the panel keeps that height when the second build measures the same. The 16 Nov play's stuck screen was most likely this and not the 14 of 14 count (that player had pressed Back too), and DESK-62 removed the accident that got that player out. The smoke test re-enters only into the other scenario. Row DESK-67, Codex, first.
 
 ## 1. Most days ask nothing
 
@@ -50,7 +50,7 @@ The hasty player, asked whether they would keep playing past day 5 unprompted: "
 
 Idle time also teaches the wrong thing. Two teammates with nothing to do for a week drew "8 hours go to walk-in small buys" and no other remark; nobody learned what a walk-in is worth.
 
-Decisions D30 and D31. Rows DESK-71, DESK-74, DESK-79.
+Decisions D30 and D31. Rows DESK-72, DESK-75, DESK-80.
 
 ## 2. Nothing says what you are playing for, or how you did
 
@@ -62,7 +62,7 @@ The tutorial has five pass lines (water never out more than a day, forklifts nev
 - The Spoke B player was never told how long the scenario runs or how it is judged.
 - One tutorial pass line cannot fail: no tutorial event creates an unauthorized commitment.
 
-Decision D28. Rows DESK-69, DESK-73.
+Decision D28. Rows DESK-70, DESK-74.
 
 ## 3. What you learn does not reach you
 
@@ -78,7 +78,7 @@ In the tutorial the same pattern: the morning the forklift vendor ran short and 
 
 The careful player's one change: "make the Today tab a proper morning brief, shown first and at the top... new requests, what people answered, vendor warnings. Each item should give its deadline and the last day I can order and still make it." That player found the true lead time for the forklifts only by typing day numbers into a field until the quote changed.
 
-Decision D29. Rows DESK-68, DESK-72.
+Decision D29. Rows DESK-69, DESK-73.
 
 ## 4. Preparation is a blind choice, and half of it does nothing
 
@@ -89,7 +89,7 @@ The Sim's own comment on four effects is "recorded for the debrief; no mechanica
 - The choice comes before the turnover, so "pick what you'll miss least on the ground" is asked before the player knows what the ground is.
 - What each choice changes is in a pointer tooltip only. Three choices in the tutorial are written as form labels ("Pull existing vehicles with scope and ceilings from reach-back") where Spoke B has the same choices in Maj Cole's voice.
 
-Decision D32. Rows DESK-75, DESK-78.
+Decision D32. Rows DESK-76, DESK-79.
 
 ## 5. Committing to something
 
@@ -104,7 +104,7 @@ New in this review:
 - **"Coordinate support"** in Spoke B took a default quantity of 1 from a field inside a collapsed section and answered with the single word "coordinated". The player moved 1 kW a day and never knew.
 - **Nothing sums the commitment up.** The hasty player's worst buy (56 shop hours for water starting day 10 for a need that ended day 9) showed every warning, below the fold, in the same weight as everything else.
 
-Decision D33. Rows DESK-63 (open), DESK-70.
+Decision D33. Rows DESK-63 (open), DESK-71.
 
 ## 6. Learning what a request leaves out closes doors without saying so
 
@@ -115,11 +115,11 @@ The Spoke B player asked Capt Ruiz, learned the generators need operators and ma
 - There is no way to take a line back off, to meet a request in parts, or to change a contract already running. The hasty player in the tutorial, with forklifts running and no drivers: "there is no way to amend a live contract to add operators... The mistake was unfixable and the game never said so."
 - The textbook policy's own Spoke B answer (the cheap sets as a bridge beside Meridian) cannot be bought from the request page once the lines are added.
 
-This is the game's central lesson (D3: the request is not the requirement) turning into a trap at the moment the player does the right thing. Decision D34, row DESK-76. Changing a running contract is a new action and is Nick's call: FOR-NICK #19.
+This is the game's central lesson (D3: the request is not the requirement) turning into a trap at the moment the player does the right thing. Decision D34, row DESK-77. Changing a running contract is a new action and is Nick's call: FOR-NICK #19.
 
 ## 7. What is on screen and wrong
 
-Checked in the code; each is a defect. Sim ones are in DESK-77 unless a row is named.
+Checked in the code; each is a defect. Sim ones are in DESK-78 unless a row is named.
 
 - A shortfall gave the wrong reason. Spoke C food at 71% on day 15 was shown as a delivery waiting for the next boat; it was 480 meals against 672 people's worth after 64 more arrived. The held-delivery sentence is returned before supply is compared with demand.
 - "It is the vendor's to put right, and there is nothing for you to do" on a failure whose stated cause is the parts left out of the buy.
@@ -128,15 +128,15 @@ Checked in the code; each is a defect. Sim ones are in DESK-77 unless a row is n
 - "Peak demand: 468 kW" beside a request for six sixty-kilowatt sets, then "demand 324" in a shortfall: three sizes for one camp, none explained. The peak is a later headcount.
 - A card buy with "Notice: 0 days" and "0 shop hours" quoted "earliest start day 2 to 3" and started on day 3; nothing says what decides the range.
 - "Already set to supply... this would be on top of it" on a buy that overlapped by one day, or not at all.
-- The Spoke B turnover says "there are two of you"; the team is the player alone, and the team page still draws "Give them this task" in grey with nobody to give it to (game, DESK-67).
-- After an accepted ask to the J4 the form stays and previews a second, identical ask, shown as a red refusal (game, DESK-63's family, added to DESK-70).
+- The Spoke B turnover says "there are two of you"; the team is the player alone, and the team page still draws "Give them this task" in grey with nobody to give it to (game, DESK-68).
+- After an accepted ask to the J4 the form stays and previews a second, identical ask, shown as a red refusal (game, DESK-63's family, added to DESK-71).
 - "Morning of day 1 · 0 alerts · 0 requests" with two requests open; a site not yet open shows "Power: 100%".
 - No record when the contract-writing system comes back.
 - The debrief's record files each morning's news under the day before, stops at day 13, and marks every day "Known then: Main Island observed".
 - "1 hours", "a 8-day service".
 - A vendor's own words at the meeting ("from Main Island") reach neither their card nor the quote, so a supplier on the site's island whose stock crosses the water gives no transport warning until a survey that is itself inside a collapsed section.
 
-Game-side, in DESK-67: Menu leaves the game with no question; a "Developer tools" box is on every player screen, title included (three players clicked it or wanted to); "Show today's movement" does nothing visible on a day with no movement; Today and the Inbox open scrolled; buttons from People to reach stay pinned to the foot of Today for the rest of the game (DESK-64, open; on day 17 of Spoke B two of them took a fifth of the pane, [picture](plays/2026-11-17-review/spoke-b-day17.png)); the scenario choice lists Spoke B above Tutorial with no word on either.
+Game-side, in DESK-68: Menu leaves the game with no question; a "Developer tools" box is on every player screen, title included (three players clicked it or wanted to); "Show today's movement" does nothing visible on a day with no movement; Today and the Inbox open scrolled; buttons from People to reach stay pinned to the foot of Today for the rest of the game (DESK-64, open; on day 17 of Spoke B two of them took a fifth of the pane, [picture](plays/2026-11-17-review/spoke-b-day17.png)); the scenario choice lists Spoke B above Tutorial with no word on either.
 
 ## 8. The map and the pane
 
@@ -165,7 +165,7 @@ The screens the players praised are the full pages: the team page, the day's pla
 - Spoke B has no requirement that can come up at the staff meeting, so the meeting (2 hours, then 1 a day) can never pay there. The cold player attended 28 of them.
 - No policy moves the tutorial's unauthorized commitment line, ratifications, overdue UCAs or held small buys.
 
-The last three are row DESK-80, after the DESK gate with DESK-12, since they are Spoke B's and the gate plays the tutorial.
+The last three are row DESK-81, after the DESK gate with DESK-12, since they are Spoke B's and the gate plays the tutorial.
 
 ## 10. The players' answers
 
@@ -186,4 +186,4 @@ Asked what the game was trying to teach, the Spoke B player named it right (the 
 
 ## 12. What follows
 
-Decisions D28 to D34 are in docs/design/desk-redesign.md section 10. Rows DESK-66 to DESK-80 are in the backlog. Two questions for Nick are FOR-NICK #19 and #20. The order: Codex fixes the preparation screen (DESK-66), then DESK-63; Fable builds the day's answers and news (DESK-72) and the commander's bar (DESK-73) first.
+Decisions D28 to D34 are in docs/design/desk-redesign.md section 10. Rows DESK-67 to DESK-81 are in the backlog. Two questions for Nick are FOR-NICK #19 and #20. The order: Codex fixes the preparation screen (DESK-67), then DESK-63; Fable builds the day's answers and news (DESK-73) and the commander's bar (DESK-74) first.
