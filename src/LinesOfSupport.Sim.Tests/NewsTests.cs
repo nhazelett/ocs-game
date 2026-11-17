@@ -17,6 +17,14 @@ public class NewsTests
 
     private static Session SpokeB(int throughDay) => Play("spoke-b", "spoke-b", throughDay);
 
+    /// <summary>The hasty play without the vendor list it brought (DESK-76: the list fills in the listed vendors' cards,
+    /// so the fastest route the shop knows changes). Information only, so the replay is otherwise the same.</summary>
+    private static Session HastyWithoutVendorList(int throughDay)
+    {
+        var log = InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-17-review", "tutorial-hasty-input-log.json"));
+        return Replay.Run(Repo.Load("tutorial"), log with { PrepChoices = [.. log.PrepChoices.Where(p => p != "vendorLists")] }, stopAfterDay: throughDay);
+    }
+
     /// <summary>The day's results page and the next morning both carry it.</summary>
     private static void Heard(Session s, NewKind kind, string words)
     {
@@ -119,14 +127,14 @@ public class NewsTests
     public void An_open_request_gives_its_last_day_to_order_and_the_route()
     {
         // The hasty player: forklifts wanted day 8; the shop knows a cash buy from Harbor Equipment on two days' notice.
-        var s = Play("tutorial-hasty", "tutorial", 3);
+        var s = HastyWithoutVendorList(3);
         var forklift = s.View.WhereThingsStand().Single(r => r.CardId == "tutForklift");
         var ob = forklift.OrderBy!;
         Assert.Equal(6, ob.Day);
         Assert.Equal("Order by day 6: a cash buy from Harbor Equipment Co starts 2 days after it goes in.", ob.Sentence);
 
         // Placed on that day by that route, it starts on the day wanted.
-        var later = Play("tutorial-hasty", "tutorial", 5);
+        var later = HastyWithoutVendorList(5);
         var today = later.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
         Assert.Equal("Order today to start on day 8: a cash buy from Harbor Equipment Co starts 2 days after it goes in.", today.Sentence);
         var preview = later.View.Preview(new AwardAction
@@ -138,9 +146,17 @@ public class NewsTests
         Assert.Equal(8, preview.EarliestStartMin);
 
         // A day later no route makes day 8, and it says the soonest start instead.
-        var late = Play("tutorial-hasty", "tutorial", 6).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        var late = HastyWithoutVendorList(6).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
         Assert.True(late.Day < 7);
         Assert.Equal("Too late for day 8 by any route the shop knows: a cash buy from Harbor Equipment Co starts 2 days after it goes in, so the soonest start is day 9.", late.Sentence);
+    }
+
+    [Fact]
+    public void The_vendor_list_widens_the_routes_the_shop_knows()
+    {
+        // The hasty player brought the vendor list: Coastal Rentals' card is filled in from day 1, and its card buy is faster.
+        var ob = Play("tutorial-hasty", "tutorial", 3).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        Assert.Equal("Order by day 7: a card buy from Coastal Rentals starts 1 day after it goes in.", ob.Sentence);
     }
 
     [Fact]

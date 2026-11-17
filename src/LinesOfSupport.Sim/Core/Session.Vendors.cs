@@ -26,7 +26,7 @@ public sealed partial class Session
     /// <summary>How they take payment, their prices and lead times: known once met, after doing business, or when the
     /// scenario says the office has seen them work.</summary>
     internal bool VendorTermsKnown(VendorData v)
-        => _vendorsMet.ContainsKey(v.Id) || DoneBusiness(v.Id) || v.InfoTier == "observed";
+        => _vendorsMet.ContainsKey(v.Id) || DoneBusiness(v.Id) || v.InfoTier == "observed" || ListedTermsKnown(v);   // DESK-76
 
     /// <summary>How much they can supply and which islands they reach: the terms, or a survey of their island.</summary>
     internal bool VendorSupplyKnown(VendorData v)
@@ -88,6 +88,7 @@ public sealed partial class Session
             string? knownFrom = met is { } md ? $"You met them on day {md}."
                 : DoneBusiness(v.Id) ? "This office has done business with them, so their terms are on file."
                 : v.InfoTier == "observed" ? "This office has seen their work before."
+                : ListedTermsKnown(v) ? "They are on the vendor list you brought from reach-back, with their terms."
                 : _islandsSurveyedInPlay.Contains(v.Island) ? $"Your survey of {IslandData(v.Island).Name} showed what they can supply and where they reach."
                 : v.InfoTier == "surveyed" ? "The handover notes say what they can supply and where they reach."
                 : null;
