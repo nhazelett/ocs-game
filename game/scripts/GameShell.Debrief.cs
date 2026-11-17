@@ -121,8 +121,18 @@ public partial class GameShell
         var score = report.Scorecard;
         static string Fraction(double value) => value.ToString("P1", CultureInfo.InvariantCulture);
         parent.AddChild(DeskUi.Label($"{report.ScenarioTitle}, {DebriefWords.Number(report.DaysPlayed)} {(report.DaysPlayed == 1 ? "day" : "days")} played, through day {report.LastDay}."));
-        var scoreText = DeskUi.Label($"Mission output {Fraction(score.MissionOutput)} · sortie generation {Fraction(score.SortieGeneration)}\nThroughput {Fraction(score.Throughput)} · endurance {Fraction(score.Endurance)} · resilience {Fraction(score.Resilience)}\nObligated {DeskUi.Money(score.ObligatedCents)} · incurred {DeskUi.Money(score.IncurredCents)} · unobligated incurred {DeskUi.Money(score.UnobligatedIncurredCents)}\nUnauthorized commitments {score.UnauthorizedCommitments} · overdue UCAs {score.UcaOverdue} · HHQ inquiries {score.HhqInquiries}\nSurveys {score.Surveys} · shop hours worked {score.ShopHoursWorked}\n{score.GapCount} gaps: {score.AvoidableGaps} avoidable · {score.DiscoverableGaps} discoverable · {score.UnforeseeableGaps} unforeseeable");
+        var inherited = string.IsNullOrEmpty(report.Inherited) ? "" : report.Inherited + "\n";
+        var scoreText = DeskUi.Label($"Mission output {Fraction(score.MissionOutput)} · sortie generation {Fraction(score.SortieGeneration)}\nThroughput {Fraction(score.Throughput)} · endurance {Fraction(score.Endurance)} · resilience {Fraction(score.Resilience)}\nObligated {DeskUi.Money(score.ObligatedCents)} · incurred {DeskUi.Money(score.IncurredCents)} · unobligated incurred {DeskUi.Money(score.UnobligatedIncurredCents)}\n{inherited}Unauthorized commitments {score.UnauthorizedCommitments} · overdue UCAs {score.UcaOverdue} · HHQ inquiries {score.HhqInquiries}\nSurveys {score.Surveys} · shop hours worked {score.ShopHoursWorked}\n{score.GapCount} gaps: {score.AvoidableGaps} avoidable · {score.DiscoverableGaps} discoverable · {score.UnforeseeableGaps} unforeseeable");
         scoreText.SetMeta("scorecard", true); parent.AddChild(scoreText);
+        if (report.Cures.Count > 0)
+        {
+            parent.AddChild(DeskUi.Label("Still open at the end"));
+            foreach (var cure in report.Cures)
+            {
+                var sentence = DeskUi.Label(cure.Text); sentence.SetMeta("running_cure", cure.IssueId);
+                parent.AddChild(sentence);
+            }
+        }
         parent.AddChild(DeskUi.Label("Support during each day; — means the site was not open."));
         foreach (var band in report.Timeline)
         {
