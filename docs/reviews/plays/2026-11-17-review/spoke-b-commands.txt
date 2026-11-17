@@ -1,0 +1,388 @@
+0002 look
+0003 click "Get your contract-writing system account started now and it may be working when you arrive. (3 days)"
+0004 click "We can pull the agreements already in place over there, with their scope and ceilings. (1 day)"
+0005 click "I can send you our vendor lists and whatever vetting we have. (2 days)"
+0006 click "Bring templates and a paper kit, and the manual work goes faster until the system's up. (1 day)"
+0007 click "If you think you'll need a bigger warrant, ask now; it doesn't get faster from the field. (2 days)"
+0008 click "One day to confirm what the partner and host nation agreements actually cover. (1 day)"
+0009 scroll "Preparation" down
+0010 click "One day to confirm what the partner and host nation agreements actually cover. (1 day)"
+0011 click "I'm ready to leave"
+0012 click "Continue"
+0013 click "Continue"
+0014 click "Continue"
+0015 click "Let's meet them"
+0016 scroll "Inbox" up
+0017 click "Today"
+0018 scroll "Today" down
+0019 click "Requests"
+0020 scroll "Requests" down
+0021 scroll "Requests" down
+0022 scroll "Requests" down
+0023 scroll "Requests" down
+0024 scroll "Requests" down
+0025 scroll "Requests" down
+0026 scroll "Requests" down
+0027 click "Ask the J4 about fuel for Spoke B"
+0028 click "Ask the J4 to add fuel support"
+0029 scroll "Today" down
+0030 scroll "Today" down
+0031 scroll "Today" down
+0032 scroll "Today" down
+0033 click "Other updates and sites"
+0034 scroll "Today" down
+0035 scroll "Today" down
+0036 click "Requests"
+0037 click "Power for Spoke B · Capt Ana Ruiz"
+0038 click "Meet Mr. Andre Moreau"
+0039 scroll "Requests" up
+0040 scroll "Requests" up
+0041 click "Meet Ms. Rosa Delgado"
+0042 scroll "Requests" up
+0043 scroll "Requests" up
+0044 scroll "Requests" up
+0045 scroll "Requests" down
+0046 click "Ask Capt Ana Ruiz"
+0047 scroll "Requests" up
+0048 scroll "Requests" up
+0049 click "Power for Spoke B · Capt Ana Ruiz"
+0050 click "Water for Spoke C · 1st Lt David Okafor"
+0051 scroll "Requests" down
+0052 scroll "Requests" down
+0053 scroll "Requests" down
+0054 click "Ask Capt Ana Ruiz"
+0055 scroll "Requests" down
+0056 scroll "Requests" down
+0057 click "Meet Ms. Ines Carvalho"
+0058 scroll "Requests" up
+0059 click "Meet Mr. Owen Pryce"
+0060 scroll "Requests" up
+0061 scroll "Requests" up
+0062 scroll "Requests" up
+0063 scroll "Requests" down
+0064 click "Ask 1st Lt David Okafor"
+0065 click "Vendors"
+0066 click "Island Power Rentals"
+0067 click "Harbor Equipment Co"
+0068 scroll "Vendors" down
+0069 scroll "Vendors" down
+0070 click "Requests"
+0071 click "Go to market"
+0072 click "Choose a supplier…"
+0073 click "Third Island Water Works"
+0074 click "Choose an arrangement…"
+0075 click "Written purchase order"
+0076 scroll "Requests" down
+0077 scroll "Requests" down
+0078 scroll "Requests" down
+0079 scroll "Requests" down
+0080 scroll "Requests" down
+0081 scroll "Requests" down
+0082 scroll "Requests" up
+0083 scroll "Requests" up
+0084 scroll "Requests" up
+0085 click "Fast"
+0086 click "Good"
+0087 scroll "Requests" down
+0088 scroll "Requests" down
+0089 scroll "Requests" down
+0090 click "Back to requests"
+0091 click "Buy on your own initiative"
+0092 scroll "Requests" up
+0093 scroll "Requests" up
+0094 scroll "Requests" up
+0095 click "Hub power"
+0096 click "Hub fuel"
+0097 click "Spoke B fuel"
+0098 click "Choose a supplier…"
+0099 key Escape
+0100 click "You"
+0101 scroll "Team" down
+0102 scroll "Team" down
+0103 scroll "Team" down
+0104 scroll "Team" down
+0105 click "Back to the desk"
+0106 click "Payments"
+0107 click "Show today's movement"
+0108 click "End the day"
+0109 click "End the day"
+0110 scroll "Dialog" down
+0111 click "Back to Today"
+0112 click "Requests"
+0113 click "Back to requests"
+0114 scroll "Requests" up
+0115 scroll "Requests" up
+0116 scroll "Requests" down
+0117 click "Add what you learned"
+0118 scroll "Requests" down
+0119 click "Add what you learned"
+0120 click "Go to market"
+0121 click "Choose a supplier…"
+0122 click "Meridian Site Services"
+0123 click "Choose an arrangement…"
+0124 key Escape
+0125 click "Vendors"
+0126 scroll "Vendors" up
+0127 scroll "Vendors" down
+0128 click "Meet Mr. Tomas Reyna"
+0129 click "Requests"
+0130 click "Power for Spoke B · Capt Ana Ruiz"
+0131 click "Water for Spoke C · 1st Lt David Okafor"
+0132 click "Back to requests"
+0133 scroll "Requests" up
+0134 scroll "Requests" up
+0135 scroll "Requests" down
+0136 click "Add what you learned"
+0137 click "Add what you learned"
+0138 scroll "Requests" down
+0139 click "Add what you learned"
+0140 click "Go to market"
+0141 click "Choose a supplier…"
+0142 click "Third Island Water Works"
+0143 click "Choose an arrangement…"
+0144 key Escape
+0145 click "Third Island Water Works"
+0146 click "Coastal Provisions"
+0147 click "Choose an arrangement…"
+0148 key Escape
+0149 click "Vendors"
+0150 scroll "Vendors" up
+0151 scroll "Vendors" up
+0152 click "Harbor Equipment Co"
+0153 click "Coastal Provisions"
+0154 scroll "Vendors" down
+0155 scroll "Vendors" down
+0156 click "Today"
+0157 click "People to reach"
+0158 scroll "Today" down
+0159 scroll "Today" down
+0160 scroll "Today" down
+0161 click "J4 / ACSA manager"
+0162 click "SCO staff · Maj Erin Cole"
+0163 scroll "Today" down
+0164 click "Who normally provides bulk fuel here?"
+0165 key Escape
+0166 click "Requests"
+0167 click "Choose an arrangement…"
+0168 click "Undefinitized contract action"
+0169 scroll "Requests" down
+0170 scroll "Requests" down
+0171 scroll "Requests" down
+0172 scroll "Requests" down
+0173 scroll "Requests" down
+0174 scroll "Requests" up
+0175 scroll "Requests" up
+0176 scroll "Requests" up
+0177 scroll "Requests" up
+0178 click "Undefinitized contract action"
+0179 click "Written purchase order"
+0180 scroll "Requests" down
+0181 scroll "Requests" down
+0182 click "Fast"
+0183 click "Good"
+0184 scroll "Requests" down
+0185 scroll "Requests" down
+0186 scroll "Requests" down
+0187 click "Arrange support"
+0188 look
+0189 click "End the day"
+0190 click "Back"
+0191 click "Today"
+0192 scroll "Today" up
+0193 click "Who normally provides bulk fuel here?"
+0194 click "What contract vehicles can we order from?"
+0195 click "Send the question"
+0196 click "What contract vehicles can we order fro…"
+0197 click "What are the purchase thresholds for this operation?"
+0198 click "Send the question"
+0199 scroll "Today" up
+0200 click "SCO staff · Maj Erin Cole"
+0201 click "Port Fuel Haulers · Mr. Kofi Mensah"
+0202 click "Meet Mr. Kofi Mensah"
+0203 click "Port Fuel Haulers · Mr. Kofi Mensah"
+0204 click "Second Island Fuel · Ms. Hana Sato"
+0205 click "Meet Ms. Hana Sato"
+0206 click "Second Island Fuel · Ms. Hana Sato"
+0207 click "Staff meeting · Lt Col Daniel Park"
+0208 scroll "Today" down
+0209 click "Join the staff meeting"
+0210 click "End the day"
+0211 click "End the day"
+0212 click "Back to Today"
+0213 scroll "Today" up
+0214 click "Requests"
+0215 scroll "Requests" up
+0216 scroll "Requests" up
+0217 scroll "Requests" up
+0218 scroll "Requests" up
+0219 scroll "Requests" up
+0220 scroll "Requests" up
+0221 click "Water for Spoke C · 1st Lt David Okafor"
+0222 click "Power for Spoke B · Capt Ana Ruiz"
+0223 click "Choose a supplier…"
+0224 click "Harbor Equipment Co (unavailable)"
+0225 click "Meridian Site Services"
+0226 click "Choose an arrangement…"
+0227 click "Written purchase order"
+0228 scroll "Requests" down
+0229 scroll "Requests" down
+0230 click "Fast"
+0231 click "Good"
+0232 scroll "Requests" down
+0233 scroll "Requests" down
+0234 scroll "Requests" down
+0235 click "Today"
+0236 click "Yesterday"
+0237 click "Back to Today"
+0238 click "Inbox"
+0239 click "Vendors"
+0240 scroll "Vendors" up
+0241 scroll "Vendors" up
+0242 click "Coastal Provisions"
+0243 click "Harbor Equipment Co"
+0244 scroll "Vendors" down
+0245 scroll "Vendors" down
+0246 click "Requests"
+0247 scroll "Requests" up
+0248 scroll "Requests" up
+0249 scroll "Requests" up
+0250 scroll "Requests" up
+0251 scroll "Requests" up
+0252 click "Power for Spoke B · Capt Ana Ruiz"
+0253 click "Buy on your own initiative"
+0254 click "Choose a supplier…"
+0255 key Escape
+0256 click "Hub power"
+0257 click "Spoke B power"
+0258 click "Choose a supplier…"
+0259 click "Harbor Equipment Co"
+0260 click "Choose an arrangement…"
+0261 look
+0262 scroll "Requests" down
+0263 click "Choose an arrangement…"
+0264 click "BPA call"
+0265 scroll "Requests" down
+0266 scroll "Requests" down
+0267 scroll "Requests" down
+0268 scroll "Requests" down
+0269 click "Choose a vehicle…"
+0270 scroll "Requests" up
+0271 click "Choose a vehicle…"
+0272 click "The Harbor Equipment Co BPA"
+0273 type "Start day" "7"
+0274 type "Duration (days)" "60"
+0275 scroll "Requests" down
+0276 type "Start day" "7"
+0277 type "Duration (days)" "60"
+0278 scroll "Requests" down
+0279 scroll "Requests" down
+0280 scroll "Requests" up
+0281 click "Arrange support"
+0282 click "Payments"
+0283 scroll "Payments" down
+0284 scroll "Payments" down
+0285 scroll "Payments" down
+0286 scroll "Payments" down
+0287 click "Requests"
+0288 click "Spoke B power"
+0289 click "Spoke C water"
+0290 click "Choose a supplier…"
+0291 click "Coastal Provisions"
+0292 scroll "Requests" down
+0293 click "Choose an arrangement…"
+0294 click "Government purchase card"
+0295 scroll "Requests" down
+0296 scroll "Requests" down
+0297 type "Start day" "7"
+0298 type "Duration (days)" "4"
+0299 scroll "Requests" down
+0300 click "Arrange support"
+0301 scroll "Requests" up
+0302 scroll "Requests" up
+0303 scroll "Requests" up
+0304 scroll "Requests" up
+0305 scroll "Requests" up
+0306 click "Buy on your own initiative"
+0307 click "Food service for Spoke C · MSgt Lena Brandt"
+0308 click "Choose a supplier…"
+0309 click "Coastal Provisions"
+0310 click "Choose an arrangement…"
+0311 click "Written purchase order"
+0312 scroll "Requests" down
+0313 scroll "Requests" down
+0314 click "Cheap"
+0315 click "Good"
+0316 scroll "Requests" down
+0317 scroll "Requests" down
+0318 click "Arrange support"
+0319 click "End the day"
+0320 click "End the day"
+0321 click "Back to Today"
+0322 click "Menu"
+0323 click "Skip quiet days"
+0324 click "Back to Today"
+0325 click "Menu"
+0326 click "Skip quiet days"
+0327 click "Menu"
+0328 click "Back to Today"
+0329 click "Menu"
+0330 click "Skip quiet days"
+0331 click "Back to Today"
+0332 click "Menu"
+0333 click "Skip quiet days"
+0334 click "Back to Today"
+0335 click "Menu"
+0336 click "Skip quiet days"
+0337 click "Back to Today"
+0338 click "Requests"
+0339 click "Back to requests"
+0340 click "Buy on your own initiative"
+0341 scroll "Requests" up
+0342 scroll "Requests" up
+0343 click "Hub power"
+0344 click "Spoke B fuel"
+0345 click "Choose a supplier…"
+0346 click "Second Island Fuel"
+0347 scroll "Requests" down
+0348 click "Choose an arrangement…"
+0349 click "SF 44 cash purchase"
+0350 scroll "Requests" down
+0351 scroll "Requests" down
+0352 type "Quantity (gal)" "700"
+0353 type "Duration (days)" "10"
+0354 scroll "Requests" down
+0355 click "Menu"
+0356 click "Skip quiet days"
+0357 click "Back to Today"
+0358 click "Menu"
+0360 look
+0361 click "Back to Today"
+0362 click "Menu"
+0363 click "Skip quiet days"
+0364 click "Back to Today"
+0365 click "Menu"
+0367 look
+0368 click "Back to Today"
+0369 click "Menu"
+0371 click "Back to Today"
+0372 click "Menu"
+0373 click "Skip quiet days"
+0374 click "Back to Today"
+0375 click "Menu"
+0377 look
+0378 click "Back to Today"
+0379 click "Open"
+0380 scroll "Inbox" down
+0381 scroll "Inbox" down
+0382 click "Ratify"
+0383 click "Spoke C"
+0384 click "Menu"
+0387 look
+0388 click "Back to Today"
+0389 click "Open"
+0390 click "Requests"
+0391 type "Name" "8"
+0392 click "Arrange support"
+0393 click "Today"
+0394 click "Coordinate support"
+0395 click "Menu"
