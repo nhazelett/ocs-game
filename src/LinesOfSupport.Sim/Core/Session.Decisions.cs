@@ -122,6 +122,10 @@ public sealed partial class Session
     private static string Article(string words)
         => words.Length > 0 && ("aeiouAEIOU".Contains(words[0]) || words.StartsWith("SF ", StringComparison.Ordinal)) ? "an" : "a";
 
+    /// <summary>"a" or "an" before a number said as digits: "an 8-day", "an 11-day", "a 7-day" (DESK-78).</summary>
+    private static string Article(int n)
+        => n.ToString(System.Globalization.CultureInfo.InvariantCulture) is var t && (t[0] == '8' || t is "11" or "18") ? "an" : "a";
+
     /// <summary>How it stands now: the work in progress (who, done about when), then what it put in place.</summary>
     private string DecisionNow(PlayerAction action, WorkItem? work, Arrangement? arr)
     {

@@ -109,7 +109,8 @@ public sealed partial class Session
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy, PersonFor(lk, lid)));
         }
         var ordered = items.Select((it, i) => (it, i)).OrderByDescending(x => x.it.Severity).ThenBy(x => x.i).Select(x => x.it).ToList();
-        return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles(), BuildLead(ordered), BuildNewThisMorning());
+        return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles(), BuildLead(ordered), BuildNewThisMorning(),
+            _cards.Count(c => c.SubmittedDay <= Day && Day <= Math.Min(LastDay, c.RequestedStartDay + Math.Max(1, c.DurationDays) - 1)));
     }
 
     private List<CapabilityTile> BuildTiles()
@@ -130,7 +131,8 @@ public sealed partial class Session
                 : cs.TodayPermille >= 1000 ? "ok"
                 : cs.TodayPermille < Rules.Model.DownThresholdPermille ? "down" : "degraded";
             tiles.Add(new CapabilityTile(cs.SiteId, cs.CapabilityId, cap.Label, cs.TodayPermille, bufferDays, status, cs.Critical,
-                status is "down" or "degraded" ? BuildWhyShort(cs.SiteId, cs.CapabilityId) : null));
+                status is "down" or "degraded" ? BuildWhyShort(cs.SiteId, cs.CapabilityId) : null,
+                status == "notOpen" ? site.OpensDay : null));
         }
         return tiles;
     }
@@ -236,7 +238,8 @@ public sealed partial class Session
             card.Id, site.Id, site.Name, cap.Id, cap.Label, cap.Unit, person?.WithUnit ?? card.SubmittedBy, card.SubmittedDay,
             card.RequestedStartDay, card.DurationDays, card.QuantityHint,
             (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied,
-            CardTitle(card), person, card.Message, BuildWhoToAsk(card), HeardSentence(card), BuildWhoCanHelp(card));
+            CardTitle(card), person, card.Message, BuildWhoToAsk(card), HeardSentence(card), BuildWhoCanHelp(card),
+            PeakSaid(site, cap, Math.Max(from, Day), to));
     }
 
     // ------------------------------------------------------------------ action editor
@@ -354,7 +357,7 @@ public sealed partial class Session
         var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee));
         var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee));
 
-        var gaps = new List<string>(AlreadyInPlace(a, siteId, capId, startMin, startMax + Math.Max(1, a.DurationDays) - 1));   // DESK-32
+        var gaps = new List<string>(AlreadyInPlace(a, siteId, capId, startMin, startMin + Math.Max(1, a.DurationDays) - 1));   // DESK-32, DESK-78
         var cap = Cap(capId);
         var site = SiteData(siteId);
         var vendor = chk.Vendor!;
@@ -366,7 +369,12 @@ public sealed partial class Session
         var end = startMax + Math.Max(1, a.DurationDays) - 1;
         var peak = (PeakDemandMilli(siteId, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay)) + 999) / 1000;
         if (a.Quantity < peak)
-            gaps.Add($"{a.Quantity} {Rate(cap)} against peak demand of {peak} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
+        {
+            var pd = PeakDay(site, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay));
+            gaps.Add($"{a.Quantity} {Rate(cap)} against peak demand of {peak} {Rate(cap)} at {site.Name} on day {pd}, when {PopulationOn(site, pd)} people are there; the difference is a shortfall unless another arrangement covers it.");
+        }
+        if (startMax > startMin && StartRange(a, inst, hMin, hMax, lift) is { } range)   // DESK-78: what decides the range
+            gaps.Add($"Earliest start is day {startMin} to {startMax}: {range}.");
         if (chk.Card is { } card)
         {
             if (startMin > card.RequestedStartDay)
@@ -378,7 +386,7 @@ public sealed partial class Session
         else if (startMin > site.OpensDay && Day <= site.OpensDay)
             gaps.Add($"Earliest start is day {startMin}; {site.Name} opens day {site.OpensDay}.");
         if (!inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays)
-            gaps.Add($"No written terms on a {a.DurationDays}-day service: execution-confusion events can occur while it runs.");
+            gaps.Add($"No written terms on {Article(a.DurationDays)} {a.DurationDays}-day service: execution-confusion events can occur while it runs.");
         if (a.Instrument == "bpaCall") gaps.Add("A BPA is not binding: the vendor may decline the call.");
         if (a.Instrument == "idiqOrder")
         {
@@ -400,8 +408,9 @@ public sealed partial class Session
                 : $"Comes by sealift to {IslandData(vendor.Island).Name}: {Lift.SealiftTransitDays.Min} to {Lift.SealiftTransitDays.Max} days in transit, and customs can hold it on arrival.");
         if (vendor.Island != site.Island)
             gaps.Add($"Supplied from {IslandData(vendor.Island).Name}: deliveries depend on the transport links to {IslandData(site.Island).Name}.");
-        else if (StockIsland(vendor, capId) is var stock && stock != site.Island && TierOn(site.Island, Day) == "surveyed")
-            gaps.Add($"{vendor.Name} stocks this from {IslandData(stock).Name} (survey): deliveries depend on the transport links to {IslandData(site.Island).Name}.");
+        else if (StockIsland(vendor, capId) is var stock && stock != site.Island
+                 && (TierOn(site.Island, Day) == "surveyed" || VendorTermsKnown(vendor)))   // DESK-78: what their rep said reaches the quote
+            gaps.Add($"{vendor.Name} stocks this on {IslandData(stock).Name} ({(_vendorsMet.ContainsKey(vendor.Id) ? "they said so when you met" : VendorTermsKnown(vendor) ? "their card" : "survey")}): deliveries depend on the transport links to {IslandData(site.Island).Name}.");
         if (CorGap(a, inst) is { } corGap) gaps.Add(corGap);
         if (inst.RequiresSystemOrManual && Day < _systemOnlineDay)
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");

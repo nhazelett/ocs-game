@@ -94,7 +94,8 @@ public class PlanSaysWhyTests
         var day = played.Records.First(r => r.Kind == RecordKind.VendorFailure && r.Text.StartsWith("Coastal Rentals", StringComparison.Ordinal)).Day;
         var greedy = Replay.Run(bundle, played.ToSave() with { SavedDay = null }, stopAfterDay: day);
         var why = greedy.View.WhyShort("hubSite", "mhe");
-        Assert.Equal("Coastal Rentals' equipment was down (no operators); it is the vendor's to put right, and there is nothing for you to do unless it happens again.", why);
+        // DESK-78: the forklifts were bought without drivers, so the failure is the buy's to put right, not the vendor's.
+        Assert.Equal("Coastal Rentals' equipment was down (no operators); it was bought without operators, so it will keep failing more often than it should: that is yours to put right, with a buy that brings it.", why);
     }
 
     [Fact]

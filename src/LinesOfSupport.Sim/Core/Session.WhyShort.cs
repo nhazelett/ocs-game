@@ -49,48 +49,60 @@ public sealed partial class Session
                                                && a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended).ToList();
         if (running.Count == 0) return NothingRunning(site, cap, d, where);
 
+        // DESK-78: what is arranged against what the site needs comes first. The review's Spoke C food read as a delivery
+        // waiting for the boat when it was 480 meals against 672 people's worth after 64 more arrived.
+        var supply = running.Sum(Gives);
+        var demand = DemandMilli(site, capId, Math.Min(d, LastDay));
+        string? qty = null;
+        if (supply < demand)
+        {
+            var named = running.Count == 1 ? SupplierName(running[0]) : "What is arranged";
+            var perDay = cap.Delivery == "consumable" ? "/day" : "";
+            var pop = PopulationOn(site, Math.Min(d, LastDay));
+            var bought = running.Min(a => Math.Max(1, a.CreatedDay));
+            var then = PopulationOn(site, Math.Min(Math.Max(bought, site.OpensDay), LastDay));
+            var more = pop > then && then > 0 ? $", {pop - then} more than on day {bought}, when it was bought" : "";
+            qty = $"{named} supplies {CountSaid(supply, cap)}{perDay}, and {site.Name} needs {Amount((demand + 999) / 1000, cap)} for its {pop} people{more}{BuyingNote(site.Id, capId)}";
+            // When the level is what was arranged against what was needed, that is the whole story; a held delivery or a
+            // failure is named only when it took the level lower still.
+            if (CapState(site.Id, capId) is { } level && level.TodayPermille >= supply * 1000 / demand - 10) return qty;
+        }
+        string With(string cause) => qty is null ? cause : $"{qty}; {cause}";
+
         foreach (var a in running)
         {
             var who = SupplierName(a);
             if (a.Status == ArrangementStatus.Suspended)
-                return $"{who} has stopped work on {where}: the UCA has gone unpaid";
+                return With($"{who} has stopped work on {where}: the UCA has gone unpaid");
             if (_sf44Held.TryGetValue(a.Id, out var held))
-                return held.Reason.StartsWith("no cash", StringComparison.Ordinal)
+                return With(held.Reason.StartsWith("no cash", StringComparison.Ordinal)
                     ? $"{Possessive(who)} delivery did not happen: it is paid in cash at the door and the cash box was short{(_cashReplenishDay is { } r && r >= Day ? $"; finance tops it up on day {r}" : "")}"
-                    : $"{Possessive(who)} delivery did not happen: the boat to {IslandData(site.Island).Name} was not running";
+                    : $"{Possessive(who)} delivery did not happen: the boat to {IslandData(site.Island).Name} was not running");
             if (_dayHeld.FirstOrDefault(h => h.Arr == a.Id && h.Cap == capId) is { Arr: not null } wait)
             {
                 var from = IslandData(a.SupplierIslandId).Name;
                 if (wait.ClosedLink is { } link)
                 {
                     var through = _linkClosedThrough.TryGetValue(link, out var t) && t >= d ? $" through day {t}" : "";
-                    return $"{Possessive(who)} delivery is waiting on {from}: the route to {IslandData(site.Island).Name} is closed{through}";
+                    return With($"{Possessive(who)} delivery is waiting on {from}: the route to {IslandData(site.Island).Name} is closed{through}");
                 }
-                return $"{Possessive(who)} delivery is waiting on {from} for the next run to {IslandData(site.Island).Name}";
+                return With($"{Possessive(who)} delivery is waiting on {from} for the next run to {IslandData(site.Island).Name}");
             }
             var failure = _records.LastOrDefault(r => r.Kind == RecordKind.VendorFailure && r.Subject == a.Id && r.Day == d);
             if (failure is not null)
             {
-                if (!FailureKnown(failure)) return null;
+                if (!FailureKnown(failure)) return qty is null ? null : qty + ". The site reports it lower still, and nobody has told you why yet";
                 var missing = failure.Text.IndexOf(" (", StringComparison.Ordinal) is var i and > 0 ? failure.Text[i..].TrimEnd('.') : "";
                 var what = cap.Delivery == "consumable" ? $"{who} missed the delivery{missing}" : $"{Possessive(who)} equipment was down{missing}";
-                return what + NextStep(a);
+                return With(what + NextStep(a));
             }
             if (CapacityShort(a.Id, d))
-                return $"{who} has more on order than it can supply, so {NameOf(a.Id)} came up short; a second source covers the rest";
+                return With($"{who} has more on order than it can supply, so {NameOf(a.Id)} came up short; a second source covers the rest");
             if (_records.Any(r => r.Kind == RecordKind.ExecutionConfusion && r.Subject == a.Id && r.Day == d))
-                return $"{who} delivered half: the vendor and the unit disagree on what was bought, and nothing is written down to settle it";
+                return With($"{who} delivered half: the vendor and the unit disagree on what was bought, and nothing is written down to settle it");
         }
 
-        var supply = running.Sum(Gives);
-        var demand = DemandMilli(site, capId, Math.Min(d, LastDay));
-        if (supply < demand)
-        {
-            var named = running.Count == 1 ? SupplierName(running[0]) : "What is arranged";
-            var perDay = cap.Delivery == "consumable" ? "/day" : "";
-            return $"{named} supplies {CountSaid(supply, cap)}{perDay}, and {site.Name} needs {Amount((demand + 999) / 1000, cap)}{BuyingNote(site.Id, capId)}";
-        }
-        return null;   // its own supply covered the day: the cause is something it depends on, or not known
+        return qty;   // its own supply covered the day: the cause is something it depends on, or not known
     }
 
     /// <summary>Nothing fed it on the day: say what is coming, being bought or being asked about, or that nothing is.</summary>
@@ -141,6 +153,12 @@ public sealed partial class Session
             return "; its performance issue is in your inbox for a decision";
         if (issue is { Outcome: CureOutcome.None, CureEndsDay: { } end } && end >= Day)
             return $"; the cure period runs to day {end}, so there is nothing for you to do yet";
+        // DESK-78: bought without the people to run or fix it, the failures are the buy's, not the vendor's to put right.
+        var cap = Cap(a.CapabilityId);
+        var left = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !a.Lines.Contains(l.Id) && PlantPartAtRisk(cap, l, a.VendorId))
+                            .Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();
+        if (left.Count > 0)
+            return $"; it was bought without {JoinWords(left)}, so it will keep failing more often than it should: that is yours to put right, with a buy that brings {(left.Count == 1 ? "it" : "them")}";
         return "; it is the vendor's to put right, and there is nothing for you to do unless it happens again";
     }
 

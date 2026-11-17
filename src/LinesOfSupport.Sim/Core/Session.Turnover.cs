@@ -82,7 +82,9 @@ public sealed partial class Session
         var hours = CeilHours(_hoursPerDayMilli);
         var shop = new List<string>
         {
-            HasTeam ? TeamSentence() : _people == 1 ? $"It's just you, {hours} hours a day." : $"There are {Number(_people)} of you, {hours} hours a day between you.",
+            // DESK-78: as the team page shows it. A shop without a named team is you alone with all its hours (Spoke B
+            // said "two of you" over a team page with one person on it).
+            HasTeam ? TeamSentence() : _people == 1 || _team.Count == 1 ? $"It's just you, {hours} hours a day." : $"There are {Number(_people)} of you, {hours} hours a day between you.",
             _systemOnlineDay <= 1
                 ? "The contract-writing system is up."
                 : _systemOnlineDay > LastDay

@@ -13,6 +13,26 @@ public sealed partial class Session
     internal DayPlanView BuildDayPlan()
     {
         var d = Day;
+        var (people, due) = PlanPeople();
+
+        // Support due to start or to end today.
+        foreach (var a in _arrangements.Where(a => a.Status == ArrangementStatus.Pending && a.StartDay == d && !ForShop(a.CapabilityId)).OrderBy(a => a.SiteId).ThenBy(a => a.CapabilityId))
+        {
+            var site = SiteData(a.SiteId);
+            var crossing = Cap(a.CapabilityId).Delivery == "consumable" && a.SupplierIslandId != site.Island && !a.PaidPerDelivery;
+            due.Add($"{SupplierName(a)} should start {Lower(CapLabel(a.CapabilityId))} at {site.Name} today{(crossing ? ", if the boat runs" : "")}.");
+        }
+        foreach (var a in _arrangements.Where(a => a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay == d && d < LastDay && !ForShop(a.CapabilityId)))
+            due.Add($"Today is the last day of {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)} from {SupplierName(a)}.");
+
+        return new DayPlanView(d, people, [.. due.Select(SentenceCase)], BuildEndOfDayCheck());
+    }
+
+    /// <summary>Each teammate's day as the day loop will work it, and the deliveries due (DESK-39); the strip's hours come
+    /// from here too (DESK-78), so the two never disagree.</summary>
+    private (List<DayPlanPerson> People, List<string> Due) PlanPeople()
+    {
+        var d = Day;
         var people = new List<DayPlanPerson>();
         var due = new List<string>();
 
@@ -64,7 +84,12 @@ public sealed partial class Session
             }
             foreach (var t in trips.Where(t => t.Who.Id == m.Id)) Take(null, t.Label, t.Milli);
             if (meeting?.Id == m.Id) Take(null, "Staff meeting", PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), m.Id));
-            foreach (var w in order.Where(w => Member(w.Assignee).Id == m.Id)) Take(w.Id, WorkName(w), w.HoursRemainingMilli);
+            foreach (var w in order.Where(w => Member(w.Assignee).Id == m.Id))
+            {
+                Take(w.Id, WorkName(w), w.HoursRemainingMilli);
+                if (AfterNeed(w) is { Length: > 0 } late)   // DESK-78: a buy that starts after its need ended says so
+                    items[^1] = items[^1] with { Sentence = items[^1].Sentence + late };
+            }
             var waiting = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay > d && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id)
                                .OrderBy(w => w.WaitUntilDay).ToList();
 
@@ -82,21 +107,10 @@ public sealed partial class Session
                 : $"{HoursText(shown)} of {Said(perDay)} planned. {Jobs(done)} should finish today{(carried > 0 ? $", and {Jobs(carried).ToLowerInvariant()} carr{(carried == 1 ? "ies" : "y")} over" : "")}."
                   + (leftShown > 0 ? $" {Said(leftShown)} left over {(leftShown == 1 ? "goes" : "go")} to walk-in small buys." : "");
             // DESK-60 (D19; Claude play note 19): say why a job waits, not "not ready until a later day".
-            foreach (var w in waiting) sentence += $" {WorkName(w)} {WaitReason(w)}.";
+            foreach (var w in waiting) sentence += $" {WorkName(w)} {WaitReason(w)}.{AfterNeed(w)}";
             people.Add(new DayPlanPerson(m.Id, name, m.Portrait, perDay, shown, items, sentence));
         }
-
-        // Support due to start or to end today.
-        foreach (var a in _arrangements.Where(a => a.Status == ArrangementStatus.Pending && a.StartDay == d && !ForShop(a.CapabilityId)).OrderBy(a => a.SiteId).ThenBy(a => a.CapabilityId))
-        {
-            var site = SiteData(a.SiteId);
-            var crossing = Cap(a.CapabilityId).Delivery == "consumable" && a.SupplierIslandId != site.Island && !a.PaidPerDelivery;
-            due.Add($"{SupplierName(a)} should start {Lower(CapLabel(a.CapabilityId))} at {site.Name} today{(crossing ? ", if the boat runs" : "")}.");
-        }
-        foreach (var a in _arrangements.Where(a => a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay == d && d < LastDay && !ForShop(a.CapabilityId)))
-            due.Add($"Today is the last day of {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)} from {SupplierName(a)}.");
-
-        return new DayPlanView(d, people, [.. due.Select(SentenceCase)], BuildEndOfDayCheck());
+        return (people, due);
 
         static string Jobs(int n) => n switch { 0 => "Nothing", 1 => "One job", _ => $"{n} jobs" };
         static string Said(double h) => h == 1 ? "1 hour" : $"{HoursText(h)} hours";

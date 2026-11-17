@@ -169,7 +169,7 @@ public sealed partial class Session
         w.HoursTotalMilli = Rescale(w.HoursTotalMilli);
         w.Assignee = to.Id;
         AddRecord(Day, RecordKind.Action, w.SubjectId ?? w.Id,
-            $"{Upper(to.Role == "you" ? "you" : MemberName(to))} took over {LowerLabel(w.Label)} from {MemberName(from)}: {CeilHours(w.HoursRemainingMilli)} hours left.", [w.CauseId]);
+            $"{Upper(to.Role == "you" ? "you" : MemberName(to))} took over {LowerLabel(w.Label)} from {MemberName(from)}: {Plural(CeilHours(w.HoursRemainingMilli), "hour")} left.", [w.CauseId]);
         return ActionResult.Ok("reassigned");
     }
 
@@ -202,12 +202,13 @@ public sealed partial class Session
     internal IReadOnlyList<TeamMemberView> BuildTeam()
     {
         var result = new List<TeamMemberView>();
+        var planned = Finished ? [] : PlanPeople().People.ToDictionary(p => p.MemberId, p => p.HoursPlanned);
         foreach (var m in _team)
         {
             var open = _work.Where(w => w.CompletedDay is null && w.Assignee == m.Id).ToList();
             var readyMilli = open.Where(w => w.WaitUntilDay <= Day).Sum(w => w.HoursRemainingMilli);
             var perDay = HalfHours(m.HoursPerDayMilli);
-            var today = HalfHours(Math.Min(m.HoursPerDayMilli, readyMilli));
+            var today = planned.TryGetValue(m.Id, out var h) ? h : HalfHours(Math.Min(m.HoursPerDayMilli, readyMilli));   // DESK-78: as the plan counts
             var work = open.Select(w => new TeamWorkView(w.Id, w.Label, HalfHours(w.HoursRemainingMilli), w.WaitUntilDay <= Day,
                 w.WaitUntilDay > Day ? w.WaitUntilDay : null)).ToList();
             result.Add(new TeamMemberView(m.Id, m.Role, m.Role == "you" ? "You" : m.Name, m.Rank, m.Portrait,
@@ -247,7 +248,7 @@ public sealed partial class Session
             {
                 var days = p.EarliestStartMin == p.EarliestStartMax ? $"day {p.EarliestStartMin}" : $"day {p.EarliestStartMin} to {p.EarliestStartMax}";
                 var hours = p.ShopHoursMax <= 0 ? null
-                    : p.ShopHoursMin == p.ShopHoursMax ? Hrs(p.ShopHoursMax) : $"{p.ShopHoursMin} to {p.ShopHoursMax} hours";
+                    : p.ShopHoursMin == p.ShopHoursMax ? Hrs(p.ShopHoursMax) : $"{p.ShopHoursMin} to {Hrs(p.ShopHoursMax)}";
                 var lead = hours is null ? "With " + them : $"This takes {them} {hours}";
                 when = starts ? $"{lead}; it could start {days}." : $"{lead}; it would be done {days}.";
             }

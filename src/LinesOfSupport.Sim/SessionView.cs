@@ -70,6 +70,10 @@ public sealed class SessionView
     public IReadOnlyList<CorState> Cors => _s.Cors;
     /// <summary>"fair: reports 2 days late, about 80% of problems".</summary>
     public string CorSummary(CorState cor) => _s.CorSummary(cor);
+
+    /// <summary>DESK-78: a COR as this contract's order form reads them, with their fit and load for its work. Payments
+    /// read 80% where the order form said 65% for the same COR on the same contract.</summary>
+    public string CorSummary(CorState cor, Arrangement arrangement) => _s.CorSummary(cor, arrangement);
     /// <summary>The COR roster for a contract of this capability (DESK-07, D8), best odds first, each with why they fit the
     /// work or do not. Empty when the scenario has no roster. Read only.</summary>
     public IReadOnlyList<CorChoice> CorChoices(string capabilityId) => _s.BuildCorChoices(capabilityId);
