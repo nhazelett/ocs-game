@@ -57,6 +57,7 @@ public partial class GameShell
             : awardInstrument is not ("sf44" or "gpc") && string.IsNullOrEmpty(awardFunding) ? "Choose an available funding line."
             : AwardPreview?.HardStops.FirstOrDefault();
         reason ??= AwardPreview is null ? "Complete the terms to see the quote." : null;
+        if (reason == "Pick two of fast, cheap and good") reason += " below.";
         DeskUi.Gate(awardButton, AwardBlockedReason, reason);
     }
 
@@ -109,10 +110,10 @@ public partial class GameShell
     }
 
     private static string? Picked(OptionButton picker) => picker.ItemCount == 0 || picker.Selected < 0 ? null : picker.GetItemMetadata(picker.Selected).AsString();
-    private SpinBox AddNumber(string label, double value, double max, Action<double> changed)
+    private SpinBox AddNumber(string name, string label, double value, double max, Action<double> changed)
     {
-        awardPanel.AddChild(DeskUi.Label(label));
-        var input = new SpinBox { MinValue = 1, MaxValue = max, Step = 1, Value = value, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+        var caption = DeskUi.Label(label); caption.Name = name + "Label"; awardPanel.AddChild(caption);
+        var input = new SpinBox { Name = name, MinValue = 1, MaxValue = max, Step = 1, Value = value, SizeFlagsHorizontal = SizeFlags.ExpandFill };
         input.ValueChanged += value => changed(value); awardPanel.AddChild(input); return input;
     }
 
@@ -143,7 +144,7 @@ public partial class GameShell
         });
         awardButton.ThemeTypeVariation="TabletopPrimary";
         var back = AwardBackButton = DeskUi.Button("Back to requests", ShowRequests);
-        awardFooter.AddChild(back);
+        awardPanel.AddChild(back);
         AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
@@ -185,6 +186,13 @@ public partial class GameShell
         instrumentInput = AddAwardChoice("How would you arrange it?", "Choose an arrangement…", choices.Instruments, awardInstrument,
             id => { awardInstrument = id; }, out var instrumentReason, AwardPickerNotice(view, target, "arrangement", choices));
         InstrumentChoiceReason = instrumentReason;
+        var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
+        quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);
+        duration ??= Math.Max(1, requirement?.DurationDays ?? view.LastDay);
+        // SpinBox stores doubles: this is its exact-integer display limit, not a simulation capacity rule.
+        quantityInput = AddNumber("Quantity", $"Quantity ({editor.Unit})" + (editor.CardId is null ? "" : $" · Asked: {editor.RequestedQuantity ?? "No quantity stated"}"), quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
+        startInput = AddNumber("StartDay", "Start day" + (editor.RequestedStartDay is { } askedStart ? $" · Asked: day {askedStart}" : ""), start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
+        durationInput = AddNumber("Duration", "Duration (days)" + (editor.RequestedDurationDays is { } askedDays ? $" · Asked: {askedDays} days" : ""), duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
         if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
         {
             SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
@@ -232,13 +240,6 @@ public partial class GameShell
                 awardPanel.AddChild(reason); CorReasonLabels.Add(reason);
             }
         }
-        var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
-        quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);
-        duration ??= Math.Max(1, requirement?.DurationDays ?? view.LastDay);
-        // SpinBox stores doubles: this is its exact-integer display limit, not a simulation capacity rule.
-        quantityInput = AddNumber($"Quantity ({editor.Unit})" + (editor.CardId is null ? "" : $" · Asked: {editor.RequestedQuantity ?? "No quantity stated"}"), quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
-        startInput = AddNumber("Start day" + (editor.RequestedStartDay is { } askedStart ? $" · Asked: day {askedStart}" : ""), start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
-        durationInput = AddNumber("Duration (days)" + (editor.RequestedDurationDays is { } askedDays ? $" · Asked: {askedDays} days" : ""), duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
         if (!AwardTermsComplete)
         {
             previewPanel.AddChild(DeskUi.Label("Choose an available vehicle and funding line for these terms before asking for the quote."));
