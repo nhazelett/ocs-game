@@ -59,9 +59,9 @@ public class ShopVehicleTests
             Id = "waste", Instrument = "sf44", Vendor = "sanitation", Card = "tutWaste", Quantity = 3600, StartDay = 13, DurationDays = 8,
         }).Accepted);
         Assert.Contains("1 shop hour.", s.Records.Last(r => r.Subject == "waste" && r.Kind == RecordKind.Action).Text);
-        To(s, 21);
+        To(s, s.LastDay + 1);
         var trips = s.Work.Where(w => w.Label == "SF 44 delivery and payment at Hub").ToList();
-        Assert.Equal(8, trips.Count);
+        Assert.Equal(s.LastDay - 12, trips.Count);
         Assert.All(trips, w => Assert.Equal(1000, w.HoursTotalMilli));
     }
 

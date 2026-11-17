@@ -54,9 +54,10 @@ public class Sf44DeliveryTests
         s.AdvanceDay();
         Assert.Equal(before - a.DailyCostCents - a.MobilizationCents, s.CashCents);
         Assert.Equal(a.DailyCostCents + a.MobilizationCents, a.ObligatedCents);
-        To(s, 21);
+        To(s, s.LastDay + 1);
         Assert.Equal(a.IncurredCents, a.ObligatedCents);
-        Assert.Equal(8 * a.DailyCostCents + a.MobilizationCents, a.ObligatedCents);
+        // One delivery a day from day 13 to the tutorial's last day (DESK-80: day 16).
+        Assert.Equal((s.LastDay - 12) * a.DailyCostCents + a.MobilizationCents, a.ObligatedCents);
     }
 
     [Fact]
@@ -71,8 +72,8 @@ public class Sf44DeliveryTests
         Assert.Equal(13, trips[0].CreatedDay);
         Assert.NotNull(trips[0].CompletedDay);
         Assert.Contains("a trip for SrA Eli Novak and the paying agent: 2 shop hours", s.Records.Last(r => r.Subject == "waste" && r.Kind == RecordKind.Action).Text);
-        To(s, 21);
-        Assert.Equal(8, s.Work.Count(w => w.Label == "SF 44 delivery and payment at Hub"));
+        To(s, s.LastDay + 1);
+        Assert.Equal(s.LastDay - 12, s.Work.Count(w => w.Label == "SF 44 delivery and payment at Hub"));
     }
 
     [Fact]

@@ -21,10 +21,10 @@ public class BarTests
         var log = Log("tutorial-careful");
         var bar = Session.Create(Repo.Load("tutorial"), log.Seed, log.PrepChoices, log.Team).View.Turnover().Bar!;
         Assert.Equal("ward", bar.From!.Id);
-        Assert.Equal(20, bar.Days);
+        Assert.Equal(16, bar.Days);
         Assert.False(bar.Final);
         Assert.StartsWith("Water is never out more than a day. Forklifts the same: never out more than a day.", bar.Spoken);
-        Assert.EndsWith("That's for the 20 days you're here.", bar.Spoken);
+        Assert.EndsWith("That's for the 16 days you're here.", bar.Spoken);
         Assert.All(bar.Lines, l => Assert.Equal(BarState.Met, l.State));
     }
 
@@ -45,7 +45,8 @@ public class BarTests
         var bar = Play("tutorial-hasty", "tutorial").View.Debrief().Bar!;
         Assert.Equal(["mheUp", "wasteUp", "mission"], bar.Lines.Where(l => l.State == BarState.Missed).Select(l => l.Id));
         Assert.Equal("Material handling equipment at Hub: out 4 days.", bar.Lines.Single(l => l.Id == "mheUp").Text);
-        Assert.Equal("Mission output: 94%, against 95%.", bar.Lines.Single(l => l.Id == "mission").Text);
+        // DESK-80: 92% over the tutorial's 16 days (94% over the 20 it had), the early misses weighing more.
+        Assert.Equal("Mission output: 92%, against 95%.", bar.Lines.Single(l => l.Id == "mission").Text);
     }
 
     [Fact]

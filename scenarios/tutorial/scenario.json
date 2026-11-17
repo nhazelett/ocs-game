@@ -2,9 +2,9 @@
   "schemaVersion": 0,
   "id": "tutorial",
   "title": "First weeks at the hub",
-  "summary": "Tutorial. The hub island only, 20 days, 300 personnel, already open with the basics running. Three requests arrive on days 1, 4 and 9: bottled water while the water point is down in a heat advisory, a forklift rental after the host nation takes its forklift back, and a waste contract when the host nation pulls its honey trucks. Each teaches one instrument: a card or cash buy (who takes which, and cash on hand), a BPA call the vendor turns down (a BPA is not a promise), and a written purchase order with a COR (a service needs terms). The outgoing contracting officer stays three days as the mentor.",
+  "summary": "Tutorial. The hub island only, 16 days, 300 personnel, already open with the basics running. Three requests arrive on days 1, 4 and 9: bottled water while the water point is down in a heat advisory, a forklift rental after the host nation takes its forklift back, and a waste contract when the host nation pulls its honey trucks. Each teaches one instrument: a card or cash buy (who takes which, and cash on hand), a BPA call the vendor turns down (a BPA is not a promise), and a written purchase order with a COR (a service needs terms). In the second half the dining contractor slips two days running and the COR reports it, so every play meets the decision on a contractor who slips (D31). The outgoing contracting officer stays three days as the mentor.",
   "rulesVersion": "2025-10",
-  "days": 20,
+  "days": 16,
   "prepDays": 14,
   "defaultSeed": 1,
   "tutorial": true,
@@ -342,7 +342,7 @@
           "unitPriceCents": 9000
         }
       ],
-      "reliability": 0.94,
+      "reliability": 0.99,
       "acceptsGpc": true,
       "acceptsCash": false,
       "vetted": true,
@@ -863,6 +863,28 @@
         }
       ],
       "playerVisibleAs": "Main Island Utilities: we need our honey trucks back after day 12."
+    },
+    {
+      "id": "diningSlips",
+      "label": "Island Camp Services short-staffs the dining hall two days running",
+      "window": {
+        "earliestDay": 11,
+        "latestDay": 11
+      },
+      "fixed": true,
+      "preconditions": [
+        {
+          "kind": "arrangement.active",
+          "target": "hubDining"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "vendor.slips",
+          "target": "hubDining",
+          "days": 2
+        }
+      ]
     }
   ],
   "fixedSituations": [
@@ -874,7 +896,8 @@
     "mentorDay3",
     "forkliftBack",
     "forkliftsOut",
-    "honeyTrucksBack"
+    "honeyTrucksBack",
+    "diningSlips"
   ],
   "variation": [],
   "passCriteria": [
@@ -915,6 +938,11 @@
     "One island, so nothing waits on a barge.",
     "The water point is down until day 9; bottled water covers the gap, and food service needs water.",
     "Harbor Equipment Co turns down every call that reaches award on days 4 to 8; the call is not binding, so nothing is owed.",
-    "The contract-writing system is not up during the scenario, so written contracts are manual and payments can go wrong."
-  ]
+    "The contract-writing system is not up during the scenario, so written contracts are manual and payments can go wrong.",
+    "Coastal Rentals' forklifts rarely break down when its drivers come with them; run without drivers, any rented forklift here breaks down about one day in ten.",
+    "Island Camp Services short-staffs the dining hall on days 11 and 12, and SSgt Lane reports both days."
+  ],
+  "failure": {
+    "missingOperatorPermillePerDay": 100
+  }
 }

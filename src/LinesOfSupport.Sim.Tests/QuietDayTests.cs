@@ -50,10 +50,13 @@ public class QuietDayTests
     }
 
     [Fact]
-    public void The_careful_tutorial_play_has_a_week_of_quiet_days_that_a_skip_crosses()
+    public void The_careful_tutorial_play_has_short_quiet_stretches_and_the_dining_slips_end_them()
     {
+        // DESK-80 (D31): the tutorial ends on day 16 and the dining hall slips on days 11 and 12, so the week of quiet
+        // days this play once had is gone: day 12 has the slip's news and from day 13 the cure notice decision waits
+        // (this log was played before the slips existed, so it never makes it).
         var quiet = Days("tutorial-careful", "tutorial").Where(s => s.View.QuietDay()).Select(s => s.Day).ToList();
-        Assert.Equal([6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19], quiet);
+        Assert.Equal([6, 10, 11], quiet);
     }
 
     [Fact]
@@ -61,8 +64,8 @@ public class QuietDayTests
     {
         var careful = Days("tutorial-careful", "tutorial").ToDictionary(s => s.Day, s => s.View.SkipStops());
         Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 8 after material handling equipment at Hub from Main Island Utilities (host nation) ends.", 8), careful[6]);
-        Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 13 when Main Island Sanitation starts waste removal at Hub.", 13), careful[12]);
-        Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 20, the last day.", 20), careful[13]);
+        Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 13 after waste removal at Hub from Main Island Utilities (host nation) ends.", 13), careful[10]);
+        Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 13 when Main Island Sanitation starts waste removal at Hub.", 13), careful[11]);
 
         var spokeB = Days("spoke-b", "spoke-b").ToDictionary(s => s.Day, s => s.View.SkipStops());
         Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 11 when Third Island Water Works starts water at Spoke C.", 11), spokeB[8]);
@@ -79,7 +82,7 @@ public class QuietDayTests
         Assert.False(hasty[7].Quiet);    // Novak idle while Avery's work carries over
         Assert.Contains("SrA Eli Novak has nothing to work on today, and MSgt Joan Avery's work carries over; their 8 hours go to walk-in small buys.", hasty[7].Check);
         Assert.False(hasty[14].Quiet);   // a vendor problem waits for the cure notice or re-source decision
-        Assert.False(hasty[20].Quiet);   // the last day: End the day ends the game
+        Assert.False(hasty[16].Quiet);   // the last day: End the day ends the game
     }
 
     [Fact]

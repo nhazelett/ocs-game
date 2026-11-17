@@ -1,5 +1,5 @@
 First weeks at the hub / policy do-nothing
-Scenario tutorial, rules 2025-10, seed 1, 20 days.
+Scenario tutorial, rules 2025-10, seed 1, 16 days.
 
 TIMELINE
 Before day 1
@@ -48,11 +48,15 @@ Day 9
 Day 10
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
+  EVENT     Island Camp Services short-staffs the dining hall two days running
   DONE      CE small buys: 2 worked today (1 h of shop time).
+  FAIL      Island Camp Services food service at Hub missed today's delivery.
+  COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 11.
 Day 12
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Island Camp Services food service at Hub missed today's delivery.
   COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 12.
+  INBOX     Performance issue: Island Camp Services under-delivered on food service at Hub on days 11 and 12 (COR SSgt Lane). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 13
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) waste removal at Hub ended.
@@ -65,36 +69,28 @@ Day 16
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Island Camp Services food service at Hub missed today's delivery.
   COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 16.
-Day 17
-  DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 18
-  DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 19
-  DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 20
-  DONE      CE small buys: 3 worked today (1.5 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
-                              0    1    1    2
-                          12345678901234567890
-Hub Power                 ....................
-Hub Fuel                  ....................
-Hub Water                 ..XXXXXX............
-Hub Lodging               ....................
-Hub Food service          ..XXXXXX............
-Hub Waste removal         ............XXXXXXXX
-Hub Material handling equ .......XXXXXXXXXXXXX
+                              0    1    1 
+                          1234567890123456
+Hub Power                 ................
+Hub Fuel                  ................
+Hub Water                 ..XXXXXX........
+Hub Lodging               ................
+Hub Food service          ..XXXXXX........
+Hub Waste removal         ............XXXX
+Hub Material handling equ .......XXXXXXXXX
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 79% (sortie generation 100%, throughput 35%, endurance 80%, resilience 100%)
-  Obligated $624,000; incurred $312,000; incurred but not obligated $0
+  Mission output 80% (sortie generation 100%, throughput 44%, endurance 75%, resilience 100%)
+  Obligated $624,000; incurred $249,600; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 29; payment errors 1; execution-confusion days 0; vendor failures 2; declined BPA calls 0
+  Surveys 0; shop hours worked 24; payment errors 1; execution-confusion days 0; vendor failures 3; declined BPA calls 0
   hubSite.water: 6 day(s) down, 0 degraded, lowest 0%
   hubSite.food: 6 day(s) down, 0 degraded, lowest 0%
-  hubSite.waste: 8 day(s) down, 0 degraded, lowest 0%
-  hubSite.mhe: 13 day(s) down, 0 degraded, lowest 0%
+  hubSite.waste: 4 day(s) down, 0 degraded, lowest 0%
+  hubSite.mhe: 9 day(s) down, 0 degraded, lowest 0%
 
 GAPS AND WHY (each traced back through its causes)
   Day 3: Water at Hub down to 0%: water on hand ran out; no arrangement supplies water.
@@ -103,22 +99,25 @@ GAPS AND WHY (each traced back through its causes)
   Day 8: Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
   Day 13: Waste removal at Hub down to 0%: no arrangement supplies waste removal.
 
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 12): hubDining at hubSite.food, failed days 11, 12. Decision: no decision.
+
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.water days 3-8, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] The request for water for Hub (submitted day 1, needed from day 2) had nothing supplying it from day 3. Main Island Utilities (host nation) water at Hub did not start until day 9.
   #1 hubSite.food days 3-8, lowest 0%, 6 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #0)
-  #2 hubSite.waste days 13-20, lowest 0%, 8 day(s) down: AVOIDABLE
+  #2 hubSite.waste days 13-16, lowest 0%, 4 day(s) down: AVOIDABLE
       [discoverable] Inherited host nation support for waste removal at Hub was withdrawn by the host nation on day 8 (last day of support 12) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
       [avoidable] The request for waste removal for Hub (submitted day 9, needed from day 13) had nothing supplying it from day 13. The last arrangement supplying it, Main Island Utilities (host nation) waste removal at Hub, ended on day 12. It was raised at the commander's staff meeting on day 6, when the shop was not in the room.
-  #3 hubSite.mhe days 8-20, lowest 0%, 13 day(s) down: AVOIDABLE
+  #3 hubSite.mhe days 8-16, lowest 0%, 9 day(s) down: AVOIDABLE
       [discoverable] Inherited host nation support for material handling equipment at Hub was withdrawn by the host nation on day 3 (last day of support 7) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
       [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7.
 
 PASS CRITERIA
   [not met] Hub water never out more than one day (site.hubSite.water.downDays = 6)
-  [not met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 13)
-  [not met] Waste removal never out (site.hubSite.waste.downDays = 8)
-  [not met] Mission output at least 95% (mission.output = 0.787)
+  [not met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 9)
+  [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
+  [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash b6219de2553e181190638948c0d75c91c0b2b41316926ef4f55264354a938352
+State hash a8554874ff16bcd8d44fb03d74f8c6c46c40675d0b31f46d66f07708e09710d5

@@ -49,6 +49,27 @@ public sealed record ScenarioFile
     public List<VariationData> Variation { get; init; } = [];
     public List<PassCriterionData> PassCriteria { get; init; } = [];
     public List<string> ModelAssumptions { get; init; } = [];
+    /// <summary>DESK-80 (D31): this scenario's own odds for equipment run without the people it needs, replacing the
+    /// rules file's values for this scenario only. Absent fields keep the rules value.</summary>
+    public FailureOverrideData? Failure { get; init; }
+}
+
+/// <summary>A scenario's override of the rules file's plant-risk odds (DESK-80). Each field, when present, replaces the
+/// matching <see cref="FailureRulesData"/> value.</summary>
+public sealed record FailureOverrideData
+{
+    public int? MissingOperatorPermillePerDay { get; init; }
+    public int? MissingMaintenancePermillePerDayAfterGrace { get; init; }
+    public int? MissingMaintenanceGraceDays { get; init; }
+    public int? MissingMaintenanceCapPermille { get; init; }
+
+    public FailureRulesData Apply(FailureRulesData f) => f with
+    {
+        MissingOperatorPermillePerDay = MissingOperatorPermillePerDay ?? f.MissingOperatorPermillePerDay,
+        MissingMaintenancePermillePerDayAfterGrace = MissingMaintenancePermillePerDayAfterGrace ?? f.MissingMaintenancePermillePerDayAfterGrace,
+        MissingMaintenanceGraceDays = MissingMaintenanceGraceDays ?? f.MissingMaintenanceGraceDays,
+        MissingMaintenanceCapPermille = MissingMaintenanceCapPermille ?? f.MissingMaintenanceCapPermille,
+    };
 }
 
 /// <summary>One person in the scenario's cast (M2R-01, docs/design/opening-and-guidance.md 5). Role is one of customer,
