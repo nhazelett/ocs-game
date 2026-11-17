@@ -41,6 +41,18 @@ public partial class GameShell
         if (card.HeardAt is { } heardAt)
         {
             var heard = DeskUi.Label(heardAt); heard.SetMeta("heard_at", card.CardId); linkedRequirement.AddChild(heard);
+            // The public card records whether the shop heard this request in the room; do not parse its prose.
+            if (view.Cards.First(c => c.Id == card.CardId).RaisedInRoomDay is null)
+            {
+                var observedHash = session.StateHash;
+                var meeting = DeskUi.Button("Find the staff meeting in People to reach", () =>
+                {
+                    if (observedHash == session.StateHash) OpenStaffMeeting();
+                });
+                meeting.SetMeta("staff_meeting_link", card.CardId);
+                var blocked = DeskUi.ActionReason(linkedRequirement, meeting);
+                DeskUi.Gate(meeting, blocked, view.Finished ? DeskUi.FinishedReason : null);
+            }
         }
         if (session.IsReplay) linkedRequirement.AddChild(DeskUi.Label("Asking about this request or adding what you learned takes control and stops future replay actions."));
 

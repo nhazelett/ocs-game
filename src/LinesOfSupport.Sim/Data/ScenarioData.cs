@@ -782,6 +782,12 @@ public sealed record InstrumentData
     public IntRange? MobilizationDays { get; init; }
     public int? MinimumUsefulDurationDays { get; init; }
     public string? Notes { get; init; }
+
+    /// <summary>A call or an order: the vehicle sets its price and ordering time (DESK-65, D27).</summary>
+    [System.Text.Json.Serialization.JsonIgnore] public bool PricedByVehicle => LimitBasis == "vehicleScope";
+
+    /// <summary>Fast, cheap and good is picked on written terms bought on the open market only (DESK-06, DESK-65).</summary>
+    [System.Text.Json.Serialization.JsonIgnore] public bool PicksTwo => WrittenTerms && !PricedByVehicle;
 }
 
 public sealed record PrepChoiceData

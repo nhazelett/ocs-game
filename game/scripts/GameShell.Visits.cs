@@ -29,16 +29,36 @@ public partial class GameShell
     private void BuildVisitsDesk()
     {
         var board = boardContents;
-        visitsFooter = new VBoxContainer { Visible = false }; boardFooter.AddChild(visitsFooter);
+        visitsFooter = new VBoxContainer();
         mentorMessages = new VBoxContainer { Name = "MentorMessages", Visible = false };
         mentorMessages.AddThemeConstantOverride("separation", 12); board.AddChild(mentorMessages); board.MoveChild(mentorMessages, 0);
         PeopleToggle = new Button { Text = "People to reach", ToggleMode = true, Alignment = HorizontalAlignment.Left, CustomMinimumSize = new Vector2(0, 42) };
         board.AddChild(PeopleToggle); board.MoveChild(PeopleToggle, BoardDetailsToggle.GetIndex());
         visitsPanel = new VBoxContainer { Name = "ReachPeople", Visible = false };
         visitsPanel.AddThemeConstantOverride("separation", 14); board.AddChild(visitsPanel); board.MoveChild(visitsPanel, PeopleToggle.GetIndex() + 1);
-        PeopleToggle.Toggled += open => { visitsPanel.Visible = open; visitsFooter.Visible = open; };
+        PeopleToggle.Toggled += open => visitsPanel.Visible = open;
         visitsForm = new VBoxContainer(); visitsForm.AddThemeConstantOverride("separation", 12); visitsPanel.AddChild(visitsForm);
+        visitsPanel.AddChild(visitsFooter);
         visitResults = new VBoxContainer { Name = "VisitResults" }; visitResults.AddThemeConstantOverride("separation", 14); visitsPanel.AddChild(visitResults);
+    }
+
+    private async void OpenStaffMeeting()
+    {
+        if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary) return;
+        visitContact = "meeting";
+        PeopleToggle.ButtonPressed = true;
+        RefreshVisits(view, view.MorningBoard());
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
+        // Wait for the newly opened section to lay out before scrolling to its action.
+        var hash = session.StateHash;
+        var tree = GetTree();
+        await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        if (!GodotObject.IsInstanceValid(this) || hash != session.StateHash || !PeopleToggle.ButtonPressed
+            || visitContact != "meeting" || GetNode<TabContainer>("%DeskTabs").CurrentTab != TodayTab) return;
+        Control focus = VisitButtons.TryGetValue("meeting", out var join) ? join : PeopleToggle;
+        focus.GrabFocus();
+        GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").EnsureControlVisible(focus);
     }
 
     private void ResetVisits()
