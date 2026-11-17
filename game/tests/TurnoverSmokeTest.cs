@@ -18,8 +18,8 @@ public partial class TurnoverSmokeTest : Node
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var prep = PrepScreen.View(bundle);
-            Require(shell.Session.View is null && prep.Options.All(o => shell.PrepChoices[o.Id].ButtonPressed == o.Default), "Authored defaults are shown before any Session exists.");
-            Require(prep.Options.All(o => o.Says is null || shell.PrepChoices[o.Id].Text.Contains(o.Says)), "Prep uses the exact person's authored words.");
+            Require(shell.Session.View is null && prep.Offered.All(o => shell.PrepChoices[o.Id].ButtonPressed == o.Default), "Authored defaults are shown before any Session exists.");
+            Require(prep.Offered.All(o => o.Says is null || shell.PrepChoices[o.Id].Text.Contains(o.Says)), "Prep uses the exact person's authored words.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string name)
             {

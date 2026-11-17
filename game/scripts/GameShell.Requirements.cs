@@ -35,13 +35,18 @@ public partial class GameShell
         picker.ItemSelected += index => { SelectedCard = cards[(int)index].CardId; scroll.ScrollVertical = 0; RenderRequirementContext(session.View); };
         linkedRequirement.AddChild(picker);
         linkedRequirement.AddChild(DeskUi.Label($"{card.Title} · {card.Person?.WithUnit ?? card.SubmittedBy}\nPeak demand: {card.PeakDemandUnits} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
-        if (view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId)?.WhyShort is { } whyShort)
+        var standing = view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId);
+        if (standing?.WhyShort is { } whyShort)
         {
             var reason = DeskUi.Label(whyShort); reason.SetMeta("request_why_short", card.CardId); linkedRequirement.AddChild(reason);
         }
-        if (view.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId)?.OrderBy is { } order)
+        if (standing?.OrderBy is { } order)
         {
             var deadline = DeskUi.Label(order.Sentence); deadline.SetMeta("request_order_by", card.CardId); linkedRequirement.AddChild(deadline);
+        }
+        foreach (var sentence in standing?.OnFile ?? [])
+        {
+            var known = DeskUi.Label(sentence); known.SetMeta("request_on_file", card.CardId); linkedRequirement.AddChild(known);
         }
         if (card.Message is { Length: > 0 } message) linkedRequirement.AddChild(DeskUi.Label(message));
         if (card.HeardAt is { } heardAt)
