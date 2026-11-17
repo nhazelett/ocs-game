@@ -53,6 +53,7 @@ public partial class GameShell
     {
         DeskUi.Clear(morningItems); DeskUi.Clear(morningTiles);
         RefreshMorningBrief(board);
+        RenderBar(TodayBar, view?.Bar(), compact: true);
         RefreshLead(view, board);
         RefreshStandings(view);
         RefreshDecisions(view);

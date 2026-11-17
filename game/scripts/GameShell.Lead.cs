@@ -19,6 +19,9 @@ public partial class GameShell
     private void BuildLead(VBoxContainer board)
     {
         BuildMorningBrief(board);
+        TodayBar = new VBoxContainer { Name = "CommandersBar" }; TodayBar.AddThemeConstantOverride("separation", 10); board.AddChild(TodayBar);
+        // Recompute the scroll body after nested text has wrapped at its actual width.
+        board.SortChildren += board.UpdateMinimumSize;
         var card = leadCard = new PanelContainer();
         using var panelStyle = new StyleBoxFlat { BgColor = TabletopTheme.Paper, BorderWidthLeft=4, BorderColor=TabletopTheme.Moss, ContentMarginLeft = 18,
             ContentMarginRight = 18, ContentMarginTop = 18, ContentMarginBottom = 18, CornerRadiusTopLeft = 5,

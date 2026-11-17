@@ -121,7 +121,8 @@ public partial class DebriefSmokeTest : Node
             Require(shell.DisplayedDebrief!.Summary!.From is null && shell.DebriefSpeaker.Text == "After the deployment"
                 && !shell.DebriefPanel.FindChildren("*", "PersonPortrait", true, false).Any(), "A cast-free deployment uses a neutral attribution.");
             shell.QueueFree(); shell = null; await Frames();
-            GD.Print("DEBRIEF_SMOKE_PASS: by-hand approach 1, exact speaker/summary/lead, full-width layout, full record, one known snapshot per day, verbatim events, quoted evidence and lead tag once with complete traces, no-gap and cast-free completions, saved finish and read-only rendering."); GetTree().Quit();
+            await BarSmokeChecks.Run(this);
+            GD.Print("DEBRIEF_SMOKE_PASS: by-hand approach 1, exact speaker/summary/lead, full-width layout, commander verdict and restart, full morning record through the last day, verbatim events, quoted evidence and lead tag once with complete traces, no-gap and cast-free completions, saved finish and read-only rendering."); GetTree().Quit();
         }
         catch (Exception error) { shell?.QueueFree(); GD.PushError($"DEBRIEF_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
         finally { if (Directory.Exists(temporary)) Directory.Delete(temporary, true); }
@@ -159,7 +160,8 @@ public partial class DebriefSmokeTest : Node
         await Frames();
         var tabs = shell.GetNode<TabContainer>("%DeskTabs"); var area = shell.GetNode<Control>("Margin/Layout/WorkArea");
         Require(!shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").Visible && !tabs.TabsVisible && tabs.Size.X >= area.Size.X * .95f, "The after-action fills the work area instead of sitting beside the map.");
-        Require(shell.DebriefSpeaker.Size.X > tabs.Size.X * .5f && shell.DebriefSummaryText.GetGlobalRect().End.Y < shell.GetViewportRect().Size.Y, "The speaker and complete paragraph are readable in the initial viewport.");
+        Require(shell.DebriefSpeaker.Size.X > tabs.Size.X * .5f && shell.DebriefBar!.GetGlobalRect().End.Y < shell.GetViewportRect().Size.Y,
+            "The verdict is readable first in the initial viewport, before the explanation and gaps.");
         Require(shell.Session.StateHash == hash, "Rendering is read-only.");
     }
 
@@ -175,21 +177,21 @@ public partial class DebriefSmokeTest : Node
             var label = labels.Single(l => l.HasMeta("event_record") && l.GetMeta("event_record").AsString() == item.RecordId);
             Require(label.Text == item.Text && label.TooltipText == DebriefWords.TimelineKind(item.Kind), "Each event is shown once as its exact sentence; its tooltip uses plain kind words.");
         }
-        var snapshots = labels.Where(l => l.HasMeta("known_day")).ToArray();
-        Require(snapshots.Length == report.Decisions.Where(d => view.Records.Any(r => r.Id == d.RecordId && view.Known(r))).Select(d => d.Day).Distinct().Count()
-            && snapshots.Select(l => l.GetMeta("known_day").AsInt32()).Distinct().Count() == snapshots.Length, "Known then appears once per decision day, including days with several decisions.");
+        Require(!labels.Any(l => l.Text.StartsWith("Known then:")), "The full record drops the repeated known-then line.");
+        Require(labels.Where(l => l.HasMeta("record_morning")).Select(l => l.GetMeta("record_morning").AsInt32())
+            .SequenceEqual(Enumerable.Range(1, report.LastDay)), "The record includes every morning through the last day, including quiet days.");
         foreach (var id in report.Gaps.SelectMany(g => g.Factors.SelectMany(f => f.RecordIds).Concat(g.ShortfallRecordIds)).Distinct()
             .Where(id => view.Records.Any(r => r.Id == id && view.Known(r))))
             Require(labels.Any(l => l.HasMeta("cause_record") && l.GetMeta("cause_record").AsString() == id), "Every known factor and shortfall trace remains available, including factors quoted in the paragraph.");
         foreach (var commitment in report.Commitments) Require(labels.Any(l => l.Text.Contains(view.NameOf(commitment.Id)) && l.Text.Contains(commitment.Decision)), "Commitment names and decisions remain in the record.");
         Require(!Buttons(shell.DebriefPanel).Any(b => System.Text.RegularExpressions.Regex.IsMatch(b.Text, @"\bGap \d")), "No internal gap index reaches the player.");
         var picker = shell.DebriefFullRecord.FindChildren("*", "OptionButton", true, false).OfType<OptionButton>().Single();
-        foreach (var day in new[] { 0, Math.Min(2, report.LastDay) })
+        foreach (var day in new[] { 1, Math.Min(5, report.LastDay), report.LastDay }.Distinct())
         {
-            picker.Select(day + 1); picker.EmitSignal(OptionButton.SignalName.ItemSelected, day + 1);
+            picker.Select(day); picker.EmitSignal(OptionButton.SignalName.ItemSelected, day);
             var shown = Labels(shell.DebriefFullRecord).Where(l => l.HasMeta("event_record")).Select(l => l.GetMeta("event_record").AsString()).ToArray();
-            var expectedEvents = report.Events.Where(e => e.Day == day && view.Records.Any(r => r.Id == e.RecordId && view.Known(r))).Select(e => e.RecordId).ToArray();
-            Require(shown.Order().SequenceEqual(expectedEvents.Order()), "Day filtering includes inherited day-zero events and only that day's known entries.");
+            var expectedEvents = report.Events.Where(e => (e.Day == day - 1 || day == report.LastDay && e.Day == report.LastDay) && view.Records.Any(r => r.Id == e.RecordId && view.Known(r))).Select(e => e.RecordId).ToArray();
+            Require(shown.Order().SequenceEqual(expectedEvents.Order()), "Morning filtering shows the preceding night and retains final-day results on the last day.");
         }
         picker.Select(0); picker.EmitSignal(OptionButton.SignalName.ItemSelected, 0);
         Require(hash == shell.Session.StateHash, "Disclosures and cause traces do not change the game.");

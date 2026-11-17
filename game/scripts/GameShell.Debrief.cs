@@ -41,7 +41,7 @@ public partial class GameShell
         RefreshDebriefLayout();
         if (view?.Finished != true)
         {
-            debriefHash = null; DisplayedDebrief = null;
+            debriefHash = null; DisplayedDebrief = null; DebriefBar = null;
             DeskUi.Clear(debriefPanel);
             debriefPanel.AddChild(DeskUi.Label("Debrief becomes available after the final day."));
             return;
@@ -52,6 +52,13 @@ public partial class GameShell
         DeskUi.Clear(debriefPanel);
         var navigation = new HBoxContainer(); debriefPanel.AddChild(navigation);
         navigation.AddChild(DeskUi.Button("Back to the map", () => GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab));
+        var folder = scenarios[GetNode<OptionButton>("%ScenarioPicker").Selected].Name;
+        var hash = session.StateHash;
+        DebriefPlayAgain = DeskUi.Button("Play again", () => { if (hash == session.StateHash) BeginNewGame(folder); });
+        DebriefChooseScenario = DeskUi.Button("Choose a scenario", () => { if (hash == session.StateHash) { ShowFrontDoor(); ShowNewGames(); } });
+        navigation.AddChild(DebriefPlayAgain); navigation.AddChild(DebriefChooseScenario);
+        DebriefBar = new VBoxContainer { Name = "Verdict" }; DebriefBar.AddThemeConstantOverride("separation", 10);
+        debriefPanel.AddChild(DebriefBar); RenderBar(DebriefBar, report.Bar);
         var sender = new HBoxContainer(); sender.AddThemeConstantOverride("separation", 20); debriefPanel.AddChild(sender);
         if (report.Summary?.From is { } person)
         {
@@ -69,6 +76,7 @@ public partial class GameShell
         DebriefFullRecord = new VBoxContainer { Name = "FullRecord", Visible = false };
         DebriefFullRecord.AddThemeConstantOverride("separation", 18);
         DebriefRecordButton = DeskUi.Button("The full record", () => DebriefFullRecord.Visible = !DebriefFullRecord.Visible);
+        DebriefRecordButton.Text = $"The full record · {report.DaysPlayed} days";
         debriefPanel.AddChild(DebriefRecordButton); debriefPanel.AddChild(DebriefFullRecord);
         BuildDebriefRecord(DebriefFullRecord, view, report);
         GetNode<TabContainer>("%DeskTabs").CurrentTab = DebriefTab;
@@ -115,17 +123,17 @@ public partial class GameShell
         parent.AddChild(DeskUi.Label($"{report.ScenarioTitle}, {DebriefWords.Number(report.DaysPlayed)} {(report.DaysPlayed == 1 ? "day" : "days")} played, through day {report.LastDay}."));
         var scoreText = DeskUi.Label($"Mission output {Fraction(score.MissionOutput)} · sortie generation {Fraction(score.SortieGeneration)}\nThroughput {Fraction(score.Throughput)} · endurance {Fraction(score.Endurance)} · resilience {Fraction(score.Resilience)}\nObligated {DeskUi.Money(score.ObligatedCents)} · incurred {DeskUi.Money(score.IncurredCents)} · unobligated incurred {DeskUi.Money(score.UnobligatedIncurredCents)}\nUnauthorized commitments {score.UnauthorizedCommitments} · overdue UCAs {score.UcaOverdue} · HHQ inquiries {score.HhqInquiries}\nSurveys {score.Surveys} · shop hours worked {score.ShopHoursWorked}\n{score.GapCount} gaps: {score.AvoidableGaps} avoidable · {score.DiscoverableGaps} discoverable · {score.UnforeseeableGaps} unforeseeable");
         scoreText.SetMeta("scorecard", true); parent.AddChild(scoreText);
-        parent.AddChild(DeskUi.Label("Capability by day; — means the site was not open."));
+        parent.AddChild(DeskUi.Label("Support during each day; — means the site was not open."));
         foreach (var band in report.Timeline)
         {
             parent.AddChild(DeskUi.Label($"{view.NameOf(band.SiteId)} · {band.Label}"));
             parent.AddChild(DeskUi.Label(string.Join(" · ", band.PermilleByDay.Select((value, index) =>
                 $"Day {index + 1}: " + (value < 0 ? "—" : $"{value / 10m:0.#}%")))));
         }
-        parent.AddChild(DeskUi.Label("What happened, day by day"));
-        var dayPicker = new OptionButton(); dayPicker.AddItem("All days");
-        // Day zero contains the inherited arrangements and is part of the full record too.
-        for (var day = 0; day <= report.LastDay; day++) { dayPicker.AddItem($"Day {day}"); dayPicker.SetItemMetadata(day + 1, day); }
+        parent.AddChild(DeskUi.Label("What you saw each morning"));
+        var dayPicker = new OptionButton(); dayPicker.AddItem("All mornings");
+        for (var day = 1; day <= report.LastDay; day++)
+        { dayPicker.AddItem($"Morning of day {day}"); dayPicker.SetItemMetadata(day, day); }
         parent.AddChild(dayPicker);
         var timeline = new VBoxContainer(); timeline.AddThemeConstantOverride("separation", 12); parent.AddChild(timeline);
         var events = report.Events.ToDictionary(e => e.RecordId, StringComparer.Ordinal);
@@ -135,31 +143,34 @@ public partial class GameShell
         {
             DeskUi.Clear(timeline);
             var selectedDay = selection == 0 ? -1 : dayPicker.GetItemMetadata((int)selection).AsInt32();
-            foreach (var group in records.Where(r => selectedDay < 0 || r.Day == selectedDay).GroupBy(r => r.Day).OrderBy(g => g.Key))
+            for (var morning = 1; morning <= report.LastDay; morning++)
             {
-                timeline.AddChild(DeskUi.Label($"Day {group.Key}"));
-                var known = group.Where(r => decisions.ContainsKey(r.Id)).Select(r => decisions[r.Id]).FirstOrDefault()?.Known;
-                if (known is not null)
+                if (selectedDay > 0 && morning != selectedDay) continue;
+                var heading = DeskUi.Label($"Morning of day {morning}"); heading.SetMeta("record_morning", morning); timeline.AddChild(heading);
+                // Decisions belong to the morning they were made. Overnight events reach the following morning.
+                // The final day's results remain after its last morning, rather than inventing a morning beyond the game.
+                var shown = records.Where(r => decisions.ContainsKey(r.Id) ? r.Day == morning : r.Day == morning - 1).ToArray();
+                foreach (var record in shown) AddRecord(record.Id, record.Text);
+                if (shown.Length == 0) timeline.AddChild(DeskUi.Label("No events or decisions this morning."));
+                if (morning == report.LastDay)
                 {
-                    var label = DeskUi.Label("Known then: " + string.Join(", ", known.Select(k => view.NameOf(k.IslandId) + " " + k.Tier)));
-                    label.SetMeta("known_day", group.Key); timeline.AddChild(label);
-                }
-                foreach (var record in group)
-                {
-                    // Sim's sentence already names its source/label. A second heading repeats it.
-                    var label = DeskUi.Label(record.Text);
-                    if (events.TryGetValue(record.Id, out var item))
+                    var final = records.Where(r => events.ContainsKey(r.Id) && r.Day == report.LastDay).ToArray();
+                    if (final.Length > 0)
                     {
-                        label.TooltipText = DebriefWords.TimelineKind(item.Kind); label.SetMeta("event_record", item.RecordId);
+                        timeline.AddChild(DeskUi.Label($"After day {report.LastDay}"));
+                        foreach (var record in final) AddRecord(record.Id, record.Text);
                     }
-                    else if (decisions.TryGetValue(record.Id, out var decision))
-                    {
-                        label.TooltipText = decision.Rejected ? "Rejected decision" : "Decision"; label.SetMeta("decision_record", decision.RecordId);
-                    }
-                    timeline.AddChild(label);
                 }
             }
-            if (timeline.GetChildCount() == 0) timeline.AddChild(DeskUi.Label("No events or decisions for this day."));
+        }
+        void AddRecord(string id, string text)
+        {
+            var label = DeskUi.Label(text);
+            if (events.TryGetValue(id, out var item))
+            { label.TooltipText = DebriefWords.TimelineKind(item.Kind); label.SetMeta("event_record", id); }
+            else if (decisions.TryGetValue(id, out var decision))
+            { label.TooltipText = decision.Rejected ? "Rejected decision" : "Decision"; label.SetMeta("decision_record", id); }
+            timeline.AddChild(label);
         }
         dayPicker.ItemSelected += ShowDay; ShowDay(0);
         foreach (var commitment in report.Commitments)
