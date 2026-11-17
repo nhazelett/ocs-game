@@ -40,7 +40,7 @@ public partial class ActionSmokeTest : Node
             var result = expected.Apply(candidate); Require(result.Accepted, "Sim accepts the candidate.");
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "Award button sends the exact previewed action.");
-            Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "ActionResult is shown.");
+            Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(shell.Session.View!.Decisions().First().Sentence), "The accepted action is confirmed in a full sentence.");
             var instruments = shell.CurrentAwardChoices!.Instruments;
             foreach (var blocked in instruments.Where(i => !i.Available))
             {

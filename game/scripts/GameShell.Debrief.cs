@@ -76,7 +76,7 @@ public partial class GameShell
         ((ScrollContainer)debriefPanel.GetParent()).ScrollVertical = 0;
     }
 
-    private static string GapName(SessionView view, GapView gap) => $"{gap.Label} at {view.NameOf(gap.SiteId)}, days {gap.StartDay}–{gap.EndDay}";
+    private static string GapName(SessionView view, GapView gap) => $"{gap.Label} at {view.NameOf(gap.SiteId)}, {DeskUi.DaySpan(gap.StartDay, gap.EndDay)}";
 
     private static void AddDebriefGap(VBoxContainer parent, SessionView view, DebriefView report, GapView gap, bool open)
     {
@@ -91,7 +91,7 @@ public partial class GameShell
             var factor = gap.Factors[factorIndex];
             var quoted = report.Summary is { } summary && gap.Index == summary.LeadGap && summary.Quoted.Contains(factorIndex);
             var dependency = factor.DependsOnGap is { } index && report.Gaps.FirstOrDefault(g => g.Index == index) is { } other
-                ? $"\nWent down with {other.Label.ToLowerInvariant()} at {view.NameOf(other.SiteId)}, days {other.StartDay}–{other.EndDay}." : "";
+                ? $"\nWent down with {other.Label.ToLowerInvariant()} at {view.NameOf(other.SiteId)}, {DeskUi.DaySpan(other.StartDay, other.EndDay)}." : "";
             var tag = gap.Index == report.Summary?.LeadGap && factor.Tag == gap.Tag
                 ? "" : " " + DebriefWords.TagMeaning(factor.Tag);
             var label = DeskUi.Label($"{DebriefWords.Factor(factor.Kind)}." + tag +

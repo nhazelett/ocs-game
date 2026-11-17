@@ -40,7 +40,6 @@ public partial class GameShell
 
     private void RenderRequestDecisions(SessionView view, string card)
     {
-        linkedRequirement.AddChild(DeskUi.Heading("Your decisions for this request"));
         RequestDecisionRows = new VBoxContainer { Name = "RequestDecisions" };
         RequestDecisionRows.AddThemeConstantOverride("separation", 10);
         linkedRequirement.AddChild(RequestDecisionRows);
