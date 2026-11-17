@@ -58,7 +58,7 @@ public partial class DecisionsSmokeTest : Node
                 "A refused action is not committed.");
             Require(shell.Session.View.Decisions().Count == count, "Refused actions add no history row.");
             // Drafting and previewing do not enter the accepted-action list either.
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Require(shell.MarketOpen, "The real request action opens its quote form.");
             Pick(shell.VendorInput, "harborBottling");
             Pick(shell.InstrumentInput, "purchaseOrder");

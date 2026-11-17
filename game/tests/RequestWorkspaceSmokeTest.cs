@@ -19,6 +19,7 @@ public partial class RequestWorkspaceSmokeTest : Node
             Require(!shell.RequestWorkspace.Visible && !PlayScreen.Descendants(tabs.GetCurrentTabControl()).OfType<SpinBox>().Any(), "The Requests tab is a list, not a hidden buy form.");
             var listScroll = tabs.GetNode<ScrollContainer>("Requests/RequestList/Body/Body");
             listScroll.ScrollVertical = 10000; await Frames(); var position = listScroll.ScrollVertical;
+            Require(!shell.RequestListButtons["tutWater"].Text.StartsWith("Water for Hub · Hub"), "The list does not repeat the site already in the title.");
             var hash = shell.Session.StateHash;
             shell.RequestListButtons["tutWater"].EmitSignal(Button.SignalName.Pressed); await Frames();
             Page("tutWater");
@@ -55,7 +56,7 @@ public partial class RequestWorkspaceSmokeTest : Node
             shell.RequestScroll.EnsureControlVisible(shell.RequirementAddButtons["operator"]); await Capture("forklifts");
             shell.RequirementAddButtons["operator"].EmitSignal(Button.SignalName.Pressed); await Frames(); Page("tutForklift");
             Require(!shell.RequirementAddButtons.ContainsKey("operator") && shell.CurrentActionEditor!.SelectedLines.Contains("operator"), "Adding the learned part refreshes both columns in place.");
-            shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            shell.CloseRequestWorkspace(); tabs.CurrentTab = GameShell.RequestsTab; shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
             Require(shell.CurrentActionEditor!.CardId is null && shell.RequestContents.GetChildren().OfType<Label>().Any(l => l.Text == "Buy on your own initiative"), "Own-initiative buying uses the same page and explains what it is for on the left.");
             shell.CloseRequestWorkspace(); await Frames();
             Open("tutForklift"); await Frames(); shell.RequestBackButton.EmitSignal(Button.SignalName.Pressed); await Frames();
@@ -75,6 +76,10 @@ public partial class RequestWorkspaceSmokeTest : Node
                 Require(viewport.Encloses(page) && page.Size.X > 1200 && page.Position.Y >= strip.End.Y, "The page covers map and pane below the intact strip.");
                 Require(page.Encloses(shell.RequestBackButton.GetGlobalRect()) && shell.RequestColumn.Size.X >= page.Size.X / 3, "Back stays at the top left and the request has at least one third of the width.");
                 Require(shell.RequestBackButton.Size.Y <= 50 && shell.RequestBackButton.Size.X > 150 && shell.RequestColumn.Size.Y > 400, "The Back button keeps one line and gives the columns their reading height.");
+                Require(page.Position.X == 0 && page.End.X == viewport.End.X && page.End.Y == viewport.End.Y && page.Position.Y == strip.End.Y, "The request page covers the desk edge to edge directly below the strip.");
+                Require(shell.RequestContents.GetChild<Label>(0).Text == (shell.Session.View!.RequirementEditor(card)!.Person?.WithUnit ?? shell.Session.View.RequirementEditor(card)!.SubmittedBy), "The request opens with who asked.");
+                Require(shell.BuyRequestLabel.Text == shell.Session.View!.RequirementEditor(card)!.Title, "The buy names its request as text.");
+                Require(!PlayScreen.Descendants(shell.RequestWorkspace).OfType<Button>().Any(b => b.Text is "Go to market" or "Buy on your own initiative"), "Old pane navigation does not remain on the request page.");
                 var scrolls = PlayScreen.Descendants(shell.RequestWorkspace).OfType<ScrollContainer>().Where(s => s.IsVisibleInTree()).ToArray();
                 Require(scrolls.Length == 2 && !scrolls.Any(s => PlayScreen.Descendants(s).OfType<ScrollContainer>().Any(n => n.IsVisibleInTree())), "Each column has one scroll and no nested scroll.");
                 Require(shell.RequestScroll.GetGlobalRect().End.X < shell.AwardScroll.GlobalPosition.X, "The two reading columns sit side by side.");

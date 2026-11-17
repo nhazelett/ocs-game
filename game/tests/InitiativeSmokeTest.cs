@@ -16,22 +16,21 @@ public partial class InitiativeSmokeTest : Node
             var view = shell.Session.View!; var hash = shell.Session.StateHash;
             var card = shell.CurrentActionEditor!.CardId!;
             Require(card is not null && shell.InitiativeTargetInput is null, "A customer request opens first with no unrelated targets.");
-            var requests = shell.AwardRequestInput;
-            Require(Enumerable.Range(0, requests.ItemCount).All(i => requests.GetItemMetadata(i).AsString() == "own-initiative"
-                || view.Cards.Any(c => c.Id == requests.GetItemMetadata(i).AsString())), "The main list holds requests and one separate initiative entry.");
+            Require(shell.RequestListButtons.Keys.All(id => view.Cards.Any(c => c.Id == id)), "The request list holds actual requests; own initiative is a separate desk action.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
-            async Task Capture(OptionButton picker, string suffix)
+            async Task Capture(OptionButton? picker, string suffix)
             {
                 for(var i=0;i<3;i++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 if(shot<0)return;
-                picker.ShowPopup();await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                picker?.ShowPopup();await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
                 using var image=GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot+1]+"-"+suffix+".png")==Error.Ok,"Native picker screenshot saved.");
-                picker.GetPopup().Hide();
+                picker?.GetPopup().Hide();
             }
-            await Capture(requests,"requests");
-            Pick(requests,"own-initiative");
+            shell.CloseRequestWorkspace(); shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.RequestsTab;
+            await Capture(null,"requests");
+            shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.CurrentActionEditor!.CardId is null && shell.InitiativeTargetInput is not null
                 && shell.PendingAward is null && shell.AwardButton.Disabled,"Initiative is explicit and clears stale award choices.");
             Require(Enumerable.Range(0,shell.InitiativeTargetInput!.ItemCount).All(i=>
@@ -40,7 +39,7 @@ public partial class InitiativeSmokeTest : Node
             Pick(shell.InitiativeTargetInput,"spokeBSite.power");
             await Capture(shell.InitiativeTargetInput!,"initiative");
             Require(shell.Session.StateHash==hash,"Changing modes and inspecting lists leaves the Sim unchanged.");
-            Pick(shell.AwardRequestInput,card!);
+            PickAwardTarget(shell,card!);
             Require(shell.CurrentActionEditor!.CardId==card && shell.InitiativeTargetInput is null,"Returning to a request restores its linked editor.");
             PickAwardTarget(shell,"spokeBSite.power");
             Pick(shell.VendorInput,"vendorC");Pick(shell.InstrumentInput,"bpaCall");Pick(shell.VehicleInput,"bosBpa");

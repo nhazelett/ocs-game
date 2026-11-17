@@ -32,11 +32,9 @@ public partial class ShopVehicleSmokeTest : Node
                 .Single(l => l.HasMeta("visit_timing") && l.GetMeta("visit_timing").AsString() == "vendor");
             Require(Timing().Text.StartsWith($"{before.ShopHoursMin} hours of your time.") && !Timing().Text.Contains("down from"),
                 "An ordinary vendor meeting uses plural hours and claims no vehicle saving.");
-            var oldRequests = shell.AwardRequestInput; var oldRequestIndex = oldRequests.Selected;
-            Pick(oldRequests, "own-initiative");
-            oldRequests.EmitSignal(OptionButton.SignalName.ItemSelected, oldRequestIndex);
+            shell.GoToOwnInitiative();
             var key = model.SiteId + "." + model.CapabilityId;
-            Require(shell.InitiativeTargetInput!.GetItemMetadata(shell.InitiativeTargetInput.Selected).AsString() == key, "The office's own purchase is offered first; an obsolete request control cannot replace it.");
+            Require(shell.InitiativeTargetInput!.GetItemMetadata(shell.InitiativeTargetInput.Selected).AsString() == key, "The office's own purchase is offered first without a request-switching control.");
             Require(shell.InitiativeDetails!.Text.Contains(model.Why) && model.Vendors.All(v => shell.InitiativeDetails.Text.Contains(shell.Session.View.NameOf(v))), "The reason and actual seller names come from the Sim model.");
             Require(shell.CurrentActionEditor!.CardId is null && shell.CurrentActionEditor.SiteId == model.SiteId && shell.CurrentActionEditor.CapabilityId == model.CapabilityId
                 && shell.PendingAward is null && shell.AwardButton.Disabled, "The model opens its ordinary site/capability award without stale terms.");

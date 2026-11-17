@@ -63,7 +63,7 @@ public partial class CommitPreviewSmokeTest : Node
             var helper = shell.Session.View!.RequirementEditor("tutForklift")!.WhoCanHelp!.First(h => h.Person?.Id == "dunn");
             await Capture("ask", Cost(shell.RequestHelperButtons["ask:dunn"], helper.Start!));
             shell.RequestHelperButtons["ask:dunn"].EmitSignal(Button.SignalName.Pressed); Step(shell);
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.VendorInput, "harborEquipment"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "equipBpa");
             Require(shell.AwardAddButtons.ContainsKey("operator"), "The learned missing-part warning carries Add what you learned in the buying form.");
             await Capture("learned", shell.AwardAddButtons["operator"]);
@@ -87,7 +87,7 @@ public partial class CommitPreviewSmokeTest : Node
             shell.QuantityInput.Value = 1000000;
             Require(!shell.AwardSummaryLabel.Visible && shell.AwardButton.Disabled, "A refused buy clears the previous summary.");
             Require(shell.Session.StateHash == hash, "Quote and attention checks are pure.");
-            shell.ShowRequests(); shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            shell.ShowRequests(); shell.GoToMarket(shell.SelectedCard!); await Frames();
             Require(shell.AwardScroll.ScrollVertical == 0, "Every opening of the buying form starts at its top.");
 
             Scenario(shell, "tutorial"); Replay(shell, "approach1 taught");

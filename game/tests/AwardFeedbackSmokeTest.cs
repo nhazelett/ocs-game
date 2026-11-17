@@ -21,10 +21,9 @@ public partial class AwardFeedbackSmokeTest : Node
             var water = shell.Session.View!.Cards.First(c => c.CapabilityId == "water").Id;
             shell.NavigateBoardItem(new BoardItem("", 1, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, water, "", []));
             var pane = shell.RequestColumn;
-            Require(PlayScreen.Descendants(pane).OfType<Label>().Any(l => l.Text.Contains("nobody has requested"))
-                && PlayScreen.Descendants(pane).OfType<Label>().Any(l => l.Text.Contains("for this request")), "Both routes explain what they arrange.");
+            Require(PlayScreen.Descendants(pane).OfType<Label>().Any(l => l.Text == shell.Session.View!.RequirementEditor(water)!.Title), "The left column identifies the same request as the buy.");
             await Capture("request-before");
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc");
             shell.StartInput.Value = 2; shell.DurationInput.Value = 7;
             var award = shell.PendingAward!;
@@ -52,7 +51,7 @@ public partial class AwardFeedbackSmokeTest : Node
             Require(requestScroll.ScrollVertical == 0 && requestScroll.GetGlobalRect().Encloses(rows.GetChild<Control>(0).GetGlobalRect()),
                 "The new arrangement and its actual state are on screen at the top.");
             // A fresh form still offers real structural refusals, with their explanations in the list itself.
-            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.InstrumentInput, "bpaCall");
             var blocked = shell.CurrentAwardChoices!.Vendors.First(v => !v.Available && v.Reason is not null);
             var index = Enumerable.Range(1, shell.VendorInput.ItemCount - 1)

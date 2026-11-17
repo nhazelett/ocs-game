@@ -34,7 +34,7 @@ public partial class DebriefSmokeTest : Node
             void GoToMarket(string card)
             {
                 OpenCard(card);
-                shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+                shell.GoToMarket(shell.SelectedCard!);
             }
             void SetLine(string card, string line)
             {

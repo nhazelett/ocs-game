@@ -29,8 +29,8 @@ public partial class BuyFormSmokeTest : Node
             Require(shell.QuantityInput.Value == 4500 && shell.StartInput.Value == 2 && shell.DurationInput.Value == 7, "Arrangement changes keep the chosen amount and timing.");
             Require(shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good below.", "A pick-two stop says where the choices are.");
             PickPriorities(shell, "fast", "good");
-            Require(shell.CorInput is not null && shell.DurationInput.GetIndex() < shell.CorInput.GetIndex()
-                && shell.PriorityInputs.Values.All(p => shell.DurationInput.GetIndex() < p.GetParent().GetIndex()), "Amount and timing precede priorities and the COR.");
+            Require(shell.CorInput is not null && shell.DurationInput.GetParent().GetParent().GetIndex() < shell.CorInput.GetParent().GetIndex()
+                && shell.PriorityInputs.Values.All(p => shell.DurationInput.GetParent().GetParent().GetIndex() < p.GetParent().GetIndex()), "Amount and timing precede priorities and the COR.");
             await Layout("written-water", shell.DurationInput);
             Require(shell.Session.StateHash == hash, "Reading and editing every term leaves Sim state unchanged.");
             shell.ShowRequests(); shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed);
@@ -49,9 +49,11 @@ public partial class BuyFormSmokeTest : Node
             string Caption(SpinBox input) => input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
             void Order()
             {
-                Require(shell.QuantityInput.GetIndex() == shell.InstrumentChoiceReason.GetIndex() + 2
-                    && shell.StartInput.GetIndex() == shell.QuantityInput.GetIndex() + 2
-                    && shell.DurationInput.GetIndex() == shell.StartInput.GetIndex() + 2, "Quantity, start and duration sit directly below the arrangement on every form.");
+                var amounts = shell.QuantityInput.GetParent().GetParent();
+                Require(amounts.Name == "BuyAmounts" && shell.StartInput.GetParent().GetParent() == amounts
+                    && shell.DurationInput.GetParent().GetParent() == amounts
+                    && amounts.GetIndex() > shell.InstrumentInput.GetParent().GetIndex()
+                    && amounts.GetIndex() < shell.VendorInput.GetParent().GetIndex(), "The sizing row sits between arrangement and supplier.");
                 Require(Caption(shell.StartInput).StartsWith("Start day") && Caption(shell.DurationInput).StartsWith("Duration (days)"), "Timing fields carry their own visible names.");
             }
             async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }

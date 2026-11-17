@@ -19,9 +19,9 @@ public partial class GameShell
     {
         PriorityInputs.Clear(); AwardTrade = null;
         if (!WrittenAward) return;
-        awardPanel.AddChild(DeskUi.Label("Fast, cheap, good · pick two"));
-        awardPanel.AddChild(DeskUi.Label("Choose the two that matter most. To change a pair, turn one off first."));
-        var row = new HBoxContainer(); awardPanel.AddChild(row);
+        priorityHelp = DeskUi.Label("Choose the two that matter most. To change a pair, turn one off first.");
+        var row = new HBoxContainer { Name = "PickTwo" }; awardPanel.AddChild(row);
+        var caption = DeskUi.Label("Pick two"); caption.CustomMinimumSize = new Vector2(150, 0); caption.SizeFlagsVertical = SizeFlags.ShrinkCenter; row.AddChild(caption);
         row.AddThemeConstantOverride("separation", 12);
         var formHash = session.StateHash;
         var formVersion = awardFormVersion;

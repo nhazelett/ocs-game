@@ -14,6 +14,8 @@ public partial class GameShell
     private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor;
     private long? quantity;
     private int? start, duration;
+    private readonly List<Label> awardChoiceReasons = [];
+    private Label? priorityHelp;
     private int awardSequence = 1;
     private int awardFormVersion;
     private OptionButton instrumentInput = null!, vendorInput = null!, vehicleInput = null!, fundingInput = null!;
@@ -27,7 +29,7 @@ public partial class GameShell
     internal AwardAction? PendingAward { get; private set; }
     internal ActionPreview? AwardPreview { get; private set; }
     internal ActionEditorView? CurrentActionEditor { get; private set; }
-    internal OptionButton AwardRequestInput { get; private set; } = null!;
+    internal Label BuyRequestLabel { get; private set; } = null!;
     internal OptionButton? InitiativeTargetInput { get; private set; }
     internal Label? InitiativeDetails { get; private set; }
     internal OptionButton InstrumentInput => instrumentInput;
@@ -88,9 +90,12 @@ public partial class GameShell
         return targets.GroupBy(t => t.Id).Select(g => g.First()).ToList();
     }
 
-    private static OptionButton AddPick(VBoxContainer panel, string label, IReadOnlyList<Pick> options, string? selected, Action<string> changed)
+    private static OptionButton AddPick(VBoxContainer panel, string label, IReadOnlyList<Pick> options, string? selected, Action<string> changed, bool inline = false)
     {
-        panel.AddChild(DeskUi.Label(label));
+        var caption = DeskUi.Label(label);
+        var row = inline ? new HBoxContainer() : null;
+        if (row is not null) { row.AddThemeConstantOverride("separation", 12); panel.AddChild(row); caption.AutowrapMode = TextServer.AutowrapMode.Off; caption.CustomMinimumSize = new Vector2(150, 0); caption.SizeFlagsVertical = SizeFlags.ShrinkCenter; }
+        (row as Node ?? panel).AddChild(caption);
         var picker = new OptionButton { SizeFlagsHorizontal = SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true };
         for (var i = 0; i < options.Count; i++)
         {
@@ -103,23 +108,24 @@ public partial class GameShell
         if (selected is null || !options.Any(o => o.Id == selected)) index = options.Select((o, i) => (o, i)).Where(x => x.o.Block is null).Select(x => x.i).DefaultIfEmpty(0).First();
         if (options.Count > 0) picker.Select(index); else picker.Disabled = true;
         picker.ItemSelected += i => changed(options[(int)i].Id);
-        panel.AddChild(picker);
+        (row as Node ?? panel).AddChild(picker);
         foreach (var option in options.Where(o => o.Block is not null))
             panel.AddChild(DeskUi.Label(option.Text + ": " + option.Block));
         return picker;
     }
 
     private static string? Picked(OptionButton picker) => picker.ItemCount == 0 || picker.Selected < 0 ? null : picker.GetItemMetadata(picker.Selected).AsString();
-    private SpinBox AddNumber(string name, string label, double value, double max, Action<double> changed)
+    private SpinBox AddNumber(VBoxContainer parent, string name, string label, double value, double max, Action<double> changed)
     {
-        var caption = DeskUi.Label(label); caption.Name = name + "Label"; awardPanel.AddChild(caption);
+        var caption = DeskUi.Label(label); caption.Name = name + "Label"; parent.AddChild(caption);
         var input = new SpinBox { Name = name, MinValue = 1, MaxValue = max, Step = 1, Value = value, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-        input.ValueChanged += value => changed(value); awardPanel.AddChild(input); return input;
+        input.ValueChanged += value => changed(value); parent.AddChild(input); return input;
     }
 
     private void RefreshActionDesk(SessionView? view)
     {
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
+        awardChoiceReasons.Clear(); priorityHelp = null;
         PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
         PriorityInputs.Clear(); AwardTrade = null; // DESK-26
         previewLearned = null; AwardAddButtons.Clear();
@@ -157,20 +163,16 @@ public partial class GameShell
         void ChooseTarget(string id)
         {
             if (formVersion != awardFormVersion || formHash != session.StateHash) return;
-            SelectedCard = targets.Single(t => t.Id == id).Card;
-            awardTarget = id; awardVendor = awardInstrument = awardVehicle = awardFunding = awardCor = null;
-            awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
+            SelectAwardTarget(id);
         }
         var target = targets.Single(t => t.Id == awardTarget);
         SelectedCard = target.Card; RenderRequirementContext(view);
         var ownTargets = targets.Where(t => t.Card is null).ToArray();
-        var requestOptions = targets.Where(t => t.Card is not null).Select(t => new Pick(t.Id, t.Label)).ToList();
-        if (ownTargets.Length > 0) requestOptions.Add(new Pick("own-initiative", "Buy on your own initiative"));
-        AwardRequestInput = AddPick(awardPanel, "What are you arranging?", requestOptions,
-            target.Card ?? "own-initiative", id => ChooseTarget(id == "own-initiative" ? ownTargets[0].Id : id));
+        BuyRequestLabel = DeskUi.Label(target.Card is null ? target.Label : view.RequirementEditor(target.Card)!.Title);
+        BuyRequestLabel.SetMeta("buy_request", target.Id); awardPanel.AddChild(BuyRequestLabel);
         if (target.Card is null)
             InitiativeTargetInput = AddPick(awardPanel, "What would you buy on your own initiative?",
-                ownTargets.Select(t => new Pick(t.Id, t.Label)).ToArray(), target.Id, ChooseTarget);
+                ownTargets.Select(t => new Pick(t.Id, t.Label)).ToArray(), target.Id, ChooseTarget, inline: true);
         if (target.Card is null && view.OwnInitiative.FirstOrDefault(t => t.SiteId == target.Site && t.CapabilityId == target.Capability) is { } initiative)
         {
             InitiativeDetails = DeskUi.Label(initiative.Why + "\nWho sells it: " + string.Join(", ", initiative.Vendors.Select(view.NameOf)) + "."
@@ -178,21 +180,22 @@ public partial class GameShell
             awardPanel.AddChild(InitiativeDetails);
         }
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
-        awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
         var choices = ReconcileAwardChoices(view, target);
-        vendorInput = AddAwardChoice("Who could provide it?", "Choose a supplier…", choices.Vendors, awardVendor,
-            id => { awardVendor = id; }, out var vendorReason, AwardPickerNotice(view, target, "supplier", choices, awardChoiceNotice));
-        VendorChoiceReason = vendorReason;
-        instrumentInput = AddAwardChoice("How would you arrange it?", "Choose an arrangement…", choices.Instruments, awardInstrument,
+        instrumentInput = AddAwardChoice("Arrangement", "Choose an arrangement…", choices.Instruments, awardInstrument,
             id => { awardInstrument = id; }, out var instrumentReason, AwardPickerNotice(view, target, "arrangement", choices));
         InstrumentChoiceReason = instrumentReason;
         var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
         quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);
         duration ??= Math.Max(1, requirement?.DurationDays ?? view.LastDay);
         // SpinBox stores doubles: this is its exact-integer display limit, not a simulation capacity rule.
-        quantityInput = AddNumber("Quantity", $"Quantity ({editor.Unit})" + (editor.CardId is null ? "" : $" · Asked: {editor.RequestedQuantity ?? "No quantity stated"}"), quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
-        startInput = AddNumber("StartDay", "Start day" + (editor.RequestedStartDay is { } askedStart ? $" · Asked: day {askedStart}" : ""), start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
-        durationInput = AddNumber("Duration", "Duration (days)" + (editor.RequestedDurationDays is { } askedDays ? $" · Asked: {askedDays} days" : ""), duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
+        var amounts = new HBoxContainer { Name = "BuyAmounts" }; amounts.AddThemeConstantOverride("separation", 12); awardPanel.AddChild(amounts);
+        VBoxContainer AmountColumn(string name) { var column = new VBoxContainer { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = name == "Amount" ? 1.5f : 1 }; column.AddThemeConstantOverride("separation", 4); amounts.AddChild(column); return column; }
+        quantityInput = AddNumber(AmountColumn("Amount"), "Quantity", $"Quantity ({editor.Unit})" + (editor.CardId is null ? "" : $" · Asked: {editor.RequestedQuantity ?? "No quantity stated"}"), quantity.Value, 9007199254740991, value => { quantity = checked((long)value); UpdateAwardPreview(); });
+        startInput = AddNumber(AmountColumn("Start"), "StartDay", "Start day" + (editor.RequestedStartDay is { } askedStart ? $" · Asked: day {askedStart}" : ""), start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
+        durationInput = AddNumber(AmountColumn("Days"), "Duration", "Duration (days)" + (editor.RequestedDurationDays is { } askedDays ? $" · Asked: {askedDays} days" : ""), duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
+        vendorInput = AddAwardChoice("Supplier", "Choose a supplier…", choices.Vendors, awardVendor,
+            id => { awardVendor = id; }, out var vendorReason, AwardPickerNotice(view, target, "supplier", choices, awardChoiceNotice));
+        VendorChoiceReason = vendorReason;
         if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
         {
             SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
@@ -200,13 +203,14 @@ public partial class GameShell
                 + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
                 + " · Uncommitted: " + (supplier.CapacityKnown ? DeskUi.Quantity(supplier.CapacityFreeToday) : "—")
                 + "\nNotice: " + (supplier.PaymentKnown ? (supplier.LeadTimeDays == 1 ? "1 day" : $"{supplier.LeadTimeDays} days") : "—"));
-            awardPanel.AddChild(SupplierKnowledge);
+
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
         vehicleInput = AddAwardChoice("Contract vehicle", needsVehicle ? "Choose a contract vehicle…" : "No contract vehicle needed", choices.Vehicles, awardVehicle,
             id => awardVehicle = id, out var vehicleReason, needsVehicle ? AwardPickerNotice(view, target, "vehicle", choices) : null);
         VehicleChoiceReason = vehicleReason;
         vehicleInput.Disabled = !needsVehicle;
+        vehicleInput.GetParent<Control>().Visible = needsVehicle;
         if (!needsVehicle) { vehicleReason.Text = ""; vehicleReason.Hide(); }
         var immediate = awardInstrument is "sf44" or "gpc";
         if (awardFunding is null && !immediate) awardFunding = choices.Funding.FirstOrDefault(f => f.Available)?.Id ?? "";
@@ -214,31 +218,36 @@ public partial class GameShell
             id => awardFunding = id, out var fundingReason, !immediate ? AwardPickerNotice(view, target, "funding", choices) : null);
         FundingChoiceReason = fundingReason;
         fundingInput.Disabled = immediate;
+        fundingInput.GetParent<Control>().Visible = !immediate;
         BuildAwardPriorities(view); GateAward(view); // DESK-26
-        if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
-        {
-            previewPanel.AddChild(DeskUi.Label("Choose an available supplier and arrangement, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
-            return;
-        }
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {
             var cors = view.CorChoices(editor.CapabilityId);
             var options = new[] { new Pick("", "None") }.Concat(cors.Select(c => new Pick(c.Id,
                 c.Name + (string.IsNullOrEmpty(c.Unit) ? "" : " · " + c.Unit)))).ToArray();
-            CorInput = AddPick(awardPanel, "Who will watch this contract?", options, awardCor, id =>
+            CorInput = AddPick(awardPanel, "Contract monitor", options, awardCor, id =>
             {
                 if (formVersion != awardFormVersion || formHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay
                     || session.View is not { Finished: false }) return;
                 awardCor = id; UpdateAwardPreview();
-            });
+            }, inline: true);
             CorInput.Disabled = view.Finished;
             awardCor = Picked(CorInput);
             for (var i = 0; i < cors.Count; i++)
             {
                 CorInput.SetItemTooltip(i + 1, cors[i].Why);
                 var reason = DeskUi.Label(cors[i].Why);
-                awardPanel.AddChild(reason); CorReasonLabels.Add(reason);
+                CorReasonLabels.Add(reason);
             }
+        }
+        foreach (var reason in awardChoiceReasons) awardPanel.AddChild(reason);
+        if (priorityHelp is not null) awardPanel.AddChild(priorityHelp);
+        foreach (var reason in CorReasonLabels) awardPanel.AddChild(reason);
+        if (SupplierKnowledge is not null) awardPanel.AddChild(SupplierKnowledge);
+        if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
+        {
+            previewPanel.AddChild(DeskUi.Label("Choose an available supplier and arrangement, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
+            return;
         }
         if (!AwardTermsComplete)
         {
@@ -260,7 +269,7 @@ public partial class GameShell
     {
         var view = session.View; var editor = CurrentActionEditor;
         if (view is null || editor is null) return;
-        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; GateAward(view); return; }
+        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; RefreshRequestBuyWarnings(); GateAward(view); return; }
         while (view.Arrangements.Any(a => a.Id == $"player-award-{awardSequence}") || view.InWork($"player-award-{awardSequence}")) awardSequence++;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
@@ -294,24 +303,31 @@ public partial class GameShell
             }
             previewStops.Visible = AwardPreview.HardStops.Count > 0;
             previewGaps.Visible = AwardPreview.SoftGaps.Count > 0;
-            GateAward(view);
+            RefreshRequestBuyWarnings(); GateAward(view);
         }
         catch (OverflowException)
         {
             AwardSummaryLabel.Text = ""; AwardSummaryLabel.Hide();
             AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
-            previewGaps.Text = ""; DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
+            previewGaps.Text = ""; RefreshRequestBuyWarnings(); DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
         }
     }
 
-    private void GoToOwnInitiative()
+    internal void SelectAwardTarget(string id)
+    {
+        if (session.View is not { } view || !AwardTargets(view).Any(t => t.Id == id)) return;
+        ResetAwardForm(); awardTarget = id; SelectedCard = AwardTargets(view).Single(t => t.Id == id).Card;
+        RefreshActionDesk(view);
+    }
+
+    internal void GoToOwnInitiative()
     {
         if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay) return;
         ResetAwardForm(); awardTarget = AwardTargets(view).FirstOrDefault(t => t.Card is null)?.Id;
         RefreshActionDesk(view); ShowMarket();
     }
 
-    private void GoToMarket(string card)
+    internal void GoToMarket(string card)
     {
         if (session.View is not { } view || AtFrontDoor || ReadingTurnover || PlayingDay
             || !view.Cards.Any(c => c.Id == card)) return;
