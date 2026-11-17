@@ -21,7 +21,7 @@ public partial class RequirementSmokeTest : Node
             shell.LookPicker.Select(0); shell.LookPicker.EmitSignal(OptionButton.SignalName.ItemSelected, 0);
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var expected = Session.Create(bundle, 1);
-            var panel = shell.GetNode<TabContainer>("%DeskTabs").GetNode<VBoxContainer>("Requests/RequirementPane/Body/Body/Contents");
+            var panel = shell.RequestContents;
             var actions = new List<PlayerAction>();
             shell.Session.ActionAccepted += actions.Add;
             void Open(string card) => shell.NavigateBoardItem(new BoardItem("", shell.Session.View!.Day, BoardCategory.Request,
@@ -162,7 +162,7 @@ public partial class RequirementSmokeTest : Node
             async Task RequestFrame(string suffix)
             {
                 for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-                var page = shell.GetNode<Control>("%DeskTabs/Requests");
+                var page = shell.RequestColumn;
                 var pane = page.GetNode<Control>("RequirementPane");
                 var scroll = (ScrollContainer)panel.GetParent();
                 Require(pane.Size.IsEqualApprox(page.Size), "A request rebuild refits the whole pane to the tab without another navigation.");

@@ -15,6 +15,12 @@ public partial class GameShell
         var fit = DeskUi.Button("Fit map", () => Map.FitMap()); fit.AutowrapMode = TextServer.AutowrapMode.Off; fit.SizeFlagsHorizontal = SizeFlags.ShrinkBegin; row.AddChild(fit);
         var movement = MovementButton = DeskUi.Button("Show today's movement", () => Map.ReplayMovement()); movement.AutowrapMode = TextServer.AutowrapMode.Off; movement.SizeFlagsHorizontal = SizeFlags.ShrinkBegin; row.AddChild(movement);
         var hint = MapHint = DeskUi.Label("Drag to move. Scroll to zoom."); hint.SizeFlagsHorizontal = SizeFlags.ExpandFill; row.AddChild(hint); board.AddChild(row);
+        Map.RequestPicked += card =>
+        {
+            if (session.View is not null) NavigateBoardItem(new LinesOfSupport.Sim.Views.BoardItem("", session.View.Day,
+                LinesOfSupport.Sim.Views.BoardCategory.Request, LinesOfSupport.Sim.Views.BoardSeverity.Info,
+                LinesOfSupport.Sim.Views.BoardLinkKind.Card, card, "", []));
+        };
         Map.SitePicked += id => { var tile = session.View?.MorningBoard().Tiles.FirstOrDefault(t => t.SiteId == id); if (tile is not null) SelectCapability(id + "." + tile.CapabilityId); };
     }
 }

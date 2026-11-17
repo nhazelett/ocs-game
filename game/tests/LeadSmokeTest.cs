@@ -36,7 +36,7 @@ public partial class LeadSmokeTest : Node
                 .Single(b => b.HasMeta("news_link") && b.GetMeta("news_link").AsString() == lead.LinkId);
             await Capture("day1");
             newRequest.EmitSignal(Button.SignalName.Pressed);
-            Require(lead.LinkKind == BoardLinkKind.Card && shell.SelectedCard == lead.LinkId && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab, "First customer's lead opens the exact card.");
+            Require(lead.LinkKind == BoardLinkKind.Card && shell.SelectedCard == lead.LinkId && shell.RequestWorkspace.Visible, "First customer's lead opens the exact card.");
             Require(shell.Session.StateHash == hash, "Opening a lead is read-only.");
             shell.BoardDetailsToggle.ButtonPressed = true;
             Require(shell.BoardDetailsVisible, "Player can still inspect all other work and sites.");

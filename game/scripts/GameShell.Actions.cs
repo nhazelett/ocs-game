@@ -63,7 +63,7 @@ public partial class GameShell
 
     private void BuildActionDesk()
     {
-        var body = DeskUi.Pane(GetNode<TabContainer>("%DeskTabs").GetNode<Control>("Requests/Market"), "AwardEditor", out awardFooter);
+        var body = DeskUi.Pane(RequestBuyColumn, "AwardEditor", out awardFooter);
         awardPanel = new VBoxContainer { Name = "Inputs" }; body.AddChild(awardPanel);
         awardPanel.AddThemeConstantOverride("separation", 10);
         previewPanel = new VBoxContainer { Name = "Quote" }; body.AddChild(previewPanel);
@@ -135,16 +135,15 @@ public partial class GameShell
                 if (SendAction(action).Accepted)
                 {
                     if (action.Card is not null) SelectedCard = action.Card;
-                    ResetAwardForm(); RefreshActionDesk(session.View);
+                    ResetAwardForm(); awardTarget = action.Card ?? action.Site + "." + action.Capability; RefreshActionDesk(session.View);
                     ShowRequests();
-                    GetNode<ScrollContainer>("%DeskTabs/Requests/RequirementPane/Body/Body").ScrollVertical = 0;
-                    if (action.Card is null) GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
+                    RequestScroll.ScrollVertical = 0;
+
                 }
             }
         });
         awardButton.ThemeTypeVariation="TabletopPrimary";
-        var back = AwardBackButton = DeskUi.Button("Back to requests", ShowRequests);
-        awardPanel.AddChild(back);
+        AwardBackButton = RequestBackButton;
         AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
@@ -163,6 +162,7 @@ public partial class GameShell
             awardChoiceNotice = null; awardPriorities.Clear(); quantity = null; start = duration = null; RefreshActionDesk(session.View);
         }
         var target = targets.Single(t => t.Id == awardTarget);
+        SelectedCard = target.Card; RenderRequirementContext(view);
         var ownTargets = targets.Where(t => t.Card is null).ToArray();
         var requestOptions = targets.Where(t => t.Card is not null).Select(t => new Pick(t.Id, t.Label)).ToList();
         if (ownTargets.Length > 0) requestOptions.Add(new Pick("own-initiative", "Buy on your own initiative"));
@@ -313,7 +313,7 @@ public partial class GameShell
 
     private void GoToMarket(string card)
     {
-        if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay
+        if (session.View is not { } view || AtFrontDoor || ReadingTurnover || PlayingDay
             || !view.Cards.Any(c => c.Id == card)) return;
         ResetAwardForm(); awardTarget = card; SelectedCard = card;
         RefreshActionDesk(session.View); ShowMarket();

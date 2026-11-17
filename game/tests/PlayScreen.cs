@@ -22,6 +22,13 @@ internal sealed class PlayScreen(GameShell shell)
     {
         var windows = Descendants(shell).OfType<Window>().Where(w => w.Visible).ToArray();
         if (windows.Length > 0) { yield return windows[^1]; yield break; }
+        if (shell.RequestWorkspace.IsVisibleInTree())
+        {
+            yield return shell.RequestWorkspace;
+            yield return shell.GetNode("Margin/Layout/TopStrip");
+            yield return shell.GetNode("Navigation");
+            yield break;
+        }
         // Opaque full-screen pages cover the desk, even though its children remain Visible.
         var cover = shell.GetChildren().OfType<PanelContainer>()
             .Where(c => c.IsVisibleInTree() && c.GetGlobalRect().Size.X >= 1200 && c.GetGlobalRect().Size.Y >= 780)
@@ -66,6 +73,9 @@ internal sealed class PlayScreen(GameShell shell)
         for (Node? node = control; node is not null; node = node.GetParent())
         {
             if (node is SubViewport) return "Map";
+            if (node.Name.ToString() is "Request" or "Buy" && node.GetParent()?.GetParent()?.GetParent()?.Name.ToString() == "RequestWorkspace")
+                return node.Name.ToString();
+            if (node.Name.ToString() == "RequestWorkspace") return "Request page";
             if (node is TabBar) return "Desk tabs";
             if (node is Control tab && node.GetParent() is TabContainer tabs)
             {

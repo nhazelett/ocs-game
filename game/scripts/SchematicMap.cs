@@ -91,6 +91,8 @@ public partial class SchematicMap : Node2D
                     {
                         if (Tabletop is { } tabletop)
                         {
+                            var request = tabletop.RequestAt(mouse.Position);
+                            if (request is not null) { RequestPicked?.Invoke(request); return; }
                             var site = tabletop.SiteAt(mouse.Position);
                             if (site is not null)
                             {

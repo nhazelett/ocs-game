@@ -20,7 +20,7 @@ public partial class AwardFeedbackSmokeTest : Node
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
             var water = shell.Session.View!.Cards.First(c => c.CapabilityId == "water").Id;
             shell.NavigateBoardItem(new BoardItem("", 1, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, water, "", []));
-            var pane = tabs.GetNode<Control>("Requests/RequirementPane");
+            var pane = shell.RequestColumn;
             Require(PlayScreen.Descendants(pane).OfType<Label>().Any(l => l.Text.Contains("nobody has requested"))
                 && PlayScreen.Descendants(pane).OfType<Label>().Any(l => l.Text.Contains("for this request")), "Both routes explain what they arrange.");
             await Capture("request-before");
@@ -32,7 +32,7 @@ public partial class AwardFeedbackSmokeTest : Node
             var before = shell.Session.CreateSave().Actions.Count;
             var stale = shell.AwardButton;
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
-            Require(!shell.MarketOpen && tabs.CurrentTab == GameShell.RequestsTab && shell.SelectedCard == water,
+            Require(shell.RequestWorkspace.Visible && shell.SelectedCard == water,
                 "A successful arrangement returns to the exact request instead of quoting its own committed capacity.");
             Require(shell.Session.CreateSave().Actions.Count == before + 1, "Exactly one award was sent.");
             var decision = shell.Session.View!.Decisions(water).First();
@@ -44,7 +44,7 @@ public partial class AwardFeedbackSmokeTest : Node
             Require(decisionText.Contains(decision.Now) && decisionText.Contains(decision.Teammate, StringComparison.OrdinalIgnoreCase)
                 && !decisionText.Contains("With " + decision.Teammate + "."),
                 "The completed immediate buy names its teammate without implying work is still waiting on them.");
-            var requestScroll = tabs.GetNode<ScrollContainer>("Requests/RequirementPane/Body/Body");
+            var requestScroll = shell.RequestScroll;
             stale.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.CreateSave().Actions.Count == before + 1, "A stale button cannot submit a duplicate arrangement.");
             await Frames();
@@ -72,7 +72,7 @@ public partial class AwardFeedbackSmokeTest : Node
             Require(!shell.VendorChoiceReason.Text.Contains("point at one"), "The count does not tell players to hover for an explanation.");
             Require(shell.CurrentAwardChoices.Vendors.Any(v => v.Reason?.Contains("This office cannot buy from it or add to that support.") == true),
                 "The real host-nation refusal includes the sentence that was lost.");
-            Require(PlayScreen.Descendants(tabs.GetNode("Requests/Market")).OfType<Label>().Any(l => l.Text == "Contract vehicle"),
+            Require(PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.Text == "Contract vehicle"),
                 "The ordering vehicle cannot be mistaken for the office's truck.");
             await Frames(); shell.AwardScroll.EnsureControlVisible(shell.VendorInput); await Frames();
             var args = OS.GetCmdlineUserArgs();

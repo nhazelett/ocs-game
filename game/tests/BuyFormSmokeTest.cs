@@ -17,7 +17,7 @@ public partial class BuyFormSmokeTest : Node
             Pick(shell.VendorInput, "harborBottling");
             Require(shell.InstrumentChoiceReason.Text.Contains("Harbor Bottling does not accept the card"), "The chosen supplier's card refusal is explained.");
             Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc");
-            Require(!VisibleText().Contains("Harbor Bottling does not accept the card"), "Changing suppliers clears the previous supplier's refusal line.");
+            Require(!shell.InstrumentChoiceReason.Text.Contains("Harbor Bottling does not accept the card") && !shell.AwardBlockedReason.Text.Contains("Harbor Bottling does not accept the card"), "Changing suppliers clears the previous supplier's refusal line.");
             Order();
             Require(shell.PendingAward!.Quantity == shell.CurrentActionEditor!.PeakDemandUnits, "The buy starts at actual demand.");
             shell.QuantityInput.Value = 4500; shell.StartInput.Value = 2; shell.DurationInput.Value = 7;
@@ -47,7 +47,6 @@ public partial class BuyFormSmokeTest : Node
             GetTree().Quit();
 
             string Caption(SpinBox input) => input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
-            string VisibleText() => string.Join("\n", PlayScreen.Descendants(shell.GetNode("%DeskTabs/Requests/Market")).OfType<Label>().Where(l => l.IsVisibleInTree()).Select(l => l.Text));
             void Order()
             {
                 Require(shell.QuantityInput.GetIndex() == shell.InstrumentChoiceReason.GetIndex() + 2
@@ -60,7 +59,7 @@ public partial class BuyFormSmokeTest : Node
             {
                 shell.ShowMarket(); await Frames();
                 var scroll = shell.AwardScroll;
-                var pane = shell.GetNode<Control>("%DeskTabs/Requests/Market").GetGlobalRect();
+                var pane = shell.RequestBuyColumn.GetGlobalRect();
                 GD.Print($"BUY_FORM_LAYOUT {suffix}: scroll={scroll.Size.Y}, pane={pane.Size.Y}, summary={shell.AwardSummaryLabel.Size.Y}");
                 Require(scroll.Size.Y >= pane.Size.Y / 2, "The form keeps at least half the pane, including the longer forklift summary.");
                 Require(shell.AwardSummaryLabel.Text == shell.Session.View!.AwardSummary(shell.PendingAward!)!.Sentence, "The pinned summary retains the complete Sim sentence.");

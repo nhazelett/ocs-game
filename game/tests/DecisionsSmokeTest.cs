@@ -47,11 +47,11 @@ public partial class DecisionsSmokeTest : Node
             var card = requestButton.GetMeta("decision_card").AsString();
             var hashBeforeOpen = shell.Session.StateHash;
             requestButton.EmitSignal(Button.SignalName.Pressed);
-            Require(tabs.CurrentTab == GameShell.RequestsTab && shell.SelectedCard == card && !shell.MarketOpen,
+            Require(shell.RequestWorkspace.Visible && shell.SelectedCard == card,
                 "A decision opens its exact request, including after editing a quote.");
             Match(shell.RequestDecisionRows!, shell.Session.View.Decisions(card));
             Require(shell.Session.StateHash == hashBeforeOpen, "Expanding and opening history is pure.");
-            var requestScroll = tabs.GetNode<ScrollContainer>("Requests/RequirementPane/Body/Body");
+            var requestScroll = shell.RequestScroll;
             requestScroll.ScrollVertical = (int)(shell.RequestDecisionRows!.GlobalPosition.Y - requestScroll.GlobalPosition.Y);
             await Capture("request");
             Require(!shell.SendAction(new MeetVendorAction { Day = 3, Vendor = "no-such-vendor" }).Accepted,

@@ -52,11 +52,13 @@ public partial class PlayDriverSmokeTest : Node
                 await Click(screen.Read().Any(e => e.Text == "Open the desk and meet people") ? "Open the desk and meet people" : "Continue");
             Require(!shell.ReadingTurnover, "Turnover uses only the visible Continue choices.");
             await Click("Requests");
+            await Click(shell.RequestListButtons["tutWater"].Text);
             for (var i = 0; i < 12 && !screen.Read().Any(e => e.Kind == "button" && e.Text == "Ask MSgt Carla Ortiz"); i++)
-                await driver.Execute(new("test", "scroll", "Requests", "down"));
+                await driver.Execute(new("test", "scroll", "Request", "down"));
             Require(screen.Read().Any(e => e.Text == "Ask MSgt Carla Ortiz"), "The helper becomes reachable through visible scrolling.");
             await Click("Ask MSgt Carla Ortiz");
             Require(shell.Session.CreateSave().Actions.Count > 0, "A real player decision is recorded before the day is played.");
+            await Click("Back to the desk");
             await Click("Today");
             await Click("End the day");
             Require(shell.EndDayDialog.Visible && shell.Session.CompletedDay == 0, "The plan opens before advancing.");

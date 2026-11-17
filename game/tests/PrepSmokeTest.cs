@@ -74,7 +74,7 @@ public partial class PrepSmokeTest : Node
                 var hash = shell.Session.StateHash;
                 shell.NavigateBoardItem(new BoardItem("", shell.Session.View!.Day, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, card, "", []));
                 var model = shell.Session.View!.WhereThingsStand().Single(r => r.CardId == card);
-                var pane = shell.GetNode<VBoxContainer>("%DeskTabs/Requests/RequirementPane/Body/Body/Contents");
+                var pane = shell.RequestContents;
                 var lines = pane.GetChildren().OfType<Label>().Where(l => l.HasMeta("request_on_file")).ToArray();
                 Require(lines.Select(l => l.Text).SequenceEqual(model.OnFile) && (lines.Length > 0) == hasAgreements,
                     "The request shows every exact on-file agreement, and clears them when none are known.");

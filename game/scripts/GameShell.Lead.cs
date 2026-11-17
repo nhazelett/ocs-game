@@ -86,6 +86,7 @@ public partial class GameShell
 
     private void FocusNewMorning()
     {
+        CloseRequestWorkspace(restore: false);
         if (session.View?.Finished == true) return;
         allDecisions = false;
         BoardDetailsToggle.ButtonPressed = false;

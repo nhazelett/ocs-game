@@ -31,20 +31,23 @@ public partial class GameShell
         morningItems = new VBoxContainer { Name = "Items" }; boardDetails.AddChild(morningItems);
         morningTiles = new VBoxContainer { Name = "Tiles" }; boardDetails.AddChild(morningTiles);
         var requests = tabs.GetNode<Control>("Requests");
-        linkedRequirement = DeskUi.Pane(requests, "RequirementPane", out requirementFooter);
-        var requestPane = requests.GetNode<Control>("RequirementPane");
+        BuildRequestWorkspace();
+        requestList = DeskUi.Pane(requests, "RequestList", out requestListFooter);
+        requests.GetNode<Control>("Market").Hide();
+        linkedRequirement = DeskUi.Pane(RequestColumn, "RequirementPane", out requirementFooter);
+        var requestPane = RequestColumn.GetNode<Control>("RequirementPane");
         // Rebuilding wrapped content can enlarge this Control before its width settles.
         // Keep the pane's offsets tied to its tab, as for the preparation page.
         void RefitRequestPane()
         {
             if (!GodotObject.IsInstanceValid(requestPane) || !requestPane.IsInsideTree() || !requestPane.IsVisibleInTree()) return;
             requestPane.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-            requestPane.Size = requests.Size;
+            requestPane.Size = RequestColumn.Size;
         }
         void QueueRequestRefit() => Callable.From(RefitRequestPane).CallDeferred();
         requestPane.VisibilityChanged += QueueRequestRefit;
         requestPane.MinimumSizeChanged += QueueRequestRefit;
-        requests.Resized += QueueRequestRefit;
+        RequestColumn.Resized += QueueRequestRefit;
         linkedLedger = DeskUi.Panel(tabs.GetNode<Control>("Payments"), "LedgerContext");
     }
 
@@ -55,7 +58,7 @@ public partial class GameShell
         allDecisions = false;
         ResetOpening();
         TeamPanel?.Hide();
-        CloseContractView();
+        CloseContractView(); CloseRequestWorkspace(restore: false);
         debriefHash = null;
         ResetVisits();
         BoardDetailsToggle.ButtonPressed = false;
@@ -63,7 +66,7 @@ public partial class GameShell
         boardFocus.Text = "";
         Map.SelectSite(null);
         ResetAwardForm();
-        ShowRequests();
+        RenderRequirementContext(session.View); RenderRequestList(session.View);
         ResetBpaForm();
         coordinationQuantity = 1; coordinationTarget = null;
     }
@@ -114,7 +117,7 @@ public partial class GameShell
                 boardFocus.Text = $"Selected: {tile.Label} at {name} · {TileLevel(tile)}\nPopulation day {day}: {population}" + (population == planned ? "" : $" · planned {planned}");
             }
         }
-        RenderRequirementContext(view);
+        RenderRequirementContext(view); RenderRequestList(view);
         RenderLedgerContext(view);
         RefreshBoardActions(view);
     }
@@ -125,7 +128,7 @@ public partial class GameShell
         switch (item.LinkKind)
         {
             case BoardLinkKind.Card:
-                SelectedCard = item.LinkId; ShowRequests();
+                SelectedCard = item.LinkId; GoToMarket(item.LinkId);
                 linkedRequirement.GetParent<ScrollContainer>().ScrollVertical = 0;
                 break;
             case BoardLinkKind.SiteCapability: SelectCapability(item.LinkId); break;

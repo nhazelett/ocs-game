@@ -5,6 +5,11 @@ namespace LinesOfSupport.Game;
 public partial class TabletopMap3D
 {
     private string? shortfallLayoutKey;
+    internal IReadOnlyList<MapRequestLink> RequestLinks { get; set; } = [];
+    internal event Action<string>? RequestPicked;
+    internal Dictionary<string, Button> RequestButtons { get; } = [];
+    internal string? RequestAt(Vector2 point) => RequestButtons.FirstOrDefault(p => p.Value.GetGlobalRect().HasPoint(point + GlobalPosition)).Key;
+
 
     internal string? OpenShortfallSite { get; private set; }
     internal PanelContainer? ShortfallCard { get; private set; }
@@ -60,6 +65,13 @@ public partial class TabletopMap3D
             capability.SetMeta("short_capability", tile.CapabilityId);
             Words(tile.WhyShort!, capability: tile.CapabilityId);
         }
+        foreach (var request in RequestLinks.Where(r => r.Site == site && shortTiles.Any(t => t.CapabilityId == r.Capability)))
+        {
+            var open = DeskUi.Button("Open request: " + request.Title, () => RequestPicked?.Invoke(request.Card));
+            using var theme = TabletopTheme.Create(); open.Theme = theme;
+            open.MouseFilter = MouseFilterEnum.Ignore; open.AddThemeFontSizeOverride("font_size", 17);
+            open.SetMeta("map_request", request.Card); body.AddChild(open); RequestButtons.Add(request.Card, open);
+        }
         LayoutShortfall(); return true;
     }
 
@@ -67,7 +79,7 @@ public partial class TabletopMap3D
     {
         if (ShortfallCard is not null) { RemoveChild(ShortfallCard); ShortfallCard.QueueFree(); ShortfallCard = null; }
         if (ShortfallTether is not null) { RemoveChild(ShortfallTether); ShortfallTether.QueueFree(); ShortfallTether = null; }
-        OpenShortfallSite = null;
+        RequestButtons.Clear(); OpenShortfallSite = null;
         shortfallLayoutKey = null;
     }
 
@@ -96,7 +108,7 @@ public partial class TabletopMap3D
             new Rect2(new Vector2(available.Position.X, protectedArea.End.Y), new Vector2(available.Size.X, available.End.Y - protectedArea.End.Y))
         };
         var body = card.GetChild<VBoxContainer>(0);
-        var labels = body.GetChildren().OfType<Label>().ToArray();
+        var labels = body.GetChildren().OfType<Control>().ToArray();
         using var paper = card.GetThemeStylebox("panel");
         var padding = paper.GetMinimumSize();
         var anchor = SitePoint(site);
@@ -110,10 +122,10 @@ public partial class TabletopMap3D
             foreach (var label in labels)
             {
                 using var font = label.GetThemeFont("font");
-                height += Mathf.Ceil(font.GetMultilineStringSize(label.Text, width: width - padding.X,
+                height += Mathf.Ceil(font.GetMultilineStringSize(label is Label words ? words.Text : ((Button)label).Text, width: width - padding.X - (label is Button ? 16 : 0),
                     fontSize: label.GetThemeFontSize("font_size"),
                     brkFlags: TextServer.LineBreakFlag.Mandatory | TextServer.LineBreakFlag.WordBound
-                        | TextServer.LineBreakFlag.Adaptive).Y);
+                        | TextServer.LineBreakFlag.Adaptive).Y) + (label is Button ? 16 : 0);
             }
             if (height > region.Size.Y) continue;
             var position = new Vector2(Math.Clamp(anchor.X - width / 2, region.Position.X, region.End.X - width),

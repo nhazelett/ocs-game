@@ -44,6 +44,7 @@ public partial class GameShell
 
     private async void OpenStaffMeeting()
     {
+        CloseRequestWorkspace(restore: false);
         if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary) return;
         visitContact = "meeting";
         PeopleToggle.ButtonPressed = true;
@@ -213,6 +214,7 @@ public partial class GameShell
 
     internal void OpenJ4Support(EngageJ4Action start)
     {
+        CloseRequestWorkspace(restore: false);
         if (session.View is not { Finished: false } view) return;
         visitContact = "j4"; j4Site = start.Site; j4Capability = start.Capability; j4Start = start; j4Quantity = null;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;

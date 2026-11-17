@@ -32,7 +32,7 @@ public partial class PeopleSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }
             var first = requests[0]!; shell.RequestOpenButtons[first.CardId].EmitSignal(Button.SignalName.Pressed);
-            Require(shell.SelectedCard == first.CardId && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab && shell.Session.StateHash == hash, "Open navigates to the actual editable card without changing Sim.");
+            Require(shell.SelectedCard == first.CardId && shell.RequestWorkspace.Visible && shell.Session.StateHash == hash, "Open navigates to the actual editable card without changing Sim.");
             Step(shell, 8);
             Require(shell.RequestOpenButtons.Keys.Order().SequenceEqual(shell.Session.View!.Cards.Where(c => shell.Session.View.RequirementEditor(c.Id) is not null).Select(c => c.Id).Order()), "Later mornings retain exactly the messages Sim has submitted.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

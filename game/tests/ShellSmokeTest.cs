@@ -32,21 +32,21 @@ public partial class ShellSmokeTest : Node
             var card = shell.Session.View!.Cards.First().Id;
             var request = new BoardItem("", 1, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, card, "", []);
             shell.NavigateBoardItem(request);
-            Require(tabs.CurrentTab == GameShell.RequestsTab && !shell.MarketOpen, "A request link opens the request inside Requests.");
+            Require(shell.RequestWorkspace.Visible && shell.MarketOpen, "A request link opens its full page.");
             await Capture("request");
             shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed); await Frames();
-            Require(tabs.CurrentTab == GameShell.RequestsTab && shell.MarketOpen && shell.CurrentActionEditor!.CardId == card,
-                "Go to market opens this request's market inside the same tab.");
+            Require(shell.RequestWorkspace.Visible && shell.MarketOpen && shell.CurrentActionEditor!.CardId == card,
+                "Go to market focuses the same request's buy form.");
             Require(shell.AwardButton.IsVisibleInTree(), "The market action remains reachable.");
-            Require(Scrolls(tabs.GetCurrentTabControl()).Count(s => s.IsVisibleInTree()) == 1, "Request and market never show competing scroll panes.");
+            Require(Scrolls(shell.RequestWorkspace).Count(s => s.IsVisibleInTree()) == 2, "Request and buy each have their own scroll.");
             await Capture("market");
             shell.AwardBackButton.EmitSignal(Button.SignalName.Pressed); await Frames();
-            Require(!shell.MarketOpen && shell.SelectedCard == card && shell.RequirementMarketButton.IsVisibleInTree(), "Back restores the same request.");
-            shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
-            Require(tabs.CurrentTab == GameShell.RequestsTab && shell.MarketOpen && shell.CurrentActionEditor!.CardId is null
+            Require(!shell.RequestWorkspace.Visible && shell.SelectedCard == card, "Back restores the desk.");
+            shell.ShowRequests(); shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.RequestWorkspace.Visible && shell.MarketOpen && shell.CurrentActionEditor!.CardId is null
                 && shell.InitiativeTargetInput!.IsVisibleInTree(), "Own-initiative buying is reachable from Requests without an Actions tab.");
             shell.NavigateBoardItem(request); await Frames();
-            Require(!shell.MarketOpen && shell.SelectedCard == card, "A new request link closes a previously open market.");
+            Require(shell.RequestWorkspace.Visible && shell.SelectedCard == card, "A new request link opens its own request and form.");
             Require(shell.Session.StateHash == hash, "Visiting tabs, requests and markets changes no Sim state.");
             var viewport = shell.GetNode<SubViewport>("%BoardViewport");
             Require(viewport.Size.X > 1 && viewport.Size.Y > 1, "The board keeps a valid viewport.");
@@ -60,7 +60,7 @@ public partial class ShellSmokeTest : Node
             DeveloperWorkspace(shell); Scenario(shell, "tutorial"); await Frames();
             Require(tabs.IsTabHidden(GameShell.DebriefTab) && !shell.MarketOpen && tabs.TabsVisible,
                 "A new deployment hides Debrief and resets the market pane.");
-            GD.Print("SHELL_SMOKE_PASS: five fitting tabs, pure request/market/initiative navigation, one scroll, real day advance and finished-only Debrief.");
+            GD.Print("SHELL_SMOKE_PASS: fitting desk tabs, full request/buy page, Back, own initiative, pure navigation, real day advance and finished-only Debrief.");
 
             void CheckTabs()
             {
