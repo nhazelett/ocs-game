@@ -30,7 +30,21 @@ public partial class GameShell
         boardFocus = DeskUi.Label(); boardDetails.AddChild(boardFocus);
         morningItems = new VBoxContainer { Name = "Items" }; boardDetails.AddChild(morningItems);
         morningTiles = new VBoxContainer { Name = "Tiles" }; boardDetails.AddChild(morningTiles);
-        linkedRequirement = DeskUi.Pane(tabs.GetNode<Control>("Requests"), "RequirementPane", out requirementFooter);
+        var requests = tabs.GetNode<Control>("Requests");
+        linkedRequirement = DeskUi.Pane(requests, "RequirementPane", out requirementFooter);
+        var requestPane = requests.GetNode<Control>("RequirementPane");
+        // Rebuilding wrapped content can enlarge this Control before its width settles.
+        // Keep the pane's offsets tied to its tab, as for the preparation page.
+        void RefitRequestPane()
+        {
+            if (!GodotObject.IsInstanceValid(requestPane) || !requestPane.IsInsideTree() || !requestPane.IsVisibleInTree()) return;
+            requestPane.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            requestPane.Size = requests.Size;
+        }
+        void QueueRequestRefit() => Callable.From(RefitRequestPane).CallDeferred();
+        requestPane.VisibilityChanged += QueueRequestRefit;
+        requestPane.MinimumSizeChanged += QueueRequestRefit;
+        requests.Resized += QueueRequestRefit;
         linkedLedger = DeskUi.Panel(tabs.GetNode<Control>("Payments"), "LedgerContext");
     }
 

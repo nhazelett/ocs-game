@@ -119,10 +119,16 @@ public partial class RequirementSmokeTest : Node
             KnownLines("tutForklift");
             Require(shell.RequirementAddButtons.ContainsKey("operator"), "Dunn's completed visit reveals the operators.");
             await Capture("learned", "--learned-screenshot", shell.RequirementAddButtons["operator"]);
+            shell.DeveloperToggle.ButtonPressed = false; await Frames(); await Frames();
             shell.RequirementAddButtons["operator"].EmitSignal(Button.SignalName.Pressed); KnownLines("tutForklift");
+            await RequestFrame("after-add");
 
             // Exact provenance for both an attended and a missed meeting.
             Scenario(shell, "tutorial"); Step(shell, 8); Open("tutWaste"); HeardAt(false);
+            shell.DeveloperToggle.ButtonPressed = false; await Frames(); await Frames();
+            var dayNineAsk = shell.RequirementAskButtons.Values.First(b => !b.Disabled);
+            dayNineAsk.EmitSignal(Button.SignalName.Pressed);
+            await RequestFrame("after-ask");
             Scenario(shell, "tutorial"); Pick(shell.PersonContactInput, "meeting");
             shell.VisitButtons["meeting"].EmitSignal(Button.SignalName.Pressed); Step(shell, 6); Open("tutWaste"); HeardAt(true);
             while (!shell.Session.View!.Finished) Step(shell);
@@ -142,7 +148,7 @@ public partial class RequirementSmokeTest : Node
 
             File.Delete(shell.AutosavePath); shell.QueueFree(); shell = null; await Frames();
             GC.Collect(); GC.WaitForPendingFinalizers(); await Frames();
-            GD.Print("REQUIREMENT_SMOKE_PASS: hidden unknown scope, exact visits and additions, duplicate guards, save/resume, J4, market scope, meeting provenance and replay takeover.");
+            GD.Print("REQUIREMENT_SMOKE_PASS: hidden unknown scope, exact visits and additions, duplicate guards, save/resume, J4, market scope, meeting provenance, request frame after adding and asking, and replay takeover.");
             GetTree().Quit();
 
             void HeardAt(bool attended)
@@ -151,6 +157,26 @@ public partial class RequirementSmokeTest : Node
                 Require(model.HeardAt is not null && model.HeardAt.Contains(attended ? "was in the room" : "was not in the room")
                     && panel.GetChildren().OfType<Label>().Any(l => l.HasMeta("heard_at") && l.Text == model.HeardAt),
                     "The request shows the Sim's exact staff-meeting source sentence.");
+            }
+            async Task RequestFrame(string suffix)
+            {
+                for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                var page = shell.GetNode<Control>("%DeskTabs/Requests");
+                var pane = page.GetNode<Control>("RequirementPane");
+                var scroll = (ScrollContainer)panel.GetParent();
+                Require(pane.Size.IsEqualApprox(page.Size), "A request rebuild refits the whole pane to the tab without another navigation.");
+                Require(scroll.GetVScrollBar().IsVisibleInTree() && scroll.GetVScrollBar().MaxValue > scroll.Size.Y,
+                    "The rebuilt long request keeps its usable scroll bar.");
+                Require(page.GetGlobalRect().Encloses(shell.RequirementMarketButton.GetGlobalRect())
+                    && page.GetGlobalRect().Encloses(shell.RequestInitiativeButton.GetGlobalRect()),
+                    "Both request navigation buttons stay wholly in view after the action.");
+                Require(scroll.GetGlobalRect().End.Y <= shell.RequestInitiativeButton.GlobalPosition.Y,
+                    "The request text remains clipped above its pinned actions.");
+                var hashBefore = shell.Session.StateHash;
+                scroll.ScrollVertical = 0;
+                await Capture(suffix, "--unused-screenshot");
+                Require(shell.Session.StateHash == hashBefore, "Refitting and capturing changes no simulation state.");
+                shell.DeveloperToggle.ButtonPressed = true;
             }
             async Task Capture(string suffix, string legacyFlag, Control? focus = null)
             {
