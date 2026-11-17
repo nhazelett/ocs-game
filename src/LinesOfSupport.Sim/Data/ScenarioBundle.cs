@@ -49,6 +49,9 @@ public sealed class ScenarioBundle
                     ?? throw new InvalidDataException($"{rulesPath} did not deserialize");
         if (rules.RulesVersion != scenario.RulesVersion)
             throw new InvalidDataException($"{rulesPath} declares rulesVersion {rules.RulesVersion}, expected {scenario.RulesVersion}");
+        // DESK-80: a scenario may price its own lesson by replacing the plant-risk odds for itself only.
+        if (scenario.Failure is { } own)
+            rules = rules with { Model = rules.Model with { Failure = own.Apply(rules.Model.Failure) } };
 
         var bundle = new ScenarioBundle(dir, node, scenario, rules);
         bundle.CheckReferences(scenario);
@@ -304,6 +307,11 @@ public sealed class ScenarioBundle
                 if (f.DaysRange is { } r) Need(r.Min <= r.Max, $"event {e.Id}: {f.Kind} daysRange max is below min");
                 if (f.Kind == "vendor.declinesCalls")
                     Need(s.Vendors.Any(v => v.Id == f.Target), $"event {e.Id}: vendor.declinesCalls target {f.Target} is not a vendor");
+                if (f.Kind == "vendor.slips")
+                {
+                    Need(s.InheritedArrangements.Any(a => a.Id == f.Target), $"event {e.Id}: vendor.slips target {f.Target} is not an inherited arrangement");
+                    Need(f.Days is > 0 || f.DaysRange is { Min: > 0 }, $"event {e.Id}: vendor.slips needs a positive number of days");
+                }
                 if (f.Kind == "vendor.reliabilityDrop")
                 {
                     Need(s.InheritedArrangements.Any(a => a.Id == f.Target), $"event {e.Id}: vendor.reliabilityDrop target {f.Target} is not an inherited arrangement");

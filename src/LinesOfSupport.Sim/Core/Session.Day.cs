@@ -273,7 +273,8 @@ public sealed partial class Session
             if (!a.IsCoordination && missingOperator) failPm += f.MissingOperatorPermillePerDay;
             if (!a.IsCoordination && missingMaintenance)
                 failPm += Math.Min(f.MissingMaintenanceCapPermille, Math.Max(0, a.DaysActive - f.MissingMaintenanceGraceDays) * f.MissingMaintenancePermillePerDayAfterGrace);
-            if (_rngVendor.Roll(failPm))
+            var rolled = _rngVendor.Roll(failPm);
+            if (rolled || SlipsOn(a.Id, d))
             {
                 _vendorFailures++;
                 t.Failed = true;

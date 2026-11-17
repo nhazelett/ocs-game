@@ -5,7 +5,7 @@ Latest replay feedback: Nick's 13 Nov 2026 (Eastern) findings and day-four scree
 For Nick, after the desk redesign (docs/design/desk-redesign.md). The same cold-start play as on 10 Nov: the tutorial, with no help from outside the game.
 
 1. Get the build as below (Get the build). Leave Developer tools off.
-2. New game, Tutorial. Play as you did on 10 Nov, as far as you like; the full twenty days if you can.
+2. New game, Tutorial. Play as you did on 10 Nov, as far as you like; the full sixteen days if you can.
 3. Write down every moment you did not know what you were looking at or what to do next, with the day and the screen. Your ten findings from 10 Nov are in the design doc, section 1; the pre-gate walk (docs/reviews/2026-11-11-desk-pre-gate.md) says what each one should look like now. Your findings from the 12 Nov play are in section 6: since then each pane scrolls as one piece with its button at the bottom, a greyed button says why directly under it, the desk has five tabs that fit (Today, Requests, Vendors, Payments, Inbox), and Today lists where each request stands. Check those first.
 
 The gate question: does the desk make sense without help? Yes: the paused work resumes (Spoke B gets the team, the port-to-port shipper, better island art). No: say where, and that is redesigned first. Tell Fable in chat.
@@ -97,7 +97,7 @@ Tutorial (if you play it, see below):
 
 ## The tutorial (optional at this gate)
 
-New game, Tutorial. The outgoing contracting officer stays three days and tells you what to look at; from day 4 you are alone for the rest of the twenty days. Three requests arrive, on days 1, 4 and 9.
+New game, Tutorial. The outgoing contracting officer stays three days and tells you what to look at; from day 4 you are alone for the rest of the sixteen days. Three requests arrive, on days 1, 4 and 9, and in the second half the dining contractor slips.
 
 Pass: you finish without help from outside the game, all three requests are covered by about day 15, and you made no unauthorized commitments. Note any moment where the mentor told you something the screen did not let you do.
 

@@ -111,7 +111,9 @@ public sealed partial class Session
             if (CorOf(a.CorId) is { } cor)
             {
                 var q = CorQuality(cor);
-                if (_rngCor.Roll(CorReportPermille(cor, a.CapabilityId, a.Id))) _corReports.Add(new CorReport(a.Id, d, d + q.LagDays, cor.Id, t.FailureRecord));
+                // An authored slip (DESK-80) always reaches the office; the draw is still made.
+                var caught = _rngCor.Roll(CorReportPermille(cor, a.CapabilityId, a.Id));
+                if (caught || SlipsOn(a.Id, d)) _corReports.Add(new CorReport(a.Id, d, d + q.LagDays, cor.Id, t.FailureRecord));
             }
             else if (CapState(a.SiteId, a.CapabilityId) is { TodayPermille: < 1000 })
                 _corReports.Add(new CorReport(a.Id, d, d + Rules.Cor.NoCorLagDays, null, t.FailureRecord));

@@ -16,9 +16,20 @@ internal static class SkipDaysSmokeChecks
         var shell = scene.Instantiate<GameShell>(); parent.AddChild(shell);
         var temporary = Path.Combine(Path.GetTempPath(), "ocs-skip-" + Guid.NewGuid() + ".json");
         shell.AutosavePathOverride = temporary + ".autosave";
-        var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
-        var log = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays",
-            "2026-11-17-review", "tutorial-careful-input-log.json"));
+        // DESK-80 (D31): the tutorial now ends on day 16 and its dining hall slips on days 11 and 12, so the careful
+        // play's long quiet stretch is gone. Its day 10 skip is stopped by the slip's news; Spoke B's review play
+        // (days 8 to 11) carries the multi-day skip that ends on a known support start.
+        var plays = Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-17-review");
+        var bundles = new Dictionary<string, ScenarioBundle>
+        {
+            ["tutorial"] = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial")),
+            ["spoke-b"] = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")),
+        };
+        var logs = new Dictionary<string, InputLog>
+        {
+            ["tutorial"] = InputLog.Load(Path.Combine(plays, "tutorial-careful-input-log.json")),
+            ["spoke-b"] = InputLog.Load(Path.Combine(plays, "spoke-b-input-log.json")),
+        };
         try
         {
             Load(1); OpenPlan();
@@ -35,7 +46,8 @@ internal static class SkipDaysSmokeChecks
             await Capture("quiet");
             var stop = expected.View.SkipStops()!.UntilDay;
             var summaries = AdvanceExpected(expected, stop);
-            Require(summaries.Count > 1 && expected.Day == stop, "The real review play exercises a multi-day skip to a known support start.");
+            Require(summaries.Count > 1 && expected.Day < stop && expected.View.MorningBoard().New.Count > 0,
+                "The real review play exercises a multi-day skip that the dining slips' news stops before its forecast.");
             shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed);
             CheckResults(expected, summaries);
             await Capture("combined");
@@ -51,11 +63,14 @@ internal static class SkipDaysSmokeChecks
             shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.DisplayedDaySummaries.Count == 1, "A later single day replaces the previous batch with its own results.");
 
-            expected = Load(13); OpenPlan(); stop = expected.View.SkipStops()!.UntilDay;
+            // The seven-day cap is the Sim's UntilDay (QuietDayTests); the game stops on UntilDay the same way for a cap
+            // or a support start, which this checks.
+            expected = Load(8, "spoke-b"); OpenPlan(); stop = expected.View.SkipStops()!.UntilDay;
             summaries = AdvanceExpected(expected, stop);
-            Require(summaries.Count == 7, "The real quiet final stretch exercises the seven-day cap.");
+            Require(summaries.Count > 1 && expected.Day == stop, "The real Spoke B review play exercises a multi-day skip to a known support start.");
             shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed); CheckResults(expected, summaries);
-            shell.CloseDaySummary(); OpenPlan();
+            shell.CloseDaySummary();
+            Load(16); OpenPlan();
             Require(!shell.SkipAheadButton.IsVisibleInTree(), "The last day is not offered for skipping.");
 
             expected = Load(10); OpenPlan();
@@ -70,26 +85,27 @@ internal static class SkipDaysSmokeChecks
             shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed); CheckResults(expected, summaries);
             Require(shell.DisplayedDaySummaries.SelectMany(d => d.Said).Any(), "The results include the returned answer that stopped the skip.");
 
-            Load(13); OpenPlan(); shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
+            Load(10); OpenPlan(); shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
             hash = shell.Session.StateHash; shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed);
             Require(hash == shell.Session.StateHash, "A canceled plan's hidden skip cannot act later.");
-            Load(13); OpenPlan(); shell.AutosavePathOverride = Path.Combine(temporary, "blocked.json");
+            Load(10); OpenPlan(); shell.AutosavePathOverride = Path.Combine(temporary, "blocked.json");
             shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.View!.Day == 14 && shell.DisplayedDaySummaries.Count == 1,
+            Require(shell.Session.View!.Day == 11 && shell.DisplayedDaySummaries.Count == 1,
                 "A failed autosave stops the batch after the first day rather than silently continuing.");
             shell.AutosavePathOverride = temporary + ".autosave";
-            GD.Print("SKIP_DAYS_SMOKE_PASS: busy absence, exact quiet forecast, support/news stops, seven-day cap, whole grouped results, autosaves, stale/duplicate/cancel guards and later-day reset.");
+            GD.Print("SKIP_DAYS_SMOKE_PASS: busy absence, exact quiet forecast, support/news stops, last day, whole grouped results, autosaves, stale/duplicate/cancel guards and later-day reset.");
         }
         finally
         {
             shell.QueueFree(); await Frames(); File.Delete(temporary); File.Delete(temporary + ".autosave");
         }
 
-        Session Load(int day)
+        Session Load(int day, string scenario = "tutorial")
         {
+            var log = logs[scenario];
             var save = log with { SavedDay = day, Actions = log.Actions.Where(a => a.Day < day).ToList() };
             File.WriteAllText(temporary, save.ToJson()); shell.LoadSavedGame(temporary);
-            return LinesOfSupport.Sim.Replay.Resume(bundle, save);
+            return LinesOfSupport.Sim.Replay.Resume(bundles[scenario], save);
         }
         void OpenPlan() => shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
         static List<DaySummaryView> AdvanceExpected(Session expected, int until)

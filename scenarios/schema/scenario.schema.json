@@ -1439,6 +1439,17 @@
       "items": {
         "type": "string"
       }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "DESK-80: this scenario's own plant-risk odds, replacing the rules file's model.failure values for this scenario only, so a lesson is priced where it is taught. Absent fields keep the rules value.",
+      "properties": {
+        "missingOperatorPermillePerDay": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "missingMaintenancePermillePerDayAfterGrace": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "missingMaintenanceGraceDays": { "type": "integer", "minimum": 0 },
+        "missingMaintenanceCapPermille": { "type": "integer", "minimum": 0, "maximum": 1000 }
+      }
     }
   },
   "$defs": {

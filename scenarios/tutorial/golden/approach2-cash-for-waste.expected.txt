@@ -1,6 +1,6 @@
 First weeks at the hub / approach2-cash-for-waste
 The trap: waste paid for on SF 44 cash buys because it was faster. No written terms and no COR; the unit and the vendor argue about what was ordered.
-Scenario tutorial, rules 2025-10, seed 1, 20 days.
+Scenario tutorial, rules 2025-10, seed 1, 16 days.
 Prep: gpcAccounts, cashAndPayingAgent, systemAccess.
 
 TIMELINE
@@ -57,10 +57,16 @@ Day 9
 Day 10
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
+  EVENT     Island Camp Services short-staffs the dining hall two days running
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery.
+  FAIL      Island Camp Services food service at Hub missed today's delivery.
+  COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 11.
 Day 12
   DONE      CE small buys: 2 worked today (1 h of shop time).
+  FAIL      Island Camp Services food service at Hub missed today's delivery.
+  COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 12.
+  INBOX     Performance issue: Island Camp Services under-delivered on food service at Hub on days 11 and 12 (COR SSgt Lane). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 13
   DONE      CE small buys: 2 worked today (1 h of shop time).
   END       Main Island Utilities (host nation) waste removal at Hub ended.
@@ -72,32 +78,27 @@ Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 16
   DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 17
-  DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 18
-  DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 19
-  DONE      CE small buys: 2 worked today (1 h of shop time).
-Day 20
-  DONE      CE small buys: 3 worked today (1.5 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
-                              0    1    1    2
-                          12345678901234567890
-Hub Power                 ....................
-Hub Fuel                  ....................
-Hub Water                 ....................
-Hub Lodging               ....................
-Hub Food service          ....................
-Hub Waste removal         ....................
-Hub Material handling equ ....................
+                              0    1    1 
+                          1234567890123456
+Hub Power                 ................
+Hub Fuel                  ................
+Hub Water                 ................
+Hub Lodging               ................
+Hub Food service          ................
+Hub Waste removal         ................
+Hub Material handling equ ................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
   Mission output 100% (sortie generation 100%, throughput 100%, endurance 100%, resilience 100%)
-  Obligated $643,466; incurred $331,466; incurred but not obligated $0
+  Obligated $642,890; incurred $265,850; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 0; shop hours worked 43; payment errors 0; execution-confusion days 1; vendor failures 2; declined BPA calls 1
+  Surveys 0; shop hours worked 30; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 1
+
+PERFORMANCE ISSUES (FAR 49.402-3)
+  pi1 (day 12): hubDining at hubSite.food, failed days 11, 12. Decision: no decision.
 
 PASS CRITERIA
   [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
@@ -105,4 +106,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash c432e970ab8cc8f454b225fe139b9a4e4f67c294e6319b6007ee86312dd2e7e2
+State hash 432df16e931c8ba4614d5382fdfbe15699a7ee1aacd281e03d6d6ba6eb371ce6

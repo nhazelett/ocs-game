@@ -19,6 +19,20 @@ public sealed partial class Session
         _reliabilityDrops.Add(new ReliabilityDropRecord(a.Id, day, cause, from, toPermille));
     }
 
+    // DESK-80 (D31): an authored run of slips on an inherited contract, so every play of a scenario meets the vendor
+    // problem the COR reports. The day's draws are still made, so nothing else in the game moves.
+    private readonly Dictionary<string, HashSet<int>> _slips = new(StringComparer.Ordinal);
+
+    internal void Slips(string arrangementId, int day, int days)
+    {
+        var a = _arrangements.FirstOrDefault(x => x.Id == arrangementId);
+        if (a is null || a.Status is not (ArrangementStatus.Active or ArrangementStatus.Suspended)) return;
+        if (!_slips.TryGetValue(a.Id, out var set)) _slips[a.Id] = set = [];
+        for (var i = 0; i < days; i++) set.Add(day + i);
+    }
+
+    private bool SlipsOn(string arrangementId, int day) => _slips.TryGetValue(arrangementId, out var set) && set.Contains(day);
+
     /// <summary>True when a cure notice on any performance issue of the arrangement is delivered or in work.</summary>
     internal bool CureNoticeIssued(string arrangementId)
         => _issues.Any(i => i.ArrangementId == arrangementId

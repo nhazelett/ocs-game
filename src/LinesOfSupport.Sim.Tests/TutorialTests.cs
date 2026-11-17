@@ -13,7 +13,7 @@ public class TutorialTests
     {
         var s = Session.Create(Repo.Load("tutorial"), 1);
         Assert.True(s.Scenario.Tutorial);
-        Assert.Equal(20, s.LastDay);
+        Assert.Equal(16, s.LastDay);   // DESK-80 (D31): it ends when its lessons do
         var turnover = s.View.Turnover();
         Assert.Equal("Capt Jordan Mills", turnover.From!.DisplayName);
         Assert.Contains("Ortiz", turnover.LastLine);
