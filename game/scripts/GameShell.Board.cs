@@ -51,7 +51,7 @@ public partial class GameShell
         ResetAwardForm();
         ShowRequests();
         ResetBpaForm();
-        coordinationQuantity = 1;
+        coordinationQuantity = 1; coordinationTarget = null;
     }
 
     private void RefreshMorningDesk(SessionView? view, MorningBoardView? board)
