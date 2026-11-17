@@ -168,15 +168,16 @@ public sealed record NewItem(NewKind Kind, string Text, PersonView? Person, stri
 
 /// <summary>
 /// The last day to order an open request (DESK-73, D29): the last day an order can go in and still start on the day it is
-/// wanted, by the fastest route the shop knows, with that route named. A forecast: best rolls, today's queue.
+/// wanted, on the slow roll (D35), with the route named. A forecast from today's queue.
 /// </summary>
 /// <param name="Day">That day; before today when no route the shop knows can make the wanted day.</param>
 /// <param name="Route">"a BPA call with Harbor Equipment Co".</param>
-/// <param name="LeadDays">Days from the order going in to the first day of support by that route.</param>
+/// <param name="LeadDays">Days from the order going in to the first day of support by that route, on the fast roll.</param>
 /// <param name="Sentence">"Order by day 5: a BPA call with Harbor Equipment Co starts 2 days after it goes in."</param>
 /// <param name="InstrumentId">The route's instrument, for opening the buying form on it. Never shown.</param>
 /// <param name="VendorId">The route's vendor. Never shown.</param>
-public sealed record OrderByView(int Day, string Route, int LeadDays, string Sentence, string InstrumentId, string VendorId);
+/// <param name="LeadDaysMax">The same on the slow roll (D35); <paramref name="Day"/> is set by it.</param>
+public sealed record OrderByView(int Day, string Route, int LeadDays, string Sentence, string InstrumentId, string VendorId, int LeadDaysMax = 0);
 
 /// <param name="TeammateId">Whose work it is, for their face. Never shown.</param>
 public sealed record DaySummaryLine(string TeammateId, string Sentence);
