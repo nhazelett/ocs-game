@@ -118,4 +118,61 @@ public class AwardSummaryTests
         Assert.Equal(before.Items.Count, s.View.MorningBoard().Items.Count);
         Assert.Equal(1, s.Day);
     }
+
+    // ------------------------------------------------------------------ DESK-86 (Claude play 17 Nov, notes 9, 24, 25)
+
+    private static InputLog TodaysPlay()
+        => InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-17", "input-log.json"));
+
+    /// <summary>The morning of day 5 of the 17 Nov play, with the operators SMSgt Dunn named added to the forklift request.</summary>
+    private static Session OperatorsAdded()
+    {
+        var log = TodaysPlay();
+        var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 4);
+        foreach (var add in log.Actions.Where(a => a.Day == 5 && a is AddLineAction)) Assert.True(s.Apply(add).Accepted);
+        return s;
+    }
+
+    [Fact]
+    public void A_card_buy_names_the_card_surcharge_in_its_price()
+    {
+        var s = Tutorial();
+        var buy = Water("w", 2, 7, instrument: "gpc") with { Vendor = "islandMart", FundingLine = null };
+        var summary = s.View.AwardSummary(buy)!;
+        Assert.StartsWith("Island Mart, water for Hub: $9,734 with Island Mart's 3% card surcharge and no shop hours.", summary.Sentence);
+        // Water has one part, so the summary does not list parts.
+        Assert.DoesNotContain("It brings", summary.Sentence, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_written_buy_says_what_it_brings_and_why_it_starts_when_it_does()
+    {
+        // Day 5 of the 17 Nov play, after the operators were added: the purchase order with Coastal Rentals the player wrote.
+        var s = OperatorsAdded();
+        var buy = new AwardAction
+        {
+            Id = "po", Instrument = "purchaseOrder", Vendor = "coastalRentals", Card = "tutForklift", Quantity = 3, StartDay = 8,
+            DurationDays = 13, FundingLine = "om1", Day = 5, Priorities = ["fast", "good"],
+        };
+        var preview = s.View.Preview(buy);
+        Assert.True(preview.Accepted, string.Join(" ", preview.HardStops));
+        var summary = s.View.AwardSummary(buy)!.Sentence;
+        Assert.True(summary.Contains("It brings forklifts, operators, and maintenance.", StringComparison.Ordinal), summary);
+        Assert.Contains("It starts on day 8 or 9; it is wanted from day 8. Finance certifies the funds on day 6.", summary);
+    }
+
+    [Fact]
+    public void A_buy_that_leaves_a_part_out_says_which()
+    {
+        // The same request with the operators added, bought from a vendor whose offer lacks them, says what it leaves out.
+        var s = OperatorsAdded();
+        var tried = new[] { "harborEquipment", "coastalRentals" }
+            .Select(v => s.View.AwardSummary(new AwardAction
+            {
+                Id = "c", Instrument = "gpc", Vendor = v, Card = "tutForklift", Quantity = 3, StartDay = 8, DurationDays = 13, Day = 5,
+            }))
+            .Where(x => x is not null).Select(x => x!.Sentence).ToList();
+        Assert.NotEmpty(tried);
+        Assert.All(tried, t => Assert.Matches("It brings [a-z ,]+(, not [a-z ,]+)?\\.", t));
+    }
 }

@@ -22,11 +22,20 @@ public sealed partial class Session
         var max = preview.EarliestStartMax;
         var startSaid = max == start ? $"on day {start}" : max == start + 1 ? $"on day {start} or {max}" : $"between day {start} and day {max}";
 
+        // DESK-86: a card buy's price carries the vendor's card surcharge, which the vendor's per-unit price leaves out.
+        var surcharge = a.Instrument == "gpc" && Fixed.Permille(vendor.GpcSurchargeFraction) is var sur and > 0
+            ? $" with {vendor.Name}'s {PercentSaid(sur)} card surcharge" : "";
         var parts = new List<string>
         {
-            $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)} and {HoursOf(preview, a.Assignee)}.",
+            $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {HoursOf(preview, a.Assignee)}.",
         };
         var card = chk.Card;
+        // DESK-86: what the buy brings, when the capability has more than one part, and what it leaves out of the request.
+        var brings = chk.Lines.Select(l => Lower(LineLabel(capId, l))).ToList();
+        var without = (card?.Lines.Where(kv => kv.Value).Select(kv => kv.Key) ?? []).Where(l => !chk.Lines.Contains(l))
+                                                                                 .Select(l => Lower(LineLabel(capId, l))).ToList();
+        if (brings.Count > 1 || without.Count > 0)
+            parts.Add($"It brings {(brings.Count > 0 ? JoinAnd(brings) : "none of it")}{(without.Count > 0 ? $", not {JoinAnd(without)}" : "")}.");
         var needEnd = card is null ? (int?)null : card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1;
         if (card is null) parts.Add($"It starts {startSaid}.");
         else if (start <= card.RequestedStartDay) parts.Add($"It starts {startSaid}; it is wanted from day {card.RequestedStartDay}.");
@@ -35,6 +44,10 @@ public sealed partial class Session
             parts.Add($"It starts {startSaid}; it was wanted from day {card.RequestedStartDay}.");
             if (start <= needEnd && BeforeStartCover(card, start) is { } cover) parts.Add(cover);
         }
+        // DESK-86: why a written buy starts when it does: finance certifies the funds before the writing can start. The
+        // range's other causes stay in the quote (DESK-78); the summary is pinned above the button and must stay short.
+        if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
+            parts.Add($"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}.");
         var onTop = InPlace(a, siteId, capId, start, start + duration - 1).Select(x => x.Name).Distinct().ToList();
         if (onTop.Count > 0) parts.Add($"It is on top of {JoinAnd(onTop)}.");
 
@@ -46,6 +59,9 @@ public sealed partial class Session
         if (why is not null) parts.Add(why);
         return new AwardSummaryView(string.Join(" ", parts), why is not null, why);
     }
+
+    /// <summary>"3%", "2.5%".</summary>
+    private static string PercentSaid(int permille) => permille % 10 == 0 ? $"{permille / 10}%" : $"{permille / 10}.{permille % 10}%";
 
     /// <summary>"no shop hours", "6 hours of your time", "6 to 9 hours of MSgt Joan Avery's time".</summary>
     private string HoursOf(ActionPreview p, string? assignee)
