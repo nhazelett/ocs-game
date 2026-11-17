@@ -74,7 +74,7 @@ public partial class PrioritiesSmokeTest : Node
             Require(shell.PendingAward!.Priorities is { Count: 0 } && shell.Session.StateHash == hash, "Changing target clears the pair and obsolete controls cannot affect the new form.");
             Written(); PickPriorities(shell, "fast", "good");
             var menuToggle = shell.PriorityInputs["fast"]; var menuAward = shell.AwardButton;
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             menuToggle.ButtonPressed = false; menuAward.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash && menuToggle.ButtonPressed, "Hidden controls on the Menu cannot edit or award a pair.");
             shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);

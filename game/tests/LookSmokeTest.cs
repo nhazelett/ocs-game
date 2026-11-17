@@ -99,7 +99,7 @@ public partial class LookSmokeTest : Node
                 pan = map.Tabletop!.Pan; zoom = map.Tabletop.CameraSize;
             }
             // Changing look also updates screens built after the setting changed.
-            Choose(1); shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            Choose(1); ReturnToMenu(shell);
             await Capture("title-night");
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             await Capture("prep-night"); DeployWithoutPrep(shell);

@@ -52,7 +52,7 @@ public partial class AudioSmokeTest : Node
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshot");
             if (shot >= 0)
             {
-                shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+                ReturnToMenu(shell);
                 shell.SoundButton.EmitSignal(Button.SignalName.Pressed);
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();

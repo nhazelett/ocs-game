@@ -177,6 +177,9 @@ public partial class GameShell : Control
         Map.ShowConfidence(view?.LostConfidenceSites ?? []);
         Map.ShowCapabilities(board?.Tiles ?? []);
         Map.ShowMapDay(view?.MapDay());
+        var moves = Map.Day is { } mapDay && (mapDay.Runs.Count > 0 || mapDay.Shipments.Any(s => !s.CustomsHeld));
+        MovementButton.Text = moves ? "Show today's movement" : "Nothing moves today";
+        MovementButton.Disabled = !moves;
         MapHint.Text = Map.Tiles.Any(t => t.WhyShort is not null)
             ? "Click a site to see why it is short." : "Drag to move. Scroll to zoom.";
         GetNode<Label>("%InboxDay").Text = view is null ? "No deployment started" : session.CompletedDay == 0 ? "Your first morning" : $"What happened on day {session.CompletedDay}";

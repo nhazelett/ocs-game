@@ -51,7 +51,7 @@ public partial class TitleArtSmokeTest : Node
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); await Shot("deployments");
             shell.TutorialGameButton.EmitSignal(Button.SignalName.Pressed); DeployWithoutPrep(shell); Step(shell);
             var hash = shell.Session.StateHash;
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             Require(!shell.ContinueGameButton.Disabled && shell.ContinueGameButton.IsVisibleInTree(), "A real autosave reveals Continue.");
             if (!baseline) Require(shell.NewGameButton.ThemeTypeVariation == "TabletopPrimary"
                 && shell.ContinueGameButton.ThemeTypeVariation != "TabletopPrimary", "New game leads and Continue is secondary.");
@@ -129,8 +129,10 @@ public partial class TitleArtSmokeTest : Node
                     var art = shell.FindChildren("TitleHarbor", "", true, false).Cast<Control>().Single();
                     Require(screen.Encloses(art.GetGlobalRect()) && art.Size.X >= 400 && art.Size.Y >= 400,
                         "The key image occupies a substantial visible panel.");
-                    Require(Math.Abs(shell.DeveloperToggle.GetGlobalRect().End.X - art.GetGlobalRect().End.X) < 1,
-                        "Developer tools aligns with the harbor right edge.");
+                    Require(shell.DeveloperToggle.GetParent() == shell.SoundButton.GetParent()
+                        && screen.Encloses(shell.DeveloperToggle.GetGlobalRect())
+                        && !shell.DeveloperToggle.GetGlobalRect().Intersects(art.GetGlobalRect()),
+                        "Developer opt-in stays in the title settings row, inside the viewport and clear of the harbor.");
                     var view = art.GetNode<SubViewport>("HarborViewport");
                     Require(view.GetChild<Node3D>(0).FindChildren("TitleKit*", "", true, false).Count == 9,
                         "The title uses the actual board kit models.");

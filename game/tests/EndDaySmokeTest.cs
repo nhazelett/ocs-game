@@ -59,7 +59,7 @@ public partial class EndDaySmokeTest : Node
             end.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash, "Playback prevents a second hidden advance.");
             shell.FinishDayPlayback(); shell.CloseDaySummary();
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             Require(!skip.IsVisibleInTree() && !PlayScreen.Descendants(shell.GetNode("FrontDoor")).OfType<Button>()
                 .Any(b => b.Text == "Skip quiet days"), "The Menu has no quiet-day shortcut.");
             await Capture("menu");
@@ -112,7 +112,7 @@ public partial class EndDaySmokeTest : Node
             end.EmitSignal(Button.SignalName.Pressed);
             Require(shell.EndDayDialog.Visible && PlanOpen().SequenceEqual(shell.Session.View!.DayPlan().Open)
                 && string.Join(" ",PlanOpen()).Contains("was wanted from day 5"), "An overdue request retains the exact late wording.");
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             shell.EndDayDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(!shell.EndDayDialog.Visible && shell.AtFrontDoor && shell.Session.StateHash == hash,
                 "Leaving the desk invalidates the check without advancing.");

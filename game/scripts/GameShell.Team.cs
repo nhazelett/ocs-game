@@ -158,7 +158,7 @@ public partial class GameShell
             portrait.SetPerson(TeamPerson(member.Id,TeamName(member),member.Rank,member.Portrait));
             using(var icon=portrait.Texture)button.Icon=icon;
             portrait.Free();
-            button.TooltipText = TeamName(member) + ". " + member.RoleLabel + ". " + member.Pace + " Open to hand out work.";
+            button.TooltipText = TeamName(member) + ". " + member.RoleLabel + ". " + member.Pace + (session.View!.Team.Count > 1 ? " Open to hand out work." : " Open your work list.");
             card.AddChild(button); TeamButtons[member.Id] = button;
             card.AddChild(DeskUi.Label($"{member.HoursSpokenForToday} of {member.HoursPerDay} h assigned"));
             var bar = new ProgressBar { MaxValue = Math.Max(1, member.HoursPerDay), Value = member.HoursSpokenForToday,
@@ -176,8 +176,10 @@ public partial class GameShell
         WorkAssignees.Clear(); WorkAssignButtons.Clear();
         TeamApplyButton.Visible = editingTeam;
         TeamBackButton.Text = editingTeam ? "Back to preparations" : "Back to the desk";
+        var canHandOver = session.View?.Team.Count > 1;
         teamMessage.Text = editingTeam
             ? TeamSetupText
+            : !canHandOver ? "You run this shop on your own. Free hours go to walk-in small buys."
             : "New work stays with you until you hand it over. Select a name below a task, then give them the work. Free hours go to walk-in small buys.";
         if (editingTeam)
         {
@@ -231,6 +233,7 @@ public partial class GameShell
             {
                 card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {work.HoursLeft} hours left" +
                     (work.Ready ? "" : $" · waiting until day {work.WaitsUntilDay}")));
+                if (!canHandOver) continue;
                 var action = new AssignAction { Day = view.Day, Work = work.WorkId };
                 var choices = view.AssigneeChoices(action);
                 var picker = new AssigneePicker(choices, member.Id, view.Finished);
