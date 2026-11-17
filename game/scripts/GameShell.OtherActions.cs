@@ -8,6 +8,9 @@ public partial class GameShell
 {
     private VBoxContainer boardActions = null!, coordinationFooter = null!;
     private long coordinationQuantity = 1;
+    private string? coordinationTarget;
+    internal SpinBox? CoordinationQuantityInput { get; private set; }
+    internal OptionButton? CoordinationSourceInput { get; private set; }
     private readonly Dictionary<string, Button> surveys = [], definitizations = [], terminations = [];
     internal IReadOnlyDictionary<string, Button> SurveyButtons => surveys;
     internal IReadOnlyDictionary<string, Button> DefinitizeButtons => definitizations;
@@ -25,7 +28,7 @@ public partial class GameShell
 
     private void RefreshBoardActions(SessionView? view)
     {
-        DeskUi.Clear(boardActions); DeskUi.Clear(coordinationFooter); coordinationFooter.Hide(); surveys.Clear(); PendingCoordination = null; CoordinateButton = null;
+        DeskUi.Clear(boardActions); DeskUi.Clear(coordinationFooter); coordinationFooter.Hide(); surveys.Clear(); PendingCoordination = null; CoordinateButton = null; CoordinationQuantityInput = null; CoordinationSourceInput = null;
         if (view is null) return;
         if (session.IsReplay) boardActions.AddChild(DeskUi.Label("Taking an action takes control and stops future replay commands."));
         boardActions.AddChild(DeskUi.Label("Site investigation"));
@@ -45,6 +48,12 @@ public partial class GameShell
         if (SelectedCapability is null) { boardActions.AddChild(DeskUi.Label("Select a capability tile to coordinate support.")); return; }
         var tile = view.MorningBoard().Tiles.SingleOrDefault(t => t.SiteId + "." + t.CapabilityId == SelectedCapability);
         if (tile is null) return;
+        var editor = view.ActionEditor(tile.SiteId, tile.CapabilityId)!;
+        if (coordinationTarget != SelectedCapability)
+        {
+            coordinationTarget = SelectedCapability;
+            coordinationQuantity = Math.Max(1, editor.PeakDemandUnits);
+        }
         boardActions.AddChild(DeskUi.Label($"Coordinate {tile.Label} to {view.Scenario.Sites.Single(s => s.Id == tile.SiteId).Name}"));
         var sources = view.Scenario.Sites.Where(s => s.Id != tile.SiteId).Select(s => new Pick(s.Id, s.Name)).ToArray();
         if (sources.Length == 0) { boardActions.AddChild(DeskUi.Label("No other source site is available.")); return; }
@@ -60,13 +69,18 @@ public partial class GameShell
             if (coordinateReason is null) return;
             DeskUi.Gate(CoordinateButton, coordinateReason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
             coordinateCost.Text = ActionCostText(view, PendingCoordination,
-                $"Requests {coordinationQuantity} {view.ActionEditor(tile.SiteId, tile.CapabilityId)!.Unit} a day of {tile.Label.ToLowerInvariant()} from {view.NameOf(source)} for {view.NameOf(tile.SiteId)}. Coordination can be withdrawn.", preview);
+                $"Requests {coordinationQuantity} {editor.Unit} a day of {tile.Label.ToLowerInvariant()} from {view.NameOf(source)} for {view.NameOf(tile.SiteId)}. Coordination can be withdrawn.", preview);
         }
-        AddPick(coordinationFooter, "From site", sources, source, id => { source = id; Update(); });
-        coordinationFooter.AddChild(DeskUi.Label($"Quantity ({view.ActionEditor(tile.SiteId, tile.CapabilityId)!.Unit}/day)"));
-        var quantityBox = new SpinBox { MinValue = 1, MaxValue = 9007199254740991, Step = 1, Value = coordinationQuantity };
+        var fields = new HBoxContainer(); fields.AddThemeConstantOverride("separation", 12); coordinationFooter.AddChild(fields);
+        var from = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+        var amount = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+        fields.AddChild(from); fields.AddChild(amount);
+        CoordinationSourceInput = AddPick(from, "From site", sources, source, id => { source = id; Update(); });
+        amount.AddChild(DeskUi.Label($"Quantity ({editor.Unit}/day)"));
+        var quantityBox = CoordinationQuantityInput = new SpinBox { MinValue = 1, MaxValue = 9007199254740991, Step = 1,
+            Value = coordinationQuantity, SizeFlagsHorizontal = SizeFlags.ExpandFill };
         quantityBox.ValueChanged += value => { coordinationQuantity = checked((long)value); Update(); };
-        coordinationFooter.AddChild(quantityBox);
+        amount.AddChild(quantityBox);
         coordinationFooter.Visible = BoardDetailsVisible;
         coordinateReason = DeskUi.ActionReason(coordinationFooter, CoordinateButton);
         coordinateCost = DeskUi.Label(); coordinateCost.SetMeta("action_cost", nameof(CoordinateAction)); coordinationFooter.AddChild(coordinateCost);

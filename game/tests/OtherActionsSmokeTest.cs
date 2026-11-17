@@ -9,7 +9,7 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class OtherActionsSmokeTest : Node
 {
-    public override void _Ready()
+    public override async void _Ready()
     {
         try
         {
@@ -24,6 +24,41 @@ public partial class OtherActionsSmokeTest : Node
             Scenario(shell, "spoke-b"); expected = Session.Create(bundle, 1);
             shell.NavigateBoardItem(new BoardItem("test", 0, BoardCategory.Report, BoardSeverity.Info, BoardLinkKind.SiteCapability, "spokeBSite.fuel", "", []));
             Require(shell.PendingCoordination is not null && shell.CoordinateButton is not null, "Selected capability offers support coordination.");
+            var view = shell.Session.View!;
+            var demand = view.ActionEditor("spokeBSite", "fuel")!.PeakDemandUnits;
+            Require(demand == 1170 && shell.PendingCoordination!.Quantity == demand && shell.CoordinationQuantityInput!.Value == demand,
+                "Spoke B fuel coordination starts at its Sim-owned peak demand, 1,170 gallons per day.");
+            async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+            var tabs = shell.GetNode<TabContainer>("%DeskTabs");
+            var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
+            shell.DeveloperToggle.ButtonPressed = false; await Frames();
+            var pane = shell.GetNode<Control>("%DeskTabs/Today/TodayPane");
+            var body = pane.GetNode<Control>("Body");
+            var quantity = shell.CoordinationQuantityInput!;
+            var source = shell.CoordinationSourceInput!;
+            Require(Math.Abs(quantity.GlobalPosition.Y - source.GlobalPosition.Y) < 1 && quantity.GlobalPosition.X > source.GlobalPosition.X,
+                "From site and Quantity share one row.");
+            Require(body.Size.Y >= pane.Size.Y / 2 && pane.GetGlobalRect().Encloses(quantity.GetGlobalRect()),
+                "Today retains at least half the pane and both coordination fields fit.");
+            async Task Capture(string suffix)
+            {
+                if (shot < 0) return;
+                await Frames(); await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Native review capture saved.");
+            }
+            await Capture("today");
+            shell.ShowRequests(); await Frames(); await Capture("requests");
+            var hash = shell.Session.StateHash;
+            quantity.Value = 800;
+            Require(shell.PendingCoordination!.Quantity == 800 && shell.Session.StateHash == hash, "Editing quantity updates only the pending action.");
+            shell.NavigateBoardItem(new BoardItem("test", 0, BoardCategory.Report, BoardSeverity.Info, BoardLinkKind.SiteCapability, "spokeBSite.fuel", "", []));
+            Require(shell.PendingCoordination!.Quantity == 800, "Reopening the same capability keeps the player's quantity.");
+            shell.NavigateBoardItem(new BoardItem("test", 0, BoardCategory.Report, BoardSeverity.Info, BoardLinkKind.SiteCapability, "hubSite.fuel", "", []));
+            Require(shell.PendingCoordination!.Quantity == view.ActionEditor("hubSite", "fuel")!.PeakDemandUnits, "Another capability starts at its own need.");
+            shell.NavigateBoardItem(new BoardItem("test", 0, BoardCategory.Report, BoardSeverity.Info, BoardLinkKind.SiteCapability, "spokeBSite.fuel", "", []));
+            Require(shell.PendingCoordination!.Quantity == demand && shell.Session.StateHash == hash, "Returning to fuel resets its need without spending resources.");
+            shell.DeveloperToggle.ButtonPressed = true;
             result = expected.Apply(shell.PendingCoordination!); Require(result.Accepted, "The fixture accepts coordination.");
             shell.CoordinateButton!.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text.Contains(expected.View.Decisions().First().Sentence), "Coordination and its result match Sim.");
@@ -50,7 +85,7 @@ public partial class OtherActionsSmokeTest : Node
             shell.DefinitizeButtons[id].EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && !shell.DefinitizeButtons.ContainsKey(id), "Definitization uses the chosen funding and no duplicate command is offered.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "Definitization result is visible.");
-            GD.Print("OTHER_ACTIONS_SMOKE_PASS: survey, coordination, termination and proposal-gated definitization."); GetTree().Quit();
+            GD.Print("OTHER_ACTIONS_SMOKE_PASS: survey, peak-demand coordination, side-by-side fields and half-pane layout, termination and proposal-gated definitization."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"OTHER_ACTIONS_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
     }
