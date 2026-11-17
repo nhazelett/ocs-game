@@ -82,9 +82,11 @@ public sealed partial class Session
         }
 
         var sentence = SummarySentence(d, finished.Count, started.Count, shortLines.Count, slipped.Count, turnedDown.Count);
+        var (said, news) = BuildDayNews();   // DESK-73 (D29): what people told you, and the day's news
         return new DaySummaryView(d, sentence,
             [.. finished.Select(Said)], [.. started.Select(SentenceCase)], [.. ended.Select(SentenceCase)],
-            [.. turnedDown.Concat(shortLines).Select(SentenceCase)], [.. slipped.Select(Said)], [.. carried.Select(Said)]);
+            [.. turnedDown.Concat(shortLines).Select(SentenceCase)], [.. slipped.Select(Said)], [.. carried.Select(Said)],
+            said, news);
 
         static DaySummaryLine Said(DaySummaryLine l) => l with { Sentence = SentenceCase(l.Sentence) };
     }

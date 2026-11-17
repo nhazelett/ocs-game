@@ -134,8 +134,49 @@ public sealed record DayPlanItem(string? WorkId, string Label, double HoursToday
 /// <param name="Short">Each capability below full, at what level, and why (DESK-38).</param>
 /// <param name="Slipped">Work the day's plan said would be done and was not.</param>
 /// <param name="CarriedOver">Work someone put hours into that goes on tomorrow, with the hours left and when it should be done.</param>
+/// <param name="Said">DESK-73 (D29): each answer given that day, with who said it, who on the team asked, and their words in
+/// full. A staff meeting with nothing for the shop is not an answer.</param>
+/// <param name="News">DESK-73 (D29): the day's news (a vendor short, people arriving, weather, support withdrawn, the
+/// contract-writing system coming up, a COR's report), in the order it happened. A declined call is under Short, not here.</param>
 public sealed record DaySummaryView(int Day, string Sentence, IReadOnlyList<DaySummaryLine> Finished, IReadOnlyList<string> Started,
-    IReadOnlyList<string> Ended, IReadOnlyList<string> Short, IReadOnlyList<DaySummaryLine> Slipped, IReadOnlyList<DaySummaryLine> CarriedOver);
+    IReadOnlyList<string> Ended, IReadOnlyList<string> Short, IReadOnlyList<DaySummaryLine> Slipped, IReadOnlyList<DaySummaryLine> CarriedOver,
+    IReadOnlyList<NewItem>? Said = null, IReadOnlyList<NewItem>? News = null)
+{
+    /// <summary>Never null for a reader; empty when the day had no answers.</summary>
+    public IReadOnlyList<NewItem> Said { get; init; } = Said ?? [];
+    /// <summary>Never null for a reader; empty when the day had no news.</summary>
+    public IReadOnlyList<NewItem> News { get; init; } = News ?? [];
+}
+
+/// <summary>What a thing new this morning is (D29), in the order the morning lists them.</summary>
+public enum NewKind { Request, Answer, News }
+
+/// <summary>
+/// One thing new since yesterday (DESK-73, D29): a new request, what someone answered, or news. The morning lists them in
+/// that order, above Where things stand; the day's results page lists the answers and the news.
+/// </summary>
+/// <param name="Text">What the player reads, whole: for an answer, the person and their words ("SMSgt Ray Dunn, LRS: \"I've
+/// got nobody licensed on forklifts this rotation.\""); for a request, who asks for what and from when.</param>
+/// <param name="Person">Who said it or brought it; null when no one in the cast did (the J4's office, the harbor master).</param>
+/// <param name="AskedBy">For an answer: who on the team asked ("you", "MSgt Joan Avery"); null otherwise.</param>
+/// <param name="TeammateId">That teammate, for their face. Never shown.</param>
+/// <param name="LinkKind">What to open for more, as on the morning board.</param>
+/// <param name="LinkId">Id to open. Never shown.</param>
+/// <param name="RecordId">The record it shows; null for a new request and the system coming up. Never shown.</param>
+public sealed record NewItem(NewKind Kind, string Text, PersonView? Person, string? AskedBy, string? TeammateId,
+    BoardLinkKind LinkKind, string LinkId, string? RecordId);
+
+/// <summary>
+/// The last day to order an open request (DESK-73, D29): the last day an order can go in and still start on the day it is
+/// wanted, by the fastest route the shop knows, with that route named. A forecast: best rolls, today's queue.
+/// </summary>
+/// <param name="Day">That day; before today when no route the shop knows can make the wanted day.</param>
+/// <param name="Route">"a BPA call with Harbor Equipment Co".</param>
+/// <param name="LeadDays">Days from the order going in to the first day of support by that route.</param>
+/// <param name="Sentence">"Order by day 5: a BPA call with Harbor Equipment Co starts 2 days after it goes in."</param>
+/// <param name="InstrumentId">The route's instrument, for opening the buying form on it. Never shown.</param>
+/// <param name="VendorId">The route's vendor. Never shown.</param>
+public sealed record OrderByView(int Day, string Route, int LeadDays, string Sentence, string InstrumentId, string VendorId);
 
 /// <param name="TeammateId">Whose work it is, for their face. Never shown.</param>
 public sealed record DaySummaryLine(string TeammateId, string Sentence);
@@ -163,9 +204,11 @@ public sealed record DecisionView(int Day, string Sentence, string TeammateId, s
 /// <param name="TeammateId">The team member on it (writing it, asking about it, or making its SF 44 trips), for their face; null when nobody is.</param>
 /// <param name="Teammate">That team member as the player reads them ("you", "MSgt Joan Avery"); null when nobody is.</param>
 /// <param name="Sentence">Where it stands, in one or two sentences: the vendor, the days, who is doing what.</param>
+/// <param name="OrderBy">DESK-73 (D29): for a request with nothing bought or in work, the last day to order and the route that
+/// assumes; null otherwise, or when the shop knows no route.</param>
 public sealed record RequestStanding(
     string CardId, string Title, PersonView? From, string State, string? TeammateId, string? Teammate, string Sentence,
-    string? WhyShort = null)
+    string? WhyShort = null, OrderByView? OrderBy = null)
 {
     /// <summary>Nothing arranged and nothing in work.</summary>
     public const string Nothing = "nothing";
@@ -226,8 +269,14 @@ public sealed record CapabilityTile(string SiteId, string CapabilityId, string L
 /// <summary>The morning board: what changed overnight, sorted alerts first, plus the capability tiles and the top strip.</summary>
 /// <param name="Items">Items from the last AdvanceDay, Alert then Warning then Info, in record order within a severity. Empty on day 1.</param>
 /// <param name="Lead">The one thing the day leads with (M2R-05), or null on a quiet day.</param>
+/// <param name="New">DESK-73 (D29): everything new since yesterday in one ordered list: new requests, then what people
+/// answered, then news. Empty on a morning with nothing new.</param>
 public sealed record MorningBoardView(int Day, TopStripView Strip, IReadOnlyList<BoardItem> Items, IReadOnlyList<CapabilityTile> Tiles,
-    LeadItem? Lead = null);
+    LeadItem? Lead = null, IReadOnlyList<NewItem>? New = null)
+{
+    /// <summary>Never null for a reader.</summary>
+    public IReadOnlyList<NewItem> New { get; init; } = New ?? [];
+}
 
 /// <summary>Why an item leads the day, in the order the fixed rule tries them (design doc 6.3).</summary>
 public enum LeadKind { Decision, Overdue, Alert, Clock }
