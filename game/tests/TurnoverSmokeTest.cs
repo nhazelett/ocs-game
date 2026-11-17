@@ -39,6 +39,8 @@ public partial class TurnoverSmokeTest : Node
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 Require(shell.TurnoverNext.IsVisibleInTree() && shell.TurnoverNext.GetGlobalRect().End.Y <= GetViewport().GetVisibleRect().Size.Y,
                     "Continue stays on screen after the sender and body have been laid out.");
+                if (section == report.Sections.Last()) Require(report.Bar is null || shell.TurnoverWords.Text.Contains(report.Bar.Spoken),
+                    "The last page states the commander's exact pass lines and deployment length.");
                 Require(shell.CurrentTurnoverSection == section.Kind && shell.TurnoverWords.Text.Contains(section.Text), "Shop, contracts, vendors and money preserve the Sim's ordered prose.");
                 if (i == 0)
                 {

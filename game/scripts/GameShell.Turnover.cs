@@ -69,7 +69,11 @@ public partial class GameShell
             paragraphs.Add(handover.Greeting); paragraphs.Add(handover.Briefing?.Situation); paragraphs.Add(handover.Briefing?.Due);
         }
         paragraphs.Add(handover.Sections[turnoverIndex].Text);
-        if (turnoverIndex == handover.Sections.Count - 1) paragraphs.Add(handover.LastLine);
+        if (turnoverIndex == handover.Sections.Count - 1)
+        {
+            paragraphs.Add(handover.Bar?.Spoken);
+            paragraphs.Add(handover.LastLine);
+        }
         turnoverWords.Text = string.Join("\n\n", paragraphs.Where(p => !string.IsNullOrWhiteSpace(p)));
         TurnoverBack.Disabled = turnoverIndex == 0;
         TurnoverNext.Text = turnoverIndex == handover.Sections.Count - 1 ? "Let's meet them" : "Continue";

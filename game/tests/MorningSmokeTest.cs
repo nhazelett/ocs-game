@@ -74,9 +74,13 @@ public partial class MorningSmokeTest : Node
             Require(quiet.LeadWords.Text == "There is no priority message this morning.", "The quiet morning still explains why there is no lead.");
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            var quietScroll = quiet.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body");
+            quietScroll.EnsureControlVisible(quiet.BoardDetailsToggle);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             Require(quiet.PeopleToggle.IsVisibleInTree() && quiet.BoardDetailsToggle.IsVisibleInTree()
-                && quiet.BoardDetailsToggle.GetGlobalRect().End.Y < GetViewport().GetVisibleRect().End.Y,
-                "People and other updates remain reachable in the compact quiet board.");
+                && quietScroll.GetGlobalRect().Encloses(quiet.BoardDetailsToggle.GetGlobalRect()),
+                "People and other updates remain reachable through Today's single scroll below the bar.");
             var quietShot = Array.IndexOf(args, "--quiet-screenshot");
             if (quietShot >= 0)
             {
