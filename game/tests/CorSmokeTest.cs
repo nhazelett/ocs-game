@@ -56,6 +56,7 @@ public partial class CorSmokeTest : Node
             {
                 Require(shell.Session.Apply(new FindFinanceAction()).Accepted,"Establish the paying agent before testing a selectable cash instrument.");Step(shell,6);
             }
+            Pick(shell.VendorInput, candidate.Vendor);
             Pick(shell.InstrumentInput, "sf44");
             Require(shell.CorInput is null && shell.PendingAward!.Cor is null, "Cash instrument hides and clears the COR field.");
             Pick(shell.InstrumentInput, "purchaseOrder");

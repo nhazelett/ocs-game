@@ -101,7 +101,7 @@ public partial class PrioritiesSmokeTest : Node
             var submit = shell.AwardButton; submit.EmitSignal(Button.SignalName.Pressed); submit.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.Session.CreateSave().Actions.OfType<AwardAction>().Count() == 1,
                 "The real button sends the exact chosen action once, even if its old signal repeats.");
-            Require(shell.PendingAward!.Priorities is { Count: 0 } && shell.AwardButton.Disabled, "The next contract asks for a new pair.");
+            Require(!shell.MarketOpen && shell.PendingAward is null && shell.AwardButton.Disabled, "A successful award closes and clears the draft; the next contract has no retained pair.");
             shell.SaveButton.EmitSignal(Button.SignalName.Pressed);
             var saved = GameSaveStore.Read(shell.AutosavePath);
             Require(saved.Actions.OfType<AwardAction>().Single().Priorities!.SequenceEqual(new[] { "fast", "good" }), "The pair survives actual save serialization.");

@@ -63,6 +63,11 @@ public partial class MarketSmokeTest : Node
             Require(expected.Apply(candidate).Accepted, "Real fixture accepts the chosen terms.");
             shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "Arrange support sends exactly the previewed action.");
+            Require(!shell.MarketOpen, "A committed award returns to the request.");
+            shell.RequirementMarketButton.EmitSignal(Button.SignalName.Pressed);
+            Pick(shell.VendorInput, candidate.Vendor); Pick(shell.InstrumentInput, candidate.Instrument);
+            if (candidate.Vehicle is not null) Pick(shell.VehicleInput, candidate.Vehicle);
+            PickPriorities(shell, "fast", "cheap");
             var queuedHours = shell.AwardPreview!.QueueAheadHours;
             timing = shell.AwardTiming;
             Require(queuedHours > 0 && timing.Text.Contains($", after the {queuedHours} hours already queued.")
