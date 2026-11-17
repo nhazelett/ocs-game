@@ -375,7 +375,7 @@ public sealed partial class Session
             L("cost.obligatedCents"), L("cost.incurredCents"), L("cost.unobligatedIncurredCents"),
             I("compliance.unauthorizedCommitments"), I("compliance.ucaOverdue"), I("compliance.hhqInquiries"), I("info.surveys"), I("shop.hoursWorked"),
             gaps.Count, gaps.Count(g => g.Tag == GapTag.Avoidable), gaps.Count(g => g.Tag == GapTag.Discoverable), gaps.Count(g => g.Tag == GapTag.Unforeseeable),
-            _claims.Count, _claims.Sum(c => c.AmountCents));
+            _claims.Count, _claims.Sum(c => c.AmountCents), InheritedObligated().Sum(a => a.ObligatedCents));
 
         var commitments = _commitments.Select(c => new CommitmentLine(
             c.Id, c.Kind == CommitmentKind.Handshake ? "handshake" : "outOfScope", c.OpenedDay, c.Decision.ToString().ToLowerInvariant(),
@@ -384,8 +384,45 @@ public sealed partial class Session
         var claims = _claims.Select(c => new ClaimLine(c.ArrangementId, c.FiledDay, c.AmountCents, c.SettledDay,
                                                        _records.First(r => r.Id == c.FiledRecordId).Text)).ToList();
         return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims,
-                               BuildDebriefSummary(played, gaps, score), BuildBar());   // DESK-74: opens with the verdict
+                               BuildDebriefSummary(played, gaps, score), BuildBar(),   // DESK-74: opens with the verdict
+                               InheritedSentence(score), RunningCures(played));
     }
+
+    // ------------------------------------------------------------------ what the debrief did not start (DESK-91)
+
+    /// <summary>The calls and contracts the last rotation left that carry an obligation, in scenario order.</summary>
+    private List<Arrangement> InheritedObligated()
+        => [.. Scenario.InheritedArrangements.Select(i => _arrangements.FirstOrDefault(a => a.Id == i.Id))
+                                              .Where(a => a is { CreatedDay: <= 0, ObligatedCents: > 0 })
+                                              .Select(a => a!)];
+
+    /// <summary>One sentence on the inherited part of the obligated total (Claude play 17 Nov, note 38): the player sees
+    /// $644,925 obligated against a smaller O&M line and nothing says $624,000 of it was there before day 1.</summary>
+    private string? InheritedSentence(ScorecardView score)
+    {
+        var left = InheritedObligated();
+        if (left.Count == 0 || score.InheritedObligatedCents <= 0) return null;
+        var calls = left.All(a => a.Instrument == "bpaCall");
+        var noun = calls ? (left.Count == 1 ? "BPA call" : "BPA calls") : left.Count == 1 ? "contract" : "calls and contracts";
+        var what = "";
+        if (left.Count <= 3)
+            what = ": " + JoinAnd(left.GroupBy(a => a.SiteId)
+                                      .Select(g => $"{JoinAnd(g.Select(a => Lower(CapLabel(a.CapabilityId))).Distinct().ToList())} at {SiteName(g.Key)}")
+                                      .ToList());
+        var share = score.InheritedObligatedCents >= score.ObligatedCents
+            ? $"All {Money(score.ObligatedCents)} obligated is"
+            : $"{Money(score.InheritedObligatedCents)} of the {Money(score.ObligatedCents)} obligated is";
+        return $"{share} on the {noun} the last rotation left{what}.";
+    }
+
+    /// <summary>Cure periods still running (Claude play 17 Nov, note 37): a cure notice delivered, no outcome yet, and the
+    /// contract still running, so the player learns what decides it after the game ends.</summary>
+    private List<RunningCure> RunningCures(int played)
+        => [.. _issues.Where(i => i is { CureNoticeDay: not null, CureEndsDay: { } end, Outcome: CureOutcome.None } && i.CureEndsDay > played)
+                      .Where(i => _arrangements.First(a => a.Id == i.ArrangementId).Status is ArrangementStatus.Active or ArrangementStatus.Pending or ArrangementStatus.Suspended)
+                      .OrderBy(i => i.CureEndsDay).ThenBy(i => i.OpenedDay)
+                      .Select(i => new RunningCure(i.Id, i.ArrangementId, i.CureEndsDay!.Value,
+                          $"{VendorData(i.VendorId)?.Name ?? "The vendor"} has until day {i.CureEndsDay} to cure its {Lower(CapLabel(i.CapabilityId))} at {SiteName(i.SiteId)}; if it does not, you can terminate for default."))];
 
     // ------------------------------------------------------------------ the debrief's opening (M2R-27)
 
