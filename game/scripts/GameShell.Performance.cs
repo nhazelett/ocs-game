@@ -38,45 +38,53 @@ public partial class GameShell
         {
             var row = new VBoxContainer(); row.SetMeta("issue", issue.Id); performanceRows.AddChild(row);
             var site = view.Scenario.Sites.Single(s => s.Id == issue.SiteId).Name;
-            row.AddChild(DeskUi.Label($"{view.NameOf(issue.Id)}\nDecision: {view.PerformanceDecision(issue)}"));
+            row.AddChild(DeskUi.Label(DeskUi.ListLabel(view.NameOf(issue.Id)) + "\n" + DeskUi.ListLabel(view.PerformanceDecision(issue)) + "."));
             var record = view.Records.FirstOrDefault(r => r.Id == issue.CauseId && view.Known(r));
             if (record is not null) row.AddChild(DeskUi.Label(record.Text));
             if (issue.CureEndsDay is { } end)
                 row.AddChild(DeskUi.Label($"Cure period ends day {end} · outcome: {issue.Outcome}"));
             foreach (var outcome in view.Records.Where(view.Known).Where(r => r.Subject == issue.Id && r.Kind is RecordKind.Compliance or RecordKind.WorkDone))
                 row.AddChild(DeskUi.Label($"Day {outcome.Day} · {outcome.Text}"));
-            var arrangement = view.Arrangements.Single(a => a.Id == issue.ArrangementId);
-            var running = arrangement.Status is ArrangementStatus.Active or ArrangementStatus.Suspended;
-            var curing = view.Work.Any(w => w.Kind == WorkKind.CureNotice && w.CompletedDay is null && (string?)w.Payload == issue.Id);
-            var terminating = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == issue.ArrangementId);
-            var cureAction = new CureNoticeAction { Day = view.Day, Issue = issue.Id };
-            var cure = DeskUi.Button(curing ? "Cure notice in work" : "Cure notice", () => SendAction(cureAction));
-            cure.Disabled = view.Finished || !running || curing || terminating || issue.CureNoticeDay is not null;
-            var resource = DeskUi.Button("Re-source…", () =>
-            {
-                ResetAwardForm(); awardTarget = issue.SiteId + "." + issue.CapabilityId;
-                RefreshActionDesk(session.View); ShowMarket();
-            });
-            resource.Disabled = view.Finished || !running;
+            AddPerformanceActions(row, view, issue, PerformanceChoices, includeContractLink: true);
+            // Reuse the Inbox's existing action availability; opening this link spends nothing.
+            if (!PerformanceChoices[(issue.Id, "cure")].Disabled) AddTodayPerformanceLink(view, issue.Id, issue.CauseId);
+
+        }
+    }
+
+    private void AddPerformanceActions(VBoxContainer row, SessionView view, PerformanceIssueState issue,
+        Dictionary<(string Id, string Choice), Button> choices, bool includeContractLink)
+    {
+        var arrangement = view.Arrangements.Single(a => a.Id == issue.ArrangementId);
+        var running = arrangement.Status is ArrangementStatus.Active or ArrangementStatus.Suspended;
+        var curing = view.Work.Any(w => w.Kind == WorkKind.CureNotice && w.CompletedDay is null && (string?)w.Payload == issue.Id);
+        var terminating = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == issue.ArrangementId);
+        var cureAction = new CureNoticeAction { Day = view.Day, Issue = issue.Id };
+        var cure = DeskUi.Button(curing ? "Cure notice in work" : "Cure notice", () => SendAction(cureAction));
+        cure.Disabled = view.Finished || !running || curing || terminating || issue.CureNoticeDay is not null;
+        var resource = DeskUi.Button("Re-source…", () =>
+        {
+            CloseContractView(); ResetAwardForm(); awardTarget = issue.SiteId + "." + issue.CapabilityId;
+            RefreshActionDesk(session.View); ShowMarket();
+        });
+        resource.Disabled = view.Finished || !running;
+        var cureReason = DeskUi.ActionReason(row, cure);
+        DeskUi.Gate(cure, cureReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
+            : terminating ? "Ending this contract is already in work." : curing ? "The cure notice is already in work."
+            : issue.CureNoticeDay is not null ? "A cure notice has already been issued." : null);
+        AddActionCost(row, view, cureAction, "Issues a cure notice to put this vendor problem right.");
+        var resourceReason = DeskUi.ActionReason(row, resource);
+        DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : null);
+        if (includeContractLink)
+        {
             var terminate = DeskUi.Button("View contract", () => OpenContractView(issue.ArrangementId));
-            terminate.Disabled = view.Finished || !running || terminating;
-            var cureReason = DeskUi.ActionReason(row, cure);
-            DeskUi.Gate(cure, cureReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
-                : terminating ? "Ending this contract is already in work." : curing ? "The cure notice is already in work."
-                : issue.CureNoticeDay is not null ? "A cure notice has already been issued." : null);
-            AddActionCost(row, view, cureAction, "Issues a cure notice to put this vendor problem right.");
-            var resourceReason = DeskUi.ActionReason(row, resource);
-            DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : null);
             var contractReason = DeskUi.ActionReason(row, terminate);
             DeskUi.Gate(terminate, contractReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
                 : terminating ? "Ending this contract is already in work." : null);
-            PerformanceChoices.Add((issue.Id, "cure"), cure);
-            PerformanceChoices.Add((issue.Id, "resource"), resource);
-            PerformanceChoices.Add((issue.Id, "terminate"), terminate);
-            // Reuse the Inbox's existing action availability; opening this link spends nothing.
-            if (!cure.Disabled) AddTodayPerformanceLink(view, issue.Id, issue.CauseId);
-
+            choices.Add((issue.Id, "terminate"), terminate);
         }
+        choices.Add((issue.Id, "cure"), cure);
+        choices.Add((issue.Id, "resource"), resource);
     }
 
     private void AddTodayPerformanceLink(SessionView view, string issueId, string causeId)

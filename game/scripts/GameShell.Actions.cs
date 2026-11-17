@@ -189,8 +189,8 @@ public partial class GameShell
         {
             SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
                 + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)
-                + "\nSupply per day: " + (supplier.CapacityKnown ? $"{supplier.CapacityPerDay} {editor.Unit}" : "—")
-                + " · Available today: " + (supplier.CapacityKnown ? supplier.CapacityFreeToday.ToString() : "—")
+                + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{supplier.CapacityPerDay} {editor.Unit}" : "—")
+                + " · Uncommitted: " + (supplier.CapacityKnown ? supplier.CapacityFreeToday.ToString() : "—")
                 + "\nNotice: " + (supplier.PaymentKnown ? (supplier.LeadTimeDays == 1 ? "1 day" : $"{supplier.LeadTimeDays} days") : "—"));
             awardPanel.AddChild(SupplierKnowledge);
         }

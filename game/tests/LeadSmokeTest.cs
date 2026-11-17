@@ -19,20 +19,23 @@ public partial class LeadSmokeTest : Node
             var hash = shell.Session.StateHash;
             shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.TodayTab; shell.DeveloperToggle.ButtonPressed = false;
             var lead = shell.Session.View!.MorningBoard().Lead!;
-            Require(shell.DisplayedLead == lead && shell.LeadWords.Text == lead.Text && !shell.BoardDetailsVisible, "Day-one Sim lead is prominent and the other work starts collapsed.");
+            Require(shell.DisplayedLead == lead && shell.LeadWords.Text == lead.Text && !shell.BoardDetailsVisible, "Day-one Sim lead stays bound and other work starts collapsed.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string name)
             {
                 if (shot < 0) return;
                 for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-                shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").EnsureControlVisible(shell.LeadOpen);
+                if (shell.LeadOpen.IsVisibleInTree()) shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").EnsureControlVisible(shell.LeadOpen);
                 for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 Require(shell.LeadOpen.GetGlobalRect().End.Y <= GetViewport().GetVisibleRect().Size.Y, "Lead Open is on screen.");
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1] + "-" + name + ".png") == Error.Ok, "Screenshot saved.");
             }
+            Require(!shell.LeadOpen.IsVisibleInTree(), "A request already in this morning's news has no duplicate lead card.");
+            var newRequest = shell.MorningBrief.FindChildren("*", "Button", true, false).OfType<Button>()
+                .Single(b => b.HasMeta("news_link") && b.GetMeta("news_link").AsString() == lead.LinkId);
             await Capture("day1");
-            shell.LeadOpen.EmitSignal(Button.SignalName.Pressed);
+            newRequest.EmitSignal(Button.SignalName.Pressed);
             Require(lead.LinkKind == BoardLinkKind.Card && shell.SelectedCard == lead.LinkId && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.RequestsTab, "First customer's lead opens the exact card.");
             Require(shell.Session.StateHash == hash, "Opening a lead is read-only.");
             shell.BoardDetailsToggle.ButtonPressed = true;

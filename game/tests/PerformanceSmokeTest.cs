@@ -45,6 +45,18 @@ public partial class PerformanceSmokeTest : Node
                 && inbox.GetGlobalRect().Encloses(cureChoice.GetGlobalRect())
                 && inbox.GetGlobalRect().Encloses(resourceChoice.GetGlobalRect()), $"The link opens Inbox scrolled to both actual decisions: scroll {inbox.ScrollVertical}/{inbox.GetVScrollBar().MaxValue}; viewport {inbox.GetGlobalRect()}, cure {cureChoice.GetGlobalRect()}, re-source {resourceChoice.GetGlobalRect()}.");
             Require(shell.Session.StateHash == tutorialHash, "Opening the vendor decision is pure navigation.");
+            var issueLabels = shell.PerformanceRows.FindChildren("*", "Label", true, false).OfType<Label>();
+            Require(issueLabels.Any(l => l.Text.StartsWith(DeskUi.ListLabel(shell.Session.View.NameOf(tutorialIssue.Id))) && l.Text.EndsWith("No decision."))
+                && !issueLabels.Any(l => l.Text.Contains("Decision: no decision")), "The issue heading and decision read as sentences.");
+            shell.OpenContractView(tutorialIssue.ArrangementId);
+            Require(shell.ContractPerformanceChoices[(tutorialIssue.Id, "cure")].Disabled == cureChoice.Disabled
+                && shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].Disabled == resourceChoice.Disabled,
+                "The contract page offers the same cure and re-source decisions as Inbox.");
+            await Capture("contract-decisions");
+            shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
+            Require(!shell.ContractView.Visible && shell.MarketOpen && shell.CurrentActionEditor!.SiteId == tutorialIssue.SiteId
+                && shell.CurrentActionEditor.CapabilityId == tutorialIssue.CapabilityId && shell.Session.StateHash == tutorialHash,
+                "Contract re-source closes its page and opens the matching form without changing Sim.");
             Step(shell); Require(shell.TodayPerformanceLinks.ContainsKey(tutorialIssue.Id), "An undecided vendor problem remains on the next morning.");
             Require(shell.TodayPerformanceRows.Visible, "An older decision stays below New since yesterday.");
             var oldLink = shell.TodayPerformanceLinks[tutorialIssue.Id];
@@ -75,7 +87,9 @@ public partial class PerformanceSmokeTest : Node
             Require(shell.Session.StateHash == hash && shell.Session.IsReplay, "Opening re-source neither changes Sim nor takes control.");
             var result = expected.Apply(new CureNoticeAction { Day = expected.Day, Issue = issue.Id });
             Require(result.Accepted, "Cure fixture is accepted.");
-            shell.PerformanceChoices[(issue.Id, "cure")].EmitSignal(Button.SignalName.Pressed);
+            shell.OpenContractView(issue.ArrangementId);
+            shell.ContractPerformanceChoices[(issue.Id, "cure")].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.ContractPerformanceChoices[(issue.Id, "cure")].Disabled, "The contract cure action refreshes its pending state.");
             Require(shell.Session.StateHash == expected.StateHash() && shell.PerformanceChoices[(issue.Id, "cure")].Disabled, "Cure sends the exact action and prevents a duplicate while in work.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "Cure ActionResult is visible.");
             while (issue.Outcome == CureOutcome.None && !expected.Finished)
@@ -86,6 +100,13 @@ public partial class PerformanceSmokeTest : Node
             }
             Require(issue.Outcome != CureOutcome.None && shell.PerformanceRows.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains($"outcome: {issue.Outcome}")), "Cure outcome stays visible when it arrives.");
             Require(shell.Session.StateHash == expected.StateHash(), "Cure progression matches Sim.");
+            shell.OpenContractView(issue.ArrangementId);
+            if (issue.Outcome == CureOutcome.Default)
+                Require(shell.ContractPerformanceChoices[(issue.Id, "cure")].Disabled
+                    && shell.ContractPerformanceChoices[(issue.Id, "resource")].Disabled == shell.PerformanceChoices[(issue.Id, "resource")].Disabled,
+                    "A failed cure keeps the contract's re-source decision available with Inbox's gate.");
+            else Require(shell.ContractPerformanceChoices.Count == 0, "A cured issue no longer adds decisions to the contract page.");
+            shell.CloseContractView();
             expected = Issue(); issue = expected.View.PerformanceIssues.First();
             result = expected.Apply(new TerminateAction { Day = expected.Day, Arrangement = issue.ArrangementId });
             Require(result.Accepted, "Termination fixture is accepted.");

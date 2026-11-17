@@ -51,7 +51,9 @@ public partial class GameShell
     private void RefreshLead(SessionView? view, MorningBoardView? board)
     {
         DisplayedLead = board?.Lead;
-        leadCard.Visible = DisplayedLead is not null || board?.New.Count is null or 0;
+        var requestInNews = DisplayedLead is { LinkKind: BoardLinkKind.Card } lead
+            && board!.New.Any(item => item.Kind == NewKind.Request && item.LinkKind == BoardLinkKind.Card && item.LinkId == lead.LinkId);
+        leadCard.Visible = !requestInNews && (DisplayedLead is not null || board?.New.Count is null or 0);
         leadPortrait.Visible=DisplayedLead?.Person is not null;if(leadPortrait.Visible)leadPortrait.SetPerson(DisplayedLead!.Person);
         leadSpeaker.Text = DisplayedLead?.Person?.WithUnit ?? ""; leadSpeaker.Visible = leadSpeaker.Text.Length > 0;
         leadWords.Text = DisplayedLead?.Text ?? (view is null ? "Your deployment has not started." : view.Finished ? "The deployment is complete." : "There is no priority message this morning.");

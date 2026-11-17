@@ -32,7 +32,7 @@ public partial class VendorsSmokeTest : Node
             var pickerHash = shell.Session.StateHash; Pick(shell.VendorCardPicker, "campServices"); Pick(shell.VendorCardPicker, "harborBottling");
             Require(shell.Session.StateHash == pickerHash, "Choosing whose card to read never changes play.");
             PickAwardTarget(shell, "tutWater"); Pick(shell.VendorInput, "harborBottling");
-            Require(shell.SupplierKnowledge!.Text.Contains("Cash: — · Card: —") && shell.SupplierKnowledge.Text.Contains("Supply per day: — · Available today: —"),
+            Require(shell.SupplierKnowledge!.Text.Contains("Cash: — · Card: —") && shell.SupplierKnowledge.Text.Contains("Usual capacity per day: — · Uncommitted: —"),
                 "The award editor also blanks unknown payment and capacity instead of disclosing its raw numbers.");
             var blank = CardText("harborBottling");
             Require(blank.Contains("Cash: — · Card: —") && blank.Contains("Islands reached: —")
@@ -54,15 +54,24 @@ public partial class VendorsSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash() && text.Contains("Cash: yes · Card: no")
                 && text.Contains(DeskUi.Money(sale.UnitPriceCents!.Value)) && text.Contains(sale.CapacityPerDay!.Value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " " + sale.Unit)
                 && text.Contains(known.KnownFrom!), "A completed meeting fills in the exact price, supply, payment and source supplied by Sim.");
-            Require(shell.SupplierKnowledge!.Text.Contains("Cash: yes · Card: no") && !shell.SupplierKnowledge.Text.Contains("Supply per day: —"),
+            Require(shell.SupplierKnowledge!.Text.Contains("Cash: yes · Card: no") && !shell.SupplierKnowledge.Text.Contains("Usual capacity per day: —"),
                 "The same award summary fills in after the engine reports learned terms and capacity.");
             Require(text.Contains("Supply per day: 5,000 gal") && text.Contains("Price per gal: " + DeskUi.Money(sale.UnitPriceCents!.Value)),
                 "A consumable quote names its engine unit and groups thousands without adding another per-day charge.");
-            Require(CardText("campServices").Contains("Price per beds per day:"), "An equipment quote retains its daily basis and the engine unit.");
+            Require(CardText("campServices").Contains("Price per bed per day:"), "An equipment quote retains its daily basis and the engine unit.");
             await Capture("known");
+            Pick(shell.VendorCardPicker, "campServices"); await Capture("bed-price");
             Require(CardText("campServices").Contains(expected.View.VehicleName("campBpa")), "An existing BPA appears on its vendor's card.");
             shell.VendorMeetButtons["harborBottling"].EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "A completed meeting remains guarded.");
+
+            Scenario(shell, "tutorial"); Step(shell, 3); PickAwardTarget(shell, "tutForklift");
+            Pick(shell.VendorInput, "harborEquipment"); shell.ShowMarket();
+            Require(shell.SupplierKnowledge!.Text.Contains("Usual capacity per day:") && shell.SupplierKnowledge.Text.Contains("Uncommitted:")
+                && !shell.SupplierKnowledge.Text.Contains("Available today"), "Capacity is labeled as usual supply, not a promise for today.");
+            shell.DeveloperToggle.ButtonPressed = false;
+            for (var i = 0; i < 6; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            shell.AwardScroll.EnsureControlVisible(shell.SupplierKnowledge); await Capture("capacity");
 
             Scenario(shell, "spoke-b"); expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             tabs.CurrentTab = GameShell.VendorsTab;

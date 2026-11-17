@@ -76,7 +76,7 @@ public partial class GameShell
         }
         turnoverWords.Text = string.Join("\n\n", paragraphs.Where(p => !string.IsNullOrWhiteSpace(p)));
         TurnoverBack.Disabled = turnoverIndex == 0;
-        TurnoverNext.Text = turnoverIndex == handover.Sections.Count - 1 ? "Let's meet them" : "Continue";
+        TurnoverNext.Text = turnoverIndex == handover.Sections.Count - 1 ? "Open the desk and meet people" : "Continue";
         turnoverScroll.ScrollVertical = 0; TurnoverNext.GrabFocus();
     }
 

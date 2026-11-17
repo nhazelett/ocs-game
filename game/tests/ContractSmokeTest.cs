@@ -68,6 +68,19 @@ public partial class ContractSmokeTest : Node
             Require(shell.Session.StateHash == expected.StateHash() && shell.TerminateButtons[own.Id].Disabled, "Confirm queues exactly the expected action once.");
             shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(shell.Session.StateHash == expected.StateHash(), "Stale repeated confirmation cannot duplicate work.");
+            shell.CloseContractView();
+            Scenario(shell, "tutorial"); Replay(shell, "approach1 taught"); Step(shell);
+            shell.DeveloperToggle.ButtonPressed = false;
+            var cardBuy = shell.Session.View!.Arrangements.First(a => a.Instrument == "gpc");
+            var cardHash = shell.Session.StateHash;
+            shell.OpenContractView(cardBuy.Id);
+            Require(shell.ContractView.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains("Paid from the card program.")),
+                "A card buy names its payment program on its contract page.");
+            shell.CloseContractView();
+            var cardRow = ledger.GetChildren().OfType<Button>().Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == cardBuy.Id);
+            Require(cardRow.Text.Contains("Paid from the card program.") && shell.Session.StateHash == cardHash,
+                "Payments also names the card program without changing play.");
+            shell.OpenContractView(cardBuy.Id); await Capture("card-payment");
             shell.CloseContractView(); shell.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("CONTRACT_SMOKE_PASS: plain payment list, inherited support protected, own contract detail, cancel and exact confirmed termination.");

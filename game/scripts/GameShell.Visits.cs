@@ -102,6 +102,11 @@ public partial class GameShell
         if (view.Scenario.Actors.AcsaPartner is not null) Contact("j4", "J4 / ACSA manager", null);
         foreach (var rep in view.VendorReps) Contact("vendor:" + rep.Id, DeskUi.ListLabel(rep.VendorName ?? "Vendor"), rep);
         PersonContactInput = AddPick(visitsForm, "Who would you like to reach?", contacts, visitContact, id => { visitContact = id; RefreshVisits(session.View, session.View?.MorningBoard()); });
+        if (visitContact is null)
+        {
+            PersonContactInput.Select(-1);
+            PersonContactInput.Text = "Choose someone to reach…";
+        }
         visitContact = Picked(PersonContactInput);
         var person = contactPeople.TryGetValue(visitContact ?? "", out var personId) && personId is not null ? view.Person(personId) : null;
         if (person is not null)

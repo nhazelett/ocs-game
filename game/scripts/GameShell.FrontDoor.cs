@@ -69,8 +69,10 @@ public partial class GameShell
         menuButton = DeskUi.Button("Menu", RequestFrontDoor); menuButton.Name = "Menu"; chrome.AddChild(menuButton);
         DeveloperToggle = new CheckBox { Text = "Developer tools" }; settingsRow.AddChild(DeveloperToggle);
         DeveloperToggle.Toggled += _ => RefreshDeveloperAccess();
-        LeaveGameDialog = new ConfirmationDialog { Title = "Leave this game?", DialogText = "Leave this game? It is saved.", Exclusive = true };
+        LeaveGameDialog = new ConfirmationDialog { Title = "", Borderless = true, DialogText = "Leave this game?\n\nYour game is saved.", Exclusive = true };
         AddChild(LeaveGameDialog);
+        LeaveGameDialog.SizeChanged += CenterLeaveGamePrompt;
+        GetViewport().SizeChanged += CenterLeaveGamePrompt;
         LeaveGameDialog.GetOkButton().Text = "Leave game";
         LeaveGameDialog.GetCancelButton().Text = "Keep playing";
         LeaveGameDialog.Canceled += () => { LeaveGameDialog.Hide(); leaveGameHash = null; menuButton.GrabFocus(); };
@@ -97,8 +99,18 @@ public partial class GameShell
             return;
         }
         leaveGameHash = session.StateHash;
-        LeaveGameDialog.PopupCentered();
+        LeaveGameDialog.PopupCentered(new Vector2I(400, 160));
+        CenterLeaveGamePrompt();
         LeaveGameDialog.GetCancelButton().GrabFocus();
+    }
+
+    private void CenterLeaveGamePrompt()
+    {
+        if (!LeaveGameDialog.Visible) return;
+        var window = GetWindow();
+        var rect = window.GuiEmbedSubwindows ? GetViewport().GetVisibleRect()
+            : new Rect2((Vector2)window.Position, (Vector2)window.Size);
+        LeaveGameDialog.Position = (Vector2I)(rect.Position + (rect.Size - (Vector2)LeaveGameDialog.Size) / 2);
     }
 
     private static Button FrontButton(string text, Action pressed)

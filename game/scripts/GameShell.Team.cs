@@ -163,7 +163,7 @@ public partial class GameShell
             card.AddChild(DeskUi.Label($"{member.HoursSpokenForToday} of {member.HoursPerDay} h assigned"));
             var bar = new ProgressBar { MaxValue = Math.Max(1, member.HoursPerDay), Value = member.HoursSpokenForToday,
                 ThemeTypeVariation = "TabletopHours", ShowPercentage = false, CustomMinimumSize = new Vector2(0, 14), MouseFilter = MouseFilterEnum.Ignore,
-                TooltipText = $"{member.FreeHoursToday} hours free today; {member.HoursQueued} hours of unfinished work." };
+                TooltipText = $"{DeskUi.Count(member.FreeHoursToday, "hour")} free today; {DeskUi.Count(member.HoursQueued, "hour")} of unfinished work." };
             card.AddChild(bar); TeamBars[member.Id] = bar;
         }
         if (TeamPanel.Visible && !editingTeam) RenderTeamPanel();
@@ -226,12 +226,12 @@ public partial class GameShell
             var header = new HBoxContainer(); card.AddChild(header);
             var portrait = new PersonPortrait(); portrait.SetPerson(TeamPerson(member.Id, TeamName(member), member.Rank, member.Portrait)); header.AddChild(portrait);
             var role = member.Role == "you" ? "" : " · " + member.RoleLabel;
-            var text = DeskUi.Label($"{TeamName(member)}{role}\n{member.Pace}\n{member.FreeHoursToday} hours free today · {member.HoursQueued} hours of unfinished work");
+            var text = DeskUi.Label($"{TeamName(member)}{role}\n{member.Pace}\n{DeskUi.Count(member.FreeHoursToday, "hour")} free today · {DeskUi.Count(member.HoursQueued, "hour")} of unfinished work");
             text.SizeFlagsHorizontal = SizeFlags.ExpandFill; header.AddChild(text);
             if (member.Work.Count == 0) card.AddChild(DeskUi.Label("No unfinished tasks."));
             foreach (var work in member.Work)
             {
-                card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {work.HoursLeft} hours left" +
+                card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {DeskUi.Count(work.HoursLeft, "hour")} left" +
                     (work.Ready ? "" : $" · waiting until day {work.WaitsUntilDay}")));
                 if (!canHandOver) continue;
                 var action = new AssignAction { Day = view.Day, Work = work.WorkId };
