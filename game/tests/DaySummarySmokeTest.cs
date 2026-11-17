@@ -124,7 +124,7 @@ public partial class DaySummarySmokeTest : Node
             shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.ReadingDaySummary && shell.DisplayedDaySummary!.Day == shell.Session.CompletedDay,
                 "The final day's results can still be read.");
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             Require(shell.AtFrontDoor && !shell.ReadingDaySummary, "Menu cleanup dismisses results without opening another page.");
             DeveloperWorkspace(shell); Scenario(shell, "tutorial"); Step(shell, 2);
             var beforeLoad = shell.Session.StateHash;

@@ -82,7 +82,7 @@ public partial class DebriefSmokeTest : Node
             await Capture("--screenshot");
             CheckRecord(shell);
             var hash = shell.Session.StateHash;
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == hash && shell.DisplayedDebrief?.Summary?.Text == expected.View.Debrief().Summary?.Text, "Continue restores the completed deployment and its summary.");
             await CheckOpening(shell);
             shell.QueueFree(); shell = null; await Frames();

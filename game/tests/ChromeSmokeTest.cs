@@ -79,7 +79,7 @@ public partial class ChromeSmokeTest : Node
                 && !shell.VendorCardContents.ContainsKey("partnerForce"),
                 "Market capitalises the partner list label; partner support has no buyable vendor card.");
             Require(shell.Session.StateHash == selectionHash, "Vendor label formatting changes no Sim state.");
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell); shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.SelectedCapability is null && !caption.Visible && caption.Text == "", "Continue starts with no stale map selection.");
             // A real accepted action must never borrow height from the operating area.
             foreach (var look in Enumerable.Range(0, 3))

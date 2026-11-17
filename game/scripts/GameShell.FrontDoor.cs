@@ -1,4 +1,5 @@
 using Godot;
+using System.Text.Json;
 
 namespace LinesOfSupport.Game;
 
@@ -15,6 +16,8 @@ public partial class GameShell
     internal Button ContinueGameButton { get; private set; } = null!;
     internal Button SpokeBGameButton { get; private set; } = null!;
     internal Button TutorialGameButton { get; private set; } = null!;
+    internal ConfirmationDialog LeaveGameDialog { get; private set; } = null!;
+    private string? leaveGameHash;
     internal bool AtFrontDoor => frontDoor.Visible;
     internal TitleHarbor TitleArt { get; private set; } = null!;
     private bool DeveloperTools => DeveloperToggle?.ButtonPressed == true;
@@ -62,11 +65,40 @@ public partial class GameShell
         column.AddChild(ArtStudiesButton);
         var chrome = new HBoxContainer { Name = "Navigation", ZIndex = 20, Alignment = BoxContainer.AlignmentMode.End };
         AddChild(chrome); chrome.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
-        chrome.OffsetLeft = -310; chrome.OffsetRight = -20; chrome.OffsetTop = 16; chrome.OffsetBottom = 60;
-        menuButton = DeskUi.Button("Menu", ShowFrontDoor); menuButton.Name = "Menu"; chrome.AddChild(menuButton);
-        DeveloperToggle = new CheckBox { Text = "Developer tools" }; chrome.AddChild(DeveloperToggle);
+        chrome.OffsetLeft = -110; chrome.OffsetRight = -20; chrome.OffsetTop = 16; chrome.OffsetBottom = 60;
+        menuButton = DeskUi.Button("Menu", RequestFrontDoor); menuButton.Name = "Menu"; chrome.AddChild(menuButton);
+        DeveloperToggle = new CheckBox { Text = "Developer tools" }; settingsRow.AddChild(DeveloperToggle);
         DeveloperToggle.Toggled += _ => RefreshDeveloperAccess();
+        LeaveGameDialog = new ConfirmationDialog { Title = "Leave this game?", DialogText = "Leave this game? It is saved.", Exclusive = true };
+        AddChild(LeaveGameDialog);
+        LeaveGameDialog.GetOkButton().Text = "Leave game";
+        LeaveGameDialog.GetCancelButton().Text = "Keep playing";
+        LeaveGameDialog.Canceled += () => { LeaveGameDialog.Hide(); leaveGameHash = null; menuButton.GrabFocus(); };
+        LeaveGameDialog.Confirmed += () =>
+        {
+            LeaveGameDialog.Hide();
+            var savedHash = leaveGameHash; leaveGameHash = null;
+            if (savedHash is not null && savedHash == session.StateHash) ShowFrontDoor();
+        };
         ShowFrontDoor();
+    }
+
+    private void RequestFrontDoor()
+    {
+        if (session.View is null) { ShowFrontDoor(); return; }
+        if (LeaveGameDialog.Visible) return;
+        CancelEndDayCheck();
+        FinishDayPlayback(false);
+        CloseDaySummary(false);
+        TryAutosave();
+        if (saveError is not null)
+        {
+            RefreshDisplay("Your game is still open. It could not be saved before leaving.");
+            return;
+        }
+        leaveGameHash = session.StateHash;
+        LeaveGameDialog.PopupCentered();
+        LeaveGameDialog.GetCancelButton().GrabFocus();
     }
 
     private static Button FrontButton(string text, Action pressed)
@@ -79,6 +111,7 @@ public partial class GameShell
 
     private void ShowFrontDoor()
     {
+        LeaveGameDialog.Hide(); leaveGameHash = null;
         CancelEndDayCheck();
         FinishDayPlayback(false);
         CloseDaySummary(false);
@@ -100,14 +133,32 @@ public partial class GameShell
     {
         DeskUi.Clear(frontChoices);
         frontMessage.Text = "Choose a deployment. Your preparations come next.";
-        SpokeBGameButton = FrontButton("Spoke B", () => BeginNewGame("spoke-b"));
-        SpokeBGameButton.Disabled = !scenarios.Any(s => s.Name == "spoke-b"); frontChoices.AddChild(SpokeBGameButton);
-        TutorialGameButton = FrontButton("Tutorial", () => BeginNewGame("tutorial"));
-        TutorialGameButton.Disabled = !scenarios.Any(s => s.Name == "tutorial");
-        TutorialGameButton.TooltipText = TutorialGameButton.Disabled ? "The training deployment is not available yet." : "Learn alongside the outgoing contracting officer.";
-        frontChoices.AddChild(TutorialGameButton);
+        TutorialGameButton = DeploymentChoice("tutorial", "Tutorial", "Learn the contracting desk");
+        SpokeBGameButton = DeploymentChoice("spoke-b", "Spoke B", "Support a hub and two island spokes");
         var back = FrontButton("Back", ShowFrontDoor); back.ThemeTypeVariation = "";
-        frontChoices.AddChild(back); SpokeBGameButton.GrabFocus();
+        frontChoices.AddChild(back); TutorialGameButton.GrabFocus();
+    }
+
+    private Button DeploymentChoice(string folder, string title, string description)
+    {
+        var scenario = scenarios.FirstOrDefault(s => s.Name == folder);
+        var button = FrontButton(title, () => BeginNewGame(folder));
+        button.Disabled = scenario is null;
+        frontChoices.AddChild(button);
+        var text = description;
+        if (scenario is not null)
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(File.ReadAllText(scenario.ScenarioPath));
+                text += $" · {document.RootElement.GetProperty("days").GetInt32()} days";
+            }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+            { button.Disabled = true; text = "This deployment could not be read."; }
+        }
+        else text = "This deployment is not installed.";
+        var detail = DeskUi.Label(text); detail.SetMeta("deployment", folder); frontChoices.AddChild(detail);
+        return button;
     }
 
     private void BeginNewGame(string folder)

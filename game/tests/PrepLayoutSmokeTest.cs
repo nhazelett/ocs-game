@@ -78,7 +78,7 @@ public partial class PrepLayoutSmokeTest : Node
                 "A checked and hovered row retains ink and its frame.");
             shell.StartGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.View is not null && shell.ReadingTurnover, "The visible departure action starts the selected deployment.");
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
             shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             foreach (var days in Enumerable.Range(0, 15)) { Choose(days); await Settle(); Footer(); }
@@ -113,7 +113,7 @@ public partial class PrepLayoutSmokeTest : Node
                 await Capture(tutorial ? "tutorial-second-back" : "spoke-b-second-back");
                 foreach (var days in Enumerable.Range(0, Math.Min(shell.Session.Prep!.BudgetDays, shell.Session.Prep.OfferedDays) + 1)) { Choose(days); await Settle(); Footer(); }
                 shell.StartGameButton.EmitSignal(Button.SignalName.Pressed); FinishOpening(shell); Step(shell);
-                shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+                ReturnToMenu(shell);
                 shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
                 (tutorial ? shell.TutorialGameButton : shell.SpokeBGameButton).EmitSignal(Button.SignalName.Pressed);
                 await Capture(tutorial ? "tutorial-second-menu" : "spoke-b-second-menu");

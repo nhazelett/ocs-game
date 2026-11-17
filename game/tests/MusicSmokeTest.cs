@@ -64,7 +64,7 @@ public partial class MusicSmokeTest : Node
             shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);shell._Process(1);music.Tick(2);
             shell.OpenContractView(shell.Session.View!.Arrangements.First().Id);shell._Process(1);music.Tick(2);
             Require(music.HarborPlayers.All(p=>!p.Playing),"A contract detail covering the map fades out harbor ambience.");
-            shell.CloseContractView();shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);shell._Process(1);music.Tick(2);music.Tick(2);
+            shell.CloseContractView();ReturnToMenu(shell);shell._Process(1);music.Tick(2);music.Tick(2);
             Require(music.CurrentTrack=="title" && music.HarborPlayers.All(p=>!p.Playing),"Menu returns to title music and no harbor.");
             shell.SoundButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.SoundMute.HasFocus(),"Combined settings keep keyboard entry focus.");

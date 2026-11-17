@@ -16,7 +16,7 @@ public partial class ArtStudySmokeTest : Node
             var shell=scene.Instantiate<GameShell>(); AddChild(shell);
             Require(!shell.ArtStudiesButton.IsVisibleInTree(),"Default launch does not show art studies or change the normal theme.");
             DeveloperWorkspace(shell); Scenario(shell,"spoke-b");
-            shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+            ReturnToMenu(shell);
             Require(shell.ArtStudiesButton.IsVisibleInTree(),"Explicit developer switch exposes the art comparison.");
             var original=shell.Session.StateHash;
             shell.ArtStudiesButton.EmitSignal(Button.SignalName.Pressed);

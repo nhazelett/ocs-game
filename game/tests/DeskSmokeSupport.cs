@@ -19,6 +19,13 @@ internal static class DeskSmokeSupport
         return shell;
     }
 
+    internal static void ReturnToMenu(GameShell shell)
+    {
+        shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
+        if (shell.LeaveGameDialog.Visible) shell.LeaveGameDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
+        Require(shell.AtFrontDoor, "Leaving reaches the title after its confirmation.");
+    }
+
     internal static void DeveloperWorkspace(GameShell shell)
     {
         // Automated play must never overwrite the player's deployment.

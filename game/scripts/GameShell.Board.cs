@@ -20,6 +20,11 @@ public partial class GameShell
     private void BuildMorningDesk()
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
+        tabs.TabChanged += tab =>
+        {
+            if (tab == TodayTab) GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body").ScrollVertical = 0;
+            else if (tab == InboxTab) GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents").ScrollVertical = 0;
+        };
         var board = boardContents = DeskUi.Pane(tabs.GetNode<Control>("Today"), "TodayPane", out boardFooter);
         BuildLead(board);
         boardFocus = DeskUi.Label(); boardDetails.AddChild(boardFocus);
