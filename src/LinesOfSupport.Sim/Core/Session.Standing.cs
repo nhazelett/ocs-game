@@ -167,31 +167,40 @@ public sealed partial class Session
     /// award would run, said first in its quote. Buying more than asked is sometimes right (D9); buying it twice by
     /// accident never is. A soft gap, never a stop.</summary>
     private List<string> AlreadyInPlace(AwardAction award, string siteId, string capId, int from, int to)
+        => [.. InPlace(award, siteId, capId, from, to).Select(x => x.Sentence)];
+
+    /// <summary>What <see cref="AlreadyInPlace"/> says, with a short name for each thing for the buy summary (DESK-82):
+    /// the supplier for an arrangement, "the call being written with Harbor Bottling" for work in hand.</summary>
+    private List<(string Name, string Sentence)> InPlace(AwardAction award, string siteId, string capId, int from, int to)
     {
         var cap = Cap(capId);
         var where = $"{Lower(cap.Label)} at {SiteName(siteId)}";
-        var said = new List<string>();
+        var said = new List<(string, string)>();
         foreach (var a in _arrangements.Where(x => x.Id != award.Id && x.SiteId == siteId && x.CapabilityId == capId && Live(x)
                                                    && x.EndDay >= Day && x.StartDay <= to && x.EndDay >= from).OrderBy(x => x.StartDay))
-            said.Add(a.StartDay <= Day
+            said.Add((SupplierName(a), a.StartDay <= Day
                 ? $"{SupplierName(a)} already supplies {where},{Amount(a, cap)}{Through(a.EndDay)}; this would be on top of it."
-                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(a.EndDay >= LastDay ? " on" : $" to day {a.EndDay}")}; this would be on top of it.");
+                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(a.EndDay >= LastDay ? " on" : $" to day {a.EndDay}")}; this would be on top of it."));
         foreach (var w in _work.Where(x => x.CompletedDay is null).OrderBy(x => x.CreatedDay))
         {
-            var text = w.Payload switch
+            (string, string)? item = w.Payload switch
             {
                 AwardPayload p when p.Action.Id != award.Id && p.SiteId == siteId && p.CapabilityId == capId
                                     && (p.Action.StartDay ?? w.CreatedDay) <= to && (p.Action.StartDay ?? w.CreatedDay) + Math.Max(1, p.Action.DurationDays) - 1 >= from
-                    => $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {p.Action.Quantity} {Rate(cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}; this would be on top of it.",
+                    => ($"the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} being written with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"}",
+                        $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {p.Action.Quantity} {Rate(cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}; this would be on top of it."),
                 AcsaPayload p when p.SiteId == siteId && p.CapabilityId == capId
-                    => $"{Upper(WhoIs(w.Assignee))} already ordering {where} from {PartnerName}; this would be on top of it.",
+                    => ($"the order being placed with {PartnerName}",
+                        $"{Upper(WhoIs(w.Assignee))} already ordering {where} from {PartnerName}; this would be on top of it."),
                 HostNationPayload p when p.SiteId == siteId && p.CapabilityId == capId
-                    => $"{Upper(WhoIs(w.Assignee))} already asking {HostNationName} for {where}; this would be on top of it.",
+                    => ($"the ask to {HostNationName}",
+                        $"{Upper(WhoIs(w.Assignee))} already asking {HostNationName} for {where}; this would be on top of it."),
                 VisitPayload { Kind: "j4", Extra: EngageJ4Action j } when j.Site == siteId && j.Capability == capId
-                    => $"{Upper(WhoIs(w.Assignee))} already asking the J4 to add {where} to the fuel order; this would be on top of it.",
+                    => ("the ask to the J4",
+                        $"{Upper(WhoIs(w.Assignee))} already asking the J4 to add {where} to the fuel order; this would be on top of it."),
                 _ => null,
             };
-            if (text is not null) said.Add(text);
+            if (item is { } x) said.Add(x);
         }
         return said;
     }
