@@ -86,6 +86,8 @@ internal static class DeskUi
 
     internal static string ListLabel(string name) => name.Length == 0 ? name : char.ToUpperInvariant(name[0]) + name[1..];
 
+    internal static string Quantity(decimal value) => value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+
     internal static string WholeDollars(long cents) => "$" + (cents / 100m).ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
 
     internal static string Money(long cents) => "$" + (cents / 100m).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);

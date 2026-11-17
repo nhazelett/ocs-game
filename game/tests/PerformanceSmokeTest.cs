@@ -46,12 +46,22 @@ public partial class PerformanceSmokeTest : Node
                 && inbox.GetGlobalRect().Encloses(resourceChoice.GetGlobalRect()), $"The link opens Inbox scrolled to both actual decisions: scroll {inbox.ScrollVertical}/{inbox.GetVScrollBar().MaxValue}; viewport {inbox.GetGlobalRect()}, cure {cureChoice.GetGlobalRect()}, re-source {resourceChoice.GetGlobalRect()}.");
             Require(shell.Session.StateHash == tutorialHash, "Opening the vendor decision is pure navigation.");
             var issueLabels = shell.PerformanceRows.FindChildren("*", "Label", true, false).OfType<Label>();
-            Require(issueLabels.Any(l => l.Text.StartsWith(DeskUi.ListLabel(shell.Session.View.NameOf(tutorialIssue.Id))) && l.Text.EndsWith("No decision."))
+            Require(issueLabels.Any(l => l.Text.StartsWith(DeskUi.ListLabel(shell.Session.View.NameOf(tutorialIssue.Id))) && l.Text.EndsWith("No decision yet."))
                 && !issueLabels.Any(l => l.Text.Contains("Decision: no decision")), "The issue heading and decision read as sentences.");
             shell.OpenContractView(tutorialIssue.ArrangementId);
             Require(shell.ContractPerformanceChoices[(tutorialIssue.Id, "cure")].Disabled == cureChoice.Disabled
                 && shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].Disabled == resourceChoice.Disabled,
                 "The contract page offers the same cure and re-source decisions as Inbox.");
+            var cause = shell.Session.View.Records.Single(r => r.Id == tutorialIssue.CauseId && shell.Session.View.Known(r));
+            var reportText = PlayScreen.Descendants(shell.ContractView).OfType<Label>().Single(l => l.HasMeta("issue_record") && l.GetMeta("issue_record").AsString() == tutorialIssue.Id);
+            var contractCure = shell.ContractPerformanceChoices[(tutorialIssue.Id, "cure")];
+            var contractResource = shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")];
+            var contractEnd = shell.TerminateButtons[tutorialIssue.ArrangementId];
+            Require(reportText.Text == cause.Text && reportText.GetIndex() < contractCure.GetIndex(), "The contract shows the same known performance record as Inbox, before the cure decision.");
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(contractEnd.GetParent() == contractResource.GetParent()
+                && contractEnd.GetGlobalRect().Position.Y - contractResource.GetGlobalRect().End.Y < 40
+                && GetViewport().GetVisibleRect().Encloses(reportText.GetGlobalRect()), "The reason is visible and termination follows re-source without an empty band.");
             await Capture("contract-decisions");
             shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
             Require(!shell.ContractView.Visible && shell.MarketOpen && shell.CurrentActionEditor!.SiteId == tutorialIssue.SiteId

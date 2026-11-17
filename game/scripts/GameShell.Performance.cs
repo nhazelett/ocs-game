@@ -38,9 +38,10 @@ public partial class GameShell
         {
             var row = new VBoxContainer(); row.SetMeta("issue", issue.Id); performanceRows.AddChild(row);
             var site = view.Scenario.Sites.Single(s => s.Id == issue.SiteId).Name;
-            row.AddChild(DeskUi.Label(DeskUi.ListLabel(view.NameOf(issue.Id)) + "\n" + DeskUi.ListLabel(view.PerformanceDecision(issue)) + "."));
-            var record = view.Records.FirstOrDefault(r => r.Id == issue.CauseId && view.Known(r));
-            if (record is not null) row.AddChild(DeskUi.Label(record.Text));
+            var decision = view.PerformanceDecision(issue);
+            row.AddChild(DeskUi.Label(DeskUi.ListLabel(view.NameOf(issue.Id)) + "\n"
+                + (decision == "no decision" ? "No decision yet." : DeskUi.ListLabel(decision) + ".")));
+            AddPerformanceRecord(row, view, issue);
             if (issue.CureEndsDay is { } end)
                 row.AddChild(DeskUi.Label($"Cure period ends day {end} · outcome: {issue.Outcome}"));
             foreach (var outcome in view.Records.Where(view.Known).Where(r => r.Subject == issue.Id && r.Kind is RecordKind.Compliance or RecordKind.WorkDone))
@@ -50,6 +51,13 @@ public partial class GameShell
             if (!PerformanceChoices[(issue.Id, "cure")].Disabled) AddTodayPerformanceLink(view, issue.Id, issue.CauseId);
 
         }
+    }
+
+    private static void AddPerformanceRecord(VBoxContainer row, SessionView view, PerformanceIssueState issue)
+    {
+        var record = view.Records.FirstOrDefault(r => r.Id == issue.CauseId && view.Known(r));
+        if (record is null) return;
+        var text = DeskUi.Label(record.Text); text.SetMeta("issue_record", issue.Id); row.AddChild(text);
     }
 
     private void AddPerformanceActions(VBoxContainer row, SessionView view, PerformanceIssueState issue,

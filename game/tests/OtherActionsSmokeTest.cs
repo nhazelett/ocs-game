@@ -47,6 +47,11 @@ public partial class OtherActionsSmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Native review capture saved.");
             }
+            var cost = shell.CoordinateButton!.GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("action_cost"));
+            Require(cost.Text.Contains("Requests 1,170 gal a day"), "The actual coordination sentence groups thousands.");
+            quantity.Value = 3600;
+            Require(cost.Text.Contains("Requests 3,600 gal a day") && shell.PendingCoordination!.Quantity == 3600, "Formatting the changed quantity never changes the action amount.");
+            quantity.Value = demand;
             await Capture("today");
             shell.ShowRequests(); await Frames(); await Capture("requests");
             var hash = shell.Session.StateHash;
