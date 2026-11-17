@@ -197,6 +197,7 @@ public class TeamTests
         Assert.Equal(2.5, avery.HoursSpokenForToday);
         Assert.Equal(5.5, avery.FreeHoursToday);
         Assert.Equal(2.5, avery.HoursQueued);
-        Assert.Contains("MSgt Joan Avery has 5.5 free hours today.", s.View.EndOfDayCheck());
+        // DESK-75 (D30): idle hours say what they cost; nobody is on the water yet.
+        Assert.Contains("MSgt Joan Avery has 5.5 free hours today, and nobody is on water for Hub.", s.View.EndOfDayCheck());
     }
 }

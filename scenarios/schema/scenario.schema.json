@@ -930,6 +930,10 @@
         "intro": {
           "type": "string"
         },
+        "where": {
+          "type": "string",
+          "description": "Where the player is going, in two sentences: the place, how many people, what is known to be coming (DESK-76, D32)"
+        },
         "choices": {
           "type": "object",
           "additionalProperties": {

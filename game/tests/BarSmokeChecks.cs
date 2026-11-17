@@ -74,12 +74,13 @@ internal static class BarSmokeChecks
         {
             var hash = shell.Session.StateHash;
             var labels = PlayScreen.Descendants(panel).OfType<Label>().Where(l => l.HasMeta("bar_line")).ToArray();
+            Require(panel.GetChildren().OfType<Label>().First().ThemeTypeVariation == "TabletopHeading", "The bar title is a pane heading.");
             Require(labels.Length == bar.Lines.Count, "Every pass criterion is shown exactly once.");
             for (var i = 0; i < labels.Length; i++)
             {
                 var line = bar.Lines[i]; var label = labels[i];
                 var word = line.State == BarState.AtRisk ? "At risk" : line.State == BarState.Missed ? "Missed" : bar.Final ? "Met" : "Met so far";
-                Require(label.Text == line.Says + " " + line.Text + " " + word + ".", "The commander's words and exact count retain their Sim state in words.");
+                Require(label.Text == (panel == shell.TodayBar ? "" : line.Says + " ") + line.Text + " " + word + ".", "Today shows counts and state only; the verdict also keeps the commander's words.");
                 var color = line.State == BarState.AtRisk ? TabletopTheme.Warning : line.State == BarState.Missed ? TabletopTheme.Alert : TabletopTheme.Ink;
                 Require(label.GetThemeColor("font_color") == color, "The Sim's at-risk and missed states are amber and red, with ordinary ink for met.");
             }

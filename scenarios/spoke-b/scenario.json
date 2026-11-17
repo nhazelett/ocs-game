@@ -923,6 +923,7 @@
   "prepBriefing": {
     "from": "cole",
     "intro": "You have fourteen days before wheels up. Here's what you can get done from here. You can't do all of it, so pick what you'll miss least on the ground.",
+    "where": "You're going to the hub on the main island, six hundred people, and the small sites going in on the outer islands. Spoke B opens on day 7 with a hundred and eighty people and no grid, and Spoke C opens on day 5.",
     "choices": {
       "gpcAccounts": "Purchase cards take about five days to set up from home. Out there, they take weeks.",
       "cashAndPayingAgent": "Finance can line up a paying agent and cash for you now, or you can find them when you land.",

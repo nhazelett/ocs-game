@@ -258,6 +258,20 @@ public sealed class SessionView
     /// Changes nothing and draws no random numbers.</summary>
     public ActionPreview Preview(AwardAction award) => Session.Said(_s.BuildPreview(award));
 
+    /// <summary>The one sentence above Arrange support that sums the buy up, and whether it needs attention (DESK-82,
+    /// D33): the buy starts after the need ends, or only adds to days already covered. Null when the buy would be
+    /// refused (the preview's hard stops say why). Changes nothing.</summary>
+    public AwardSummaryView? AwardSummary(AwardAction award) => _s.BuildAwardSummary(award);
+
+    /// <summary>True when nothing is open today (DESK-75, D30): no request without cover, no decision waiting, no
+    /// teammate idle while work is ready, nothing short and nothing new this morning. The day's plan offers Skip ahead
+    /// only then.</summary>
+    public bool QuietDay() => _s.BuildQuietDay();
+
+    /// <summary>What stops a skip from today and the morning it stops on at the latest; null when today is not quiet
+    /// (DESK-75, D30). Skip ahead ends days while <see cref="QuietDay"/> holds and the day is before UntilDay.</summary>
+    public SkipStopsView? SkipStops() => _s.BuildSkipStops();
+
     /// <summary>The debrief (SPEC 4): timeline, decisions with what was known, gaps tagged avoidable / discoverable /
     /// unforeseeable with their evidence, scorecard and commitments. Covers the days played so far.</summary>
     public DebriefView Debrief() => _s.BuildDebrief();

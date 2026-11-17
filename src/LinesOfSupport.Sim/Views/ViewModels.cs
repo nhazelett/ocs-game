@@ -214,6 +214,11 @@ public sealed record RequestStanding(
 {
     /// <summary>Never null for a reader.</summary>
     public IReadOnlyList<string> StillToFind { get; init; } = StillToFind ?? [];
+    /// <summary>What is already on file that could serve it, one sentence each (DESK-76, D32): existing BPAs and IDIQs
+    /// when the player pulled them in preparation, and what the partner force and host nation can spare when the player
+    /// confirmed those agreements. Given while nothing covers the request in full (nothing, asking, short); empty
+    /// otherwise.</summary>
+    public IReadOnlyList<string> OnFile { get; init; } = [];
     /// <summary>Nothing arranged and nothing in work.</summary>
     public const string Nothing = "nothing";
     /// <summary>Someone on the team is asking a person about the request; nothing bought yet.</summary>
@@ -493,6 +498,21 @@ public sealed record ExternalSupportRequestView(
 /// FindingsRecordId the Knowledge record that lists them; InReview while the review is in the shop's queue.</summary>
 public sealed record InheritedFileView(
     string ArrangementId, string SiteId, string CapabilityId, string Instrument, int? ReviewedDay, bool InReview, string? FindingsRecordId);
+
+/// <summary>
+/// What stops a skip (DESK-75, D30), shown under Skip ahead: "Stops when anything needs you, and on day 9 when Main Island
+/// Utilities starts water at Hub." Skip ahead ends days while the morning is quiet and the day is before UntilDay, so it
+/// stops on the morning of UntilDay at the latest (the next day the shop waits on, seven days on, or the last day).
+/// </summary>
+public sealed record SkipStopsView(string Sentence, int UntilDay);
+
+/// <summary>
+/// The buy summary above Arrange support (DESK-82, D33): one sentence with the cost, the hours and whose, the start
+/// against the wanted day and what is uncovered between, and what the buy is on top of. Attention is true when the buy
+/// starts after the need ends or only adds to days already covered; Why is that reason, and is also the sentence's
+/// last part. A forecast; it ignores rolls.
+/// </summary>
+public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why);
 
 /// <summary>
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return
