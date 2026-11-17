@@ -258,6 +258,11 @@ public sealed class SessionView
     /// Changes nothing and draws no random numbers.</summary>
     public ActionPreview Preview(AwardAction award) => Session.Said(_s.BuildPreview(award));
 
+    /// <summary>The one sentence above Arrange support that sums the buy up, and whether it needs attention (DESK-82,
+    /// D33): the buy starts after the need ends, or only adds to days already covered. Null when the buy would be
+    /// refused (the preview's hard stops say why). Changes nothing.</summary>
+    public AwardSummaryView? AwardSummary(AwardAction award) => _s.BuildAwardSummary(award);
+
     /// <summary>The debrief (SPEC 4): timeline, decisions with what was known, gaps tagged avoidable / discoverable /
     /// unforeseeable with their evidence, scorecard and commitments. Covers the days played so far.</summary>
     public DebriefView Debrief() => _s.BuildDebrief();

@@ -495,6 +495,14 @@ public sealed record InheritedFileView(
     string ArrangementId, string SiteId, string CapabilityId, string Instrument, int? ReviewedDay, bool InReview, string? FindingsRecordId);
 
 /// <summary>
+/// The buy summary above Arrange support (DESK-82, D33): one sentence with the cost, the hours and whose, the start
+/// against the wanted day and what is uncovered between, and what the buy is on top of. Attention is true when the buy
+/// starts after the need ends or only adds to days already covered; Why is that reason, and is also the sentence's
+/// last part. A forecast; it ignores rolls.
+/// </summary>
+public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why);
+
+/// <summary>
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return
 /// (the action is refused); SoftGaps are legal but carry a consequence the sim will play out.
 /// </summary>
