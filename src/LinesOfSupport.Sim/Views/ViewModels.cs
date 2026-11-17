@@ -500,6 +500,13 @@ public sealed record InheritedFileView(
     string ArrangementId, string SiteId, string CapabilityId, string Instrument, int? ReviewedDay, bool InReview, string? FindingsRecordId);
 
 /// <summary>
+/// What stops a skip (DESK-75, D30), shown under Skip ahead: "Stops when anything needs you, and on day 9 when Main Island
+/// Utilities starts water at Hub." Skip ahead ends days while the morning is quiet and the day is before UntilDay, so it
+/// stops on the morning of UntilDay at the latest (the next day the shop waits on, seven days on, or the last day).
+/// </summary>
+public sealed record SkipStopsView(string Sentence, int UntilDay);
+
+/// <summary>
 /// The buy summary above Arrange support (DESK-82, D33): one sentence with the cost, the hours and whose, the start
 /// against the wanted day and what is uncovered between, and what the buy is on top of. Attention is true when the buy
 /// starts after the need ends or only adds to days already covered; Why is that reason, and is also the sentence's

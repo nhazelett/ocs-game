@@ -14,8 +14,9 @@ public class EndOfDayTests
         Assert.Equal(
         [
             "Water for Hub is wanted from day 2 and nothing is arranged or in work yet.",
-            "MSgt Joan Avery has nothing to work on today; their 8 hours go to walk-in small buys.",
-            "SrA Eli Novak has nothing to work on today; their 8 hours go to walk-in small buys.",
+            // DESK-75 (D30): idle hours on a day that is not quiet say what they cost.
+            "MSgt Joan Avery has nothing to work on today, and nobody is on water for Hub; their 8 hours go to walk-in small buys.",
+            "SrA Eli Novak has nothing to work on today, and nobody is on water for Hub; their 8 hours go to walk-in small buys.",
         ], s.View.EndOfDayCheck());
     }
 
