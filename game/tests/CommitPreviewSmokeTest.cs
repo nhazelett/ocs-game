@@ -1,4 +1,5 @@
 using Godot;
+using System.Globalization;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Views;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
@@ -51,7 +52,7 @@ public partial class CommitPreviewSmokeTest : Node
             shell.NavigateBoardItem(new BoardItem("test", 0, BoardCategory.Report, BoardSeverity.Info, BoardLinkKind.SiteCapability, "spokeBSite.fuel", "", []));
             var coordinate = shell.PendingCoordination!;
             var coordinateCost = Cost(shell.CoordinateButton!, coordinate);
-            Require(coordinateCost.Text.Contains(coordinate.Quantity.ToString()) && coordinateCost.Text.Contains("withdrawn"), "Coordination names quantity and its consequence in a sentence.");
+            Require(coordinate.Quantity == 1170 && coordinateCost.Text.Contains("Requests 1,170 gal a day") && coordinateCost.Text.Contains(coordinate.Quantity.ToString("N0", CultureInfo.InvariantCulture)) && coordinateCost.Text.Contains("withdrawn"), "Coordination names quantity and its consequence in a sentence.");
             await Capture("coordinate", coordinateCost);
             tabs.CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true; Pick(shell.PersonContactInput, "j4");
             await Capture("j4", Cost(shell.VisitButtons["j4"], shell.VisitOptions["j4"].Action));
