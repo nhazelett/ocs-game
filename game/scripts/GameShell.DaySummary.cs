@@ -10,6 +10,9 @@ public partial class GameShell
     internal ScrollContainer DaySummaryScroll { get; private set; } = null!;
     internal Button YesterdayButton { get; private set; } = null!;
     internal DaySummaryView? DisplayedDaySummary { get; private set; }
+    private IReadOnlyList<DaySummaryView> skippedDaySummaries = [];
+    internal IReadOnlyList<DaySummaryView> DisplayedDaySummaries { get; private set; } = [];
+    private Label daySummaryTitle = null!;
     internal bool ReadingDaySummary => DaySummaryDialog?.Visible == true;
 
     private void BuildDaySummary()
@@ -23,7 +26,7 @@ public partial class GameShell
         var page = new VBoxContainer(); holder.AddChild(page);
         page.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         page.AddThemeConstantOverride("separation", 12);
-        page.AddChild(DeskUi.Heading("What happened today"));
+        daySummaryTitle = DeskUi.Heading("What happened today"); page.AddChild(daySummaryTitle);
         DaySummaryScroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill,
             HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, FollowFocus = true };
         page.AddChild(DaySummaryScroll);
@@ -47,6 +50,7 @@ public partial class GameShell
     private void RefreshYesterday()
     {
         YesterdayButton.Visible = session.CompletedSummary is not null;
+        YesterdayButton.Text = skippedDaySummaries.Count > 1 ? "Last results" : "Yesterday";
     }
 
     private void ShowDaySummary()
@@ -55,15 +59,21 @@ public partial class GameShell
             || ReadingTurnover || EndDayDialog.Visible) return;
         DisplayedDaySummary = summary;
         DeskUi.Clear(DaySummaryContents);
-        DaySummaryContents.AddChild(DeskUi.Heading(summary.Sentence));
-        News("What people told you", summary.Said, "said");
-        News("The day's news", summary.News, "news");
-        People("Work finished", summary.Finished, "finished");
-        Lines("Support started", summary.Started, "started");
-        Lines("Support ended", summary.Ended, "ended");
-        Lines("Short or missed", summary.Short, "short");
-        People("Slipped against the plan", summary.Slipped, "slipped");
-        People("Carried into tomorrow", summary.CarriedOver, "carried");
+        DisplayedDaySummaries = skippedDaySummaries.Count > 0 ? skippedDaySummaries : [summary];
+        daySummaryTitle.Text = DisplayedDaySummaries.Count > 1
+            ? $"What happened over days {DisplayedDaySummaries[0].Day}–{DisplayedDaySummaries[^1].Day}" : "What happened today";
+        foreach (var day in DisplayedDaySummaries)
+        {
+            var heading = DeskUi.Heading(day.Sentence); heading.SetMeta("summary_day", day.Day); DaySummaryContents.AddChild(heading);
+            News("What people told you", day.Said, "said");
+            News("The day's news", day.News, "news");
+            People("Work finished", day.Finished, "finished");
+            Lines("Support started", day.Started, "started");
+            Lines("Support ended", day.Ended, "ended");
+            Lines("Short or missed", day.Short, "short");
+            People("Slipped against the plan", day.Slipped, "slipped");
+            People("Carried into tomorrow", day.CarriedOver, "carried");
+        }
         DaySummaryScroll.ScrollVertical = 0;
         DaySummaryDialog.GetOkButton().Text = session.View?.Finished == true ? "Back to the debrief" : "Back to Today";
         var viewport = GetViewportRect().Size;
@@ -113,7 +123,7 @@ public partial class GameShell
     internal void CloseDaySummary(bool returnToMorning = true)
     {
         var wasReading = DisplayedDaySummary is not null;
-        DaySummaryDialog?.Hide(); DisplayedDaySummary = null;
+        DaySummaryDialog?.Hide(); DisplayedDaySummary = null; DisplayedDaySummaries = [];
         if (!wasReading) return;
         RefreshDayAdvanceControls();
         if (!returnToMorning || AtFrontDoor || ReadingTurnover) return;
@@ -127,6 +137,7 @@ public partial class GameShell
     private void ResetDaySummary()
     {
         CloseDaySummary(false);
+        skippedDaySummaries = [];
         YesterdayButton.Visible = false;
     }
 
@@ -134,6 +145,5 @@ public partial class GameShell
     {
         var blocked = PlayingDay || ReadingDaySummary || session.View is null || session.View.Finished;
         GetNode<Button>("%NextDay").Disabled = blocked;
-        GetNode<Button>("%Continue").Disabled = blocked;
     }
 }

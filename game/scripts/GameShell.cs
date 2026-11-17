@@ -19,7 +19,6 @@ public partial class GameShell : Control
         GetNode<Label>("%GameTitle").Text = ProjectSettings.GetSetting("application/config/name").AsString();
         GetNode<Button>("%NextDay").Pressed += OnNextDay;
         GetNode<Button>("%ReplayButton").Pressed += OnReplay;
-        GetNode<Button>("%Continue").Pressed += OnContinue;
         BuildMorningDesk();
         BuildPeopleDesk();
         BuildVisitsDesk();
@@ -105,6 +104,7 @@ public partial class GameShell : Control
 
     private void AdvanceDayFromDesk()
     {
+        skippedDaySummaries = [];
         var advanced = AdvanceAndAutosave();
         if (advanced && session.View?.Finished == false) FocusNewMorning();
         RefreshDisplay(advanced ? $"Results through day {session.CompletedDay}." : "Day advance is unavailable: no active scenario or scenario finished.", developerOnly: advanced);
@@ -149,7 +149,6 @@ public partial class GameShell : Control
         displayStatus = status; displayStatusDeveloperOnly = developerOnly; RefreshBuildStatus();
         GetNode<Label>("%DayCounter").Text = strip is null ? "No deployment" : view!.Finished ? $"Day {strip.LastDay} complete" : $"Morning of day {strip.Day}";
         GetNode<Button>("%NextDay").Disabled = view is null || view.Finished;
-        GetNode<Button>("%Continue").Disabled = view is null || view.Finished;
         var shop = GetNode<ProgressBar>("%ShopHoursGauge");
         var capacity = strip?.ShopHoursPerDay ?? 0;
         var hours = capacity == 1 ? "hour" : "hours";

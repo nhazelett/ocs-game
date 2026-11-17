@@ -23,8 +23,8 @@ public partial class MorningSmokeTest : Node
             {
                 expected.AdvanceDay(); days++;
             } while (!expected.Finished && expected.View.MorningBoard().Lead is null);
-            shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.StateHash == expected.StateHash() && shell.Session.CompletedDay == days, "Continue stops exactly at the next Sim-projected lead or completion.");
+            Step(shell, days);
+            Require(shell.Session.StateHash == expected.StateHash() && shell.Session.CompletedDay == days, "Single-day controls stop exactly at the next Sim-projected lead or completion.");
 
             Replay(shell); Step(shell, 10);
             var board = shell.Session.View!.MorningBoard();
@@ -88,8 +88,8 @@ public partial class MorningSmokeTest : Node
                 Require(image.SavePng(args[quietShot + 1]) == Error.Ok, "Quiet morning screenshot saved.");
             }
             Require(quiet.Session.StateHash == quietHash, "The quiet layout and capture leave Sim state unchanged.");
-            quiet.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
-            Require(quiet.Session.View!.Finished && quiet.Session.CompletedDay == quiet.Session.View.LastDay, "A quiet scenario continues to completion without an arbitrary week stop.");
+            Step(quiet, quiet.Session.View!.LastDay);
+            Require(quiet.Session.View!.Finished && quiet.Session.CompletedDay == quiet.Session.View.LastDay, "A quiet scenario can be ended through completion.");
             Require(!quiet.LeadOpen.Visible, "Open stays hidden at completion without a lead.");
             GD.Print("MORNING_SMOKE_PASS: quiet morning without Open, alert-first details, linked targets, Sim lead stop and quiet completion.");
             shell.QueueFree(); quiet.QueueFree();

@@ -27,9 +27,11 @@ public partial class GameShell
         page.AddChild(DeskUi.Label("This is a forecast. Work should finish as shown; events and deliveries can change what happens. Go back to the desk to change assignments."));
         DayPlanScroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill,
             HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, FollowFocus = true };
+        DeskUi.ShowScrollTrack(DayPlanScroll);
         page.AddChild(DayPlanScroll);
         DayPlanContents = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
         DayPlanContents.AddThemeConstantOverride("separation", 16); DayPlanScroll.AddChild(DayPlanContents);
+        BuildSkipAhead(page);
         EndDayDialog.Canceled += CancelEndDayCheck;
         EndDayDialog.CloseRequested += CancelEndDayCheck;
         EndDayDialog.Confirmed += () =>
@@ -65,6 +67,7 @@ public partial class GameShell
         }
         Lines("Deliveries and support due today", plan.Due, "plan_due", "No deliveries or support starts or ends are due today.");
         Lines("Still open", plan.Open, "plan_open", "Nothing needs your attention before ending the day.");
+        RefreshSkipAhead(view);
         DayPlanScroll.ScrollVertical = 0;
         var viewport = GetViewportRect().Size;
         EndDayDialog.PopupCentered(new Vector2I((int)Math.Min(960, viewport.X - 32), (int)Math.Min(650, viewport.Y - 32)));

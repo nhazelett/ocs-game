@@ -44,12 +44,11 @@ public partial class GameShell
             SizeFlagsVertical = SizeFlags.ExpandFill };
         row.AddChild(TitleArt);
         DeveloperWorkspaceButton = FrontButton("Open developer workspace", ShowGameSurface); column.AddChild(DeveloperWorkspaceButton);
-        var skipQuietDays = GetNode<Button>("%Continue");
         var settings = new VBoxContainer(); column.AddChild(settings);
         BuildSoundControls(settings);
         BuildLookControls(settings);
         var settingsRow = new HBoxContainer(); settingsRow.AddThemeConstantOverride("separation", 24); settings.AddChild(settingsRow);
-        foreach (var button in new[] { SoundButton, LookButton, skipQuietDays })
+        foreach (var button in new[] { SoundButton, LookButton })
         {
             button.Reparent(settingsRow, false); button.ThemeTypeVariation = "TabletopSetting";
             button.Flat = false; button.CustomMinimumSize = new Vector2(64, 38);
@@ -134,7 +133,6 @@ public partial class GameShell
     {
         var board = GetNode<VBoxContainer>("Margin/Layout/WorkArea/BoardPanel/BoardLayout");
         foreach (var name in new[] { "ScenarioRow", "ReplayRow", "SaveRow" }) board.GetNode<Control>(name).Visible = DeveloperTools;
-        GetNode<Button>("%Continue").Visible = AtFrontDoor && session.View is { Finished: false } && !ReadingTurnover;
         DeveloperWorkspaceButton.Visible = DeveloperTools && AtFrontDoor;
         ArtStudiesButton.Visible = DeveloperTools && AtFrontDoor && OS.HasFeature("editor");
         if (!DeveloperTools) SaveFilePicker.Hide();

@@ -47,7 +47,7 @@ public partial class TurnoverSmokeTest : Node
                     Require(report.Greeting is null || shell.TurnoverWords.Text.Contains(report.Greeting), "Greeting is shown.");
                     Require(report.Briefing is null || shell.TurnoverWords.Text.Contains(report.Briefing.Due), "What is due is shown.");
                     shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
-                    shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
+                    shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed);
                     Require(shell.Session.StateHash == hash, "Forced daily-control signals cannot skip turnover or advance Sim.");
                 }
                 if (i == 1)

@@ -15,7 +15,7 @@ public partial class DayPlaybackSmokeTest : Node
             var next=shell.GetNode<Button>("%NextDay");EndDay(shell);
             Require(shell.PlayingDay && shell.PlaybackFacts!.Day==10 && next.Disabled,"Next day automatically plays exactly the completed day and holds further input.");
             var hash=shell.Session.StateHash;
-            next.EmitSignal(Button.SignalName.Pressed);shell.GetNode<Button>("%Continue").EmitSignal(Button.SignalName.Pressed);
+            next.EmitSignal(Button.SignalName.Pressed);shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed);
             Require(hash==shell.Session.StateHash,"Day/Continue cannot advance behind playback.");
             Require(map.Tabletop!.ReportedChangeLabels.Count==shell.PlaybackFacts!.Changes.Where(c=>c.Known).Select(c=>c.SiteId).Distinct().Count(),"Every changed site has a visible marker for its reported changes.");
             Require(new[]{"fuel","power","lodging"}.All(shell.PlaybackText.Text.Contains) && !shell.PlaybackText.Text.Contains("more in"),"Playback names all three reported shortfalls rather than hiding two behind a count.");
