@@ -50,7 +50,7 @@ public partial class CorSmokeTest : Node
             controls.Submit.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.GetNode<Label>("%BuildStatus").Text.Contains("designated"), "Ledger submits the exact designation and shows its result.");
             var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents");
-            Require(ledger.GetChildren().OfType<Label>().Any(l => l.HasMeta("cor_arrangement") && l.GetMeta("cor_arrangement").AsString() == candidate.Id && l.Text.Contains("SGT Okafor") && l.Text.Contains(expected.View.CorSummary(expected.View.Cors.Single(c => c.Id == "corOkafor")))), "Ledger shows the assigned COR and reporting quality.");
+            Require(ledger.GetChildren().OfType<Label>().Any(l => l.HasMeta("cor_arrangement") && l.GetMeta("cor_arrangement").AsString() == candidate.Id && l.Text.Contains("SGT Okafor") && l.Text.Contains(expected.View.CorSummary(expected.View.Cors.Single(c => c.Id == "corOkafor"), expected.Arrangements.Single(a => a.Id == candidate.Id)))), "Ledger shows the assigned COR and reporting quality.");
             Require(shell.CorDesignations[candidate.Id].Submit.Disabled, "Designation refresh disables the now-current choice.");
             if(!shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44").Available)
             {

@@ -86,8 +86,8 @@ public partial class PrioritiesSmokeTest : Node
             Pick(shell.InstrumentInput, "sf44");
             Require(shell.PriorityInputs.Count == 0 && shell.PendingAward!.Priorities is null && shell.AwardTrade is { Visible: false, Text: "" }, "Switching to cash removes the pair and its trade.");
             Pick(shell.InstrumentInput, "purchaseOrder");
-            Require(shell.PriorityInputs.Count == 3 && shell.PriorityInputs.Values.All(t => !t.ButtonPressed) && shell.AwardButton.Disabled,
-                "Returning to written terms requires a fresh pair.");
+            Require(shell.PriorityInputs.Count == 3 && shell.PendingAward!.Priorities!.SequenceEqual(new[] { "fast", "good" }),
+                "Returning to written terms preserves the applicable pair.");
             Scenario(shell, "spoke-b"); Written(); PickPriorities(shell, "fast", "good");
             hash = shell.Session.StateHash;
             var changedDayToggle = shell.PriorityInputs["fast"]; var changedDayAward = shell.AwardButton;

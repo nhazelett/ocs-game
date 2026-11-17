@@ -92,7 +92,7 @@ public partial class GoingToPeopleSmokeTest : Node
             Require(!shell.VisitOptions["j4"].Preview.Accepted && shell.VisitButtons["j4"].Disabled, "Partner stock ceiling comes from Sim and blocks the request.");
             shell.J4QuantityInput!.Value = 1300;
             var j4 = (EngageJ4Action)shell.VisitOptions["j4"].Action; Submit("j4");
-            Require(((EngageJ4Action)shell.VisitOptions["j4"].Action).Id != j4.Id, "A second request cannot reuse the pending internal id.");
+            Require(!shell.PeopleToggle.ButtonPressed && shell.J4QuantityInput is null && !shell.VisitOptions.ContainsKey("j4"), "An accepted J4 ask closes the form and offers no duplicate red refusal.");
             while (!expected.Arrangements.Any(a => a.Id == j4.Id)) Day();
             Require(shell.Session.View!.Arrangements.Any(a => a.Id == j4.Id && a.SiteId == "spokeBSite" && a.Instrument == "acsa"), "The J4 request creates the real ACSA support, not a local award.");
             // A single day stops on returned finance news even in an otherwise quiet game.

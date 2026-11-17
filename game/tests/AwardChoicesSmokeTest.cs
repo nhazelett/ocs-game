@@ -25,31 +25,33 @@ public partial class AwardChoicesSmokeTest : Node
             }
             Target("spokeBSite.lodging"); Bindings();
             var host = shell.CurrentAwardChoices!.Vendors.Single(v=>v.Id=="hubUtilities");
-            Require(!host.Available && shell.VendorChoiceReason.Text==host.Reason,"The single unavailable supplier has its exact host nation reason before preview.");
+            Require(!host.Available && shell.VendorChoiceReason.Text.Contains(host.Reason!),"The single unavailable supplier has its exact host nation reason before preview.");
             Pick(shell.VendorInput,"hubUtilities");
             Require(Selected(shell.VendorInput)=="" && shell.PendingAward is null,"A disabled supplier cannot be chosen even by a forced selection signal.");
             await Capture("host-nation",shell.VendorChoiceReason);
+            Target("spokeBSite.fuel"); Pick(shell.InstrumentInput,"bpaCall");
+            Require(shell.CurrentAwardChoices!.Vendors.All(v => !v.Available)
+                && shell.VendorChoiceReason.Text.Contains("To open available choices, choose")
+                && shell.VendorChoiceReason.Text.Contains(shell.Session.View!.Rules.Instruments["purchaseOrder"].Label), "When a BPA leaves every supplier unavailable, the visible line names a usable arrangement from the Sim projection.");
+            await Capture("no-supplier", shell.VendorChoiceReason);
             Target("req0007"); Pick(shell.InstrumentInput,"bpaCall"); Bindings();
             Require(shell.CurrentAwardChoices!.Vendors.Single(v=>v.Id=="vendorC").Available
                 && shell.CurrentAwardChoices.Vendors.Where(v=>v.Id!="vendorC").All(v=>!v.Available),"Instrument-first selection re-asks the Sim and greys suppliers without that BPA.");
-            Require(!shell.InstrumentChoiceReason.Visible && shell.InstrumentChoiceReason.Text=="",
-                "A valid BPA selection has no unrelated cash or card reason under it.");
             var unavailableVendors = shell.CurrentAwardChoices.Vendors.Count(v=>!v.Available);
-            Require(unavailableVendors>1 && shell.VendorChoiceReason.Text==$"{unavailableVendors} choices are unavailable.",
-                "The unselected supplier list describes all unavailable choices instead of one arbitrary supplier.");
-            var blockedVendor=shell.CurrentAwardChoices.Vendors.First(v=>!v.Available);
-            var blockedIndex=Index(shell.VendorInput,blockedVendor.Id);
-            shell.VendorInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,blockedIndex);
-            Require(shell.VendorChoiceReason.Text==blockedVendor.Reason,"Pointing at a disabled supplier shows that supplier's exact reason.");
+            Require(unavailableVendors > 1, "The instrument-first fixture has several supplier refusals.");
+            void VisibleReasons()
+            {
+                foreach (var (options, label) in new[] { (shell.CurrentAwardChoices!.Vendors, shell.VendorChoiceReason),
+                    (shell.CurrentAwardChoices.Instruments, shell.InstrumentChoiceReason),
+                    (shell.CurrentAwardChoices.Vehicles, shell.VehicleChoiceReason),
+                    (shell.CurrentAwardChoices.Funding, shell.FundingChoiceReason) })
+                    Require(options.Where(o => !o.Available).All(o => label.Text.Contains(o.Reason!)), "Every unavailable reason is visible in full without pointer focus.");
+            }
+            VisibleReasons();
+            var priorReasons = shell.VendorChoiceReason.Text;
             shell.VendorInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,Index(shell.VendorInput,"vendorC"));
-            Require(shell.VendorChoiceReason.Text==$"{unavailableVendors} choices are unavailable.",
-                "Moving to an available supplier clears the unrelated hover reason.");
-            shell.InstrumentInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,Index(shell.InstrumentInput,"sf44"));
-            Require(shell.InstrumentChoiceReason.Text==shell.CurrentAwardChoices.Instruments.Single(i=>i.Id=="sf44").Reason,
-                "Even with BPA selected, a disabled instrument explains itself while focused.");
             shell.InstrumentInput.GetPopup().EmitSignal(Popup.SignalName.PopupHide);
-            Require(!shell.InstrumentChoiceReason.Visible && shell.InstrumentChoiceReason.Text=="",
-                "Closing the list restores the selected BPA's empty reason line.");
+            Require(shell.VendorChoiceReason.Text == priorReasons, "Opening and closing a popup never hides refusal reasons.");
             Require(shell.Session.StateHash==hash,"Every list, hover and blocked attempt is read-only.");
             await Capture("bpa-first",shell.VendorInput,true);
             await Capture("bpa-selected",shell.InstrumentInput);
@@ -81,7 +83,7 @@ public partial class AwardChoicesSmokeTest : Node
             var cash=shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44");
             Require(!cash.Available && cash.Reason=="Meridian Site Services does not take cash.","The current supplier's cash restriction comes from the Sim.");
             shell.InstrumentInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,Index(shell.InstrumentInput,"sf44"));
-            Require(shell.InstrumentChoiceReason.Text==cash.Reason,"The no-cash option gives its exact reason when focused.");
+            Require(shell.InstrumentChoiceReason.Text.Contains(cash.Reason!),"The no-cash option gives its exact reason when focused.");
             hash=shell.Session.StateHash; Pick(shell.InstrumentInput,"sf44");
             Require(Selected(shell.InstrumentInput)=="" && shell.PendingAward is null,"A disabled cash route never reaches Preview.");
             await Capture("no-cash",shell.InstrumentChoiceReason);

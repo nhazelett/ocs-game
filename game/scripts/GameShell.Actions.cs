@@ -20,6 +20,10 @@ public partial class GameShell
     private SpinBox quantityInput = null!, startInput = null!, durationInput = null!;
     private Label previewCost = null!, previewTiming = null!, previewStops = null!, previewGaps = null!;
     private Button awardButton = null!;
+    private VBoxContainer? previewLearned;
+    internal Label AwardSummaryLabel { get; private set; } = null!;
+    internal Dictionary<string, Button> AwardAddButtons { get; } = [];
+    internal Label VehicleChoiceReason { get; private set; } = null!;
     internal AwardAction? PendingAward { get; private set; }
     internal ActionPreview? AwardPreview { get; private set; }
     internal ActionEditorView? CurrentActionEditor { get; private set; }
@@ -98,7 +102,10 @@ public partial class GameShell
         if (selected is null || !options.Any(o => o.Id == selected)) index = options.Select((o, i) => (o, i)).Where(x => x.o.Block is null).Select(x => x.i).DefaultIfEmpty(0).First();
         if (options.Count > 0) picker.Select(index); else picker.Disabled = true;
         picker.ItemSelected += i => changed(options[(int)i].Id);
-        panel.AddChild(picker); return picker;
+        panel.AddChild(picker);
+        foreach (var option in options.Where(o => o.Block is not null))
+            panel.AddChild(DeskUi.Label(option.Text + ": " + option.Block));
+        return picker;
     }
 
     private static string? Picked(OptionButton picker) => picker.ItemCount == 0 || picker.Selected < 0 ? null : picker.GetItemMetadata(picker.Selected).AsString();
@@ -114,6 +121,7 @@ public partial class GameShell
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
         PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
         PriorityInputs.Clear(); AwardTrade = null; // DESK-26
+        previewLearned = null; AwardAddButtons.Clear();
         var formVersion = ++awardFormVersion;
         var formHash = session.StateHash;
         awardButton = DeskUi.Button("Arrange support", () =>
@@ -136,6 +144,7 @@ public partial class GameShell
         awardButton.ThemeTypeVariation="TabletopPrimary";
         var back = AwardBackButton = DeskUi.Button("Back to requests", ShowRequests);
         awardFooter.AddChild(back);
+        AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         SupplierKnowledge = null;
@@ -171,10 +180,10 @@ public partial class GameShell
         awardPanel.AddChild(DeskUi.Label($"You're looking for {editor.CapabilityLabel.ToLowerInvariant()} at {view.Scenario.Sites.Single(s => s.Id == editor.SiteId).Name}."));
         var choices = ReconcileAwardChoices(view, target);
         vendorInput = AddAwardChoice("Who could provide it?", "Choose a supplier…", choices.Vendors, awardVendor,
-            id => { awardVendor = id; awardCor = null; }, out var vendorReason, awardChoiceNotice);
+            id => { awardVendor = id; }, out var vendorReason, AwardPickerNotice(view, target, "supplier", choices, awardChoiceNotice));
         VendorChoiceReason = vendorReason;
         instrumentInput = AddAwardChoice("How would you arrange it?", "Choose an arrangement…", choices.Instruments, awardInstrument,
-            id => { awardInstrument = id; awardCor = null; }, out var instrumentReason);
+            id => { awardInstrument = id; }, out var instrumentReason, AwardPickerNotice(view, target, "arrangement", choices));
         InstrumentChoiceReason = instrumentReason;
         if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
         {
@@ -187,13 +196,14 @@ public partial class GameShell
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
         vehicleInput = AddAwardChoice("Contract vehicle", needsVehicle ? "Choose a contract vehicle…" : "No contract vehicle needed", choices.Vehicles, awardVehicle,
-            id => awardVehicle = id, out var vehicleReason);
+            id => awardVehicle = id, out var vehicleReason, needsVehicle ? AwardPickerNotice(view, target, "vehicle", choices) : null);
+        VehicleChoiceReason = vehicleReason;
         vehicleInput.Disabled = !needsVehicle;
         if (!needsVehicle) { vehicleReason.Text = ""; vehicleReason.Hide(); }
         var immediate = awardInstrument is "sf44" or "gpc";
         if (awardFunding is null && !immediate) awardFunding = choices.Funding.FirstOrDefault(f => f.Available)?.Id ?? "";
-        fundingInput = AddAwardChoice("Funding line", immediate ? "No funding line used" : "Choose a funding line…", choices.Funding, awardFunding,
-            id => awardFunding = id, out var fundingReason);
+        fundingInput = AddAwardChoice("Funding line", immediate ? "No funding line used" : "Choose a funding line…", choices.Funding, immediate ? "" : awardFunding,
+            id => awardFunding = id, out var fundingReason, !immediate ? AwardPickerNotice(view, target, "funding", choices) : null);
         FundingChoiceReason = fundingReason;
         fundingInput.Disabled = immediate;
         BuildAwardPriorities(view); GateAward(view); // DESK-26
@@ -222,7 +232,6 @@ public partial class GameShell
                 awardPanel.AddChild(reason); CorReasonLabels.Add(reason);
             }
         }
-        else awardCor = null;
         var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
         quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);
         duration ??= Math.Max(1, requirement?.DurationDays ?? view.LastDay);
@@ -241,6 +250,7 @@ public partial class GameShell
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
         previewPanel.AddChild(new Control { CustomMinimumSize = new Vector2(0, 8), MouseFilter = MouseFilterEnum.Ignore });
+        previewLearned = new VBoxContainer(); previewLearned.AddThemeConstantOverride("separation", 8); previewPanel.AddChild(previewLearned);
         if (session.IsReplay) previewPanel.AddChild(DeskUi.Label("Awarding takes control and stops future replay actions."));
         UpdateAwardPreview();
     }
@@ -253,8 +263,8 @@ public partial class GameShell
         while (view.Arrangements.Any(a => a.Id == $"player-award-{awardSequence}") || view.InWork($"player-award-{awardSequence}")) awardSequence++;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
-            Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = string.IsNullOrEmpty(awardFunding) ? null : awardFunding,
-            Cor = string.IsNullOrEmpty(awardCor) ? null : awardCor,
+            Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = awardInstrument is "sf44" or "gpc" || string.IsNullOrEmpty(awardFunding) ? null : awardFunding,
+            Cor = view.Rules.Instruments[awardInstrument!].WrittenTerms && !string.IsNullOrEmpty(awardCor) ? awardCor : null,
             Quantity = quantity ?? 1, StartDay = start, DurationDays = duration ?? 1,
             Priorities = WrittenAward ? [.. PriorityOrder.Where(awardPriorities.Contains)] : null }; // DESK-26
         try
@@ -266,12 +276,28 @@ public partial class GameShell
             previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.";
             previewStops.Text = string.Join("\n\n", AwardPreview.HardStops);
             previewGaps.Text = string.Join("\n\n", AwardPreview.SoftGaps);
+            var summary = view.AwardSummary(PendingAward);
+            AwardSummaryLabel.Text = summary?.Sentence ?? ""; AwardSummaryLabel.Visible = summary is not null;
+            AwardSummaryLabel.AddThemeColorOverride("font_color", summary?.Attention == true ? TabletopTheme.Warning : TabletopTheme.Ink);
+            if (previewLearned is not null)
+            {
+                DeskUi.Clear(previewLearned); AwardAddButtons.Clear();
+                foreach (var line in (editor.CardId is null ? null : view.RequirementEditor(editor.CardId))?.Lines.Where(l => l.Known && !l.On && l.CanAdd) ?? [])
+                {
+                    var text = (line.LearnedFrom is { } person ? person.WithUnit + " told you: " : "") + (line.Learned ?? line.GapIfOff ?? line.Label);
+                    var warning = DeskUi.Label(text); warning.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewLearned.AddChild(warning);
+                    var add = DeskUi.Button("Add what you learned", () => AddLearnedRequirementLine(editor.CardId!, line.Id));
+                    add.SetMeta("add_line", line.Id); previewLearned.AddChild(add); add.Disabled = view.Finished;
+                    AwardAddButtons[line.Id] = add;
+                }
+            }
             previewStops.Visible = AwardPreview.HardStops.Count > 0;
             previewGaps.Visible = AwardPreview.SoftGaps.Count > 0;
             GateAward(view);
         }
         catch (OverflowException)
         {
+            AwardSummaryLabel.Text = ""; AwardSummaryLabel.Hide();
             AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
             previewGaps.Text = ""; DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
         }

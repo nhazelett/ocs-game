@@ -39,8 +39,8 @@ public partial class GameShell
             var running = arrangement.Status is ArrangementStatus.Active or ArrangementStatus.Suspended;
             var curing = view.Work.Any(w => w.Kind == WorkKind.CureNotice && w.CompletedDay is null && (string?)w.Payload == issue.Id);
             var terminating = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == issue.ArrangementId);
-            var cure = DeskUi.Button(curing ? "Cure notice in work" : "Cure notice", () =>
-                SendAction(new CureNoticeAction { Day = session.View!.Day, Issue = issue.Id }));
+            var cureAction = new CureNoticeAction { Day = view.Day, Issue = issue.Id };
+            var cure = DeskUi.Button(curing ? "Cure notice in work" : "Cure notice", () => SendAction(cureAction));
             cure.Disabled = view.Finished || !running || curing || terminating || issue.CureNoticeDay is not null;
             var resource = DeskUi.Button("Re-source…", () =>
             {
@@ -54,6 +54,7 @@ public partial class GameShell
             DeskUi.Gate(cure, cureReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
                 : terminating ? "Ending this contract is already in work." : curing ? "The cure notice is already in work."
                 : issue.CureNoticeDay is not null ? "A cure notice has already been issued." : null);
+            AddActionCost(row, view, cureAction, "Issues a cure notice to put this vendor problem right.");
             var resourceReason = DeskUi.ActionReason(row, resource);
             DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : null);
             var contractReason = DeskUi.ActionReason(row, terminate);

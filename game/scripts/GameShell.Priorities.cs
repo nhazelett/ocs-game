@@ -18,7 +18,7 @@ public partial class GameShell
     private void BuildAwardPriorities(SessionView view)
     {
         PriorityInputs.Clear(); AwardTrade = null;
-        if (!WrittenAward) { awardPriorities.Clear(); return; }
+        if (!WrittenAward) return;
         awardPanel.AddChild(DeskUi.Label("Fast, cheap, good · pick two"));
         awardPanel.AddChild(DeskUi.Label("Choose the two that matter most. To change a pair, turn one off first."));
         var row = new HBoxContainer(); awardPanel.AddChild(row);

@@ -28,9 +28,9 @@ public partial class ShopVehicleSmokeTest : Node
                 Pick(shell.PersonContactInput, "vendor:" + rep.Id);
             }
             VendorVisit(); var before = shell.VisitOptions["vendor"].Preview;
-            Label Timing() => shell.ShopVehicleStatus!.GetParent().GetChildren().OfType<Label>()
+            Label Timing() => shell.VisitButtons["vendor"].GetParent().GetChildren().OfType<Label>()
                 .Single(l => l.HasMeta("visit_timing") && l.GetMeta("visit_timing").AsString() == "vendor");
-            Require(Timing().Text.StartsWith($"This takes {before.ShopHoursMin} shop hours.") && !Timing().Text.Contains("down from"),
+            Require(Timing().Text.StartsWith($"{before.ShopHoursMin} hours of your time.") && !Timing().Text.Contains("down from"),
                 "An ordinary vendor meeting uses plural hours and claims no vehicle saving.");
             var oldRequests = shell.AwardRequestInput; var oldRequestIndex = oldRequests.Selected;
             Pick(oldRequests, "own-initiative");
@@ -61,7 +61,7 @@ public partial class ShopVehicleSmokeTest : Node
             Require(after.ShopHoursMin < before.ShopHoursMin && after.ShopHoursMin == real.ShopHoursMin && after.ShopHoursMax == real.ShopHoursMax,
                 "The running vehicle's lower visit hours come from Sim, not Game arithmetic.");
             var timing = Timing();
-            Require(timing.Text.StartsWith($"This takes {after.ShopHoursMin} shop hour with the office vehicle, down from the usual {before.ShopHoursMin} shop hours.")
+            Require(timing.Text.StartsWith($"{after.ShopHoursMin} hour of your time.")
                 && shell.ShopVehicleStatus!.Text == "Office vehicle: running today.",
                 "The singular hour, actual saving and running status are visible together; the baseline is the independent pre-purchase preview.");
             await Capture(timing, "running-visit"); Matches();

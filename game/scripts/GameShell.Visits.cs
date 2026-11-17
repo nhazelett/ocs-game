@@ -162,18 +162,12 @@ public partial class GameShell
         var key = meeting.Attending ? "leave-meeting" : "meeting";
         var action = new JoinStaffMeetingAction { Day = view.Day, Attend = !meeting.Attending };
         var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
-        if (!meeting.Attending && preview.Accepted)
-        {
-            var day = preview.EarliestStartMin == preview.EarliestStartMax ? preview.EarliestStartMin.ToString()
-                : $"{preview.EarliestStartMin}–{preview.EarliestStartMax}";
-            var queue = preview.QueueAheadHours > 0 ? $", after the {preview.QueueAheadHours} hours already queued" : "";
-            visitsForm.AddChild(DeskUi.Label($"The earliest result is day {day}{queue}."));
-        }
         var button = DeskUi.Button(meeting.Attending ? "Stop attending" : "Join the staff meeting", () => SendAction(action));
         button.SetMeta("visit", key);
         var reason = DeskUi.ActionReason(visitsFooter, button);
         DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
         VisitButtons[key] = button;
+        AddActionCost(visitsFooter, view, action, meeting.Attending ? "Stops attending the staff meeting." : "Joins the staff meeting so requests reach you in the room.", preview);
         if (preview.SoftGaps.Count > 0) visitsForm.AddChild(DeskUi.Label(string.Join("\n\n", preview.SoftGaps)));
     }
 
@@ -181,16 +175,27 @@ public partial class GameShell
     {
         var host = parent ?? visitsForm;
         var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
-        var button = DeskUi.Button(text, () => SendAction(action)); button.Disabled = view.Finished || !preview.Accepted;
+        var button = DeskUi.Button(text, () =>
+        {
+            if (!SendAction(action).Accepted || action is not EngageJ4Action) return;
+            // An accepted ask is in work; close its form instead of presenting the same ask as a refusal.
+            ResetVisits(); RefreshVisits(session.View, session.View?.MorningBoard());
+        }); button.Disabled = view.Finished || !preview.Accepted;
         button.SetMeta("visit", key);
         var reason = DeskUi.ActionReason(visitsFooter, button);
         DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault()); VisitButtons[key] = button;
-        static string Range(int min, int max) => min == max ? min.ToString() : $"{min}–{max}";
-        static string Hours(int min, int max) => $"{Range(min, max)} shop {(min == 1 && max == 1 ? "hour" : "hours")}";
-        var saving = action is MeetVendorAction && view.HasShopVehicle && preview.ShopHoursMax < view.Rules.GoingToPeople.MeetVendor.ShopHours
-            ? $" with the office vehicle, down from the usual {Hours(view.Rules.GoingToPeople.MeetVendor.ShopHours, view.Rules.GoingToPeople.MeetVendor.ShopHours)}" : "";
-        var timing = DeskUi.Label($"This takes {Hours(preview.ShopHoursMin, preview.ShopHoursMax)}{saving}. The earliest result is day {Range(preview.EarliestStartMin, preview.EarliestStartMax)}{DeskUi.QueueClause(preview.QueueAheadHours)}.");
-        timing.SetMeta("visit_timing", key); host.AddChild(timing);
+        var effect = action switch
+        {
+            FindFinanceAction => "Finds the finance office and its cash and payment arrangements.",
+            AskScoAction ask => "Sends the SCO your question: " + view.ScoQuestions.First(q => q.Id == ask.Question).Label + ".",
+            MeetVendorAction meet => "Meets " + view.NameOf(meet.Vendor) + " to learn their terms.",
+            EngageJ4Action j4 => $"Asks the J4 for {j4.Quantity} {view.ActionEditor(j4.Site, j4.Capability)!.Unit} a day of {CapabilityName(view, j4.Capability).ToLowerInvariant()} at {view.NameOf(j4.Site)}.",
+            _ => text + "."
+        };
+        var timing = AddActionCost(visitsFooter, view, action, effect, preview);
+        timing.SetMeta("visit_timing", key);
+        if (action is MeetVendorAction && view.HasShopVehicle && preview.ShopHoursMax < view.Rules.GoingToPeople.MeetVendor.ShopHours)
+            timing.Text += $" With the office vehicle, down from the usual {view.Rules.GoingToPeople.MeetVendor.ShopHours} shop hours.";
         if (preview.HardStops.Count > 0)
         {
             var stops = DeskUi.Label(string.Join("\n\n", preview.HardStops)); stops.AddThemeColorOverride("font_color", TabletopTheme.Alert); host.AddChild(stops);
