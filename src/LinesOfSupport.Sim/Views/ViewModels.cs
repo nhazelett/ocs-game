@@ -220,6 +220,11 @@ public sealed record RequestStanding(
     /// confirmed those agreements. Given while nothing covers the request in full (nothing, asking, short); empty
     /// otherwise.</summary>
     public IReadOnlyList<string> OnFile { get; init; } = [];
+    /// <summary>DESK-103: a buy in work, or an arrangement not yet started, that leaves out a part the request includes or
+    /// someone said it needs, when nothing else for the request brings it: "The BPA call MSgt Joan Avery is writing with
+    /// Harbor Equipment Co comes without operators, and SMSgt Ray Dunn said the request needs them." The sentence ends
+    /// <see cref="Sentence"/> too, and the request counts in the morning's alerts while it is set. Null otherwise.</summary>
+    public string? LeavesOut { get; init; }
     /// <summary>Nothing arranged and nothing in work.</summary>
     public const string Nothing = "nothing";
     /// <summary>Someone on the team is asking a person about the request; nothing bought yet.</summary>
@@ -279,7 +284,9 @@ public sealed record CapabilityTile(string SiteId, string CapabilityId, string L
     string? WhyShort = null, int? OpensDay = null);
 
 /// <summary>The morning board: what changed overnight, sorted alerts first, plus the capability tiles and the top strip.</summary>
-/// <param name="Items">Items from the last AdvanceDay, Alert then Warning then Info, in record order within a severity. Empty on day 1.</param>
+/// <param name="Items">Items from the last AdvanceDay, Alert then Warning then Info, in record order within a severity. Empty on day 1.
+/// DESK-103: after the overnight alerts, one alert per request a buy leaves a part out of (<see cref="RequestStanding.LeavesOut"/>);
+/// its RecordId is not a record.</param>
 /// <param name="Lead">The one thing the day leads with (M2R-05), or null on a quiet day.</param>
 /// <param name="OpenRequests">DESK-78: requests on the desk whose days are not over, for the morning's heading (the
 /// review's "0 requests" counted board items, not requests).</param>
