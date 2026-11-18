@@ -22,13 +22,6 @@ internal sealed class PlayScreen(GameShell shell)
     {
         var windows = Descendants(shell).OfType<Window>().Where(w => w.Visible).ToArray();
         if (windows.Length > 0) { yield return windows[^1]; yield break; }
-        if (shell.RequestWorkspace.IsVisibleInTree())
-        {
-            yield return shell.RequestWorkspace;
-            yield return shell.GetNode("Margin/Layout/TopStrip");
-            yield return shell.GetNode("Navigation");
-            yield break;
-        }
         // Opaque full-screen pages cover the desk, even though its children remain Visible.
         var cover = shell.GetChildren().OfType<PanelContainer>()
             .Where(c => c.IsVisibleInTree() && c.GetGlobalRect().Size.X >= 1200 && c.GetGlobalRect().Size.Y >= 780)
@@ -37,8 +30,16 @@ internal sealed class PlayScreen(GameShell shell)
         {
             yield return cover;
             if (cover.ZIndex <= 15) yield return shell.GetNode("Navigation");
+            yield break;
         }
-        else yield return shell;
+        if (shell.RequestWorkspace.IsVisibleInTree())
+        {
+            yield return shell.RequestWorkspace;
+            yield return shell.GetNode("Margin/Layout/TopStrip");
+            yield return shell.GetNode("Navigation");
+            yield break;
+        }
+        yield return shell;
     }
 
     private static Rect2 ScreenRect(Control control)

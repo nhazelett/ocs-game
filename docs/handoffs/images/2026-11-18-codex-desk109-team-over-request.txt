@@ -1,0 +1,19 @@
+Native play-driver review: team-over-request
+
+[Team]
+Your contracting team
+New work stays with you until you hand it over. Select a name below a task, then give them the work. Free hours go to walk-in small buys.
+scroll "Team" (up: False, more below: False)
+You
+Works at the usual pace.
+7 hours free today · 0 hours of unfinished work
+No unfinished tasks.
+MSgt Joan Avery · Experienced contracting officer
+Gets through work faster than most.
+8 hours free today · 0 hours of unfinished work
+No unfinished tasks.
+SrA Eli Novak · Junior contracting officer
+Still learning: work takes longer.
+8 hours free today · 0 hours of unfinished work
+No unfinished tasks.
+button "Back to the desk" [enabled]
