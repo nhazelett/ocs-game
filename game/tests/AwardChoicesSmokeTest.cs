@@ -42,10 +42,9 @@ public partial class AwardChoicesSmokeTest : Node
             void VisibleReasons()
             {
                 foreach (var (options, label) in new[] { (shell.CurrentAwardChoices!.Vendors, shell.VendorChoiceReason),
-                    (shell.CurrentAwardChoices.Instruments, shell.InstrumentChoiceReason),
                     (shell.CurrentAwardChoices.Vehicles, shell.VehicleChoiceReason),
                     (shell.CurrentAwardChoices.Funding, shell.FundingChoiceReason) })
-                    Require(options.Where(o => !o.Available).All(o => label.Text.Contains(o.Reason!)), "Every unavailable reason is visible in full without pointer focus.");
+                    Require(options.Where(o => !o.Available).All(o => label.Text.Contains(o.Reason!)), "Every supplier, vehicle and funding refusal stays visible in full without pointer focus.");
             }
             VisibleReasons();
             var priorReasons = shell.VendorChoiceReason.Text;
@@ -83,10 +82,10 @@ public partial class AwardChoicesSmokeTest : Node
             var cash=shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44");
             Require(!cash.Available && cash.Reason=="Meridian Site Services does not take cash.","The current supplier's cash restriction comes from the Sim.");
             shell.InstrumentInput.GetPopup().EmitSignal(PopupMenu.SignalName.IdFocused,Index(shell.InstrumentInput,"sf44"));
-            Require(shell.InstrumentChoiceReason.Text.Contains(cash.Reason!),"The no-cash option gives its exact reason when focused.");
+            Require(shell.InstrumentInput.GetItemTooltip(Index(shell.InstrumentInput, "sf44")) == cash.Reason && !shell.InstrumentChoiceReason.Visible, "The disabled cash option keeps its exact reason in the arrangement picker, without a separate warning about another buy.");
             hash=shell.Session.StateHash; Pick(shell.InstrumentInput,"sf44");
             Require(Selected(shell.InstrumentInput)=="" && shell.PendingAward is null,"A disabled cash route never reaches Preview.");
-            await Capture("no-cash",shell.InstrumentChoiceReason);
+            await Capture("no-cash",shell.InstrumentInput,true);
             Pick(shell.VendorInput,"vendorA"); Pick(shell.InstrumentInput,"sf44"); Bindings();
             Require(shell.FundingInput.Disabled && Selected(shell.FundingInput)=="" && shell.PendingAward?.FundingLine is null
                 && shell.FundingChoiceReason.Text=="A cash buy is paid from the cash box, not a funding line.","Cash greys and clears funding with the exact explanation.");

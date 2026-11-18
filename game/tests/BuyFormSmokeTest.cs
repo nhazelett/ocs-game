@@ -15,9 +15,9 @@ public partial class BuyFormSmokeTest : Node
             PickAwardTarget(shell, "tutWater"); shell.ShowMarket();
             var hash = shell.Session.StateHash;
             Pick(shell.VendorInput, "harborBottling");
-            Require(shell.InstrumentChoiceReason.Text.Contains("Harbor Bottling does not accept the card"), "The chosen supplier's card refusal is explained.");
+            Require(CardReason().Contains("Harbor Bottling does not accept the card"), "The disabled card choice explains the supplier's refusal in the arrangement picker.");
             Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc");
-            Require(!shell.InstrumentChoiceReason.Text.Contains("Harbor Bottling does not accept the card") && !shell.AwardBlockedReason.Text.Contains("Harbor Bottling does not accept the card"), "Changing suppliers clears the previous supplier's refusal line.");
+            Require(!CardReason().Contains("Harbor Bottling does not accept the card") && !shell.AwardBlockedReason.Text.Contains("Harbor Bottling does not accept the card"), "Changing suppliers clears the previous supplier's refusal line.");
             Order();
             Require(shell.PendingAward!.Quantity == shell.CurrentActionEditor!.PeakDemandUnits, "The buy starts at actual demand.");
             shell.QuantityInput.Value = 4500; shell.StartInput.Value = 2; shell.DurationInput.Value = 7;
@@ -46,6 +46,8 @@ public partial class BuyFormSmokeTest : Node
             GD.Print("BUY_FORM_SMOKE_PASS: early amount and timing, correct labels, supplier refusal refresh, pure exact previews, preserved terms and half-pane space with pinned summaries.");
             GetTree().Quit();
 
+            string CardReason() => shell.InstrumentInput.GetItemTooltip(Enumerable.Range(1, shell.InstrumentInput.ItemCount - 1)
+                .Single(i => shell.InstrumentInput.GetItemMetadata(i).AsString() == "gpc"));
             string Caption(SpinBox input) => input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
             void Order()
             {

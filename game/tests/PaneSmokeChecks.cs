@@ -15,6 +15,12 @@ internal static class PaneSmokeChecks
             var tabs = shell.GetNode<TabContainer>("%DeskTabs"); shell.ShowMarket();
             PickAwardTarget(shell, "tutForklift");
             var hash = shell.Session.StateHash;
+            Require(shell.AwardButton.Disabled && !shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text.Length == 0,
+                "An untouched buy stays disabled without a premature missing-choice error.");
+            var quantity = shell.QuantityInput.Value;
+            shell.QuantityInput.Value = quantity + 1;
+            Blocked("Choose an available supplier.");
+            shell.QuantityInput.Value = quantity;
             Blocked("Choose an available supplier.");
             await Frames(); await Capture("greyed", false);
             Pick(shell.VendorInput, "harborEquipment"); Blocked("Choose an available arrangement.");
