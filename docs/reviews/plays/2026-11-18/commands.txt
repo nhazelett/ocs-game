@@ -1,0 +1,239 @@
+0002 look
+0003 scroll "Preparation" down
+0004 click "I can pull the agreements the last rotation left you, so you can see which requests they cover before you land. (1 day)"
+0005 click "I can send you our vendor list with the terms we have, so you know who takes cash and who takes the card. (2 days)"
+0006 click "Bring templates and a paper kit, and the manual work goes faster until the system's up. (1 day)"
+0007 click "I'm ready to leave"
+0008 click "Continue"
+0009 click "Continue"
+0010 click "Continue"
+0011 click "Open the desk and meet people"
+0012 scroll "Today" down
+0013 scroll "Today" down
+0014 click "Water for Hub · MSgt Carla Ortiz"
+0015 click "Requests"
+0016 click "Water for Hub"
+0017 click "Today"
+0018 click "Open request"
+0019 scroll "Request" down
+0020 scroll "Request" down
+0021 click "Ask MSgt Carla Ortiz"
+0022 click "Choose an arrangement…"
+0023 click "Government purchase card"
+0024 click "Choose a supplier…"
+0025 click "Island Mart"
+0026 click "Arrange support"
+0027 click "Back to the desk"
+0028 click "Inbox"
+0029 scroll "Inbox" down
+0030 click "Vendors"
+0031 click "End the day"
+0032 scroll "Dialog" down
+0033 click "End the day" #2
+0034 click "End the day"
+0035 click "Back to Today"
+0036 scroll "Today" down
+0037 scroll "Today" down
+0038 click "End the day"
+0039 click "End the day"
+0040 click "Back to Today"
+0041 click "People to reach"
+0042 scroll "Today" down
+0043 scroll "Today" down
+0044 scroll "Today" down
+0045 scroll "Today" down
+0046 click "People to reach"
+0047 scroll "Today" down
+0048 click "Choose someone to reach…"
+0049 click "Staff meeting · Col Helen Ward"
+0050 scroll "Today" down
+0051 click "Join the staff meeting"
+0052 click "Staff meeting · Col Helen Ward"
+0053 scroll "Today" up
+0054 click "Staff meeting · Col Helen Ward"
+0055 click "Harbor Equipment Co · Mr. Tomas Reyna"
+0056 scroll "Today" down
+0057 click "MSgt Joan Avery"
+0058 click "Back to the desk"
+0059 click "End the day"
+0060 click "End the day"
+0061 scroll "Dialog" down
+0062 click "Back to Today"
+0063 scroll "Today" down
+0064 click "Open request"
+0065 scroll "Request" down
+0066 scroll "Request" down
+0067 click "Ask SMSgt Ray Dunn"
+0068 click "Choose an arrangement…"
+0069 click "BPA call"
+0070 click "Choose a supplier…"
+0071 click "Harbor Equipment Co"
+0072 click "Choose a contract vehicle…"
+0073 click "The Harbor Equipment Co BPA"
+0074 scroll "Buy" down
+0075 click "None"
+0076 click "TSgt Pratt · 3 CES"
+0077 click "Arrange support"
+0078 click "MSgt Joan Avery"
+0079 click "Back to the desk"
+0080 click "MSgt Joan Avery"
+0081 look
+0082 scroll "Team" down
+0083 key Escape
+0084 click "Back to the desk"
+0085 click "MSgt Joan Avery"
+0086 scroll "Team" down
+0087 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 7 hours; it would be done day 5."
+0088 click "Give them this task" #2
+0089 click "Back to the desk"
+0090 click "End the day"
+0091 click "End the day"
+0092 click "Back to Today"
+0093 scroll "Today" down
+0094 click "Requests"
+0095 click "Material handling equipment for Hub
+MSgt Joan Avery is writing the BPA call with Harbor Equipment Co, about 7 hours of work left."
+0096 scroll "Request" down
+0097 click "Add what you learned"
+0098 click "Choose an arrangement…"
+0099 click "BPA call"
+0100 click "Choose a supplier…"
+0101 click "Harbor Equipment Co"
+0102 click "Choose a contract vehicle…"
+0103 click "The Harbor Equipment Co BPA"
+0104 click "BPA call"
+0105 click "Written purchase order"
+0106 click "Harbor Equipment Co"
+0107 click "Coastal Rentals"
+0108 click "Fast"
+0109 click "Good"
+0110 scroll "Buy" down
+0111 click "None"
+0112 click "TSgt Pratt · 3 CES"
+0113 click "Good"
+0114 click "Cheap"
+0115 click "Cheap"
+0116 click "Good"
+0117 click "Arrange support"
+0118 scroll "Request" down
+0119 click "Back to the desk"
+0120 click "Today"
+0121 scroll "Today" down
+0122 scroll "Today" down
+0123 scroll "Today" down
+0124 scroll "Today" down
+0125 scroll "Today" down
+0126 click "All decisions"
+0127 click "Day 4: Material handling equipment at Hub from Harbor Equipment Co, 3 forklifts for 13 days on a BPA call, given to MSgt Joan Avery.
+In work: done about day 5."
+0128 click "Back to the desk"
+0129 click "MSgt Joan Avery"
+0130 scroll "Team" up
+0131 click "MSgt Joan Avery: 1.5 hours free today, 6.5 hours queued, clear by day 5. This takes them 7 hours; it would be done day 6."
+0132 click "Give them this task"
+0133 click "Back to the desk"
+0134 click "End the day"
+0135 click "End the day"
+0136 click "Back to Today"
+0137 scroll "Today" down
+0138 click "End the day"
+0139 click "End the day"
+0140 click "Back to Today"
+0141 click "Requests"
+0142 click "Waste removal for Hub
+Main Island Utilities (host nation) is delivering 6,000 gal."
+0143 scroll "Request" down
+0144 click "Ask Capt Ana Ruiz"
+0145 click "Choose an arrangement…"
+0146 click "Written purchase order"
+0147 click "Choose a supplier…"
+0148 click "Main Island Sanitation"
+0149 click "Cheap"
+0150 click "Good"
+0151 click "" #2
+0152 click "" #1
+0153 click "Fast"
+0154 click "None"
+0155 scroll "Buy" down
+0156 click "None"
+0157 click "TSgt Pratt · 3 CES"
+0158 click "Back to the desk"
+0159 click "End the day"
+0160 click "End the day"
+0161 click "Back to Today"
+0162 click "Requests"
+0163 click "Waste removal for Hub
+Main Island Utilities (host nation) is delivering 6,000 gal."
+0164 click "Choose an arrangement…"
+0165 click "Written purchase order"
+0166 click "Choose a supplier…"
+0167 click "Main Island Sanitation"
+0168 click "Fast"
+0169 click "Good"
+0170 scroll "Buy" down
+0171 click "None"
+0172 click "TSgt Pratt · 3 CES"
+0173 click "Arrange support"
+0174 click "Back to the desk"
+0175 click "MSgt Joan Avery"
+0176 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 13 hours; it would be done day 10."
+0177 click "Give them this task"
+0178 click "Back to the desk"
+0179 click "Today"
+0180 click "End the day"
+0181 click "End the day"
+0182 click "Back to Today"
+0183 scroll "Today" down
+0184 scroll "Today" down
+0185 scroll "Today" down
+0186 click "End the day"
+0187 click "End the day"
+0188 click "Back to Today"
+0189 click "End the day"
+0190 click "End the day"
+0191 click "Back to Today"
+0192 click "End the day"
+0193 click "Skip ahead"
+0194 click "Back to Today"
+0195 click "Hub · down"
+0196 click "Open request: Material handling equipment for Hub"
+0197 scroll "Request" down
+0198 scroll "Request" down
+0199 scroll "Request" down
+0200 click "Back to the desk"
+0201 scroll "Today" down
+0202 scroll "Today" down
+0203 click "Open"
+0204 scroll "Today" down
+0205 scroll "Today" down
+0206 scroll "Today" down
+0207 click "Harbor Equipment Co · Mr. Tomas Reyna"
+0208 click "Coastal Rentals · Ms. Nadia Haddad"
+0209 scroll "Today" down
+0210 click "End the day"
+0211 click "End the day"
+0212 click "Back to Today"
+0213 click "Inbox"
+0214 scroll "Inbox" down
+0215 scroll "Inbox" down
+0216 scroll "Inbox" down
+0217 scroll "Inbox" down
+0218 scroll "Inbox" down
+0219 click "Cure notice"
+0220 click "Today"
+0221 click "End the day"
+0222 scroll "Dialog" down
+0223 click "End the day"
+0224 click "Back to Today"
+0225 click "End the day"
+0226 click "End the day"
+0227 click "Back to Today"
+0228 click "End the day"
+0229 click "End the day"
+0230 click "Back to Today"
+0231 click "End the day"
+0232 click "End the day"
+0233 click "Back to the debrief"
+0234 scroll "Debrief" down
+0235 click "Trace the evidence"
+0236 quit
