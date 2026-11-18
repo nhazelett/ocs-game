@@ -191,8 +191,12 @@ public sealed record DaySummaryLine(string TeammateId, string Sentence);
 /// <param name="Teammate">That person as the player reads them ("you", "MSgt Joan Avery").</param>
 /// <param name="CardId">The request it was for, for opening it; null when it was for none. Never shown.</param>
 /// <param name="Request">That request's title ("Water for Hub"); null when none.</param>
-/// <param name="Now">How it stands now: "In work: done about day 23.", "Arranged: starts on day 5.", "Running through day 8.", "Done on day 4."</param>
-public sealed record DecisionView(int Day, string Sentence, string TeammateId, string Teammate, string? CardId, string? Request, string Now);
+/// <param name="Now">How it stands now: "In work: done about day 23.", "Arranged: starts on day 5.", "Running through day 8.", "Done on day 4.",
+/// "Stopped on day 5 before it was signed; nothing was bought."</param>
+/// <param name="StopWorkId">DESK-104: for a buy still being written, the work item for StopWorkAction.Work; null otherwise. Never shown.</param>
+/// <param name="StopSentence">DESK-104: the line under "Stop this work" beside this decision; null when it cannot be stopped.</param>
+public sealed record DecisionView(int Day, string Sentence, string TeammateId, string Teammate, string? CardId, string? Request, string Now,
+    string? StopWorkId = null, string? StopSentence = null);
 
 /// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
@@ -247,7 +251,10 @@ public sealed record RequestStanding(
 /// <param name="HoursLeft">Hours left, in this person's hours, rounded up to the half hour.</param>
 /// <param name="Ready">True when it can be worked today; false while it waits on someone outside the office.</param>
 /// <param name="WaitsUntilDay">The day it can be worked, when not today.</param>
-public sealed record TeamWorkView(string WorkId, string Label, double HoursLeft, bool Ready, int? WaitsUntilDay);
+/// <param name="StopSentence">DESK-104: when it is a buy still being written and can be stopped (StopWorkAction), the line
+/// under "Stop this work" ("Stops the BPA call with Harbor Equipment Co. The 1.5 hours MSgt Joan Avery spent stay spent;
+/// nothing is owed."); null when it cannot be stopped, and then the button is not shown.</param>
+public sealed record TeamWorkView(string WorkId, string Label, double HoursLeft, bool Ready, int? WaitsUntilDay, string? StopSentence = null);
 
 // ------------------------------------------------------------------ morning board
 

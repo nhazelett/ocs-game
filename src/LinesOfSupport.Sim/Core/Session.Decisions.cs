@@ -19,21 +19,25 @@ public sealed partial class Session
             if (_appliedRejected[i] || _appliedRecord[i] is not { } recId) continue;
             var rec = _records.First(r => r.Id == recId);
             var action = _applied[i];
-            var work = _work.FirstOrDefault(w => w.CauseId == recId);
+            var work = action is StopWorkAction ? null : _work.FirstOrDefault(w => w.CauseId == recId);
+            var stopped = action is StopWorkAction sw ? _work.FirstOrDefault(w => w.Id == sw.Work) : null;
             var arr = ArrangementFor(action, rec);
-            var card = CardFor(action, arr, work);
+            var card = stopped?.Payload is AwardPayload sp ? CardFor(sp.Action, null, stopped) : CardFor(action, arr, work);
             if (cardId is not null && card != cardId) continue;
             var who = action switch
             {
                 AssignAction h => h.To,
+                StopWorkAction when stopped is not null => stopped.Assignee,
                 _ => work?.Assignee ?? arr?.TripAssignee ?? (_team.Any(m => m.Id == action.Assignee) ? action.Assignee : _lead),
             };
             var name = MemberName(Member(who));
-            var what = DecisionWhat(action, rec, work);
+            var stopLine = work is null ? null : StopSentence(work);
+            var what = stopped?.Payload is AwardPayload ? StoppedWhat(stopped) : DecisionWhat(action, rec, work);
             var givenTo = work is not null || action is AssignAction ? $", given to {name}" : "";
             list.Add(new DecisionView(rec.Day, SentenceCase($"Day {rec.Day}: {Upper(what)}{givenTo}."),
                 Member(who).Id, name, card, card is null ? null : CardTitle(_cards.First(c => c.Id == card)),
-                SentenceCase(DecisionNow(action, work, arr))));
+                SentenceCase(stopped is not null ? $"Stopped. {SpentWords(stopped, stopped: true)}" : DecisionNow(action, work, arr)),
+                stopLine is null ? null : work!.Id, stopLine));
         }
         return list;
     }
@@ -130,6 +134,7 @@ public sealed partial class Session
     private string DecisionNow(PlayerAction action, WorkItem? work, Arrangement? arr)
     {
         if (action is AssignAction h) work = _work.FirstOrDefault(w => w.Id == h.Work);
+        if (work?.StoppedDay is { } stoppedDay) return $"Stopped on day {stoppedDay} before it was signed; nothing was bought.";
         if (work is not null && work.CompletedDay is null)
         {
             var done = PlayQueue(Member(work.Assignee), 0, Day, work, work.HoursRemainingMilli);

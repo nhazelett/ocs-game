@@ -36,7 +36,7 @@ public sealed partial class Session
 
         // Finished: everything the team completed that day, in the order given, except the trips and the meeting, which the
         // day adds and finishes by itself.
-        var finished = _work.Where(w => w.CompletedDay == d && w.Payload is not VisitPayload { Kind: "meeting" or "sf44Trip" })
+        var finished = _work.Where(w => w.CompletedDay == d && w.StoppedDay is null && w.Payload is not VisitPayload { Kind: "meeting" or "sf44Trip" })
                             .Select(w => new DaySummaryLine(Member(w.Assignee).Id, w.Payload is AwardPayload p && declined.Contains(p.Action.Id)
                                 ? $"{WorkName(w)}: sent by {MemberName(Member(w.Assignee))}, and the vendor turned it down."
                                 : $"{WorkName(w)}: done by {MemberName(Member(w.Assignee))}."))
