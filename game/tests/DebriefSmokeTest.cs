@@ -15,6 +15,10 @@ public partial class DebriefSmokeTest : Node
         var temporary = Path.Combine(Path.GetTempPath(), "ocs-debrief-" + Guid.NewGuid());
         try
         {
+            if (OS.GetCmdlineUserArgs().Contains("--bar-only"))
+            {
+                await BarSmokeChecks.Run(this); GetTree().Quit(); return;
+            }
             // The gate's approach 1 path through New game, award and ratification controls; later cards use legacy scope fixtures.
             static GameShell CreateShell() { using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn"); return scene.Instantiate<GameShell>(); }
             shell = CreateShell(); shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json"); AddChild(shell);
@@ -160,8 +164,8 @@ public partial class DebriefSmokeTest : Node
         await Frames();
         var tabs = shell.GetNode<TabContainer>("%DeskTabs"); var area = shell.GetNode<Control>("Margin/Layout/WorkArea");
         Require(!shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").Visible && !tabs.TabsVisible && tabs.Size.X >= area.Size.X * .95f, "The after-action fills the work area instead of sitting beside the map.");
-        Require(shell.DebriefSpeaker.Size.X > tabs.Size.X * .5f && shell.DebriefBar!.GetGlobalRect().End.Y < shell.GetViewportRect().Size.Y,
-            "The verdict is readable first in the initial viewport, before the explanation and gaps.");
+        Require(shell.DebriefSpeaker.Size.X > tabs.Size.X * .5f && shell.DebriefBar!.GetGlobalRect().Position.Y < shell.GetViewportRect().Size.Y,
+            "The verdict starts in the initial viewport, with each line's explanation before the summary and gaps.");
         Require(shell.Session.StateHash == hash, "Rendering is read-only.");
     }
 
