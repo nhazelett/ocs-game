@@ -18,7 +18,7 @@ Day 2
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 3
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
-  EVENT     The host nation takes its forklift back. Main Island Utilities: our forklift goes back to the port after day 7.
+  EVENT     The host nation takes its forklifts back. Main Island Utilities: our forklifts go back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   SHORT     Water at Hub down to 0%: water on hand ran out; no arrangement supplies water.
@@ -120,4 +120,4 @@ PASS CRITERIA
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash d6fe57946e1e3f9e81820dc3e3413f49b96d4d7389e490d77aac6a3037cb8181
+State hash 69f302f866d7dff6ab7a5340318988d18b6e15830378ad986dcf783fd948e467

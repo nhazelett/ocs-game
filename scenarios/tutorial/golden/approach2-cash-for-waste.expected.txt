@@ -24,7 +24,7 @@ Day 2
   START     Water at Hub from Island Mart began, 4,500 gal/day.
 Day 3
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
-  EVENT     The host nation takes its forklift back. Main Island Utilities: our forklift goes back to the port after day 7.
+  EVENT     The host nation takes its forklifts back. Main Island Utilities: our forklifts go back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   CONFUSED  Execution confusion on Island Mart water at Hub: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -106,4 +106,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 63051bd2799f8c7d41ac8e5d3fbaf78ef6bd8d3705fcf2af7a0733118203f55b
+State hash 9132b474cedab260221558393e4e545c3e2963015b6eb5cc093abbc30c193338

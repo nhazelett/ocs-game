@@ -42,7 +42,7 @@ public sealed partial class Session
         var to = Math.Min(LastDay, card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1);
         var brought = new List<IEnumerable<string>>();
         foreach (var a in _arrangements.Where(a => a.SiteId == card.SiteId && a.CapabilityId == card.CapabilityId && Live(a)
-                                                   && (a.CardId == card.Id || (a.StartDay <= to && a.EndDay >= from))))
+                                                   && (a.CardId == card.Id || (a.StartDay <= to && CountsThrough(a, card) >= from))))
             brought.Add(a.Lines);
         foreach (var w in _work.Where(w => w.CompletedDay is null && w.Payload is AwardPayload p && (p.Action.Card == card.Id
                                            || (p.SiteId == card.SiteId && p.CapabilityId == card.CapabilityId))))

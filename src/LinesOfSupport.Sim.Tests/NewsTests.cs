@@ -124,7 +124,7 @@ public class NewsTests
         var s = Play("tutorial-careful", "tutorial", 3);
         var news = s.View.MorningBoard().New.Where(n => n.Kind == NewKind.News).Select(n => n.Text).ToList();
         Assert.Contains(news, t => t.StartsWith("The host nation withdrew inherited host nation support for material handling equipment at Hub", StringComparison.Ordinal));
-        Assert.DoesNotContain(news, t => t.StartsWith("The host nation takes its forklift back.", StringComparison.Ordinal));
+        Assert.DoesNotContain(news, t => t.StartsWith("The host nation takes its forklifts back.", StringComparison.Ordinal));
     }
 
     [Fact]

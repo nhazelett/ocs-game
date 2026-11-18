@@ -31,7 +31,7 @@ public sealed partial class Session
             var demand = DemandMilli(site, cap.Id, g);
             if (g == site.OpensDay && sc?.InitialBufferDays is { } init && demand > 0) buffer = demand * Fixed.Permille(init) / 1000;
             if (demand == 0) continue;
-            var supply = _arrangements.Where(a => a.SiteId == site.Id && Live(a) && a.StartDay <= g && a.EndDay >= g)
+            var supply = _arrangements.Where(a => a.SiteId == site.Id && Live(a) && a.StartDay <= g && CountsThrough(a, card) >= g)
                                       .Sum(a => (a.CapabilityId == cap.Id ? a.QuantityMilli : 0) + a.SuppliedQuantityMilli.GetValueOrDefault(cap.Id));
             var covered = supply >= demand ? "other" : cap.Delivery == "consumable" && buffer + supply >= demand ? "stock" : "none";
             if (cap.Delivery == "consumable")

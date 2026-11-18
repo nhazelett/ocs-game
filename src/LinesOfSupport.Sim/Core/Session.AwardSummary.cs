@@ -82,13 +82,14 @@ public sealed partial class Session
     private bool OnlyCoveredDays(AwardAction award, string siteId, string capId, int from, int to)
     {
         var site = SiteData(siteId);
+        var card = CardOf(award);   // DESK-102
         var any = false;
         for (var g = Math.Max(from, Math.Max(Day, 1)); g <= Math.Min(to, LastDay); g++)
         {
             var demand = DemandMilli(site, capId, g);
             if (demand <= 0) continue;
             any = true;
-            var supply = _arrangements.Where(x => x.Id != award.Id && x.SiteId == siteId && Live(x) && x.StartDay <= g && x.EndDay >= g)
+            var supply = _arrangements.Where(x => x.Id != award.Id && x.SiteId == siteId && Live(x) && x.StartDay <= g && CountsThrough(x, card) >= g)
                                       .Sum(x => (x.CapabilityId == capId ? x.QuantityMilli : 0) + x.SuppliedQuantityMilli.GetValueOrDefault(capId));
             supply += _work.Where(w => w.CompletedDay is null).Select(w => w.Payload).OfType<AwardPayload>()
                            .Where(p => p.Action.Id != award.Id && p.SiteId == siteId && p.CapabilityId == capId && p.Action.StartDay is { } sd
