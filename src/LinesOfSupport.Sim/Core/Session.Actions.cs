@@ -48,6 +48,7 @@ public sealed partial class Session
             AssignAction a => ApplyAssign(a),
             AskAboutAction q => ApplyAskAbout(q),
             AddLineAction l => ApplyAddLine(l),
+            StopWorkAction w => ApplyStopWork(w),
             _ => ActionResult.Stop($"unknown action {action.GetType().Name}"),
         };
         _assigneeNow = null;
@@ -93,6 +94,7 @@ public sealed partial class Session
         AssignAction h => $"handing over {h.Work}",
         AskAboutAction q => $"asking {q.Person} about {q.Card}",
         AddLineAction l => $"{l.Card}.{l.Line}=added",
+        StopWorkAction w => $"stopping {w.Work}",
         _ => a.GetType().Name,
     };
 

@@ -84,6 +84,7 @@ public sealed partial class Session
     {
         work = _work.FirstOrDefault(x => x.Id == a.Work);
         if (work is null) return "that work is not in the queue";
+        if (work.StoppedDay is not null) return "that work was stopped";
         if (work.CompletedDay is not null) return "that work is already done";
         if (_team.All(m => m.Id != a.To)) return "that person is not on the team";
         return null;
@@ -190,6 +191,7 @@ public sealed partial class Session
         CureNoticeAction x => BuildCureNoticePreview(x),
         ResolveCommitmentAction x => BuildResolvePreview(x),
         AssignAction x => BuildAssignPreview(x),
+        StopWorkAction x => BuildStopWorkPreview(x),
         _ => BuildVisitPreview(a),
     };
 }

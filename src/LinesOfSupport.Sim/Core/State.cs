@@ -133,6 +133,9 @@ public sealed class WorkItem
     /// <summary>The team member doing it (DESK-02). Hours are in that person's hours, at their pace.</summary>
     public string Assignee { get; set; } = "";
     public int? CompletedDay { get; set; }
+    /// <summary>DESK-104: the day the player stopped it before it was signed. A stopped item also has CompletedDay set to
+    /// that day, so it is out of every queue and count; readers that mean "finished" check this.</summary>
+    public int? StoppedDay { get; set; }
     public object? Payload { get; init; }
     public string CauseId { get; init; } = "";
     /// <summary>The id of what this work is for (the award, order, request, vehicle or arrangement), for matching and

@@ -158,6 +158,7 @@ public sealed partial class Session
     {
         var w = _work.FirstOrDefault(x => x.Id == a.Work);
         if (w is null) return ActionResult.Stop("that work is not in the queue");
+        if (w.StoppedDay is not null) return ActionResult.Stop("that work was stopped");
         if (w.CompletedDay is not null) return ActionResult.Stop("that work is already done");
         var to = _team.FirstOrDefault(m => m.Id == a.To);
         if (to is null) return ActionResult.Stop("that person is not on the team");
@@ -210,7 +211,7 @@ public sealed partial class Session
             var perDay = HalfHours(m.HoursPerDayMilli);
             var today = planned.TryGetValue(m.Id, out var h) ? h : HalfHours(Math.Min(m.HoursPerDayMilli, readyMilli));   // DESK-78: as the plan counts
             var work = open.Select(w => new TeamWorkView(w.Id, w.Label, HalfHours(w.HoursRemainingMilli), w.WaitUntilDay <= Day,
-                w.WaitUntilDay > Day ? w.WaitUntilDay : null)).ToList();
+                w.WaitUntilDay > Day ? w.WaitUntilDay : null, StopSentence(w))).ToList();
             result.Add(new TeamMemberView(m.Id, m.Role, m.Role == "you" ? "You" : m.Name, m.Rank, m.Portrait,
                 m.Role switch { "you" => "You", "experienced" => "Experienced contracting officer", _ => "Junior contracting officer" },
                 Pace(m.SpeedPermille), perDay, today, Math.Max(0, perDay - today), HalfHours(open.Sum(w => w.HoursRemainingMilli)), work,

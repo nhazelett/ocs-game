@@ -33,6 +33,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(AssignAction), "assign")]
 [JsonDerivedType(typeof(AskAboutAction), "askAbout")]
 [JsonDerivedType(typeof(AddLineAction), "addLine")]
+[JsonDerivedType(typeof(StopWorkAction), "stopWork")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -66,6 +67,18 @@ public sealed record AssignAction : PlayerAction
 {
     public string Work { get; init; } = "";
     public string To { get; init; } = "";
+}
+
+/// <summary>
+/// Stop a buy the shop is still writing (DESK-104, FOR-NICK #23 (a)), before it is signed. Work is a work item id
+/// (SessionView.Team lists them; DecisionView.StopWorkId names the one behind a decision). Only an unfinished written
+/// award: the hours already spent stay spent, nothing is obligated, the work leaves the queue and the request stands as it
+/// did before it. Card and cash buys are done the day they go in and never have work to stop. Not undo: nothing signed is
+/// touched; ending a signed contract is <see cref="TerminateAction"/>.
+/// </summary>
+public sealed record StopWorkAction : PlayerAction
+{
+    public string Work { get; init; } = "";
 }
 
 /// <summary>Order a site survey of an island. Costs shop hours; findings return after a delay.</summary>
