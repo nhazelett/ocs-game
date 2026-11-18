@@ -195,42 +195,62 @@ public sealed partial class Session
         => [.. InPlace(award, siteId, capId, from, to).Select(x => x.Sentence)];
 
     /// <summary>What <see cref="AlreadyInPlace"/> says, with a short name for each thing for the buy summary (DESK-82):
-    /// the supplier for an arrangement, "the call being written with Harbor Bottling" for work in hand.</summary>
-    private List<(string Name, string Sentence)> InPlace(AwardAction award, string siteId, string capId, int from, int to)
+    /// the supplier for an arrangement, "the call being written with Harbor Bottling" for work in hand. Without is the
+    /// parts this buy brings that the request needs and the thing in place leaves out (DESK-110), so a buy that brings the
+    /// drivers a call in work lacks is not "on top of" it as if it added nothing.</summary>
+    private List<(string Name, string Sentence, List<string> Without)> InPlace(AwardAction award, string siteId, string capId, int from, int to)
     {
         var cap = Cap(capId);
         var where = $"{Lower(cap.Label)} at {SiteName(siteId)}";
-        var said = new List<(string, string)>();
+        var said = new List<(string, string, List<string>)>();
         var card = CardOf(award);
+        var needed = NeededParts(award, card);
+        List<string> Lacks(IReadOnlyCollection<string> lines) => [.. needed.Where(l => !lines.Contains(l))];
+        string Without(List<string> lacks) => lacks.Count > 0 ? $", without {PartsLabels(capId, lacks)}" : "";
         foreach (var a in _arrangements.Where(x => x.Id != award.Id && x.SiteId == siteId && x.CapabilityId == capId && Live(x)
                                                    && x.EndDay >= Day && x.StartDay <= to && CountsThrough(x, card) >= from).OrderBy(x => x.StartDay))
         {
             var end = CountsThrough(a, card);
+            var lacks = Lacks(a.Lines);
             said.Add((SupplierName(a), a.StartDay <= Day
-                ? $"{SupplierName(a)} already supplies {where},{Amount(a, cap)}{Through(end)}; this would be on top of it."
-                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(end >= LastDay ? " on" : $" to day {end}")}; this would be on top of it."));
+                ? $"{SupplierName(a)} already supplies {where},{Amount(a, cap)}{Through(end)}{Without(lacks)}; this would be on top of it."
+                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(end >= LastDay ? " on" : $" to day {end}")}{Without(lacks)}; this would be on top of it.", lacks));
         }
         foreach (var w in _work.Where(x => x.CompletedDay is null).OrderBy(x => x.CreatedDay))
         {
-            (string, string)? item = w.Payload switch
+            (string, string, List<string>)? item = w.Payload switch
             {
                 AwardPayload p when p.Action.Id != award.Id && p.SiteId == siteId && p.CapabilityId == capId
                                     && (p.Action.StartDay ?? w.CreatedDay) <= to && (p.Action.StartDay ?? w.CreatedDay) + Math.Max(1, p.Action.DurationDays) - 1 >= from
                     => ($"the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} being written with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"}",
-                        $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {Qty(p.Action.Quantity)} {Rate(cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}; this would be on top of it."),
+                        $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {Qty(p.Action.Quantity)} {Rate(cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}{Without(Lacks(p.Lines))}; this would be on top of it.",
+                        Lacks(p.Lines)),
                 AcsaPayload p when p.SiteId == siteId && p.CapabilityId == capId
                     => ($"the order being placed with {PartnerName}",
-                        $"{Upper(WhoIs(w.Assignee))} already ordering {where} from {PartnerName}; this would be on top of it."),
+                        $"{Upper(WhoIs(w.Assignee))} already ordering {where} from {PartnerName}{Without(Lacks(p.Lines))}; this would be on top of it.",
+                        Lacks(p.Lines)),
                 HostNationPayload p when p.SiteId == siteId && p.CapabilityId == capId
                     => ($"the ask to {HostNationName}",
-                        $"{Upper(WhoIs(w.Assignee))} already asking {HostNationName} for {where}; this would be on top of it."),
+                        $"{Upper(WhoIs(w.Assignee))} already asking {HostNationName} for {where}; this would be on top of it.", []),
                 VisitPayload { Kind: "j4", Extra: EngageJ4Action j } when j.Site == siteId && j.Capability == capId
                     => ("the ask to the J4",
-                        $"{Upper(WhoIs(w.Assignee))} already asking the J4 to add {where} to the fuel order; this would be on top of it."),
+                        $"{Upper(WhoIs(w.Assignee))} already asking the J4 to add {where} to the fuel order; this would be on top of it.", []),
                 _ => null,
             };
             if (item is { } x) said.Add(x);
         }
         return said;
+    }
+
+    /// <summary>
+    /// The parts this buy brings that its request needs: on the request, or said to be needed by someone the shop asked
+    /// (DESK-103's learned parts, so the buy summary and the request's standing agree before the player adds the part).
+    /// Something already in place that leaves one of these out does not cover the request's days (DESK-110). Empty for a
+    /// buy with no request.
+    /// </summary>
+    private List<string> NeededParts(AwardAction award, CardState? card)
+    {
+        if (card is null) return [];
+        return [.. CheckAward(award).Lines.Where(l => (card.Lines.TryGetValue(l, out var on) && on) || _learnedLines.ContainsKey((card.Id, l)))];
     }
 }
