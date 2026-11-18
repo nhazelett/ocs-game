@@ -62,7 +62,7 @@ public sealed partial class Session
         // What covers it: support tied to the request, or any support for the same thing at the same site on its days.
         var covering = _arrangements
             .Where(a => a.SiteId == card.SiteId && a.CapabilityId == card.CapabilityId && a.Status != ArrangementStatus.Declined
-                        && (a.CardId == card.Id || Overlaps(a.StartDay, a.EndDay)))
+                        && (a.CardId == card.Id || Overlaps(a.StartDay, CountsThrough(a, card))))
             .OrderBy(a => a.StartDay).ToList();
         var live = covering.Where(Live).ToList();
 
@@ -160,6 +160,22 @@ public sealed partial class Session
     /// <summary>" through day 8", or nothing for support that runs past the end of the game (host nation, inherited).</summary>
     private string Through(int end) => end >= LastDay ? "" : $" through day {end}";
 
+    /// <summary>
+    /// The last day an arrangement counts for a request (DESK-102; Claude play 18 Nov, note 24). Host nation support the
+    /// last rotation left at the request's site and capability, already running before the request is wanted, counts only
+    /// through the day before it: a request for something the host nation already supplies there is the site saying that
+    /// support is going, even before the withdrawal is on the record (the tutorial's honey trucks are tasked on day 6 and
+    /// withdrawn on day 8). Host nation support still to start (the tutorial's water point on day 9) counts in full.
+    /// Everything else counts to its own end. A forecast from what the shop was told; it changes nothing.
+    /// </summary>
+    internal int CountsThrough(Arrangement a, CardState? card)
+        => card is not null && a.Instrument == HostNationInstrumentId && a.CreatedDay == 0 && a.CardId is null
+           && a.SiteId == card.SiteId && a.CapabilityId == card.CapabilityId && a.StartDay < card.RequestedStartDay
+            ? Math.Min(a.EndDay, card.RequestedStartDay - 1) : a.EndDay;
+
+    /// <summary>The request an award is for, or null for a buy on the shop's own initiative.</summary>
+    private CardState? CardOf(AwardAction award) => award.Card is { } id ? _cards.FirstOrDefault(c => c.Id == id) : null;
+
     private static string More(int count) => count switch { <= 1 => "", 2 => " (and one other arrangement)", _ => $" (and {count - 1} others)" };
 
     /// <summary>An SF 44 paid at each delivery says whose trips they are (DESK-09).</summary>
@@ -179,11 +195,15 @@ public sealed partial class Session
         var cap = Cap(capId);
         var where = $"{Lower(cap.Label)} at {SiteName(siteId)}";
         var said = new List<(string, string)>();
+        var card = CardOf(award);
         foreach (var a in _arrangements.Where(x => x.Id != award.Id && x.SiteId == siteId && x.CapabilityId == capId && Live(x)
-                                                   && x.EndDay >= Day && x.StartDay <= to && x.EndDay >= from).OrderBy(x => x.StartDay))
+                                                   && x.EndDay >= Day && x.StartDay <= to && CountsThrough(x, card) >= from).OrderBy(x => x.StartDay))
+        {
+            var end = CountsThrough(a, card);
             said.Add((SupplierName(a), a.StartDay <= Day
-                ? $"{SupplierName(a)} already supplies {where},{Amount(a, cap)}{Through(a.EndDay)}; this would be on top of it."
-                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(a.EndDay >= LastDay ? " on" : $" to day {a.EndDay}")}; this would be on top of it."));
+                ? $"{SupplierName(a)} already supplies {where},{Amount(a, cap)}{Through(end)}; this would be on top of it."
+                : $"{SupplierName(a)} is already set to supply {where},{Amount(a, cap)} from day {a.StartDay}{(end >= LastDay ? " on" : $" to day {end}")}; this would be on top of it."));
+        }
         foreach (var w in _work.Where(x => x.CompletedDay is null).OrderBy(x => x.CreatedDay))
         {
             (string, string)? item = w.Payload switch
