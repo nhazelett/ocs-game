@@ -8,7 +8,7 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class LedgerSmokeTest : Node
 {
-    public override void _Ready()
+    public override async void _Ready()
     {
         try
         {
@@ -60,6 +60,12 @@ public partial class LedgerSmokeTest : Node
             var directory = shell.VendorCardsBox;
             foreach (var vendor in shell.Session.View!.VendorCards())
                 Require(shell.VendorCardContents[vendor.Id].GetChildren().OfType<Label>().Any(l => l.Text.Contains(vendor.Name)) && (vendor.Standing is null || shell.VendorCardContents[vendor.Id].GetChildren().OfType<Label>().Any(l => l.Text.Contains(vendor.Standing))), "Directory preserves Sim vendor standing.");
+            // The long replay builds many native UI resources. Release them while Godot is
+            // still processing frames, before managed finalizers race engine shutdown.
+            shell.QueueFree();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
             GD.Print("LEDGER_SMOKE_PASS: 90-day costs, coordination, funding expiry, vendor standing and pure bindings."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"LEDGER_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
