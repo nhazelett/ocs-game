@@ -10,7 +10,7 @@ public partial class GameShell
     internal Button DebriefPlayAgain { get; private set; } = null!;
     internal Button DebriefChooseScenario { get; private set; } = null!;
 
-    private static void RenderBar(VBoxContainer parent, BarView? bar, bool compact = false)
+    private static void RenderBar(VBoxContainer parent, BarView? bar, bool compact = false, IReadOnlyList<CarriedView>? carried = null)
     {
         DeskUi.Clear(parent); parent.Visible = bar is { Lines.Count: > 0 };
         if (bar is null || bar.Lines.Count == 0) return;
@@ -27,7 +27,14 @@ public partial class GameShell
             label.SetMeta("bar_line", line.Id); label.SetMeta("bar_state", line.State.ToString());
             label.AddThemeColorOverride("font_color", line.State switch {
                 BarState.AtRisk => TabletopTheme.Warning, BarState.Missed => TabletopTheme.Alert, _ => TabletopTheme.Ink });
-            parent.AddChild(label);
+            if (bar.Final && carried?.FirstOrDefault(c => c.LineId == line.Id) is { } cause)
+            {
+                var row = new VBoxContainer(); row.AddThemeConstantOverride("separation", 4);
+                row.SetMeta("verdict_line", line.Id); parent.AddChild(row); row.AddChild(label);
+                var explanation = DeskUi.Label(cause.Sentence); explanation.SetMeta("bar_carried", line.Id);
+                row.AddChild(explanation);
+            }
+            else parent.AddChild(label);
         }
     }
 }

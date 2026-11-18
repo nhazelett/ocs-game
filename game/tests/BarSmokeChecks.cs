@@ -31,8 +31,17 @@ internal static class BarSmokeChecks
             Load(careful, null); var pass = shell.DisplayedDebrief!.Bar!;
             Require(pass.Final && pass.Lines.All(l => l.State == BarState.Met), "The careful review log passes every real line.");
             Check(shell.DebriefBar!, pass); await Capture("pass", shell.DebriefBar!);
+            var play = InputLog.Load(Path.Combine(root, "docs", "reviews", "plays", "2026-11-18", "input-log.json"));
+            Load(play, null); Check(shell.DebriefBar!, shell.DisplayedDebrief!.Bar!);
+            Require(shell.DisplayedDebrief.Carried.Single(c => c.LineId == "mheUp").Sentence.Contains("ordered on day 5")
+                && shell.DisplayedDebrief.Carried.Single(c => c.LineId == "mheUp").Sentence.Contains("SMSgt Ray Dunn"),
+                "The recorded 18 Nov play exercises the decision and the person who named the missing operators.");
+            await Capture("play18", shell.DebriefBar!);
             Load(hasty, null); var miss = shell.DisplayedDebrief!.Bar!;
             Require(miss.Final && miss.Lines.Any(l => l.State == BarState.Missed), "The hasty review log has real misses.");
+            Require(miss.Lines.Single(l => l.Id == "mheUp").State == BarState.Missed
+                && shell.DisplayedDebrief!.Carried.Single(c => c.LineId == "mheUp").Sentence.StartsWith("Out on days "),
+                "The hasty review log misses the forklift line and supplies its actual days and cause.");
             Check(shell.DebriefBar!, miss); await Capture("miss", shell.DebriefBar!);
             var barIndex = shell.DebriefBar!.GetIndex();
             Require(shell.DebriefPanel.GetChildren().OfType<Button>().Where(b => b.HasMeta("gap")).All(b => b.GetIndex() > barIndex),
@@ -84,6 +93,25 @@ internal static class BarSmokeChecks
                 var color = line.State == BarState.AtRisk ? TabletopTheme.Warning : line.State == BarState.Missed ? TabletopTheme.Alert : TabletopTheme.Ink;
                 Require(label.GetThemeColor("font_color") == color, "The Sim's at-risk and missed states are amber and red, with ordinary ink for met.");
             }
+            var causes = PlayScreen.Descendants(panel).OfType<Label>().Where(l => l.HasMeta("bar_carried")).ToArray();
+            if (panel == shell.TodayBar)
+                Require(causes.Length == 0, "Today keeps the current bar without final-debrief explanations.");
+            else
+            {
+                var carried = shell.DisplayedDebrief!.Carried;
+                Require(causes.Select(l => l.GetMeta("bar_carried").AsString()).SequenceEqual(carried.Select(c => c.LineId)),
+                    "Exactly the Sim's carried sentences appear, in verdict order, without extra lines.");
+                foreach (var cause in carried)
+                {
+                    var label = causes.Single(l => l.GetMeta("bar_carried").AsString() == cause.LineId);
+                    var verdict = labels.Single(l => l.GetMeta("bar_line").AsString() == cause.LineId);
+                    Require(label.Text == cause.Sentence && label.GetParent() == verdict.GetParent()
+                        && label.GetIndex() == verdict.GetIndex() + 1,
+                        "The exact Sim sentence sits directly under its matching verdict in the same group.");
+                    Require(label.GetThemeFontSize("font_size") == verdict.GetThemeFontSize("font_size"),
+                        "What carried the line uses the verdict's normal readable text size.");
+                }
+            }
             Require(hash == shell.Session.StateHash, "Reading the bar is pure.");
         }
         async Task Frames() { for (var i = 0; i < 8; i++) await parent.ToSignal(parent.GetTree(), SceneTree.SignalName.ProcessFrame); }
@@ -93,10 +121,24 @@ internal static class BarSmokeChecks
             ScrollContainer scroll;
             if (focus == shell.TodayBar) scroll = shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body");
             else scroll = (ScrollContainer)shell.DebriefPanel.GetParent();
-            scroll.EnsureControlVisible(focus); await Frames();
+            if (focus == shell.TodayBar) scroll.EnsureControlVisible(focus);
+            else
+            {
+                foreach (var row in focus.GetChildren().OfType<VBoxContainer>())
+                {
+                    scroll.EnsureControlVisible(row); await Frames();
+                    Require(scroll.GetGlobalRect().Encloses(row.GetGlobalRect()), "Each verdict and its carried sentence fit together in the native reading area.");
+                }
+                // EnsureControlVisible queues scroll adjustments; let them settle before returning to the heading.
+                await Frames(); scroll.ScrollVertical = 0;
+            }
+            await Frames();
+            if (focus != shell.TodayBar) { scroll.ScrollVertical = 0; await Frames(); }
             var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--bar-screenshots");
             if (at < 0) return;
-            Require(scroll.GetGlobalRect().Encloses(focus.GetGlobalRect()), "The whole bar is readable in one native viewport.");
+            Require(focus == shell.TodayBar ? scroll.GetGlobalRect().Encloses(focus.GetGlobalRect())
+                : scroll.GetGlobalRect().Encloses(focus.GetChildren().OfType<Label>().First().GetGlobalRect()),
+                "The current bar or the final verdict heading is visible at the native scroll position.");
             await parent.ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
             using var image = parent.GetViewport().GetTexture().GetImage();
             Require(image.SavePng(args[at + 1] + "-" + suffix + ".png") == Error.Ok, "Native commander's bar saved.");

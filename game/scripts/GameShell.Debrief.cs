@@ -58,7 +58,7 @@ public partial class GameShell
         DebriefChooseScenario = DeskUi.Button("Choose a scenario", () => { if (hash == session.StateHash) { ShowFrontDoor(); ShowNewGames(); } });
         navigation.AddChild(DebriefPlayAgain); navigation.AddChild(DebriefChooseScenario);
         DebriefBar = new VBoxContainer { Name = "Verdict" }; DebriefBar.AddThemeConstantOverride("separation", 10);
-        debriefPanel.AddChild(DebriefBar); RenderBar(DebriefBar, report.Bar);
+        debriefPanel.AddChild(DebriefBar); RenderBar(DebriefBar, report.Bar, carried: report.Carried);
         var sender = new HBoxContainer(); sender.AddThemeConstantOverride("separation", 20); debriefPanel.AddChild(sender);
         if (report.Summary?.From is { } person)
         {
