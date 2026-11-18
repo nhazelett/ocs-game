@@ -100,7 +100,25 @@ public partial class PlayDriverSmokeTest : Node
             await driver.Execute(new("test", "type", "Test quantity", "7"));
             Require(number.Value == 7, "Typing a numeric field uses its visible caption and commits the value.");
             cover.QueueFree();
-            GD.Print("PLAY_DRIVER_SMOKE_PASS: visible New game, seed, duplicate/numeric fields, popup, clipped text, greyed/missing controls, modal Escape, one real day, native screenshot and exact replay.");
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            // Reproduce the actual day-four overlay; only the test oracle reads the saved input.
+            var played = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-18", "input-log.json"));
+            var dayFour = played with { SavedDay = 4, Actions = played.Actions.Where(a => a.Day < 4).ToList() };
+            var dayFourPath = Path.Combine(scratch, "day-four.json"); File.WriteAllText(dayFourPath, dayFour.ToJson());
+            shell.LoadSavedGame(dayFourPath);
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await Click("Requests"); await Click(shell.RequestListButtons["tutForklift"].Text);
+            var overlayHash = shell.Session.StateHash;
+            await Click(shell.TeamButtons.Values.First().Text);
+            Require(shell.TeamPanel.Visible && shell.RequestWorkspace.Visible, "The real team page opens over the day-four request.");
+            Require(screen.Read().Count > 0 && screen.Read().All(e => e.Pane == "Team"), "Every reported control and word belongs to the top team page.");
+            Require(!screen.Describe("").Contains("Arrange support"), "Look cannot describe the covered buy column.");
+            Require((await driver.Execute(new("test", "click", "Arrange support"))).Contains("Nothing changed"), "A covered request action cannot be invoked through the driver.");
+            await Review("team-over-request");
+            await driver.Execute(new("test", "key", "Escape"));
+            Require(!shell.TeamPanel.Visible && shell.RequestWorkspace.Visible && screen.Read().Any(e => e.Pane == "Request")
+                && shell.Session.StateHash == overlayHash, "Escape returns both screen reading and control reachability to the same unchanged request.");
+            GD.Print("PLAY_DRIVER_SMOKE_PASS: visible New game, seed, duplicate/numeric fields, popup, clipped text, greyed/missing controls, modal Escape, one real day, native screenshot, exact replay and the day-four team page over its request.");
             Directory.Delete(scratch, true);
             GetTree().Quit();
         }
