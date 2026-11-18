@@ -49,10 +49,15 @@ public partial class PlainNamesSmokeTest : Node
             if (shot >= 0)
             {
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-                Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Plain-name screenshot saved.");
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[shot + 1]) == Error.Ok, "Plain-name screenshot saved.");
             }
             shell.QueueFree(); shell = null;
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            // Finish the long all-scenario replay's managed resource finalizers while
+            // Godot is still alive, as CorSmokeTest does, rather than during native shutdown.
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print($"PLAIN_NAMES_SMOKE_PASS: {checkedPanels} panel visits and {checkedStrings} strings; all scenarios, forms, live days, debrief causes and internal action keys.");
             GetTree().Quit();
