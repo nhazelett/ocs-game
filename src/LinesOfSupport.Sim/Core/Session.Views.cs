@@ -114,6 +114,7 @@ public sealed partial class Session
             var (lk, lid) = Link(r.Subject);
             items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy, PersonFor(lk, lid)));
         }
+        items.AddRange(LeavesOutAlerts());   // DESK-103
         var ordered = items.Select((it, i) => (it, i)).OrderByDescending(x => x.it.Severity).ThenBy(x => x.i).Select(x => x.it).ToList();
         return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles(), BuildLead(ordered), BuildNewThisMorning(),
             _cards.Count(c => c.SubmittedDay <= Day && Day <= Math.Min(LastDay, c.RequestedStartDay + Math.Max(1, c.DurationDays) - 1)));

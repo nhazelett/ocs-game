@@ -48,7 +48,12 @@ public sealed partial class Session
             // DESK-77 (D34): covered in part names what is still to find.
             var still = state is RequestStanding.Arranged or RequestStanding.Running or RequestStanding.Short or RequestStanding.Buying
                 ? StillToFind(card) : [];
-            if (still.Count > 0)
+            // DESK-103: a buy not yet started that leaves out a part someone said is needed names itself and who said it,
+            // in place of the still-to-find line, which would name the same parts.
+            var leavesOut = state == RequestStanding.Ended ? null : LeavesOut(card)?.Sentence;
+            if (leavesOut is not null)
+                sentence += " " + leavesOut;
+            else if (still.Count > 0)
                 sentence += $" It leaves out {PartsLabels(card.CapabilityId, still)}, still to find.";
             return new(card.Id, title, asker, state, who, who is null ? null : MemberName(Member(who)), SentenceCase(sentence),
                    state == RequestStanding.Ended ? null : whyShort,
@@ -56,6 +61,7 @@ public sealed partial class Session
                    [.. still.Select(l => LineLabel(card.CapabilityId, l).ToLowerInvariant())])
             {
                 OnFile = state is RequestStanding.Nothing or RequestStanding.Asking or RequestStanding.Short ? OnFile(card) : [],   // DESK-76 (D32)
+                LeavesOut = leavesOut,
             };
         }
 
