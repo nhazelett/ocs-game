@@ -385,7 +385,10 @@ public sealed partial class Session
                                                        _records.First(r => r.Id == c.FiledRecordId).Text)).ToList();
         return new DebriefView(Scenario.Title, played, LastDay, bands, events, decisions, gaps, score, commitments, claims,
                                BuildDebriefSummary(played, gaps, score), BuildBar(),   // DESK-74: opens with the verdict
-                               InheritedSentence(score), RunningCures(played));
+                               InheritedSentence(score), RunningCures(played))
+        {
+            Carried = BuildCarried(gaps, played),   // DESK-106 (D38)
+        };
     }
 
     // ------------------------------------------------------------------ what the debrief did not start (DESK-91)
