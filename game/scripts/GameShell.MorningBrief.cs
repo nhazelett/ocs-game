@@ -1,5 +1,6 @@
 using Godot;
 using LinesOfSupport.Sim.Views;
+using LinesOfSupport.Sim.Core;
 
 namespace LinesOfSupport.Game;
 
@@ -7,18 +8,44 @@ public partial class GameShell
 {
     internal VBoxContainer MorningBrief { get; private set; } = null!;
     internal Label MorningHeading => morningHeading;
+    internal VBoxContainer MorningAlerts { get; private set; } = null!;
 
     private void BuildMorningBrief(VBoxContainer board)
     {
         morningHeading = DeskUi.Label();
         board.AddChild(morningHeading);
+        MorningAlerts = new VBoxContainer { Name = "MorningAlerts" };
+        MorningAlerts.AddThemeConstantOverride("separation", 10); board.AddChild(MorningAlerts);
         MorningBrief = new VBoxContainer { Name = "NewSinceYesterday" };
         MorningBrief.AddThemeConstantOverride("separation", 14); board.AddChild(MorningBrief);
     }
 
     private void RefreshMorningBrief(MorningBoardView? board)
     {
-        DeskUi.Clear(MorningBrief);
+        DeskUi.Clear(MorningBrief); DeskUi.Clear(MorningAlerts);
+        var view = session.View;
+        if (board is not null && view is not null)
+        {
+            // The current Sim tiles supply both state and explanation, including a continuing shortfall.
+            foreach (var tile in board.Tiles.Where(t => t.Status is "down" or "degraded"))
+            {
+                var key = tile.SiteId + "." + tile.CapabilityId;
+                var panel = new PanelContainer(); panel.SetMeta("morning_shortfall", key); MorningAlerts.AddChild(panel);
+                var row = new VBoxContainer(); panel.AddChild(row);
+                var open = DeskUi.Button(view.NameOf(tile.SiteId) + " · " + tile.Label + ": " + TileLevel(tile) + "\nOpen site details →", () => SelectCapability(key));
+                row.AddChild(open);
+                if (tile.WhyShort is { } why) row.AddChild(DeskUi.Label(why));
+            }
+            foreach (var item in board.Items.Where(i => i.Severity == BoardSeverity.Alert
+                && !board.Tiles.Any(t => t.SiteId + "." + t.CapabilityId == i.LinkId && t.Status is "down" or "degraded")))
+            {
+                var row = new VBoxContainer(); MorningAlerts.AddChild(row);
+                var open = DeskUi.Button(item.Text, () => NavigateBoardItem(item));
+                var reason = DeskUi.ActionReason(row, open);
+                DeskUi.Gate(open, reason, item.LinkKind == BoardLinkKind.None ? "This update has no further detail to open." : null);
+            }
+        }
+        MorningAlerts.Visible = MorningAlerts.GetChildCount() > 0;
         MorningBrief.AddChild(DeskUi.Heading("New since yesterday"));
         if (board is null) return;
         if (board.New.Count == 0) MorningBrief.AddChild(DeskUi.Label("Nothing new since yesterday."));
@@ -38,6 +65,18 @@ public partial class GameShell
         {
             var asked = DeskUi.Label("Asked by " + DeskUi.ListLabel(asker) + ".");
             asked.SetMeta("asked_by", asker); row.AddChild(asked);
+        }
+        if (surface == "morning" && item.Person?.Role == "outgoingCco"
+            && item.Text.Contains("staff meeting", StringComparison.OrdinalIgnoreCase)
+            && session.View is { Finished: false } view && !view.StaffMeeting.Attending && !view.StaffMeeting.Joining)
+        {
+            var action = new JoinStaffMeetingAction { Day = view.Day, Attend = true };
+            var preview = view.PreviewVisit(action); var meetingHash = session.StateHash;
+            var join = DeskUi.Button("Join the staff meeting", () => { if (meetingHash == session.StateHash) SendAction(action); });
+            join.SetMeta("news_staff_meeting", true);
+            var reason = DeskUi.ActionReason(row, join);
+            DeskUi.Gate(join, reason, preview.HardStops.FirstOrDefault());
+            AddActionCost(row, view, action, "Joins the staff meeting so requests reach you in the room.", preview);
         }
         if (surface != "morning" || item.Kind != NewKind.Request || item.LinkKind != BoardLinkKind.Card) return;
         var hash = session.StateHash;

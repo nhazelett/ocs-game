@@ -110,7 +110,7 @@ public partial class GameShell
         var traceButton = DeskUi.Button("Trace the evidence", () =>
         {
             if (trace.GetChildCount() == 0)
-                AddCauseTrace(trace, view, gap.Factors.SelectMany(f => f.RecordIds).Concat(gap.ShortfallRecordIds).Distinct().ToArray());
+                AddCauseTrace(trace, view, gap.ShortfallRecordIds.Concat(gap.Factors.SelectMany(f => f.RecordIds)).Distinct().ToArray());
             trace.Visible = !trace.Visible;
         });
         traceButton.SetMeta("gap_trace", gap.Index); detail.AddChild(traceButton); detail.AddChild(trace);
@@ -191,13 +191,15 @@ public partial class GameShell
 
     private static void AddCauseTrace(VBoxContainer parent, SessionView view, IReadOnlyList<string> roots)
     {
-        var records = view.Records.Where(view.Known).ToDictionary(r => r.Id, StringComparer.Ordinal);
+        var records = view.Records.ToDictionary(r => r.Id, StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         void Visit(string id, int depth)
         {
             if (!seen.Add(id)) return;
             if (!records.TryGetValue(id, out var record)) { parent.AddChild(DeskUi.Label("An earlier cause was not reported to the shop.")); return; }
-            var label = DeskUi.Label($"{(depth == 0 ? "Evidence" : "Because")}, day {record.Day}\n{record.Text}");
+            var label = DeskUi.Label(view.Known(record)
+                ? $"{(depth == 0 ? "Evidence" : "Because")}, day {record.Day}\n{record.Text}"
+                : "An earlier cause was not reported to the shop.");
             label.SetMeta("cause_record", id); label.SetMeta("cause_depth", depth);
             var indent = new MarginContainer(); indent.AddThemeConstantOverride("margin_left", Math.Min(depth, 8) * 12);
             indent.AddChild(label); parent.AddChild(indent);

@@ -41,7 +41,7 @@ internal static class TabletopTheme
         foreach(var type in new[]{"Label","Button","OptionButton","CheckBox","LineEdit","TextEdit","PopupMenu","Tree","ItemList","TabContainer","Window","TooltipLabel"})
         {
             theme.SetColor("font_color",type,Ink);theme.SetColor("font_hover_color",type,Ink);theme.SetColor("font_pressed_color",type,Ink);
-            theme.SetColor("font_focus_color",type,Ink);theme.SetColor("font_disabled_color",type,Muted);theme.SetColor("font_selected_color",type,Paper);
+            theme.SetColor("font_hover_pressed_color",type,Ink);theme.SetColor("font_focus_color",type,Ink);theme.SetColor("font_disabled_color",type,Muted);theme.SetColor("font_selected_color",type,Paper);
         }
         theme.SetFont("normal_font","RichTextLabel",regular);theme.SetFont("bold_font","RichTextLabel",bold);theme.SetColor("default_color","RichTextLabel",Ink);
         foreach(var type in new[]{"Panel","PanelContainer","PopupPanel","PopupMenu","Tree","ItemList","TooltipPanel","AcceptDialog","ConfirmationDialog"}) SetBox("panel",type,Box(Paper,12));
@@ -69,7 +69,7 @@ internal static class TabletopTheme
         using(var setting=Box(Colors.Transparent,8))theme.SetStylebox("normal","TabletopSetting",setting);
         SetBox("hover","TabletopSetting",Box(Hover,8));SetBox("pressed","TabletopSetting",Box(Pressed,8));
         theme.SetTypeVariation("TabletopPerson","Button");
-        using(var clear=new StyleBoxEmpty())theme.SetStylebox("normal","TabletopPerson",clear);
+        SetBox("normal","TabletopPerson",Box(Paper,0));
         SetBox("hover","TabletopPerson",Box(Hover,0));SetBox("pressed","TabletopPerson",Box(Pressed,0));
         theme.SetConstant("icon_max_width","TabletopPerson",36);theme.SetConstant("h_separation","TabletopPerson",8);
         theme.SetFontSize("font_size","TabletopPerson",18);

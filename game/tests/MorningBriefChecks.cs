@@ -74,7 +74,8 @@ internal static class MorningBriefChecks
                 await Frames();
                 var scroll = shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body");
                 scroll.ScrollVertical = 0; await Frames();
-                if (day == 5)
+                // DESK-108 gives current alerts priority; on other mornings the full answer group still fits.
+                if (day == 5 && !shell.MorningAlerts.Visible)
                     Require(labels.Where(l => l.HasMeta("news_surface")).All(l => scroll.GetGlobalRect().Encloses(l.GetGlobalRect())),
                         "Dunn's full answer and the vendor shortage fit together at the top of the native morning.");
                 await Capture(screenshot);

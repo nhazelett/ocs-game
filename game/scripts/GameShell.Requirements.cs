@@ -108,7 +108,7 @@ public partial class GameShell
             var label = DeskUi.Label($"{dependency.Label}: {Words(dependency.Coverage).ToLowerInvariant()}" +
                 (dependency.CoveredBy.Count > 0 ? $" · {string.Join(", ", dependency.CoveredBy.Select(view.ArrangementName))}" : ""));
             label.SetMeta("dependency", dependency.CapabilityId); linkedRequirement.AddChild(label);
-            if (dependency.UsualOwner is { } owner)
+            if (dependency.Coverage is not ("arranged" or "inRequirement") && dependency.UsualOwner is { } owner)
             {
                 var responsibility = DeskUi.Label($"{dependency.Label} is usually {owner.TrimEnd('.')}. " +
                     (dependency.OwnerEngaged ? "The usual owner is engaged." : "The usual owner has not been engaged."));
