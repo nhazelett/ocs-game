@@ -15,6 +15,15 @@ public partial class MorningSmokeTest : Node
         try
         {
             var shell = Shell(this);
+            if (OS.GetCmdlineUserArgs().Contains("--screen-fixes-only"))
+            {
+                await MorningScreenFixChecks.Run(shell);
+                shell.QueueFree();
+                await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                GC.Collect(); GC.WaitForPendingFinalizers();
+                GD.Print("MORNING_SCREEN_FIXES_PASS: saved play alerts, news, meeting, Escape, dependencies, toggle ink, map state and complete evidence trace.");
+                GetTree().Quit(); return;
+            }
             Require(shell.DisplayedLead is not null && shell.LeadOpen.Visible && !shell.LeadOpen.Disabled, "An actual priority item keeps its working Open button.");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
             var expected = Session.Create(bundle, 1);
@@ -51,6 +60,7 @@ public partial class MorningSmokeTest : Node
             }
 
             await MorningBriefChecks.Run(shell);
+            await MorningScreenFixChecks.Run(shell);
 
             // Author a quiet temporary fixture using only existing scenario fields; production data is untouched.
             var dir = Path.Combine(temporary, "quiet"); Directory.CreateDirectory(dir);

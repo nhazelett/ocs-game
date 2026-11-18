@@ -25,10 +25,15 @@ public partial class J4DependencySmokeTest : Node
             void CheckOwner(bool engaged)
             {
                 var dependency = expected.View.RequirementEditor("req0007")!.Dependencies.Single(d => d.CapabilityId == "fuel");
-                var label = panel.GetChildren().OfType<Label>().Single(l => l.HasMeta("dependency_owner"));
-                Require(dependency.OwnerEngaged == engaged && label.GetMeta("owner_engaged").AsBool() == engaged
+                var label = panel.GetChildren().OfType<Label>().SingleOrDefault(l => l.HasMeta("dependency_owner"));
+                if (dependency.Coverage is "arranged" or "inRequirement")
+                {
+                    Require(label is null, "A fully covered dependency has no usual-owner warning."); return;
+                }
+                Require(label is not null, "An uncovered dependency keeps its usual-owner guidance.");
+                Require(dependency.OwnerEngaged == engaged && label!.GetMeta("owner_engaged").AsBool() == engaged
                     && label.Text.Contains(dependency.UsualOwner!), "Checklist binds the authored usual owner and the Sim's engaged state.");
-                Require(label.Text.Contains(engaged ? "owner is engaged" : "owner has not been engaged"), "The owner's status is readable in prose.");
+                Require(label!.Text.Contains(engaged ? "owner is engaged" : "owner has not been engaged"), "The owner's status is readable in prose.");
             }
             CheckOwner(false); Require(Shortcut() is { Disabled: false }, "Uncovered fuel offers the J4 from its checklist.");
             tabs.CurrentTab = GameShell.RequestsTab; await Screenshot(shell, "--checklist-screenshot", (ScrollContainer)panel.GetParent(), Shortcut()!);

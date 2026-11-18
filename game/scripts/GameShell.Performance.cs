@@ -85,6 +85,7 @@ public partial class GameShell
         DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : null);
         if (includeContractLink)
         {
+            row.AddChild(DeskUi.Label("To end this contract, open its contract page."));
             var terminate = DeskUi.Button("View contract", () => OpenContractView(issue.ArrangementId));
             var contractReason = DeskUi.ActionReason(row, terminate);
             DeskUi.Gate(terminate, contractReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."

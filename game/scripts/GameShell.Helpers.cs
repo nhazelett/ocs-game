@@ -63,7 +63,7 @@ public partial class GameShell
             RequestHelperButtons[key] = button;
             if (preview is not null)
             {
-                var cost = AddActionCost(row, view, action, action is MeetVendorAction ? "Meets them to learn their terms." : "Asks " + helper.Person!.DisplayName + " about " + card.Title + ".", preview);
+                var cost = AddActionCost(row, view, action, action is MeetVendorAction ? VendorMeetingEffect(view, ((MeetVendorAction)action).Vendor) : "Asks " + helper.Person!.DisplayName + " about " + card.Title + ".", preview);
                 cost.SetMeta("ask_preview", helper.Person?.Id ?? key);
             }
             else row.AddChild(DeskUi.Label("Opens the support quantity form; no work is sent yet."));

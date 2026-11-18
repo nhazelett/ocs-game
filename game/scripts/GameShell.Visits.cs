@@ -76,7 +76,7 @@ public partial class GameShell
         mentorMessages.Visible = false; PeopleToggle.Disabled = view is null;
         if (view is null) return;
         // Only tutorial-authored messages from the outgoing CCO are guidance. The Sim supplies their exact words and day.
-        foreach (var item in (board?.Items ?? []).Where(i => view.Scenario.Tutorial && i.Person?.Role == "outgoingCco"))
+        foreach (var item in (board?.Items ?? []).Where(i => view.Scenario.Tutorial && i.Person?.Role == "outgoingCco" && !board!.New.Any(n => n.RecordId == i.RecordId)))
         {
             var card = new PanelContainer();
             using var cardStyle = new StyleBoxFlat { BgColor = TabletopTheme.Paper, ContentMarginLeft = 16,
@@ -194,7 +194,7 @@ public partial class GameShell
         {
             FindFinanceAction => "Finds the finance office and its cash and payment arrangements.",
             AskScoAction ask => "Sends the SCO your question: " + view.ScoQuestions.First(q => q.Id == ask.Question).Label + ".",
-            MeetVendorAction meet => "Meets " + view.NameOf(meet.Vendor) + " to learn their terms.",
+            MeetVendorAction meet => VendorMeetingEffect(view, meet.Vendor),
             EngageJ4Action j4 => $"Asks the J4 for {DeskUi.Quantity(j4.Quantity)} {view.ActionEditor(j4.Site, j4.Capability)!.Unit} a day of {CapabilityName(view, j4.Capability).ToLowerInvariant()} at {view.NameOf(j4.Site)}.",
             _ => text + "."
         };
@@ -207,6 +207,12 @@ public partial class GameShell
             var stops = DeskUi.Label(string.Join("\n\n", preview.HardStops)); stops.AddThemeColorOverride("font_color", TabletopTheme.Alert); host.AddChild(stops);
         }
         if (preview.SoftGaps.Count > 0) host.AddChild(DeskUi.Label(string.Join("\n\n", preview.SoftGaps)));
+    }
+
+    private static string VendorMeetingEffect(SessionView view, string vendor)
+    {
+        var card = view.VendorCards().FirstOrDefault(c => c.Id == vendor);
+        return "Meets " + view.NameOf(vendor) + ". " + (card?.StillToLearn ?? "Their terms are already known.");
     }
 
     private void OpenJ4FuelVisit(string site)
