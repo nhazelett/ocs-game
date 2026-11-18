@@ -102,8 +102,9 @@ public partial class DeskHierarchySmokeTest : Node
                     var button=shell.TeamButtons[member.Id];var bar=shell.TeamBars[member.Id];
                     using var icon=button.Icon;
                     using var nameStyle=button.GetThemeStylebox("normal");
-                    Require(icon is not null&&nameStyle is StyleBoxEmpty,
-                        "A teammate is a face and name, without an input-like frame.");
+                    Require(icon is not null&&nameStyle is StyleBoxFlat frame&&frame.BorderWidthLeft>0
+                        &&frame.BorderWidthRight>0&&frame.BgColor.IsEqualApprox(TabletopTheme.Paper),
+                        "A teammate keeps a face and name with a visible resting outline that invites opening the work list.");
                     Require(bar.Value==member.HoursSpokenForToday&&bar.MaxValue==member.HoursPerDay,
                         "Personal bar fill is exactly the Sim's occupied hours.");
                     using var fill=(StyleBoxFlat)bar.GetThemeStylebox("fill");
