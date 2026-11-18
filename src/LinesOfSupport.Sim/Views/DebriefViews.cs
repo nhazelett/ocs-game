@@ -75,7 +75,20 @@ public sealed record DebriefView(
 {
     /// <summary>Never null: the cure periods still running when the debrief was built (DESK-91), earliest end first.</summary>
     public IReadOnlyList<RunningCure> Cures { get; init; } = Cures ?? [];
+    /// <summary>DESK-106 (D38): what earned each line of the bar, one sentence per pass line, in the bar's order. Lines on a
+    /// site and capability, mission output and unauthorized commitments have one; other lines have none.</summary>
+    public IReadOnlyList<CarriedView> Carried { get; init; } = [];
 }
+
+/// <summary>
+/// What carried one line of the bar (DESK-106, D38), for under that line on the debrief: the arrangements that covered it,
+/// in the order they started, each with the day it was decided, by whom, and who said a part was needed when an ask added
+/// it ("Coastal Rentals with operators and maintenance from day 8, ordered on day 5 and written by MSgt Joan Avery, after
+/// SMSgt Ray Dunn said the request needs operators."). A missed line names its days and first cause; a line the host
+/// nation carried throughout says so. No grades and no hindsight.
+/// </summary>
+/// <param name="LineId">The pass line's id, as <see cref="BarLine.Id"/>. Never shown.</param>
+public sealed record CarriedView(string LineId, string Sentence);
 
 /// <summary>A cure period still running at the end (DESK-91): the issue, the arrangement, the cure period's last day and one
 /// sentence saying what decides it ("Island Camp Services has until day 23 to cure its food service at Hub; if it does not,
