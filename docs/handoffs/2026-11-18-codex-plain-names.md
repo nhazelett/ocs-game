@@ -10,7 +10,7 @@ Expected look of this build and why: no visible change from the DESK-100 and DES
 ## Changed
 
 - PlainNamesSmokeTest frees its shell, clears the managed reference and waits two frames as before; it now drains managed finalizers while Godot is alive and waits another frame before reporting success and quitting, matching CorSmokeTest. Its optional screenshot Image is explicitly disposed. All scenarios, forms, live days, debrief causes, naming and state-purity assertions remain.
-- CI also rejects `Leaked unsafe reference` in the plain-names log even if the process exits 0, so a lucky non-crashing leak cannot pass. No smoke test, assertion or timeout was removed or relaxed.
+- CI also rejects `Leaked unsafe reference` in the plain-names log even if the process exits 0, so a lucky non-crashing leak cannot pass. No smoke test or assertion was removed or relaxed; every process keeps its sixty-second limit. The overall job budget is fifteen minutes for the expanded 67-invocation suite.
 - Merged main into the existing DESK-100 branch and integrated that repair into the existing DESK-101 branch, without code conflicts. Kept both backlog Status cells, Fable's headline/review records and all accepted screenshots. No Sim, scenario, asset, shared-contract or design-file change.
 
 ## Why
@@ -27,7 +27,9 @@ A pass line followed by native shutdown failure is a failed process, not a green
 
 ## Unresolved
 
-Hosted CI is still running at publication. Initial repair runs: [DESK-100 44235779346](https://github.com/nhazelett/ocs-game/actions/runs/44235779346) and [DESK-101 44236029513](https://github.com/nhazelett/ocs-game/actions/runs/44236029513). The final CI-diagnostic/validation commit starts another run on each branch without another Game change; DESK-100's is [44236596864](https://github.com/nhazelett/ocs-game/actions/runs/44236596864). Fable should use the final branch runs and inspect their plain-names diagnostics before merging. No new FOR-NICK entry, question or objection.
+The first complete DESK-101 repair run, [44236029513](https://github.com/nhazelett/ocs-game/actions/runs/44236029513), is green. Its complete Godot job has zero unsafe-reference or crash diagnostics and includes the full suite after plain-names. DESK-100's first run [44235779346](https://github.com/nhazelett/ocs-game/actions/runs/44235779346) also passed plain-names cleanly, then was cancelled near the end after roughly ten minutes and 64 smoke pass lines, consistent with the configured ten-minute job budget; it had no unsafe-reference or crash diagnostics. Increased only the overall job budget to fifteen minutes and retained every process's sixty-second limit. Final Game code is unchanged from those runs.
+
+Final branch CI is still running at publication: DESK-100 [44237196703](https://github.com/nhazelett/ocs-game/actions/runs/44237196703); the final DESK-101 commit starts another run. Fable should use those final branch runs and inspect their plain-names diagnostics before merging. No new FOR-NICK entry, question or objection.
 
 ## Next
 
