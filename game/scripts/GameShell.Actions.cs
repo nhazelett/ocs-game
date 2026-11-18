@@ -199,7 +199,7 @@ public partial class GameShell
         startInput = AddNumber(AmountColumn("Start"), "StartDay", "Start day" + (editor.RequestedStartDay is { } askedStart ? $" · Asked: day {askedStart}" : ""), start.Value, int.MaxValue, value => { start = checked((int)value); UpdateAwardPreview(); });
         durationInput = AddNumber(AmountColumn("Days"), "Duration", "Duration (days)" + (editor.RequestedDurationDays is { } askedDays ? $" · Asked: {askedDays} days" : ""), duration.Value, int.MaxValue, value => { duration = checked((int)value); UpdateAwardPreview(); });
         vendorInput = AddAwardChoice("Supplier", "Choose a supplier…", choices.Vendors, awardVendor,
-            id => { awardVendor = id; }, out var vendorReason, AwardPickerNotice(view, target, "supplier", choices, awardChoiceNotice));
+            id => { awardVendor = id; }, out var vendorReason, AwardPickerNotice(view, target, "supplier", choices, awardChoiceNotice), listReasonsOnly: true);
         VendorChoiceReason = vendorReason;
         if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
         {
@@ -251,7 +251,7 @@ public partial class GameShell
         if (SupplierKnowledge is not null) awardPanel.AddChild(SupplierKnowledge);
         if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
         {
-            previewPanel.AddChild(DeskUi.Label("Choose an available supplier and arrangement, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
+            previewPanel.AddChild(DeskUi.Label("Choose an arrangement and an available supplier, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
             return;
         }
         if (!AwardTermsComplete)

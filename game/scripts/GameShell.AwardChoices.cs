@@ -72,7 +72,7 @@ public partial class GameShell
         var index = options.Select((o, i) => (o, i)).Where(x => x.o.Id == selected && x.o.Available).Select(x => x.i + 1).DefaultIfEmpty(0).First();
         picker.Select(index);
         var unavailable = options.Where(o => !o.Available).ToArray();
-        // Arrangement refusals already live on the disabled picker entries. Repeating them below a
+        // Arrangement and supplier refusals live on their disabled picker entries. Repeating them below a
         // chosen buy makes those alternatives read like faults in the buy itself.
         var reasonText = listReasonsOnly ? "" : string.Join("\n\n", unavailable.Select(o => o.Reason ?? $"{o.Label} is unavailable today.").Distinct());
         if (!string.IsNullOrEmpty(notice) && !reasonText.Contains(notice, StringComparison.Ordinal))

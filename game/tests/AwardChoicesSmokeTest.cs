@@ -25,10 +25,11 @@ public partial class AwardChoicesSmokeTest : Node
             }
             Target("spokeBSite.lodging"); Bindings();
             var host = shell.CurrentAwardChoices!.Vendors.Single(v=>v.Id=="hubUtilities");
-            Require(!host.Available && shell.VendorChoiceReason.Text.Contains(host.Reason!),"The single unavailable supplier has its exact host nation reason before preview.");
+            Require(!host.Available && shell.VendorInput.GetItemTooltip(Index(shell.VendorInput, host.Id)) == host.Reason
+                && !shell.VendorChoiceReason.Text.Contains(host.Reason!),"The unavailable supplier keeps its exact host nation reason in the picker before preview, beside any route guidance.");
             Pick(shell.VendorInput,"hubUtilities");
             Require(Selected(shell.VendorInput)=="" && shell.PendingAward is null,"A disabled supplier cannot be chosen even by a forced selection signal.");
-            await Capture("host-nation",shell.VendorChoiceReason);
+            await Capture("host-nation",shell.VendorInput,true);
             Target("spokeBSite.fuel"); Pick(shell.InstrumentInput,"bpaCall");
             Require(shell.CurrentAwardChoices!.Vendors.All(v => !v.Available)
                 && shell.VendorChoiceReason.Text.Contains("To open available choices, choose")
@@ -41,10 +42,18 @@ public partial class AwardChoicesSmokeTest : Node
             Require(unavailableVendors > 1, "The instrument-first fixture has several supplier refusals.");
             void VisibleReasons()
             {
-                foreach (var (options, label) in new[] { (shell.CurrentAwardChoices!.Vendors, shell.VendorChoiceReason),
-                    (shell.CurrentAwardChoices.Vehicles, shell.VehicleChoiceReason),
+                foreach (var option in shell.CurrentAwardChoices!.Vendors.Where(o => !o.Available))
+                {
+                    var index = Index(shell.VendorInput, option.Id);
+                    var reason = option.Reason ?? "Unavailable today.";
+                    if (reason.StartsWith(option.Label + " ", StringComparison.OrdinalIgnoreCase)) reason = reason[(option.Label.Length + 1)..];
+                    Require(shell.VendorInput.IsItemDisabled(index) && shell.VendorInput.GetItemText(index).EndsWith(DeskUi.ListLabel(reason))
+                        && shell.VendorInput.GetItemTooltip(index) == option.Reason,
+                        "Every supplier refusal remains complete on its disabled picker entry.");
+                }
+                foreach (var (options, label) in new[] { (shell.CurrentAwardChoices.Vehicles, shell.VehicleChoiceReason),
                     (shell.CurrentAwardChoices.Funding, shell.FundingChoiceReason) })
-                    Require(options.Where(o => !o.Available).All(o => label.Text.Contains(o.Reason!)), "Every supplier, vehicle and funding refusal stays visible in full without pointer focus.");
+                    Require(options.Where(o => !o.Available).All(o => label.Text.Contains(o.Reason!)), "Every vehicle and funding refusal stays visible in full without pointer focus.");
             }
             VisibleReasons();
             var priorReasons = shell.VendorChoiceReason.Text;

@@ -17,10 +17,24 @@ public partial class RequestBuyFitSmokeTest : Node
             Open("tutWater");
             Require(shell.AwardButton.Disabled && !shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text.Length == 0,
                 "An untouched buy is disabled without presenting an error before the first edit.");
+            Suppliers();
+            var guidance = "Choose an arrangement and an available supplier, and any vehicle and funding line they need.";
+            Require(PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.Visible && l.Text.StartsWith(guidance, StringComparison.Ordinal)),
+                "The untouched form names the next choices in the order they appear.");
             Pick(shell.InstrumentInput, "gpc");
             Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text == "Choose an available supplier.",
                 "A real choice restores the missing-supplier gate and its visible explanation.");
-            Pick(shell.VendorInput, "islandMart"); await Frames(); Alternatives();
+            Suppliers(); await Capture("water-no-supplier");
+            var captureArgs = OS.GetCmdlineUserArgs();
+            if (Array.IndexOf(captureArgs, "--screenshots") >= 0)
+            {
+                shell.VendorInput.ShowPopup(); await Frames();
+                var popup = shell.VendorInput.GetPopup();
+                Require(new Rect2I(0, 0, 1280, 800).Encloses(new Rect2I(popup.Position, popup.Size)),
+                    "The open supplier picker and its complete refusals fit inside the native window.");
+                await Capture("supplier-options"); popup.Hide();
+            }
+            Pick(shell.VendorInput, "islandMart"); await Frames(); Alternatives(); Suppliers();
             var hash = shell.Session.StateHash;
             FitWater(); await Capture("water-before");
             var args = OS.GetCmdlineUserArgs();
@@ -75,6 +89,22 @@ public partial class RequestBuyFitSmokeTest : Node
             shell.QueueFree(); shell = null; await Frames();
             GD.Print("REQUEST_BUY_FIT_SMOKE_PASS: alternatives explained only in their picker, untouched/reset form safely gated without errors, validation after edits, water fields without scrolling, exact visible standing after one buy, known-only warning marks and clearing, forklift priorities/COR within one scroll, pinned full summary and Spoke B."); GetTree().Quit();
 
+            void Suppliers()
+            {
+                Require(!shell.VendorChoiceReason.Visible,
+                    "Other suppliers do not become separate paragraphs about the selected buy, including before a supplier is chosen.");
+                foreach (var option in shell.CurrentAwardChoices!.Vendors.Where(o => !o.Available))
+                {
+                    var index = Enumerable.Range(1, shell.VendorInput.ItemCount - 1).Single(i => shell.VendorInput.GetItemMetadata(i).AsString() == option.Id);
+                    var reason = option.Reason ?? "Unavailable today.";
+                    if (reason.StartsWith(option.Label + " ", StringComparison.OrdinalIgnoreCase)) reason = reason[(option.Label.Length + 1)..];
+                    Require(shell.VendorInput.IsItemDisabled(index) && shell.VendorInput.GetItemText(index).EndsWith(DeskUi.ListLabel(reason))
+                        && shell.VendorInput.GetItemTooltip(index) == option.Reason,
+                        "Each greyed supplier carries its complete actual refusal in the picker.");
+                    Require(!PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.Visible && l.Text.Contains(option.Reason!)),
+                        "An unrelated supplier refusal never appears elsewhere in the buy column.");
+                }
+            }
             void Alternatives()
             {
                 Require(!shell.InstrumentChoiceReason.Visible, "Closed alternatives do not become separate warnings about the chosen buy.");
