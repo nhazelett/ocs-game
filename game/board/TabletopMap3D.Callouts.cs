@@ -20,6 +20,7 @@ public partial class TabletopMap3D
         internal bool Compact;
         internal bool Lane;
         internal bool Alert;
+        internal string State = "";
         internal string? Island;
         internal float Width;
         internal Vector2 PlacedAnchor;
@@ -52,9 +53,9 @@ public partial class TabletopMap3D
     internal IEnumerable<Vector2> VisibleRouteDots=>routeDots.Where(d=>d.Visible).Select(d=>camera.UnprojectPosition(d.GlobalPosition));
     internal IReadOnlyList<Vector2[]> ProjectedSolids=>Enumerable.Range(0,solidBounds.Count).Select(ProjectSolid).ToArray();
 
-    private Label SiteCaption(string title,string location,string status,Func<Vector3> anchor,bool alert,string island)
+    private Label SiteCaption(string title,string location,string status,Func<Vector3> anchor,bool alert,string island,string state)
     {
-        var item=PaperCallout(status,anchor,()=>true,190,0,false,alert);item.Name=title;item.Island=island;
+        var item=PaperCallout(status,anchor,()=>true,190,0,false,alert);item.Name=title;item.Island=island;item.State=state;
         originalStatuses[item.Words]=status;item.Card.TooltipText=location;
         var heading=new Label{Text=title+(alert?" · down":""),AutowrapMode=TextServer.AutowrapMode.Off,MouseFilter=MouseFilterEnum.Ignore};
         heading.AddThemeFontSizeOverride("font_size",20);
@@ -172,8 +173,7 @@ public partial class TabletopMap3D
         if(item.Heading is not null)
             item.Heading.Text=form==2&&!quiet
                 ?item.Name+" · "+item.ShortWords!.Text.Replace("\n","; ")
-                :item.Name+(item.Words.Text.Contains("down",StringComparison.OrdinalIgnoreCase)
-                    ||item.Words.Text.Contains("0%")?" · down":"");
+                :item.Name+item.State;
         if(item.Heading is null&&compact)item.Words.Text=item.Name??item.Words.Text;
         item.Card.CustomMinimumSize=new Vector2(compact?0:item.Width,0);
         if(quiet){using var empty=new StyleBoxEmpty();item.Card.AddThemeStyleboxOverride("panel",empty);}

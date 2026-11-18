@@ -104,7 +104,7 @@ public partial class TabletopMap3D:Control
             var state=SiteStatus(values,site.OpensDay);
             var title=board.Sites.Count(s=>s.Island==site.Island)==1?site.Name+" / "+board.Islands.Single(i=>i.Id==site.Island).Name:site.Name;
             // Attach at a free shore edge so every camera leaves room for facts.
-            SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),()=>SiteShoreAnchor(site.Island),values.Any(t=>t.Status=="down"),site.Island);
+            SiteStatuses[site.Id]=SiteCaption(site.Name,title,state+(confidence?.Contains(site.Id)==true?" · confidence lost":""),()=>SiteShoreAnchor(site.Island),values.Any(t=>t.Status=="down"),site.Island,values.Any(t=>t.Status=="down")?" · down":values.Any(t=>t.Status=="degraded")?" · partly supported":"");
             SiteStatuses[site.Id].SetMeta("confidence_lost",confidence?.Contains(site.Id)==true);
         }
         FinishScenery();addingIsland=null;

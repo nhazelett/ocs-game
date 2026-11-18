@@ -103,9 +103,10 @@ public partial class GameShell
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
-        if (@event is InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape } && RequestWorkspace.Visible
-            && !EndDayDialog.Visible && !LeaveGameDialog.Visible)
-        { CloseRequestWorkspace(); GetViewport().SetInputAsHandled(); }
+        if (@event is not InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape }
+            || EndDayDialog.Visible || LeaveGameDialog.Visible) return;
+        if (TeamPanel.Visible) { CloseTeam(); GetViewport().SetInputAsHandled(); }
+        else if (RequestWorkspace.Visible) { CloseRequestWorkspace(); GetViewport().SetInputAsHandled(); }
     }
 
     private void RenderRequestList(SessionView? view)

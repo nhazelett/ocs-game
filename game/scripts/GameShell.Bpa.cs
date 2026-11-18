@@ -153,7 +153,7 @@ public partial class GameShell
                 DeskUi.Gate(meet, meetReason, view.Finished ? DeskUi.FinishedReason : card.MeetingSetUp ? "The meeting is already in work."
                     : card.MetDay is not null ? "You have already met this vendor." : visit.HardStops.FirstOrDefault()); VendorMeetButtons[card.Id] = meet;
                 if (card.MetDay is null && !card.MeetingSetUp)
-                    AddActionCost(details, view, new MeetVendorAction { Day = view.Day, Vendor = card.Id }, "Meets " + card.Name + " to learn their terms.", visit);
+                    AddActionCost(details, view, new MeetVendorAction { Day = view.Day, Vendor = card.Id }, VendorMeetingEffect(view, card.Id), visit);
             }
             if (offers.Any(o => o.Vendor.Id == card.Id))
             {

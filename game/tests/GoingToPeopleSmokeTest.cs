@@ -27,9 +27,18 @@ public partial class GoingToPeopleSmokeTest : Node
             {
                 Step(shell); expectedTutorial.AdvanceDay();
                 var notes = expectedTutorial.Records.Where(r => r.Day == day && expectedTutorial.View.RecordPerson(r)?.Role == "outgoingCco").ToArray();
-                Require(notes.Length > 0 && shell.MentorMessages.Visible, "The authored mentor note has its own visible card each of the first three days.");
-                foreach (var note in notes) Require(Labels(shell.MentorMessages).Any(l => l.HasMeta("mentor_record") && l.GetMeta("mentor_record").AsString() == note.Id && l.Text == note.Text), "Mentor words and record link bind exactly to Sim.");
-                Require(Labels(shell.MentorMessages).Any(l => l.Text == expectedTutorial.View.OutgoingCco!.WithUnit), "The outgoing CCO is the named mentor.");
+                Require(notes.Length > 0, "The Sim authors mentor news on each of the first three days.");
+                foreach (var note in notes)
+                {
+                    var news = shell.MorningBrief.GetChildren().OfType<PanelContainer>()
+                        .Single(p => p.HasMeta("news_record") && p.GetMeta("news_record").AsString() == note.Id);
+                    Require(news.IsVisibleInTree() && Labels(news).Any(l => l.Text == note.Text), "Morning news binds the exact mentor words and record identity from Sim.");
+                    Require(Labels(shell.MorningBrief.GetParent()).Count(l => l.IsVisibleInTree() && l.Text == note.Text) == 1,
+                        "The mentor note appears once on Today, without a duplicate lead or mentor card.");
+                    Require(shell.Session.View.MorningBoard().New.Single(n => n.RecordId == note.Id).Person?.Id == expectedTutorial.View.OutgoingCco!.Id,
+                        "The morning note retains the Sim's outgoing CCO identity.");
+                }
+                Require(!shell.MentorMessages.Visible, "Mentor news already on Today has no separate mentor card.");
                 Require(shell.Session.StateHash == expectedTutorial.StateHash(), "Mentor presentation changes no rules or replay state.");
                 if (day == 1) await Screenshot(shell, "--mentor-screenshot");
             }
@@ -38,7 +47,10 @@ public partial class GoingToPeopleSmokeTest : Node
             Scenario(shell, "tutorial"); Replay(shell, "approach1 taught");
             var startingDay = shell.Session.View!.Day;
             Step(shell);
-            Require(shell.Session.View!.Day == startingDay + 1 && shell.MentorMessages.Visible, "A single day stops for mentor news rather than skipping it.");
+            Require(shell.Session.View!.Day == startingDay + 1 && shell.Session.View.MorningBoard().New
+                .Where(n => n.Person?.Role == "outgoingCco").Any(n => shell.MorningBrief.GetChildren().OfType<PanelContainer>()
+                    .Any(p => p.HasMeta("news_record") && p.GetMeta("news_record").AsString() == n.RecordId)),
+                "A single day stops for mentor news and shows it in New since yesterday.");
 
             Scenario(shell, "spoke-b"); shell.DeveloperToggle.ButtonPressed = false; shell.PeopleToggle.ButtonPressed = true;
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));

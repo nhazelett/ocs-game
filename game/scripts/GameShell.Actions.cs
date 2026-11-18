@@ -56,7 +56,7 @@ public partial class GameShell
             : CurrentActionEditor is null ? "Choose a request or something to buy on your own initiative."
             : string.IsNullOrEmpty(awardVendor) ? "Choose an available supplier."
             : string.IsNullOrEmpty(awardInstrument) ? "Choose an available arrangement."
-            : awardInstrument is "bpaCall" or "idiqOrder" && string.IsNullOrEmpty(awardVehicle) ? "Choose an available vehicle."
+            : awardInstrument is "bpaCall" or "idiqOrder" && string.IsNullOrEmpty(awardVehicle) ? "Choose a contract vehicle."
             : awardInstrument is not ("sf44" or "gpc") && string.IsNullOrEmpty(awardFunding) ? "Choose an available funding line."
             : AwardPreview?.HardStops.FirstOrDefault();
         reason ??= AwardPreview is null ? "Complete the terms to see the quote." : null;
@@ -256,7 +256,7 @@ public partial class GameShell
         }
         if (!AwardTermsComplete)
         {
-            previewPanel.AddChild(DeskUi.Label("Choose an available vehicle and funding line for these terms before asking for the quote."));
+            previewPanel.AddChild(DeskUi.Label("Choose a contract vehicle and funding line for these terms before asking for the quote."));
             return;
         }
         AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); // DESK-26
