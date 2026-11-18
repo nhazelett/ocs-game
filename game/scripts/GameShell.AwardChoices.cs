@@ -46,7 +46,7 @@ public partial class GameShell
     }
 
     private OptionButton AddAwardChoice(string label, string prompt, IReadOnlyList<ChoiceOption> options,
-        string? selected, Action<string> changed, out Label explanation, string? notice = null)
+        string? selected, Action<string> changed, out Label explanation, string? notice = null, bool listReasonsOnly = false)
     {
         var row = new HBoxContainer(); row.AddThemeConstantOverride("separation", 12); awardPanel.AddChild(row);
         var caption = DeskUi.Label(label); caption.AutowrapMode = TextServer.AutowrapMode.Off;
@@ -72,11 +72,13 @@ public partial class GameShell
         var index = options.Select((o, i) => (o, i)).Where(x => x.o.Id == selected && x.o.Available).Select(x => x.i + 1).DefaultIfEmpty(0).First();
         picker.Select(index);
         var unavailable = options.Where(o => !o.Available).ToArray();
-        // All refusals remain visible without opening the popup or hovering a pointer.
-        var reasonText = string.Join("\n\n", unavailable.Select(o => o.Reason ?? $"{o.Label} is unavailable today.").Distinct());
+        // Arrangement refusals already live on the disabled picker entries. Repeating them below a
+        // chosen buy makes those alternatives read like faults in the buy itself.
+        var reasonText = listReasonsOnly ? "" : string.Join("\n\n", unavailable.Select(o => o.Reason ?? $"{o.Label} is unavailable today.").Distinct());
         if (!string.IsNullOrEmpty(notice) && !reasonText.Contains(notice, StringComparison.Ordinal))
             reasonText += (reasonText.Length > 0 ? "\n\n" : "") + notice;
         var reasonLabel = DeskUi.Label(reasonText);
+        reasonLabel.AddThemeColorOverride("font_color", TabletopTheme.Ink);
         reasonLabel.Visible = reasonLabel.Text.Length > 0;
         picker.ItemSelected += i =>
         {
@@ -85,11 +87,13 @@ public partial class GameShell
                 picker.Select(index);
                 return;
             }
-            awardChoiceNotice = null;
+            awardChoiceNotice = null; awardFormTouched = true;
             changed(picker.GetItemMetadata((int)i).AsString());
             RefreshActionDesk(session.View);
         };
-        row.AddChild(picker); awardChoiceReasons.Add(reasonLabel); explanation = reasonLabel;
+        row.AddChild(picker);
+        if (listReasonsOnly) awardPanel.AddChild(reasonLabel); else awardChoiceReasons.Add(reasonLabel);
+        explanation = reasonLabel;
         return picker;
     }
     // Ask the same read projection about other structural selections. This is navigation guidance, never Game-side

@@ -18,6 +18,7 @@ public partial class GameShell
     private Label? priorityHelp;
     private int awardSequence = 1;
     private int awardFormVersion;
+    private bool awardFormTouched;
     private OptionButton instrumentInput = null!, vendorInput = null!, vehicleInput = null!, fundingInput = null!;
     private SpinBox quantityInput = null!, startInput = null!, durationInput = null!;
     private Label previewCost = null!, previewTiming = null!, previewStops = null!, previewGaps = null!;
@@ -61,6 +62,10 @@ public partial class GameShell
         reason ??= AwardPreview is null ? "Complete the terms to see the quote." : null;
         if (reason == "Pick two of fast, cheap and good") reason += " below.";
         DeskUi.Gate(awardButton, AwardBlockedReason, reason);
+        // An untouched form is an invitation to start another buy, including after a successful one.
+        // Keep submission gated, but wait for an edit before showing missing-field errors.
+        if (!awardFormTouched && view is { Finished: false } && CurrentActionEditor is not null)
+        { AwardBlockedReason.Text = ""; AwardBlockedReason.Hide(); }
     }
 
     private void BuildActionDesk()
@@ -74,7 +79,7 @@ public partial class GameShell
     private void ResetAwardForm()
     {
         awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = awardCor = null;
-        awardChoiceNotice = null;
+        awardChoiceNotice = null; awardFormTouched = false;
         awardPriorities.Clear(); // DESK-26
         quantity = null; start = duration = null; awardSequence = 1;
     }
@@ -119,7 +124,7 @@ public partial class GameShell
     {
         var caption = DeskUi.Label(label); caption.Name = name + "Label"; parent.AddChild(caption);
         var input = new SpinBox { Name = name, MinValue = 1, MaxValue = max, Step = 1, Value = value, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-        input.ValueChanged += value => changed(value); parent.AddChild(input); return input;
+        input.ValueChanged += value => { awardFormTouched = true; changed(value); }; parent.AddChild(input); return input;
     }
 
     private void RefreshActionDesk(SessionView? view)
@@ -182,7 +187,7 @@ public partial class GameShell
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
         var choices = ReconcileAwardChoices(view, target);
         instrumentInput = AddAwardChoice("Arrangement", "Choose an arrangement…", choices.Instruments, awardInstrument,
-            id => { awardInstrument = id; }, out var instrumentReason, AwardPickerNotice(view, target, "arrangement", choices));
+            id => { awardInstrument = id; }, out var instrumentReason, AwardPickerNotice(view, target, "arrangement", choices), listReasonsOnly: true);
         InstrumentChoiceReason = instrumentReason;
         var requirement = target.Card is null ? null : view.RequirementEditor(target.Card);
         quantity ??= Math.Max(1, editor.PeakDemandUnits); start ??= Math.Max(view.Day, requirement?.RequestedStartDay ?? view.Day);

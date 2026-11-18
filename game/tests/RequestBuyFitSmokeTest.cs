@@ -14,9 +14,18 @@ public partial class RequestBuyFitSmokeTest : Node
         try
         {
             shell = Shell(this); Scenario(shell, "tutorial"); shell.DeveloperToggle.ButtonPressed = false;
-            Open("tutWater"); Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc"); await Frames();
+            Open("tutWater");
+            Require(shell.AwardButton.Disabled && !shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text.Length == 0,
+                "An untouched buy is disabled without presenting an error before the first edit.");
+            Pick(shell.InstrumentInput, "gpc");
+            Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text == "Choose an available supplier.",
+                "A real choice restores the missing-supplier gate and its visible explanation.");
+            Pick(shell.VendorInput, "islandMart"); await Frames(); Alternatives();
             var hash = shell.Session.StateHash;
             FitWater(); await Capture("water-before");
+            var args = OS.GetCmdlineUserArgs();
+            if (Array.IndexOf(args, "--screenshots") >= 0)
+            { shell.InstrumentInput.ShowPopup(); await Capture("arrangement-options"); shell.InstrumentInput.GetPopup().Hide(); }
             Require(shell.Session.StateHash == hash, "Reading and fitting the form does not act.");
             var candidate = shell.PendingAward!;
             var expected = LinesOfSupport.Sim.Replay.Resume(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial")), shell.Session.CreateSave());
@@ -27,7 +36,15 @@ public partial class RequestBuyFitSmokeTest : Node
             Require(standing.Text == shell.Session.View!.WhereThingsStand().Single(s => s.CardId == "tutWater").Sentence
                 && shell.RequestScroll.GetGlobalRect().Encloses(standing.GetGlobalRect()), "The updated standing is exact and visible immediately after buying.");
             Require(shell.PendingAward is null && !shell.AwardSummaryLabel.Visible && shell.RequestBuyWarnings.Values.All(l => !l.Visible), "The committed quote and its warnings clear without closing the page.");
+            Require(shell.AwardButton.Disabled && !shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text.Length == 0,
+                "A successful buy leaves a safely disabled fresh form without a red missing-supplier reason.");
+            var resetHash = shell.Session.StateHash;
+            shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == resetHash, "The quiet reset form cannot submit another buy.");
             await Capture("water-after");
+            shell.QuantityInput.Value += 1;
+            Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text == "Choose an available supplier.",
+                "Editing the reset form restores the real incomplete-terms explanation.");
             Scenario(shell, "tutorial"); shell.DeveloperToggle.ButtonPressed = false; Step(shell, 3); Open("tutForklift");
             Require(!shell.RequestPartLabels.ContainsKey("operator"), "Unknown parts stay hidden.");
             shell.RequirementAskButtons["dunn"].EmitSignal(Button.SignalName.Pressed); Step(shell); Open("tutForklift");
@@ -42,10 +59,10 @@ public partial class RequestBuyFitSmokeTest : Node
             Pick(shell.InstrumentInput, ""); Pick(shell.VendorInput, "coastalRentals"); Pick(shell.InstrumentInput, "purchaseOrder"); PickPriorities(shell, "fast", "good");
             Pick(shell.CorInput!, shell.Session.View!.CorChoices("mhe")[0].Id); await Frames();
             Require(!shell.RequestBuyWarnings["operator"].Visible, "Changing to a supplier that lists the part clears its stale marker: " + shell.RequestBuyWarnings["operator"].Text + " on=" + shell.Session.View!.RequirementEditor("tutForklift")!.Lines.Single(l => l.Id == "operator").On + " vendor=" + shell.PendingAward?.Vendor + " add=" + shell.AwardAddButtons.ContainsKey("operator"));
-            shell.AwardScroll.ScrollVertical = 0; await Frames();
+            shell.AwardScroll.ScrollVertical = 0; shell.RequestScroll.ScrollVertical = 0; await Frames();
             var quote = shell.PendingAward!; var exact = shell.Session.View!.Preview(quote);
             Require(shell.AwardPreview!.TotalCents == exact.TotalCents && shell.AwardSummaryLabel.Text == shell.Session.View.AwardSummary(quote)!.Sentence, "The compact written form keeps the complete exact quote.");
-            await Capture("forklifts-top");
+            Alternatives(); await Capture("forklifts-top");
             var pure = shell.Session.StateHash; var pinned = shell.AwardButton.GetGlobalRect();
             shell.AwardScroll.ScrollVertical = (int)(shell.AwardScroll.Size.Y * .75f); await Frames();
             Require(shell.PriorityInputs.Values.All(InForm) && InForm(shell.CorInput!) && InForm(shell.CorInput!.GetParent().GetChild<Control>(0)), "One normal scroll reaches pick two and the contract monitor together.");
@@ -56,8 +73,23 @@ public partial class RequestBuyFitSmokeTest : Node
             Pick(shell.VendorInput, "vendorA"); Pick(shell.InstrumentInput, "purchaseOrder"); PickPriorities(shell, "fast", "good");
             shell.AwardScroll.ScrollVertical = 0; await Capture("spoke-b-power");
             shell.QueueFree(); shell = null; await Frames();
-            GD.Print("REQUEST_BUY_FIT_SMOKE_PASS: water fields without scrolling, exact visible standing after one buy, known-only warning marks and clearing, forklift priorities/COR within one scroll, pinned full summary and Spoke B."); GetTree().Quit();
+            GD.Print("REQUEST_BUY_FIT_SMOKE_PASS: alternatives explained only in their picker, untouched/reset form safely gated without errors, validation after edits, water fields without scrolling, exact visible standing after one buy, known-only warning marks and clearing, forklift priorities/COR within one scroll, pinned full summary and Spoke B."); GetTree().Quit();
 
+            void Alternatives()
+            {
+                Require(!shell.InstrumentChoiceReason.Visible, "Closed alternatives do not become separate warnings about the chosen buy.");
+                foreach (var option in shell.CurrentAwardChoices!.Instruments.Where(o => !o.Available))
+                {
+                    var index = Enumerable.Range(1, shell.InstrumentInput.ItemCount - 1).Single(i => shell.InstrumentInput.GetItemMetadata(i).AsString() == option.Id);
+                    var reason = option.Reason ?? "Unavailable today.";
+                    if (reason.StartsWith(option.Label + " ", StringComparison.OrdinalIgnoreCase)) reason = reason[(option.Label.Length + 1)..];
+                    Require(shell.InstrumentInput.IsItemDisabled(index) && shell.InstrumentInput.GetItemText(index).EndsWith(DeskUi.ListLabel(reason))
+                        && shell.InstrumentInput.GetItemTooltip(index) == option.Reason,
+                        "Every closed arrangement retains its complete actual Sim refusal in its disabled picker entry.");
+                    Require(!PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.Visible && l.Text.Contains(option.Reason!)),
+                        "An alternative's refusal is not repeated elsewhere in the buy column.");
+                }
+            }
             bool InForm(Control control) => control.IsVisibleInTree() && shell!.AwardScroll.GetGlobalRect().Encloses(control.GetGlobalRect());
             void Open(string card) => shell!.NavigateBoardItem(new BoardItem("", shell.Session.View!.Day, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, card, "", []));
             void FitWater()
