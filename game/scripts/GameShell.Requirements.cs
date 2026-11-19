@@ -96,10 +96,7 @@ public partial class GameShell
                 gap.AddThemeColorOverride("font_color", TabletopTheme.Warning); linkedRequirement.AddChild(gap);
             }
             if (!line.CanAdd) continue;
-            var add = DeskUi.Button("Add what you learned", () => AddLearnedRequirementLine(card.CardId, line.Id));
-            add.TooltipText = line.Label; add.SetMeta("add_line", line.Id); add.Disabled = view!.Finished;
-            var addReason = DeskUi.ActionReason(linkedRequirement, add);
-            DeskUi.Gate(add, addReason, view.Finished ? DeskUi.FinishedReason : null); RequirementAddButtons.Add(line.Id, add);
+            RequirementAddButtons.Add(line.Id, AddLearnedLineButton(linkedRequirement, view, card.CardId, line));
         }
         RenderRequestHelpers(view!, card);
         linkedRequirement.AddChild(DeskUi.Label("Dependency checklist"));
@@ -124,6 +121,22 @@ public partial class GameShell
                 DeskUi.Gate(ask, reason, view.Finished ? DeskUi.FinishedReason : null);
             }
         }
+    }
+
+    private Button AddLearnedLineButton(VBoxContainer parent, SessionView view, string card, RequirementLine line)
+    {
+        var hash = session.StateHash;
+        var add = DeskUi.Button("Add what you learned", () =>
+        {
+            if (hash == session.StateHash) AddLearnedRequirementLine(card, line.Id);
+        });
+        add.TooltipText = line.Label; add.SetMeta("add_line", line.Id);
+        var reason = DeskUi.ActionReason(parent, add);
+        DeskUi.Gate(add, reason, view.Finished ? DeskUi.FinishedReason : null);
+        // AddLine applies immediately: it queues no work and spends no hours or money.
+        var cost = DeskUi.Label($"No shop hours. Adds {line.Label.ToLowerInvariant()} to this request.");
+        cost.SetMeta("action_cost", nameof(AddLineAction)); parent.AddChild(cost);
+        return add;
     }
 
     private void AddLearnedRequirementLine(string card, string line)

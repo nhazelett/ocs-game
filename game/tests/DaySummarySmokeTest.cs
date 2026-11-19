@@ -143,6 +143,9 @@ public partial class DaySummarySmokeTest : Node
             {
                 Require(shell.ReadingDaySummary && !shell.PlayingDay, "One results page opens only after playback.");
                 expected ??= shell.Session.View!.DaySummary()!;
+                Require(shell.DaySummaryDialog.GetOkButton().Text == (shell.Session.View!.Finished
+                    ? "Back to the debrief" : $"On to the morning of day {shell.Session.View.Day}"),
+                    "The results button names the actual next morning, including Yesterday and resumed results.");
                 Require(shell.DisplayedDaySummary!.Day == expected.Day, "Results name the exact completed day.");
                 var labels = Labels(shell.DaySummaryContents).ToArray();
                 Require(labels.First().Text == expected.Sentence, "The result summary comes verbatim from Sim.");

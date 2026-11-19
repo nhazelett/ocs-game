@@ -65,7 +65,7 @@ public partial class GameShell
         SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
         boardFocus.Text = "";
         Map.SelectSite(null);
-        ResetAwardForm();
+        awardDrafts.Clear(); awardDraftDay = 0; ResetAwardForm();
         RenderRequirementContext(session.View); RenderRequestList(session.View);
         ResetBpaForm();
         coordinationQuantity = 1; coordinationTarget = null;

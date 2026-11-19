@@ -55,13 +55,13 @@ public partial class GameShell
         prepPanel.AddChild(holder);
         var choices = DeskUi.Panel(holder, "PreparationChoices");
         PrepScroll = (ScrollContainer)choices.GetParent();
-        choices.AddThemeConstantOverride("separation", 12);
+        choices.AddThemeConstantOverride("separation", 24);
         foreach (var choice in prep.Offered)
         {
             var toggle = new CheckBox { Text = $"{choice.Says ?? choice.Label} ({choice.PrepDays} {(choice.PrepDays == 1 ? "day" : "days")})", ButtonPressed = choice.Default,
                 AutowrapMode = TextServer.AutowrapMode.WordSmart, ThemeTypeVariation = "TabletopPrepChoice",
                 SizeFlagsHorizontal = SizeFlags.ExpandFill };
-            var row = new VBoxContainer(); row.AddThemeConstantOverride("separation", 3);
+            var row = new VBoxContainer(); row.AddThemeConstantOverride("separation", 2);
             choices.AddChild(row);
             PrepChoices.Add(choice.Id, toggle); row.AddChild(toggle);
             var changes = DeskUi.Label(choice.Changes ?? ""); changes.SetMeta("prep_changes", choice.Id); row.AddChild(changes);

@@ -102,7 +102,7 @@ public partial class GameShell
         var offers = DirectoryOffers(view);
         var cards = view.VendorCards();
         if (!cards.Any(c => c.Id == selectedVendor)) selectedVendor = cards.FirstOrDefault()?.Id;
-        VendorCardPicker = AddPick(VendorCardsBox, "Whose card?", cards.Select(c => new Pick(c.Id, c.Name)).ToArray(), selectedVendor,
+        VendorCardPicker = AddPick(VendorCardsBox, "Choose a vendor", cards.Select(c => new Pick(c.Id, c.Name)).ToArray(), selectedVendor,
             id => { selectedVendor = id; vendorCardsScroll.ScrollVertical = 0; RefreshBpaDesk(session.View); });
         foreach (var card in cards)
         {

@@ -9,6 +9,10 @@ public partial class GameShell
 {
     private sealed record AwardTarget(string Id, string Label, string Site, string Capability, string? Card);
     private sealed record Pick(string Id, string Text, string? Block = null);
+    private sealed record AwardDraft(string? Instrument, string? Vendor, string? Vehicle, string? Funding,
+        string? Cor, long? Quantity, int? Start, int? Duration, string[] Priorities, bool Touched);
+    private readonly Dictionary<string, AwardDraft> awardDrafts = [];
+    private int awardDraftDay;
     private VBoxContainer awardPanel = null!;
     private VBoxContainer previewPanel = null!, awardFooter = null!;
     private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor;
@@ -84,6 +88,26 @@ public partial class GameShell
         quantity = null; start = duration = null; awardSequence = 1;
     }
 
+    private void RefreshAwardDraftDay(SessionView? view)
+    {
+        if (awardDraftDay == (view?.Day ?? 0)) return;
+        awardDrafts.Clear(); awardDraftDay = view?.Day ?? 0;
+    }
+
+    private void SwitchAwardTarget(string? id)
+    {
+        RefreshAwardDraftDay(session.View);
+        if (awardTarget == id) return;
+        if (awardTarget is { } previous)
+            awardDrafts[previous] = new(awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor,
+                quantity, start, duration, [.. awardPriorities], awardFormTouched);
+        ResetAwardForm(); awardTarget = id;
+        if (id is null || !awardDrafts.TryGetValue(id, out var draft)) return;
+        awardInstrument = draft.Instrument; awardVendor = draft.Vendor; awardVehicle = draft.Vehicle;
+        awardFunding = draft.Funding; awardCor = draft.Cor; quantity = draft.Quantity; start = draft.Start;
+        duration = draft.Duration; awardPriorities.UnionWith(draft.Priorities); awardFormTouched = draft.Touched;
+    }
+
     private static List<AwardTarget> AwardTargets(SessionView view)
     {
         var targets = view.Cards.Select(c => view.RequirementEditor(c.Id)).Where(c => c is not null)
@@ -129,6 +153,7 @@ public partial class GameShell
 
     private void RefreshActionDesk(SessionView? view)
     {
+        RefreshAwardDraftDay(view);
         DeskUi.Clear(awardPanel); DeskUi.Clear(previewPanel); DeskUi.Clear(awardFooter);
         awardChoiceReasons.Clear(); priorityHelp = null;
         PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
@@ -146,6 +171,7 @@ public partial class GameShell
                 if (SendAction(action).Accepted)
                 {
                     if (action.Card is not null) SelectedCard = action.Card;
+                    if (awardTarget is { } bought) awardDrafts.Remove(bought);
                     ResetAwardForm(); awardTarget = action.Card ?? action.Site + "." + action.Capability; RefreshActionDesk(session.View);
                     ShowRequests();
                     RequestScroll.ScrollVertical = 0;
@@ -264,7 +290,6 @@ public partial class GameShell
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);
         previewGaps = DeskUi.Label(); previewGaps.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewPanel.AddChild(previewGaps);
-        previewPanel.AddChild(new Control { CustomMinimumSize = new Vector2(0, 8), MouseFilter = MouseFilterEnum.Ignore });
         previewLearned = new VBoxContainer(); previewLearned.AddThemeConstantOverride("separation", 8); previewPanel.AddChild(previewLearned);
         if (session.IsReplay) previewPanel.AddChild(DeskUi.Label("Awarding takes control and stops future replay actions."));
         UpdateAwardPreview();
@@ -301,8 +326,7 @@ public partial class GameShell
                 {
                     var text = (line.LearnedFrom is { } person ? person.WithUnit + " told you: " : "") + (line.Learned ?? line.GapIfOff ?? line.Label);
                     var warning = DeskUi.Label(text); warning.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewLearned.AddChild(warning);
-                    var add = DeskUi.Button("Add what you learned", () => AddLearnedRequirementLine(editor.CardId!, line.Id));
-                    add.SetMeta("add_line", line.Id); previewLearned.AddChild(add); add.Disabled = view.Finished;
+                    var add = AddLearnedLineButton(previewLearned, view, editor.CardId!, line);
                     AwardAddButtons[line.Id] = add;
                 }
             }
@@ -321,14 +345,14 @@ public partial class GameShell
     internal void SelectAwardTarget(string id)
     {
         if (session.View is not { } view || !AwardTargets(view).Any(t => t.Id == id)) return;
-        ResetAwardForm(); awardTarget = id; SelectedCard = AwardTargets(view).Single(t => t.Id == id).Card;
+        SwitchAwardTarget(id); SelectedCard = AwardTargets(view).Single(t => t.Id == id).Card;
         RefreshActionDesk(view);
     }
 
     internal void GoToOwnInitiative()
     {
         if (session.View is not { Finished: false } view || AtFrontDoor || ReadingTurnover || PlayingDay) return;
-        ResetAwardForm(); awardTarget = AwardTargets(view).FirstOrDefault(t => t.Card is null)?.Id;
+        SwitchAwardTarget(AwardTargets(view).FirstOrDefault(t => t.Card is null)?.Id);
         RefreshActionDesk(view); ShowMarket();
     }
 
@@ -336,7 +360,7 @@ public partial class GameShell
     {
         if (session.View is not { } view || AtFrontDoor || ReadingTurnover || PlayingDay
             || !view.Cards.Any(c => c.Id == card)) return;
-        ResetAwardForm(); awardTarget = card; SelectedCard = card;
+        SwitchAwardTarget(card); SelectedCard = card;
         RefreshActionDesk(session.View); ShowMarket();
     }
 }

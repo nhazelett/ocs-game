@@ -13,7 +13,7 @@ public partial class RequestBuyFitSmokeTest : Node
         GameShell? shell = null;
         try
         {
-            shell = Shell(this); Scenario(shell, "tutorial"); shell.DeveloperToggle.ButtonPressed = false;
+            shell = Shell(this); Scenario(shell, "tutorial", preview: false); shell.DeveloperToggle.ButtonPressed = false;
             Open("tutWater");
             Require(shell.AwardButton.Disabled && !shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text.Length == 0,
                 "An untouched buy is disabled without presenting an error before the first edit.");
@@ -59,7 +59,7 @@ public partial class RequestBuyFitSmokeTest : Node
             shell.QuantityInput.Value += 1;
             Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Visible && shell.AwardBlockedReason.Text == "Choose an available supplier.",
                 "Editing the reset form restores the real incomplete-terms explanation.");
-            Scenario(shell, "tutorial"); shell.DeveloperToggle.ButtonPressed = false; Step(shell, 3); Open("tutForklift");
+            Scenario(shell, "tutorial", preview: false); shell.DeveloperToggle.ButtonPressed = false; Step(shell, 3); Open("tutForklift");
             Require(!shell.RequestPartLabels.ContainsKey("operator"), "Unknown parts stay hidden.");
             shell.RequirementAskButtons["dunn"].EmitSignal(Button.SignalName.Pressed); Step(shell); Open("tutForklift");
             Pick(shell.VendorInput, "harborEquipment"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "equipBpa");
