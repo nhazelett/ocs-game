@@ -233,6 +233,7 @@ public partial class GameShell
             {
                 card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {DeskUi.Count(work.HoursLeft, "hour")} left" +
                     (work.Ready ? "" : $" · waiting until day {work.WaitsUntilDay}")));
+                if (work.StopSentence is { } sentence) AddStopWork(card, work.WorkId, sentence);
                 if (!canHandOver) continue;
                 var action = new AssignAction { Day = view.Day, Work = work.WorkId };
                 var choices = view.AssigneeChoices(action);

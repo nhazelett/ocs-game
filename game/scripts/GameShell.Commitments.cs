@@ -21,7 +21,7 @@ public partial class GameShell
         if (ReadingDaySummary) return ActionResult.Stop("Close the day’s results before giving new work.");
         var wasReplay = session.IsReplay;
         var result = session.Apply(action);
-        var message = result.Accepted && action is (AwardAction or AssignAction or CoordinateAction) && session.View?.Decisions().FirstOrDefault() is { } decision
+        var message = result.Accepted && action is (AwardAction or AssignAction or CoordinateAction or StopWorkAction) && session.View?.Decisions().FirstOrDefault() is { } decision
             ? decision.Sentence + " " + decision.Now : result.Message;
         RefreshDisplay(message + (wasReplay && result.Accepted ? " You are now in control; future replay actions are stopped." : ""));
         return result;
