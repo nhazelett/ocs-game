@@ -1,4 +1,5 @@
 using Godot;
+using LinesOfSupport.Sim;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Data;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
@@ -7,11 +8,76 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class VendorsSmokeTest : Node
 {
+    private async Task CheckHeard(GameShell shell)
+    {
+        var input = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-19", "input-log.json"));
+        var path = Path.Combine(Path.GetTempPath(), "ocs-vendor-heard-" + Guid.NewGuid() + ".json");
+        string? previous = null;
+        try
+        {
+            foreach (var day in new[] { 4, 5, 8, 9 })
+            {
+                File.WriteAllText(path, (input with { SavedDay = day, Actions = input.Actions.Where(a => a.Day < day).ToList() }).ToJson());
+                shell.DeveloperToggle.ButtonPressed = false; shell.LoadSavedGame(path);
+                var view = shell.Session.View!; var hash = shell.Session.StateHash;
+                shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.VendorsTab;
+                Pick(shell.VendorCardPicker, "harborEquipment"); await Frames();
+                var card = view.VendorCards().Single(c => c.Id == "harborEquipment");
+                var text = string.Join("\n", shell.VendorCardContents[card.Id].GetChildren().OfType<Label>().Select(l => l.Text));
+                Check(text, "Supply per day:", card.Heard);
+                Require(view.VendorCards().Where(c => c.Id != card.Id && c.Heard is null).All(c =>
+                    !shell.VendorCardContents[c.Id].GetChildren().OfType<Label>().Any(l => previous is not null && l.Text.Contains(previous))),
+                    "A different vendor never inherits Harbor's news.");
+                if (day == 5)
+                {
+                    var facts = shell.VendorCardContents[card.Id].GetChildren().OfType<Label>().Single(l => card.Heard is not null && l.Text.Contains(card.Heard));
+                    var scroll = shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>();
+                    scroll.EnsureControlVisible(facts); await Frames();
+                    Require(scroll.GetGlobalRect().Encloses(facts.GetGlobalRect()), "The vendor's full capacity and news sentence can be read together.");
+                    await Capture("day5-card");
+                }
+                PickAwardTarget(shell, "tutForklift"); Pick(shell.VendorInput, "harborEquipment");
+                Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "equipBpa"); shell.ShowMarket(); await Frames();
+                var option = shell.CurrentActionEditor!.Vendors.Single(v => v.Id == card.Id);
+                Require(option.Heard == card.Heard, "The two surfaces bind the same current Sim news.");
+                Check(shell.SupplierKnowledge!.Text, "Usual capacity per day:", option.Heard);
+                if (day == 5)
+                {
+                    shell.AwardScroll.EnsureControlVisible(shell.SupplierKnowledge); await Frames();
+                    Require(shell.AwardScroll.GetGlobalRect().Encloses(shell.SupplierKnowledge.GetGlobalRect()),
+                        "The entire supplier facts and news sentence fit in the form's scroll.");
+                    await Capture("day5-supplier");
+                }
+                Require(shell.Session.StateHash == hash, "Reading cards and quote facts spends no hours or money.");
+                previous = card.Heard ?? previous;
+            }
+        }
+        finally { File.Delete(path); }
+        void Check(string text, string capacityPrefix, string? heard)
+        {
+            var lines = text.Split('\n'); var capacity = Array.FindIndex(lines, l => l.StartsWith(capacityPrefix, StringComparison.Ordinal));
+            Require(capacity >= 0, "The existing capacity facts remain visible.");
+            if (heard is not null)
+                Require(lines[capacity + 1] == heard && lines.Count(l => l == heard) == 1,
+                    "The Sim's heard sentence appears exactly once, directly under capacity.");
+            else Require(previous is null || !text.Contains(previous), "Before the news and after it expires there is no stale heard sentence.");
+        }
+        async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+        async Task Capture(string name)
+        {
+            var args = OS.GetCmdlineUserArgs(); var index = Array.IndexOf(args, "--heard-screenshots"); if (index < 0) return;
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[index + 1] + "-" + name + ".png") == Error.Ok, "Native heard-news review capture saved.");
+        }
+    }
+
     public override async void _Ready()
     {
         try
         {
             var shell = Shell(this);
+            await CheckHeard(shell);
             Scenario(shell, "tutorial");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
             var expected = Session.Create(bundle, 1);
