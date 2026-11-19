@@ -65,7 +65,7 @@ public sealed partial class Session
             if (arr is not null && (arr.Status == ArrangementStatus.Declined || arr.StartDay <= d)) continue;
             var refused = _records.First(r => r.Id == df.RefusalRecordId).Subject;
             yield return ($"prio|{df.WorkId}", new GapFactor(GapFactorKind.PriorityDeferred, GapTag.Avoidable, d,
-                $"{df.Label} waited behind other shop work from day {df.Day}: {site.Name}'s commander lost confidence in contracting when {refused} was refused, so its work went last when hours were short.",
+                $"{df.Label} waited behind other shop work from day {df.Day}: {Possessive(site.Name)} commander lost confidence in contracting when {refused} was refused, so its work went last when hours were short.",
                 [df.RecordId, df.RefusalRecordId]));
         }
 

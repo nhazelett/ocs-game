@@ -136,7 +136,7 @@ public static class PrepScreen
             case "vehicles.infoTier":
             {
                 var held = scenario.Vehicles.Where(x => x.Kind is "bpa" or "idiq" && x.VisibleOnDay1)
-                    .Select(x => $"{scenario.Vendors.FirstOrDefault(v => v.Id == x.Vendor)?.Name ?? "a vendor"}'s {(x.Kind == "bpa" ? "BPA" : "IDIQ")}")
+                    .Select(x => $"the {scenario.Vendors.FirstOrDefault(v => v.Id == x.Vendor)?.Name ?? "vendor"} {(x.Kind == "bpa" ? "BPA" : "IDIQ")}")
                     .ToList();
                 return Said("Existing agreements shown on the requests they could serve.", "Existing agreements found in the buying form.",
                     held.Count == 0 ? null : $"Each request names the agreements already in place that could serve it from day 1 ({And(held)}).");

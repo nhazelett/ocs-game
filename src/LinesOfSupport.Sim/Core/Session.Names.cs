@@ -47,7 +47,11 @@ public sealed partial class Session
     internal string CardName(string? id)
         => _cards.FirstOrDefault(c => c.Id == id) is { } c ? $"the request for {Lower(CardTitle(c))}" : "that request";
 
-    /// <summary>"Meridian Site Services's BPA" by kind and vendor.</summary>
+    /// <summary>"Island Camp Services' card surcharge", "Coastal Rentals' capacity": a name ending in s takes the apostrophe alone
+    /// (DESK-115). "You" is "your".</summary>
+    internal static string Possessive(string name) => name == "You" ? "your" : name.EndsWith('s') ? name + "'" : name + "'s";
+
+    /// <summary>"the Meridian Site Services BPA" by kind and vendor.</summary>
     internal string VehicleName(string? id)
     {
         if (id is null || _vehicles.FirstOrDefault(v => v.Id == id) is not { } v) return "that contract vehicle";

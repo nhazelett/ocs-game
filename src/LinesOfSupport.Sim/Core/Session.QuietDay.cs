@@ -40,7 +40,7 @@ public sealed partial class Session
         var carried = people.SelectMany(p => p.Work.Where(w => w.WorkId is not null && !w.FinishesToday).Select(w => (Who: p, Item: w))).FirstOrDefault();
         if (carried.Item is null) return null;
         var idle = BuildTeam().FirstOrDefault(m => m.Role != "you" && m.FreeHoursToday > 0 && m.Id != carried.Who.MemberId);
-        return idle is null ? null : $"{(idle.Rank is { Length: > 0 } r ? $"{r} {idle.Name}" : idle.Name)} has free hours while {(carried.Who.Name == "You" ? "your" : carried.Who.Name + "'s")} work carries over";
+        return idle is null ? null : $"{(idle.Rank is { Length: > 0 } r ? $"{r} {idle.Name}" : idle.Name)} has free hours while {Possessive(carried.Who.Name)} work carries over";
     }
 
     /// <summary>
