@@ -166,5 +166,4 @@ public sealed partial class Session
     private bool FailureKnown(CauseRecord failure)
         => RecordKnown(failure) || _records.Any(r => r.Kind == RecordKind.CorReport && r.CausedBy.Contains(failure.Id));
 
-    private static string Possessive(string name) => name.EndsWith('s') ? name + "'" : name + "'s";
 }

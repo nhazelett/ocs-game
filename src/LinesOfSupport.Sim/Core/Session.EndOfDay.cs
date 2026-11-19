@@ -43,7 +43,7 @@ public sealed partial class Session
             list.Add((null, $"nobody is on {Lower(r.Title)}"));
         var (people, _) = PlanPeople();
         foreach (var p in people.Where(p => p.Work.Any(w => w.WorkId is not null && !w.FinishesToday)))
-            list.Add((p.MemberId, $"{(p.Name == "You" ? "your" : p.Name + "'s")} work carries over"));
+            list.Add((p.MemberId, $"{Possessive(p.Name)} work carries over"));
         return list;
     }
 

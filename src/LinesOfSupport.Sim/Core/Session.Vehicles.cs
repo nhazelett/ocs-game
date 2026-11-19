@@ -195,7 +195,7 @@ public sealed partial class Session
         int Ready(int hours) => FinishDay(hours * 1000L, e.Assignee, Day);   // DESK-37: behind the assignee's queue
         var gaps = new List<string> { $"The minimum guarantee of {Money(min)} is obligated at award and owed to the vendor whether or not it is ordered." };
         if (vendor?.Offers.FirstOrDefault(o => o.Capability == e.Capability) is { } offer)
-            gaps.Add($"Binding, but {vendor.Name}'s capacity is still about {Qty(offer.CapacityPerDay)} {Cap(e.Capability).Unit}/day in total: orders above it are accepted and delivered short.");
+            gaps.Add($"Binding, but {Possessive(vendor.Name)} capacity is still about {Qty(offer.CapacityPerDay)} {Cap(e.Capability).Unit}/day in total: orders above it are accepted and delivered short.");
         if (Day < _systemOnlineDay) gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: set-up takes longer.");
         // Ready-day range goes in the start fields: the first day orders can be placed. TotalCents is the guarantee obligated.
         return new ActionPreview(stops.Count == 0, stops, gaps, 0, 0, min, hMin, hMax, Ready(hMin) + 1, Ready(hMax) + 1, queue);

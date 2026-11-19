@@ -24,7 +24,7 @@ public sealed partial class Session
 
         // DESK-86: a card buy's price carries the vendor's card surcharge, which the vendor's per-unit price leaves out.
         var surcharge = a.Instrument == "gpc" && Fixed.Permille(vendor.GpcSurchargeFraction) is var sur and > 0
-            ? $" with {vendor.Name}'s {PercentSaid(sur)} card surcharge" : "";
+            ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
         var parts = new List<string>
         {
             $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {HoursOf(preview, a.Assignee)}.",
