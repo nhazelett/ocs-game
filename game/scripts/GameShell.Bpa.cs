@@ -114,10 +114,15 @@ public partial class GameShell
             box.AddChild(DeskUi.Label("Based on " + card.IslandName));
             box.AddChild(DeskUi.Label("Cash: " + Payment(card.AcceptsCash) + " · Card: " + Payment(card.AcceptsGpc)));
             box.AddChild(DeskUi.Label("Islands reached: " + (card.IslandsReached is null ? "—" : string.Join(", ", card.IslandsReached.Select(view.NameOf)))));
+            var heard = card.Heard;
             foreach (var sell in card.Sells)
+            {
                 box.AddChild(DeskUi.Label(sell.Label + "\nSupply per day: " + (sell.CapacityPerDay is { } capacity ? $"{capacity.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} {sell.Unit}" : "—")
+                    + (heard is null ? "" : "\n" + heard)
                     + $"\nPrice per {DeskUi.SingleUnit(sell.Unit)}{(view.Rules.Model.Capabilities.Single(c => c.Id == sell.CapabilityId).Delivery == "consumable" ? "" : " per day")}: " + (sell.UnitPriceCents is { } price ? DeskUi.Money(price) : "—")
                     + " · Notice: " + (sell.LeadTimeDays is { } days ? (days == 1 ? "1 day" : $"{days} days") : "—")));
+                heard = null; // A vendor's news is said once, even when it sells several capabilities.
+            }
             if (card.Standing is not null) box.AddChild(DeskUi.Label("Standing: " + card.Standing));
             if (card.KnownFrom is not null) box.AddChild(DeskUi.Label(card.KnownFrom));
             if (card.StillToLearn is not null) box.AddChild(DeskUi.Label(card.StillToLearn));

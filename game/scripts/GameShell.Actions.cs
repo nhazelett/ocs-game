@@ -233,6 +233,7 @@ public partial class GameShell
                 + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)
                 + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
                 + " · Uncommitted: " + (supplier.CapacityKnown ? DeskUi.Quantity(supplier.CapacityFreeToday) : "—")
+                + (supplier.Heard is { } heard ? "\n" + heard : "")
                 + "\nNotice: " + (supplier.PaymentKnown ? (supplier.LeadTimeDays == 1 ? "1 day" : $"{supplier.LeadTimeDays} days") : "—"));
 
         }
