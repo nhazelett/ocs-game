@@ -117,7 +117,7 @@ public partial class GameShell
             var heard = card.Heard;
             foreach (var sell in card.Sells)
             {
-                box.AddChild(DeskUi.Label(sell.Label + "\nSupply per day: " + (sell.CapacityPerDay is { } capacity ? $"{capacity.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} {sell.Unit}" : "—")
+                box.AddChild(DeskUi.Label(sell.Label + "\nUsual capacity per day: " + (sell.CapacityPerDay is { } capacity ? $"{capacity.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} {sell.Unit}" : "—")
                     + (heard is null ? "" : "\n" + heard)
                     + $"\nPrice per {DeskUi.SingleUnit(sell.Unit)}{(view.Rules.Model.Capabilities.Single(c => c.Id == sell.CapabilityId).Delivery == "consumable" ? "" : " per day")}: " + (sell.UnitPriceCents is { } price ? DeskUi.Money(price) : "—")
                     + " · Notice: " + (sell.LeadTimeDays is { } days ? (days == 1 ? "1 day" : $"{days} days") : "—")));
