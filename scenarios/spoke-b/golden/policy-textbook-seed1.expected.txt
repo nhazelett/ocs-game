@@ -207,7 +207,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The request for food service for Spoke C (submitted day 3, needed from day 12) had nothing supplying it from day 19. The last arrangement supplying it, Coastal Provisions food service at Spoke C, ended on day 18. The other unit's food service at Spoke C did not start until day 20.
       [avoidable] The other unit's food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 3 showed that dependency.
       [avoidable] The other unit's food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [unforeseeable] The other unit's food service at Spoke C failed on day 22 with full operator and maintenance coverage.
+      [unforeseeable] The other unit's food service at Spoke C failed on day 22 with full operator coverage.
 
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 1)

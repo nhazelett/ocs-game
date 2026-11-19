@@ -57,7 +57,7 @@ public sealed partial class Session
             // DESK-07: with fit modeled, the reason is the COR's fit and load, not the quality word.
             if (c.Knows is not null && CapabilityOf(a) is { } capId)
                 return CorReportPermille(c, capId, null) >= 1000 && CorQuality(c).LagDays == 0 ? null
-                    : $"{CorWhy(c, capId, null)} Some vendor problems will reach you late or not at all.";
+                    : $"{CorWhy(c, capId, null, naming: true)} Some vendor problems will reach you late or not at all.";
             return CorQuality(c) is { LagDays: 0, ReportPermille: >= 1000 }
                 ? null
                 : $"COR {c.Name} is {CorSummary(c)}: some vendor problems will reach you late or not at all.";

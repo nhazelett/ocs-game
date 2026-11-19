@@ -575,7 +575,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.waste days 27-27, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 27 with full operator and maintenance coverage. The COR reported it on day 31.
+      [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 27; no part was left out of its terms. The COR reported it on day 31.
   #1 hubSite.transport days 2-2, lowest 53%, 0 day(s) down: AVOIDABLE
       [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed.
   #2 hubSite.transport days 29-29, lowest 53%, 0 day(s) down: UNFORESEEABLE
@@ -589,7 +589,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #6 spokeASite.comms days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Comms backhaul depends on power, which was short. (see #4)
   #7 spokeBSite.fuel days 39-40, lowest 0%, 1 day(s) down: AVOIDABLE
-      [avoidable] Second Island Fuel fuel at Spoke B failed on day 39 with full operator and maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 36; decision: cure notice day 37, cured.
+      [avoidable] Second Island Fuel fuel at Spoke B failed on day 39 with full maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 36; decision: cure notice day 37, cured.
   #8 spokeBSite.power days 39-40, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #7)
       [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 39) and was bought without operators; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 55; decision: cure notice day 56, cure period running.
@@ -600,16 +600,16 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #11 spokeBSite.power days 57-57, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 57) and was bought without operators; its failure odds were higher every day it ran. The performance issue with Harbor Equipment Co on power at Spoke B opened day 55; decision: cure notice day 56, cure period running.
   #12 spokeBSite.lodging days 7-7, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full operator and maintenance coverage. The COR reported it on day 9.
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full maintenance coverage. The COR reported it on day 9.
   #13 spokeBSite.lodging days 39-40, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #8)
   #14 spokeBSite.lodging days 44-44, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 44 with full operator and maintenance coverage.
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 44 with full maintenance coverage.
   #15 spokeBSite.lodging days 50-50, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #9)
   #16 spokeBSite.lodging days 54-57, lowest 51%, 0 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #10)
-      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 56 with full operator and maintenance coverage.
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 56 with full maintenance coverage.
       [avoidable] Lodging depends on power, which was short. (see #11)
   #17 spokeBSite.food days 39-40, lowest 0%, 2 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #8)
@@ -638,11 +638,11 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Port Fuel Haulers fuel at Spoke C supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 5 showed that dependency.
       [avoidable] The other unit's fuel at Spoke C supplies fuel from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 5 showed that dependency.
   #24 spokeCSite.lodging days 27-27, lowest 53%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 27 with full operator and maintenance coverage. The COR reported it on day 29.
+      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 27 with full maintenance coverage. The COR reported it on day 29.
   #25 spokeCSite.lodging days 30-60, lowest 38%, 1 day(s) down: AVOIDABLE
       [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Nothing before the notice showed it coming.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Still short 7 days after they arrived: the notice left time to resize.
-      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 56 with full operator and maintenance coverage. The COR reported it on day 58.
+      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 56 with full maintenance coverage. The COR reported it on day 58.
   #26 spokeCSite.mhe days 37-39, lowest 80%, 0 day(s) down: AVOIDABLE
       [unforeseeable] Harbor Equipment Co material handling equipment at Spoke C failed on day 37 with full operator and maintenance coverage. The performance issue with Harbor Equipment Co on material handling equipment at Spoke C opened day 39; decision: cure notice day 40, default.
       [avoidable] Material handling equipment depends on fuel, which was short. (see #21)
