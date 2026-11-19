@@ -128,13 +128,16 @@ public sealed partial class Session
         if (Day > to) return null;
         var from = Math.Max(card.RequestedStartDay, Day);
         var need = Math.Max(1, (PeakDemandMilli(card.SiteId, card.CapabilityId, from, to) + 999) / 1000);
-        var lines = card.Lines.Where(kv => kv.Value).Select(kv => kv.Key).ToList();
+        // D39, DESK-111: a part someone the shop asked said is needed counts before the player adds it.
+        var lines = card.Lines.Where(kv => kv.Value).Select(kv => kv.Key)
+            .Union(_learnedLines.Keys.Where(k => k.Card == card.Id).Select(k => k.Line), StringComparer.Ordinal).ToList();
         var routes = new List<(int Lead, int LeadMax, long Cost, string Route, string Inst, string Vendor, bool NoTerms)>();
         foreach (var v in Scenario.Vendors)
         {
             if (v.Offers.FirstOrDefault(o => o.Capability == card.CapabilityId) is not { } offer) continue;
             if (!lines.All(offer.Lines.Contains)) continue;   // DESK-77: a buy that meets it only in part does not make the day
             if (VendorReason(v, card.SiteId, card.CapabilityId, lines) is not null) continue;
+            if (HeardDeclining(v.Id)) continue;   // D39: the news says they are short; the line does not send the player there
             foreach (var inst in new[] { "sf44", "gpc", "purchaseOrder", "bpaCall", "idiqOrder" })
             {
                 var kind = inst switch { "bpaCall" => "bpa", "idiqOrder" => "idiq", _ => null };

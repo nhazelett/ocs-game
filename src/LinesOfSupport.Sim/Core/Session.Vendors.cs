@@ -112,7 +112,7 @@ public sealed partial class Session
                 supply ? VendorReach(v) : null,
                 holding, vehicles, rep, met, VisitInWork("vendor", v.Id),
                 _standing.TryGetValue(v.Id, out var st) ? (st.DeclinesWork ? "Declines work after an unpaid handshake." : $"Quotes {st.MarkupPermille / 10}% higher after an unpaid handshake.") : null,
-                knownFrom, still));
+                knownFrom, still, HeardAboutVendor(v.Id)));
         }
         return cards;
     }
