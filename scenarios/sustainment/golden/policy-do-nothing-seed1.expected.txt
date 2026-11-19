@@ -479,13 +479,13 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] No funding line with money could pay for comms backhaul on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [avoidable] Comms backhaul depends on power, which was short. (see #6)
   #12 spokeBSite.fuel days 27-31, lowest 0%, 4 day(s) down: DISCOVERABLE
-      [discoverable] Second Island Fuel fuel at Spoke B failed on day 27 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 27 with full maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #13 spokeBSite.fuel days 37-39, lowest 0%, 3 day(s) down: DISCOVERABLE
-      [discoverable] Second Island Fuel fuel at Spoke B failed on day 37 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. The COR reported it on day 41. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 37 with full maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. The COR reported it on day 41. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #14 spokeBSite.fuel days 45-47, lowest 0%, 3 day(s) down: DISCOVERABLE
-      [discoverable] Second Island Fuel fuel at Spoke B failed on day 45 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 45 with full maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #15 spokeBSite.fuel days 49-49, lowest 28%, 1 day(s) down: DISCOVERABLE
-      [discoverable] Second Island Fuel fuel at Spoke B failed on day 49 with full operator and maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
+      [discoverable] Second Island Fuel fuel at Spoke B failed on day 49 with full maintenance coverage. The handover did not mention its real delivery record (60% on time, not the 97% reported at handover); a review of the inherited files would have shown it. Its COR (poor) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 27; decision: no decision.
   #16 spokeBSite.power days 23-23, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 23) and was bought without operators; its failure odds were higher every day it ran. The COR reported it on day 25.
   #17 spokeBSite.power days 27-60, lowest 0%, 33 day(s) down: AVOIDABLE
@@ -496,12 +496,12 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] No funding line with money could pay for power on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
       [discoverable] Power depends on fuel, which was short. (see #15)
   #18 spokeBSite.lodging days 7-7, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full operator and maintenance coverage. The COR reported it on day 9.
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 7 with full maintenance coverage. The COR reported it on day 9.
   #19 spokeBSite.lodging days 23-23, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #16)
   #20 spokeBSite.lodging days 27-60, lowest 0%, 33 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #17)
-      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 28 with full operator and maintenance coverage. Its COR (fair) did not report it.
+      [unforeseeable] Second Island Camp Services lodging at Spoke B failed on day 28 with full maintenance coverage. Its COR (fair) did not report it.
       [avoidable] The request for lodging for Spoke B (submitted day 13, needed from day 32) had nothing supplying it from day 32. The last arrangement supplying it, Second Island Camp Services lodging at Spoke B, ended on day 31.
       [avoidable] No funding line with money could pay for lodging on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #21 spokeBSite.food days 23-23, lowest 64%, 0 day(s) down: AVOIDABLE
@@ -510,7 +510,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #22 spokeBSite.food days 27-60, lowest 0%, 33 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #17)
       [discoverable] Island Provisions food service at Spoke B supplies food service from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
-      [unforeseeable] Island Provisions food service at Spoke B failed on day 33 with full operator and maintenance coverage. Its COR (fair) did not report it. The performance issue with Island Provisions on food service at Spoke B opened day 17; decision: no decision.
+      [unforeseeable] Island Provisions food service at Spoke B failed on day 33 with full operator coverage. Its COR (fair) did not report it. The performance issue with Island Provisions on food service at Spoke B opened day 17; decision: no decision.
       [avoidable] Nothing supplied food service at Spoke B; the site and its population were in the plan from day 1.
       [avoidable] No funding line with money could pay for food service on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #23 spokeCSite.fuel days 38-38, lowest 80%, 0 day(s) down: AVOIDABLE
@@ -521,7 +521,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] No funding line with money could pay for fuel on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.
   #25 spokeCSite.lodging days 30-60, lowest 0%, 13 day(s) down: AVOIDABLE
       [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Nothing before the notice showed it coming.
-      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 34 with full operator and maintenance coverage. The COR reported it on day 36.
+      [unforeseeable] Third Island Camp Services lodging at Spoke C failed on day 34 with full maintenance coverage. The COR reported it on day 36.
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Still short 7 days after they arrived: the notice left time to resize.
       [avoidable] Third Island Camp Services lodging at Spoke C stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 8. Higher HQ's inquiry on day 13 brought its definitization clock to light.
   #26 spokeCSite.mhe days 27-60, lowest 0%, 33 day(s) down: AVOIDABLE

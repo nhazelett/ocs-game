@@ -147,7 +147,7 @@ public static class Events
                 break;
             }
             case "vendor.declinesCalls":
-                s.DeclineCalls(e.Target ?? throw new InvalidDataException("vendor.declinesCalls needs a vendor"), day, s.EffectDays(ev, index, 1));
+                s.DeclineCalls(e.Target ?? throw new InvalidDataException("vendor.declinesCalls needs a vendor"), day, s.EffectDays(ev, index, 1), cause);
                 break;
             case "vendor.slips":
                 s.Slips(e.Target ?? throw new InvalidDataException("vendor.slips needs an arrangement"), day, s.EffectDays(ev, index, 1));

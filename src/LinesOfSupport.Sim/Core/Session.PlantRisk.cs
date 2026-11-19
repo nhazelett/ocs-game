@@ -38,6 +38,13 @@ public sealed partial class Session
                                        && !PlantPartAtRisk(cap, l, a.VendorId));
         return goods
             ? $"{Upper(NameOf(a.Id))} missed a delivery on day {day}. It delivers goods, so the miss is its own delivery record, not a part left out."
-            : $"{Upper(NameOf(a.Id))} failed on day {day} with full operator and maintenance coverage.";
+            : PlantKinds(cap) is { Count: > 0 } kinds
+                ? $"{Upper(NameOf(a.Id))} failed on day {day} with full {string.Join(" and ", kinds)} coverage."
+                // DESK-112 (Claude play 19 Nov, note 28): name only the parts the capability has; waste removal has none.
+                : $"{Upper(NameOf(a.Id))} failed on day {day}; no part was left out of its terms.";
     }
+
+    /// <summary>The plant parts this capability has, operator before maintenance (DESK-112).</summary>
+    private static List<string> PlantKinds(CapabilityData cap)
+        => new[] { "operator", "maintenance" }.Where(k => cap.Lines.Any(l => l.Kind == k)).ToList();
 }

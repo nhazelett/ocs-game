@@ -137,22 +137,16 @@ public class NewsTests
         Assert.Equal(5, ob.Day);
         Assert.Equal("Order by day 5: a BPA call with Harbor Equipment Co starts 3 days after it goes in.", ob.Sentence);
 
-        // Placed on day 5 by that route, it starts by the day wanted even on the slow roll.
+        // D39 (Claude play 19 Nov, note 16): from the morning of day 5 the news says Harbor Equipment is short of forklifts
+        // this week, and the only route this shop knows is with Harbor, so the line names none rather than send the player there.
         var later = HastyWithoutVendorList(4);
-        var today = later.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
-        Assert.Equal("Order today to start by day 8: a BPA call with Harbor Equipment Co starts 3 days after it goes in.", today.Sentence);
-        var preview = later.View.Preview(new AwardAction
-        {
-            Id = "forecastCheck", Instrument = today.InstrumentId, Vendor = today.VendorId, Vehicle = "equipBpa", Card = "tutForklift",
-            Quantity = 3, DurationDays = 13, Day = later.Day, FundingLine = "om1",
-        });
-        Assert.True(preview.Accepted, string.Join(" ", preview.HardStops));
-        Assert.True(preview.EarliestStartMax <= 8);
+        Assert.Contains(later.View.MorningBoard().New, n => n.Text.StartsWith("Harbor Equipment Co is short of forklifts this week", StringComparison.Ordinal));
+        Assert.Null(later.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy);
 
-        // A day later (day 6) no route the shop knows makes day 8, and it says when it would start and what covers the gap.
-        var late = HastyWithoutVendorList(5).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
-        Assert.True(late.Day < 6);
-        Assert.Equal("Too late for day 8 by any route the shop knows: a BPA call with Harbor Equipment Co starts on day 9. Nothing covers day 8.", late.Sentence);
+        // By the morning of day 9 every route the shop knows is too late for day 8: it says when it would start and what
+        // goes uncovered.
+        var late = HastyWithoutVendorList(8).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
+        Assert.Equal("Too late for day 8 by any route the shop knows: a card buy from Coastal Rentals starts on day 10 or 11, with no written terms. Nothing covers days 9 and 10.", late.Sentence);
     }
 
     [Fact]

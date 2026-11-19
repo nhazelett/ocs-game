@@ -85,8 +85,30 @@ public sealed partial class Session
 
     // Event vendor.declinesCalls (M2R-08): a BPA vendor turns down every call that reaches award through this day.
     private readonly Dictionary<string, int> _declinesCallsThrough = new(StringComparer.Ordinal);
-    internal void DeclineCalls(string vendorId, int day, int days) => _declinesCallsThrough[vendorId] = day + Math.Max(1, days) - 1;
+    // D39, DESK-111: the event record that told the shop, so the order-by line and the vendor's card can say what was heard.
+    private readonly Dictionary<string, string> _declinesCallsHeard = new(StringComparer.Ordinal);
+    internal void DeclineCalls(string vendorId, int day, int days, string? cause = null)
+    {
+        _declinesCallsThrough[vendorId] = day + Math.Max(1, days) - 1;
+        if (cause is not null) _declinesCallsHeard[vendorId] = cause;
+    }
     private bool DeclinesCalls(string? vendorId, int day) => vendorId is not null && _declinesCallsThrough.TryGetValue(vendorId, out var through) && day <= through;
+
+    /// <summary>D39, DESK-111: the shop has heard (an event on the news board) that this vendor is turning calls down, and
+    /// the effect still runs today.</summary>
+    private bool HeardDeclining(string vendorId) => DeclinesCalls(vendorId, Day) && _declinesCallsHeard.ContainsKey(vendorId);
+
+    /// <summary>D39, DESK-111: "Heard on day 4: Harbor Equipment Co is short of forklifts this week." while the effect runs;
+    /// null otherwise.</summary>
+    internal string? HeardAboutVendor(string vendorId)
+    {
+        if (!HeardDeclining(vendorId)) return null;
+        var rec = _records.FirstOrDefault(r => r.Id == _declinesCallsHeard[vendorId]);
+        if (rec is null) return null;
+        var text = rec.Text.TrimEnd();
+        if (text.Length > 0 && !".!?\"'".Contains(text[^1])) text += ".";
+        return $"Heard on day {rec.Day}: {text}";
+    }
 
     /// <summary>The id a work item is for, from its payload (WorkItem.SubjectId).</summary>
     private static string? WorkSubject(object? payload) => payload switch

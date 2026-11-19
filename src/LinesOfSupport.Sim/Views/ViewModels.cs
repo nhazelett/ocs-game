@@ -425,10 +425,12 @@ public sealed record InstrumentOption(
 /// still decides on the true facts.</param>
 /// <param name="CapacityKnown">False until the office has learned how much this vendor can supply (DESK-05): the above, or a
 /// survey of their island. The game shows capacity as blank while false.</param>
+/// <param name="Heard">D39, DESK-111: what the shop has heard about this vendor that still holds today ("Heard on day 4:
+/// Harbor Equipment Co is short of forklifts this week."); null otherwise. Shown under the capacity line.</param>
 public sealed record VendorOption(
     string Id, string Name, string IslandId, string IslandName, IReadOnlyList<string> Lines, int CapacityPerDay, int CapacityFreeToday,
     int LeadTimeDays, long UnitPriceCents, int MobilizationPermille, bool AcceptsCash, bool AcceptsGpc, bool VehicleOnly,
-    string? Standing = null, bool PaymentKnown = true, bool CapacityKnown = true);
+    string? Standing = null, bool PaymentKnown = true, bool CapacityKnown = true, string? Heard = null);
 
 /// <summary>One thing a vendor sells, as their card shows it (DESK-05). A number the office has not learned is null.</summary>
 /// <param name="CapacityPerDay">Units a day they can supply; null until met, dealt with, or their island surveyed.</param>
@@ -457,11 +459,12 @@ public sealed record VendorCardOffer(string CapabilityId, string Label, string U
 /// <param name="Standing">How they treat the office after an unpaid handshake; null normally.</param>
 /// <param name="KnownFrom">One sentence on where what the card shows came from; null when nothing is known yet.</param>
 /// <param name="StillToLearn">One sentence on what is still blank and how to fill it; null when the card is complete.</param>
+/// <param name="Heard">D39, DESK-111: what the shop has heard about this vendor that still holds today; null otherwise.</param>
 public sealed record VendorCard(
     string Id, string Name, string IslandId, string IslandName, IReadOnlyList<VendorCardOffer> Sells,
     bool? AcceptsCash, bool? AcceptsGpc, IReadOnlyList<string>? IslandsReached,
     IReadOnlyList<string> ArrangementIds, IReadOnlyList<string> VehicleIds,
-    PersonView? Rep, int? MetDay, bool MeetingSetUp, string? Standing, string? KnownFrom, string? StillToLearn);
+    PersonView? Rep, int? MetDay, bool MeetingSetUp, string? Standing, string? KnownFrom, string? StillToLearn, string? Heard = null);
 
 /// <summary>An existing vehicle the shop knows about that could carry this action.</summary>
 /// <param name="CeilingCents">IDIQs: the contract ceiling (null for BPAs, or an IDIQ with no ceiling in its data).</param>
