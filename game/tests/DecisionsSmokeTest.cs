@@ -82,6 +82,7 @@ public partial class DecisionsSmokeTest : Node
             DeveloperWorkspace(shell); Scenario(shell, "spoke-b");
             Require(Rows(shell.DecisionRows).Count() == 0 && !shell.AllDecisionsButton.Visible,
                 "A different deployment clears the old decision list and expanded state.");
+            await StopWorkSmokeChecks.Run(this, shell);
             shell.QueueFree(); await Frames();
             GD.Print("DECISIONS_SMOKE_PASS: exact committed history and current status, newest-first short/all, pure request links, drafts/refusals, stale guard and save/reset.");
             GetTree().Quit();

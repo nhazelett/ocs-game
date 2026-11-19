@@ -1,5 +1,6 @@
 using Godot;
 using LinesOfSupport.Sim;
+using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Views;
 
 namespace LinesOfSupport.Game;
@@ -46,6 +47,22 @@ public partial class GameShell
         if (view.Decisions(card).Count > 0) RenderDecisionRows(RequestDecisionRows, view.Decisions(card), false);
     }
 
+    private void AddStopWork(VBoxContainer parent, string workId, string sentence)
+    {
+        var hash = session.StateHash;
+        var button = DeskUi.Button("Stop this work", () =>
+        {
+            if (hash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
+                || session.View is not { Finished: false } view || view.StopWorkSentence(workId) is null) return;
+            SendAction(new StopWorkAction { Day = view.Day, Work = workId });
+        });
+        button.SetMeta("stop_work", workId);
+        parent.AddChild(button);
+        var explanation = DeskUi.Label(sentence);
+        explanation.SetMeta("stop_work_sentence", workId);
+        parent.AddChild(explanation);
+    }
+
     private void RenderDecisionRows(VBoxContainer parent, IEnumerable<DecisionView> decisions, bool openRequest)
     {
         var hash = session.StateHash;
@@ -73,6 +90,8 @@ public partial class GameShell
                 var frame = new PanelContainer(); row.AddChild(frame);
                 frame.AddChild(DeskUi.Label(decision.Sentence + "\n" + now));
             }
+            if (!openRequest && decision.StopWorkId is { } workId && decision.StopSentence is { } sentence)
+                AddStopWork(row, workId, sentence);
             row.SetMeta("decision_now", decision.Now);
             row.SetMeta("decision_teammate", decision.Teammate);
         }
