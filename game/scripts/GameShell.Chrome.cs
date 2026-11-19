@@ -16,7 +16,7 @@ public partial class GameShell
     internal void ShowRequests()
     {
         if (SelectedCard is not null && awardTarget != SelectedCard)
-        { ResetAwardForm(); awardTarget = SelectedCard; RefreshActionDesk(session.View); }
+        { SwitchAwardTarget(SelectedCard); RefreshActionDesk(session.View); }
         RenderRequirementContext(session.View);
         OpenRequestWorkspace();
     }

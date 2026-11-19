@@ -25,6 +25,8 @@ public partial class RequestWorkspaceSmokeTest : Node
             Page("tutWater");
             Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc"); await Frames();
             Require(shell.PendingAward!.Card == "tutWater" && shell.AwardSummaryLabel.Text == shell.Session.View!.AwardSummary(shell.PendingAward)!.Sentence, "The moved form previews the exact selected request and complete Sim summary.");
+            shell.QuantityInput.Value = 4321; shell.StartInput.Value = 3; shell.DurationInput.Value = 5;
+            var draft = shell.PendingAward!;
             var pinned = shell.AwardButton.GetGlobalRect(); shell.AwardScroll.ScrollVertical = 10000; await Frames();
             Require(shell.AwardButton.GetGlobalRect() == pinned && shell.RequestBuyColumn.GetGlobalRect().Encloses(pinned), "The buy action and summary are pinned independently of the scrolling form.");
             shell.AwardScroll.ScrollVertical = 0; await Capture("water");
@@ -34,6 +36,7 @@ public partial class RequestWorkspaceSmokeTest : Node
             await Capture("desk-after-back");
             tabs.CurrentTab = GameShell.TodayTab;
             shell.StandingOpenButtons["tutWater"].EmitSignal(Button.SignalName.Pressed); await Frames(); Page("tutWater");
+            Require(shell.PendingAward == draft, "Reopening through Today retains the exact same-day draft and amounts.");
             using (var escape = new InputEventKey { Keycode = Key.Escape, Pressed = true }) GetViewport().PushInput(escape, true);
             await Frames(); Require(!shell.RequestWorkspace.Visible && tabs.CurrentTab == GameShell.TodayTab, "Escape returns to Today through real viewport input.");
             Step(shell, 3);
@@ -50,6 +53,21 @@ public partial class RequestWorkspaceSmokeTest : Node
             shell.CloseRequestWorkspace(); Open("tutForklift");
             shell.RequirementAskButtons["dunn"].EmitSignal(Button.SignalName.Pressed); Step(shell); Open("tutForklift");
             await Frames(); Page("tutForklift");
+            Pick(shell.VendorInput, "coastalRentals"); Pick(shell.InstrumentInput, "purchaseOrder"); PickPriorities(shell, "fast", "good");
+            Pick(shell.CorInput!, shell.Session.View!.CorChoices("mhe")[0].Id);
+            shell.QuantityInput.Value = 3; shell.DurationInput.Value = 9;
+            var forkliftDraft = shell.PendingAward!;
+            shell.RequestBackButton.EmitSignal(Button.SignalName.Pressed); Open("tutWater"); await Frames();
+            // Day one choices expired with the new morning; this request starts fresh today.
+            Require(shell.PendingAward is null, "Drafts from previous mornings expire.");
+            Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc");
+            shell.QuantityInput.Value = 4321; shell.StartInput.Value = 6; shell.DurationInput.Value = 3;
+            var waterDraft = shell.PendingAward!; Open("tutForklift"); await Frames();
+            Require(shell.PendingAward == (forkliftDraft with { Priorities = shell.PendingAward?.Priorities })
+                && shell.PendingAward!.Priorities!.SequenceEqual(forkliftDraft.Priorities!), "Another request preserves all written terms, amounts, pick two and COR for this morning.");
+            shell.CloseRequestWorkspace(); Open("tutWater"); await Frames();
+            Require(shell.PendingAward == waterDraft, "Returning restores this request's separate cash/card draft without spending anything.");
+            shell.CloseRequestWorkspace(); Open("tutForklift"); await Frames();
             var learned = shell.RequestContents.GetChildren().OfType<Label>().Single(l => l.HasMeta("learned_line") && l.GetMeta("learned_line").AsString() == "operator");
             var line = shell.RequestContents.GetChildren().OfType<Label>().Single(l => l.HasMeta("requirement_line") && l.GetMeta("requirement_line").AsString() == "operator");
             Require(line.GetIndex() < learned.GetIndex() && learned.Text.Contains(shell.Session.View!.RequirementEditor("tutForklift")!.Lines.Single(l => l.Id == "operator").Learned!), "Dunn's exact warning stays beside its known part.");

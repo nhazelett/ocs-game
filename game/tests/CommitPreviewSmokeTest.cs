@@ -66,7 +66,13 @@ public partial class CommitPreviewSmokeTest : Node
             shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.VendorInput, "harborEquipment"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "equipBpa");
             Require(shell.AwardAddButtons.ContainsKey("operator"), "The learned missing-part warning carries Add what you learned in the buying form.");
-            await Capture("learned", shell.AwardAddButtons["operator"]);
+            var add = shell.AwardAddButtons["operator"];
+            var addCost = add.GetParent().GetChildren().OfType<Label>().Last(l => l.HasMeta("action_cost"));
+            var requestCost = shell.RequirementAddButtons["operator"].GetParent().GetChildren().OfType<Label>()
+                .First(l => l.HasMeta("action_cost") && l.GetIndex() > shell.RequirementAddButtons["operator"].GetIndex());
+            Require(addCost.Text.StartsWith("No shop hours.") && addCost.Text == requestCost.Text,
+                "The quote and request offer the same explicit learned-part action and cost.");
+            await Capture("learned", addCost);
             var learnedHash = shell.Session.StateHash; shell.AwardAddButtons["operator"].EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash != learnedHash && shell.Session.View!.RequirementEditor("tutForklift")!.Lines.Single(l => l.Id == "operator").On, "The quote's inline fix adds the exact learned part.");
             Require(!shell.AwardAddButtons.ContainsKey("operator"), "The inline fix disappears after the part is included.");

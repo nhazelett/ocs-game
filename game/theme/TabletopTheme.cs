@@ -56,8 +56,12 @@ internal static class TabletopTheme
         foreach(var name in new[]{"font_color","font_hover_color","font_focus_color","font_pressed_color","font_hover_pressed_color"})theme.SetColor(name,"TabletopPrimary",PrimaryInk);
         theme.SetTypeVariation("TabletopPrepChoice", "CheckBox");
         foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed", "disabled" })
-            SetBox(state, "TabletopPrepChoice", Box(state == "disabled" ? Background
-                : state == "hover" || state == "hover_pressed" ? Hover : state == "pressed" ? Pressed : Paper, 8));
+        {
+            var box = Box(state == "disabled" ? Background
+                : state == "hover" || state == "hover_pressed" ? Hover : state == "pressed" ? Pressed : Paper, 8);
+            box.ContentMarginBottom = 4;
+            SetBox(state, "TabletopPrepChoice", box);
+        }
         theme.SetColor("font_hover_pressed_color", "TabletopPrepChoice", Ink);
         using (var focus = Box(Colors.Transparent, 0))
         {

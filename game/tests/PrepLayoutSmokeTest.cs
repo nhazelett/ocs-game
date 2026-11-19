@@ -69,6 +69,16 @@ public partial class PrepLayoutSmokeTest : Node
             // Every affordable total, including the previously stuck full-budget state.
             foreach (var days in Enumerable.Range(0, Math.Min(shell.Session.Prep!.BudgetDays, shell.Session.Prep.OfferedDays) + 1)) { Choose(days); await Settle(); Footer(); }
             Choose(shell.Session.Prep!.OfferedDays); shell.PrepScroll.ScrollVertical = 0; await Capture("tutorial");
+            var choiceRows = shell.PrepChoices.Values.Select(c => c.GetParent<VBoxContainer>()).ToArray();
+            for (var i = 0; i < choiceRows.Length - 1; i++)
+            {
+                var toggle = choiceRows[i].GetChild<CheckBox>(0);
+                var effect = choiceRows[i].GetChild<Label>(1);
+                var next = choiceRows[i + 1].GetChild<CheckBox>(0);
+                Require(effect.GlobalPosition.Y - toggle.GetGlobalRect().End.Y <= 3
+                    && next.GlobalPosition.Y - effect.GetGlobalRect().End.Y >= 20,
+                    "Each effect sits close under its own box, with the larger gap before the next choice.");
+            }
             shell.PrepScroll.ScrollVertical = 10000; await Settle();
             var templates = shell.PrepChoices["templatesAndKit"];
             Input.ParseInputEvent(new InputEventMouseMotion { Position = templates.GetGlobalRect().GetCenter() });

@@ -12,6 +12,7 @@ public partial class AwardChoicesSmokeTest : Node
         try
         {
             var shell = Shell(this);
+            Scenario(shell, "spoke-b", preview: false);
             var hash = shell.Session.StateHash;
             void Target(string id)
             {
@@ -85,7 +86,7 @@ public partial class AwardChoicesSmokeTest : Node
                 "The quote's first warning names the part the supplier leaves out.");
             await Capture("parts-kept",shell.VendorInput,true);
             await Capture("parts-quote",shell.FundingInput);
-            Scenario(shell,"spoke-b");
+            Scenario(shell,"spoke-b", preview: false);
             Require(shell.Session.Apply(new FindFinanceAction()).Accepted,"Finance fixture accepted."); Step(shell,6);
             Target("req0007"); Pick(shell.VendorInput,"vendorB"); Bindings();
             var cash=shell.CurrentAwardChoices!.Instruments.Single(i=>i.Id=="sf44");

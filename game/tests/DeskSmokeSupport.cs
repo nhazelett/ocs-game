@@ -34,13 +34,13 @@ internal static class DeskSmokeSupport
         shell.DeveloperWorkspaceButton.EmitSignal(Button.SignalName.Pressed);
     }
 
-    internal static void Scenario(GameShell shell, string name)
+    internal static void Scenario(GameShell shell, string name, bool preview = true)
     {
         var picker = shell.GetNode<OptionButton>("%ScenarioPicker");
         var index = Enumerable.Range(0, picker.ItemCount).Single(i => picker.GetItemText(i) == name);
         picker.Select(index); picker.EmitSignal(OptionButton.SignalName.ItemSelected, index);
         DeployWithoutPrep(shell);
-        ChoosePreviewFixture(shell);
+        if (preview) ChoosePreviewFixture(shell);
     }
 
     internal static void DeployWithoutPrep(GameShell shell)

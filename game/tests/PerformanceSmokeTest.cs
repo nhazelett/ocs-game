@@ -8,17 +8,56 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class PerformanceSmokeTest : Node
 {
+    private async Task CheckDaySeven(GameShell shell)
+    {
+        var input = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-19", "input-log.json"));
+        var path = Path.Combine(Path.GetTempPath(), "ocs-desk113-" + Guid.NewGuid() + ".json");
+        try
+        {
+            File.WriteAllText(path, (input with { SavedDay = 7, Actions = input.Actions.Where(a => a.Day < 7).ToList() }).ToJson());
+            shell.DeveloperToggle.ButtonPressed = false; shell.LoadSavedGame(path);
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            var issue = shell.Session.View!.PerformanceIssues.Single(i => i.CapabilityId == "lodging");
+            var alert = shell.MorningAlerts.GetChildren().OfType<PanelContainer>().Single(p => p.HasMeta("morning_shortfall")
+                && p.GetMeta("morning_shortfall").AsString() == issue.SiteId + "." + issue.CapabilityId);
+            var open = shell.TodayPerformanceLinks[issue.Id];
+            Require(alert.IsAncestorOf(open) && open.Text == "Open vendor decision",
+                "The recorded day-seven lodging alert carries its existing vendor decision directly below the reason.");
+            var hash = shell.Session.StateHash;
+            var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
+            if (shot >= 0)
+            {
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[shot + 1] + "-day7-alert.png") == Error.Ok, "The recorded day-seven alert is captured.");
+            }
+            open.EmitSignal(Button.SignalName.Pressed);
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            var cure = shell.PerformanceChoices[(issue.Id, "cure")];
+            Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab
+                && shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents").GetGlobalRect().Encloses(cure.GetGlobalRect())
+                && shell.Session.StateHash == hash, "The alert opens the exact pending decision without spending hours.");
+            cure.EmitSignal(Button.SignalName.Pressed);
+            Require(!shell.TodayPerformanceLinks.ContainsKey(issue.Id), "Starting the cure removes the pending decision link.");
+            var after = shell.Session.StateHash; open.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == after, "A stale alert button cannot act on a changed game.");
+        }
+        finally { File.Delete(path); }
+    }
+
     public override async void _Ready()
     {
         try
         {
             var shell = Shell(this);
+            await CheckDaySeven(shell);
             Scenario(shell, "tutorial");
             while (shell.Session.View!.PerformanceIssues.Count == 0 && shell.Session.View.Day < 13) Step(shell);
             var firstIssue = shell.Session.View!.PerformanceIssues.First();
             Require(shell.Session.View.MorningBoard().New.Any(n => n.RecordId == firstIssue.CauseId)
-                && shell.MorningBrief.IsAncestorOf(shell.TodayPerformanceLinks[firstIssue.Id]),
-                "The first vendor report carries its decision link inside New since yesterday.");
+                && (shell.MorningBrief.IsAncestorOf(shell.TodayPerformanceLinks[firstIssue.Id])
+                    || shell.MorningAlerts.IsAncestorOf(shell.TodayPerformanceLinks[firstIssue.Id])),
+                "The first vendor report carries its decision link beside its alert or news.");
             Step(shell, 13 - shell.Session.View.Day); shell.DeveloperToggle.ButtonPressed = false;
             var tutorialIssue = shell.Session.View!.PerformanceIssues.First(i => i.CureNoticeDay is null);
             var tutorialHash = shell.Session.StateHash;

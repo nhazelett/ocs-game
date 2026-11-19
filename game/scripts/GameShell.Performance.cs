@@ -48,7 +48,7 @@ public partial class GameShell
                 row.AddChild(DeskUi.Label($"Day {outcome.Day} · {outcome.Text}"));
             AddPerformanceActions(row, view, issue, PerformanceChoices, includeContractLink: true);
             // Reuse the Inbox's existing action availability; opening this link spends nothing.
-            if (!PerformanceChoices[(issue.Id, "cure")].Disabled) AddTodayPerformanceLink(view, issue.Id, issue.CauseId);
+            if (!PerformanceChoices[(issue.Id, "cure")].Disabled) AddTodayPerformanceLink(view, issue);
 
         }
     }
@@ -72,7 +72,7 @@ public partial class GameShell
         cure.Disabled = view.Finished || !running || curing || terminating || issue.CureNoticeDay is not null;
         var resource = DeskUi.Button("Re-source…", () =>
         {
-            CloseContractView(); ResetAwardForm(); awardTarget = issue.SiteId + "." + issue.CapabilityId;
+            CloseContractView(); SwitchAwardTarget(issue.SiteId + "." + issue.CapabilityId);
             RefreshActionDesk(session.View); ShowMarket();
         });
         resource.Disabled = view.Finished || !running;
@@ -96,12 +96,17 @@ public partial class GameShell
         choices.Add((issue.Id, "resource"), resource);
     }
 
-    private void AddTodayPerformanceLink(SessionView view, string issueId, string causeId)
+    private void AddTodayPerformanceLink(SessionView view, PerformanceIssueState issue)
     {
+        var issueId = issue.Id; var causeId = issue.CauseId;
+        var alert = MorningAlerts.GetChildren().OfType<PanelContainer>()
+            .FirstOrDefault(panel => panel.HasMeta("morning_shortfall")
+                && panel.GetMeta("morning_shortfall").AsString() == issue.SiteId + "." + issue.CapabilityId);
         var news = MorningBrief.GetChildren().OfType<PanelContainer>()
             .FirstOrDefault(panel => panel.HasMeta("news_record") && panel.GetMeta("news_record").AsString() == causeId);
         VBoxContainer parent;
-        if (news is not null) parent = news.GetChild<VBoxContainer>(0);
+        if (alert is not null) parent = alert.GetChild<VBoxContainer>(0);
+        else if (news is not null) parent = news.GetChild<VBoxContainer>(0);
         else
         {
             if (!TodayPerformanceRows.Visible) TodayPerformanceRows.AddChild(DeskUi.Heading("Vendor problems"));
