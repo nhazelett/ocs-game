@@ -24,7 +24,7 @@ public partial class VendorsSmokeTest : Node
                 Pick(shell.VendorCardPicker, "harborEquipment"); await Frames();
                 var card = view.VendorCards().Single(c => c.Id == "harborEquipment");
                 var text = string.Join("\n", shell.VendorCardContents[card.Id].GetChildren().OfType<Label>().Select(l => l.Text));
-                Check(text, "Supply per day:", card.Heard);
+                Check(text, "Usual capacity per day:", card.Heard);
                 Require(view.VendorCards().Where(c => c.Id != card.Id && c.Heard is null).All(c =>
                     !shell.VendorCardContents[c.Id].GetChildren().OfType<Label>().Any(l => previous is not null && l.Text.Contains(previous))),
                     "A different vendor never inherits Harbor's news.");
@@ -102,7 +102,7 @@ public partial class VendorsSmokeTest : Node
                 "The award editor also blanks unknown payment and capacity instead of disclosing its raw numbers.");
             var blank = CardText("harborBottling");
             Require(blank.Contains("Cash: — · Card: —") && blank.Contains("Islands reached: —")
-                && blank.Contains("Supply per day: —") && blank.Contains("Price per gal: — · Notice: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
+                && blank.Contains("Usual capacity per day: —") && blank.Contains("Price per gal: — · Notice: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
             Require(blank.Contains(expected.View.VendorCards().Single(c => c.Id == "harborBottling").StillToLearn!), "The exact engine sentence explains how to fill the blanks.");
             var hash = shell.Session.StateHash;
             await Capture("blank");
@@ -122,7 +122,7 @@ public partial class VendorsSmokeTest : Node
                 && text.Contains(known.KnownFrom!), "A completed meeting fills in the exact price, supply, payment and source supplied by Sim.");
             Require(shell.SupplierKnowledge!.Text.Contains("Cash: yes · Card: no") && !shell.SupplierKnowledge.Text.Contains("Usual capacity per day: —"),
                 "The same award summary fills in after the engine reports learned terms and capacity.");
-            Require(text.Contains("Supply per day: 5,000 gal") && text.Contains("Price per gal: " + DeskUi.Money(sale.UnitPriceCents!.Value)),
+            Require(text.Contains("Usual capacity per day: 5,000 gal") && text.Contains("Price per gal: " + DeskUi.Money(sale.UnitPriceCents!.Value)),
                 "A consumable quote names its engine unit and groups thousands without adding another per-day charge.");
             Require(CardText("campServices").Contains("Price per bed per day:"), "An equipment quote retains its daily basis and the engine unit.");
             await Capture("known");
