@@ -1,0 +1,127 @@
+{
+  "scenario": "tutorial",
+  "rulesVersion": "2025-10",
+  "seed": 20261119,
+  "prepChoices": [
+    "cashAndPayingAgent",
+    "systemAccess",
+    "pullVehicles",
+    "vendorLists",
+    "templatesAndKit"
+  ],
+  "actions": [
+    {
+      "kind": "askAbout",
+      "card": "tutWater",
+      "person": "ortiz",
+      "day": 1
+    },
+    {
+      "kind": "award",
+      "id": "player-award-1",
+      "instrument": "gpc",
+      "vendor": "islandMart",
+      "card": "tutWater",
+      "site": "hubSite",
+      "capability": "water",
+      "quantity": 4500,
+      "startDay": 2,
+      "durationDays": 7,
+      "day": 1
+    },
+    {
+      "kind": "joinStaffMeeting",
+      "attend": true,
+      "day": 3
+    },
+    {
+      "kind": "meetVendor",
+      "vendor": "coastalRentals",
+      "day": 3
+    },
+    {
+      "kind": "assign",
+      "work": "w2",
+      "to": "novak",
+      "day": 3
+    },
+    {
+      "kind": "askAbout",
+      "card": "tutForklift",
+      "person": "dunn",
+      "day": 4
+    },
+    {
+      "kind": "addLine",
+      "card": "tutForklift",
+      "line": "operator",
+      "day": 5
+    },
+    {
+      "kind": "award",
+      "id": "player-award-2",
+      "instrument": "purchaseOrder",
+      "vendor": "coastalRentals",
+      "card": "tutForklift",
+      "site": "hubSite",
+      "capability": "mhe",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 5
+    },
+    {
+      "kind": "assign",
+      "work": "w6",
+      "to": "avery",
+      "day": 5
+    },
+    {
+      "kind": "cureNotice",
+      "issue": "pi1",
+      "day": 7
+    },
+    {
+      "kind": "askAbout",
+      "card": "tutWaste",
+      "person": "ruizT",
+      "day": 7
+    },
+    {
+      "kind": "award",
+      "id": "player-award-3",
+      "instrument": "purchaseOrder",
+      "vendor": "sanitation",
+      "card": "tutWaste",
+      "site": "hubSite",
+      "capability": "waste",
+      "quantity": 3600,
+      "startDay": 13,
+      "durationDays": 8,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 8
+    },
+    {
+      "kind": "assign",
+      "work": "w12",
+      "to": "avery",
+      "day": 8
+    },
+    {
+      "kind": "cureNotice",
+      "issue": "pi2",
+      "day": 13
+    }
+  ]
+}
