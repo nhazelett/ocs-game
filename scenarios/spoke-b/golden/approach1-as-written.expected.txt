@@ -252,9 +252,9 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [unforeseeable] 64 unplanned personnel arrived at Spoke C on day 24 on 4 days' notice (day 20); arrangements sized for the plan's 480 meals a day fell short of 672 a day. Nothing before the notice showed it coming.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 11)
-  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
-  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 11)
+  [not met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 7)
+  [met] Spoke C water out no more than one day in all (site.spokeCSite.water.downDays = 0)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.789)
 

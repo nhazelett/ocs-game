@@ -44,6 +44,9 @@ public sealed partial class Session
             parts.Add($"It starts {startSaid}; it was wanted from day {card.RequestedStartDay}.");
             if (start <= needEnd && BeforeStartCover(card, start) is { } cover) parts.Add(cover);
         }
+        // D43, DESK-129: what the late end of the quoted range costs against the commander's allowance.
+        var passCost = card is null ? null : PassLineCost(card, max);
+        if (passCost is not null) parts.Add(passCost);
         // DESK-86: why a written buy starts when it does: finance certifies the funds before the writing can start. The
         // range's other causes stay in the quote (DESK-78); the summary is pinned above the button and must stay short.
         if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
@@ -70,7 +73,27 @@ public sealed partial class Session
         // D42, DESK-123: the summary's last sentence, after any attention reason; never one itself.
         var answer = card is null ? null : AnswerDue(card);
         if (answer is not null) parts.Add(answer);
-        return new AwardSummaryView(string.Join(" ", parts), why is not null, why, answer);
+        return new AwardSummaryView(string.Join(" ", parts), why is not null, why, answer, passCost);
+    }
+
+    /// <summary>D43 (DESK-129, Claude play 20 Nov, third play, note 1): when the quote's latest start is after the day the
+    /// request wants it and a pass line counts down days for that site and capability, the days nothing covers until then
+    /// added to the days already out, against the allowance: "If it starts on day 9, material handling equipment at Hub is
+    /// out 1 day in all: all the commander allows." Null otherwise. A forecast from the plan; it ignores rolls.</summary>
+    private string? PassLineCost(CardState card, int latestStart)
+    {
+        if (latestStart <= card.RequestedStartDay) return null;
+        var metric = $"site.{card.SiteId}.{card.CapabilityId}.downDays";
+        if (Scenario.PassCriteria.FirstOrDefault(p => p.Metric == metric && p.Comparator == "<=") is not { } line) return null;
+        if (CoverDays(card, latestStart) is not { None.Count: > 0 } days) return null;
+        var used = Metrics.TryGetValue(metric, out var v) ? (long)v : 0;
+        var total = used + days.None.Count;
+        var allowed = (long)line.Value;
+        var verdict = total == allowed ? "all the commander allows"
+            : total < allowed ? $"within the {Plural(allowed, "day")} the commander allows"
+            : total - allowed == 1 ? "one more than the commander allows"
+            : $"{total - allowed} more than the commander allows";
+        return $"If it starts on day {latestStart}, {Lower(CapLabel(card.CapabilityId))} at {SiteName(card.SiteId)} is out {Plural(total, "day")} in all: {verdict}.";
     }
 
     /// <summary>D42 (DESK-123, Claude play 20 Nov, second play, note 1): an ask about this request still in work, the

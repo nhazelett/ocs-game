@@ -23,7 +23,7 @@ public class BarTests
         Assert.Equal("ward", bar.From!.Id);
         Assert.Equal(16, bar.Days);
         Assert.False(bar.Final);
-        Assert.StartsWith("Water is never out more than a day. Forklifts the same: never out more than a day.", bar.Spoken);
+        Assert.StartsWith("Water is out no more than one day in all while you're here. Forklifts the same: no more than one day in all.", bar.Spoken);   // D43: a total
         Assert.EndsWith("That's for the 16 days you're here.", bar.Spoken);
         Assert.All(bar.Lines, l => Assert.Equal(BarState.Met, l.State));
     }
@@ -36,7 +36,7 @@ public class BarTests
         Assert.True(bar.Final);
         Assert.Equal(["waterUp", "mheUp", "wasteUp", "mission"], bar.Lines.Select(l => l.Id));
         Assert.All(bar.Lines, l => Assert.Equal(BarState.Met, l.State));
-        Assert.Equal("Water at Hub: out 0 days.", bar.Lines[0].Text);
+        Assert.Equal("Water at Hub: out 0 of the 1 day allowed.", bar.Lines[0].Text);   // D43
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class BarTests
     {
         var bar = Play("tutorial-hasty", "tutorial").View.Debrief().Bar!;
         Assert.Equal(["mheUp", "wasteUp", "mission"], bar.Lines.Where(l => l.State == BarState.Missed).Select(l => l.Id));
-        Assert.Equal("Material handling equipment at Hub: out 4 days.", bar.Lines.Single(l => l.Id == "mheUp").Text);
+        Assert.Equal("Material handling equipment at Hub: out 4 of the 1 day allowed.", bar.Lines.Single(l => l.Id == "mheUp").Text);
         // DESK-80: 92% over the tutorial's 16 days (94% over the 20 it had), the early misses weighing more.
         Assert.Equal("Mission output: 92%, against 95%.", bar.Lines.Single(l => l.Id == "mission").Text);
     }
@@ -66,10 +66,10 @@ public class BarTests
         // day 18, which the line allows, and a second on day 19, which it does not.
         var mid = Play("spoke-b", "spoke-b", 18).View.Bar().Lines.Single(l => l.Id == "powerUp");
         Assert.Equal(BarState.AtRisk, mid.State);
-        Assert.Equal("Power at Spoke B: out 1 day so far.", mid.Text);
+        Assert.Equal("Power at Spoke B: out 1 of the 1 day allowed so far.", mid.Text);
         var next = Play("spoke-b", "spoke-b", 19).View.Bar().Lines.Single(l => l.Id == "powerUp");
         Assert.Equal(BarState.Missed, next.State);
-        Assert.Equal("Power at Spoke B: out 2 days so far.", next.Text);
+        Assert.Equal("Power at Spoke B: out 2 of the 1 day allowed so far.", next.Text);
     }
 
     [Fact]

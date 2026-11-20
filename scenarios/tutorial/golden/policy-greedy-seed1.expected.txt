@@ -118,8 +118,8 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 11) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
 
 PASS CRITERIA
-  [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
-  [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 1)
+  [met] Hub water out no more than one day in all (site.hubSite.water.downDays = 0)
+  [met] Forklifts out no more than one day in all (site.hubSite.mhe.downDays = 1)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 0.968)
 

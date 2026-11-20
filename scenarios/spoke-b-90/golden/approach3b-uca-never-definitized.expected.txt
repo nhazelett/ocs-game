@@ -303,8 +303,8 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] No funding line with money could pay for power on day 78 (days 76 to 84). The O&M line good through day 75 reached its fiscal-year end with day 75. The O&M line from day 76 was released day 85, 9 days late (the comptroller warned on day 68). Money was usable until day 75: a follow-on awarded before then could have run through the window.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 26)
-  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 21)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 26)
+  [not met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 21)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.834)
 

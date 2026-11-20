@@ -199,9 +199,9 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Lodging depends on power, which was short. (see #1)
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)
-  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 14)
-  [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 18)
+  [not met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 14)
+  [met] Spoke C water out no more than one day in all (site.spokeCSite.water.downDays = 0)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.727)
 
