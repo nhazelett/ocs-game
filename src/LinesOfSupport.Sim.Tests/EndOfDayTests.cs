@@ -41,7 +41,9 @@ public class EndOfDayTests
     public void A_late_request_says_so_and_one_far_off_is_not_listed()
     {
         var s = Session.Create(Repo.Load("spoke-b"), 1);
-        Assert.Equal([], s.View.EndOfDayCheck()); // power from day 7, water from day 5: more than three days off; one-person office
+        // Power from day 7, water from day 5: more than three days off, so neither is listed; with the team (DESK-12) the
+        // only lines on day 1 are the teammates with nothing to do.
+        Assert.All(s.View.EndOfDayCheck(), x => Assert.Contains("has nothing to work on today", x));
         while (s.Day < 6) s.AdvanceDay();
         var check = s.View.EndOfDayCheck();
         Assert.Contains("Water for Spoke C was wanted from day 5 and nothing is arranged or in work.", check);

@@ -64,13 +64,13 @@ Day 17
   SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
 Day 18
   COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
-  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
-  DONE      CE small buys: 13 worked today (6.5 h of shop time).
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 20
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
+  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 21
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
@@ -183,4 +183,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash 3d85fe6830f57d0169a61f1431c3d42c7e86c25039942220cf03d0eb33738be0
+State hash f7d7011fba08032bfbc24aae835dc2f178025cb83c896f3764104deab4dc45bd

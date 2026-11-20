@@ -6,6 +6,8 @@ namespace LinesOfSupport.Sim.Tests;
 /// <summary>M2-14: a refused handshake puts that site's shop work behind other work when hours are short.</summary>
 public class PriorityTests
 {
+    private const long YourHours = 8_000;
+
     private static readonly AwardAction Gens = new()
     {
         Day = 1, Id = "gens", Instrument = "bpaCall", Vendor = "vendorC", Vehicle = "bosBpa", Card = "req0007",
@@ -14,7 +16,7 @@ public class PriorityTests
 
     /// <summary>Approach 1 to day 12; optionally refuse the handshake; award a Spoke B UCA; on the day its shop work
     /// becomes ready, queue a survey and a BPA setup (work tied to no site) behind it: more ready work than the
-    /// shop's 16 hours a day.</summary>
+    /// 8 hours a day: all of it is yours, as nobody hands it over (DESK-12: Spoke B has the team).</summary>
     private static Session Day12(bool refuse, bool surveys = true)
     {
         var s = Session.Create(Repo.Load("spoke-b"), 1);
@@ -56,11 +58,11 @@ public class PriorityTests
         var others = s.Work.Where(w => w != award && w.CompletedDay is null && w.WaitUntilDay <= s.Day).ToList();
         Assert.All(others, w => Assert.True(w.Kind is WorkKind.Survey or WorkKind.EstablishVehicle, w.Label));
         var otherHours = others.Sum(w => w.HoursRemainingMilli);
-        Assert.True(before + otherHours > 16_000, "the test needs the shop to be short today");
+        Assert.True(before + otherHours > YourHours, "the test needs the shop to be short today");
         s.AdvanceDay();
 
         // The other work was served first although it was queued after; the award got what was left of the day.
-        Assert.Equal(before - Math.Max(0, 16_000 - otherHours), award.HoursRemainingMilli);
+        Assert.Equal(before - Math.Max(0, YourHours - otherHours), award.HoursRemainingMilli);
         var rec = Assert.Single(s.Records, r => r.Kind == RecordKind.Compliance && r.Subject == award.Id);
         Assert.Contains("waits behind other work", rec.Text);
         Assert.Contains("uc1", rec.Text);
@@ -76,7 +78,7 @@ public class PriorityTests
         var before = award.HoursRemainingMilli;
         Assert.Equal(award, s.Work.First(w => w.CompletedDay is null && w.WaitUntilDay <= s.Day));
         s.AdvanceDay();
-        Assert.Equal(Math.Max(0, before - 16_000), award.HoursRemainingMilli);
+        Assert.Equal(Math.Max(0, before - YourHours), award.HoursRemainingMilli);
         Assert.DoesNotContain(s.Records, r => r.Text.Contains("waits behind other work"));
     }
 
@@ -87,7 +89,7 @@ public class PriorityTests
         var award = Award(s);
         var hoursToday = s.Work.Where(w => w.CompletedDay is null && w.WaitUntilDay <= s.Day).Sum(w => w.HoursRemainingMilli);
         s.AdvanceDay();
-        if (hoursToday <= 16_000) Assert.True(award.HoursRemainingMilli == 0 || award.CompletedDay is not null);
+        if (hoursToday <= YourHours) Assert.True(award.HoursRemainingMilli == 0 || award.CompletedDay is not null);
         Assert.DoesNotContain(s.Records, r => r.Text.Contains("waits behind other work"));
     }
 

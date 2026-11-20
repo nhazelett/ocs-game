@@ -9,9 +9,9 @@ Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 324 kW/day for 60 days (Generation equipment); quoted $44,712.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $44,712.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
+  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $44,712.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 4
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -67,23 +67,23 @@ Day 20
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 21
   COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 22
-  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 23
+  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 24
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 26
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Second Island Fuel. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
-  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 27
+  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
@@ -110,15 +110,15 @@ Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 36
   COMPLY    Higher HQ asked why Second Island Fuel fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
 Day 37
-  DONE      Response to higher HQ on Second Island Fuel fuel at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   COR       Unit report from Spoke B: power fell short on day 34 and the unit blames Harbor Equipment Co, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 38
+  DONE      Response to higher HQ on Second Island Fuel fuel at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
 Day 39
@@ -242,14 +242,14 @@ Day 82
 Day 83
   WITHDRAWN Harbor Equipment Co walked off Harbor Equipment Co power at Spoke B after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   COMPLY    Higher HQ asked why Harbor Equipment Co power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 84
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
   COMPLY    Unauthorized commitment: the Spoke B unit arranged power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
-  DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
+  DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
 Day 86
@@ -351,4 +351,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.672)
 
-State hash dfc3901c9da9f933b3b5a7307ba9e605f23c8d05b9ad0e15afd3608d47b305e8
+State hash 73b7bf70a173c07a25e69c4c7d1f25c55d39d4da4effcdbf2a688ba943882b87

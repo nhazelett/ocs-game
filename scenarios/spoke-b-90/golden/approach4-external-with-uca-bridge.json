@@ -50,7 +50,8 @@
       "startDay": 7,
       "durationDays": 60,
       "fundingLine": "om1",
-      "cor": "corReyes"
+      "cor": "corReyes",
+      "assignee": "novak"
     },
     {
       "kind": "award",
@@ -63,7 +64,8 @@
       "startDay": 7,
       "durationDays": 35,
       "fundingLine": "om1",
-      "cor": "corReyes"
+      "cor": "corReyes",
+      "assignee": "avery"
     },
     {
       "kind": "requestExternalSupport",
@@ -93,14 +95,15 @@
     },
     {
       "kind": "terminate",
-      "day": 19,
+      "day": 20,
       "arrangement": "gens"
     },
     {
       "kind": "definitize",
-      "day": 22,
+      "day": 23,
       "arrangement": "turnkey",
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     }
   ]
 }

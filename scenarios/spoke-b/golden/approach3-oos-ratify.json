@@ -53,7 +53,7 @@
     },
     {
       "kind": "award",
-      "day": 2,
+      "day": 1,
       "id": "turnkey",
       "instrument": "uca",
       "vendor": "vendorB",
@@ -61,7 +61,8 @@
       "quantity": 470,
       "startDay": 7,
       "durationDays": 60,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     },
     {
       "kind": "setLine",
@@ -87,7 +88,8 @@
       "quantity": 2640,
       "startDay": 5,
       "durationDays": 60,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     },
     {
       "kind": "award",
@@ -103,7 +105,8 @@
       "quantity": 2640,
       "startDay": 5,
       "durationDays": 12,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "novak"
     },
     {
       "kind": "coordinate",
@@ -152,7 +155,8 @@
       "kind": "definitize",
       "day": 22,
       "arrangement": "turnkey",
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     }
   ]
 }

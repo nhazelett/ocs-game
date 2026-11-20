@@ -578,14 +578,19 @@
     ]
   },
   "shop": {
-    "people": 2,
+    "people": 3,
     "systemOnlineDay": 12,
     "cashOnHandCents": 5000000,
     "cashReplenishLagDays": 5,
     "gpcAvailableDay": null,
     "gpcSinglePurchaseCents": 4000000,
     "gpcMonthlyCents": 15000000,
-    "payingAgentAvailableDay": 5
+    "payingAgentAvailableDay": 5,
+    "team": [
+      { "id": "you", "role": "you", "name": "You", "portrait": "haddad", "hoursPerDay": 8 },
+      { "id": "avery", "role": "experienced", "name": "Joan Avery", "rank": "MSgt", "portrait": "ortiz", "hoursPerDay": 8, "speed": 1.25 },
+      { "id": "novak", "role": "junior", "name": "Eli Novak", "rank": "SrA", "portrait": "mills", "hoursPerDay": 8, "speed": 0.75 }
+    ]
   },
   "actors": {
     "sco": {

@@ -79,12 +79,13 @@ public class DebriefTests
     [Fact]
     public void Approach_3_has_no_gaps_and_approach_4_is_late_not_unlucky()
     {
-        // Approach 3 covers every planned need. The only gaps left are the seeded Spoke C follow-on element a
-        // scripted log cannot react to (M2-19), and those tag unforeseeable, not as the player's.
+        // Approach 3 covers every planned need. With the team (DESK-12) the only gap left at seed 1 is one day of the
+        // turnkey package's equipment down with full operator and maintenance coverage, and it tags unforeseeable, not
+        // as the player's; nothing at Spoke B is ever down.
         var gaps = Debrief("spoke-b", "approach3-uca-turnkey-with-bridge").Gaps;
-        Assert.All(gaps, g => Assert.Equal("spokeCSite", g.SiteId));
+        Assert.NotEmpty(gaps);
         Assert.All(gaps, g => Assert.Equal(GapTag.Unforeseeable, g.Tag));
-        Assert.Contains(gaps.SelectMany(g => g.Factors), f => f.Kind == GapFactorKind.PopulationJump);
+        Assert.All(gaps, g => Assert.Equal(0, g.DownDays));
         var power = GapOn(Debrief("spoke-b", "approach4-enduring-only"), "spokeBSite.power", 7);
         Assert.Equal(GapTag.Avoidable, power.Tag);
         Assert.Contains(power.Factors, f => f.Kind == GapFactorKind.Uncovered && f.Text.Contains("did not start until"));
@@ -93,8 +94,10 @@ public class DebriefTests
     [Fact]
     public void Ucas_left_undefinitized_show_stop_work_as_avoidable()
     {
-        var power = Debrief("spoke-b-90", "approach3b-uca-never-definitized").Gaps.First(g => g.CapabilityId == "power");
-        Assert.Contains(power.Factors, f => f.Kind == GapFactorKind.StopWork && f.Tag == GapTag.Avoidable && f.Text.Contains("past due"));
+        // DESK-12: with the team the UCA lands a day later, so an earlier one-day fuel dip comes first; the stop work is
+        // on the power gap that follows it.
+        var power = Debrief("spoke-b-90", "approach3b-uca-never-definitized").Gaps.Where(g => g.CapabilityId == "power");
+        Assert.Contains(power.SelectMany(g => g.Factors), f => f.Kind == GapFactorKind.StopWork && f.Tag == GapTag.Avoidable && f.Text.Contains("past due"));
     }
 
     [Fact]

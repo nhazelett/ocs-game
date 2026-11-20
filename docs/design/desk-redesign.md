@@ -361,3 +361,15 @@ Sim notes (Fable):
 - DESK-126: the decision and record text gives a continuous capability's quantity per day when its unit is a volume (waste removal in gal): "3,600 gal/day for 8 days". Goldens move where they print that line (state which).
 - DESK-128: Mills' money line and his day 2 note say the cash box is what to watch when you buy with cash (an SF 44), not in general. Goldens move where they print the turnover or the note.
 
+
+## 18. Spoke B gets the team (DESK-12, 20 Nov 2026)
+
+D2 gave the tutorial a named team of three, each with their own hours, and left Spoke B as you alone with all 16 of the shop's hours until after the gate. DESK-12 gives Spoke B the same team. No new decision for Nick; the one choice it needed is in Fable's lane and is recorded here.
+
+Sim notes (Fable):
+
+- DESK-12: `shop.team` in spoke-b and spoke-b-90 is the tutorial's three (you, MSgt Joan Avery at 1.25, SrA Eli Novak at 0.75), each with the rules' 8 hours a day, so the shop has 24 hours, not 16 (`people` 3). Chosen over three people sharing 16 hours, which would put 5 or 6 hours on each bar with nothing to say why, and over keeping two people, which D2 rules out. One person writes one contract (DESK-02), so a single big job is slower than it was out of a shared 16, while the shop as a whole has more hours; the 200-seed batches before and after are in the handoff. Faces are ones nobody in Spoke B already wears (Haddad for you, Ortiz for Avery, Mills for Novak, the last two in uniform and Novak young, as the tutorial's are); the player can pick others.
+- The approach logs give work to the right person, so each approach keeps every pass line it had: the generator call is yours, the turnkey UCA and its definitization are Avery's, the Spoke C water UCA is Avery's and its bottled-water bridge Novak's. In the approach 4 logs with an external request, the request is yours and the generator call Novak's. Where a job now lands a day later, the log's next step moves a day with it: definitization on day 23 (the proposal comes a day later), the first transition plan on day 7 (the morning after the UCA is awarded), the second on day 18 (the morning after the external award), the hand termination on day 20. Approach 3 at Spoke B buys the turnkey UCA on day 1 with the bridge, so it lands before the hub fuel run is withdrawn.
+- Plays logged before the team (the 17 Nov review play) replay in the tests with each action handed, as a player would, to whoever has the least work queued for their hours (`Divided` in the test support). The logs themselves are records and are not changed.
+- A funding lapse names an award rejected for want of money on any day of the lapse window, not only its first day (a written buy by one person can complete a day into it).
+- Left out: different people or skills per scenario, a smaller Spoke B team, and any change to the tutorial.

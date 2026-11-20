@@ -54,7 +54,7 @@ public partial class ChromeSmokeTest : Node
             Require(expected.Apply(new FindFinanceAction { Day = expected.Day }).Accepted, "Finance fixture is a valid actual action.");
             strip = expected.View.TopStrip();
             Require(strip.ShopHoursQueued > 0 && shell.Session.StateHash == expected.StateHash(), "Real visit changes only the same Sim state as direct play.");
-            Require(shell.TeamBars["you"].Value == expected.View.Team.Single().HoursSpokenForToday && shell.TeamBars["you"].MaxValue == strip.ShopHoursPerDay,
+            Require(shell.TeamBars["you"].Value == expected.View.Team.Single(m => m.Id == "you").HoursSpokenForToday && shell.TeamBars["you"].MaxValue == expected.View.Team.Single(m => m.Id == "you").HoursPerDay,
                 "Queued wording binds to actual committed shop hours, including fractions.");
             Step(shell); expected.AdvanceDay();
             Require(shell.GetNode<Label>("%DayCounter").Text == "Morning of day 2" && shell.GetNode<Label>("%InboxDay").Text == "What happened on day 1"

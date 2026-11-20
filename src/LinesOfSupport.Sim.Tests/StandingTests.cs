@@ -105,16 +105,17 @@ public class StandingTests
     [Fact]
     public void A_contract_on_its_first_day_is_not_blamed_for_the_gap_before_it()
     {
-        // Approach 4 buys Spoke B's power late: Meridian starts on day 17, after ten dark days. On day 17 it is running,
-        // not short, though power was at 0% the day before; the day before, it is the first thing on the list.
+        // Approach 4 buys Spoke B's power late: Meridian starts on day 18 (MSgt Avery writes the UCA, DESK-12), after
+        // eleven dark days. On day 18 it is running, not short, though power was at 0% the day before; the day before,
+        // it is the first thing on the list.
         var log = InputLog.Load(Path.Combine(Repo.Scenario("spoke-b"), "golden", "approach4-enduring-only.json"));
-        var s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 15);
+        var s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 16);
         var first = s.View.WhereThingsStand()[0];
         Assert.Equal("Power for Spoke B", first.Title);
         Assert.Equal(RequestStanding.Arranged, first.State);
-        Assert.Equal("Meridian Site Services starts on day 17: 470 kW. It was wanted from day 7. Nothing covers day 16.", first.Sentence);
+        Assert.Equal("Meridian Site Services starts on day 18: 470 kW. It was wanted from day 7. Nothing covers day 17.", first.Sentence);
 
-        s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 16);
+        s = Replay.Run(Repo.Load("spoke-b"), log, stopAfterDay: 17);
         var power = s.View.WhereThingsStand().Single(x => x.Title == "Power for Spoke B");
         Assert.Equal(RequestStanding.Running, power.State);
         Assert.Equal("Meridian Site Services is delivering 470 kW.", power.Sentence);

@@ -2,7 +2,7 @@
   "scenario": "spoke-b-90",
   "rulesVersion": "2025-10",
   "seed": 1,
-  "note": "The transition planner flagging a gap (backlog M3-05): as approach4-transition-plans, but the turnkey UCA is sized at 25 days, so it ends day 41 while the external support contract cannot start before day 47. The planner shows the gap when the second plan is made (day 17) and flags it on the morning board five days before the UCA runs out; the player does nothing, and Spoke B loses power until the external contract arrives. The debrief tags the gap avoidable.",
+  "note": "The transition planner flagging a gap (backlog M3-05): as approach4-transition-plans, but the turnkey UCA is sized at 25 days, so it ends day 42 while the external support contract cannot start before day 48. The planner shows the gap when the second plan is made (day 18, the morning after the external office awards its contract) and flags it on the morning board five days before the UCA runs out; the player does nothing, and Spoke B loses power until the external contract arrives. The debrief tags the gap avoidable.",
   "prepChoices": [
     "systemAccess",
     "cashAndPayingAgent"
@@ -50,7 +50,8 @@
       "startDay": 7,
       "durationDays": 60,
       "fundingLine": "om1",
-      "cor": "corReyes"
+      "cor": "corReyes",
+      "assignee": "novak"
     },
     {
       "kind": "award",
@@ -63,7 +64,8 @@
       "startDay": 7,
       "durationDays": 25,
       "fundingLine": "om1",
-      "cor": "corReyes"
+      "cor": "corReyes",
+      "assignee": "avery"
     },
     {
       "kind": "requestExternalSupport",
@@ -86,7 +88,7 @@
     },
     {
       "kind": "planTransition",
-      "day": 6,
+      "day": 7,
       "id": "bridgeToUca",
       "outgoing": "gens",
       "incoming": "turnkey"
@@ -100,16 +102,17 @@
     },
     {
       "kind": "planTransition",
-      "day": 17,
+      "day": 18,
       "id": "ucaToEnduring",
       "outgoing": "turnkey",
       "incoming": "extPower"
     },
     {
       "kind": "definitize",
-      "day": 22,
+      "day": 23,
       "arrangement": "turnkey",
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     }
   ]
 }

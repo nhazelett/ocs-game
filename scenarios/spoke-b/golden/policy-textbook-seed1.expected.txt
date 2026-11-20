@@ -26,68 +26,68 @@ Day 1
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
   ACTION    Written purchase order started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480.
-  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2,640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2,640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for MSgt Joan Avery and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated as each delivery is paid.
   VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1,287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      Survey team dispatched to Third Island; findings due day 3.
-  DONE      CE small buys: none worked today (no hours left); 4 waiting.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  DONE      CE small buys: none worked today (no hours left); 8 waiting.
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
   ACTION    Written purchase order started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088.
-  ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 528 meals/day for 7 days (Meal service). Paid in cash at each delivery, $4,752 a day, about $33,264 in all. Each delivery is a trip for you and the paying agent: 6 shop hours.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 528 meals/day for 7 days (Meal service). Paid in cash at each delivery, $4,752 a day, about $33,264 in all. Each delivery is a trip for MSgt Joan Avery and the paying agent: 6 shop hours.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for food service at Spoke C; performance starts day 12, ends day 18. Obligated as each delivery is paid.
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   SURVEY    Survey of Third Island returned: grid power available; no fuel point; water: well; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Third Island Water Works, Coastal Provisions; Coastal Provisions stocks food service from Main Island, so its deliveries ride the surface link.
   DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 15, ends day 74. Obligated $693,900.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 19. Obligated $15,369.
-  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 12 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
-  DONE      CE small buys: none worked today (no hours left); 12 waiting.
+  DONE      Written purchase order awarded to Third Island Water Works for water at Spoke C; performance starts day 11, ends day 70. Obligated $51,480.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time); 3 still waiting.
 Day 4
-  DONE      Written purchase order awarded to Third Island Water Works for water at Spoke C; performance starts day 12, ends day 71. Obligated $51,480.
-  REJECTED  Written purchase order with Third Island Water Works for food service at Spoke C could not be awarded on day 4: The O&M line has $139,251 left of the $209,088 needed.
-  DONE      CE small buys: none worked today (no hours left); 16 waiting.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 5
-  DONE      CE small buys: none worked today (no hours left); 21 waiting.
+  REJECTED  Written purchase order with Third Island Water Works for food service at Spoke C could not be awarded on day 5: The O&M line has $139,251 left of the $209,088 needed.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
   START     Fuel at Spoke B from the partner force began, 1,287 gal/day.
   CONFUSED  Execution confusion on Coastal Provisions water at Spoke C: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 6
-  DONE      CE small buys: none worked today (no hours left); 26 waiting.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
   DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
-  DONE      CE small buys: 12 worked today (6 h of shop time); 21 still waiting.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 514 kW/day.
 Day 8
-  DONE      CE small buys: 23 worked today (11.5 h of shop time, 4 on cards).
+  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 9
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 10
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 11
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
 Day 12
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     Food service at Spoke C from Coastal Provisions began, 528 meals/day.
-  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
+  ACTION    Termination of Coastal Provisions water at Spoke C started.
   SURVEY    Forecast from your Third Island survey contacts: Weather closes the Third Island crossing. No that arrangement sailings days 14 to 15.
+  END       Coastal Provisions water at Spoke C terminated; performance ends day 13.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 14
-  ACTION    Termination of Coastal Provisions water at Spoke C started.
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
   CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
-  END       Coastal Provisions water at Spoke C terminated; performance ends day 14.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
+  END       Coastal Provisions water at Spoke C ended.
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  END       Coastal Provisions water at Spoke C ended.
   START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
 Day 16
   ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
@@ -96,7 +96,7 @@ Day 16
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 17
   ACTION    Termination of Harbor Equipment Co power at Spoke B started.
-  CASH      Cash on hand down to $20,432; FM replenishment expected day 20.
+  CASH      Cash on hand down to $21,488; FM replenishment expected day 20.
   END       Harbor Equipment Co power at Spoke B terminated; performance ends day 17. $2,364 deobligated back to the O&M line.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 18
@@ -175,9 +175,9 @@ Spoke C Waste removal         ..........................
 
 SCORECARD
   Mission output 92% (sortie generation 99%, throughput 99%, endurance 97%, resilience 58%)
-  Obligated $795,008; incurred $428,708; incurred but not obligated $0
+  Obligated $793,952; incurred $428,312; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 2; shop hours worked 223; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 0
+  Surveys 2; shop hours worked 214; payment errors 0; execution-confusion days 1; vendor failures 5; declined BPA calls 0
   spokeBSite.power: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 1 day(s) down, 0 degraded, lowest 0%
@@ -216,4 +216,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.92)
 
-State hash 11378773db35879e54b9750567baf3e447e3e1b47c65a27a827bba38eeb9d196
+State hash 1607ee75ba4fb4ae12d82faa27364856c8d9f39c1e99c90bc809f22f71610f74

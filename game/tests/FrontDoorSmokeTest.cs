@@ -69,14 +69,15 @@ public partial class FrontDoorSmokeTest : Node
             File.WriteAllText(shell.AutosavePath, "{");
             shell.ContinueGameButton.EmitSignal(Button.SignalName.Pressed);
             Require(shell.AtFrontDoor && shell.Session.StateHash == hash, "Malformed saved deployment is refused without losing the open session.");
-            // A one-person shop still lists its real work, with no impossible transfer controls.
+            // Spoke B's shop is the team (DESK-12): your real work is listed with the hand-over picker. The one-person
+            // shop's view (no picker, no hand-over help) is checked on sustainment in TeamSmokeTest.
             shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
             DeployWithoutPrep(shell);
             Pick(shell.PersonContactInput, "finance"); shell.VisitButtons["finance"].EmitSignal(Button.SignalName.Pressed);
-            Require(shell.Session.View!.Team.Count == 1 && shell.Session.View.Team.Single().Work.Count > 0, "Solo fixture has real unfinished work.");
-            shell.TeamButtons.Values.Single().EmitSignal(Button.SignalName.Pressed);
-            Require(shell.WorkAssignees.Count == 0 && shell.WorkAssignButtons.Count == 0, "Solo work offers no hand-over picker or button.");
-            Require(!shell.TeamPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains("hand it over")), "Solo help does not tell the player to hand work over.");
+            Require(shell.Session.View!.Team.Count == 3 && shell.Session.View.Team.Single(m => m.Id == "you").Work.Count > 0, "Spoke B's team fixture has your real unfinished work.");
+            shell.TeamButtons["you"].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.WorkAssignees.Count > 0, "Your work offers the hand-over picker.");
+            Require(shell.TeamPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains("hand it over")), "Team help tells the player work stays with them until handed over.");
             await Capture("-solo-team"); shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
             var today = shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body");

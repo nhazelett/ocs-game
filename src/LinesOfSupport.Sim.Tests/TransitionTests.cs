@@ -9,7 +9,8 @@ public class TransitionTests
 {
     private static string Golden(string file) => Path.Combine(Repo.Scenario("spoke-b-90"), "golden", file);
 
-    /// <summary>The approach 4 paired log up to the start of <paramref name="day"/>, without its hand termination of gens.</summary>
+    /// <summary>The approach 4 paired log up to the start of <paramref name="day"/>, without its hand termination of gens.
+    /// With the team (DESK-12) MSgt Avery's turnkey UCA is awarded on day 6, so plans to it are made from day 7.</summary>
     private static Session PairedOn(int day, Func<PlayerAction, bool>? keep = null)
     {
         var log = InputLog.Load(Golden("approach4-external-with-uca-bridge.json"));
@@ -27,9 +28,9 @@ public class TransitionTests
         var byHand = Replay.Run(Repo.Load("spoke-b-90"), InputLog.Load(Golden("approach4-external-with-uca-bridge.json")));
         var planned = Replay.Run(Repo.Load("spoke-b-90"), InputLog.Load(Golden("approach4-transition-plans.json")));
         Assert.Equal(byHand.Arrangements.Single(a => a.Id == "gens").EndDay, planned.Arrangements.Single(a => a.Id == "gens").EndDay);
-        Assert.Equal(19, planned.Arrangements.Single(a => a.Id == "gens").EndDay);
-        // The second plan cuts the turnkey UCA over to the external contract after two full days instead of running to day 51.
-        Assert.Equal(49, planned.Arrangements.Single(a => a.Id == "turnkey").EndDay);
+        Assert.Equal(20, planned.Arrangements.Single(a => a.Id == "gens").EndDay);
+        // The second plan cuts the turnkey UCA over to the external contract after two full days instead of running to day 52.
+        Assert.Equal(50, planned.Arrangements.Single(a => a.Id == "turnkey").EndDay);
         var views = planned.View.Transitions();
         Assert.All(views, v => Assert.Equal("clean", v.Status));
         Assert.All(views, v => Assert.Equal(3, v.BothRunningDays));
@@ -71,12 +72,12 @@ public class TransitionTests
     [Fact]
     public void An_on_day_handoff_ends_the_outgoing_on_that_day()
     {
-        var s = PairedOn(6);
+        var s = PairedOn(7);
         Assert.True(s.Apply(Plan("bridge", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 21 }).Accepted);
         PlayTo(s, 23);
         Assert.Equal(21, s.Arrangements.Single(a => a.Id == "gens").EndDay);
         Assert.Equal("clean", s.View.Transitions().Single().Status);
-        Assert.Equal(5, s.View.Transitions().Single().BothRunningDays); // days 17 to 21
+        Assert.Equal(4, s.View.Transitions().Single().BothRunningDays); // days 18 to 21
     }
 
     [Fact]
@@ -85,25 +86,25 @@ public class TransitionTests
         var s = Replay.Run(Repo.Load("spoke-b-90"), InputLog.Load(Golden("approach4-transition-gap.json")));
         var t = s.Transitions.Single(x => x.Id == "ucaToEnduring");
         Assert.Equal(TransitionOutcome.Gap, t.Outcome);
-        Assert.Equal(41 - s.Rules.Transition.WarnDays, t.WarningDay);
+        Assert.Equal(42 - s.Rules.Transition.WarnDays, t.WarningDay);
         var plan = s.Records.Single(r => r.Kind == RecordKind.Action && r.Subject == "ucaToEnduring");
-        Assert.Contains("a gap of at least 5 days (days 42 to 46)", plan.Text);
+        Assert.Contains("a gap of at least 5 days (days 43 to 47)", plan.Text);
         var warning = s.Records.Single(r => r.Id == t.WarningRecordId);
         Assert.Equal(RecordKind.Transition, warning.Kind);
         Assert.Equal(1, s.Metrics["transitions.gap"]);
 
-        var gap = s.View.Debrief().Gaps.Single(g => g.StartDay == 42);
+        var gap = s.View.Debrief().Gaps.Single(g => g.StartDay == 43);
         Assert.Equal(GapTag.Avoidable, gap.Tag);
         var f = gap.Factors.Single(x => x.Kind == GapFactorKind.TransitionGap);
         Assert.Equal(GapTag.Avoidable, f.Tag);
         Assert.Contains(t.WarningRecordId!, f.RecordIds);
-        Assert.Contains("flagged it on day 36", f.Text);
+        Assert.Contains("flagged it on day 37", f.Text);
     }
 
     [Fact]
     public void The_morning_board_shows_the_warning()
     {
-        var s = Replay.Run(Repo.Load("spoke-b-90"), InputLog.Load(Golden("approach4-transition-gap.json")), stopAfterDay: 36);
+        var s = Replay.Run(Repo.Load("spoke-b-90"), InputLog.Load(Golden("approach4-transition-gap.json")), stopAfterDay: 37);
         var item = s.View.MorningBoard().Items.Single(i => i.Text.StartsWith("Transition planner:", StringComparison.Ordinal));
         Assert.Equal(BoardSeverity.Warning, item.Severity);
         Assert.Equal(BoardLinkKind.Arrangement, item.LinkKind);
@@ -114,7 +115,7 @@ public class TransitionTests
     public void A_lost_incoming_is_flagged_and_its_plan_ends_in_a_gap()
     {
         // The turnkey UCA is terminated before it starts: the plan's incoming will not arrive.
-        var s = PairedOn(6);
+        var s = PairedOn(7);
         Assert.True(s.Apply(Plan("bridge", "gens", "turnkey")).Accepted);
         Assert.True(s.Apply(new TerminateAction { Arrangement = "turnkey" }).Accepted);
         PlayTo(s, 8);
@@ -131,13 +132,13 @@ public class TransitionTests
     [Fact]
     public void A_plan_to_an_external_request_projects_its_start_range_until_the_award()
     {
-        var s = PairedOn(4, a => a is not AwardAction { Id: "turnkey" });
+        var s = PairedOn(5, a => a is not AwardAction { Id: "turnkey" });   // the request goes through on day 4
         Assert.True(s.Apply(Plan("toEnduring", "gens", "extPower")).Accepted);
         var before = s.View.Transitions().Single();
         Assert.Null(before.IncomingStartDay);
         Assert.NotNull(before.IncomingStartMin);
         Assert.True(before.IncomingStartMax > before.IncomingStartMin);
-        PlayTo(s, 16);
+        PlayTo(s, 17);   // the external office awards it on day 17
         var after = s.View.Transitions().Single();
         var ext = s.Arrangements.Single(a => a.Id == "extPower");
         Assert.Equal(ext.StartDay, after.IncomingStartDay);
@@ -157,7 +158,7 @@ public class TransitionTests
         [Plan("p", "gens", "turnkey") with { Owner = "sco" }, "Gap owner sco"],
         [Plan("p", "gens", "turnkey") with { Handoff = "whenever" }, "Handoff whenever"],
         [Plan("p", "gens", "turnkey") with { Handoff = "onDay" }, "needs a cut-over day"],
-        [Plan("p", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 6 }, "after today"],
+        [Plan("p", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 7 }, "after today"],
         [Plan("p", "gens", "turnkey") with { Handoff = "onDay", CutoverDay = 67 }, "ends (day 66)"],
     ];
 
@@ -165,7 +166,7 @@ public class TransitionTests
     [MemberData(nameof(Stops))]
     public void Hard_stops_reject_the_plan_and_the_preview_matches_without_changing_state(PlanTransitionAction plan, string expected)
     {
-        var s = PairedOn(6);
+        var s = PairedOn(7);
         var hash = s.StateHash();
         var preview = s.View.PreviewTransition(plan);
         Assert.False(preview.Accepted);
@@ -180,12 +181,12 @@ public class TransitionTests
     [Fact]
     public void An_outgoing_in_an_open_plan_cannot_be_planned_twice_and_a_preview_changes_nothing()
     {
-        var s = PairedOn(6);
+        var s = PairedOn(7);
         var hash = s.StateHash();
         var preview = s.View.PreviewTransition(Plan("bridge", "gens", "turnkey"));
         Assert.True(preview.Accepted);
         Assert.Equal("planned", preview.Plan!.Status);
-        Assert.Equal(17, preview.Plan.IncomingStartDay);
+        Assert.Equal(18, preview.Plan.IncomingStartDay);
         Assert.Equal(hash, s.StateHash());
         Assert.True(s.Apply(Plan("bridge", "gens", "turnkey")).Accepted);
         var again = s.Apply(Plan("bridge2", "gens", "turnkey"));

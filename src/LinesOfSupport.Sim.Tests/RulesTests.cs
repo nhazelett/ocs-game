@@ -72,7 +72,8 @@ public class RulesTests
     {
         var s = NewSpokeB();
         Assert.True(s.Apply(new AwardAction { Id = "u", Instrument = "uca", Vendor = "vendorB", Site = "spokeBSite", Capability = "power", Lines = ["generation", "fuelSupply", "operator", "maintenance"], Quantity = 470, DurationDays = 60, FundingLine = "om1" }).Accepted);
-        AdvanceTo(s, 18);
+        // Played to the day after it starts (with the team, DESK-12, you write it alone, so it starts later than day 17).
+        while (s.Arrangements.SingleOrDefault(a => a.Id == "u") is not { } started || s.Day <= started.StartDay) s.AdvanceDay();
         var uca = s.Arrangements.Single(a => a.Id == "u");
         Assert.NotNull(uca.Uca);
         if (!uca.Uca!.ProposalReceived)

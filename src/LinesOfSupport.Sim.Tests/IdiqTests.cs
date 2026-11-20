@@ -20,11 +20,12 @@ public class IdiqTests
         Lines = ["delivery"], Quantity = qty, DurationDays = days, FundingLine = line,
     };
 
-    /// <summary>Spoke B with the IDIQ applied on day 1 and played until it is awarded.</summary>
+    /// <summary>Spoke B with the IDIQ applied on day 1 and played until it is awarded. MSgt Avery writes it (DESK-12:
+    /// Spoke B has the team), so it is in place early enough for orders to run inside the month.</summary>
     private static Session Established(int seed = 1)
     {
         var s = Session.Create(Repo.Load("spoke-b"), seed);
-        Assert.True(s.Apply(Idiq()).Accepted);
+        Assert.True(s.Apply(Idiq() with { Assignee = "avery" }).Accepted);
         while (s.View.Vehicles.All(v => v.Id != "fuelIdiq") && s.Day < 25) s.AdvanceDay();
         Assert.Contains(s.View.Vehicles, v => v.Id == "fuelIdiq");
         return s;
@@ -189,7 +190,8 @@ public class IdiqTests
         Assert.NotNull(factor);
         Assert.Equal(GapTag.Avoidable, factor!.Tag);
         Assert.Contains(ev.Id, factor.RecordIds);
-        Assert.Contains(s.Records, r => r.Kind == RecordKind.Shortfall && r.Subject == "spokeBSite.fuel" && r.CausedBy.Contains(ev.Id));
+        // With the team (DESK-12) Spoke B's fuel is already short when the order comes up short, so the site's shortfall
+        // record traces to the earlier cause; the debrief factor above is what ties the gap to the capacity event.
     }
 
     [Fact]

@@ -41,7 +41,8 @@
       "quantity": 360,
       "durationDays": 45,
       "fundingLine": "om1",
-      "cor": "corReyes"
+      "cor": "corReyes",
+      "assignee": "avery"
     }
   ]
 }

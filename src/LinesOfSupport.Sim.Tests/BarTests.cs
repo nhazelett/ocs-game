@@ -13,7 +13,7 @@ public class BarTests
         => InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-17-review", name + "-input-log.json")) with { SavedDay = null };
 
     private static Session Play(string name, string scenario, int? throughDay = null)
-        => Replay.Run(Repo.Load(scenario), Log(name), throughDay);
+        => Divided.Replay(Repo.Load(scenario), Log(name), throughDay);
 
     [Fact]
     public void The_turnover_says_the_bar_in_the_commanders_words_with_the_length()
@@ -60,12 +60,16 @@ public class BarTests
     }
 
     [Fact]
-    public void A_line_with_its_allowance_used_up_is_amber_and_met_if_it_holds()
+    public void A_line_with_its_allowance_used_up_is_amber_and_missed_on_the_next_bad_day()
     {
-        var mid = Play("spoke-b", "spoke-b", 19).View.Bar().Lines.Single(l => l.Id == "powerUp");
+        // The review play replayed with the team (DESK-12, work divided as the player would): power is out one day by
+        // day 18, which the line allows, and a second on day 19, which it does not.
+        var mid = Play("spoke-b", "spoke-b", 18).View.Bar().Lines.Single(l => l.Id == "powerUp");
         Assert.Equal(BarState.AtRisk, mid.State);
         Assert.Equal("Power at Spoke B: out 1 day so far.", mid.Text);
-        Assert.Equal(BarState.Met, Play("spoke-b", "spoke-b").View.Debrief().Bar!.Lines.Single(l => l.Id == "powerUp").State);
+        var next = Play("spoke-b", "spoke-b", 19).View.Bar().Lines.Single(l => l.Id == "powerUp");
+        Assert.Equal(BarState.Missed, next.State);
+        Assert.Equal("Power at Spoke B: out 2 days so far.", next.Text);
     }
 
     [Fact]

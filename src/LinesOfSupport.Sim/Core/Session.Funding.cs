@@ -104,7 +104,8 @@ public sealed partial class Session
     /// Debrief: a day with nothing supplying the capability that also fell in a window with no money that could pay
     /// for it. Avoidable when money was usable before the window opened (the fiscal-year end is on the ledger from the
     /// line's release, and a service awarded before it may run up to 12 months past it); unforeseeable when no line
-    /// ever could have paid. Awards rejected for money at completion are named.
+    /// ever could have paid. Awards rejected for money at completion are named, on any day of the window (DESK-12: one
+    /// written by a single person can complete a day or two into it).
     /// </summary>
     private (string Key, Views.GapFactor F)? FundingLapseFactor(string siteId, string capId, int d)
     {
@@ -126,7 +127,7 @@ public sealed partial class Session
             text += f.AvailableDay > f.PlannedAvailableDay
                 ? $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}, {Plural(f.AvailableDay - f.PlannedAvailableDay, "day")} late" + (lateNotices.Count > 0 ? $" (the comptroller warned on day {lateNotices[0].Day})." : ".")
                 : $" {Upper(NameOf(f.Id))} was released day {f.AvailableDay}.";
-        var rejected = _fundingRejections.Where(x => x.SiteId == siteId && x.CapabilityId == capId && x.Day >= from && x.Day <= d).ToList();
+        var rejected = _fundingRejections.Where(x => x.SiteId == siteId && x.CapabilityId == capId && x.Day >= from && x.Day <= to).ToList();
         if (rejected.Count > 0) text += $" {Upper(string.Join(", ", rejected.Select(x => ArrName(x.AwardId))))} reached award with no money to pay for it.";
         var before = from > 1 && Enumerable.Range(1, from - 1).Any(x => FundedOn(x, capId));
         var ids = new List<string>();

@@ -39,7 +39,8 @@
       "quantity": 470,
       "startDay": 7,
       "durationDays": 60,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     },
     {
       "kind": "setLine",
@@ -65,7 +66,8 @@
       "quantity": 2640,
       "startDay": 5,
       "durationDays": 60,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "avery"
     },
     {
       "kind": "award",
@@ -81,7 +83,8 @@
       "quantity": 2640,
       "startDay": 5,
       "durationDays": 12,
-      "fundingLine": "om1"
+      "fundingLine": "om1",
+      "assignee": "novak"
     },
     {
       "kind": "setLine",

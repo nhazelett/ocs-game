@@ -42,8 +42,9 @@ public partial class DisruptionSmokeTest : Node
             }
             Require(forecastSeen && arrivalSeen && differenceSeen, "Fixture exercises both notices and the population jump.");
             Require(shell.Session.StateHash == expected.StateHash(), "Disruption displays do not change the run.");
-            // A population-caused sizing gap requires arrangements sized to the old plan.
-            Scenario(shell, "spoke-b"); Replay(shell, "approach3 uca turnkey with bridge");
+            // A population-caused sizing gap requires arrangements sized to the old plan (with the team, DESK-12, approach 2
+            // carries the Spoke C food gap that approach 3 used to).
+            Scenario(shell, "spoke-b"); Replay(shell, "approach2 fix scope and bridge");
             while (!shell.Session.View!.Finished) Step(shell);
             var gap = shell.DisplayedDebrief!.Gaps.First(g => g.Factors.Any(f => f.Kind == GapFactorKind.PopulationJump));
             shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index).EmitSignal(Button.SignalName.Pressed);
