@@ -67,7 +67,9 @@ public partial class AwardChoicesSmokeTest : Node
             await ReachFunding();
             Pick(shell.VendorInput,"vendorC");
             shell.QuantityInput.Value += 1;
-            Require(shell.PendingAward is null && shell.AwardPreview is null,"Editing an amount cannot bypass a missing ordering vehicle.");
+            Require(shell.CurrentAwardChoices!.Vehicles.Count(v => v.Available) == 1
+                && shell.PendingAward?.Vehicle == "bosBpa" && shell.AwardPreview is not null,
+                "The only fitting vehicle is selected automatically and editing an amount keeps its exact preview.");
             Pick(shell.VehicleInput,"bosBpa");
             Require(shell.PendingAward is not null && shell.AwardPreview is not null,"A complete structural selection reaches the real amount-dependent preview.");
             await Capture("full-award",shell.FundingInput);

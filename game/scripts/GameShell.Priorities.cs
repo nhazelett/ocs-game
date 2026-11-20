@@ -43,6 +43,8 @@ public partial class GameShell
                 UpdateAwardPreview();
             };
         }
+        AwardTrade = DeskUi.Label(); AwardTrade.Hide(); awardPanel.AddChild(AwardTrade);
+        awardPanel.AddChild(priorityHelp); priorityHelp = null;
         RefreshPriorityToggles(view.Finished);
     }
 
