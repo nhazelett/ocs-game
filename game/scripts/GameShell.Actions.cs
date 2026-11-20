@@ -207,7 +207,9 @@ public partial class GameShell
         if (target.Card is null && view.OwnInitiative.FirstOrDefault(t => t.SiteId == target.Site && t.CapabilityId == target.Capability) is { } initiative)
         {
             InitiativeDetails = DeskUi.Label(initiative.Why + "\nWho sells it: " + string.Join(", ", initiative.Vendors.Select(view.NameOf)) + "."
-                + (initiative.Have ? "\nThe office has one running today." : ""));
+                + (initiative.Have ? view.Rules.Model.Capabilities.Single(c => c.Id == initiative.CapabilityId).Lift
+                    ? "\nA boat to " + view.Scenario.Islands.Single(i => i.Id == view.Scenario.Sites.Single(s => s.Id == initiative.SiteId).Island).Name + " is running today."
+                    : "\nThe office has one running today." : ""));
             awardPanel.AddChild(InitiativeDetails);
         }
         var editor = view.ActionEditor(target.Site, target.Capability, target.Card)!; CurrentActionEditor = editor;
