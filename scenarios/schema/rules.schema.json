@@ -427,7 +427,8 @@
             "ratificationShopDays",
             "paymentErrorReworkHours",
             "hhqInquiryResponseHours",
-            "terminationShopDays"
+            "terminationShopDays",
+            "cardCancelShopHours"
           ],
           "properties": {
             "surveyShopHours": {
@@ -453,6 +454,11 @@
             "terminationShopDays": {
               "type": "integer",
               "minimum": 0
+            },
+            "cardCancelShopHours": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Shop hours to cancel a card buy with the vendor (DESK-94): a short call, no notice, no settlement."
             }
           }
         },

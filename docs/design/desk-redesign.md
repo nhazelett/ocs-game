@@ -401,3 +401,15 @@ Sim notes (Fable):
 - The small-buy squeeze: not brought back. Since DESK-12 three people share 24 hours and walk-in buys get worked; the commander's confidence hit stays a consequence of an overloaded shop (textbook takes it in at most one seed of 200 now), not a scripted cost of Spoke B.
 - The UCA below the threshold is not in this row; it is DESK-134, with its design: a written order with a vendor that must price a complex service first (`qualifyingProposalLagDays`, Meridian) waits for that proposal, and a UCA lets the work start while it comes. That is the real reason for a UCA, and it touches Spoke B, Spoke B 90 and sustainment, their policies and goldens, so it gets its own PR.
 - Left out: operators sold separately, borrowing operators from another unit, and any change to the tutorial's numbers.
+
+## 21. Cancelling a card buy (DESK-94, 20 Nov 2026)
+
+PR 308's capture of a 7-day card buy offered "End this contract" at 14 hours of the player's time, the same as ending a 60-day contract. A card buy is not a contract: it is cancelled with the vendor in a short call.
+
+Sim notes (Fable):
+
+- `TerminateAction` on a card buy is a cancel: 1 shop hour (rules `cardCancelShopHours`), no notice, no claim. The work reads "Cancel the card buy for Island Mart water at Hub"; the record and the decisions list read "Cancel this card buy: Island Mart water at Hub, a short call to the vendor, with no notice and nothing owed for days not delivered." Not yet delivered, it never starts; delivering, it supplies through the day the call is made. What was not delivered is credited back to the card (the end record says how much) and no longer counts against the month's limit.
+- `SessionView.EndWords(id)` gives the button and the line under it: "Cancel this card buy" with "A short call to Island Mart cancels it before its first delivery, and the whole charge comes back off the card." (or "...stops it at the end of the day the call is made...") for a card buy; "End this contract" with the line the game shows today for a contract or a call; null where `TerminateBlocked` says no. The hours and the day come from the terminate preview as before.
+- A performance issue on a card buy that was cancelled says "card buy cancelled", not "terminated". No golden moves: no log or policy ends a card buy.
+- Codex (DESK-136): the contract page and its confirmation use `EndWords` on a card buy.
+- Left out: a cash (SF 44) cancel, a restocking fee, a card dispute with the bank, and partial cancellation.

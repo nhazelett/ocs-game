@@ -259,6 +259,11 @@ public sealed class SessionView
     public string? TerminateBlocked(string arrangementId)
         => _s.Arrangements.FirstOrDefault(a => a.Id == arrangementId) is { } a ? _s.NotOursToEnd(a) : null;
 
+    /// <summary>How ending the arrangement reads (DESK-94): "Cancel this card buy" with its line for a card buy, "End this
+    /// contract" for a contract or a call; null where <see cref="TerminateBlocked"/> says no, for a coordination, or for an
+    /// unknown id. The shop hours and the day come from the terminate preview.</summary>
+    public ArrangementEndView? EndWords(string arrangementId) => _s.BuildEndWords(arrangementId);
+
     /// <summary>What can be picked together in the award editor given the vendor and instrument already picked, with a
     /// plain reason on everything that cannot (M2R-35). Null for an unknown site or capability.</summary>
     public AwardChoicesView? AwardChoices(string siteId, string capabilityId, string? cardId = null, string? vendorId = null, string? instrumentId = null)

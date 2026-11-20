@@ -888,6 +888,8 @@ public sealed record WorkRulesData
     public int PaymentErrorReworkHours { get; init; }
     public int HhqInquiryResponseHours { get; init; }
     public int TerminationShopDays { get; init; }
+    /// <summary>DESK-94: a card buy is cancelled with the vendor in a short call, not terminated.</summary>
+    public int CardCancelShopHours { get; init; }
 }
 
 public sealed record ModelData
