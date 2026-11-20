@@ -638,3 +638,11 @@ public sealed record BarView(PersonView? From, int Days, bool Final, string Spok
 /// <summary>How ending an arrangement reads on its own page (DESK-94): the button's words and the line under it. A card buy
 /// is cancelled with the vendor ("Cancel this card buy"); a contract or a call is terminated ("End this contract").</summary>
 public sealed record ArrangementEndView(string Button, string Says);
+
+/// <summary>D37 (DESK-97): "Add to this contract" on a contract's own page. Can is false with Why (one plain sentence) when
+/// the Sim says no; Button names the parts ("Add operators to this contract"); Says is the line under it (hours, price for
+/// the days left, the first day). Parts are line ids for <c>ModifyAction.Lines</c>. Added says what earlier changes added
+/// and from which day ("Operators added from day 10."), whether or not more can be added.</summary>
+public sealed record ModifyView(bool Can, string? Why, IReadOnlyList<string> Parts, string Button, int ShopHours, long PriceCents,
+    long DailyCents, int FromDayMin, int FromDayMax, string? Says, IReadOnlyList<string> Added);
+

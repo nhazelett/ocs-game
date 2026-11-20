@@ -188,6 +188,7 @@ public sealed partial class Session
         CoordinateAction x => BuildCoordinatePreview(x),
         DefinitizeAction x => BuildDefinitizePreview(x),
         TerminateAction x => BuildTerminatePreview(x),
+        ModifyAction x => BuildModifyPreview(x),
         CureNoticeAction x => BuildCureNoticePreview(x),
         ResolveCommitmentAction x => BuildResolvePreview(x),
         AssignAction x => BuildAssignPreview(x),

@@ -54,6 +54,7 @@ public sealed partial class Session
             EngageJ4Action j => j.Id,
             DefinitizeAction d => d.Arrangement,
             TerminateAction t => t.Arrangement,
+            ModifyAction m => m.Arrangement,
             _ => null,
         };
         return id is null ? null : _arrangements.FirstOrDefault(a => a.Id == id);
@@ -142,6 +143,11 @@ public sealed partial class Session
                 ? $"Waiting until day {work.WaitUntilDay}, then about {HoursSaid(work.HoursRemainingMilli)} of work: done about day {done}."
                 : $"In work: done about day {done}.";
         }
+        // DESK-97: a change says what it added and from when, not how the contract is running.
+        if (action is ModifyAction && work?.CompletedDay is { } signed && arr is not null)
+            return arr.Added.Where(x => x.RecordId == work.CauseId).ToList() is { Count: > 0 } parts
+                ? $"Signed on day {signed}: {JoinWords(parts.Select(x => LineLabel(arr.CapabilityId, x.Line).ToLowerInvariant()).ToList())} from day {parts[0].FromDay}."
+                : $"Not signed: it was no longer running on day {signed}.";
         if (arr is not null)
             return arr.Status switch
             {

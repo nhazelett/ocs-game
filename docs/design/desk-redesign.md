@@ -413,3 +413,16 @@ Sim notes (Fable):
 - A performance issue on a card buy that was cancelled says "card buy cancelled", not "terminated". No golden moves: no log or policy ends a card buy.
 - Codex (DESK-136): the contract page and its confirmation use `EndWords` on a card buy.
 - Left out: a cash (SF 44) cancel, a restocking fee, a card dispute with the bank, and partial cancellation.
+
+## 22. Add to this contract (DESK-97, 20 Nov 2026)
+
+D37 built in the Sim. Codex's DESK-98 puts the button on a contract's own page.
+
+Sim notes (Fable):
+
+- `ModifyAction` (arrangement, part line ids; empty means every part that can be added). Offered on a purchase order, a BPA call or an IDIQ order (a UCA once definitized) whose request has an operator or maintenance part the buy left out and whose vendor sells it. 4 shop hours (rules `modificationShopHours`). One change in work at a time.
+- Price: each part costs 25% of the contract's daily price a day (rules `modificationPartPricePermille`, a placeholder) for the days from the day after signing to the contract's end, obligated from the contract's own line when signed. A line without the money refuses the change with the funding sentence. The vendor's price for the buy itself never depended on the parts ticked, so the change is a real extra cost of learning the requirement late; that is the lesson, and a cheaper buy without a part is left out.
+- From the day after signing the arrangement no longer draws the missing part's failure odds; the debrief and "who knew" read the parts on the failure's own day, so failures before keep their reason. Costs incur from that day too, and a later termination keeps what was delivered.
+- `SessionView.ModifyOptions(id, assignee)` (`ModifyView`): whether it can be changed, why not as one sentence ("The request does not ask for operators. Find out what it needs first.", "Harbor Equipment Co does not offer operators. Buy that from someone who does.", "A card buy cannot be changed. Buy what it left out on its own, or cancel it and buy again."), the parts, the button ("Add operators to this contract"), the line under it ("4 hours to write the change; $1,815 for the days left, obligated when it is signed. Operators from day 10."), and what earlier changes added ("Operators added from day 10."). The decisions list reads "Day 9: Add operators to Coastal Rentals material handling equipment at Hub: ..." and, once signed, "Signed on day 9: operators from day 10."
+- Tests: tutorial forklifts from Coastal Rentals without drivers, changed on day 9, have no failure for want of operators from day 10 in 200 seeds (and still do without the change); refusals with their reasons. No golden moves (no log or policy modifies; the textbook asks before it buys).
+- Left out, as D37 says: quantity, dates or price of what is bought, taking a part off, a part the vendor does not sell, an approval chain, and a modifications screen.

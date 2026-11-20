@@ -239,7 +239,7 @@ public sealed partial class Session
                 {
                     case RecordKind.VendorFailure:
                     {
-                        var missing = MissingPlantParts(a, cap).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();   // DESK-59
+                        var missing = MissingPlantParts(a, cap, d).Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList();   // DESK-59; DESK-97 on the day
                         // Slips that opened a performance issue, then an authored drop the player's action would have
                         // prevented (M3-18).
                         if (missing.Count == 0 && DropFactor(a, d, r.Id) is { } drop)

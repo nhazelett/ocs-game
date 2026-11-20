@@ -218,7 +218,7 @@ public static class Counterfactual
     private static string KindOf(PlayerAction a) => a switch
     {
         SurveyAction => "survey", SetLineAction => "setLine", AwardAction => "award", CoordinateAction => "coordinate",
-        DefinitizeAction => "definitize", TerminateAction => "terminate", ResolveCommitmentAction => "resolveCommitment",
+        DefinitizeAction => "definitize", TerminateAction => "terminate", ModifyAction => "modify", ResolveCommitmentAction => "resolveCommitment",
         EstablishBpaAction => "establishBpa", EstablishIdiqAction => "establishIdiq", CureNoticeAction => "cureNotice", DesignateCorAction => "designateCor", RequestExternalSupportAction => "requestExternalSupport", AcsaOrderAction => "acsaOrder", HostNationRequestAction => "hostNationRequest", _ => a.GetType().Name,
     };
 }
