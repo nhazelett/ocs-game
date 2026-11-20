@@ -68,7 +68,7 @@ public partial class GameShell
         var supplies = $"{DeskUi.Quantity(arrangement.QuantityMilli / 1000m)} {unit} a day at {site}, days {arrangement.StartDay} to {arrangement.EndDay}";
         var scope = string.Join(", ", view.Rules.Model.Capabilities.Single(c => c.Id == arrangement.CapabilityId).Lines
             .Where(line => arrangement.Lines.Contains(line.Id)).Select(line => line.Label?.ToLowerInvariant() ?? "support"));
-        contractContents.AddChild(DeskUi.Label($"{ArrangementStatusText(arrangement.Status)}. Supplies {supplies}."));
+        contractContents.AddChild(DeskUi.Label($"{ArrangementStatusText(view, arrangement)}. Supplies {supplies}."));
         if (scope.Length > 0) contractContents.AddChild(DeskUi.Label("Includes " + scope + "."));
         contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement)));
         if (arrangement.NoticeDays is { } days)
@@ -112,10 +112,10 @@ public partial class GameShell
         return (arrangement.Instrument == "gpc" ? "Paid from the card program.\n" : "") + $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
     }
 
-    private static string ArrangementStatusText(ArrangementStatus status) => status switch
+    private static string ArrangementStatusText(SessionView view, Arrangement arrangement) => arrangement.Status switch
     {
-        ArrangementStatus.Pending => "Being arranged", ArrangementStatus.Active => "Providing support",
+        ArrangementStatus.Pending => arrangement.StartDay == view.Day ? "Starts today" : $"Starts on day {arrangement.StartDay}", ArrangementStatus.Active => "Providing support",
         ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended",
-        ArrangementStatus.Declined => "Declined", _ => status.ToString()
+        ArrangementStatus.Declined => "Declined", _ => arrangement.Status.ToString()
     };
 }
