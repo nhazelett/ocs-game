@@ -23,14 +23,18 @@ This does not change merge authority, security, access, provenance or correctnes
 5. **Merge pass** again (section 3), then the next item. Repeat until the backlog has nothing unblocked for Fable or the session's budget is spent.
 6. If Fable's backlog is empty, add the next items from SPEC 11's milestone plan (Fable's lane only), then continue.
 
+## 2a. Small game fixes (Nick, 20 Nov 2026)
+Fable may fix a small `game/` defect itself instead of filing a Codex row: a blocker, or a fix of about 20 lines that needs no new screen layout. It runs the affected Godot smoke tests, commits one plain screenshot of the fix in `docs/handoffs/images/`, says so in the handoff, and reviews its own screenshot as section 2b says. Anything larger, any new screen or art, stays a Codex row.
+
 ## 2b. Reviewing the game as a player (added after the M2 gate, 8 Nov 2026)
 - A game PR (anything under `game/`) is reviewed by opening its screenshots (`docs/handoffs/images/*.png`, plain PNG, under 400 KB, not LFS). No screenshot of what changed: comment and do not merge.
 - Before any milestone with a player-facing surface is called ready for Nick, write down what a first-time player sees in the first two minutes, from the screenshots, in the milestone review. If you cannot, it is not ready.
 - An ART PR is reviewed against the bar in docs/reviews/2026-11-12-art-review.md (Nick, 12 Nov: do not be a sycophant; if the quality is not good, send it back). Open the before and after screenshots side by side, do the squint test, and comment with every point it misses. "Better than before" is not a pass.
 - While M2R is open, no new Sim routes or scenarios start (docs/design/opening-and-guidance.md 9). Fable's items are the M2R rows.
+- The DESK gate (Nick, 20 Nov 2026): Claude's plays stand in for Nick's gate play. The Sim depth that waited on the gate (DESK-11, DESK-12, DESK-81, DESK-94, DESK-97) is unblocked. Nick still plays when he chooses, and his findings go ahead of every other row.
 
 ## 2c. Claude plays the game (Nick, 16 Nov 2026)
-Once a day, after PLAY-01, a fresh agent plays the tutorial cold through the play driver and Fable sorts what it found into rows: docs/PLAYTEST-CLAUDE.md. Nick's own plays stay the gate.
+Whenever a play is needed (docs/PLAYTEST-CLAUDE.md section 2: Nick, 20 Nov 2026, no fixed daily slot), a fresh agent plays the tutorial cold through the play driver and Fable sorts what it found into rows: docs/PLAYTEST-CLAUDE.md. Nick's own plays stay the gate.
 
 ## 3. Merge pass (after every completed task, and at session start)
 
