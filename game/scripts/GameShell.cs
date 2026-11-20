@@ -187,7 +187,7 @@ public partial class GameShell : Control
             ? "Click a site to see why it is short." : "Drag to move. Scroll to zoom.";
         GetNode<Label>("%InboxDay").Text = view is null ? "No deployment started" : session.CompletedDay == 0 ? "Your first morning" : $"What happened on day {session.CompletedDay}";
         var records = (board?.Items ?? []).Where(r => DeveloperTools || r.Category != LinesOfSupport.Sim.Views.BoardCategory.Request || r.LinkKind != LinesOfSupport.Sim.Views.BoardLinkKind.Card).ToArray();
-        GetNode<RichTextLabel>("%InboxRecords").Text = records.Length == 0 ? "No other news for this day." : string.Join("\n\n", records.Select(r => $"[{r.Category} · {r.Severity}] {r.Text}"));
+        GetNode<RichTextLabel>("%InboxRecords").Text = records.Length == 0 ? "No other news for this day." : string.Join("\n\n", records.Select(r => $"[{BoardCategoryText(r.Category)} · {r.Severity}] {r.Text}"));
         GetNode<OptionButton>("%ReplayPicker").Disabled = replays.Length == 0;
         GetNode<Button>("%ReplayButton").Disabled = replays.Length == 0;
         RefreshMorningDesk(view, board);

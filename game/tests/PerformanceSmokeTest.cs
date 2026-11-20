@@ -72,6 +72,19 @@ public partial class PerformanceSmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Vendor-decision screenshot saved.");
             }
+            async Task CaptureAssigned(Button button, AssigneePicker picker, string name, string suffix)
+            {
+                var cost = button.GetParent().GetChildren().OfType<Label>().First(l => l.GetIndex() > button.GetIndex() && l.HasMeta("action_cost"));
+                Require(cost.Text.Contains(name) && cost.Text.Contains("Earliest result: day"), "The cost line names the chosen teammate and result day.");
+                Node? parent = button.GetParent(); while (parent is not null && parent is not ScrollContainer) parent = parent.GetParent();
+                var scroll = (ScrollContainer)parent!;
+                for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                scroll.EnsureControlVisible(cost);
+                await ToSignal(GetTree().CreateTimer(0.15), SceneTreeTimer.SignalName.Timeout);
+                await Capture(suffix);
+                Require(GetViewport().GetVisibleRect().Encloses(button.GetGlobalRect()) && GetViewport().GetVisibleRect().Encloses(cost.GetGlobalRect()), $"Assigned decision is inside the actual release viewport: {suffix}, button {button.GetGlobalRect()}, cost {cost.GetGlobalRect()}, scroll {scroll.GetGlobalRect()}.");
+                Require(scroll.GetGlobalRect().Encloses(picker.ChoiceButtons[picker.Selected].GetGlobalRect()) && scroll.GetGlobalRect().Encloses(cost.GetGlobalRect()), "The chosen teammate and complete cost fit together in the viewport.");
+            }
             var link = shell.TodayPerformanceLinks[tutorialIssue.Id];
             var todayScroll = shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body");
             await Capture("day13-before"); todayScroll.EnsureControlVisible(link); await Capture("day13-today");
@@ -99,8 +112,9 @@ public partial class PerformanceSmokeTest : Node
             Require(reportText.Text == cause.Text && reportText.GetIndex() < contractCure.GetIndex(), "The contract shows the same known performance record as Inbox, before the cure decision.");
             for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             Require(contractEnd.GetParent() == contractResource.GetParent()
-                && contractEnd.GetGlobalRect().Position.Y - contractResource.GetGlobalRect().End.Y < 40
-                && GetViewport().GetVisibleRect().Encloses(reportText.GetGlobalRect()), "The reason is visible and termination follows re-source without an empty band.");
+                && contractEnd.GetIndex() > contractResource.GetIndex()
+                && contractEnd.GetParent().GetChildren().OfType<AssigneePicker>().Any(p => p.GetIndex() > contractResource.GetIndex() && p.GetIndex() < contractEnd.GetIndex())
+                && GetViewport().GetVisibleRect().Encloses(reportText.GetGlobalRect()), "The reason is visible and termination follows re-source with its teammate picker.");
             await Capture("contract-decisions");
             shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
             Require(!shell.ContractView.Visible && shell.MarketOpen && shell.CurrentActionEditor!.SiteId == tutorialIssue.SiteId
@@ -134,13 +148,23 @@ public partial class PerformanceSmokeTest : Node
             shell.PerformanceChoices[(issue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
             Require(shell.RequestWorkspace.Visible && shell.CurrentActionEditor!.SiteId == issue.SiteId && shell.CurrentActionEditor.CapabilityId == issue.CapabilityId, "Re-source opens the matching action editor.");
             Require(shell.Session.StateHash == hash && shell.Session.IsReplay, "Opening re-source neither changes Sim nor takes control.");
-            var result = expected.Apply(new CureNoticeAction { Day = expected.Day, Issue = issue.Id });
+            var result = expected.Apply(new CureNoticeAction { Day = expected.Day, Issue = issue.Id, Assignee = "avery" });
             Require(result.Accepted, "Cure fixture is accepted.");
             shell.OpenContractView(issue.ArrangementId);
-            shell.ContractPerformanceChoices[(issue.Id, "cure")].EmitSignal(Button.SignalName.Pressed);
+            var selectedCure = shell.ContractPerformanceChoices[(issue.Id, "cure")];
+            var curePicker = selectedCure.GetParent().GetChildren().OfType<AssigneePicker>().First();
+            Require(curePicker.Choices.SequenceEqual(shell.Session.View!.AssigneeChoices(new CureNoticeAction { Day = expected.Day, Issue = issue.Id })), "Cure offers the exact Sim teammate forecasts.");
+            curePicker.ChoiceButtons["avery"].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == hash, "Selecting the cure writer spends no hours.");
+            await CaptureAssigned(selectedCure, curePicker, "Avery", "cure-assignee");
+            selectedCure.EmitSignal(Button.SignalName.Pressed);
             Require(shell.ContractPerformanceChoices[(issue.Id, "cure")].Disabled, "The contract cure action refreshes its pending state.");
             Require(shell.Session.StateHash == expected.StateHash() && shell.PerformanceChoices[(issue.Id, "cure")].Disabled, "Cure sends the exact action and prevents a duplicate while in work.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "Cure ActionResult is visible.");
+            Require(shell.Session.View!.Team.Single(m => m.Id == "avery").Work.Any(w => w.Label.StartsWith("Cure notice")), "Avery actually receives the cure work.");
+            Require(LinesOfSupport.Sim.Replay.Resume(bundle, shell.Session.CreateSave()).StateHash() == expected.StateHash(), "The cure assignee survives save and replay.");
+            selectedCure.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == expected.StateHash(), "The old cure button cannot duplicate work.");
             while (issue.Outcome == CureOutcome.None && !expected.Finished)
             {
                 expected.AdvanceDay(); Step(shell);
@@ -157,13 +181,27 @@ public partial class PerformanceSmokeTest : Node
             else Require(shell.ContractPerformanceChoices.Count == 0, "A cured issue no longer adds decisions to the contract page.");
             shell.CloseContractView();
             expected = Issue(); issue = expected.View.PerformanceIssues.First();
-            result = expected.Apply(new TerminateAction { Day = expected.Day, Arrangement = issue.ArrangementId });
+            result = expected.Apply(new TerminateAction { Day = expected.Day, Arrangement = issue.ArrangementId, Assignee = "novak" });
             Require(result.Accepted, "Termination fixture is accepted.");
             shell.PerformanceChoices[(issue.Id, "terminate")].EmitSignal(Button.SignalName.Pressed);
-            shell.TerminateButtons[issue.ArrangementId].EmitSignal(Button.SignalName.Pressed);
+            var endChoice = shell.TerminateButtons[issue.ArrangementId];
+            var endPicker = endChoice.GetParent().GetChildren().OfType<AssigneePicker>().Last();
+            var beforeEnd = shell.Session.StateHash;
+            endPicker.ChoiceButtons["novak"].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == beforeEnd, "Selecting the termination writer is pure.");
+            await CaptureAssigned(endChoice, endPicker, "Novak", "terminate-assignee");
+            endChoice.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.EndContractDialog.Visible && shell.EndContractDialog.DialogText.Contains("Novak") && shell.Session.StateHash == beforeEnd, "Confirmation keeps the chosen writer and sends nothing.");
+            shell.EndContractDialog.Hide(); shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
+            Require(shell.Session.StateHash == beforeEnd, "Cancel sends no termination.");
+            endChoice.EmitSignal(Button.SignalName.Pressed);
             shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
             Require(shell.Session.StateHash == expected.StateHash() && shell.PerformanceChoices[(issue.Id, "terminate")].Disabled, "Terminate sends the exact action and prevents duplicate work.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(result.Message), "Terminate ActionResult is visible.");
+            Require(shell.Session.View!.Team.Single(m => m.Id == "novak").Work.Any(w => w.Label.StartsWith("Terminate")), "Novak receives the real termination work.");
+            Require(LinesOfSupport.Sim.Replay.Resume(bundle, shell.Session.CreateSave()).StateHash() == expected.StateHash(), "The termination assignee survives save and replay.");
+            shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
+            Require(shell.Session.StateHash == expected.StateHash(), "Repeated confirmation cannot duplicate assigned work.");
             while (!shell.Session.View!.Finished) Step(shell);
             Require(shell.PerformanceChoices.Values.All(b => b.Disabled), "Finished-game performance controls are disabled.");
             Scenario(shell, "spoke-b"); Require(shell.PerformanceChoices.Count == 0, "Scenario reset clears performance choices.");

@@ -59,6 +59,7 @@ public partial class MorningSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1]) == Error.Ok, "Screenshot saved.");
             }
 
+            await PlainBoardSmokeChecks.Run(shell, this);
             await MorningBriefChecks.Run(shell);
             await MorningScreenFixChecks.Run(shell);
 

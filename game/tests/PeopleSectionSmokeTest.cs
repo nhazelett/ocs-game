@@ -18,8 +18,9 @@ public partial class PeopleSectionSmokeTest : Node
             shell.StartGameButton.EmitSignal(Button.SignalName.Pressed); FinishOpening(shell);
             var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.TodayTab;
             var section = PlayScreen.Descendants(shell).Single(n => n.Name == "ReachPeople");
-            Require(shell.Session.View!.MorningBoard().OpenRequests == 1 && shell.MorningHeading.Text.EndsWith("1 open request"),
+            Require(shell.Session.View!.MorningBoard().OpenRequests == 1 && shell.MorningHeading.Text.EndsWith("1 request"),
                 "The tutorial's first open request uses the singular count.");
+            await Capture("request-heading");
             shell.PeopleToggle.ButtonPressed = true;
             Require(shell.PersonContactInput.Selected == -1 && shell.PersonContactInput.Text == "Choose someone to reach…"
                 && shell.VisitButtons.Count == 0, "People to reach opens with an explicit prompt and no unchosen action.");

@@ -80,11 +80,11 @@ public partial class GameShell
         RefreshStandings(view);
         RefreshDecisions(view);
         morningHeading.Text = board is null ? "No scenario loaded" :
-            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {DeskUi.Count(MorningAlerts.GetChildCount(), "alert")} · {DeskUi.Count(board.OpenRequests, "open request")}";
+            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {DeskUi.Count(MorningAlerts.GetChildCount(), "alert")} · {DeskUi.Count(board.OpenRequests, "request")}";
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
         foreach (var item in board?.Items ?? [])
         {
-            var button = DeskUi.Button($"{item.Severity} · {item.Category}\n{item.Text}", () => NavigateBoardItem(item));
+            var button = DeskUi.Button($"{item.Severity} · {BoardCategoryText(item.Category)}\n{item.Text}", () => NavigateBoardItem(item));
             button.Disabled = item.LinkKind == BoardLinkKind.None;
             button.SetMeta("link_kind", item.LinkKind.ToString()); button.SetMeta("link_id", item.LinkId);
             var reason = DeskUi.ActionReason(morningItems, button);
@@ -121,6 +121,14 @@ public partial class GameShell
         RenderLedgerContext(view);
         RefreshBoardActions(view);
     }
+
+    private static string BoardCategoryText(BoardCategory category) => category switch
+    {
+        BoardCategory.Delivery => "Delivery", BoardCategory.Failure => "Failure",
+        BoardCategory.Report => "Report", BoardCategory.Request => "Request",
+        BoardCategory.VendorNotice => "Vendor notice", BoardCategory.HigherHq => "Higher headquarters",
+        _ => "Event"
+    };
 
     internal void NavigateBoardItem(BoardItem item)
     {

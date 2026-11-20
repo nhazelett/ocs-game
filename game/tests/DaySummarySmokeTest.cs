@@ -118,6 +118,7 @@ public partial class DaySummarySmokeTest : Node
                 sawEnded |= shell.DisplayedDaySummary.Ended.Count > 0;
                 shell.CloseDaySummary();
             }
+            shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed); await Capture("final"); shell.CloseDaySummary();
             Require(sawStarted && sawEnded, "The real replay exercises actual support starts and ends.");
             Require(end.Disabled && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.DebriefTab,
                 "The final day's results close into the debrief without enabling more days.");
@@ -144,7 +145,7 @@ public partial class DaySummarySmokeTest : Node
                 Require(shell.ReadingDaySummary && !shell.PlayingDay, "One results page opens only after playback.");
                 expected ??= shell.Session.View!.DaySummary()!;
                 Require(shell.DaySummaryDialog.GetOkButton().Text == (shell.Session.View!.Finished
-                    ? "Back to the debrief" : $"On to the morning of day {shell.Session.View.Day}"),
+                    ? "On to the debrief" : $"On to the morning of day {shell.Session.View.Day}"),
                     "The results button names the actual next morning, including Yesterday and resumed results.");
                 Require(shell.DisplayedDaySummary!.Day == expected.Day, "Results name the exact completed day.");
                 var labels = Labels(shell.DaySummaryContents).ToArray();
