@@ -71,12 +71,9 @@ public partial class GameShell
             && session.View is { Finished: false } view && !view.StaffMeeting.Attending && !view.StaffMeeting.Joining)
         {
             var action = new JoinStaffMeetingAction { Day = view.Day, Attend = true };
-            var preview = view.PreviewVisit(action); var meetingHash = session.StateHash;
-            var join = DeskUi.Button("Join the staff meeting", () => { if (meetingHash == session.StateHash) SendAction(action); });
-            join.SetMeta("news_staff_meeting", true);
-            var reason = DeskUi.ActionReason(row, join);
-            DeskUi.Gate(join, reason, preview.HardStops.FirstOrDefault());
-            AddActionCost(row, view, action, "Joins the staff meeting so requests reach you in the room.", preview);
+            var assigned = AddAssignedAction(row, row, view, action, "Join the staff meeting",
+                "Joins the staff meeting so requests reach you in the room.");
+            assigned.Button.SetMeta("news_staff_meeting", true);
         }
         if (surface != "morning" || item.Kind != NewKind.Request || item.LinkKind != BoardLinkKind.Card) return;
         var hash = session.StateHash;

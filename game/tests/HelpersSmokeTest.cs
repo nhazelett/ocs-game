@@ -35,7 +35,7 @@ public partial class HelpersSmokeTest : Node
                     var cost = $"This takes about {helper.Hours} shop {(helper.Hours == 1 ? "hour" : "hours")}.";
                     Require(words.Contains(cost) == (helper.State == HelperView.Asking),
                         "The work-hours line appears only while someone is on it; an answered entry ends with its answer.");
-                    Require(row.FindChildren("*", "Button", true, false).Count == (helper.Start is null ? 0 : 1), "Pending and completed help have no duplicate start.");
+                    Require(row.FindChildren("*", "Button", true, false).OfType<Button>().Count(b => b.HasMeta("helper_start")) == (helper.Start is null ? 0 : 1), "Pending and completed help have no duplicate start.");
                 }
             }
             Scenario(shell, "tutorial"); Step(shell, 3); Open("tutForklift"); Check("tutForklift");
@@ -84,6 +84,7 @@ public partial class HelpersSmokeTest : Node
             Open("tutForklift"); before = shell.Session.StateHash;
             foreach (var button in shell.RequestHelperButtons.Values.ToArray()) { Require(button.Disabled, "Finished helper actions are disabled."); button.EmitSignal(Button.SignalName.Pressed); }
             Require(before == shell.Session.StateHash, "Forced finished-game helper actions change no state.");
+            await AssignedHelpSmokeChecks.Run(shell, this);
             File.Delete(shell.AutosavePath); shell.QueueFree(); shell = null; await Frames();
             GC.Collect(); GC.WaitForPendingFinalizers(); await Frames();
             GD.Print("HELPERS_SMOKE_PASS: exact helpers and typed starts, hidden answers, pending/completed state, stale/finished guards and non-fuel J4 targets."); GetTree().Quit();
