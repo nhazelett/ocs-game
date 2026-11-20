@@ -16,6 +16,7 @@ public partial class TabletopMap3D
         internal bool Dynamic{get;}=dynamic;
         internal Label? Heading;
         internal Label? ShortWords;
+        internal Label? FallbackWords;
         internal string? Name;
         internal bool Compact;
         internal bool Lane;
@@ -64,7 +65,11 @@ public partial class TabletopMap3D
         var summary=new Label{Text=status,Visible=false,AutowrapMode=TextServer.AutowrapMode.Off,MouseFilter=MouseFilterEnum.Ignore};
         summary.AddThemeFontSizeOverride("font_size",17);summary.AddThemeColorOverride("font_color",alert?TabletopTheme.Alert:TabletopTheme.Ink);
         column.AddChild(summary);item.ShortWords=summary;
-        OutlineMapText(heading);OutlineMapText(summary);
+        // Keep the actual capability status as a last-resort summary. Full reported changes remain in the tooltip and site details.
+        var fallback=new Label{Text=status,Visible=false,AutowrapMode=TextServer.AutowrapMode.Off,MouseFilter=MouseFilterEnum.Ignore};
+        fallback.AddThemeFontSizeOverride("font_size",17);fallback.AddThemeColorOverride("font_color",alert?TabletopTheme.Alert:TabletopTheme.Ink);
+        column.AddChild(fallback);item.FallbackWords=fallback;
+        OutlineMapText(heading);OutlineMapText(summary);OutlineMapText(fallback);
         return item.Words;
     }
     private Vector3 SiteShoreAnchor(string island)=>SiteShoreAnchors(island)[0];
@@ -170,9 +175,11 @@ public partial class TabletopMap3D
         var quiet=QuietCallout(item);
         item.Words.Visible=item.Heading is null||form==0&&!quiet;
         if(item.ShortWords is not null)item.ShortWords.Visible=form==1&&!quiet;
+        if(item.FallbackWords is not null)item.FallbackWords.Visible=form==3&&!quiet;
         if(item.Heading is not null)
             item.Heading.Text=form==2&&!quiet
                 ?item.Name+" · "+item.ShortWords!.Text.Replace("\n","; ")
+                :form==4&&!quiet?item.Name+" · "+item.FallbackWords!.Text.Replace("\n","; ")
                 :item.Name+item.State;
         if(item.Heading is null&&compact)item.Words.Text=item.Name??item.Words.Text;
         item.Card.CustomMinimumSize=new Vector2(compact?0:item.Width,0);
@@ -185,7 +192,7 @@ public partial class TabletopMap3D
         }
         // Container minimum sizes propagate on the next frame. Measure the labels now
         // so changing between a card and a shore tag cannot leave a stale footprint.
-        var body=item.ShortWords?.Visible==true?item.ShortWords:item.Words;
+        var body=item.FallbackWords?.Visible==true?item.FallbackWords:item.ShortWords?.Visible==true?item.ShortWords:item.Words;
         var words=body.GetMinimumSize();
         var content=item.Heading is null?words:item.Heading.GetMinimumSize();
         if(body.Visible&&item.Heading is not null)
@@ -230,7 +237,7 @@ public partial class TabletopMap3D
                 choices[item]=[];
                 foreach(var anchor in anchors[item])
                 {
-                for(var pass=quiet?2:0;pass<(item.Dynamic&&item.Priority==1?1:3);pass++)
+                for(var pass=quiet?2:0;pass<(item.Dynamic&&item.Priority==1?1:item.FallbackWords is not null&&!quiet?5:3);pass++)
                 {
                     CompactCallout(item,pass);var size=item.Card.Size;
                     var reach=quiet&&item.Lane?60:120;
@@ -260,7 +267,7 @@ public partial class TabletopMap3D
                 }
                 }
             }
-            var placed=new Dictionary<MapCallout,(Rect2 Box,int Form,Vector2 End,Vector2 Source)>(ReferenceEqualityComparer.Instance);var attempts=0;
+            var placed=new Dictionary<MapCallout,(Rect2 Box,int Form,Vector2 End,Vector2 Source)>(ReferenceEqualityComparer.Instance);var attempts=0;MapCallout? fallbackSite=null;
             bool Compatible(MapCallout item,(Rect2 Box,int Form,Vector2 End,Vector2 Source) slot)
             {
                 var anchor=slot.Source;
@@ -278,7 +285,7 @@ public partial class TabletopMap3D
             {
                 if(placed.Count==active.Length)return true;
                 if(++attempts>12000)return false;
-                var next=active.Where(c=>!placed.ContainsKey(c)).Select(c=>(Item:c,Slots:choices[c].Where(s=>Compatible(c,s)).ToArray()))
+                var next=active.Where(c=>!placed.ContainsKey(c)).Select(c=>(Item:c,Slots:choices[c].Where(s=>(c==fallbackSite?s.Form>=3:s.Form<3)&&Compatible(c,s)).ToArray()))
                     .OrderBy(x=>x.Slots.Length).ThenBy(x=>x.Item.Priority).First();
                 foreach(var slot in next.Slots)
                 {
@@ -289,6 +296,16 @@ public partial class TabletopMap3D
                 return false;
             }
             CalloutLayoutFits=Place();
+            if(!CalloutLayoutFits)
+            {
+                // Preserve the normal placement first. If it cannot fit, shorten one site card, starting with the most constrained.
+                foreach(var site in active.Where(c=>c.FallbackWords is not null&&!QuietCallout(c))
+                    .OrderBy(c=>choices[c].Count(s=>s.Form<3)).ThenBy(c=>c.Priority))
+                {
+                    fallbackSite=site;placed.Clear();attempts=0;
+                    if(Place()){CalloutLayoutFits=true;break;}
+                }
+            }
             CalloutFailure=string.Join("; ",active.Where(c=>!placed.ContainsKey(c)).Select(c=>$"{c.Words.Text} at {camera.UnprojectPosition(c.Anchor())}: {choices[c].Count} slots ({string.Join(",",choices[c].GroupBy(s=>s.Form).Select(g=>$"{g.Key}:{g.Count()}"))}); summary {c.ShortWords?.Text}; {attempts} attempts in {available}"));
             foreach(var pair in placed)
             {
