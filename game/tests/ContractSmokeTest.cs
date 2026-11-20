@@ -83,6 +83,7 @@ public partial class ContractSmokeTest : Node
             shell.OpenContractView(cardBuy.Id); await Capture("card-payment");
             shell.CloseContractView(); shell.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await PaymentReportsSmokeChecks.Run(this);
             GD.Print("CONTRACT_SMOKE_PASS: plain payment list, inherited support protected, own contract detail, cancel and exact confirmed termination.");
             GetTree().Quit();
         }

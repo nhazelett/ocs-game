@@ -36,7 +36,7 @@ public partial class LedgerSmokeTest : Node
                 foreach (var arrangement in view.Arrangements)
                 {
                     var row = arrangements.Single(b => b.GetMeta("arrangement").AsString() == arrangement.Id);
-                    Require(char.IsUpper(row.Text[0]) && row.Text.Contains(arrangement.Status switch { ArrangementStatus.Pending => "Being arranged", ArrangementStatus.Active => "Providing support", ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended", _ => "Declined" }), "Support headings are capitalized and keep the Sim status.");
+                    Require(char.IsUpper(row.Text[0]) && row.Text.Contains(arrangement.Status switch { ArrangementStatus.Pending => arrangement.StartDay == view.Day ? "Starts today" : $"Starts on day {arrangement.StartDay}", ArrangementStatus.Active => "Providing support", ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended", _ => "Declined" }), "Support headings are capitalized and keep the Sim status.");
                     if (row.Text.Contains("no recorded costs"))
                     {
                         Require(view.TerminateBlocked(arrangement.Id) is not null && arrangement.ObligatedCents == 0

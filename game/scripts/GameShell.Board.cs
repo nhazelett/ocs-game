@@ -194,7 +194,7 @@ public partial class GameShell
         linkedLedger.AddChild(DeskUi.Heading("What we are paying for"));
         foreach (var arrangement in view.Arrangements)
         {
-            var button = DeskUi.Button($"{DeskUi.ListLabel(view.ArrangementName(arrangement.Id))} · {ArrangementStatusText(arrangement.Status)}\n{ArrangementPaymentText(view, arrangement)}", () =>
+            var button = DeskUi.Button($"{DeskUi.ListLabel(view.ArrangementName(arrangement.Id))} · {ArrangementStatusText(view, arrangement)}\n{ArrangementPaymentText(view, arrangement)}", () =>
             {
                 OpenContractView(arrangement.Id);
             });
