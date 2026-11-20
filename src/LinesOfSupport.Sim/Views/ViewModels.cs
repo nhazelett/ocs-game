@@ -635,3 +635,6 @@ public sealed record BarLine(string Id, string Says, string Text, double Count, 
 /// <param name="Spoken">The commander's lines in order, then the length ("That's for the 20 days you're here.").</param>
 public sealed record BarView(PersonView? From, int Days, bool Final, string Spoken, IReadOnlyList<BarLine> Lines);
 
+/// <summary>How ending an arrangement reads on its own page (DESK-94): the button's words and the line under it. A card buy
+/// is cancelled with the vendor ("Cancel this card buy"); a contract or a call is terminated ("End this contract").</summary>
+public sealed record ArrangementEndView(string Button, string Says);

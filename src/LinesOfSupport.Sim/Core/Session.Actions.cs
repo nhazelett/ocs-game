@@ -500,12 +500,34 @@ public sealed partial class Session
         if (CheckTerminate(t) is { } stop) return ActionResult.Stop(stop);
         var arr = _arrangements.First(x => x.Id == t.Arrangement);
         var rec = AddRecord(Day, RecordKind.Action, t.Arrangement,
-            t.WithNotice ? $"Termination of {NameOf(t.Arrangement)} with {arr.NoticeDays} days' notice started." : $"Termination of {NameOf(t.Arrangement)} started.", []);
-        var hours = arr.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true);
-        var w = AddWork(WorkKind.Terminate, $"Terminate {NameOf(t.Arrangement)}", hours, Day, t.Arrangement, rec);
+            IsCardBuy(arr) ? $"Cancel this card buy: {NameOf(t.Arrangement)}, a short call to the vendor, with no notice and nothing owed for days not delivered."
+            : t.WithNotice ? $"Termination of {NameOf(t.Arrangement)} with {arr.NoticeDays} days' notice started." : $"Termination of {NameOf(t.Arrangement)} started.", []);
+        var w = AddWork(WorkKind.Terminate, EndWorkName(arr), EndMilli(arr), Day, t.Arrangement, rec);
         if (t.WithNotice) _noticeTerminations.Add(w.Id);
         return ActionResult.Ok("termination in work");
     }
+
+    /// <summary>DESK-94: a card buy is not a contract. It is cancelled with the vendor in a short call: no notice, no
+    /// termination settlement, and the days not delivered come back off the card.</summary>
+    internal static bool IsCardBuy(Arrangement a) => a.Instrument == "gpc";
+
+    /// <summary>The shop time to end an arrangement: none for a coordination, about an hour to cancel a card buy
+    /// (rules cardCancelShopHours), a shop day to terminate a contract or a call (rules terminationShopDays).</summary>
+    private long EndMilli(Arrangement a)
+        => a.IsCoordination ? 0 : IsCardBuy(a) ? Fixed.Milli(Rules.Model.Work.CardCancelShopHours) : Hours(Rules.Model.Work.TerminationShopDays, true);
+
+    /// <summary>How ending this arrangement reads on its page (DESK-94); null when the office cannot end it or the id is unknown.</summary>
+    internal Views.ArrangementEndView? BuildEndWords(string arrangementId)
+    {
+        if (_arrangements.FirstOrDefault(x => x.Id == arrangementId) is not { } a || NotOursToEnd(a) is not null || a.IsCoordination) return null;
+        if (!IsCardBuy(a)) return new("End this contract", "Ends this contract's support when the work and any notice are complete.");
+        var vendor = VendorData(a.VendorId)?.Name ?? "the vendor";
+        return new("Cancel this card buy", a.StartDay > Day
+            ? $"A short call to {vendor} cancels it before its first delivery, and the whole charge comes back off the card."
+            : $"A short call to {vendor} stops it at the end of the day the call is made, and the days not delivered come back off the card. No notice, and nothing more is owed.");
+    }
+
+    private string EndWorkName(Arrangement a) => IsCardBuy(a) ? $"Cancel the card buy for {NameOf(a.Id)}" : $"Terminate {NameOf(a.Id)}";
 
     /// <summary>
     /// Why this office cannot end an arrangement (DESK-01, Nick's 10 Nov playthrough: the tutorial's host nation power and
@@ -606,6 +628,11 @@ public sealed partial class Session
                 // Deobligate the unperformed portion of a fully obligated award. It returns to its line only while
                 // the line is still current; otherwise it lapses. UCAs obligate as they go, so nothing comes back.
                 var tail = "";
+                if (IsCardBuy(arr))
+                {
+                    CompleteCardCancel(arr, day, w.CauseId);
+                    break;
+                }
                 if (arr.Uca is null && arr.FundingLineId is not null && _funding.FirstOrDefault(f => f.Id == arr.FundingLineId) is { } fl)
                 {
                     var performedDays = Math.Max(0, arr.EndDay - arr.StartDay + 1);
@@ -628,6 +655,26 @@ public sealed partial class Session
                 break;
             }
         }
+    }
+
+    /// <summary>DESK-94: the card buy ends with the day the call is made (or never starts), the vendor is paid for what it
+    /// delivered and the rest is credited back to the card, so it counts against the month's limit no longer. No claim.</summary>
+    private void CompleteCardCancel(Arrangement arr, int day, string causeId)
+    {
+        var started = arr.StartDay <= arr.EndDay;
+        var performedDays = Math.Max(0, arr.EndDay - arr.StartDay + 1);
+        var keep = arr.PaidPerDelivery ? arr.ObligatedCents
+            : Math.Min(arr.ObligatedCents, arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0));
+        var back = arr.ObligatedCents - keep;
+        if (back > 0)
+        {
+            arr.ObligatedCents = keep;
+            _gpcSpend.Add((day, -back));
+        }
+        var credit = back > 0 ? $" {Money(back)} credited back to the card." : "";
+        AddRecord(day, RecordKind.ArrangementEnd, arr.Id,
+            started ? $"Card buy for {NameOf(arr.Id)} cancelled with the vendor; it supplies through day {arr.EndDay}.{credit}"
+                    : $"Card buy for {NameOf(arr.Id)} cancelled with the vendor before its first delivery.{credit}", [causeId]);
     }
 
     internal static string Money(long cents) => (cents / 100m).ToString("$#,##0", System.Globalization.CultureInfo.InvariantCulture);

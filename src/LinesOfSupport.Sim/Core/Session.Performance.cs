@@ -107,9 +107,9 @@ public sealed partial class Session
         var parts = new List<string>();
         if (i.CureNoticeDay is { } cn)
             parts.Add($"cure notice day {cn}, {(i.Outcome switch { CureOutcome.Cured => "cured", CureOutcome.Default => "default", _ => "cure period running" })}");
-        if (_records.Any(r => r.Kind == RecordKind.Action && r.Subject == a.Id && r.Day >= i.OpenedDay && r.Text.StartsWith("Termination", StringComparison.Ordinal))
+        if (_records.Any(r => r.Kind == RecordKind.Action && r.Subject == a.Id && r.Day >= i.OpenedDay && (r.Text.StartsWith("Termination", StringComparison.Ordinal) || r.Text.StartsWith("Cancel this card buy", StringComparison.Ordinal)))
             || _work.Any(w => w.Kind == WorkKind.Terminate && w.CreatedDay >= i.OpenedDay && (w.Payload as string) == a.Id))
-            parts.Add("terminated");
+            parts.Add(IsCardBuy(a) ? "card buy cancelled" : "terminated");
         var replacement = _arrangements.FirstOrDefault(x => x.Id != a.Id && x.SiteId == i.SiteId && x.CapabilityId == i.CapabilityId
                                                              && x.CreatedDay >= i.OpenedDay && !x.IsCoordination && x.Status != ArrangementStatus.Declined);
         if (replacement is not null) parts.Add($"re-sourced ({NameOf(replacement.Id)})");
