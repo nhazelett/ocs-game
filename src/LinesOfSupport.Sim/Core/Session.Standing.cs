@@ -99,7 +99,7 @@ public sealed partial class Session
         var buying = _work.Where(w => w.CompletedDay is null && BuysFor(w, card)).OrderBy(w => w.CreatedDay).FirstOrDefault();
         if (buying is not null)
         {
-            var hours = Plural(CeilHours(buying.HoursRemainingMilli), "hour");
+            var hours = HoursSaid(buying.HoursRemainingMilli);   // DESK-120: to the half hour, as the team view says it
             return Entry(RequestStanding.Buying, buying.WaitUntilDay > Day
                 ? $"{Upper(WhoIs(buying.Assignee))} {BuyingWords(buying)}. It {WaitReason(buying)}, then about {hours} of work."
                 : $"{Upper(WhoIs(buying.Assignee))} {BuyingWords(buying)}, about {hours} of work left.", buying.Assignee);
