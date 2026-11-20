@@ -32,7 +32,18 @@ public partial class GameShell
         performanceRows.AddChild(DeskUi.Label("Vendor performance"));
         if (view is null || view.PerformanceIssues.Count == 0)
         {
-            performanceRows.AddChild(DeskUi.Label("No performance issues reported.")); return;
+            var reports = view?.Records.Where(view.Known).Where(r => r.Kind == RecordKind.CorReport).OrderByDescending(r => r.Day).ToArray() ?? [];
+            if (reports.Length == 0) performanceRows.AddChild(DeskUi.Label("No performance issues reported."));
+            else
+            {
+                performanceRows.AddChild(DeskUi.Label("Reports on file"));
+                foreach (var report in reports)
+                {
+                    var line = DeskUi.Label($"Day {report.Day} · {report.Text}");
+                    line.SetMeta("performance_report", report.Id); performanceRows.AddChild(line);
+                }
+            }
+            return;
         }
         foreach (var issue in view.PerformanceIssues.OrderByDescending(i => i.OpenedDay))
         {
