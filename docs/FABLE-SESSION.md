@@ -30,7 +30,7 @@ This does not change merge authority, security, access, provenance or correctnes
 - While M2R is open, no new Sim routes or scenarios start (docs/design/opening-and-guidance.md 9). Fable's items are the M2R rows.
 
 ## 2c. Claude plays the game (Nick, 16 Nov 2026)
-Once a day, after PLAY-01, a fresh agent plays the tutorial cold through the play driver and Fable sorts what it found into rows: docs/PLAYTEST-CLAUDE.md. Nick's own plays stay the gate.
+Whenever a play is needed (docs/PLAYTEST-CLAUDE.md section 2: Nick, 20 Nov 2026, no fixed daily slot), a fresh agent plays the tutorial cold through the play driver and Fable sorts what it found into rows: docs/PLAYTEST-CLAUDE.md. Nick's own plays stay the gate.
 
 ## 3. Merge pass (after every completed task, and at session start)
 
