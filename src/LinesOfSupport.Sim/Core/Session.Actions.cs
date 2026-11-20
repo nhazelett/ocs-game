@@ -147,12 +147,18 @@ public sealed partial class Session
 
     // ------------------------------------------------------------------ awards
 
+    /// <summary>DESK-117: an award's id is taken when an arrangement has it or any buy's work has it, finished, stopped or
+    /// still in progress, so the records, the decisions list and the debrief always name one buy by one id. The award
+    /// check below refuses a taken id; the Game picks a new buy's id with the same test (SessionView.AwardIdTaken).</summary>
+    internal bool AwardIdTaken(string id)
+        => _arrangements.Any(x => x.Id == id) || _work.Any(w => w.Payload is AwardPayload p && p.Action.Id == id);
+
     /// <summary>Every check an award must pass, with the cost it would carry. Reads state only; draws no random numbers.</summary>
     internal AwardCheck CheckAward(AwardAction a)
     {
         var stops = new List<string>();
         if (string.IsNullOrWhiteSpace(a.Id)) stops.Add("an award needs an id");
-        else if (_arrangements.Any(x => x.Id == a.Id) || _work.Any(w => w.Payload is AwardPayload p && p.Action.Id == a.Id))
+        else if (AwardIdTaken(a.Id))
             stops.Add($"{Upper(NameOf(a.Id))} already exists");
         if (!Rules.Instruments.TryGetValue(a.Instrument, out var inst)) return AwardCheck.Fail($"instrument {a.Instrument} is not in the rules");
         if (!AwardableInM0.Contains(a.Instrument)) return AwardCheck.Fail($"{inst.Label} is not implemented in this build");

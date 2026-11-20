@@ -170,6 +170,11 @@ public sealed class SessionView
     public bool InWork(string awardId)
         => _s.Work.Any(w => w.CompletedDay is null && w.Kind == WorkKind.Award && w.SubjectId == awardId);
 
+    /// <summary>DESK-117: true exactly when an award with this id would be refused as already existing: an arrangement
+    /// has it, or a buy's work has it, finished, stopped or in progress. Unlike <see cref="InWork"/>, a stopped buy's id
+    /// stays taken. The buy form picks a new buy's id with this.</summary>
+    public bool AwardIdTaken(string awardId) => _s.AwardIdTaken(awardId);
+
     // ---------------------------------------------------------------- view-model contracts (M0-07, ADR-0006)
 
     /// <summary>Why a capability at a site was short on the day just played, and what is in motion (DESK-38, D18): one
