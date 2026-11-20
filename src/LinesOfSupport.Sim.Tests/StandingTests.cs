@@ -55,8 +55,9 @@ public class StandingTests
         Assert.Equal(RequestStanding.Buying, forklifts.State);
         Assert.Equal("avery", forklifts.TeammateId);
         Assert.Equal("MSgt Joan Avery", forklifts.Teammate);
-        Assert.Equal("MSgt Joan Avery is writing the BPA call with Harbor Equipment Co. It waits for finance to certify the funds on day 5, then about 7 hours of work.", forklifts.Sentence);
-        Assert.Equal("MSgt Joan Avery is writing the BPA call with Harbor Equipment Co, about 7 hours of work left.",
+        // DESK-120: to the half hour, as the team view says it (was "about 7 hours", rounded up to the hour).
+        Assert.Equal("MSgt Joan Avery is writing the BPA call with Harbor Equipment Co. It waits for finance to certify the funds on day 5, then about 6.5 hours of work.", forklifts.Sentence);
+        Assert.Equal("MSgt Joan Avery is writing the BPA call with Harbor Equipment Co, about 6.5 hours of work left.",
             Taught(5).View.WhereThingsStand().Single(x => x.CardId == "tutForklift").Sentence);
     }
 
