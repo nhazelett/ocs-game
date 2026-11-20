@@ -347,3 +347,17 @@ Sim notes (Fable):
 
 - D41, DESK-11: rules capability `portLift` ("Boat between islands", unit boats) marked `forShop` and the new `lift`; no demand, not scored, no failure roll, as the vehicle. `Session.LiftTo(island, day)` is a lift arrangement running at a site on that island; `SurfaceDeliveryRuns` falls back to it when no scheduled link runs that day, unless a surface link between the two islands is closed (then that link is the held reason, even on a day the barge was not due). The map's run names the link `lift:<id>` with mode barge. `HasShopVehicle` no longer counts a lift. `VendorReach` for a lift vendor is every island. Spoke B gains Harbor Lighterage (Main Island, $1,200 a boat a day, two days' notice, card or written buy) and its rep. Built (20 Nov): LiftTests. No policy buys a boat, so no golden report or batch moves; Spoke B has 8 vendor cards.
 
+## 17. The 20 Nov verification play: D42 (20 Nov 2026)
+
+The day's second play (docs/reviews/2026-11-20-claude-play-2.md) ran two players on the build with DESK-118 and DESK-121. Both won. The one that changed its mind stopped a BPA call and bought its replacement the same morning, so the morning's blocker is gone. Both asked a requester and bought in the same morning, before the answer, and one bought a call without the drivers the answer then asked for. The game had said nothing about an answer being on its way.
+
+D42. **A buy made while an ask about the same request is out says so.** While someone the shop asked about a request has not answered, the buy summary above Arrange support (D33, D40) ends with one sentence: "SMSgt Ray Dunn's answer about this request is due on day 4; what he says may change what this buy needs." It is not a warning colour on its own and it does not grey Arrange support: buying before an answer is sometimes right, and Stop this work (D33) makes it safe while the buy is still being written. Left out: blocking or holding the buy, guessing the answer, and a dialog.
+
+Also from this play, no decision needed: the pick-two sentence sits under its toggles and a one-entry vehicle picker starts on its entry (DESK-124); Payments names the day support starts instead of "Being arranged", and the Inbox's vendor performance names the COR reports on file while no issue is open (DESK-125); a per-day volume reads per day in the decision line (DESK-126); asks and the staff meeting take the Who does it picker the buy form has (D17, DESK-127); Mills' money note says the cash box matters for cash buys (DESK-128).
+
+Sim notes (Fable):
+
+- D42, DESK-123: `AwardSummaryView` gains `AnswerDue`, the sentence while an ask about the request's card is in work (the person, the day the answer is due from that work's forecast); null otherwise. It is the summary's last sentence and not an attention reason. Read only; goldens move only where a golden prints the summary (state which).
+- DESK-126: the decision and record text gives a continuous capability's quantity per day when its unit is a volume (waste removal in gal): "3,600 gal/day for 8 days". Goldens move where they print that line (state which).
+- DESK-128: Mills' money line and his day 2 note say the cash box is what to watch when you buy with cash (an SF 44), not in general. Goldens move where they print the turnover or the note.
+
