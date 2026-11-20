@@ -82,7 +82,7 @@ public class IdiqTests
         Assert.Contains(s.View.PreviewEstablish(Idiq() with { MinimumGuaranteeCents = 100_00 }).HardStops, h => h.Contains("nominal"));
         Assert.Contains(s.View.PreviewEstablish(Idiq() with { MinimumGuaranteeCents = Ceiling + 1 }).HardStops, h => h.Contains("cannot exceed the ceiling"));
         Assert.Contains(s.View.PreviewEstablish(Idiq() with { FundingLine = "" }).HardStops, h => h.Contains("funding line"));
-        Assert.Contains(s.View.PreviewEstablish(Idiq() with { CeilingCents = 2_000_000_000 }).HardStops, h => h.Contains("has $900,000 left"));
+        Assert.Contains(s.View.PreviewEstablish(Idiq() with { CeilingCents = 3_000_000_000 }).HardStops, h => h.Contains("has $1,100,000 left"));
         Assert.Contains(s.View.PreviewEstablish(Idiq() with { Id = "bosBpa" }).HardStops, h => h.Contains("already exists"));
         Assert.Contains(s.View.PreviewEstablish(Idiq() with { ScopeLines = [] }).HardStops, h => h.Contains("scope line"));
         Assert.True(s.Apply(Idiq()).Accepted);

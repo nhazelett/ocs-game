@@ -174,7 +174,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #5 spokeCSite.food days 7-30, lowest 0%, 24 day(s) down: AVOIDABLE
       [avoidable] Food service depends on water, which was short. (see #4)
       [avoidable] Nothing supplied food service at Spoke C; the site and its population were in the plan from day 1.
-      [avoidable] The request for food service for Spoke C (submitted day 3, needed from day 12) had nothing supplying it from day 12.
+      [avoidable] The request for food service for Spoke C (submitted day 3, needed from day 12) had nothing supplying it from day 12. It was raised at the commander's staff meeting on day 1, when the shop was not in the room.
 
 PASS CRITERIA
   [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 22)

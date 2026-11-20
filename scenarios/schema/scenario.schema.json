@@ -1448,7 +1448,9 @@
         "missingOperatorPermillePerDay": { "type": "integer", "minimum": 0, "maximum": 1000 },
         "missingMaintenancePermillePerDayAfterGrace": { "type": "integer", "minimum": 0, "maximum": 1000 },
         "missingMaintenanceGraceDays": { "type": "integer", "minimum": 0 },
-        "missingMaintenanceCapPermille": { "type": "integer", "minimum": 0, "maximum": 1000 }
+        "missingMaintenanceCapPermille": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "missingOperatorGraceDays": { "type": "integer", "minimum": 0, "description": "DESK-81: days in service before the operator odds apply (the unit covers at first)" },
+        "missingOperatorFailureSupplyPermille": { "type": "integer", "minimum": 0, "maximum": 1000, "description": "DESK-81: share of rated supply on a failure the missing operators caused (nobody to run it); absent, as any failure" }
       }
     }
   },

@@ -109,7 +109,6 @@ Day 36
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 38
   WITHDRAWN Harbor Equipment Co walked off Harbor Equipment Co power at Spoke B after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   COMPLY    Higher HQ asked why Harbor Equipment Co power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
@@ -257,7 +256,7 @@ SCORECARD
   Mission output 65% (sortie generation 54%, throughput 54%, endurance 100%, resilience 52%)
   Obligated $0; incurred $226,878; incurred but not obligated $226,878
   Unauthorized commitments 5; UCAs past due 0; HHQ inquiries 5
-  Surveys 0; shop hours worked 381; payment errors 0; execution-confusion days 1; vendor failures 4; declined BPA calls 0
+  Surveys 0; shop hours worked 381; payment errors 0; execution-confusion days 1; vendor failures 3; declined BPA calls 0
   spokeBSite.power: 77 day(s) down, 7 degraded, lowest 0%
   spokeBSite.fuel: 62 day(s) down, 13 degraded, lowest 0%
 
@@ -294,7 +293,6 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 7. Harbor Equipment Co power at Spoke B did not start until day 29.
       [discoverable] Power depends on fuel, which was short. (see #0)
       [avoidable] Power depends on fuel, which was short. (see #1)
-      [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 37) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran.
       [avoidable] Harbor Equipment Co power at Spoke B was left unresolved and the vendor walked off on day 38.
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 38. The last arrangement supplying it, Harbor Equipment Co power at Spoke B, ended on day 37. Island Power Rentals power at Spoke B did not start until day 40.
       [avoidable] Island Power Rentals power at Spoke B was left unresolved and the vendor walked off on day 47.
@@ -309,4 +307,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash 00f4405053cfb3c88d69a85ab8fa237f42e4fae60c1baa83ae582ab09c310bac
+State hash b229a9a0c1b4c1265f98b467b02f397262f9cf01bb6b8abcdb41e8db7e4e642a

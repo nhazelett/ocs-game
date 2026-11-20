@@ -30,6 +30,12 @@ public class StaffMeetingTests
         return ScenarioBundle.Load(scenarioDir, rulesDir);
     }
 
+    /// <summary>DESK-81 has Spoke B's food request raised in the room; these previews are checked on Spoke B without that.</summary>
+    private static void Unheard(JsonNode sc)
+    {
+        foreach (var card in sc["requirementCards"]!.AsArray()) card!.AsObject().Remove("heardAtStaffMeeting");
+    }
+
     private static List<CauseRecord> Meetings(Session s)
         => s.Records.Where(r => r.Kind == RecordKind.Visit && r.Subject == $"person {s.Scenario.Actors.Commander.Person}").ToList();
 
@@ -41,7 +47,7 @@ public class StaffMeetingTests
     [Fact]
     public void A_meeting_with_nothing_for_contracting_is_ops_talk()
     {
-        var s = Session.Create(Bundle("spoke-b", meetingRules: m => m["contractingPermille"] = 0), 1);
+        var s = Session.Create(Bundle("spoke-b", Unheard, m => m["contractingPermille"] = 0), 1);
         s.Apply(new JoinStaffMeetingAction());
         To(s, 6);
         var talk = s.Rules.GoingToPeople.StaffMeeting.OpsTalk;
@@ -60,7 +66,7 @@ public class StaffMeetingTests
     [Fact]
     public void A_meeting_with_something_for_contracting_mentions_requests_before_they_arrive()
     {
-        var s = Session.Create(Bundle("spoke-b", meetingRules: m => m["contractingPermille"] = 1000), 1);
+        var s = Session.Create(Bundle("spoke-b", Unheard, m => m["contractingPermille"] = 1000), 1);
         s.Apply(new JoinStaffMeetingAction());
         s.AdvanceDay();
         // MSgt Brandt's food service card is submitted on day 3; the meeting on day 1 hears about it first.
@@ -75,9 +81,10 @@ public class StaffMeetingTests
     public void Whether_the_first_meeting_has_anything_for_the_shop_is_a_draw()
     {
         var heard = 0;
+        var bundle = Bundle("spoke-b", Unheard);
         for (var seed = 1; seed <= 20; seed++)
         {
-            var s = Session.Create(Repo.Load("spoke-b"), seed);
+            var s = Session.Create(bundle, seed);
             s.Apply(new JoinStaffMeetingAction());
             s.AdvanceDay();
             var first = Meetings(s).Single();
@@ -89,6 +96,23 @@ public class StaffMeetingTests
             Assert.DoesNotContain("If we run short", Meetings(s)[1].Text);
         }
         Assert.InRange(heard, 1, 19);
+    }
+
+    [Fact]
+    public void Spoke_b_has_something_to_hear_in_the_room()
+    {
+        // DESK-81: Lt Col Park raises Spoke C's hot meals at the first meeting; in the room, the request is on the desk on
+        // day 2, a day before MSgt Brandt would bring it.
+        var s = Session.Create(Repo.Load("spoke-b"), 1);
+        s.Apply(new JoinStaffMeetingAction());
+        s.AdvanceDay();
+        Assert.Contains("Then the commander turned to the shop: \"Spoke C is still eating MREs", Meetings(s).Single().Text);
+        Assert.Equal(2, s.View.RequirementEditor("req0014")!.SubmittedDay);
+        var away = Session.Create(Repo.Load("spoke-b"), 1);
+        To(away, 2);
+        Assert.Null(away.View.RequirementEditor("req0014"));
+        away.AdvanceDay();
+        Assert.Equal(3, away.View.RequirementEditor("req0014")!.SubmittedDay);
     }
 
     [Fact]
