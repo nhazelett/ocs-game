@@ -19,7 +19,7 @@ public class QuietDayTests
         var s = Session.Create(Repo.Load(scenario), l.Seed, l.PrepChoices, l.Team);
         while (!s.Finished)
         {
-            foreach (var a in l.Actions.Where(a => a.Day == s.Day)) s.Apply(a);
+            foreach (var a in l.Actions.Where(a => a.Day == s.Day)) s.Apply(Divided.Assign(s, a));
             yield return s;
             s.AdvanceDay();
         }
@@ -68,7 +68,7 @@ public class QuietDayTests
         Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 13 when Main Island Sanitation starts waste removal at Hub.", 13), careful[11]);
 
         var spokeB = Days("spoke-b", "spoke-b").ToDictionary(s => s.Day, s => s.View.SkipStops());
-        Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 11 when Third Island Water Works starts water at Spoke C.", 11), spokeB[8]);
+        Assert.Equal(new SkipStopsView("Stops when anything needs you, and on day 11 when Third Island Water Works starts water at Spoke C.", 11), spokeB[9]);   // with the team (DESK-12) day 8 has something for you
         Assert.Equal(new SkipStopsView("Stops when anything needs you, and after 7 days at most, on day 21.", 21), spokeB[14]);
     }
 

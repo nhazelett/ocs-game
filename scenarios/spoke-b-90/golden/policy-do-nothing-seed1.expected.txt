@@ -53,11 +53,11 @@ Day 17
   SHORT     Fuel at Spoke B down to 33%: fuel on hand ran out; no arrangement supplies fuel.
 Day 18
   COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 5 waiting.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 19
-  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
-  DONE      CE small buys: 11 worked today (5.5 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 20
+  DONE      Response to higher HQ on Port Fuel Haulers fuel at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 21
   EVENT     With fuel down and nothing on contract, the Spoke B unit goes around contracting again (habit 10%).
@@ -91,12 +91,12 @@ Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 31
   COMPLY    Higher HQ asked why Second Island Fuel fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 32
-  DONE      Response to higher HQ on Second Island Fuel fuel at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 33
   COMPLY    The Spoke B unit's habit of going around contracting rises (Harbor Equipment Co power at Spoke B has been open 5 days).
+  DONE      Response to higher HQ on Second Island Fuel fuel at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -113,13 +113,13 @@ Day 37
 Day 38
   WITHDRAWN Harbor Equipment Co walked off Harbor Equipment Co power at Spoke B after 10 days of unpaid delivery. Power at Spoke B loses that source today. It will decline work from this office from now on.
   COMPLY    Higher HQ asked why Harbor Equipment Co power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 39
   EVENT     With power down and nothing on contract, the Spoke B unit goes around contracting again (habit 30%).
   COMPLY    Unauthorized commitment: the Spoke B unit arranged power directly with Island Power Rentals. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
-  DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 40
+  DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
 Day 41
@@ -147,12 +147,12 @@ Day 48
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 49
   COMPLY    Higher HQ asked why Island Power Rentals power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Power at Spoke B from Meridian Site Services began, 468 kW/day.
 Day 50
-  DONE      Response to higher HQ on Island Power Rentals power at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 51
+  DONE      Response to higher HQ on Island Power Rentals power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 52
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -170,11 +170,11 @@ Day 57
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 58
   COMPLY    Higher HQ asked why Meridian Site Services power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 59
-  DONE      Response to higher HQ on Meridian Site Services power at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 60
+  DONE      Response to higher HQ on Meridian Site Services power at Spoke B sent.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 61
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -309,4 +309,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash d15dbd683dd8912f1efc947e71287dbd279fbfb5264cb13ac673b619d0957a12
+State hash 00f4405053cfb3c88d69a85ab8fa237f42e4fae60c1baa83ae582ab09c310bac

@@ -47,11 +47,13 @@ public partial class DebriefSmokeTest : Node
                 Require(shell.SendAction(new SetLineAction { Day = expected.Day, Card = card, Line = line, On = true }).Accepted,
                     "The supported legacy scope fixture is accepted by the game bridge.");
             }
-            void Award(string vendor, string instrument, long quantity, int start, int duration)
+            void Award(string vendor, string instrument, long quantity, int start, int duration, string? writer = null)
             {
                 Pick(shell.VendorInput, vendor); Pick(shell.InstrumentInput, instrument);
                 shell.QuantityInput.Value = quantity; shell.StartInput.Value = start; shell.DurationInput.Value = duration;
                 PickPriorities(shell, "fast", "cheap");
+                // Spoke B has the team (DESK-12): approach 1 gives the Spoke C water UCA to Avery and its bridge to Novak.
+                if (writer is not null) shell.AwardWriterPicker!.ChoiceButtons[writer].EmitSignal(Button.SignalName.Pressed);
                 Require(!shell.AwardButton.Disabled && expected.Apply(shell.PendingAward!).Accepted, "Spoke C support is accepted with its exact UI terms.");
                 shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
             }
@@ -60,8 +62,8 @@ public partial class DebriefSmokeTest : Node
                 if (expected.Day == 2)
                 {
                     SetLine("req0012", "operator"); SetLine("req0012", "maintenance");
-                    GoToMarket("req0012"); Award("vendorF", "uca", 2640, 5, 60);
-                    PickAwardTarget(shell, "spokeCSite.water"); Award("vendorG", "purchaseOrder", 2640, 5, 12);
+                    GoToMarket("req0012"); Award("vendorF", "uca", 2640, 5, 60, "avery");
+                    PickAwardTarget(shell, "spokeCSite.water"); Award("vendorG", "purchaseOrder", 2640, 5, 12, "novak");
                 }
                 if (expected.Day == 3)
                 {

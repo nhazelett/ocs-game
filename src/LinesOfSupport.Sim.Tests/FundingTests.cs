@@ -131,6 +131,7 @@ public class FundingTests
         Assert.Equal(GapTag.Avoidable, lapse.Tag);
         Assert.Contains("The O&M line good through day 75 reached its fiscal-year end with day 75", lapse.Text);
         Assert.Contains("late (the comptroller warned on day", lapse.Text);
+        // With the team (DESK-12) you write it alone and it completes on day 77, inside the window; it is still named.
         Assert.Contains("Meridian Site Services power at Spoke B reached award with no money to pay for it", lapse.Text);
         Assert.Contains(rejected.Id, lapse.RecordIds);
     }

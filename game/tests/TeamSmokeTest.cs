@@ -149,7 +149,7 @@ public partial class TeamSmokeTest : Node
                 && shell.TeamFaceInputs[experienced.Id].GetItemMetadata(shell.TeamFaceInputs[experienced.Id].Selected).AsString()==faceKey,
                 "A fresh shell and new game load the remembered names and faces.");
             shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
-            DeveloperWorkspace(shell);Scenario(shell,"spoke-b");
+            DeveloperWorkspace(shell);Scenario(shell,"sustainment",preview:false);   // Spoke B has the team since DESK-12
             Require(shell.TeamBars.Count==1 && shell.TeamButtons["you"].Text=="You"
                 && !shell.TeamCustomizeButton.Visible,"An older single-person scenario keeps its actual roster and total hours.");
             Scenario(shell,"tutorial");

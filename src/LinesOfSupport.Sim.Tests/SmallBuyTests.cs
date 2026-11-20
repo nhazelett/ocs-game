@@ -30,8 +30,9 @@ public class SmallBuyTests
         var b = Repo.Load("spoke-b");
         var log = InputLog.Load(Path.Combine(Repo.Scenario("spoke-b"), "golden", "approach3-uca-turnkey-with-bridge.json"));
         var s = Replay.Run(b, log);
-        // The SPEC 5 approach 3 story has no Spoke B gap; the stream must not have moved its clock.
-        Assert.DoesNotContain(s.View.Debrief().Gaps, g => g.SiteId == "spokeBSite");
+        // The SPEC 5 approach 3 story has no Spoke B gap the player could have avoided (with the team, DESK-12, one
+        // unforeseeable equipment day is left); the stream must not have moved its clock.
+        Assert.DoesNotContain(s.View.Debrief().Gaps, g => g.SiteId == "spokeBSite" && g.Tag != Views.GapTag.Unforeseeable);
         Assert.True(s.Metrics["shop.smallBuyHours"] > 0);
     }
 
@@ -41,9 +42,13 @@ public class SmallBuyTests
         var s = Session.Create(Repo.Load("spoke-b"), 1);
         // Fill the queue: the day-1 textbook awards plus surveys leave no hours for a while.
         foreach (var a in PolicyCatalog.Create("textbook").Decide(s.View).Where(a => a is not StandUpGpcProgramAction)) s.Apply(a);
-        s.Apply(new AwardAction { Id = "big", Instrument = "purchaseOrder", Vendor = "vendorA", Site = "spokeBSite", Capability = "power", Lines = ["generation", "maintenance"], Quantity = 300, DurationDays = 30, FundingLine = "om1" });
-        // The textbook hands fuel to the J4 now (M2R-06), so one more written buy keeps the queue full.
-        s.Apply(new AwardAction { Id = "big2", Instrument = "purchaseOrder", Vendor = "vendorE", Site = "spokeBSite", Capability = "fuel", Lines = ["delivery"], Quantity = 500, DurationDays = 20, FundingLine = "om1" });
+        // The textbook hands fuel to the J4 now (M2R-06), so more written buys keep the queue full. With the team
+        // (DESK-12) each person gets two, so nobody has hours left for small buys.
+        foreach (var who in new[] { "you", "avery", "novak" })
+        {
+            s.Apply(new AwardAction { Id = "big-" + who, Instrument = "purchaseOrder", Vendor = "vendorA", Site = "spokeBSite", Capability = "power", Lines = ["generation", "maintenance"], Quantity = 300, DurationDays = 30, FundingLine = "om1", Assignee = who });
+            s.Apply(new AwardAction { Id = "big2-" + who, Instrument = "purchaseOrder", Vendor = "vendorE", Site = "spokeBSite", Capability = "fuel", Lines = ["delivery"], Quantity = 500, DurationDays = 20, FundingLine = "om1", Assignee = who });
+        }
         var complained = false;
         for (var d = 0; d < 8 && !complained; d++)
         {

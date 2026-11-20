@@ -12,7 +12,7 @@ public class TrueSentencesTests
     private static InputLog Log(string name)
         => InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-17-review", name + "-input-log.json")) with { SavedDay = null };
 
-    private static Session SpokeB(int throughDay) => Replay.Run(Repo.Load("spoke-b"), Log("spoke-b"), throughDay);
+    private static Session SpokeB(int throughDay) => Divided.Replay(Repo.Load("spoke-b"), Log("spoke-b"), throughDay);
 
     [Fact]
     public void Spoke_C_food_on_day_15_compares_supply_with_the_headcount_before_any_held_delivery()
@@ -25,10 +25,11 @@ public class TrueSentencesTests
     [Fact]
     public void The_strip_counts_the_hours_the_days_plan_counts()
     {
-        // Spoke B day 3 in the review play: the staff meeting and work; the strip read 0 of 16.
+        // Spoke B day 3 in the review play: the staff meeting and work; the strip read 0 of 16. With the team (DESK-12)
+        // the work SpokeB() leaves is yours, so your bar counts what your line of the day's plan counts.
         var s = SpokeB(2);
-        var plan = s.View.DayPlan().People.Single();
-        var strip = s.View.Team.Single();
+        var plan = s.View.DayPlan().People.Single(p => p.MemberId == "you");
+        var strip = s.View.Team.Single(m => m.Id == "you");
         Assert.True(plan.HoursPlanned > 0);
         Assert.Equal(plan.HoursPlanned, strip.HoursSpokenForToday);
         Assert.Equal(strip.HoursPerDay - strip.HoursSpokenForToday, strip.FreeHoursToday);
@@ -36,7 +37,7 @@ public class TrueSentencesTests
 
     [Fact]
     public void The_turnover_counts_the_shop_as_the_team_page_does()
-        => Assert.Contains("It's just you, 16 hours a day.",
+        => Assert.Contains("You have 8 hours a day; Avery has 8, Novak has 8.",
             Session.Create(Repo.Load("spoke-b"), 1, []).View.Turnover().Text(TurnoverSectionKind.Shop));
 
     [Fact]

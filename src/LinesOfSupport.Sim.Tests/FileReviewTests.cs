@@ -275,7 +275,8 @@ public class FileReviewTests
         var bundle = Variant(AddFuelIdiq, PastDueUca(false), OverstatedFuel(), IdiqOrder(false));
         var s = Session.Create(bundle, 5);
         ReviewAll(s);
-        s.AdvanceDay();
+        // With the team (DESK-12) you review the files alone, which can take more than a day.
+        do s.AdvanceDay(); while (s.Work.Any(w => w.Kind == WorkKind.FileReview && w.CompletedDay is null));
         var json = s.ToSave().ToJson();
         Assert.Contains("\"reviewFiles\"", json);
         var path = Path.Combine(Path.GetTempPath(), $"los-files-save-{Guid.NewGuid():N}.json");

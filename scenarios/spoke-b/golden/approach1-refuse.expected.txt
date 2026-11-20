@@ -21,26 +21,25 @@ Day 2
   ACTION    The request for water for Spoke C: Maintenance switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day.
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2,640 gal/day for 12 days (Potable water supply); quoted $12,672.
-  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
   ACTION    Written purchase order started with Third Island Water Works: Food service at Spoke C, 480 meals/day for 28 days (Meal service, Food service staff); quoted $177,408.
-  DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 16. Obligated $12,672.
+  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 4
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 5
-  DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
-  DONE      CE small buys: none worked today (no hours left); 9 waiting.
-  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
-Day 6
-  DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
-  DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
-Day 7
+  DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 7, ends day 18. Obligated $12,672.
+  DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 11, ends day 38. Obligated $177,408.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
+Day 6
+  DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 13, ends day 72. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 7
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -54,15 +53,15 @@ Day 11
   EVENT     Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
 Day 12
   END       Port Fuel Haulers fuel at Spoke B refused: Port Fuel Haulers stops at once and fuel at Spoke B has no source from it. The site commander's confidence in contracting drops.
   COMPLY    The Spoke B unit's habit of going around contracting rises (the handshake was refused with nothing in its place).
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
-  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
@@ -76,11 +75,11 @@ Day 16
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 17
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  END       Coastal Provisions water at Spoke C ended.
 Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
+  END       Coastal Provisions water at Spoke C ended.
 Day 20
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
@@ -92,11 +91,11 @@ Day 21
   START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 22
-  UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
   INBOX     Performance issue: Harbor Equipment Co under-delivered on power at Spoke B on days 21 and 22. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 23
+  UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
@@ -106,14 +105,14 @@ Day 24
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
   COMPLY    The Spoke B unit's habit of going around contracting rises (Port Fuel Haulers fuel at Spoke B has been open 5 days).
-  DONE      CE small buys: none worked today (no hours left); 7 waiting.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 26
-  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
-  DONE      CE small buys: 15 worked today (7.5 h of shop time).
+  DONE      CE small buys: 8 worked today (4 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   SHORT     Lodging at Spoke B down to 38%: power at 38%.
 Day 27
+  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 8 worked today (4 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 28
@@ -124,7 +123,7 @@ Day 29
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 30
   COMPLY    Higher HQ asked why Port Fuel Haulers fuel at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 7 waiting.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                               0    1    1    2    2    3
@@ -145,10 +144,10 @@ Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 74% (sortie generation 80%, throughput 80%, endurance 80%, resilience 44%)
-  Obligated $264,180; incurred $257,052; incurred but not obligated $70,200
+  Mission output 74% (sortie generation 80%, throughput 80%, endurance 80%, resilience 45%)
+  Obligated $263,520; incurred $261,672; incurred but not obligated $70,200
   Unauthorized commitments 2; UCAs past due 0; HHQ inquiries 2
-  Surveys 0; shop hours worked 202; payment errors 0; execution-confusion days 0; vendor failures 6; declined BPA calls 0
+  Surveys 0; shop hours worked 196; payment errors 0; execution-confusion days 0; vendor failures 5; declined BPA calls 0
   spokeBSite.power: 16 day(s) down, 5 degraded, lowest 0%
   spokeBSite.fuel: 14 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 16 day(s) down, 5 degraded, lowest 0%
@@ -201,6 +200,6 @@ PASS CRITERIA
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 14)
   [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
-  [not met] Mission output at least 90% (mission.output = 0.741)
+  [not met] Mission output at least 90% (mission.output = 0.743)
 
-State hash e48fffa24379757fcd36271a984334cb96a69242111f63944170e3e45d1148d2
+State hash 34ae6530239f1fd6f4525a54f9557a9c87d34047167e302b8a9580fefc184dea

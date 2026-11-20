@@ -71,7 +71,8 @@ public class WorkPreviewTests
         var s = SpokeB();
         var survey = new SurveyAction { Island = "spokeB" };
         var choices = s.View.AssigneeChoices(survey);
-        var you = Assert.Single(choices);
+        Assert.Equal(3, choices.Count);   // Spoke B's team (DESK-12)
+        var you = choices.Single(c => c.MemberId == "you");
         Assert.NotNull(you.ResultDayMin);
         Assert.Contains("it would be done day", you.Sentence);
         Assert.True(s.Apply(survey).Accepted);
@@ -119,7 +120,7 @@ public class WorkPreviewTests
     {
         var s = SpokeB();
         var c = new CoordinateAction { Id = "c", Site = "spokeBSite", Capability = "fuel", Quantity = 900, FromSite = "hubSite" };
-        var choice = Assert.Single(s.View.AssigneeChoices(c));
+        var choice = s.View.AssigneeChoices(c).Single(x => x.MemberId == "you");
         Assert.Equal(0, choice.HoursMax);
         Assert.Contains("it could start day", choice.Sentence);
         Assert.True(s.Apply(c).Accepted);

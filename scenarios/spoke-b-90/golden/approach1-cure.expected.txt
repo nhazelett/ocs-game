@@ -10,9 +10,9 @@ Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
+  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 4
   DONE      CE small buys: 4 worked today (2 h of shop time).
@@ -37,11 +37,11 @@ Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
-  COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $56,160 obligated from the O&M line good through day 75. Port Fuel Haulers keeps delivering; deliveries after day 19 are owed and not obligated until a contract covers the need.
-  DONE      CE small buys: none worked today (no hours left); 5 waiting.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
 Day 13
-  DONE      CE small buys: 11 worked today (5.5 h of shop time).
+  COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $63,180 obligated from the O&M line good through day 75. Port Fuel Haulers keeps delivering; deliveries after day 20 are owed and not obligated until a contract covers the need.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 14
@@ -78,11 +78,11 @@ Day 24
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 6 waiting.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 26
-  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
-  DONE      CE small buys: 12 worked today (6 h of shop time).
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 27
+  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 28
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -212,7 +212,7 @@ Day 65
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
-  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $794,160 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $787,140 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -246,7 +246,7 @@ Day 74
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
-  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $794,160 never obligated can no longer pay for anything new.
+  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $787,140 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -295,7 +295,7 @@ Spoke B Fuel                    ...XXX..7XXXX........................X.....XX...
 
 SCORECARD
   Mission output 76% (sortie generation 72%, throughput 72%, endurance 100%, resilience 52%)
-  Obligated $105,840; incurred $604,260; incurred but not obligated $498,420
+  Obligated $112,860; incurred $604,260; incurred but not obligated $491,400
   Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 1
   Surveys 0; shop hours worked 319; payment errors 0; execution-confusion days 1; vendor failures 20; declined BPA calls 0
   spokeBSite.power: 42 day(s) down, 37 degraded, lowest 0%
@@ -413,4 +413,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.76)
 
-State hash e0042df54f47d660160ebee450f5a9a62a2b33159cbc47105cb3b11fec09ef63
+State hash b24a1311da9eed10e781f8b5df7868aa39c2e27622f84d44ed4ee96f5be043b8

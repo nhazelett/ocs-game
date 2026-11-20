@@ -65,7 +65,9 @@ internal static class SkipDaysSmokeChecks
 
             // The seven-day cap is the Sim's UntilDay (QuietDayTests); the game stops on UntilDay the same way for a cap
             // or a support start, which this checks.
-            expected = Load(8, "spoke-b"); OpenPlan(); stop = expected.View.SkipStops()!.UntilDay;
+            // DESK-12: the pre-team Spoke B play is replayed with its work divided as a player would (Divided), so its quiet
+            // stretch starts on day 9.
+            expected = Load(9, "spoke-b"); OpenPlan(); stop = expected.View.SkipStops()!.UntilDay;
             summaries = AdvanceExpected(expected, stop);
             Require(summaries.Count > 1 && expected.Day == stop, "The real Spoke B review play exercises a multi-day skip to a known support start.");
             shell.SkipAheadButton.EmitSignal(Button.SignalName.Pressed); CheckResults(expected, summaries);
@@ -103,11 +105,25 @@ internal static class SkipDaysSmokeChecks
         Session Load(int day, string scenario = "tutorial")
         {
             var log = logs[scenario];
-            var save = log with { SavedDay = day, Actions = log.Actions.Where(a => a.Day < day).ToList() };
+            var save = scenario == "spoke-b" ? Divided(log, day) : log with { SavedDay = day, Actions = log.Actions.Where(a => a.Day < day).ToList() };
             File.WriteAllText(temporary, save.ToJson()); shell.LoadSavedGame(temporary);
             return LinesOfSupport.Sim.Replay.Resume(bundles[scenario], save);
         }
         void OpenPlan() => shell.GetNode<Button>("%NextDay").EmitSignal(Button.SignalName.Pressed);
+
+        // The 17 Nov Spoke B play was logged when Spoke B was one person with 16 hours. Each logged action goes, as a
+        // player would hand it over, to whoever has the least work queued for their hours (as Sim.Tests' Divided does).
+        InputLog Divided(InputLog log, int day)
+        {
+            var s = Session.Create(bundles["spoke-b"], log.Seed, log.PrepChoices, log.Team);
+            while (s.Day < day)
+            {
+                foreach (var a in log.Actions.Where(a => a.Day == s.Day))
+                    s.Apply(a.Assignee is not null ? a : a with { Assignee = s.View.Team.OrderBy(m => (m.HoursQueued + m.HoursSpokenForToday) / Math.Max(1, m.HoursPerDay)).First().Id });
+                s.AdvanceDay();
+            }
+            return s.ToSave();
+        }
         static List<DaySummaryView> AdvanceExpected(Session expected, int until)
         {
             var summaries = new List<DaySummaryView>();

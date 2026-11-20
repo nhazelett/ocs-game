@@ -23,42 +23,41 @@ Day 2
   ACTION    The request for water for Spoke C: Maintenance switched on.
   ACTION    Undefinitized contract action started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480. Approval request routed through the SCO; answer expected in 1 day.
   ACTION    Written purchase order started with Coastal Provisions: Water at Spoke C, 2,640 gal/day for 12 days (Potable water supply); quoted $12,672.
-  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
   ACTION    Written purchase order started with Third Island Water Works: Food service at Spoke C, 480 meals/day for 28 days (Meal service, Food service staff); quoted $177,408.
-  DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 16. Obligated $12,672.
+  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 4
   DONE      CE small buys: none worked today (no hours left); 4 waiting.
 Day 5
-  DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 12, ends day 71. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
-  DONE      CE small buys: none worked today (no hours left); 9 waiting.
-  START     Fuel at Spoke B from the partner force began, 1,300 gal/day.
-  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
-Day 6
-  DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 39. Obligated $177,408.
-  DONE      CE small buys: 12 worked today (6 h of shop time); 2 still waiting.
-Day 7
+  DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 7, ends day 18. Obligated $12,672.
+  DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 11, ends day 38. Obligated $177,408.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
+  START     Fuel at Spoke B from the partner force began, 1,300 gal/day.
+Day 6
+  DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 13, ends day 72. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+Day 7
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
 Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
-  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
@@ -72,11 +71,11 @@ Day 16
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 17
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  END       Coastal Provisions water at Spoke C ended.
 Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
+  END       Coastal Provisions water at Spoke C ended.
   FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
@@ -91,20 +90,20 @@ Day 20
 Day 21
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 22
-  UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 23
+  UCA       Third Island Water Works submitted a qualifying proposal for water at Spoke C. Obligation cap rises to 75% of NTE; definitization can start.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 24
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 25
   COMPLY    Harbor Equipment Co filed a claim for $2,400 of out-of-scope work after 10 days with no answer; higher HQ asked for the file. A response is now shop work (24 hours).
-  DONE      CE small buys: none worked today (no hours left); 7 waiting.
+  DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 26
-  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
-  DONE      CE small buys: 15 worked today (7.5 h of shop time).
+  DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 27
+  DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 28
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -132,10 +131,10 @@ Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 88% (sortie generation 96%, throughput 96%, endurance 96%, resilience 44%)
-  Obligated $264,180; incurred $186,852; incurred but not obligated $0
+  Mission output 88% (sortie generation 96%, throughput 96%, endurance 96%, resilience 45%)
+  Obligated $263,520; incurred $191,472; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 193; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
+  Surveys 0; shop hours worked 192; payment errors 0; execution-confusion days 0; vendor failures 3; declined BPA calls 0
   spokeBSite.power: 1 day(s) down, 11 degraded, lowest 0%
   spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 1 day(s) down, 11 degraded, lowest 0%
@@ -168,6 +167,6 @@ PASS CRITERIA
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 1)
   [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [not met] Mission output at least 90% (mission.output = 0.877)
+  [not met] Mission output at least 90% (mission.output = 0.879)
 
-State hash 72b448f209cde9ec343fa1baf1888967e442db7ff7f4977a7aaf7b9c7a6ce60c
+State hash f6ab5df065969c9dba7da29d42b814db0f6ddaf3c64c23c6fafc9da4719a7916

@@ -11,7 +11,7 @@ namespace LinesOfSupport.Sim.Tests;
 public class NewsTests
 {
     private static Session Play(string log, string scenario, int throughDay)
-        => Replay.Run(Repo.Load(scenario),
+        => Divided.Replay(Repo.Load(scenario),
             InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-17-review", log + "-input-log.json")),
             stopAfterDay: throughDay);
 

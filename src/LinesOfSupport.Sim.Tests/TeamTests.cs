@@ -30,10 +30,26 @@ public class TeamTests
     [Fact]
     public void A_scenario_without_a_team_is_you_alone_with_all_the_shops_hours()
     {
-        var s = Session.Create(Repo.Load("spoke-b"), 1);
+        var s = Session.Create(Repo.Load("sustainment"), 1);
         var you = Assert.Single(s.View.Team);
         Assert.Equal("you", you.Role);
         Assert.Equal(s.View.TopStrip().ShopHoursPerDay, you.HoursPerDay);
+    }
+
+    [Theory]
+    [InlineData("spoke-b")]
+    [InlineData("spoke-b-90")]
+    public void Spoke_B_has_the_team_with_eight_hours_each(string scenario)
+    {
+        // DESK-12: Spoke B gets the same three-person team as the tutorial, each with the rules' 8 hours a day.
+        var s = Session.Create(Repo.Load(scenario), 1);
+        var team = s.View.Team;
+        Assert.Equal(["you", "experienced", "junior"], team.Select(m => m.Role).ToArray());
+        Assert.All(team, m => Assert.Equal(8, m.HoursPerDay));
+        Assert.Equal(24, s.View.TopStrip().ShopHoursPerDay);
+        // No teammate wears the face of someone the player meets in Spoke B.
+        var faces = s.View.People.Select(p => p.Portrait).ToHashSet();
+        Assert.All(team, m => Assert.DoesNotContain(m.Portrait, faces));
     }
 
     [Fact]

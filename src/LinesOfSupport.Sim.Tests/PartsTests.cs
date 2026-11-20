@@ -16,7 +16,7 @@ public class PartsTests
     private static Session Day3()
     {
         var log = Log();
-        return Replay.Run(Repo.Load("spoke-b"), log with { Actions = [.. log.Actions.Where(a => a.Day <= 2)] }, stopAfterDay: 2);
+        return Divided.Replay(Repo.Load("spoke-b"), log with { Actions = [.. log.Actions.Where(a => a.Day <= 2)] }, stopAfterDay: 2);
     }
 
     private static AwardAction HarborFromTheRequest(int day) => new()
@@ -62,7 +62,7 @@ public class PartsTests
     public void Before_a_learned_part_is_added_the_request_says_who_could_still_meet_all_of_it()
     {
         var log = Log();
-        var s = Replay.Run(Repo.Load("spoke-b"), log with { Actions = [.. log.Actions.Where(a => a.Day <= 1)] }, stopAfterDay: 1);
+        var s = Divided.Replay(Repo.Load("spoke-b"), log with { Actions = [.. log.Actions.Where(a => a.Day <= 1)] }, stopAfterDay: 1);
         var lines = s.View.RequirementEditor("req0007")!.Lines;
         var op = lines.Single(l => l.Id == "operator");
         Assert.True(op.CanAdd);
@@ -75,7 +75,7 @@ public class PartsTests
     {
         // The review play bought Harbor's sets on its own initiative on day 3. On day 4 the lead said nothing covered the
         // power request and the request said no decisions were committed.
-        var s = Replay.Run(Repo.Load("spoke-b"), Log(), stopAfterDay: 3);
+        var s = Divided.Replay(Repo.Load("spoke-b"), Log(), stopAfterDay: 3);
         Assert.Equal(4, s.Day);
         var lead = s.View.MorningBoard().Lead;
         Assert.False(lead is not null && lead.LinkId == "req0007" && lead.Text.Contains("nothing covers", StringComparison.Ordinal),

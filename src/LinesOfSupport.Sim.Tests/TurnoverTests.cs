@@ -116,8 +116,9 @@ public class TurnoverTests
         var picked = Turnover("spoke-b", ["gpcAccounts", "cashAndPayingAgent", "systemAccess"]).Text(TurnoverSectionKind.Shop);
         Assert.Contains("down until about day 3", picked);
         Assert.DoesNotContain("No purchase cards", picked);
-        // DESK-78: as the team page shows it: Spoke B's shop is you alone with all its hours until DESK-12 names a team.
-        Assert.Contains("It's just you, 16 hours a day.", picked);
+        // DESK-78, DESK-12: as the team page shows it: Spoke B's shop is the named team, eight hours each.
+        Assert.Contains("You've got MSgt Joan Avery and SrA Eli Novak.", picked);
+        Assert.Contains("You have 8 hours a day; Avery has 8, Novak has 8.", picked);
     }
 
     [Fact]

@@ -17,28 +17,27 @@ Day 1
   ACTION    BPA call started with Harbor Equipment Co: Power at Spoke B, 514 kW/day for 13 days (Generation equipment); quoted $15,369.
   VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1,287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
-  DONE      CE small buys: none worked today (no hours left); 4 waiting.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  DONE      CE small buys: none worked today (no hours left); 8 waiting.
+  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 19. Obligated $15,369.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
-  DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 15, ends day 74. Obligated $693,900.
-  DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 19. Obligated $15,369.
-  COMPLY    Capt Ana Ruiz (3 CES) went to the commander: 12 small buys are waiting behind the shop's other work. The commander's confidence in contracting drops.
-  DONE      CE small buys: none worked today (no hours left); 12 waiting.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 4
-  DONE      CE small buys: none worked today (no hours left); 16 waiting.
+  DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 16, ends day 75. Obligated $693,900.
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 5
-  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
-  DONE      CE small buys: 4 worked today (2 h of shop time); 17 still waiting.
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     Fuel at Spoke B from the partner force began, 1,287 gal/day.
 Day 6
-  DONE      CE small buys: 18 worked today (9 h of shop time, 3 on cards).
+  DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
-  DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
+  DONE      CE small buys: 5 worked today (2.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 514 kW/day.
 Day 8
-  DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 10
@@ -56,21 +55,21 @@ Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
 Day 16
   ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
   DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
+  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
 Day 17
-  ACTION    Termination of Harbor Equipment Co power at Spoke B started.
-  END       Harbor Equipment Co power at Spoke B terminated; performance ends day 17. $2,364 deobligated back to the O&M line good through day 75.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 18
+  ACTION    Termination of Harbor Equipment Co power at Spoke B started.
+  END       Harbor Equipment Co power at Spoke B terminated; performance ends day 18. $1,182 deobligated back to the O&M line good through day 75.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
-  END       Harbor Equipment Co power at Spoke B ended.
 Day 19
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  END       Harbor Equipment Co power at Spoke B ended.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 20
@@ -168,12 +167,12 @@ Day 58
 Day 59
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 60
-  ACTION    Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 16 days (Generation equipment, Operators, Maintenance and repair); quoted $123,360.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 61
-  DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 75, ends day 90. Obligated $123,360.
+  ACTION    Written purchase order started with Meridian Site Services: Power at Spoke B, 514 kW/day for 15 days (Generation equipment, Operators, Maintenance and repair); quoted $115,650.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 62
+  DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 76, ends day 90. Obligated $115,650.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 63
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
@@ -181,7 +180,7 @@ Day 64
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 65
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $69,736 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
+  FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $76,264 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 67
@@ -204,12 +203,12 @@ Day 74
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 75
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  END       Meridian Site Services power at Spoke B ended.
-  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
-  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $69,736 never obligated can no longer pay for anything new.
+  FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $76,264 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
+  END       Meridian Site Services power at Spoke B ended.
+  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
 Day 77
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 78
@@ -251,9 +250,9 @@ Spoke B Fuel                    ............X...................................
 
 SCORECARD
   Mission output 93% (sortie generation 99%, throughput 99%, endurance 100%, resilience 55%)
-  Obligated $830,264; incurred $830,264; incurred but not obligated $0
+  Obligated $823,736; incurred $823,736; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 187; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
+  Surveys 1; shop hours worked 191; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
   spokeBSite.power: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
 
@@ -277,4 +276,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash 5a865c67a0941ac723a4b6bfc3b3d9ac3c5ae9a22ef72ebf1b0bfafb9c8e0a1b
+State hash dca2ca4076024e78778beec0da477d91255bea463820f7ff182e3fe1a5911ffd

@@ -77,7 +77,7 @@ public class CarriedTests
     {
         var s = Run("spoke-b", "greedy");
         Assert.StartsWith("Out on days 10 to 12 and 16 to 30.", Line(s, "powerUp"), StringComparison.Ordinal);
-        Assert.StartsWith("Out on days 22 and 23, and 27 and 28.", Line(s, "waterUp"), StringComparison.Ordinal);
+        Assert.StartsWith("Out on days 7 and 8.", Line(s, "waterUp"), StringComparison.Ordinal);   // DESK-12: the team
         Assert.Equal("Two commitments were made without authority, the first on day 11.", Line(s, "noUc"));
     }
 
