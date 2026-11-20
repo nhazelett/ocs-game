@@ -41,7 +41,11 @@ internal static class MorningScreenFixChecks
                     await Capture("day3-news");
                     scroll.EnsureControlVisible(join.GetParent().GetChildren().OfType<Label>().Last()); await Frames();
                     await Capture("day3-meeting");
+                    var picker = join.GetParent().GetChildren().OfType<AssigneePicker>().Single();
+                    Require(picker.Selected == "you", "The news meeting entry defaults to you.");
+                    picker.ChoiceButtons["novak"].EmitSignal(Button.SignalName.Pressed);
                     join.EmitSignal(Button.SignalName.Pressed);
+                    Require(shell.Session.CreateSave().Actions.Last() is JoinStaffMeetingAction { Assignee: "novak" }, "The news entry sends its chosen teammate too.");
                     Require(shell.Session.View!.StaffMeeting.Joining && !PlayScreen.Descendants(shell.MorningBrief).OfType<Button>().Any(b => b.HasMeta("news_staff_meeting")), "Joining from the note queues the real action once and removes its duplicate affordance.");
                 }
                 else if (day == 4)

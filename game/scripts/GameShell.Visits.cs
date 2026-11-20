@@ -11,6 +11,7 @@ public partial class GameShell
     private VBoxContainer visitsFooter = null!;
     private string? visitContact, scoQuestion, j4Site;
     private long? j4Quantity;
+    private string? j4Assignee;
     private string j4Capability = "fuel";
     private EngageJ4Action? j4Start;
     private int j4Sequence = 1;
@@ -20,6 +21,7 @@ public partial class GameShell
     internal OptionButton? ScoQuestionInput { get; private set; }
     internal OptionButton? J4SiteInput { get; private set; }
     internal SpinBox? J4QuantityInput { get; private set; }
+    internal Dictionary<string, AssigneePicker> VisitAssignees { get; } = [];
     internal Dictionary<string, Button> VisitButtons { get; } = [];
     internal Dictionary<string, (PlayerAction Action, ActionPreview Preview)> VisitOptions { get; } = [];
     internal Label? ShopVehicleStatus { get; private set; }
@@ -64,14 +66,14 @@ public partial class GameShell
 
     private void ResetVisits()
     {
-        visitContact = scoQuestion = j4Site = null; j4Quantity = null; j4Sequence = 1; j4Capability = "fuel"; j4Start = null;
+        visitContact = scoQuestion = j4Site = null; j4Quantity = null; j4Assignee = null; j4Sequence = 1; j4Capability = "fuel"; j4Start = null;
         PeopleToggle.ButtonPressed = false;
     }
 
     private void RefreshVisits(SessionView? view, MorningBoardView? board)
     {
         DeskUi.Clear(visitsForm); DeskUi.Clear(visitsFooter); DeskUi.Clear(visitResults); DeskUi.Clear(mentorMessages);
-        VisitButtons.Clear(); VisitOptions.Clear(); contactPeople.Clear();
+        VisitButtons.Clear(); VisitOptions.Clear(); VisitAssignees.Clear(); contactPeople.Clear();
         ScoQuestionInput = J4SiteInput = null; J4QuantityInput = null; ShopVehicleStatus = null;
         mentorMessages.Visible = false; PeopleToggle.Disabled = view is null;
         if (view is null) return;
@@ -167,26 +169,40 @@ public partial class GameShell
         if (meeting.Joining) return;
         var key = meeting.Attending ? "leave-meeting" : "meeting";
         var action = new JoinStaffMeetingAction { Day = view.Day, Attend = !meeting.Attending };
-        var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
-        var button = DeskUi.Button(meeting.Attending ? "Stop attending" : "Join the staff meeting", () => SendAction(action));
-        button.SetMeta("visit", key);
-        var reason = DeskUi.ActionReason(visitsFooter, button);
-        DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
-        VisitButtons[key] = button;
-        AddActionCost(visitsFooter, view, action, meeting.Attending ? "Stops attending the staff meeting." : "Joins the staff meeting so requests reach you in the room.", preview);
-        if (preview.SoftGaps.Count > 0) visitsForm.AddChild(DeskUi.Label(string.Join("\n\n", preview.SoftGaps)));
+        var effect = meeting.Attending ? "Stops attending the staff meeting." : "Joins the staff meeting so requests reach you in the room.";
+        if (!meeting.Attending)
+        {
+            var assigned = AddAssignedAction(visitsForm, visitsFooter, view, action, "Join the staff meeting", effect,
+                stillCurrent: () => visitContact == "meeting", updated: (chosen, quote) => VisitOptions[key] = (chosen, quote));
+            VisitButtons[key] = assigned.Button; VisitAssignees[key] = assigned.Picker;
+            assigned.Button.SetMeta("visit", key);
+        }
+        else
+        {
+            var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
+            var button = DeskUi.Button("Stop attending", () => SendAction(action)); button.SetMeta("visit", key);
+            var reason = DeskUi.ActionReason(visitsFooter, button);
+            DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault());
+            VisitButtons[key] = button; AddActionCost(visitsFooter, view, action, effect, preview);
+        }
     }
 
     private void AddVisit(string key, string text, PlayerAction action, SessionView view, VBoxContainer? parent = null)
     {
         var host = parent ?? visitsForm;
-        var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
-        var button = DeskUi.Button(text, () =>
+        if (action is EngageJ4Action j4)
         {
-            if (!SendAction(action).Accepted || action is not EngageJ4Action) return;
-            // An accepted ask is in work; close its form instead of presenting the same ask as a refusal.
-            ResetVisits(); RefreshVisits(session.View, session.View?.MorningBoard());
-        }); button.Disabled = view.Finished || !preview.Accepted;
+            var assigned = AddAssignedAction(host, visitsFooter, view, j4 with { Assignee = j4Assignee }, text,
+                $"Asks the J4 for {DeskUi.Quantity(j4.Quantity)} {view.ActionEditor(j4.Site, j4.Capability)!.Unit} a day of {CapabilityName(view, j4.Capability).ToLowerInvariant()} at {view.NameOf(j4.Site)}.",
+                stillCurrent: () => visitContact == "j4",
+                updated: (chosen, quote) => { j4Assignee = chosen.Assignee; VisitOptions[key] = (chosen, quote); },
+                accepted: () => { ResetVisits(); RefreshVisits(session.View, session.View?.MorningBoard()); });
+            VisitButtons[key] = assigned.Button; VisitAssignees[key] = assigned.Picker;
+            assigned.Button.SetMeta("visit", key); assigned.Cost.SetMeta("visit_timing", key);
+            return;
+        }
+        var preview = view.PreviewVisit(action); VisitOptions[key] = (action, preview);
+        var button = DeskUi.Button(text, () => SendAction(action)); button.Disabled = view.Finished || !preview.Accepted;
         button.SetMeta("visit", key);
         var reason = DeskUi.ActionReason(visitsFooter, button);
         DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview.HardStops.FirstOrDefault()); VisitButtons[key] = button;
@@ -195,7 +211,6 @@ public partial class GameShell
             FindFinanceAction => "Finds the finance office and its cash and payment arrangements.",
             AskScoAction ask => "Sends the SCO your question: " + view.ScoQuestions.First(q => q.Id == ask.Question).Label + ".",
             MeetVendorAction meet => VendorMeetingEffect(view, meet.Vendor),
-            EngageJ4Action j4 => $"Asks the J4 for {DeskUi.Quantity(j4.Quantity)} {view.ActionEditor(j4.Site, j4.Capability)!.Unit} a day of {CapabilityName(view, j4.Capability).ToLowerInvariant()} at {view.NameOf(j4.Site)}.",
             _ => text + "."
         };
         var timing = AddActionCost(visitsFooter, view, action, effect, preview);
@@ -222,7 +237,7 @@ public partial class GameShell
     {
         CloseRequestWorkspace(restore: false);
         if (session.View is not { Finished: false } view) return;
-        visitContact = "j4"; j4Site = start.Site; j4Capability = start.Capability; j4Start = start; j4Quantity = null;
+        visitContact = "j4"; j4Site = start.Site; j4Capability = start.Capability; j4Start = start; j4Assignee = start.Assignee; j4Quantity = null;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         PeopleToggle.ButtonPressed = true; RefreshVisits(view, view.MorningBoard());
         var quantity = J4QuantityInput;

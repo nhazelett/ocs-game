@@ -10,11 +10,13 @@ public partial class GameShell
     internal VBoxContainer RequestHelperRows { get; private set; } = null!;
     internal Dictionary<string, Button> RequestHelperButtons { get; } = [];
 
+    internal Dictionary<string, AssigneePicker> RequestHelperAssignees { get; } = [];
+
     private static string HelperKey(HelperView helper) => helper.Kind + ":" + (helper.Person?.Id ?? helper.CapabilityId);
 
     private void RenderRequestHelpers(SessionView view, RequirementEditorView card)
     {
-        RequestHelperButtons.Clear();
+        RequestHelperButtons.Clear(); RequestHelperAssignees.Clear();
         linkedRequirement.AddChild(DeskUi.Heading("Who can help"));
         RequestHelperRows = new VBoxContainer { Name = "RequestHelpers" };
         RequestHelperRows.AddThemeConstantOverride("separation", 14); linkedRequirement.AddChild(RequestHelperRows);
@@ -45,28 +47,31 @@ public partial class GameShell
             if (helper.State == HelperView.Asking)
                 row.AddChild(DeskUi.Label($"This takes about {helper.Hours} shop {(helper.Hours == 1 ? "hour" : "hours")}."));
             if (helper.Start is not { } action) continue;
-            var preview = action is EngageJ4Action ? null : view.PreviewAny(action);
-            var text = action is MeetVendorAction ? "Meet " + helper.Person!.DisplayName : action is EngageJ4Action ? "Ask the J4" : "Ask " + helper.Person!.DisplayName;
-            var button = DeskUi.Button(text, () =>
+            bool CurrentHelper() => SelectedCard == card.CardId
+                && session.View?.RequirementEditor(card.CardId)?.WhoCanHelp?.FirstOrDefault(h => HelperKey(h) == key)?.Start is not null;
+            Button button;
+            if (action is EngageJ4Action j4)
             {
-                if (hash != session.StateHash || SelectedCard != card.CardId || PlayingDay || ReadingDaySummary
-                    || session.View is not { Finished: false } current) return;
-                // Re-read the typed target so a stale callback cannot repeat or redirect a visit.
-                var latest = current.RequirementEditor(card.CardId)?.WhoCanHelp?.FirstOrDefault(h => HelperKey(h) == key);
-                if (latest?.Start is not { } start) return;
-                if (start is EngageJ4Action j4) OpenJ4Support(j4);
-                else if (current.PreviewAny(start).Accepted) SendAction(start);
-            });
-            button.SetMeta("helper_start", key);
-            var reason = DeskUi.ActionReason(row, button);
-            DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : preview?.HardStops.FirstOrDefault());
-            RequestHelperButtons[key] = button;
-            if (preview is not null)
-            {
-                var cost = AddActionCost(row, view, action, action is MeetVendorAction ? VendorMeetingEffect(view, ((MeetVendorAction)action).Vendor) : "Asks " + helper.Person!.DisplayName + " about " + card.Title + ".", preview);
-                cost.SetMeta("ask_preview", helper.Person?.Id ?? key);
+                // This opens a quantity form; its committing Ask button has the assignee picker.
+                button = DeskUi.Button("Ask the J4", () =>
+                {
+                    if (hash == session.StateHash && CurrentHelper() && !PlayingDay && !ReadingDaySummary
+                        && session.View is { Finished: false }) OpenJ4Support(j4);
+                });
+                var reason = DeskUi.ActionReason(row, button);
+                DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : null);
+                row.AddChild(DeskUi.Label("Opens the support quantity form to choose who does it; no work is sent yet."));
             }
-            else row.AddChild(DeskUi.Label("Opens the support quantity form; no work is sent yet."));
+            else
+            {
+                var assigned = AddAssignedAction(row, row, view, action,
+                    action is MeetVendorAction ? "Meet " + helper.Person!.DisplayName : "Ask " + helper.Person!.DisplayName,
+                    action is MeetVendorAction meet ? VendorMeetingEffect(view, meet.Vendor) : "Asks " + helper.Person!.DisplayName + " about " + card.Title + ".",
+                    stillCurrent: CurrentHelper);
+                button = assigned.Button; RequestHelperAssignees[key] = assigned.Picker;
+                assigned.Cost.SetMeta("ask_preview", helper.Person?.Id ?? key);
+            }
+            button.SetMeta("helper_start", key); RequestHelperButtons[key] = button;
             if (action is AskAboutAction ask) RequirementAskButtons[ask.Person] = button;
         }
     }
