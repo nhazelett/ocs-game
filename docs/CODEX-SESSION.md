@@ -36,6 +36,7 @@ Standing authorization (Nick, 8 Nov 2026): Codex opens ordinary (non-draft) pull
 
 ## 3. Lanes (from `docs/CODEX-KICKOFF.md` and `docs/DISSENT.md`)
 - Your components: `src/LinesOfSupport.Harness*`, `game/`, `tools/`, `assets/`, `.github/`, `backlog/`, Codex handoff notes. PRs that stay inside them merge on green CI.
+- Small game fixes by Fable (Nick, 20 Nov 2026): Fable may fix a small `game/` defect itself (a blocker or a fix of about 20 lines, with the smoke tests passing and a plain screenshot) instead of filing a row for you, and says so in its handoff. Larger screen work stays yours. Pull `main` before touching the same file.
 - Fable's components: `src/LinesOfSupport.Sim*`, `scenarios/`, `docs/SPEC.md`, `docs/decisions/`. Touch them only when a backlog item says so; those PRs get a design review, not a CI-only merge.
 - Need something from the Sim or the schema? Write the interface you want in `backlog/QUESTIONS.md` tagged `@Fable`, then take the next item.
 - Disagree with Fable? Objection record per `docs/DISSENT.md`, one counter, then the lane owner decides. Never escalate a technical dispute to Nick.
@@ -47,6 +48,7 @@ Standing authorization (Nick, 8 Nov 2026): Codex opens ordinary (non-draft) pull
 
 ## 5. End
 1. Handoff note `docs/handoffs/YYYY-MM-DD-codex-<topic>.md` from the template, including the "Expected look of this build and why" line. Commit it on the branch of your last PR, or on its own `codex/handoff-<date>` branch with a PR.
+   Quiet when idle (Nick, 20 Nov 2026): if the session opened no PR, pushed no fix and found nothing new for Nick or Fable, it writes no handoff note and opens no PR; the final message says "Nothing to build" in one line. Nine handoff-only PRs in a row on 19 and 20 Nov each cost a CI run and a Fable merge.
 2. The session's final message is short and plain: PRs opened, PRs fixed, anything added to `backlog/FOR-NICK.md`. Scheduled runs use it as the run summary.
 
 ## Never
