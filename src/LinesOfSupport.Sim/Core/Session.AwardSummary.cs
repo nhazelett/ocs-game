@@ -62,10 +62,27 @@ public sealed partial class Session
         string? why = null;
         if (card is not null && start > needEnd)
             why = $"It starts after the need ends on day {needEnd}.";
+        else if (card is not null && ToldNotAdded(card) is { } told)
+            why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
         else if (onTop.Count > 0 && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
             why = "Every day it would run is already covered.";
         if (why is not null) parts.Add(why);
         return new AwardSummaryView(string.Join(" ", parts), why is not null, why);
+    }
+
+    /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include
+    /// yet: "It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first." Null when
+    /// there are none. Whatever the vendor, a buy is written for the request's parts, so it leaves these out until the
+    /// player adds them.</summary>
+    private string? ToldNotAdded(CardState card)
+    {
+        var told = Cap(card.CapabilityId).Lines
+            .Where(l => !card.Lines.GetValueOrDefault(l.Id) && _learnedLines.ContainsKey((card.Id, l.Id)))
+            .Select(l => l.Id).ToList();
+        if (told.Count == 0) return null;
+        var said = told.Select(l => _learnedLines[(card.Id, l)].Person).Distinct().Select(BuildPerson).OfType<PersonView>().ToList();
+        var who = said.Count > 0 ? $"which {string.Join(" and ", said.Select(p => p.DisplayName))} said" : "which you were told";
+        return $"It leaves out {PartsLabels(card.CapabilityId, told)}, {who} the request needs: add what you learned first.";
     }
 
     /// <summary>"3%", "2.5%".</summary>

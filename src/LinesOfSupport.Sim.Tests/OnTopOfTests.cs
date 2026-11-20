@@ -37,15 +37,18 @@ public class OnTopOfTests
     }
 
     [Fact]
-    public void An_order_that_leaves_out_the_drivers_too_is_still_a_double_buy()
+    public void An_order_that_leaves_out_the_drivers_too_says_to_add_them_first()
     {
         // Dunn has said it, but the player has not put drivers on the request, so the order as written brings none either
-        // (the quote says so) and adds nothing the call leaves out.
+        // (the quote says so) and adds nothing the call leaves out. D40 (DESK-119, Claude play 20 Nov): the summary says
+        // what is missing and who said so, in place of "Every day it would run is already covered.", which sent the 20 Nov
+        // player away from the vendor that brings drivers.
         var s = Day5();
         var summary = s.View.AwardSummary(CoastalOrder())!;
         Assert.DoesNotContain("which comes without", summary.Sentence, StringComparison.Ordinal);
+        Assert.DoesNotContain("already covered", summary.Sentence, StringComparison.Ordinal);
         Assert.True(summary.Attention);
-        Assert.Equal("Every day it would run is already covered.", summary.Why);
+        Assert.Equal("It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first.", summary.Why);
     }
 
     [Fact]
