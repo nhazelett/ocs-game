@@ -57,7 +57,7 @@ public sealed partial class Session
         if (supply < demand)
         {
             var named = running.Count == 1 ? SupplierName(running[0]) : "What is arranged";
-            var perDay = cap.Delivery == "consumable" ? "/day" : "";
+            var perDay = PerDay(cap) ? "/day" : "";
             var pop = PopulationOn(site, Math.Min(d, LastDay));
             var bought = running.Min(a => Math.Max(1, a.CreatedDay));
             var then = PopulationOn(site, Math.Min(Math.Max(bought, site.OpensDay), LastDay));
