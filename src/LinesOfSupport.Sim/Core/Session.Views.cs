@@ -8,7 +8,11 @@ namespace LinesOfSupport.Sim.Core;
 public sealed partial class Session
 {
     private static int CeilHours(long milli) => (int)((milli + 999) / 1000);
-    private static string Rate(CapabilityData cap) => cap.Delivery == "consumable" ? $"{cap.Unit}/day" : cap.Unit;
+    private static string Rate(CapabilityData cap) => PerDay(cap) ? $"{cap.Unit}/day" : cap.Unit;
+
+    /// <summary>A quantity read per day: a consumable, or a continuous service measured in a volume (waste removal's
+    /// "3,600 gal/day", DESK-126, Claude play 20 Nov, second play, note 5). A count of things (forklifts, beds) is not.</summary>
+    internal static bool PerDay(CapabilityData cap) => cap.Delivery == "consumable" || cap.Unit is "gal" or "L" or "m3";
 
     /// <summary>A whole quantity as the player reads it, with thousands separators whatever the machine's culture:
     /// "4,500", not "4500" (DESK-99).</summary>
@@ -20,7 +24,7 @@ public sealed partial class Session
     private static string Amount(long n, CapabilityData cap)
     {
         var unit = n == 1 && cap.Unit.Length > 3 && cap.Unit.EndsWith('s') && cap.Unit.All(char.IsLower) ? cap.Unit[..^1] : cap.Unit;
-        return cap.Delivery == "consumable" ? $"{Qty(n)} {unit}/day" : $"{Qty(n)} {unit}";
+        return PerDay(cap) ? $"{Qty(n)} {unit}/day" : $"{Qty(n)} {unit}";
     }
 
     /// <summary>

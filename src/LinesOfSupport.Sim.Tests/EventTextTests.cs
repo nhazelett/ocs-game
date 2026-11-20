@@ -48,8 +48,9 @@ public class EventTextTests
         var s = Session.Create(Repo.Load("tutorial"), 1);
         s.AdvanceDay();
         var item = s.View.MorningBoard().Items.Single(i => i.LinkId == "mentorDay1");
-        Assert.StartsWith("Capt Mills on the cash box. \"Watch the cash box.", item.Text);
-        Assert.EndsWith("only takes cash.\"", item.Text);
+        // DESK-128: the card first, with its limit for one buy; the cash box only when paying cash.
+        Assert.StartsWith("Capt Mills on paying for small buys. \"Small buys go on the card if the vendor takes it, up to $20,000 each;", item.Text);
+        Assert.EndsWith("the paying agent can't buy what isn't in it.\"", item.Text);
         Assert.Equal("mills", item.Person?.Id);
     }
 

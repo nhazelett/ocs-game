@@ -357,7 +357,7 @@ Also from this play, no decision needed: the pick-two sentence sits under its to
 
 Sim notes (Fable):
 
-- D42, DESK-123: `AwardSummaryView` gains `AnswerDue`, the sentence while an ask about the request's card is in work (the person, the day the answer is due from that work's forecast); null otherwise. It is the summary's last sentence and not an attention reason. Read only; goldens move only where a golden prints the summary (state which).
+- D42, DESK-123: `AwardSummaryView` gains `AnswerDue`, the sentence while an ask about the request's card is in work (the person, the day the answer is due from that work's forecast); null otherwise. It is the summary's last sentence and not an attention reason. Read only; goldens move only where a golden prints the summary (state which). Built 20 Nov: the sentence says "what they say" (the cast carries no pronouns); the earliest answer when two asks are out; no golden prints the summary.
 - DESK-126: the decision and record text gives a continuous capability's quantity per day when its unit is a volume (waste removal in gal): "3,600 gal/day for 8 days". Goldens move where they print that line (state which).
 - DESK-128: Mills' money line and his day 2 note say the cash box is what to watch when you buy with cash (an SF 44), not in general. Goldens move where they print the turnover or the note.
 

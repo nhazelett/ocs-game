@@ -530,7 +530,10 @@ public sealed record SkipStopsView(string Sentence, int UntilDay);
 /// starts after the need ends or only adds to days already covered; Why is that reason, and is also the sentence's
 /// last part. A forecast; it ignores rolls.
 /// </summary>
-public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why);
+/// <param name="AnswerDue">D42 (DESK-123): while someone asked about the request has not answered, one sentence saying when
+/// the answer is due ("SMSgt Ray Dunn's answer about this request is due on day 4; what they say may change what this buy
+/// needs."); also the last sentence of <paramref name="Sentence"/>. Not an attention reason and not a stop. Null otherwise.</param>
+public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why, string? AnswerDue = null);
 
 /// <summary>
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return

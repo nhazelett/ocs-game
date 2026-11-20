@@ -67,7 +67,24 @@ public sealed partial class Session
         else if (onTop.Count > 0 && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
             why = "Every day it would run is already covered.";
         if (why is not null) parts.Add(why);
-        return new AwardSummaryView(string.Join(" ", parts), why is not null, why);
+        // D42, DESK-123: the summary's last sentence, after any attention reason; never one itself.
+        var answer = card is null ? null : AnswerDue(card);
+        if (answer is not null) parts.Add(answer);
+        return new AwardSummaryView(string.Join(" ", parts), why is not null, why, answer);
+    }
+
+    /// <summary>D42 (DESK-123, Claude play 20 Nov, second play, note 1): an ask about this request still in work, the
+    /// earliest answer first: "SMSgt Ray Dunn's answer about this request is due on day 4; what they say may change what
+    /// this buy needs." The day is that work's forecast, as the decisions list gives it. Null when no ask is out.</summary>
+    private string? AnswerDue(CardState card)
+    {
+        var due = _work.Where(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.StoppedDay is null
+                                   && w.Payload is VisitPayload { Extra: AskAboutAction q } && q.Card == card.Id)
+                       .Select(w => (Person: ((AskAboutAction)((VisitPayload)w.Payload!).Extra!).Person,
+                                     Day: PlayQueue(Member(w.Assignee), 0, Day, w, w.HoursRemainingMilli) ?? Day))
+                       .OrderBy(x => x.Day).FirstOrDefault();
+        if (due.Person is null || BuildPerson(due.Person) is not { } person) return null;
+        return $"{Possessive(person.DisplayName)} answer about this request is due on day {due.Day}; what they say may change what this buy needs.";
     }
 
     /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include
