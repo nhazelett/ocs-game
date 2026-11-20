@@ -37,6 +37,9 @@ public partial class PrioritiesSmokeTest : Node
                 var preview = expected.View.Preview(action);
                 Require(preview.Accepted && !shell.AwardButton.Disabled && shell.AwardTrade!.Visible && shell.AwardTrade!.Text == preview.Trade
                     && System.Text.Json.JsonSerializer.Serialize(shell.AwardPreview) == System.Text.Json.JsonSerializer.Serialize(preview), "All preview costs, timing, stops, gaps and the trade come directly from Sim.");
+                Require(shell.AwardTrade!.GetParent() == shell.PriorityInputs["fast"].GetParent().GetParent()
+                    && shell.AwardTrade.GetIndex() == shell.PriorityInputs["fast"].GetParent().GetIndex() + 1,
+                    "The exact trade and premium sit directly below their pick-two row.");
                 var third = shell.PriorityInputs.Single(t => !pair.Contains(t.Key)).Value;
                 Require(third.Disabled && shell.PriorityInputs.Where(t => pair.Contains(t.Key)).All(t => !t.Value.Disabled), "Only the unchosen third is disabled; either chosen toggle can be changed.");
                 third.ButtonPressed = true;
@@ -45,7 +48,9 @@ public partial class PrioritiesSmokeTest : Node
                 await Capture(string.Join("-", pair));
             }
             // Instrument metadata, rather than a list of ids in Game, controls the UI on written orders.
-            Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "bosBpa");
+            Pick(shell.VendorInput, "vendorC"); Pick(shell.InstrumentInput, "bpaCall");
+            Require(shell.PendingAward?.Vehicle == "bosBpa", "The only available BPA is selected without an extra click.");
+            Pick(shell.VehicleInput, "bosBpa");
             shell.QuantityInput.Value = 360;
             // DESK-65 (D27): a call is priced and timed by its BPA, so it offers no pair and says the vehicle's terms instead.
             Require(shell.PriorityInputs.Count == 0 && shell.PendingAward!.Priorities is null, "A BPA call offers no fast, cheap and good.");
@@ -124,6 +129,7 @@ public partial class PrioritiesSmokeTest : Node
             Require(shell.Session.StateHash == hash, "Finished-game signals cannot mutate state.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await TradePlacementSmokeChecks.Run(this);
             GD.Print("PRIORITIES_SMOKE_PASS: all three exact Sim trades, required pairs, price updates, pure edits, stale/duplicate guards, cash clearing, save/resume, replay takeover and finished games.");
             GetTree().Quit();
 
@@ -139,7 +145,7 @@ public partial class PrioritiesSmokeTest : Node
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using (var form = GetViewport().GetTexture().GetImage())
                     Require(form.SavePng(args[index + 1] + "-call-form.png") == Error.Ok, "Native call form screenshot saved.");
-                shell.AwardScroll.ScrollVertical = (int)shell.AwardTrade!.GetParent<Control>().Position.Y;
+                shell.AwardScroll.EnsureControlVisible(shell.AwardTrade!);
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();
@@ -160,15 +166,9 @@ public partial class PrioritiesSmokeTest : Node
                 Require(shell.PriorityInputs.Values.All(t => t.GetGlobalRect().Position.X >= scroll.GetGlobalRect().Position.X
                     && t.GetGlobalRect().End.X <= scroll.GetGlobalRect().End.X), "The three toggles fit the award form.");
                 Require(shell.AwardTrade!.GetGlobalRect().End.X <= GetViewport().GetVisibleRect().End.X, "The wrapped trade stays in the preview pane.");
-                var previewScroll = shell.AwardScroll;
-                previewScroll.ScrollVertical = (int)shell.AwardTrade.GetParent<Control>().Position.Y;
-                for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-                Require(previewScroll.GetGlobalRect().Encloses(shell.AwardTrade.GetGlobalRect())
-                    && previewScroll.GetGlobalRect().Encloses(shell.AwardTiming.GetGlobalRect()),
-                    "The complete trade and shop-hours cost fit together above the preview fold.");
-                Require(previewScroll.GetGlobalRect().Encloses(shell.AwardCost.GetGlobalRect())
-                    && shell.AwardCost.GetGlobalRect().End.Y + 8 <= previewScroll.GetGlobalRect().End.Y,
-                    $"The complete quote, including its punctuation, clears the preview edge above the award button ({suffix}: quote {shell.AwardCost.GetGlobalRect()}, preview {previewScroll.GetGlobalRect()}).");
+                Require(scroll.GetGlobalRect().Encloses(shell.AwardTrade.GetGlobalRect())
+                    && shell.PriorityInputs.Values.All(t => scroll.GetGlobalRect().Encloses(t.GetGlobalRect())),
+                    "The complete trade and premium are readable beside the toggles they explain.");
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[index + 1] + "-" + suffix + ".png") == Error.Ok, "Native pair screenshot saved.");

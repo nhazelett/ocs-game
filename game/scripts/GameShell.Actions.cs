@@ -289,7 +289,7 @@ public partial class GameShell
             return;
         }
         awardWriters = new VBoxContainer(); previewPanel.AddChild(awardWriters);
-        AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); // DESK-26
+        if (AwardTrade is null) { AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); }
         previewTiming = DeskUi.Label(); previewPanel.AddChild(previewTiming);
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
         previewStops = DeskUi.Label(); previewStops.AddThemeColorOverride("font_color", TabletopTheme.Alert); previewPanel.AddChild(previewStops);

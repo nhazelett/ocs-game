@@ -40,6 +40,8 @@ public partial class GameShell
         ClearUnavailable(ref awardVehicle, choices.Vehicles);
         if (awardInstrument is not ("sf44" or "gpc")) ClearUnavailable(ref awardFunding, choices.Funding);
         if (awardInstrument is not ("bpaCall" or "idiqOrder")) awardVehicle = "";
+        else if (string.IsNullOrEmpty(awardVehicle) && choices.Vehicles.Where(v => v.Available).ToArray() is { Length: 1 } fitting)
+            awardVehicle = fitting[0].Id;
         if (reasons.Count > 0) awardChoiceNotice = string.Join(" ", reasons.Distinct());
         CurrentAwardChoices = choices;
         return choices;
