@@ -68,6 +68,14 @@ internal static class StopWorkSmokeChecks
             Require(shell.Session.StateHash == afterStop && !StopButtons(shell.RequestDecisionRows!).Any(),
                 "Save and resume retain the stopped decision and restored request standing.");
 
+            // DESK-118: a stopped buy keeps its name even after it leaves the active queue.
+            Require(fixture.View.AwardIdTaken("player-award-2") && !fixture.View.InWork("player-award-2"),
+                "The stopped call is a reserved name outside active work.");
+            await BuyAfterStop(fixture, "gpc", "same-day");
+            Step(shell); fixture.AdvanceDay();
+            Require(shell.Session.StateHash == fixture.StateHash(), "The day loop preserves the independent post-stop state.");
+            await BuyAfterStop(fixture, "purchaseOrder", "next-day");
+
             // The team button performs the same change without requiring the request page to be open.
             shell.CloseRequestWorkspace(); shell.LoadSavedGame(savePath);
             shell.TeamButtons["avery"].EmitSignal(Button.SignalName.Pressed);
@@ -101,6 +109,30 @@ internal static class StopWorkSmokeChecks
             GD.Print("STOP_WORK_SMOKE_PASS: day-five request and team controls, exact sentences, independent state hashes, standing and queue refresh, save/resume, spent hours, finished buys and stale/duplicate guards.");
         }
         finally { Directory.Delete(temporary, true); }
+
+        async Task BuyAfterStop(Session expected, string instrument, string name)
+        {
+            PickAwardTarget(shell, "tutWater"); shell.ShowMarket();
+            Pick(shell.InstrumentInput, instrument); Pick(shell.VendorInput, "islandMart");
+            shell.QuantityInput.Value = 500; shell.StartInput.Value = expected.Day; shell.DurationInput.Value = 2;
+            PickPriorities(shell, "fast", "good");
+            var buy = shell.PendingAward!;
+            Require(!expected.View.AwardIdTaken(buy.Id) && buy.Id != "player-award-2",
+                "The real buy form skips the stopped call's reserved name.");
+            Require(shell.AwardPreview?.Accepted == true && !shell.AwardButton.Disabled,
+                "A different request has an enabled quote after a stop: " + shell.AwardBlockedReason.Text);
+            await Frames();
+            var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--buy-after-stop-screenshots");
+            if (at >= 0)
+            {
+                await scene.ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = scene.GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[at + 1] + "-" + name + ".png") == Error.Ok, "Saved the enabled quote after stopping work.");
+            }
+            shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
+            Require(expected.Apply(buy).Accepted && shell.Session.StateHash == expected.StateHash(),
+                "Arrange support submits the exact new buy after a stop on the " + name + ".");
+        }
 
         void OpenRequest() => shell.NavigateBoardItem(new BoardItem("", shell.Session.View!.Day, BoardCategory.Request,
             BoardSeverity.Info, BoardLinkKind.Card, "tutForklift", "", []));

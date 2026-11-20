@@ -301,7 +301,7 @@ public partial class GameShell
         var view = session.View; var editor = CurrentActionEditor;
         if (view is null || editor is null) return;
         if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; RefreshRequestBuyWarnings(); GateAward(view); return; }
-        while (view.Arrangements.Any(a => a.Id == $"player-award-{awardSequence}") || view.InWork($"player-award-{awardSequence}")) awardSequence++;
+        while (view.AwardIdTaken($"player-award-{awardSequence}")) awardSequence++;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
             Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = awardInstrument is "sf44" or "gpc" || string.IsNullOrEmpty(awardFunding) ? null : awardFunding,
