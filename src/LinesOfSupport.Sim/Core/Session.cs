@@ -301,6 +301,9 @@ public sealed partial class Session
             usedLink = l.Id;
             return true;
         }
+        // DESK-11: a hired boat carries it on a day the scheduled links do not, unless the weather has closed them.
+        if (LiftRuns(fromIsland, toIsland, day, out var lift, out var weather)) { closedLink = null; usedLink = $"lift:{lift}"; return true; }
+        closedLink ??= weather;   // the boat was held by the closure, so say so even on a day the barge was not due
         return false;
     }
 

@@ -36,6 +36,7 @@ public sealed partial class Session
     /// there (consumables do not fly in v0). Ordered as the scenario lists islands.</summary>
     internal IReadOnlyList<string> VendorReach(VendorData v)
     {
+        if (v.Offers.Any(o => IsLift(o.Capability))) return Scenario.Islands.Select(i => i.Id).ToList();   // DESK-11: a boat goes port to port
         var from = v.Offers.Select(o => StockIsland(v, o.Capability)).Append(v.Island).ToHashSet(StringComparer.Ordinal);
         var reach = new HashSet<string>(from, StringComparer.Ordinal);
         foreach (var l in Scenario.TransportLinks.Where(l => l.Mode is not ("aircraft" or "airlift")))
@@ -57,6 +58,7 @@ public sealed partial class Session
     private string ReachSentence(VendorData v)
     {
         var names = VendorReach(v).Select(id => IslandData(id).Name).ToList();
+        if (v.Offers.Any(o => IsLift(o.Capability))) return $"Their boat sails from {IslandData(v.Island).Name} to any island, every day the weather allows.";
         return names.Count == 1 ? $"They deliver on {names[0]} only." : $"They deliver to {AndList(names)}.";
     }
 

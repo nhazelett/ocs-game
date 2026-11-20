@@ -307,6 +307,10 @@
               "forShop": {
                 "type": "boolean",
                 "description": "DESK-10 (D5): the office's own need (the shop vehicle), bought on its own initiative. No site demand; not part of the mission score; no execution confusion."
+              },
+              "lift": {
+                "type": "boolean",
+                "description": "DESK-11 (D41): a boat between islands, bought on the office's own initiative at the site it serves (mark forShop too). While it runs, consumables for that site's island cross from any island every day, except a day weather closes a surface link between the two islands."
               }
             }
           }

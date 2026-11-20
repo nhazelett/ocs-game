@@ -15,7 +15,7 @@ public sealed partial class Session
 
     /// <summary>True when the office has a vehicle running on this day (or starting on it).</summary>
     internal bool HasShopVehicle(int day)
-        => _arrangements.Any(a => ForShop(a.CapabilityId) && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active
+        => _arrangements.Any(a => ForShop(a.CapabilityId) && !IsLift(a.CapabilityId) && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active
                                   && a.StartDay <= day && a.EndDay >= day);
 
     /// <summary>A visit's milli-hours with the shop vehicle's cut, if the office has one on that day.</summary>
@@ -27,13 +27,15 @@ public sealed partial class Session
         return (cut + 999) / 1000 * 1000;   // whole hours, rounded up
     }
 
-    /// <summary>Things the shop can buy that nobody asked for (DESK-10): today, the vehicle, for the shop's own site.</summary>
+    /// <summary>Things the shop can buy that nobody asked for: the vehicle for the shop's own site (DESK-10), and a boat to each
+    /// site off the shop's island (DESK-11).</summary>
     internal IReadOnlyList<OwnInitiativeView> BuildOwnInitiative()
     {
         var site = Scenario.Sites.FirstOrDefault(s => s.Island == ShopIsland) ?? Scenario.Sites.First();
         var list = new List<OwnInitiativeView>();
         foreach (var cap in Rules.Model.Capabilities.Where(c => c.ForShop))
         {
+            if (cap.Lift) { list.AddRange(LiftInitiative(cap)); continue; }   // DESK-11
             var vendors = Scenario.Vendors.Where(v => v.Offers.Any(o => o.Capability == cap.Id)).Select(v => v.Id).ToList();
             if (vendors.Count == 0) continue;
             var pm = Rules.ShopVehicle.VisitHoursPermille;

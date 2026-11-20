@@ -524,6 +524,27 @@
       "infoTier": "assumed"
     },
     {
+      "id": "harborLighterage",
+      "name": "Harbor Lighterage",
+      "island": "hub",
+      "offers": [
+        {
+          "capability": "portLift",
+          "lines": [
+            "boat"
+          ],
+          "capacityPerDay": 2,
+          "leadTimeDays": 2,
+          "unitPriceCents": 120000
+        }
+      ],
+      "reliability": 0.95,
+      "acceptsGpc": true,
+      "acceptsCash": false,
+      "vetted": true,
+      "infoTier": "estimated"
+    },
+    {
       "id": "partnerForce",
       "name": "the partner force",
       "island": "hub",
@@ -893,6 +914,18 @@
       "portrait": "carvalho",
       "lines": {
         "greeting": "Water and rations, stocked right here on the third island."
+      }
+    },
+    {
+      "id": "santos",
+      "name": "Rui Santos",
+      "rank": "Mr.",
+      "unit": "Harbor Lighterage",
+      "role": "vendorRep",
+      "vendor": "harborLighterage",
+      "portrait": "silva",
+      "lines": {
+        "greeting": "The barge keeps its own days. My boat goes out every morning the harbor master lets it, to any island you need."
       }
     }
   ],

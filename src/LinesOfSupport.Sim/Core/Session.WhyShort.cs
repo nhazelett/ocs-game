@@ -86,7 +86,7 @@ public sealed partial class Session
                     var through = _linkClosedThrough.TryGetValue(link, out var t) && t >= d ? $" through day {t}" : "";
                     return With($"{Possessive(who)} delivery is waiting on {from}: the route to {IslandData(site.Island).Name} is closed{through}");
                 }
-                return With($"{Possessive(who)} delivery is waiting on {from} for the next run to {IslandData(site.Island).Name}");
+                return With($"{Possessive(who)} delivery is waiting on {from} for the next run to {IslandData(site.Island).Name}{LiftHint(site.Island)}");
             }
             var failure = _records.LastOrDefault(r => r.Kind == RecordKind.VendorFailure && r.Subject == a.Id && r.Day == d);
             if (failure is not null)

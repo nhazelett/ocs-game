@@ -854,6 +854,9 @@ public sealed record CapabilityData
     public string? UsualOwner { get; init; }
     /// <summary>DESK-10 (D5): the office's own need (the shop vehicle): no site demand, not scored, bought on the shop's own initiative.</summary>
     public bool ForShop { get; init; }
+    /// <summary>DESK-11 (D41): a boat between islands. Bought like the shop vehicle (ForShop too) at the site it serves; while
+    /// it runs, consumables for that site's island cross from any island every day the weather allows.</summary>
+    public bool Lift { get; init; }
 }
 
 public sealed record MissionWeightsData(double SortieGeneration, double Throughput, double Endurance, double Resilience);
