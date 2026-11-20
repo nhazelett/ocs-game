@@ -116,7 +116,7 @@ public partial class GameShell
             visitsForm.AddChild(DeskUi.Label(person.WithUnit));
             if (person.Line("greeting") is { } greeting) visitsForm.AddChild(DeskUi.Label(greeting));
         }
-        if (view.OwnInitiative.Count > 0)
+        if (view.OwnInitiative.Any(o => !view.Rules.Model.Capabilities.Single(c => c.Id == o.CapabilityId).Lift))   // DESK-11: a boat is not the office vehicle
         {
             ShopVehicleStatus = DeskUi.Label(view.HasShopVehicle ? "Office vehicle: running today." : "Office vehicle: none running today.");
             visitsForm.AddChild(ShopVehicleStatus);
