@@ -18,7 +18,7 @@ public class VendorCardTests
         Assert.DoesNotContain("hubUtilities", ids);
         Assert.DoesNotContain("partnerForce", ids);
         Assert.Contains("vendorD", ids);
-        Assert.Equal(7, ids.Count);
+        Assert.Equal(8, ids.Count);   // DESK-11: Harbor Lighterage
     }
 
     [Fact]

@@ -628,6 +628,23 @@
             "kind": "core"
           }
         ]
+      },
+      {
+        "id": "portLift",
+        "label": "Boat between islands",
+        "unit": "boats",
+        "demandPerPersonPerDay": 0,
+        "dependsOn": [],
+        "delivery": "continuous",
+        "forShop": true,
+        "lift": true,
+        "lines": [
+          {
+            "id": "boat",
+            "label": "Boat",
+            "kind": "core"
+          }
+        ]
       }
     ],
     "defaultBufferDays": 3,

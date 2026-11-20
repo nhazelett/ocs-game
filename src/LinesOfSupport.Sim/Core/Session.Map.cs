@@ -28,7 +28,7 @@ public sealed partial class Session
             var v = VendorData(a.VendorId);
             var link = Scenario.TransportLinks.FirstOrDefault(l => l.Id == r.Link);
             return new MapRun(a.Id, a.VendorId, v?.Name ?? SupplierName(a), r.Cap, Cap(r.Cap).Unit, a.SupplierIslandId, SiteData(r.Site).Island, r.Site,
-                              r.Link, link?.Mode ?? "", r.Milli / 1000);
+                              r.Link, link?.Mode ?? (r.Link.StartsWith("lift:", StringComparison.Ordinal) ? "barge" : ""), r.Milli / 1000);   // DESK-11: a hired boat
         }
         MapHeld HeldOf((string Arr, string Cap, string Site, string? ClosedLink, long Milli) h)
         {
