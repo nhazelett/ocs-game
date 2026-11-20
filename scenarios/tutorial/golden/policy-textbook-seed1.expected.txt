@@ -20,7 +20,7 @@ Day 1
   ACTION    The request for water for Hub: Maintenance switched on.
   ACTION    Government purchase card to Island Mart: Water at Hub, 4,950 gal/day for 7 days (Potable water supply); $10,707 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $10,707.
-  EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  EVENT     Capt Mills on paying for small buys. "Small buys go on the card if the vendor takes it, up to $20,000 each; Island Mart does. Harbor Bottling only takes cash, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it."
   VISIT     MSgt Joan Avery got the shop into the commander's staff meeting. Col Helen Ward, Hub commander, ran it. If we run short, Hub comes first. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
@@ -132,4 +132,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash bf18bb39131c76f77ac0addb49e618d8d3ec109930209d6f7502f84d9768fef2
+State hash 121772f8d8fb353db09c1e9b918ab0abff954f48a3bb6b43f883b7e6f285f4de

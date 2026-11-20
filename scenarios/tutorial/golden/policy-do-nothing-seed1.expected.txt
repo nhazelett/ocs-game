@@ -11,7 +11,7 @@ Before day 1
   START     Inherited: Lodging at Hub from Island Camp Services (BPA call), days -20 to 40.
   START     Inherited: Food service at Hub from Island Camp Services (BPA call), days -20 to 40.
 Day 1
-  EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  EVENT     Capt Mills on paying for small buys. "Small buys go on the card if the vendor takes it, up to $20,000 each; Island Mart does. Harbor Bottling only takes cash, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it."
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
   EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
@@ -120,4 +120,4 @@ PASS CRITERIA
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash 69f302f866d7dff6ab7a5340318988d18b6e15830378ad986dcf783fd948e467
+State hash 09b60c28e13da755f2b30d453df5f1faf9893bf77127da547b039040cbfa5860
