@@ -79,6 +79,7 @@ public partial class ShopVehicleSmokeTest : Node
             Require(shell.ShopVehicleStatus is null && shell.InitiativeDetails is null, "A scenario with no office offer inherits no vehicle status or explanation.");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await BoatSmokeChecks.Run(this);
             GD.Print("SHOP_VEHICLE_SMOKE_PASS: explicit model and seller, pure exact award, duplicate guard, real start/expiry, cheaper visit, save/load, exact meeting and scenario clearing.");
             GetTree().Quit();
 
