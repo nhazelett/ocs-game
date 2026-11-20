@@ -10,12 +10,12 @@ public partial class GameShell
     private sealed record AwardTarget(string Id, string Label, string Site, string Capability, string? Card);
     private sealed record Pick(string Id, string Text, string? Block = null);
     private sealed record AwardDraft(string? Instrument, string? Vendor, string? Vehicle, string? Funding,
-        string? Cor, long? Quantity, int? Start, int? Duration, string[] Priorities, bool Touched);
+        string? Cor, string? Assignee, long? Quantity, int? Start, int? Duration, string[] Priorities, bool Touched);
     private readonly Dictionary<string, AwardDraft> awardDrafts = [];
     private int awardDraftDay;
     private VBoxContainer awardPanel = null!;
     private VBoxContainer previewPanel = null!, awardFooter = null!;
-    private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor;
+    private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor, awardAssignee;
     private long? quantity;
     private int? start, duration;
     private readonly List<Label> awardChoiceReasons = [];
@@ -82,7 +82,7 @@ public partial class GameShell
     }
     private void ResetAwardForm()
     {
-        awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = awardCor = null;
+        awardTarget = awardInstrument = awardVendor = awardVehicle = awardFunding = awardCor = awardAssignee = null;
         awardChoiceNotice = null; awardFormTouched = false;
         awardPriorities.Clear(); // DESK-26
         quantity = null; start = duration = null; awardSequence = 1;
@@ -99,12 +99,12 @@ public partial class GameShell
         RefreshAwardDraftDay(session.View);
         if (awardTarget == id) return;
         if (awardTarget is { } previous)
-            awardDrafts[previous] = new(awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor,
+            awardDrafts[previous] = new(awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor, awardAssignee,
                 quantity, start, duration, [.. awardPriorities], awardFormTouched);
         ResetAwardForm(); awardTarget = id;
         if (id is null || !awardDrafts.TryGetValue(id, out var draft)) return;
         awardInstrument = draft.Instrument; awardVendor = draft.Vendor; awardVehicle = draft.Vehicle;
-        awardFunding = draft.Funding; awardCor = draft.Cor; quantity = draft.Quantity; start = draft.Start;
+        awardFunding = draft.Funding; awardCor = draft.Cor; awardAssignee = draft.Assignee; quantity = draft.Quantity; start = draft.Start;
         duration = draft.Duration; awardPriorities.UnionWith(draft.Priorities); awardFormTouched = draft.Touched;
     }
 
@@ -158,7 +158,7 @@ public partial class GameShell
         awardChoiceReasons.Clear(); priorityHelp = null;
         PendingAward = null; AwardPreview = null; CurrentActionEditor = null; CurrentAwardChoices = null; CorInput = null; CorReasonLabels.Clear(); InitiativeTargetInput = null; InitiativeDetails = null;
         PriorityInputs.Clear(); AwardTrade = null; // DESK-26
-        previewLearned = null; AwardAddButtons.Clear();
+        previewLearned = null; AwardAddButtons.Clear(); awardWriters = null; AwardWriterPicker = null;
         var formVersion = ++awardFormVersion;
         var formHash = session.StateHash;
         awardButton = DeskUi.Button("Arrange support", () =>
@@ -286,6 +286,7 @@ public partial class GameShell
             previewPanel.AddChild(DeskUi.Label("Choose a contract vehicle and funding line for these terms before asking for the quote."));
             return;
         }
+        awardWriters = new VBoxContainer(); previewPanel.AddChild(awardWriters);
         AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); // DESK-26
         previewTiming = DeskUi.Label(); previewPanel.AddChild(previewTiming);
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
@@ -300,17 +301,20 @@ public partial class GameShell
     {
         var view = session.View; var editor = CurrentActionEditor;
         if (view is null || editor is null) return;
-        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; RefreshRequestBuyWarnings(); GateAward(view); return; }
+        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; ClearAwardWriter(); RefreshRequestBuyWarnings(); GateAward(view); return; }
         while (view.AwardIdTaken($"player-award-{awardSequence}")) awardSequence++;
+        awardAssignee ??= view.Team.Single(m => m.Role == "you").Id;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
             Site = editor.SiteId, Capability = editor.CapabilityId, Instrument = awardInstrument ?? "", Vendor = awardVendor ?? "",
             Vehicle = string.IsNullOrEmpty(awardVehicle) ? null : awardVehicle, FundingLine = awardInstrument is "sf44" or "gpc" || string.IsNullOrEmpty(awardFunding) ? null : awardFunding,
             Cor = view.Rules.Instruments[awardInstrument!].WrittenTerms && !string.IsNullOrEmpty(awardCor) ? awardCor : null,
             Quantity = quantity ?? 1, StartDay = start, DurationDays = duration ?? 1,
+            Assignee = awardInstrument is "sf44" or "gpc" ? null : awardAssignee,
             Priorities = WrittenAward ? [.. PriorityOrder.Where(awardPriorities.Contains)] : null }; // DESK-26
         try
         {
             AwardPreview = view.Preview(PendingAward);
+            RefreshAwardWriter(view);
             AwardTrade!.Text = AwardPreview.Trade ?? ""; AwardTrade.Visible = AwardPreview.Trade is not null; // DESK-26
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
             previewTiming.Text = $"It would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
@@ -337,7 +341,7 @@ public partial class GameShell
         }
         catch (OverflowException)
         {
-            AwardSummaryLabel.Text = ""; AwardSummaryLabel.Hide();
+            AwardSummaryLabel.Text = ""; AwardSummaryLabel.Hide(); ClearAwardWriter();
             AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
             previewGaps.Text = ""; RefreshRequestBuyWarnings(); DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
         }

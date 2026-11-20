@@ -11,11 +11,11 @@ internal partial class AssigneePicker : VBoxContainer
     internal string Selected { get; private set; }
     internal Action? SelectionChanged { get; set; }
 
-    internal AssigneePicker(IReadOnlyList<AssigneeChoice> choices, string selected, bool disabled)
+    internal AssigneePicker(IReadOnlyList<AssigneeChoice> choices, string selected, bool disabled, string caption = "Who should take this task?")
     {
         Choices = choices; Selected = selected;
         AddThemeConstantOverride("separation", 6);
-        AddChild(DeskUi.Label("Who should take this task?"));
+        AddChild(DeskUi.Label(caption));
         foreach (var choice in choices)
         {
             var button = DeskUi.Button(choice.Sentence, () => Select(choice.MemberId));
