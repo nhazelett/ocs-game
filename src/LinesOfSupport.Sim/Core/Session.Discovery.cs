@@ -104,7 +104,7 @@ public sealed partial class Session
     {
         if (a.CardId is not { } cardId || _cards.FirstOrDefault(c => c.Id == cardId) is not { } card) return null;
         var data = Scenario.RequirementCards.First(c => c.Id == cardId);
-        var missing = MissingPlantParts(a, cap);
+        var missing = MissingPlantParts(a, cap, failDay);
         if (missing.Any(l => _learnedLines.TryGetValue((cardId, l.Id), out var learned) && learned.Day <= failDay)) return null;
         var knew = missing.Where(l => data.KnownBy.ContainsKey(l.Id))
                           .GroupBy(l => data.KnownBy[l.Id].Person)

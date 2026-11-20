@@ -34,6 +34,7 @@ namespace LinesOfSupport.Sim.Core;
 [JsonDerivedType(typeof(AskAboutAction), "askAbout")]
 [JsonDerivedType(typeof(AddLineAction), "addLine")]
 [JsonDerivedType(typeof(StopWorkAction), "stopWork")]
+[JsonDerivedType(typeof(ModifyAction), "modify")]
 public abstract record PlayerAction
 {
     public int Day { get; init; }
@@ -365,3 +366,17 @@ public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<s
     public static ActionResult Ok(string message) => new(true, message, []);
     public static ActionResult Stop(params string[] reasons) => new(false, string.Join("; ", reasons), reasons);
 }
+
+/// <summary>
+/// Add to a running contract the part it left out (D37, DESK-97; FAR 43, a bilateral change within scope): operators or
+/// maintenance that the request it serves has and that the same vendor sells. Lines names the parts (line ids); empty adds
+/// every part that can be added. Costs shop hours (rules modificationShopHours) and, when signed, obligates the parts'
+/// price for the days left from the contract's own funding line. From the day after signing the vendor brings the parts and
+/// their failure odds stop; failures before stay as recorded. Card and cash buys cannot be modified: they are bought again.
+/// </summary>
+public sealed record ModifyAction : PlayerAction
+{
+    public string Arrangement { get; init; } = "";
+    public List<string> Lines { get; init; } = [];
+}
+

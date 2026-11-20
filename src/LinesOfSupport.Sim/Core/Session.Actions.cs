@@ -28,6 +28,7 @@ public sealed partial class Session
             CoordinateAction c => ApplyCoordinate(c),
             DefinitizeAction d => ApplyDefinitize(d),
             TerminateAction t => ApplyTerminate(t),
+            ModifyAction m => ApplyModify(m),
             ResolveCommitmentAction r => ApplyResolve(r),
             EstablishBpaAction e => ApplyEstablishBpa(e),
             EstablishIdiqAction e => ApplyEstablishIdiq(e),
@@ -74,6 +75,7 @@ public sealed partial class Session
         CoordinateAction c => $"coordinate {c.Id}",
         DefinitizeAction d => $"definitize {d.Arrangement}",
         TerminateAction t => $"terminate {t.Arrangement}",
+        ModifyAction m => $"modify {m.Arrangement}",
         ResolveCommitmentAction r => $"{r.Choice} {r.Commitment}",
         EstablishBpaAction e => $"establish BPA {e.Id}",
         EstablishIdiqAction e => $"establish IDIQ {e.Id}",
@@ -590,6 +592,9 @@ public sealed partial class Session
             case WorkKind.CureNotice:
                 CompleteCureNotice((string)w.Payload!, day, w.CauseId);
                 break;
+            case WorkKind.Modify:
+                CompleteModify((ModifyAction)w.Payload!, day, w.CauseId);
+                break;
             case WorkKind.EstablishVehicle:
                 if (w.Payload is EstablishIdiqAction idiqAction) CompleteEstablishIdiq(idiqAction, day, w.CauseId);
                 else CompleteEstablishBpa((EstablishBpaAction)w.Payload!, day, w.CauseId);
@@ -640,7 +645,7 @@ public sealed partial class Session
                                                     .Sum(c => c.AmountCents);
                     // The part of an IDIQ order paid from the minimum guarantee stays spent: the guarantee is owed regardless.
                     var keep = Math.Min(arr.ObligatedCents, Math.Max(arr.FromGuaranteeCents,
-                        arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra));
+                        arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra + AddedPartsCost(arr, arr.EndDay)));
                     var back = arr.ObligatedCents - keep;
                     if (back > 0)
                     {

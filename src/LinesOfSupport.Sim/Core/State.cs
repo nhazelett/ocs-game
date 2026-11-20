@@ -53,7 +53,13 @@ public sealed class Arrangement
     public string? TripAssignee { get; init; }
     /// <summary>Days of termination notice the contract requires, or null for none (inherited noticeDays, M3-19).</summary>
     public int? NoticeDays { get; init; }
+    /// <summary>Parts added by modification (D37, DESK-97): each from the day after it was signed, at its own daily price.</summary>
+    public List<AddedPart> Added { get; } = [];
 }
+
+/// <summary>A part added to a running contract by modification (DESK-97): the line, the first day the vendor brings it,
+/// and what it adds to the contract's daily cost from that day.</summary>
+public sealed record AddedPart(string Line, int FromDay, long DailyCents, string RecordId);
 
 /// <summary>A vendor's claim after a termination that skipped the contract's notice (M3-19). Filed when the
 /// termination is done; settled when the shop works it, charged to the arrangement's funding line.</summary>
@@ -119,7 +125,9 @@ public sealed class CapabilityState
 
 public enum WorkKind { Award, Survey, Definitize, Ratification, PaymentRework, HhqResponse, Terminate, Denial, EstablishVehicle, CureNotice, GpcProgram, ExternalSupportRequest, AcsaOrder, HostNationRequest, FileReview, ClaimSettlement,
     /// <summary>Going to people (M2R-04): finding finance, the staff meeting, a question to the SCO, a vendor meeting, the J4.</summary>
-    Visit }
+    Visit,
+    /// <summary>D37 (DESK-97): writing a modification that adds a part to a running contract.</summary>
+    Modify }
 
 public sealed class WorkItem
 {

@@ -428,7 +428,9 @@
             "paymentErrorReworkHours",
             "hhqInquiryResponseHours",
             "terminationShopDays",
-            "cardCancelShopHours"
+            "cardCancelShopHours",
+            "modificationShopHours",
+            "modificationPartPricePermille"
           ],
           "properties": {
             "surveyShopHours": {
@@ -459,6 +461,16 @@
               "type": "integer",
               "minimum": 0,
               "description": "Shop hours to cancel a card buy with the vendor (DESK-94): a short call, no notice, no settlement."
+            },
+            "modificationShopHours": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Shop hours to write a modification adding a part to a running contract (D37, DESK-97)."
+            },
+            "modificationPartPricePermille": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Each added part's price a day, in permille of the contract's daily price (D37, DESK-97)."
             }
           }
         },

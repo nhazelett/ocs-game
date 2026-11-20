@@ -268,7 +268,7 @@ public sealed partial class Session
 
             var cap = Cap(a.CapabilityId);
             var failPm = 1000 - a.ReliabilityPermille;
-            var missingParts = MissingPlantParts(a, cap);   // DESK-59: goods carry no plant risk
+            var missingParts = MissingPlantParts(a, cap, d);   // DESK-59: goods carry no plant risk; DESK-97: parts added from their day
             var missingOperator = missingParts.Any(l => l.Kind == "operator");
             var missingMaintenance = missingParts.Any(l => l.Kind == "maintenance");
             // DESK-81: a scenario can give the unit a few days of covering for missing operators before the odds apply.
@@ -448,7 +448,7 @@ public sealed partial class Session
             if (!today.ContainsKey(a.Id) || a.IsCoordination) continue;
             if (a.Status == ArrangementStatus.Active && !(today[a.Id].NoDeliveryRecord is not null))
             {
-                a.IncurredCents += a.DailyCostCents;
+                a.IncurredCents += a.DailyCostCents + a.Added.Where(x => x.FromDay <= d).Sum(x => x.DailyCents);
                 if (!a.MobilizationCharged) { a.IncurredCents += a.MobilizationCents; a.MobilizationCharged = true; }
             }
             if (a.Uca is { } u) UcaObligations(a, u, d);

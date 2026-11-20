@@ -890,6 +890,10 @@ public sealed record WorkRulesData
     public int TerminationShopDays { get; init; }
     /// <summary>DESK-94: a card buy is cancelled with the vendor in a short call, not terminated.</summary>
     public int CardCancelShopHours { get; init; }
+    /// <summary>D37 (DESK-97): shop hours to write a modification adding a part to a running contract.</summary>
+    public int ModificationShopHours { get; init; }
+    /// <summary>D37 (DESK-97): each added part's price a day, in permille of the contract's daily price.</summary>
+    public int ModificationPartPricePermille { get; init; }
 }
 
 public sealed record ModelData

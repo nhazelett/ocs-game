@@ -264,6 +264,11 @@ public sealed class SessionView
     /// unknown id. The shop hours and the day come from the terminate preview.</summary>
     public ArrangementEndView? EndWords(string arrangementId) => _s.BuildEndWords(arrangementId);
 
+    /// <summary>D37 (DESK-97): whether this arrangement can take the part it left out, which parts, the hours (for
+    /// <paramref name="assignee"/>, you by default) and the price for the days left, or why not; and what earlier changes
+    /// added from which day. Null for an unknown id or a coordination. Changes nothing.</summary>
+    public ModifyView? ModifyOptions(string arrangementId, string? assignee = null) => _s.BuildModifyView(arrangementId, assignee);
+
     /// <summary>What can be picked together in the award editor given the vendor and instrument already picked, with a
     /// plain reason on everything that cannot (M2R-35). Null for an unknown site or capability.</summary>
     public AwardChoicesView? AwardChoices(string siteId, string capabilityId, string? cardId = null, string? vendorId = null, string? instrumentId = null)
