@@ -13,6 +13,7 @@ public partial class AwardContextSmokeTest : Node
         try
         {
             await PaneSmokeChecks.Run(this);
+            await AwardWriterSmokeChecks.Run(this);
             var shell = Shell(this);
             Scenario(shell, "tutorial"); Step(shell, 3);
             PickAwardTarget(shell, "tutForklift");
