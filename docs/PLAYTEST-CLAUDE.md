@@ -4,13 +4,23 @@ Nick, 16 Nov 2026, in chat: Claude should play the game itself and be more criti
 
 ## 1. What it is for
 
-A daily cold-start play of the tutorial by a player who has never seen the game, played on the real build, one click at a time, from what is on the screen. It finds what Nick found on 10 and 12 Nov (what am I looking at, what do I do next, two buttons that seem to do the same thing, a dead end) before he plays, so each of his plays starts from a build that has already been through one.
+A cold-start play of the tutorial by a player who has never seen the game, played on the real build, one click at a time, from what is on the screen. It finds what Nick found on 10 and 12 Nov (what am I looking at, what do I do next, two buttons that seem to do the same thing, a dead end) before he plays, so each of his plays starts from a build that has already been through one.
 
 It cannot judge motion, sound, timing, how the mouse feels, or whether the game is fun. A model is also an odd first-time player: patient, it reads every word, and it never gets bored. Findings that come only from that are sorted out (section 5).
 
 ## 2. When
 
-Once a day: the first scheduled Fable run on or after 14:00 UTC whose date has no `docs/reviews/YYYY-MM-DD-claude-play.md` yet, and only when `game/`, `src/` or `scenarios/` changed on `main` since the last play. Otherwise the run skips it. Not before PLAY-01 (the driver) is merged.
+Nick, 20 Nov 2026, in chat: plays run when they are needed and not when they are not; no fixed daily slot, and as many in a day as the work calls for. He approves every play scheduled this way in advance.
+
+Every Fable run decides, after its merge pass, whether a play is needed. One is needed when any of these merged on `main` since the last play's build:
+
+- a fix for a defect a play or Nick found on the tutorial's path, so the play checks the fix (a verification play);
+- a change a player sees in the tutorial (anything under `game/`, or a Sim or scenario change to words, numbers or choices on screen) that no play has been through yet;
+- a change to an action a play has not exercised (stopping, handing over, ending a contract): the play then uses a second brief, section 3b, alongside the first.
+
+None is needed when only docs, the backlog, handoffs, tests, goldens or Sim internals no player sees changed, or when the last play's blocking defect has not been fixed yet (the player would stop at the same wall). Nick asking for one always makes one needed.
+
+When a play is needed, the run plays it. If the run cannot (a fix it is waiting for is still in CI, or the run has no time left), it schedules a one-time Fable play session for when it can run, with a prompt that says which build to wait for, and says so in its summary; it never schedules a play that is not needed, and it removes a scheduled play that a later run already did. Reports keep the name `docs/reviews/YYYY-MM-DD-claude-play.md`; a second play the same day adds `-2`, and so on.
 
 ## 3. The player
 
@@ -19,6 +29,14 @@ The player is a fresh agent (the Agent tool, general-purpose), not the Fable ses
 The brief, word for word:
 
 > You are playing a strategy game called Lines of Support for the first time. You are the kind of player it is made for: you know government contracting in general, but you have never seen this game, its rules or its screens. You are playing its Tutorial. The game is already open on the Tutorial's first screen (it was reached through New game, then Tutorial), so do not press Back on that first screen and do not go back to the title: play from the screen you are given. You act only through `tools/play/step.sh "<command>"`, which does one thing on the screen and prints the path of a screenshot and a text file describing what is now on screen; look at both after every step. Commands: `click "<label>"` (add `#2` for the second of two with the same label), `type "<field>" "<text>"`, `scroll "<pane>" up` or `down`, `key Escape`, `look`. Do not open any other file. Play to win, to the end of the Tutorial or until you have been stuck for ten steps in a row. Keep notes as you go, in plain words, each with the day and the screen: every moment you did not know what you were looking at, what a button would do, or what to do next; anything that contradicted something else on screen; anything you did that did not do what you expected; and the moment you stopped, if you stopped. At the end, answer: who were you, what were you trying to do, did you manage it, and what one change would have helped most. Be blunt; praise nothing that did not earn it.
+
+## 3b. The second brief: a player who changes their mind
+
+Used only when section 2 calls for it. The 20 Nov play found a defect that only a player who stopped a buy could reach, and the batch policies never stop, hand over or end anything. This player gets the section 3 brief word for word with one sentence added at the end:
+
+> At least twice in the game, change your mind about something you have already done (a buy, who is doing a piece of work, or a contract) and use whatever the game offers to stop, hand over or replace it, then carry on playing to win.
+
+It runs as its own play beside the first (at most two at once on a two-CPU machine) and gets its own section in the same report.
 
 ## 4. Running it
 
@@ -44,7 +62,7 @@ Nick is notified only when the play found a new defect or design finding; the fi
 
 ## 6b. A review on request
 
-Nick can ask for more than the daily play (17 Nov 2026: "a thorough review of the gameplay"). Such a review may use more than one player, other briefs (a hasty player who makes mistakes on purpose; Spoke B played cold) and Fable's own pass on the Sim. Its report is `docs/reviews/YYYY-MM-DD-gameplay-review.md` with its logs under `docs/reviews/plays/YYYY-MM-DD-review/`, so the day's play still runs. The picture limit and the storage rules below apply to it as they do to a play.
+Nick can ask for more than the usual play (17 Nov 2026: "a thorough review of the gameplay"). Such a review may use more than one player, other briefs (a hasty player who makes mistakes on purpose; Spoke B played cold) and Fable's own pass on the Sim. Its report is `docs/reviews/YYYY-MM-DD-gameplay-review.md` with its logs under `docs/reviews/plays/YYYY-MM-DD-review/`, so the day's play still runs. The picture limit and the storage rules below apply to it as they do to a play.
 
 ## 7. Storage
 
