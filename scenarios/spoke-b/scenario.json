@@ -1236,15 +1236,15 @@
   "passCriteria": [
     {
       "id": "powerUp",
-      "label": "Spoke B power never down more than one day",
+      "label": "Spoke B power down no more than one day in all",
       "metric": "site.spokeBSite.power.downDays",
       "comparator": "<=",
       "value": 1,
-      "says": "Spoke B never goes without power more than a day."
+      "says": "Spoke B goes without power no more than one day in all."
     },
     {
       "id": "fuelUp",
-      "label": "Spoke B fuel never out more than one day",
+      "label": "Spoke B fuel out no more than one day in all",
       "metric": "site.spokeBSite.fuel.downDays",
       "comparator": "<=",
       "value": 1,
@@ -1252,11 +1252,11 @@
     },
     {
       "id": "waterUp",
-      "label": "Spoke C water never out more than one day",
+      "label": "Spoke C water out no more than one day in all",
       "metric": "site.spokeCSite.water.downDays",
       "comparator": "<=",
       "value": 1,
-      "says": "Spoke C never goes without water more than a day."
+      "says": "Spoke C goes without water no more than one day in all."
     },
     {
       "id": "noUc",

@@ -177,9 +177,9 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The request for food service for Spoke C (submitted day 3, needed from day 12) had nothing supplying it from day 12. It was raised at the commander's staff meeting on day 1, when the shop was not in the room.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 22)
-  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 7)
-  [not met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 24)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 22)
+  [not met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 7)
+  [not met] Spoke C water out no more than one day in all (site.spokeCSite.water.downDays = 24)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 

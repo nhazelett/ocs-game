@@ -158,7 +158,8 @@ public class AwardSummaryTests
         Assert.True(preview.Accepted, string.Join(" ", preview.HardStops));
         var summary = s.View.AwardSummary(buy)!.Sentence;
         Assert.True(summary.Contains("It brings forklifts, operators, and maintenance.", StringComparison.Ordinal), summary);
-        Assert.Contains("It starts on day 8 or 9; it is wanted from day 8. Finance certifies the funds on day 6.", summary);
+        // D43 (DESK-129): the late end of the range says what it costs against the commander's allowance.
+        Assert.Contains("It starts on day 8 or 9; it is wanted from day 8. If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows. Finance certifies the funds on day 6.", summary);
     }
 
     [Fact]

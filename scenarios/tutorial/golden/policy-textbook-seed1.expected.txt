@@ -127,8 +127,8 @@ PERFORMANCE ISSUES (FAR 49.402-3)
   pi1 (day 12): hubDining at hubSite.food, failed days 11, 12. Decision: cure notice day 13, cure period running.
 
 PASS CRITERIA
-  [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
-  [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 0)
+  [met] Hub water out no more than one day in all (site.hubSite.water.downDays = 0)
+  [met] Forklifts out no more than one day in all (site.hubSite.mhe.downDays = 0)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 

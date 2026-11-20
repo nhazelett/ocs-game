@@ -115,8 +115,8 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7.
 
 PASS CRITERIA
-  [not met] Hub water never out more than one day (site.hubSite.water.downDays = 6)
-  [not met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 9)
+  [not met] Hub water out no more than one day in all (site.hubSite.water.downDays = 6)
+  [not met] Forklifts out no more than one day in all (site.hubSite.mhe.downDays = 9)
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 

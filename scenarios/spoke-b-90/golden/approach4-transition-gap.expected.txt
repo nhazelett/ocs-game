@@ -289,8 +289,8 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The hand-off from Meridian Site Services power at Spoke B to the external contract's power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 42 before the external contract's power at Spoke B was delivering. The external contract's power at Spoke B started day 48. The transition planner flagged it on day 37; a bridge or an earlier start would have covered it. Gap owner: CCO seat.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 5)
-  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 5)
+  [met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.91)
 

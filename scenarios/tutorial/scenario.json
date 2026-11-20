@@ -903,19 +903,19 @@
   "passCriteria": [
     {
       "id": "waterUp",
-      "label": "Hub water never out more than one day",
+      "label": "Hub water out no more than one day in all",
       "metric": "site.hubSite.water.downDays",
       "comparator": "<=",
       "value": 1,
-      "says": "Water is never out more than a day."
+      "says": "Water is out no more than one day in all while you're here."
     },
     {
       "id": "mheUp",
-      "label": "Forklifts never out more than one day",
+      "label": "Forklifts out no more than one day in all",
       "metric": "site.hubSite.mhe.downDays",
       "comparator": "<=",
       "value": 1,
-      "says": "Forklifts the same: never out more than a day."
+      "says": "Forklifts the same: no more than one day in all."
     },
     {
       "id": "wasteUp",
