@@ -271,21 +271,32 @@ public sealed partial class Session
             var missingParts = MissingPlantParts(a, cap);   // DESK-59: goods carry no plant risk
             var missingOperator = missingParts.Any(l => l.Kind == "operator");
             var missingMaintenance = missingParts.Any(l => l.Kind == "maintenance");
-            if (!a.IsCoordination && missingOperator) failPm += f.MissingOperatorPermillePerDay;
+            // DESK-81: a scenario can give the unit a few days of covering for missing operators before the odds apply.
+            var operatorPm = !a.IsCoordination && missingOperator && (f.MissingOperatorGraceDays == 0 || a.DaysActive > f.MissingOperatorGraceDays)
+                ? f.MissingOperatorPermillePerDay : 0;
+            failPm += operatorPm;
             if (!a.IsCoordination && missingMaintenance)
                 failPm += Math.Min(f.MissingMaintenanceCapPermille, Math.Max(0, a.DaysActive - f.MissingMaintenanceGraceDays) * f.MissingMaintenancePermillePerDayAfterGrace);
-            var rolled = _rngVendor.Roll(failPm);
+            // One draw, as Roll makes it; the top operatorPm of the failure odds is the failure the missing operators caused.
+            var drawn = failPm is > 0 and < 1000 ? _rngVendor.NextInt(0, 999) : -1;
+            var rolled = failPm >= 1000 || (drawn >= 0 && drawn < failPm);
+            var unrun = rolled && operatorPm > 0 && (failPm >= 1000 || drawn >= failPm - operatorPm);
             if (rolled || SlipsOn(a.Id, d))
             {
                 _vendorFailures++;
                 t.Failed = true;
                 var consumable = cap.Delivery == "consumable";
-                t.FactorPermille = consumable ? 0 : f.ContinuousFailureSupplyPermille;
+                t.FactorPermille = consumable ? 0
+                    : unrun && f.MissingOperatorFailureSupplyPermille is { } unrunPm ? unrunPm
+                    : f.ContinuousFailureSupplyPermille;
                 var why = new List<string>();
                 if (!a.IsCoordination && missingMaintenance) why.AddRange(cap.Lines.Where(l => l.Kind == "maintenance").Select(l => $"no {l.Label!.ToLowerInvariant()}"));
                 if (!a.IsCoordination && missingOperator) why.AddRange(cap.Lines.Where(l => l.Kind == "operator").Select(l => $"no {l.Label!.ToLowerInvariant()}"));
+                var stopped = !consumable && unrun && f.MissingOperatorFailureSupplyPermille is not null;
                 t.FailureRecord = AddRecord(d, RecordKind.VendorFailure, a.Id,
-                    $"{Upper(NameOf(a.Id))} {(consumable ? "missed today's delivery" : "had equipment down")}{(why.Count > 0 ? $" ({string.Join(", ", why)})" : "")}.", [a.CauseId]);
+                    stopped
+                        ? $"{Upper(NameOf(a.Id))} stopped: nobody was there to run it ({string.Join(", ", why)})."
+                        : $"{Upper(NameOf(a.Id))} {(consumable ? "missed today's delivery" : "had equipment down")}{(why.Count > 0 ? $" ({string.Join(", ", why)})" : "")}.", [a.CauseId]);
             }
             // Execution confusion is the cost of running a recurring service on a cash or card buy (or a handshake):
             // nobody wrote down what was bought. Agreements and coordinations between governments or units are exempt.

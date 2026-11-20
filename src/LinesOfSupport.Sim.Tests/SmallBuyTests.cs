@@ -30,9 +30,10 @@ public class SmallBuyTests
         var b = Repo.Load("spoke-b");
         var log = InputLog.Load(Path.Combine(Repo.Scenario("spoke-b"), "golden", "approach3-uca-turnkey-with-bridge.json"));
         var s = Replay.Run(b, log);
-        // The SPEC 5 approach 3 story has no Spoke B gap the player could have avoided (with the team, DESK-12, one
-        // unforeseeable equipment day is left); the stream must not have moved its clock.
-        Assert.DoesNotContain(s.View.Debrief().Gaps, g => g.SiteId == "spokeBSite" && g.Tag != Views.GapTag.Unforeseeable);
+        // The SPEC 5 approach 3 story has no avoidable Spoke B gap (with the team, DESK-12, one unforeseeable equipment
+        // day is left; since DESK-81 the bridge it leaves running without operators adds one discoverable degraded day);
+        // the stream must not have moved its clock.
+        Assert.DoesNotContain(s.View.Debrief().Gaps, g => g.SiteId == "spokeBSite" && g.Tag == Views.GapTag.Avoidable);
         Assert.True(s.Metrics["shop.smallBuyHours"] > 0);
     }
 

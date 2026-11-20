@@ -60,6 +60,8 @@ Day 16
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 17.
 Day 18
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 19
@@ -72,8 +74,12 @@ Day 21
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 22
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+  SHORT     Power at Spoke B down to 0%: supply 0 kW against demand 468.
+  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 22.
 Day 23
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 24
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 25
@@ -91,10 +97,13 @@ Day 28
   COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 28.
 Day 29
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 29.
+  INBOX     Performance issue: Harbor Equipment Co under-delivered on power at Spoke B on days 28 and 29 (COR SSG Reyes). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 31
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
@@ -102,10 +111,12 @@ Day 31
   COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 31.
 Day 32
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 32.
 Day 33
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 34
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
@@ -113,9 +124,9 @@ Day 35
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 36
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
-  SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  SHORT     Power at Spoke B down to 0%: supply 0 kW against demand 468.
   COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 36.
 Day 37
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -125,7 +136,6 @@ Day 38
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
   SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
   COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 38.
-  INBOX     Performance issue: Harbor Equipment Co under-delivered on power at Spoke B on days 36 and 38 (COR SSG Reyes). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 39
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
@@ -168,6 +178,7 @@ Day 50
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 51
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage).
 Day 52
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -178,8 +189,12 @@ Day 53
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 54
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 55
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  OK        Power at Spoke B restored to 100%.
+  COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 51, reported 4 days later.
 Day 56
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
@@ -190,6 +205,7 @@ Day 57
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
 Day 58
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 54, reported 4 days later.
 Day 59
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -198,9 +214,11 @@ Day 60
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 61
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 57, reported 4 days later.
+  FAIL      Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 62
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  OK        Power at Spoke B restored to 100%.
 Day 63
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Island Power Rentals power at Spoke B had equipment down (no operators).
@@ -209,8 +227,9 @@ Day 64
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
 Day 65
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
-  SHORT     Power at Spoke B down to 0%: fuel at 0%.
+  SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
   FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $746,640 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -221,7 +240,6 @@ Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
-  COR       COR report (SSG Reyes's relief): Island Power Rentals power at Spoke B had equipment down on day 63, reported 4 days later.
 Day 68
   EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
@@ -230,12 +248,14 @@ Day 69
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
+  COR       COR report (SSG Reyes's relief): Harbor Equipment Co power at Spoke B had equipment down on day 65, reported 4 days later.
 Day 70
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+  SHORT     Power at Spoke B down to 0%: supply 0 kW against demand 468.
 Day 71
   DONE      CE small buys: 6 worked today (3 h of shop time).
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
-  SHORT     Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
 Day 72
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 73
@@ -245,10 +265,11 @@ Day 73
 Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
+  COR       COR report (SSG Reyes's relief): Island Power Rentals power at Spoke B had equipment down on day 70, reported 4 days later.
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Island Power Rentals power at Spoke B had equipment down (no operators).
-  SHORT     Power at Spoke B down to 38%: supply 180 kW against demand 468.
+  FAIL      Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+  SHORT     Power at Spoke B down to 0%: supply 0 kW against demand 468.
   FUNDING   The O&M line good through day 75 reached its fiscal-year end with day 75: $746,640 never obligated can no longer pay for anything new.
   FUNDING   No funding line has money usable from day 76: nothing new can be awarded, definitized or ratified until one does. Next release: the O&M line from day 76, expected day 85.
 Day 76
@@ -270,8 +291,11 @@ Day 80
 Day 81
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
+  FAIL      Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+  SHORT     Power at Spoke B down to 0%: supply 0 kW against demand 468.
 Day 82
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 83
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
@@ -282,6 +306,7 @@ Day 84
   FUNDING   Comptroller released the O&M line from day 76: $900,000 usable from day 85, 9 days later than planned.
 Day 85
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  COR       COR report (SSG Reyes's relief): Island Power Rentals power at Spoke B had equipment down on day 81, reported 4 days later.
 Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 87
@@ -300,16 +325,16 @@ CAPABILITY BY DAY (percent; . = 100, blank = site not open)
                           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 Hub Power                 ..........................................................................................
 Hub Fuel                  ..........................................................................................
-Spoke B Power                   ...XXX..7XXXX777777772772777727277777X27777XX.....XX......X.7777XX772777X7777XXX7777
+Spoke B Power                   ...XXX..7XXXX77X777772X72X777X7277777X27777XX..7..XX..7...X.777XXX77X777X7X77XXX7777
 Spoke B Fuel                    ...XXX..7XXXX........................X.....XX.....XX......X.....XX......X....XXX....
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 82% (sortie generation 81%, throughput 81%, endurance 100%, resilience 57%)
+  Mission output 81% (sortie generation 79%, throughput 79%, endurance 100%, resilience 57%)
   Obligated $153,360; incurred $641,160; incurred but not obligated $491,400
   Unauthorized commitments 1; UCAs past due 0; HHQ inquiries 1
-  Surveys 0; shop hours worked 328; payment errors 0; execution-confusion days 1; vendor failures 24; declined BPA calls 0
-  spokeBSite.power: 25 day(s) down, 42 degraded, lowest 0%
+  Surveys 0; shop hours worked 328; payment errors 0; execution-confusion days 1; vendor failures 34; declined BPA calls 0
+  spokeBSite.power: 30 day(s) down, 39 degraded, lowest 0%
   spokeBSite.fuel: 19 day(s) down, 1 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
@@ -327,16 +352,20 @@ GAPS AND WHY (each traced back through its causes)
   Day 16: Power at Spoke B down to 0%: fuel at 0%.
       <- day 16: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 20: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 22: Power at Spoke B down to 0%: supply 0 kW against demand 468.
+      <- day 22: Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
+  Day 23: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 28: Power at Spoke B down to 38%: supply 180 kW against demand 468.
       <- day 28: Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
           <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
-  Day 29: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 30: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 31: Power at Spoke B down to 38%: supply 180 kW against demand 468.
       <- day 31: Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
           <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
-  Day 32: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
-  Day 36: Power at Spoke B down to 38%: supply 180 kW against demand 468.
-      <- day 36: Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
+  Day 33: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 36: Power at Spoke B down to 0%: supply 0 kW against demand 468.
+      <- day 36: Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
           <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
   Day 37: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 38: Power at Spoke B down to 38%: supply 180 kW against demand 468.
@@ -350,34 +379,47 @@ GAPS AND WHY (each traced back through its causes)
   Day 50: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 50: Power at Spoke B down to 0%: fuel at 0%.
       <- day 50: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 54: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+      <- day 54: Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
   Day 57: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 57: Power at Spoke B down to 0%: fuel at 0%.
       <- day 57: Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
           <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
       <- day 57: Fuel at Spoke B down to 0%: fuel on hand ran out.
+  Day 61: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+      <- day 61: Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+          <- day 43: Written purchase order started with Island Power Rentals: Power at Spoke B, 360 kW/day for 45 days (Generation equipment, Maintenance and repair); quoted $40,500.
   Day 65: Fuel at Spoke B down to 0%: fuel on hand ran out.
-  Day 65: Power at Spoke B down to 0%: fuel at 0%.
+  Day 65: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
+      <- day 65: Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+          <- day 1: BPA call started with Harbor Equipment Co: Power at Spoke B, 360 kW/day for 60 days (Generation equipment); quoted $49,680.
       <- day 65: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 67: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 70: Power at Spoke B down to 0%: supply 0 kW against demand 468.
+      <- day 70: Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+          <- day 43: Written purchase order started with Island Power Rentals: Power at Spoke B, 360 kW/day for 45 days (Generation equipment, Maintenance and repair); quoted $40,500.
   Day 71: Fuel at Spoke B down to 0%: fuel on hand ran out.
-  Day 71: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
-      <- day 71: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 73: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
-  Day 75: Power at Spoke B down to 38%: supply 180 kW against demand 468.
-      <- day 75: Island Power Rentals power at Spoke B had equipment down (no operators).
+  Day 75: Power at Spoke B down to 0%: supply 0 kW against demand 468.
+      <- day 75: Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
           <- day 43: Written purchase order started with Island Power Rentals: Power at Spoke B, 360 kW/day for 45 days (Generation equipment, Maintenance and repair); quoted $40,500.
   Day 76: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 79: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 79: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
       <- day 79: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 80: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
+  Day 81: Power at Spoke B down to 0%: supply 0 kW against demand 468.
+      <- day 81: Island Power Rentals power at Spoke B stopped: nobody was there to run it (no operators).
+          <- day 43: Written purchase order started with Island Power Rentals: Power at Spoke B, 360 kW/day for 45 days (Generation equipment, Maintenance and repair); quoted $40,500.
+  Day 82: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
   Day 84: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 84: Power at Spoke B down to 0%: supply 360 kW against demand 468; fuel at 0%.
       <- day 84: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 87: Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 
 PERFORMANCE ISSUES (FAR 49.402-3)
-  pi1 (day 38): gens at spokeBSite.power, failed days 36, 38. Decision: re-sourced (Island Power Rentals power at Spoke B).
+  pi1 (day 29): gens at spokeBSite.power, failed days 28, 29. Decision: re-sourced (Island Power Rentals power at Spoke B).
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 spokeBSite.fuel days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
@@ -403,28 +445,33 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Port Fuel Haulers fuel at Spoke B supplies fuel from Main Island, so deliveries to Second Island wait on the surface link schedule. A survey of Second Island would have shown that dependency; a buffer or an on-island source would have covered it.
   #9 spokeBSite.power days 10-12, lowest 0%, 3 day(s) down: AVOIDABLE
       [avoidable] Power depends on fuel, which was short. (see #0)
-  #10 spokeBSite.power days 15-51, lowest 0%, 12 day(s) down: AVOIDABLE
+  #10 spokeBSite.power days 15-51, lowest 0%, 15 day(s) down: AVOIDABLE
       [discoverable] Power depends on fuel, which was short. (see #1)
+      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 17) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. The performance issue with Harbor Equipment Co on power at Spoke B opened day 29; decision: re-sourced (Island Power Rentals power at Spoke B).
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
-      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 28) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: re-sourced (Island Power Rentals power at Spoke B).
       [discoverable] Power depends on fuel, which was short. (see #2)
       [avoidable] Power depends on fuel, which was short. (see #3)
-  #11 spokeBSite.power days 57-58, lowest 0%, 2 day(s) down: DISCOVERABLE
+  #11 spokeBSite.power days 54-54, lowest 76%, 0 day(s) down: DISCOVERABLE
+      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 54) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. The COR reported it on day 58. The performance issue with Harbor Equipment Co on power at Spoke B opened day 29; decision: re-sourced (Island Power Rentals power at Spoke B).
+  #12 spokeBSite.power days 57-58, lowest 0%, 2 day(s) down: DISCOVERABLE
       [discoverable] Power depends on fuel, which was short. (see #4)
-      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 57) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. The COR reported it on day 61. The performance issue with Harbor Equipment Co on power at Spoke B opened day 38; decision: re-sourced (Island Power Rentals power at Spoke B).
-  #12 spokeBSite.power days 65-65, lowest 0%, 1 day(s) down: DISCOVERABLE
+      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 57) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. Its COR (poor) did not report it. The performance issue with Harbor Equipment Co on power at Spoke B opened day 29; decision: re-sourced (Island Power Rentals power at Spoke B).
+  #13 spokeBSite.power days 61-61, lowest 76%, 0 day(s) down: AVOIDABLE
+      [avoidable] Island Power Rentals power at Spoke B failed (first on day 61) and was bought without operators; its failure odds were higher every day it ran. Its COR (poor) did not report it.
+  #14 spokeBSite.power days 65-65, lowest 0%, 1 day(s) down: DISCOVERABLE
       [discoverable] Power depends on fuel, which was short. (see #5)
-  #13 spokeBSite.power days 67-90, lowest 0%, 7 day(s) down: AVOIDABLE
+      [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 65) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. The COR reported it on day 69. The performance issue with Harbor Equipment Co on power at Spoke B opened day 29; decision: re-sourced (Island Power Rentals power at Spoke B).
+  #15 spokeBSite.power days 67-90, lowest 0%, 9 day(s) down: AVOIDABLE
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
+      [avoidable] Island Power Rentals power at Spoke B failed (first on day 70) and was bought without operators; its failure odds were higher every day it ran. The COR reported it on day 74.
       [discoverable] Power depends on fuel, which was short. (see #6)
-      [avoidable] Island Power Rentals power at Spoke B failed (first on day 75) and was bought without operators; its failure odds were higher every day it ran. Its COR (poor) did not report it.
       [discoverable] Power depends on fuel, which was short. (see #7)
       [discoverable] Power depends on fuel, which was short. (see #8)
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 25)
+  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 30)
   [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 19)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
-  [not met] Mission output at least 90% (mission.output = 0.823)
+  [not met] Mission output at least 90% (mission.output = 0.806)
 
-State hash 9de7d5910f027e2f7f2944c13ff81f246c88cb1602f1ab30c42f9ca1a4bb8d9c
+State hash 4f6ecf008c87d1621c02cf278e85464f1efc15a10e66eecb2291eed970af6bdc

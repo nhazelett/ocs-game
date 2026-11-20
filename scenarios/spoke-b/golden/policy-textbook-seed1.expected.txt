@@ -16,6 +16,7 @@ Before day 1
   START     Inherited: Waste removal at Spoke C from Main Island Utilities (host nation), days 1 to 400.
 Day 1
   ACTION    Standing up a decentralized purchase card program in CE: nominations, training, an approving official and a billing official. About 40 shop hours, worked around everything else.
+  ACTION    Getting the shop into the commander's staff meeting: about 2 shop hours, then 1 at each meeting, every day.
   ACTION    Asked the J4, through the OCS seat, to have the ACSA manager add Spoke B to the fuel order: 1,287 gal a day.
   ACTION    Ordered a site survey of Second Island.
   ACTION    Ordered a site survey of Third Island.
@@ -26,88 +27,107 @@ Day 1
   ACTION    The request for water for Spoke C: Plant operators switched on.
   ACTION    The request for water for Spoke C: Maintenance switched on.
   ACTION    Written purchase order started with Third Island Water Works: Water at Spoke C, 2,640 gal/day for 60 days (Potable water supply, Plant operators, Maintenance); quoted $51,480.
-  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2,640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for MSgt Joan Avery and the paying agent: 2 shop hours.
+  ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 2,640 gal/day for 10 days (Potable water supply). Paid in cash at each delivery, $1,056 a day, about $10,560 in all. Each delivery is a trip for SrA Eli Novak and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 5, ends day 14. Obligated as each delivery is paid.
+  VISIT     MSgt Joan Avery got the shop into the commander's staff meeting. Lt Col Daniel Park, Hub commander, ran it. If we run short, it's Hub, then Spoke B, then Spoke C. Then the commander turned to the shop: "Spoke C is still eating MREs, and MSgt Brandt tells me they won't last. Hot meals, three a day, from about day 12. Contracting, that one is yours; she has the numbers." That is food service for Spoke C, wanted from day 12. MSgt Lena Brandt, Spoke C camp, will bring it to you tomorrow.
   VISIT     The J4's ACSA manager is adding Spoke B to the fuel order with the partner force: 1,287 gal a day from day 5. The reimbursement is the J4's, not the shop's. The partner force can cut it back when its own needs rise.
   DONE      Survey team dispatched to Second Island; findings due day 3.
   DONE      Survey team dispatched to Third Island; findings due day 3.
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 2
-  DONE      CE small buys: none worked today (no hours left); 4 waiting.
-Day 3
   ACTION    The request for food service for Spoke C: Food service staff switched on.
   ACTION    Written purchase order started with Third Island Water Works: Food service at Spoke C, 528 meals/day for 30 days (Meal service, Food service staff); quoted $209,088.
   ACTION    SF 44 cash purchase to Coastal Provisions: Food service at Spoke C, 528 meals/day for 7 days (Meal service). Paid in cash at each delivery, $4,752 a day, about $33,264 in all. Each delivery is a trip for MSgt Joan Avery and the paying agent: 6 shop hours.
   DONE      SF 44 cash purchase awarded to Coastal Provisions for food service at Spoke C; performance starts day 12, ends day 18. Obligated as each delivery is paid.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
+  DONE      CE small buys: none worked today (no hours left); 4 waiting.
+Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   SURVEY    Survey of Third Island returned: grid power available; no fuel point; water: well; barge to Main Island 2x weekly, weather-sensitive; vendors on the island: Third Island Water Works, Coastal Provisions; Coastal Provisions stocks food service from Main Island, so its deliveries ride the surface link.
-  DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 15, ends day 74. Obligated $693,900.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 19. Obligated $15,369.
   DONE      Written purchase order awarded to Third Island Water Works for water at Spoke C; performance starts day 11, ends day 70. Obligated $51,480.
-  DONE      CE small buys: 5 worked today (2.5 h of shop time); 3 still waiting.
+  DONE      CE small buys: none worked today (no hours left); 8 waiting.
 Day 4
-  DONE      CE small buys: 7 worked today (3.5 h of shop time).
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
+  DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 12, ends day 41. Obligated $209,088.
+  DONE      CE small buys: 11 worked today (5.5 h of shop time); 1 still waiting.
 Day 5
-  REJECTED  Written purchase order with Third Island Water Works for food service at Spoke C could not be awarded on day 5: The O&M line has $139,251 left of the $209,088 needed.
-  DONE      CE small buys: 5 worked today (2.5 h of shop time).
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
+  DONE      Written purchase order awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. Obligated $693,900.
+  DONE      CE small buys: 6 worked today (3 h of shop time).
   START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
   START     Fuel at Spoke B from the partner force began, 1,287 gal/day.
   CONFUSED  Execution confusion on Coastal Provisions water at Spoke C: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
 Day 6
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   START     Power at Spoke B from Harbor Equipment Co began, 514 kW/day.
 Day 8
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 9
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 10
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 11
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
 Day 12
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Operations briefed tomorrow's sorties and a change to the alert posture. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     Food service at Spoke C from Coastal Provisions began, 528 meals/day.
+  START     Food service at Spoke C from Third Island Water Works began, 528 meals/day.
   FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   ACTION    Termination of Coastal Provisions water at Spoke C started.
   SURVEY    Forecast from your Third Island survey contacts: Weather closes the Third Island crossing. No that arrangement sailings days 14 to 15.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   END       Coastal Provisions water at Spoke C terminated; performance ends day 13.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 14
+  ACTION    Termination of Coastal Provisions food service at Spoke C started.
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
   CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
+  END       Coastal Provisions food service at Spoke C terminated; performance ends day 14.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   END       Coastal Provisions water at Spoke C ended.
+  FAIL      Coastal Provisions food service at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
-  CASH      No delivery on Coastal Provisions food service at Spoke C today: the boat to Third Island is not running, so the goods and the cash both stayed on Main Island.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
+  END       Coastal Provisions food service at Spoke C ended.
 Day 16
   ACTION    Payment for the extra work Harbor Equipment Co did on power at Spoke B denied: $2,400 of work outside Harbor Equipment Co power at Spoke B's scope.
   EVENT     Weather stops the barge. Harbor master: no barge movements for the next three days.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   DONE      Denial of payment for the extra work Harbor Equipment Co did on power at Spoke B sent to the vendor: work outside the contract was not ordered by a contracting officer.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 17
-  ACTION    Termination of Harbor Equipment Co power at Spoke B started.
-  CASH      Cash on hand down to $21,488; FM replenishment expected day 20.
-  END       Harbor Equipment Co power at Spoke B terminated; performance ends day 17. $2,364 deobligated back to the O&M line.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
+  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
 Day 18
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Most of it was the flying schedule: two sorties slipped for weather and one jet is down waiting on a part. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  END       Harbor Equipment Co power at Spoke B ended.
   FAIL      Third Island Water Works water at Spoke C missed today's delivery. The stock on hand covered today's demand.
-  SHORT     Food service at Spoke C down to 30%: food service on hand ran out.
 Day 19
-  ACTION    Coordinated with the Hub unit for 480 meals/day of Food service to Spoke C. Not a contract; they can withdraw it.
+  ACTION    Termination of Harbor Equipment Co power at Spoke B started.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
+  END       Harbor Equipment Co power at Spoke B terminated; performance ends day 19.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  END       Coastal Provisions food service at Spoke C ended.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
@@ -115,44 +135,50 @@ Day 20
   ACTION    Coordinated with the Hub unit for 1,170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Operations briefed tomorrow's sorties and a change to the alert posture. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  CASH      FM replenished cash on hand to $50,000.
-  START     Food service at Spoke C from the other unit began, 480 meals/day.
+  END       Harbor Equipment Co power at Spoke B ended.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
 Day 21
   ACTION    SF 44 cash purchase to Coastal Provisions: Water at Spoke C, 720 gal/day for 9 days (Potable water supply). Paid in cash at each delivery, $288 a day, about $2,592 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
-  DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 23, ends day 31. Obligated as each delivery is paid.
-  ACTION    Coordinated with the Hub unit for 672 meals/day of Food service to Spoke C. Not a contract; they can withdraw it.
+  DONE      SF 44 cash purchase awarded to Coastal Provisions for water at Spoke C; performance starts day 24, ends day 32. Obligated as each delivery is paid.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   START     Fuel at Spoke B from the other unit began, 1,170 gal/day.
 Day 22
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  START     Food service at Spoke C from the other unit began, 672 meals/day.
-  FAIL      The other unit's food service at Spoke C missed today's delivery.
+  FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
 Day 23
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
-  START     Water at Spoke C from Coastal Provisions began, 720 gal/day.
-  OK        Food service at Spoke C restored to 100%.
 Day 24
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
+  START     Water at Spoke C from Coastal Provisions began, 720 gal/day.
+  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 25
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Most of it was the flying schedule: two sorties slipped for weather and one jet is down waiting on a part. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 Day 26
   EVENT     Hub fuels flight pulls its support. "Tempo is up here and we need our truck and crew back. Last run in two days."
   WITHDRAWN The other unit withdrew its coordination (Fuel to Spoke B); last day of support 27. A coordination is not a contract.
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 27
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
 Day 28
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
   END       The other unit's fuel at Spoke B ended.
 Day 29
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
-  FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 30
+  VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 5 on cards).
 
 CAPABILITY BY DAY (percent; . = 100, blank = site not open)
@@ -169,25 +195,23 @@ Spoke B Lodging                 ............X...........
 Spoke B Waste removal           ........................
 Spoke C Water                 ..........................
 Spoke C Lodging               ..........................
-Spoke C Food service          .............2XXXX........
+Spoke C Food service          ..........................
 Spoke C Waste removal         ..........................
   key: . full, 7 = 75-99%, 5 = 50-74%, 2 = 25-49%, 1 = 1-24%, X = none
 
 SCORECARD
-  Mission output 92% (sortie generation 99%, throughput 99%, endurance 97%, resilience 58%)
-  Obligated $793,952; incurred $428,312; incurred but not obligated $0
+  Mission output 92% (sortie generation 99%, throughput 99%, endurance 99%, resilience 56%)
+  Obligated $990,861; incurred $545,913; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 2; shop hours worked 214; payment errors 0; execution-confusion days 1; vendor failures 5; declined BPA calls 0
+  Surveys 2; shop hours worked 243; payment errors 0; execution-confusion days 1; vendor failures 6; declined BPA calls 0
   spokeBSite.power: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.fuel: 1 day(s) down, 0 degraded, lowest 0%
   spokeBSite.lodging: 1 day(s) down, 0 degraded, lowest 0%
-  spokeCSite.food: 5 day(s) down, 0 degraded, lowest 0%
 
 UNAUTHORIZED COMMITMENTS (SPEC 4.5)
   oos1 (day 15): out-of-scope work on t-req0007-bridge, $2,400. Decision: denied on day 16.
 
 GAPS AND WHY (each traced back through its causes)
-  Day 18: Food service at Spoke C down to 30%: food service on hand ran out.
   Day 19: Fuel at Spoke B down to 0%: fuel on hand ran out.
   Day 19: Power at Spoke B down to 0%: fuel at 0%.
       <- day 19: Fuel at Spoke B down to 0%: fuel on hand ran out.
@@ -202,18 +226,12 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] Power depends on fuel, which was short. (see #0)
   #2 spokeBSite.lodging days 19-19, lowest 0%, 1 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #1)
-  #3 spokeCSite.food days 18-22, lowest 0%, 5 day(s) down: AVOIDABLE
-      [avoidable] Coastal Provisions food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [avoidable] The request for food service for Spoke C (submitted day 3, needed from day 12) had nothing supplying it from day 19. The last arrangement supplying it, Coastal Provisions food service at Spoke C, ended on day 18. The other unit's food service at Spoke C did not start until day 20.
-      [avoidable] The other unit's food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [avoidable] The other unit's food service at Spoke C supplies food service from Main Island, so deliveries to Third Island wait on the surface link schedule. The survey on day 3 showed that dependency.
-      [unforeseeable] The other unit's food service at Spoke C failed on day 22 with full operator coverage.
 
 PASS CRITERIA
   [met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 1)
   [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 1)
   [met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
-  [met] Mission output at least 90% (mission.output = 0.92)
+  [met] Mission output at least 90% (mission.output = 0.923)
 
-State hash 1607ee75ba4fb4ae12d82faa27364856c8d9f39c1e99c90bc809f22f71610f74
+State hash d643efb147de9546993a95dc986032b53b84fe0a7931ee766652dbef756b2398

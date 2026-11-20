@@ -62,9 +62,15 @@ public sealed record FailureOverrideData
     public int? MissingMaintenancePermillePerDayAfterGrace { get; init; }
     public int? MissingMaintenanceGraceDays { get; init; }
     public int? MissingMaintenanceCapPermille { get; init; }
+    /// <summary>DESK-81: days a set run without its operators goes before the operator odds apply (the unit covers at first).</summary>
+    public int? MissingOperatorGraceDays { get; init; }
+    /// <summary>DESK-81: share of rated supply on a day equipment stops for want of anyone to run it (null: as any failure).</summary>
+    public int? MissingOperatorFailureSupplyPermille { get; init; }
 
     public FailureRulesData Apply(FailureRulesData f) => f with
     {
+        MissingOperatorGraceDays = MissingOperatorGraceDays ?? f.MissingOperatorGraceDays,
+        MissingOperatorFailureSupplyPermille = MissingOperatorFailureSupplyPermille ?? f.MissingOperatorFailureSupplyPermille,
         MissingOperatorPermillePerDay = MissingOperatorPermillePerDay ?? f.MissingOperatorPermillePerDay,
         MissingMaintenancePermillePerDayAfterGrace = MissingMaintenancePermillePerDayAfterGrace ?? f.MissingMaintenancePermillePerDayAfterGrace,
         MissingMaintenanceGraceDays = MissingMaintenanceGraceDays ?? f.MissingMaintenanceGraceDays,
@@ -868,6 +874,10 @@ public sealed record FailureRulesData
     public int MissingMaintenanceGraceDays { get; init; }
     public int MissingMaintenanceCapPermille { get; init; }
     public int ContinuousFailureSupplyPermille { get; init; }
+    /// <summary>DESK-81: operator odds apply only once a set has been in service more than this many days (0: from the start).</summary>
+    public int MissingOperatorGraceDays { get; init; }
+    /// <summary>DESK-81: supply on a failure the missing operators caused; null keeps ContinuousFailureSupplyPermille.</summary>
+    public int? MissingOperatorFailureSupplyPermille { get; init; }
 }
 
 public sealed record WorkRulesData

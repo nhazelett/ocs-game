@@ -404,6 +404,17 @@
               "minimum": 0,
               "maximum": 1000,
               "description": "Share of rated supply still delivered on a failure day for continuous capabilities"
+            },
+            "missingOperatorGraceDays": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "DESK-81: days in service before the operator odds apply; 0 or absent, from the start"
+            },
+            "missingOperatorFailureSupplyPermille": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000,
+              "description": "DESK-81: share of rated supply on a failure the missing operators caused; absent, as any failure"
             }
           }
         },

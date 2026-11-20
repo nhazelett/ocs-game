@@ -274,6 +274,10 @@
       },
       "person": "brandt",
       "message": "Hot meals for the camp, three a day, from day 12. The MREs won't last.",
+      "heardAtStaffMeeting": {
+        "fromDay": 1,
+        "says": "Spoke C is still eating MREs, and MSgt Brandt tells me they won't last. Hot meals, three a day, from about day 12. Contracting, that one is yours; she has the numbers."
+      },
       "flaggedEnduring": false
     }
   ],
@@ -708,7 +712,7 @@
     {
       "id": "om1",
       "type": "OM",
-      "amountCents": 90000000,
+      "amountCents": 110000000,
       "availableDay": 1,
       "expiresDay": 75
     }
@@ -1283,6 +1287,12 @@
     "Spoke C's advance team asked for bottled water only; the island's well plant vendor offers supply with operators and maintenance but needs six days to mobilize.",
     "Weather can close the Third Island ferry for 2 to 4 days on a seeded day; a survey of Third Island gets you a day's forecast.",
     "Coastal Provisions keeps little stock on Third Island and restocks food from Main Island on the ferry; its water is local.",
-    "A follow-on element can push Spoke C's population up about 40% on 3 to 5 days' notice, on a seeded day."
-  ]
+    "A follow-on element can push Spoke C's population up about 40% on 3 to 5 days' notice, on a seeded day.",
+    "Generators with nobody to run them keep going for about ten days while the advance team is near them; after that a set that trips stays dark for the day."
+  ],
+  "failure": {
+    "missingOperatorPermillePerDay": 150,
+    "missingOperatorGraceDays": 10,
+    "missingOperatorFailureSupplyPermille": 0
+  }
 }
