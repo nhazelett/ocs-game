@@ -54,6 +54,8 @@ public class ToldNotAddedTests
         // The morning of day 4: Dunn has been asked by nobody yet.
         var s = Morning(4);
         var summary = s.View.AwardSummary(Coastal(s, "gpc"))!;
-        Assert.DoesNotContain("leaves out", summary.Sentence, StringComparison.Ordinal);
+        Assert.DoesNotContain("said the request needs", summary.Sentence, StringComparison.Ordinal);
+        // D48 (DESK-172): what it leaves out is named while Dunn has not answered, without saying what he would say.
+        Assert.EndsWith("It leaves out operators; SMSgt Ray Dunn has not been asked.", summary.Sentence, StringComparison.Ordinal);
     }
 }

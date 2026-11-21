@@ -62,6 +62,8 @@ public sealed partial class Session
                 why = $"It starts after the need ends on day {needEnd}.";
             else if (card is not null && ToldNotAdded(card) is { } told)
                 why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
+            else if (card is not null && NotYetConfirmed(card, chk) is { } unconfirmed)
+                why = unconfirmed;   // D48, DESK-172: a part at risk left out while the requester has not answered
             else if (onTop && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
                 why = "Every day it would run is already covered.";
             passCost = card is null ? null : PassLineCost(card, latestStart);
@@ -146,6 +148,32 @@ public sealed partial class Session
         var said = told.Select(l => _learnedLines[(card.Id, l)].Person).Distinct().Select(BuildPerson).OfType<PersonView>().ToList();
         var who = said.Count > 0 ? $"which {string.Join(" and ", said.Select(p => p.DisplayName))} said" : "which you were told";
         return $"It leaves out {PartsLabels(card.CapabilityId, told)}, {who} the request needs: add what you learned first.";
+    }
+
+    /// <summary>D48 (DESK-172, Claude play 21 Nov, sixth play, notes 23, 24): the operator and maintenance parts at risk
+    /// (DESK-59) that this buy leaves out and nobody has told the shop about, while the person the request came from has not
+    /// answered: "It leaves out operators; SMSgt Ray Dunn has not been asked." or, with that ask in work, "It leaves out
+    /// operators; MSgt Joan Avery is asking SMSgt Ray Dunn, answer due day 6." The same person and parts the quote's ask-first
+    /// warning names (AskFirst, DESK-58), so it marks no ask as the one that pays off. Null once they have answered: then
+    /// D40 says what they told, or nothing does. A buy is written for the request's parts, so a part nobody listed is left
+    /// out whatever the vendor offers.</summary>
+    private string? NotYetConfirmed(CardState card, AwardCheck chk)
+    {
+        if (chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) return null;
+        if (BuildPerson(card.PersonId) is not { } p) return null;
+        if (_askedAbout.TryGetValue(card.Id, out var asked) && asked.Contains(p.Id)) return null;
+        var cap = Cap(capId);
+        var left = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !chk.Lines.Contains(l.Id)
+                                        && !LineKnown(card, l.Id) && PlantPartAtRisk(cap, l, vendor.Id))
+                            .Select(l => l.Id).ToList();
+        if (left.Count == 0) return null;
+        var parts = PartsLabels(capId, left);
+        if (VisitWork("ask", AskTarget(new AskAboutAction { Card = card.Id, Person = p.Id })) is not { } w)
+            return $"It leaves out {parts}; {p.DisplayName} has not been asked.";
+        var asker = Member(w.Assignee);
+        var day = PlayQueue(asker, 0, Day, w, w.HoursRemainingMilli) ?? Day;
+        var who = asker.Role == "you" ? "you are" : $"{MemberName(asker)} is";
+        return $"It leaves out {parts}; {who} asking {p.DisplayName}, answer due day {day}.";
     }
 
     /// <summary>"3%", "2.5%".</summary>
