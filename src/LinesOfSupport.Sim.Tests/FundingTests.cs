@@ -113,7 +113,13 @@ public class FundingTests
     [Fact]
     public void An_award_that_reaches_completion_after_the_fiscal_year_end_is_rejected_and_named_in_the_debrief()
     {
-        var s = Session.Create(Repo.Load("spoke-b-90"), 1);
+        // DESK-134: Meridian prices first, so a purchase order with it would wait two weeks for the proposal; this test is
+        // about the fiscal-year end, so Meridian here sends its price with the order.
+        var s = Session.Create(Variant("spoke-b-90", n =>
+        {
+            foreach (var v in n["vendors"]!.AsArray())
+                if ((string?)v!["id"] == "vendorB") v.AsObject().Remove("qualifyingProposalLagDays");
+        }), 1);
         PlayTo(s, 75);
         // Usable today; the award completes after day 75. Some vendors refuse this office by now (unpaid handshakes).
         var po = new[] { ("vendorA", "maintenance"), ("vendorC", "maintenance"), ("hubUtilities", "operator"), ("vendorB", "operator") }

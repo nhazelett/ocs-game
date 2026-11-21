@@ -352,16 +352,17 @@ public sealed partial class Session
 
         // Timing, best and worst roll, behind the work already queued for the assignee (DESK-37).
         var immediate = a.Instrument is "sf44" or "gpc";
-        int Completion(int shopDays, int approvalLag)
+        var pricing = chk.Vendor is { } pv ? PricesFirst(a.Instrument, pv) : null;   // DESK-134
+        int Completion(int shopDays, int approvalLag, int proposalLag)
         {
             if (immediate) return Day;
-            var wait = Day + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0);
+            var wait = Math.Max(Day + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0), Day + proposalLag);
             var hours = Hours(shopDays, inst.RequiresSystemOrManual);
             return FinishDay(PersonHours(hours, a.Assignee), a.Assignee, wait);
         }
         var compete = CompeteDays(PickFor(a, inst));   // DESK-06, DESK-65
-        var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min);
-        var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max);
+        var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min, pricing?.Min ?? 0);
+        var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max, pricing?.Max ?? 0);
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
         var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
         var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
@@ -374,8 +375,16 @@ public sealed partial class Session
         var cap = Cap(capId);
         var site = SiteData(siteId);
         var vendor = chk.Vendor!;
+        if (pricing is not null)   // DESK-134: why a purchase order with this vendor waits, and what does not
+            gaps.Add($"{vendor.Name} needs about {pricing.Min} to {Plural(pricing.Max, "day")} to price this; a purchase order waits for that, a UCA lets them start now.");
         if (chk.Card is { } partCard && LeftOut(partCard, chk.Lines) is { Count: > 0 } left)   // DESK-77 (D34)
             gaps.Insert(0, PartsLeftOut(partCard, vendor.Name, left));
+        // DESK-149 (d), Claude play 21 Nov, second play, note 12: a vendor's price is per unit whatever parts it brings, so a
+        // part added from what someone said can leave the total unchanged; the quote says so, or the player wonders whether
+        // it came free. In the quote, not the pinned summary, which must stay short.
+        if (chk.Card is { } learnedCard
+            && chk.Lines.Where(l => learnedCard.Lines.GetValueOrDefault(l) && _learnedLines.ContainsKey((learnedCard.Id, l))).ToList() is { Count: > 0 } learned)
+            gaps.Add($"{Possessive(vendor.Name)} price already includes its {PartsLabels(capId, learned)}.");
         foreach (var l in cap.Lines.Where(l => l.Kind != "core" && !chk.Lines.Contains(l.Id)))
             if ((l.Kind is not ("operator" or "maintenance") || PlantPartAtRisk(cap, l, vendor.Id))   // DESK-59
                 && GapIfOff(cap, l) is { } g) gaps.Add(g + AskFirst(chk.Card, l));
@@ -386,7 +395,7 @@ public sealed partial class Session
             var pd = PeakDay(site, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay));
             gaps.Add($"{Qty(a.Quantity)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} at {site.Name} on day {pd}, when {Qty(PopulationOn(site, pd))} people are there; the difference is a shortfall unless another arrangement covers it.");
         }
-        if (startMax > startMin && StartRange(a, inst, hMin, hMax, lift) is { } range)   // DESK-78: what decides the range
+        if (startMax > startMin && StartRange(a, inst, hMin, hMax, lift, pricing) is { } range)   // DESK-78: what decides the range
             gaps.Add($"Earliest start is day {startMin} to {startMax}: {range}.");
         if (chk.Card is { } card)
         {

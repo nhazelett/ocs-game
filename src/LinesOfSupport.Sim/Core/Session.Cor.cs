@@ -179,9 +179,23 @@ public sealed partial class Session
             return r.CorId is null
                 ? $" With no COR, the unit reported it on day {r.ArriveDay}, after the mission effect."
                 : r.ArriveDay > day ? $" The COR reported it on day {r.ArriveDay}." : "";
-        if (r is not null) return $" Its report was still on the way (due day {r.ArriveDay}) when the game ended.";
+        if (r is not null) return $" Its report was still on the way (due day {r.ArriveDay}) when the game ended.{SoonerCor(r)}";
         return a.CorId is null
             ? " No COR was designated, so nobody reported it to the office."
             : $" Its COR ({CorOf(a.CorId)!.Quality}) did not report it.";
+    }
+
+    /// <summary>DESK-149 (b), Claude play 21 Nov, second play, note 9: a report still on the way at the end was late because
+    /// of the COR's lag, and the debrief said only "due day 17", so the monitor the player chose made no visible
+    /// difference. When another COR on the roster reports sooner, name both lags: " TSgt Pratt reports problems 2 days
+    /// late; SSgt Lane reports them the same day." Empty with no COR, no lag, or nobody sooner.</summary>
+    private string SoonerCor(CorReport r)
+    {
+        if (CorOf(r.CorId) is not { } cor || CorQuality(cor).LagDays is var lag && lag <= 0) return "";
+        var sooner = _cors.Where(c => c.Id != cor.Id && c.RotatedDay is null && CorQuality(c).LagDays < lag)
+                          .OrderBy(c => CorQuality(c).LagDays).FirstOrDefault();
+        if (sooner is null) return "";
+        var soon = CorQuality(sooner).LagDays;
+        return $" {cor.Name} reports problems {Plural(lag, "day")} late; {sooner.Name} reports them {(soon == 0 ? "the same day" : $"{Plural(soon, "day")} late")}.";
     }
 }

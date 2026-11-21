@@ -649,7 +649,13 @@ public sealed record BarLine(string Id, string Says, string Text, double Count, 
 /// <param name="Days">How long the player is there.</param>
 /// <param name="Final">True once the scenario is over: the states are the verdict.</param>
 /// <param name="Spoken">The commander's lines in order, then the length ("That's for the 20 days you're here.").</param>
-public sealed record BarView(PersonView? From, int Days, bool Final, string Spoken, IReadOnlyList<BarLine> Lines);
+public sealed record BarView(PersonView? From, int Days, bool Final, string Spoken, IReadOnlyList<BarLine> Lines)
+{
+    /// <summary>DESK-149 (a), Claude play 21 Nov, second play, note 10: in the tutorial, once it is over, the verdict's first
+    /// line: that it is done and how the commander's lines came out ("The tutorial is done: all four of Col Ward's lines
+    /// held."). Null otherwise.</summary>
+    public string? Closing { get; init; }
+}
 
 /// <summary>How ending an arrangement reads on its own page (DESK-94): the button's words and the line under it. A card buy
 /// is cancelled with the vendor ("Cancel this card buy"); a contract or a call is terminated ("End this contract").</summary>

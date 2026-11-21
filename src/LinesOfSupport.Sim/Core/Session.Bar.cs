@@ -17,8 +17,25 @@ public sealed partial class Session
         var lines = Scenario.PassCriteria.Select(p => BarLineFor(p, m)).ToList();
         var says = string.Join(" ", Scenario.PassCriteria.Select(p => p.Says ?? Upper(p.Label.TrimEnd('.')) + "."));
         var length = $"That's for the {Plural(LastDay, "day")} you're here.";
-        return new BarView(BuildPerson(Scenario.Actors.Commander.Person), LastDay, Finished,
-            (says.Length == 0 ? length : says + " " + length).Trim(), lines);
+        var from = BuildPerson(Scenario.Actors.Commander.Person);
+        return new BarView(from, LastDay, Finished, (says.Length == 0 ? length : says + " " + length).Trim(), lines)
+        {
+            Closing = Finished && Scenario.Tutorial && lines.Count > 0 ? TutorialClosing(from, lines) : null,
+        };
+    }
+
+    /// <summary>DESK-149 (a), Claude play 21 Nov, second play, note 10: the debrief had four Met lines and Play again, and
+    /// nothing said the tutorial was over or how it went. "The tutorial is done: all four of Col Ward's lines held."</summary>
+    private static string TutorialClosing(Views.PersonView? from, IReadOnlyList<BarLine> lines)
+    {
+        var whose = from is null ? "the commander's"
+            : Possessive(from.Rank.Length == 0 ? from.Name : $"{from.Rank} {from.Name.Split(' ')[^1]}");
+        int n = lines.Count, held = lines.Count(l => l.State == BarState.Met);
+        var how = n == 1 ? (held == 1 ? $"{whose} one line held" : $"{whose} one line did not hold")
+            : held == n ? (n == 2 ? $"both of {whose} lines held" : $"all {Views.DebriefWords.Number(n)} of {whose} lines held")
+            : held == 0 ? $"none of {whose} {Views.DebriefWords.Number(n)} lines held"
+            : $"{Views.DebriefWords.Number(held)} of {whose} {Views.DebriefWords.Number(n)} lines held";
+        return $"The tutorial is done: {how}.";
     }
 
     private BarLine BarLineFor(Data.PassCriterionData p, IReadOnlyDictionary<string, double> m)

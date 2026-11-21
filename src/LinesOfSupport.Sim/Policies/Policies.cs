@@ -72,6 +72,7 @@ public sealed class TextbookPolicy : IPolicy
     public string Name => "textbook";
     private readonly HashSet<string> _done = [];
     private readonly HashSet<string> _bridges = [];
+    private readonly Dictionary<string, int> _ucaEnduring = [];   // DESK-134: card id to the UCA's latest start
     /// <summary>Site:capability pairs handed to their usual owner (the J4); the office leaves those supply lines off its own buys.</summary>
     private readonly HashSet<string> _owned = [];
 
@@ -175,13 +176,21 @@ public sealed class TextbookPolicy : IPolicy
                     // DESK-61: a UCA only above the simplified acquisition threshold. Below it a purchase order is as fast
                     // (no approval to wait for) and has no obligation cap to stop the work before a proposal arrives.
                     var instrument = total > v.Rules.Thresholds.SimplifiedAcquisitionCents ? "uca" : "purchaseOrder";
-                    var line = Helpers.Funding(v, instrument == "uca" ? 1 : total, card.CapabilityId);
+                    var award = new AwardAction
+                    {
+                        Id = enduringId, Instrument = instrument, Vendor = turnkey.Vendor.Id, Card = card.Id, Lines = allLines,
+                        Quantity = sized, DurationDays = card.DurationDays, StartDay = card.RequestedStartDay,
+                    };
+                    // DESK-134: a vendor that prices first holds a purchase order until its proposal; a UCA when that is late.
+                    if (instrument == "purchaseOrder" && Helpers.Funding(v, total, card.CapabilityId) is { } poLine)
+                        award = Helpers.UcaIfPricingIsLate(v, award with { FundingLine = poLine.Id }, card.RequestedStartDay);
+                    var line = Helpers.Funding(v, award.Instrument == "uca" ? 1 : total, card.CapabilityId);
                     if (line is not null && Helpers.HasCapacity(v, turnkey.Vendor, card.CapabilityId, sized))
-                        actions.Add(new AwardAction
-                        {
-                            Id = enduringId, Instrument = instrument, Vendor = turnkey.Vendor.Id, Card = card.Id, Lines = allLines,
-                            Quantity = sized, DurationDays = card.DurationDays, FundingLine = line.Id, StartDay = card.RequestedStartDay,
-                        });
+                    {
+                        actions.Add(award with { FundingLine = line.Id });
+                        if (award.Instrument == "uca" && instrument == "purchaseOrder")
+                            _ucaEnduring[card.Id] = v.Preview(award with { FundingLine = line.Id }).EarliestStartMax;
+                    }
                 }
             }
 
@@ -195,6 +204,9 @@ public sealed class TextbookPolicy : IPolicy
             if (urgent && _done.Add($"bridge:{card.Id}"))
             {
                 var bridgeDays = Math.Max(7, turnkeyLead + 8 - (card.RequestedStartDay - v.Day));
+                // DESK-134: a UCA waits for its approval as well, so the bridge runs to the latest day the UCA could start.
+                if (_ucaEnduring.TryGetValue(card.Id, out var ucaLatest))
+                    bridgeDays = Math.Max(bridgeDays, ucaLatest - card.RequestedStartDay + 2);
                 var core = cap.Lines.Where(l => l.Kind is "core").Select(l => l.Id).ToList();
                 var island = v.Scenario.Sites.First(s => s.Id == card.SiteId).Island;
                 var bridge = Helpers.FastestRoute(v, card.SiteId, card.CapabilityId, core, sized, bridgeDays, preferIsland: null);
@@ -239,7 +251,10 @@ public sealed class TextbookPolicy : IPolicy
         {
             var site = v.Scenario.Sites.First(s => s.Id == a.SiteId);
             var siteEnd = Math.Min(site.ClosesDay ?? v.LastDay, v.LastDay);
-            if (a.EndDay >= siteEnd || a.EndDay - v.Day > 14) continue;
+            // DESK-134: a vendor that prices first needs its proposal before a purchase order is written, so its follow-on
+            // is started that much earlier (a UCA's obligations would outrun a line that expires before it ends).
+            var pricing = v.Scenario.Vendors.FirstOrDefault(x => x.Id == a.VendorId)?.QualifyingProposalLagDays?.Max ?? 0;
+            if (a.EndDay >= siteEnd || a.EndDay - v.Day > 14 + pricing) continue;
             var key = $"follow:{a.Id}";
             if (_done.Contains(key)) continue;
             var replaced = _bridges.Contains(a.Id) || v.InWork($"{a.Id}-next")
@@ -382,6 +397,23 @@ internal static class Helpers
         var offer = vendor.Offers.First(o => o.Capability == capability);
         var committed = v.Arrangements.Where(a => a.VendorId == vendor.Id && a.CapabilityId == capability && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active).Sum(a => a.QuantityMilli) / 1000;
         return committed + qty <= (long)offer.CapacityPerDay;
+    }
+
+    /// <summary>DESK-134: a purchase order with a vendor that must price the work first (its proposal lag) becomes a UCA when
+    /// the order, waiting for the proposal, would start after the day it is wanted. Any other buy is returned as it is.</summary>
+    public static AwardAction UcaIfPricingIsLate(SessionView v, AwardAction award, int wanted)
+    {
+        if (award.Instrument != "purchaseOrder" || v.Scenario.Vendors.FirstOrDefault(x => x.Id == award.Vendor)?.QualifyingProposalLagDays is null)
+            return award;
+        var preview = v.Preview(award);
+        if (!preview.Accepted || preview.EarliestStartMin <= wanted) return award;
+        // The UCA goes to whoever on the team could have it awarded soonest, so it does not wait behind the shop's other work.
+        var uca = award with { Instrument = "uca" };
+        return v.Team.Select(m => uca with { Assignee = m.Id })
+                     .Select(x => (Award: x, Preview: v.Preview(x)))
+                     .Where(x => x.Preview.Accepted)
+                     .OrderBy(x => x.Preview.EarliestStartMax).ThenBy(x => x.Preview.EarliestStartMin)
+                     .Select(x => x.Award).DefaultIfEmpty(uca).First();
     }
 
     /// <summary>The usable line with the money that expires first and is certified for the capability (M3-03).</summary>
