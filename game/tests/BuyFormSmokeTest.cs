@@ -27,7 +27,7 @@ public partial class BuyFormSmokeTest : Node
             await Layout("water", shell.DurationInput);
             Pick(shell.InstrumentInput, "purchaseOrder"); Order();
             Require(shell.QuantityInput.Value == 4500 && shell.StartInput.Value == 2 && shell.DurationInput.Value == 7, "Arrangement changes keep the chosen amount and timing.");
-            Require(shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good below.", "A pick-two stop says where the choices are.");
+            Require(shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good", "The pick-two reason does not point below the pinned footer.");
             PickPriorities(shell, "fast", "good");
             Require(shell.CorInput is not null && shell.DurationInput.GetParent().GetParent().GetIndex() < shell.CorInput.GetParent().GetIndex()
                 && shell.PriorityInputs.Values.All(p => shell.DurationInput.GetParent().GetParent().GetIndex() < p.GetParent().GetIndex()), "Amount and timing precede priorities and the COR.");
@@ -42,6 +42,21 @@ public partial class BuyFormSmokeTest : Node
             PickAwardTarget(shell, "tutForklift"); shell.ShowMarket();
             Pick(shell.VendorInput, "harborEquipment"); Pick(shell.InstrumentInput, "purchaseOrder"); PickPriorities(shell, "fast", "good");
             await Layout("forklifts", shell.DurationInput);
+            var input = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-6", "input-log.json"));
+            var bundle = LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+            var morning = LinesOfSupport.Sim.Replay.Run(bundle, input, stopAfterDay: 5);
+            var save = shell.AutosavePathOverride + ".day6";
+            File.WriteAllText(save, morning.ToSave().ToJson()); shell.LoadSavedGame(save); File.Delete(save);
+            shell.DeveloperToggle.ButtonPressed = false;
+            PickAwardTarget(shell, "tutForklift"); shell.ShowMarket();
+            Pick(shell.VendorInput, "coastalRentals"); Pick(shell.InstrumentInput, "gpc");
+            Require(shell.AwardPreview is not null && !shell.SupplierNotice!.Visible
+                && shell.AwardTiming.Text.Contains("The earliest start is day "), "The exact sixth-play card buy has one start forecast, without the signed-order notice.");
+            await Layout("day6-card", shell.SupplierKnowledge!);
+            Pick(shell.InstrumentInput, "purchaseOrder");
+            Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good"
+                && !shell.SupplierNotice!.Visible, "The written buy keeps its actual quote and plain pick-two reason.");
+            await Layout("day6-pick-two", shell.PriorityInputs["fast"]);
             shell.QueueFree(); await Frames(); shell = null;
             GD.Print("BUY_FORM_SMOKE_PASS: early amount and timing, correct labels, supplier refusal refresh, pure exact previews, preserved terms and half-pane space with pinned summaries.");
             GetTree().Quit();
@@ -68,7 +83,7 @@ public partial class BuyFormSmokeTest : Node
                 if (shell.AwardWriterPicker is { } writer)
                     GD.Print($"WRITER_LAYOUT: picker={writer.Size}, rows={string.Join(",", writer.ChoiceButtons.Values.Select(b => b.Size.Y))}, summary={shell.AwardSummaryLabel.Size}, button={shell.AwardButton.Size}, reason={shell.AwardBlockedReason.Size} visible={shell.AwardBlockedReason.Visible}");
                 Require(scroll.Size.Y >= pane.Size.Y / 2, "The form keeps at least half the pane, including the longer forklift summary.");
-                Require(shell.AwardSummaryLabel.Text == shell.Session.View!.AwardSummary(shell.PendingAward!)!.Sentence, "The pinned summary retains the complete Sim sentence.");
+                Require(shell.AwardSummaryLabel.Text == (shell.Session.View!.AwardSummary(shell.PendingAward!)?.Sentence ?? ""), "The pinned summary retains the complete Sim sentence.");
                 var button = shell.AwardButton.GetGlobalRect();
                 scroll.EnsureControlVisible(focus); await Frames();
                 Require(scroll.GetGlobalRect().Encloses(focus.GetGlobalRect()) && button == shell.AwardButton.GetGlobalRect()

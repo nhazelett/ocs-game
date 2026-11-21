@@ -66,7 +66,6 @@ public partial class GameShell
             : awardInstrument is not ("sf44" or "gpc") && string.IsNullOrEmpty(awardFunding) ? "Choose an available funding line."
             : AwardPreview?.HardStops.FirstOrDefault();
         reason ??= AwardPreview is null ? "Complete the terms to see the quote." : null;
-        if (reason == "Pick two of fast, cheap and good") reason += " below.";
         DeskUi.Gate(awardButton, AwardBlockedReason, reason);
         // An untouched form is an invitation to start another buy, including after a successful one.
         // Keep submission gated, but wait for an edit before showing missing-field errors.
@@ -322,7 +321,7 @@ public partial class GameShell
     {
         var view = session.View; var editor = CurrentActionEditor;
         if (view is null || editor is null) return;
-        if (!AwardTermsComplete) { PendingAward = null; AwardPreview = null; ClearAwardWriter(); RefreshRequestBuyWarnings(); GateAward(view); return; }
+        if (!AwardTermsComplete) { if (SupplierNotice is not null) SupplierNotice.Show(); PendingAward = null; AwardPreview = null; ClearAwardWriter(); RefreshRequestBuyWarnings(); GateAward(view); return; }
         while (view.AwardIdTaken($"player-award-{awardSequence}")) awardSequence++;
         awardAssignee ??= view.Team.Single(m => m.Role == "you").Id;
         PendingAward = new AwardAction { Day = view.Day, Id = $"player-award-{awardSequence}", Card = editor.CardId,
@@ -335,6 +334,7 @@ public partial class GameShell
         try
         {
             AwardPreview = view.Preview(PendingAward);
+            SupplierNotice?.Hide();
             RefreshAwardWriter(view);
             AwardTrade!.Text = AwardPreview.Trade ?? ""; AwardTrade.Visible = AwardPreview.Trade is not null; // DESK-26
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
@@ -363,6 +363,7 @@ public partial class GameShell
         catch (OverflowException)
         {
             AwardSummaryLabel.Text = ""; AwardSummaryLabel.Hide(); ClearAwardWriter();
+            SupplierNotice?.Show();
             AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
             previewGaps.Text = ""; RefreshRequestBuyWarnings(); DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
         }
