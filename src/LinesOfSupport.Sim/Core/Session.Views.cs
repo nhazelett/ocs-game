@@ -384,7 +384,9 @@ public sealed partial class Session
         // it came free. In the quote, not the pinned summary, which must stay short.
         if (chk.Card is { } learnedCard
             && chk.Lines.Where(l => learnedCard.Lines.GetValueOrDefault(l) && _learnedLines.ContainsKey((learnedCard.Id, l))).ToList() is { Count: > 0 } learned)
-            gaps.Add($"{Possessive(vendor.Name)} price already includes its {PartsLabels(capId, learned)}.");
+            // Claude play 21 Nov, sixth play: "already includes its operators" read as if any buy from them brought the
+            // operators, so a player whose first buy came without them saw a contradiction. Same price; named or not brought.
+            gaps.Add($"{vendor.Name} charges the same with its {PartsLabels(capId, learned)} as without, and an order brings only the parts it names.");
         foreach (var l in cap.Lines.Where(l => l.Kind != "core" && !chk.Lines.Contains(l.Id)))
             if ((l.Kind is not ("operator" or "maintenance") || PlantPartAtRisk(cap, l, vendor.Id))   // DESK-59
                 && GapIfOff(cap, l) is { } g) gaps.Add(g + AskFirst(chk.Card, l));
