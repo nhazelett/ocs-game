@@ -131,9 +131,10 @@ public partial class GameShell
         var blocked = view.TerminateBlocked(arrangement.Id);
         if (blocked is not null) { contractContents.AddChild(DeskUi.Label(blocked)); return; }
         if (arrangement.IsCoordination || view.EndWords(arrangement.Id) is not { } endWords) return;
-        var ending = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
+        var endingWork = view.Work.FirstOrDefault(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
+        var ending = endingWork is not null;
         var endPanel = ContractPerformanceChoices.Count > 0 || hasModification ? contractContents : contractFooter;
-        var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
+        var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id, Assignee = endingWork?.Assignee };
         var assigned = AddAssignedAction(endPanel, endPanel, view, action,
             ending ? endWords.Button + " (in work)" : endWords.Button + "…",
             endWords.Says,
@@ -150,7 +151,7 @@ public partial class GameShell
                     + ActionCostText(current, chosen, words.Says);
                 EndContractDialog.PopupCentered(new Vector2I(620, 300));
                 EndContractDialog.GetCancelButton().GrabFocus();
-            });
+            }, inWork: endingWork?.Id, showInWorkPicker: true);
         terminations[arrangement.Id] = assigned.Button;
     }
 

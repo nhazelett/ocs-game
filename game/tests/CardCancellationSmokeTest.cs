@@ -51,6 +51,11 @@ public partial class CardCancellationSmokeTest : Node
                 shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed);
                 Require(shell.Session.StateHash == expected.StateHash() && shell.TerminateButtons["water"].Disabled,
                     "Confirmation queues the exact selected caller and prevents another cancellation.");
+                var heldButton = shell.TerminateButtons["water"];
+                var heldPicker = heldButton.GetParent().GetChildren().OfType<AssigneePicker>().Single();
+                Require(heldPicker.Visible && heldPicker.Selected == "novak" && heldPicker.ChoiceButtons.Values.All(b => b.Disabled)
+                    && Cost(heldButton).Text.Contains("Novak has this task") && !Cost(heldButton).Text.Contains("of your time"),
+                    "An in-work cancellation keeps its actual caller selected and shows their remaining hours without proposing another action.");
                 shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Confirmed); button.EmitSignal(Button.SignalName.Pressed);
                 Require(shell.Session.StateHash == expected.StateHash(), "Repeated confirmation and stale page clicks cannot duplicate the call.");
                 while (expected.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null)) { expected.AdvanceDay(); Step(shell); }
@@ -81,6 +86,21 @@ public partial class CardCancellationSmokeTest : Node
                 "The reused confirmation resets all card-specific words for a written contract.");
             shell.EndContractDialog.Hide(); shell.EndContractDialog.EmitSignal(ConfirmationDialog.SignalName.Canceled);
             Require(shell.Session.StateHash == before, "Cancelling the comparison confirmation is read only.");
+            var exactLog = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-7", "input-log-2.json"));
+            var exact = LinesOfSupport.Sim.Replay.Run(bundle, exactLog, stopAfterDay: 14);
+            var cancel = exactLog.Actions.OfType<TerminateAction>().Single(a => a.Day == 15);
+            Require(exact.Apply(cancel).Accepted, "The seventh play's exact day-fifteen cancellation is accepted.");
+            await Load(exact, cancel.Arrangement);
+            var held = shell.TerminateButtons[cancel.Arrangement];
+            var selected = held.GetParent().GetChildren().OfType<AssigneePicker>().Single();
+            var holder = exact.View.Team.Single(m => m.Work.Any(w => w.WorkId == exact.Work.Single(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null).Id));
+            var remaining = holder.Work.Single(w => w.WorkId == exact.Work.Single(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null).Id).HoursLeft;
+            Require(held.Disabled && selected.Selected == cancel.Assignee && selected.ChoiceButtons[cancel.Assignee!].Text.StartsWith("✓ ") && selected.ChoiceButtons.Values.All(b => b.Disabled)
+                && Cost(held).Text.Contains(holder.Name + " has this task, about " + DeskUi.Count(remaining, "hour") + " of work left."),
+                "The seventh play's contract keeps Novak selected with his exact remaining hours after the cancel.");
+            await Capture("day15-in-work", Cost(held));
+            var exactHash = shell.Session.StateHash; selected.ChoiceButtons["you"].EmitSignal(Button.SignalName.Pressed); held.EmitSignal(Button.SignalName.Pressed);
+            Require(selected.Selected == cancel.Assignee && shell.Session.StateHash == exactHash, "Disabled in-work choices cannot change or repeat the cancellation.");
             shell.QueueFree(); await Frames();
             GD.Print("CARD_CANCELLATION_SMOKE_PASS: before/after delivery words, exact caller quotes, confirmation reset, pure cancel, single execution, credit and save/replay."); GetTree().Quit();
 

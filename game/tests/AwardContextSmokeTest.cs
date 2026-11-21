@@ -68,6 +68,7 @@ public partial class AwardContextSmokeTest : Node
             Require(LinesOfSupport.Sim.Replay.Resume(bundle, saved).StateHash() == expected.StateHash(), "The chosen COR survives save/resume unchanged.");
             Step(shell); expected.AdvanceDay();
             Require(shell.Session.StateHash == expected.StateHash(), "The next day agrees with independent Sim play.");
+            await CheckMonitorChoices(shell);
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
             GD.Print("AWARD_CONTEXT_SMOKE_PASS: best-first COR reasons, exact customer ask beside editable terms, pure changes, capability refresh, stale controls, exact award and save/resume.");
@@ -99,4 +100,43 @@ public partial class AwardContextSmokeTest : Node
         }
         catch (Exception error) { GD.PushError("AWARD_CONTEXT_SMOKE_FAIL: " + error); GetTree().Quit(1); }
     }
+    private async Task CheckMonitorChoices(GameShell shell)
+    {
+        var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+        var log = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-7", "input-log-1.json"));
+        var expected = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 6);
+        var path = shell.AutosavePathOverride + ".monitor-day7";
+        File.WriteAllText(path, expected.ToSave().ToJson()); shell.LoadSavedGame(path); File.Delete(path);
+        shell.DeveloperToggle.ButtonPressed = false; shell.GoToMarket("tutWaste");
+        var order = log.Actions.OfType<AwardAction>().Single(a => a.Day == 7);
+        Pick(shell.VendorInput, order.Vendor); Pick(shell.InstrumentInput, order.Instrument);
+        Pick(shell.FundingInput, order.FundingLine!); PickPriorities(shell, order.Priorities!.ToArray());
+        shell.QuantityInput.Value = order.Quantity; shell.StartInput.Value = order.StartDay!.Value; shell.DurationInput.Value = order.DurationDays;
+        var picker = shell.CorInput!;
+        foreach (var c in expected.View.CorChoices("waste"))
+        {
+            var index = Enumerable.Range(1, picker.ItemCount - 1).Single(i => picker.GetItemMetadata(i).AsString() == c.Id);
+            var odds = $"catches about {c.ReportPermille / 10m:0.#}%, reports " + (c.LagDays == 0 ? "the same day" : DeskUi.Count(c.LagDays, "day") + " late");
+            Require(picker.GetItemText(index).EndsWith(odds) && picker.GetItemTooltip(index) == c.Why
+                && shell.CorReasonLabels.Any(l => l.Text == c.Why), "Every monitor's effective odds and lag are in its choice; the complete Sim sentence remains below.");
+        }
+        Require(shell.Session.StateHash == expected.StateHash() && shell.PendingAward!.Cor is null, "Reading monitor choices is pure and retains None until chosen.");
+        for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        shell.AwardScroll.EnsureControlVisible(picker);
+        for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--monitor-screenshots");
+        if (at >= 0)
+        {
+            picker.ShowPopup(); for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            var popup = picker.GetPopup();
+            Require(new Rect2I(0, 0, 1280, 800).Encloses(new Rect2I(popup.Position, popup.Size)), "The complete monitor choices fit the native window.");
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[at + 1] + "-monitor.png") == Error.Ok, "Native open-monitor capture saved."); popup.Hide();
+        }
+        Pick(picker, order.Cor!);
+        Require(shell.PendingAward!.Cor == order.Cor && shell.Session.StateHash == expected.StateHash(), "Choosing from the explained roster binds the exact monitor without committing.");
+        GD.Print("MONITOR_CHOICES_SMOKE_PASS: exact seventh-play day-seven waste quote, every effective odds/lag choice, full Sim reasons, None and exact selection.");
+    }
+
 }
