@@ -249,8 +249,10 @@ public partial class GameShell
                 void GateAssignment()
                 {
                     var preview = view.PreviewAny(action with { To = picker.Selected });
+                    var awaitingPick = !view.Finished && picker.Selected == member.Id;
                     DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason
-                        : picker.Selected == member.Id ? "Choose another teammate for this task." : preview.HardStops.FirstOrDefault());
+                        : awaitingPick ? "Pick who should take it." : preview.HardStops.FirstOrDefault());
+                    reason.AddThemeColorOverride("font_color", awaitingPick ? TabletopTheme.Ink : TabletopTheme.Alert);
                 }
                 picker.SelectionChanged = GateAssignment;
                 GateAssignment(); WorkAssignButtons[work.WorkId] = give;
