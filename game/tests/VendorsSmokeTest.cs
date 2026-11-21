@@ -153,6 +153,41 @@ public partial class VendorsSmokeTest : Node
         }
     }
 
+    private async Task CheckReturnToVendors(GameShell shell)
+    {
+        var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+        var log = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-8", "input-log-2.json"));
+        var fixture = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 15);
+        var path = shell.AutosavePathOverride + ".vendors-day16";
+        File.WriteAllText(path, fixture.ToSave().ToJson()); shell.LoadSavedGame(path); File.Delete(path);
+        shell.DeveloperToggle.ButtonPressed = false;
+        var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.VendorsTab;
+        Pick(shell.VendorCardPicker, "campServices"); await Frames();
+        var scroll = shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>();
+        var hash = shell.Session.StateHash;
+        foreach (var destination in new[] { GameShell.TodayTab, GameShell.InboxTab, GameShell.PaymentsTab })
+        {
+            scroll.ScrollVertical = 100000; await Frames();
+            Require(scroll.ScrollVertical > 0 && !scroll.GetGlobalRect().Encloses(shell.VendorCardPicker.GetGlobalRect()),
+                "The fixture really leaves the vendor picker above the visible card.");
+            tabs.CurrentTab = destination; await Frames();
+            tabs.CurrentTab = GameShell.VendorsTab; await Frames();
+            Require(scroll.ScrollVertical == 0 && scroll.GetGlobalRect().Encloses(shell.VendorCardPicker.GetGlobalRect())
+                && shell.VendorCardPicker.GetItemMetadata(shell.VendorCardPicker.Selected).AsString() == "campServices"
+                && shell.VendorCardContents["campServices"].IsVisibleInTree() && shell.Session.StateHash == hash,
+                "Returning from another desk tab reveals the picker at the selected card's top without changing Sim state.");
+        }
+        var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--return-screenshot");
+        if (at >= 0)
+        {
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[at + 1]) == Error.Ok, "The eighth play's day-sixteen Vendors return is captured.");
+        }
+        GD.Print("VENDOR_RETURN_SMOKE_PASS: exact eighth-play day-sixteen card, offscreen-picker fixture, three tab returns, selected card and pure state.");
+        async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+    }
+
     public override async void _Ready()
     {
         try
@@ -161,6 +196,7 @@ public partial class VendorsSmokeTest : Node
             await CheckMeetingEffect(shell);
             await CheckNotice(shell);
             await CheckHeard(shell);
+            await CheckReturnToVendors(shell);
             Scenario(shell, "tutorial");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
             var expected = Session.Create(bundle, 1);

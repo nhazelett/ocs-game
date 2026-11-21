@@ -49,6 +49,12 @@ public partial class GameShell
         tabs.SetTabTitle(page.GetIndex(), "Vendors");
         VendorCardsBox = DeskUi.Panel(page, "VendorCards");
         vendorCardsScroll = (ScrollContainer)VendorCardsBox.GetParent();
+        tabs.TabChanged += tab =>
+        {
+            if (tab != VendorsTab || !vendorCardsScroll.Visible) return;
+            vendorCardsScroll.ScrollVertical = 0;
+            if (VendorCardPicker is { } picker && picker.IsVisibleInTree()) picker.GrabFocus();
+        };
         bpaForm = DeskUi.Pane(page, "VendorSetup", out vendorSetupFooter);
         vendorSetupScroll = (ScrollContainer)bpaForm.GetParent();
         vendorSetupPane = vendorSetupFooter.GetParent<Control>(); vendorSetupPane.Hide();
