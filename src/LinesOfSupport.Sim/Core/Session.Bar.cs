@@ -37,6 +37,10 @@ public sealed partial class Session
                 ? $"{CapLabel(cap)} at {SiteName(site)}: out {n} of the {Plural((long)p.Value, "day")} allowed{sofar}."
                 : p.Comparator == "<=" && p.Value == 0 ? $"{CapLabel(cap)} at {SiteName(site)}: out {Plural(n, "day")}{sofar}; none allowed."
                 : $"{CapLabel(cap)} at {SiteName(site)}: out {Plural(n, "day")}{sofar}.";
+            // DESK-145 (a), Claude play 21 Nov, note 2: once a day has been short but not out, say it is not an out day.
+            if (n == 0 && m.TryGetValue($"site.{site}.{cap}.degradedDays", out var shortDays) && shortDays > 0
+                && m.TryGetValue($"site.{site}.{cap}.minPercent", out var low) && low > 0)
+                text += $" A day at {(long)low}% counts as short, not out.";
             // Amber once the days allowed are used up: one more bad day misses it. A line that allows none is met or missed.
             state = !ok ? BarState.Missed : !Finished && p.Comparator == "<=" && p.Value > 0 && n >= p.Value ? BarState.AtRisk : BarState.Met;
         }

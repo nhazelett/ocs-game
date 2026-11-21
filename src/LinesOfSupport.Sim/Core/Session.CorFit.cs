@@ -61,7 +61,7 @@ public sealed partial class Session
         var work = Lower(CapLabel(capId));
         var fit = CorFits(c, capId) switch
         {
-            true => $"works with {work} every day",
+            true => $"knows {work}",
             false => $"does not work with {work}",
             null => $"is rated {c.Quality}",
         };

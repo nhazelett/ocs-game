@@ -104,8 +104,12 @@ public class AwardSummaryTests
         var preview = s.View.Preview(buy);
         Assert.True(preview.Accepted, string.Join(" ", preview.HardStops));
         Assert.True(preview.ShopHoursMax > 0);
-        var hours = preview.ShopHoursMin == preview.ShopHoursMax ? $"{preview.ShopHoursMin} hours" : $"{preview.ShopHoursMin} to {preview.ShopHoursMax} hours";
+        // Q28 (DESK-142): Avery's own hours to the half hour, as the picker says them ("6.5 to 13 hours").
+        static string H(long milli) => ((milli + 499) / 500 / 2.0).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
+        var (lo, hi) = (H(preview.HoursMinMilli), H(preview.HoursMaxMilli));
+        var hours = lo == hi ? $"{lo} hours" : $"{lo} to {hi} hours";
         Assert.Contains($"and {hours} of MSgt Joan Avery's time.", s.View.AwardSummary(buy)!.Sentence);
+        Assert.Contains(".5", hours);
         Assert.Contains("and no shop hours.", s.View.AwardSummary(Water("x", 2, 7))!.Sentence);
     }
 

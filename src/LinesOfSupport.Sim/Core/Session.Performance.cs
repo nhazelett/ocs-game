@@ -87,7 +87,7 @@ public sealed partial class Session
         if (CheckCureNotice(c) is { } stop) return ActionResult.Stop(stop);
         var i = _issues.First(x => x.Id == c.Issue);
         var rec = AddRecord(Day, RecordKind.Action, i.Id, $"Cure notice on {NameOf(i.Id)} started: {Perf.CureNoticeShopHours} shop hours.", [i.CauseId]);
-        AddWork(WorkKind.CureNotice, $"Cure notice {NameOf(i.Id)}", Fixed.Milli(Perf.CureNoticeShopHours), Day, i.Id, rec);
+        AddWork(WorkKind.CureNotice, $"Cure notice on {NameOf(i.Id)}", Fixed.Milli(Perf.CureNoticeShopHours), Day, i.Id, rec);
         return ActionResult.Ok("in work");
     }
 

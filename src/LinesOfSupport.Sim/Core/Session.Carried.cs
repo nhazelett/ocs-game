@@ -109,6 +109,9 @@ public sealed partial class Session
                         .OrderBy(g => g.StartDay).ThenBy(g => g.Index).FirstOrDefault() ?? gaps.FirstOrDefault();
         if (first is null) return "Carried by the lines above: no site ran short of anything.";
         var when = $"on day {first.StartDay}, when {Lower(first.Label)} at {SiteName(first.SiteId)} ran short";
+        // DESK-145 (b), Claude play 21 Nov, note 3: "100%" and "it first dipped" cannot both be true.
+        if (met && _missionLowestPermille >= 1000)
+            return $"Carried by the lines above: mission output never dipped, though {Lower(first.Label)} at {SiteName(first.SiteId)} ran short on day {first.StartDay}.";
         return met ? $"Carried by the lines above; it first dipped {when}." : $"It first fell {when}.";
     }
 

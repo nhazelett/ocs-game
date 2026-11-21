@@ -17,7 +17,7 @@ public class CorFitTests
         var pratt = choices[0];
         Assert.True(pratt.Fits);
         Assert.Equal(800, pratt.ReportPermille);
-        Assert.Equal("TSgt Pratt (3 CES) works with material handling equipment every day and watches no other contract: catches about 80% of problems, reported 2 days late.", pratt.Why);
+        Assert.Equal("TSgt Pratt (3 CES) knows material handling equipment and watches no other contract: catches about 80% of problems, reported 2 days late.", pratt.Why);
         var lane = choices[1];
         Assert.False(lane.Fits);
         Assert.Equal(2, lane.Watching);                     // billeting and dining, inherited
