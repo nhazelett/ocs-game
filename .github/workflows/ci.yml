@@ -62,10 +62,14 @@ jobs:
           python3 -m unittest discover -s tools/validate -p test_provenance.py
           python3 tools/validate/provenance.py
 
-  godot-shell:
-    name: godot-shell
+  godot-smoke:
+    name: godot-smoke (${{ matrix.suite }})
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [presentation, operations]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -82,11 +86,15 @@ jobs:
           test -n "$godot_bin"
           chmod +x "$godot_bin"
           echo "GODOT_BIN=$godot_bin" >> "$GITHUB_ENV"
-      - name: Build, import and smoke-test the shell
+      - name: Build and import the shell
         shell: bash
         run: |
           dotnet build game/LinesOfSupport.Game.csproj -c Debug
           "$GODOT_BIN" --headless --path game --editor --import --quit
+      - name: Smoke-test presentation and the morning board
+        if: matrix.suite == 'presentation'
+        shell: bash
+        run: |
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/MusicSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-music.log"
           grep -Fq 'MUSIC_SMOKE_PASS:' "$RUNNER_TEMP/godot-music.log"
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/AudioSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-audio.log"
@@ -160,6 +168,10 @@ jobs:
           grep -Fq 'SKIP_DAYS_SMOKE_PASS:' "$RUNNER_TEMP/godot-skip-days.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/MorningSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-morning.log"
           grep -Fq 'MORNING_SMOKE_PASS:' "$RUNNER_TEMP/godot-morning.log"
+      - name: Smoke-test decisions, contracts and the request workspace
+        if: matrix.suite == 'operations'
+        shell: bash
+        run: |
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PlainBoardSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-plain-board.log"
           grep -Fq 'PLAIN_BOARD_SMOKE_PASS:' "$RUNNER_TEMP/godot-plain-board.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/VendorNewsSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-vendor-news.log"
@@ -238,6 +250,20 @@ jobs:
           grep -Fq 'KIT_SMOKE_PASS: five pieces, 5 glTF files loaded' "$RUNNER_TEMP/godot-kit.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --extended-kit --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-extended-kit.log"
           grep -Fq 'KIT_SMOKE_PASS: 22 pieces, 22 glTF files loaded' "$RUNNER_TEMP/godot-extended-kit.log"
+
+  # Keep the existing required check and export dependency. A failed or cancelled
+  # matrix member must fail this gate even if its sibling passed.
+  godot-shell:
+    name: godot-shell
+    needs: [godot-smoke]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Require both Godot suites
+        env:
+          GODOT_SUITE_RESULT: ${{ needs.godot-smoke.result }}
+        run: test "$GODOT_SUITE_RESULT" = success
 
   export-windows:
     name: export-windows
