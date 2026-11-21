@@ -22,7 +22,7 @@ public class ToldNotAddedTests
         Priorities = instrument == "gpc" ? null : ["fast", "good"],
     };
 
-    private const string Told = "It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first.";
+    private const string Told = "It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first; Coastal Rentals brings them at the same price.";
 
     [Theory]
     [InlineData("gpc")]

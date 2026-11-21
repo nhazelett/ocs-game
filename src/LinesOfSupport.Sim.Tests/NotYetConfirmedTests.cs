@@ -41,7 +41,7 @@ public class NotYetConfirmedTests
         // Not bought this time: the next morning Dunn has answered, D40 names what he said (DESK-156), and D48 no longer applies.
         s.AdvanceDay();
         var told = s.View.AwardSummary(buy with { Day = 7 })!;
-        Assert.Equal("It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first.", told.Why);
+        Assert.Equal("It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first; Coastal Rentals brings them at the same price.", told.Why);
     }
 
     [Fact]
