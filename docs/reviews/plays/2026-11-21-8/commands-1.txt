@@ -1,0 +1,199 @@
+look
+scroll "Preparation" down
+click "I can pull the agreements the last rotation left you, so you can see which requests they cover before you land. (1 day)"
+click "I can send you our vendor list with the terms we have, so you know who takes cash and who takes the card. (2 days)"
+click "Bring templates and a paper kit, and the manual work goes faster until the system's up. (1 day)"
+click "I'm ready to leave"
+click "Continue"
+click "Continue"
+click "Continue"
+click "Open the desk and meet people"
+scroll "Today" down
+scroll "Today" down
+click "Open request"
+click "Water for Hub · MSgt Carla Ortiz"
+scroll "Request" down
+scroll "Request" down
+click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 1 hour; it would be done day 1."
+click "Ask MSgt Carla Ortiz"
+click "Choose an arrangement…"
+click "Government purchase card"
+click "Choose a supplier…"
+click "Island Mart"
+scroll "Buy" down
+click "Government purchase card"
+click "Written purchase order"
+scroll "Buy" up
+click "Government purchase card"
+click "Written purchase order"
+scroll "Buy" down
+click "Fast"
+click "Good"
+scroll "Buy" up
+click "Written purchase order"
+click "Government purchase card"
+click "Arrange support"
+click "Back to the desk"
+click "Requests"
+click "Inbox"
+scroll "Inbox" down
+click "Today"
+scroll "Today" down
+scroll "Today" down
+scroll "Today" down
+click "People to reach"
+scroll "Today" down
+click "Choose someone to reach…"
+click "Staff meeting · Col Helen Ward"
+scroll "Today" down
+scroll "Today" down
+scroll "Today" down
+click "SrA Eli Novak: 8 hours free today, nothing queued. This takes them 3 hours; it would be done day 1."
+click "Join the staff meeting"
+click "Other updates and sites"
+scroll "Today" down
+scroll "Today" down
+scroll "Today" up
+click "Hub · Water: 100% · fully supported"
+click "End the day"
+scroll "Dialog" down
+click "End the day"
+scroll "Dialog" down
+click "On to the morning of day 2"
+click "Vendors"
+click "Island Camp Services"
+click "Harbor Equipment Co"
+scroll "Vendors" down
+scroll "Vendors" up
+click "Harbor Equipment Co"
+click "Coastal Rentals"
+scroll "Vendors" down
+click "Today"
+scroll "Today" down
+scroll "Today" down
+scroll "Today" down
+click "End the day"
+click "End the day"
+click "On to the morning of day 3"
+click "Vendors"
+click "Coastal Rentals"
+click "Harbor Equipment Co"
+scroll "Vendors" down
+scroll "Vendors" down
+click "End the day"
+click "End the day"
+click "On to the morning of day 4"
+click "Open request"
+click "Choose an arrangement…"
+click "BPA call"
+click "Choose a supplier…"
+scroll "Buy" down
+scroll "Request" down
+scroll "Request" down
+click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 1 hour; it would be done day 4."
+click "Ask SMSgt Ray Dunn"
+click "None"
+click "TSgt Pratt · 3 CES · catches about 80%, reports 2 days late"
+scroll "Buy" down
+click "Arrange support"
+click "End the day"
+click "End the day"
+click "On to the morning of day 5"
+click "Material handling equipment for Hub: the BPA call you are writing with Harbor Equipment Co comes without operators, and SMSgt Ray Dunn said the request needs them."
+click "Choose an arrangement…"
+click "Written purchase order"
+click "Choose a supplier…"
+click "Coastal Rentals"
+scroll "Buy" down
+click "Add what you learned"
+click "Fast"
+click "Good"
+click "MSgt Joan Avery · 8 h free · done day unavailable"
+scroll "Buy" up
+click "Written purchase order"
+click "Government purchase card"
+scroll "Buy" down
+click "Stop this work"
+scroll "Request" down
+click "Stop this work"
+click "Arrange support"
+click "Back to the desk"
+click "End the day"
+click "End the day"
+click "On to the morning of day 6"
+click "End the day"
+click "End the day"
+click "On to the morning of day 7"
+click "Open request"
+scroll "Request" down
+scroll "Request" down
+click "SrA Eli Novak: 6.5 hours free today, nothing queued. This takes them 1.5 hours; it would be done day 7."
+click "Ask Capt Ana Ruiz"
+click "Choose an arrangement…"
+click "Written purchase order"
+click "Choose a supplier…"
+click "Main Island Sanitation"
+scroll "Buy" down
+click "Fast"
+click "Good"
+click "None"
+click "TSgt Pratt · 3 CES · catches about 80%, reports 2 days late"
+scroll "Buy" down
+click "MSgt Joan Avery · 8 h free · done day 8–9"
+click "Arrange support"
+click "End the day"
+click "End the day"
+click "On to the morning of day 8"
+click "End the day"
+click "End the day"
+click "On to the morning of day 9"
+click "Payments"
+scroll "Payments" down
+scroll "Payments" down
+scroll "Payments" down
+scroll "Payments" down
+scroll "Payments" down
+click "End the day"
+click "End the day"
+click "On to the morning of day 10"
+click "End the day"
+click "End the day"
+click "On to the morning of day 11"
+click "End the day"
+click "End the day"
+click "On to the morning of day 12"
+click "Inbox"
+scroll "Inbox" down
+click "End the day"
+click "End the day"
+click "On to the morning of day 13"
+click "Open vendor decision"
+scroll "Inbox" down
+click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 3.5 hours; it would be done day 13."
+click "Cure notice"
+click "End the day"
+click "End the day"
+click "On to the morning of day 14"
+click "End the day"
+click "End the day"
+click "On to the morning of day 15"
+click "End the day"
+click "End the day"
+click "On to the morning of day 16"
+scroll "Today" down
+scroll "Today" up
+click "Hub · Waste removal: 50% · partly supported"
+scroll "Today" down
+scroll "Today" down
+scroll "Today" down
+scroll "Today" down
+scroll "Today" down
+click "People to reach"
+click "Staff meeting · Col Helen Ward"
+click "Main Island Sanitation · Mr. Pete Kowalski"
+scroll "Today" down
+click "End the day"
+click "End the day"
+click "On to the debrief"
+scroll "Debrief" down
+scroll "Debrief" down

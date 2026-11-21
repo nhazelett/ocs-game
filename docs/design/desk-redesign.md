@@ -509,3 +509,12 @@ Sim notes (Fable):
 
 - DESK-175: in `SummaryThird`, after `ToldNotAdded` and before `OnlyCoveredDays`: `LeftOut(card, chk.Lines)` filtered to parts at risk (`PlantPartAtRisk`, DESK-59), so a goods buy with no plant risk is not flagged; the `SummaryNotes` vendor-brings line is unchanged. Built 21 Nov as `IncludedLeftOut`, after D48's `NotYetConfirmed`; when it takes the place and the days are also covered, the covered sentence is the first of the quote's notes.
 - DESK-176: the hand-over preview (`PreviewAny` of an `AssignAction` with `To`) plays the queue from the person's hours left today after the work already planned (the standing staff meeting, `PlanPeople`), as the day's plan does, so `EarliestStartMin` is the day the plan finishes it. Built 21 Nov in `PlayQueue` itself, so every forecast that plays a queue (pickers, the team page's clear-by day, the answer-due day) agrees with the plan; no record or golden moved.
+
+## 30. The 21 Nov eighth play (21 Nov 2026)
+
+No decision needed. Both players asked Dunn because the pinned summary named operators unconfirmed (D48), and the second turned down the shop's own BPA vendor on D49's sentence. Fixes from the play: a heard short week refuses the call as it does the card (DESK-178); the day's plan's lines add up to the hours planned (DESK-179); the buy form's greyed reason brings the control it names into view (DESK-180); the hand-over and the contract page are reachable from where the work is shown (DESK-181); Vendors opens with its picker in view (DESK-182). Left out on purpose: turning a card buy into a written order with the same vendor while it runs (the second player's P2-16). The forklifts are the vendor's, so the replacement is a cancel and a rebuy, or another vendor; a conversion would be an administration step.
+
+Sim notes (Fable):
+
+- DESK-178: in `CheckAward`, the DESK-174 stop applies to a `bpaCall` when `HeardDeclining(vendor.Id)`; the stop for a call names the day calls resume (`ShortThrough + 1`) instead of a start day.
+- DESK-179: `PlanPeople` rounds the running total of a person's spend to the half hour and gives each line the difference, so the lines add to `HoursPlanned`; the team page and the decisions list read a task's remaining hours through the same helper.
