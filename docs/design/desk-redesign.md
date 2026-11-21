@@ -466,3 +466,14 @@ Sim notes (Fable):
 
 - DESK-155: (a) rewrite `SoonerCor` as "The failure itself could not be foreseen. <COR> reports problems <lag> late; with <sooner COR>, who reports <lag>, its report would have been due on day <failure day + that lag>" (a report, not a promise: the sooner COR's odds of catching it are not 100%); (b) the join preview's effect line; (c) one clause in `BarView.Spoken`; (d) `PickTrade` with no pick on an open-price written buy. Goldens move where they print these (state which).
 - DESK-156: `BuildAwardSummary` keeps three parts and hands the rest to `BuildPreview`'s soft gaps, each once.
+
+## 26. The 21 Nov fourth play: D47 (21 Nov 2026)
+
+D47. **The start sentence says what the start waits for.** In the pinned buy summary, the second sentence (when it starts against when it is wanted) carries one clause naming what a written buy waits for before the vendor's notice: "It starts on day 8 or 9, after finance certifies the funds on day 6 and the order is written; it is wanted from day 8." With a vendor that prices first, the priced proposal's days in place of finance's. Still at most three sentences (D46). The fourth play's player could not see the funds wait, which D46 had moved to the quote's notes below the writer picker, and read the Now line after committing ("waits for finance to certify the funds on day 6") as a delay the quote had hidden. Left out: a timeline under the summary, and finance's day as its own sentence.
+
+Also from this play, no decision needed: on a one-day failure at the end, the debrief's lag clause says an earlier report would not have changed the day (DESK-159); two tutorial sentences (DESK-160); Mills's stay matches his notes (fixed in the play's PR).
+
+Sim notes (Fable):
+
+- DESK-158: `BuildAwardSummary`'s start part takes the clause from the same values as `SummaryNotes`, which then drops finance's day and the proposal's days.
+- DESK-159: `SoonerCor` adds "; the day itself would still have been short" (or "out") when the failure did not continue past the sooner report day, and says "a cure notice could have started on day N" when it did.
