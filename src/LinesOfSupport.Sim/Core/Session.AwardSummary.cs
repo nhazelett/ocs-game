@@ -158,7 +158,8 @@ public sealed partial class Session
     /// D51 (DESK-190; Claude play 21 Nov, tenth play, notes P1-4, P2-3): what waiting for the answer costs. The same buy
     /// placed the day after the answer comes, behind the same queue: " Ordered tomorrow, after the answer, it starts on day
     /// 9: material handling equipment at Hub is out 1 day in all: all the commander allows." The count against the line only
-    /// when that start is past the day wanted and a pass line counts the days (D43). Nothing when it would start the same.
+    /// when that start is past the day wanted and a pass line counts the days (D43). D53 (DESK-201): when it would start the
+    /// same, " Ordered tomorrow, after the answer, it still starts on day 8."
     /// Three times a game both tenth-play players chose between ordering blind on the order-by day and waiting a night, with
     /// nothing to weigh. Left out: forecasting what the answer will be. A forecast from the plan; it ignores rolls.
     /// </summary>
@@ -166,9 +167,11 @@ public sealed partial class Session
     {
         if (chk.Instrument is not { } inst || chk.Offer is not { } offer || orderDay > LastDay) return "";
         var (min, max, _, _) = StartWindow(a, inst, offer, chk, orderDay);
-        if (min == start && max == latestStart) return "";
         var when = orderDay == Day + 1 ? "tomorrow" : $"on day {orderDay}";
         var starts = max == min ? $"on day {min}" : max == min + 1 ? $"on day {min} or {max}" : $"between day {min} and day {max}";
+        // D53 (DESK-201; Claude play 21 Nov, twelfth play, notes P1-11, P2-8): a wait that costs nothing is said too, or the
+        // silence reads as "order now". Nothing is lost, so no count against the line.
+        if (min == start && max == latestStart) return $" Ordered {when}, after the answer, it still starts {starts}.";
         var cost = DownDaysIf(card, max) is { } c ? $": {c}" : "";
         return $" Ordered {when}, after the answer, it starts {starts}{cost}.";
     }
