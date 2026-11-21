@@ -44,8 +44,9 @@ public sealed partial class Session
         return new AwardSummaryView(string.Join(" ", parts), third.Why is not null, third.Why, third.Answer, third.PassCost);
     }
 
-    /// <summary>D46 (DESK-156): the candidates for the summary's third sentence, in order: the attention reason (D33), the
-    /// allowance cost of the quote's latest start (D43), the answer due from someone asked (D42). <c>Said</c> is the first
+    /// <summary>D46 (DESK-156): the candidates for the summary's third sentence, in order: the attention reason (D33), already
+    /// covered, the allowance cost of the quote's latest start (D43), the answer due from someone asked (D42), no written
+    /// terms on a service (D52). <c>Said</c> is the first
     /// of them; <c>Notes</c> the ones that did not fit, for the quote's notes. Each field keeps its value whether or not it
     /// is said. A forecast from the plan; it ignores rolls.</summary>
     private (string? Why, string? PassCost, string? Answer, string? Said, List<string> Notes) SummaryThird(AwardAction a, int start, int latestStart)
@@ -75,7 +76,13 @@ public sealed partial class Session
             passCost = card is null ? null : PassLineCost(card, latestStart);
             answer = card is null ? null : AnswerDue(card, a, chk, start, latestStart);
         }
-        var all = new[] { why, covered, passCost, answer }.OfType<string>().ToList();
+        // D52 (DESK-194; Claude play 21 Nov, eleventh play, notes P2-13, P2-20): a buy with no written terms on a service long
+        // enough to be disputed says so where it is committed to, when nothing ahead of it takes the place (the answer due
+        // and what waiting costs, D51, stay ahead: both are about whether to buy today). The eleventh play's second
+        // player bought the forklifts on the card for thirteen days with the warning below the fold; on day 16 the forklifts
+        // ran at half and the debrief called it avoidable.
+        var noTerms = chk.Instrument is { } inst ? NoWrittenTerms(a, inst) : null;
+        var all = new[] { why, covered, passCost, answer, noTerms }.OfType<string>().ToList();
         return (why, passCost, answer, all.FirstOrDefault(), all.Skip(1).ToList());
     }
 

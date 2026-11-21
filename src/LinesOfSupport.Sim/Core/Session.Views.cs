@@ -378,6 +378,13 @@ public sealed partial class Session
                 Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2), minDone, maxDone);
     }
 
+    /// <summary>The confusion rule's warning for a buy with no written terms on a long enough service (D52, DESK-194: also a
+    /// candidate for the pinned summary's third sentence). Null otherwise.</summary>
+    private string? NoWrittenTerms(AwardAction a, InstrumentData inst)
+        => !inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays
+            ? $"No written terms on {Article(a.DurationDays)} {a.DurationDays}-day service: on a day the vendor and the unit disagree on how much or when, nothing on paper settles it and only half of that day's supply arrives."
+            : null;
+
     internal ActionPreview BuildPreview(AwardAction a)
     {
         var chk = CheckAward(a);
@@ -434,8 +441,8 @@ public sealed partial class Session
         }
         else if (startMin > site.OpensDay && Day <= site.OpensDay)
             gaps.Add($"Earliest start is day {startMin}; {site.Name} opens day {site.OpensDay}.");
-        if (!inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays)
-            gaps.Add($"No written terms on {Article(a.DurationDays)} {a.DurationDays}-day service: on a day the vendor and the unit disagree on how much or when, nothing on paper settles it and only half of that day's supply arrives.");
+        // D52 (DESK-194): the no-written-terms warning (NoWrittenTerms) is a candidate for the pinned summary's third
+        // sentence; SummaryNotes adds it here when something ahead of it took the place, so it is said once.
         if (a.Instrument == "bpaCall") gaps.Add("A BPA is not binding: the vendor may decline the call.");
         if (a.Instrument == "idiqOrder")
         {
