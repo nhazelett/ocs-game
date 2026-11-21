@@ -29,7 +29,9 @@ public class PricesFirstTests
         // Day 1 plus the proposal, the writing and the vendor's lead: no earlier than day 16 plus its lead.
         Assert.True(po.EarliestStartMin >= 1 + 14 + 1 + 1, $"{po.EarliestStartMin}");
         Assert.True(uca.EarliestStartMax < po.EarliestStartMin, $"UCA {uca.EarliestStartMax}, PO {po.EarliestStartMin}");
-        Assert.Contains("It is written once Meridian Site Services' priced proposal comes, between day 15 and day 21.", s.View.AwardSummary(Power("purchaseOrder"))!.Sentence);
+        var summary = s.View.AwardSummary(Power("purchaseOrder"))!.Sentence;
+        Assert.Contains("It is written once Meridian Site Services' priced proposal comes, between day 15 and day 21.", summary);
+        Assert.DoesNotContain("Finance certifies", summary);
         Assert.DoesNotContain("priced proposal", s.View.AwardSummary(Power("uca"))!.Sentence);
     }
 

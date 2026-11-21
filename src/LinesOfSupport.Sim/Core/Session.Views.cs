@@ -379,6 +379,12 @@ public sealed partial class Session
             gaps.Add($"{vendor.Name} needs about {pricing.Min} to {Plural(pricing.Max, "day")} to price this; a purchase order waits for that, a UCA lets them start now.");
         if (chk.Card is { } partCard && LeftOut(partCard, chk.Lines) is { Count: > 0 } left)   // DESK-77 (D34)
             gaps.Insert(0, PartsLeftOut(partCard, vendor.Name, left));
+        // DESK-149 (d), Claude play 21 Nov, second play, note 12: a vendor's price is per unit whatever parts it brings, so a
+        // part added from what someone said can leave the total unchanged; the quote says so, or the player wonders whether
+        // it came free. In the quote, not the pinned summary, which must stay short.
+        if (chk.Card is { } learnedCard
+            && chk.Lines.Where(l => learnedCard.Lines.GetValueOrDefault(l) && _learnedLines.ContainsKey((learnedCard.Id, l))).ToList() is { Count: > 0 } learned)
+            gaps.Add($"{Possessive(vendor.Name)} price already includes its {PartsLabels(capId, learned)}.");
         foreach (var l in cap.Lines.Where(l => l.Kind != "core" && !chk.Lines.Contains(l.Id)))
             if ((l.Kind is not ("operator" or "maintenance") || PlantPartAtRisk(cap, l, vendor.Id))   // DESK-59
                 && GapIfOff(cap, l) is { } g) gaps.Add(g + AskFirst(chk.Card, l));

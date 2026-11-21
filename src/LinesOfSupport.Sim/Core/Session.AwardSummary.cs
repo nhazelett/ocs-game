@@ -36,11 +36,6 @@ public sealed partial class Session
                                                                                  .Select(l => Lower(LineLabel(capId, l))).ToList();
         if (brings.Count > 1 || without.Count > 0)
             parts.Add($"It brings {(brings.Count > 0 ? JoinAnd(brings) : "none of it")}{(without.Count > 0 ? $", not {JoinAnd(without)}" : "")}.");
-        // DESK-149 (d), Claude play 21 Nov, second play, note 12: a vendor's price is per unit whatever parts it brings, so a
-        // part added from what someone said can leave the total unchanged; say so, or the player wonders whether it was free.
-        var learned = card is null ? [] : chk.Lines.Where(l => card.Lines.GetValueOrDefault(l) && _learnedLines.ContainsKey((card.Id, l))).ToList();
-        if (learned.Count > 0)
-            parts.Add($"{Possessive(vendor.Name)} price already includes its {PartsLabels(capId, learned)}.");
         var needEnd = card is null ? (int?)null : card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1;
         if (card is null) parts.Add($"It starts {startSaid}.");
         else if (start <= card.RequestedStartDay) parts.Add($"It starts {startSaid}; it is wanted from day {card.RequestedStartDay}.");
@@ -54,11 +49,12 @@ public sealed partial class Session
         if (passCost is not null) parts.Add(passCost);
         // DESK-86: why a written buy starts when it does: finance certifies the funds before the writing can start. The
         // range's other causes stay in the quote (DESK-78); the summary is pinned above the button and must stay short.
-        if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
-            parts.Add($"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}.");
-        // DESK-134: a purchase order with a vendor that prices first is written once the priced proposal is in.
+        // DESK-134: a purchase order with a vendor that prices first is written once the priced proposal is in, which is
+        // after the funds; one sentence in place of the funds one, as the summary is pinned and must stay short.
         if (PricesFirst(a.Instrument, vendor) is { } pricing)
             parts.Add($"It is written once {Possessive(vendor.Name)} priced proposal comes, between day {Day + pricing.Min} and day {Day + pricing.Max}.");
+        else if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
+            parts.Add($"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}.");
         // DESK-110: what it is on top of, and what of the request that thing leaves out and this buy brings.
         var inPlace = InPlace(a, siteId, capId, start, start + duration - 1).DistinctBy(x => x.Name).ToList();
         var onTop = inPlace.Select(x => x.Name).ToList();
