@@ -10,12 +10,14 @@ public partial class GameShell
     // Assignee changes only the proposed action. Sim owns the hours, queue and completion forecast.
     private (Button Button, AssigneePicker Picker, Label Cost) AddAssignedAction(
         VBoxContainer body, VBoxContainer footer, SessionView view, PlayerAction action, string text, string effect,
-        Func<bool>? stillCurrent = null, Action<PlayerAction, ActionPreview>? updated = null, Action? accepted = null, Action<PlayerAction>? commit = null, Func<string?>? blocked = null, Func<PlayerAction, ActionPreview, string>? costText = null, string? inWork = null)
+        Func<bool>? stillCurrent = null, Action<PlayerAction, ActionPreview>? updated = null, Action? accepted = null, Action<PlayerAction>? commit = null, Func<string?>? blocked = null, Func<PlayerAction, ActionPreview, string>? costText = null, string? inWork = null, bool showInWorkPicker = false)
     {
         var hash = session.StateHash;
         var selected = action.Assignee ?? view.Team.Single(m => m.Role == "you").Id;
-        var picker = new AssigneePicker(view.AssigneeChoices(action), selected, view.Finished, "Who does it");
-        picker.Visible = inWork is null; body.AddChild(picker);
+        var picker = new AssigneePicker(view.AssigneeChoices(action), selected, view.Finished || inWork is not null, "Who does it");
+        picker.Visible = inWork is null || showInWorkPicker; body.AddChild(picker);
+        if (inWork is not null && showInWorkPicker && picker.ChoiceButtons.TryGetValue(selected, out var heldChoice))
+            heldChoice.Text = "✓ " + heldChoice.Text;
         bool Current() => inWork is null && picker.IsInsideTree() && hash == session.StateHash
             && !AtFrontDoor && !ReadingTurnover && !PlayingDay && !ReadingDaySummary
             && session.View is { Finished: false } && (stillCurrent?.Invoke() ?? true);
