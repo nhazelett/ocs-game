@@ -30,7 +30,7 @@ public sealed partial class Session
             ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
         var parts = new List<string>
         {
-            $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
+            $"{vendor.Name}, {WhatFor(capId, site.Name)}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
         };
         var card = chk.Card;
         // D47 (DESK-158, Claude play 21 Nov, fourth play, note 14): what a written buy's start waits for, in one clause, so
@@ -73,7 +73,7 @@ public sealed partial class Session
             else if (onTop && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
                 why = "Every day it would run is already covered.";
             passCost = card is null ? null : PassLineCost(card, latestStart);
-            answer = card is null ? null : AnswerDue(card);
+            answer = card is null ? null : AnswerDue(card, a, chk, start, latestStart);
         }
         var all = new[] { why, covered, passCost, answer }.OfType<string>().ToList();
         return (why, passCost, answer, all.FirstOrDefault(), all.Skip(1).ToList());
@@ -112,6 +112,11 @@ public sealed partial class Session
     /// added to the days already out, against the allowance: "If it starts on day 9, material handling equipment at Hub is
     /// out 1 day in all: all the commander allows." Null otherwise. A forecast from the plan; it ignores rolls.</summary>
     private string? PassLineCost(CardState card, int latestStart)
+        => DownDaysIf(card, latestStart) is { } cost ? $"If it starts on day {latestStart}, {cost}." : null;
+
+    /// <summary>D43's count without its opening: "material handling equipment at Hub is out 1 day in all: all the commander
+    /// allows". Null when the start is not past the day wanted, or no pass line counts the days.</summary>
+    private string? DownDaysIf(CardState card, int latestStart)
     {
         if (latestStart <= card.RequestedStartDay) return null;
         var metric = $"site.{card.SiteId}.{card.CapabilityId}.downDays";
@@ -124,13 +129,13 @@ public sealed partial class Session
             : total < allowed ? $"within the {Plural(allowed, "day")} the commander allows"
             : total - allowed == 1 ? "one more than the commander allows"
             : $"{total - allowed} more than the commander allows";
-        return $"If it starts on day {latestStart}, {Lower(CapLabel(card.CapabilityId))} at {SiteName(card.SiteId)} is out {Plural(total, "day")} in all: {verdict}.";
+        return $"{Lower(CapLabel(card.CapabilityId))} at {SiteName(card.SiteId)} is out {Plural(total, "day")} in all: {verdict}";
     }
 
     /// <summary>D42 (DESK-123, Claude play 20 Nov, second play, note 1): an ask about this request still in work, the
     /// earliest answer first: "SMSgt Ray Dunn's answer about this request comes in tonight, after you end the day; what
     /// they say may change what this buy needs." (D44, DESK-144: "on the night of day 6" for a later day.) The day is that work's forecast, as the decisions list gives it. Null when no ask is out.</summary>
-    private string? AnswerDue(CardState card)
+    private string? AnswerDue(CardState card, AwardAction a, AwardCheck chk, int start, int latestStart)
     {
         var due = _work.Where(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.StoppedDay is null
                                    && w.Payload is VisitPayload { Extra: AskAboutAction q } && q.Card == card.Id)
@@ -138,7 +143,27 @@ public sealed partial class Session
                                      Day: PlayQueue(Member(w.Assignee), 0, Day, w, w.HoursRemainingMilli) ?? Day))
                        .OrderBy(x => x.Day).FirstOrDefault();
         if (due.Person is null || BuildPerson(due.Person) is not { } person) return null;
-        return $"{Possessive(person.DisplayName)} answer about this request comes in {ComesIn(due.Day)}; what they say may change what this buy needs.";
+        return $"{Possessive(person.DisplayName)} answer about this request comes in {ComesIn(due.Day)}; what they say may change what this buy needs."
+               + AfterTheAnswer(card, a, chk, due.Day + 1, start, latestStart);
+    }
+
+    /// <summary>
+    /// D51 (DESK-190; Claude play 21 Nov, tenth play, notes P1-4, P2-3): what waiting for the answer costs. The same buy
+    /// placed the day after the answer comes, behind the same queue: " Ordered tomorrow, after the answer, it starts on day
+    /// 9: material handling equipment at Hub is out 1 day in all: all the commander allows." The count against the line only
+    /// when that start is past the day wanted and a pass line counts the days (D43). Nothing when it would start the same.
+    /// Three times a game both tenth-play players chose between ordering blind on the order-by day and waiting a night, with
+    /// nothing to weigh. Left out: forecasting what the answer will be. A forecast from the plan; it ignores rolls.
+    /// </summary>
+    private string AfterTheAnswer(CardState card, AwardAction a, AwardCheck chk, int orderDay, int start, int latestStart)
+    {
+        if (chk.Instrument is not { } inst || chk.Offer is not { } offer || orderDay > LastDay) return "";
+        var (min, max, _, _) = StartWindow(a, inst, offer, chk, orderDay);
+        if (min == start && max == latestStart) return "";
+        var when = orderDay == Day + 1 ? "tomorrow" : $"on day {orderDay}";
+        var starts = max == min ? $"on day {min}" : max == min + 1 ? $"on day {min} or {max}" : $"between day {min} and day {max}";
+        var cost = DownDaysIf(card, max) is { } c ? $": {c}" : "";
+        return $" Ordered {when}, after the answer, it starts {starts}{cost}.";
     }
 
     /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include
@@ -200,6 +225,13 @@ public sealed partial class Session
 
     /// <summary>"3%", "2.5%".</summary>
     private static string PercentSaid(int permille) => permille % 10 == 0 ? $"{permille / 10}%" : $"{permille / 10}.{permille % 10}%";
+
+    /// <summary>DESK-189 (Claude play 21 Nov, tenth play, note P1-10): what a buy is and where it goes, "water for Hub". The
+    /// office's own support leaves out the site, which it is bought at but does not serve: "vehicle for the contracting
+    /// office", as the plan says it (DESK-185).</summary>
+    private string WhatFor(string capId, string siteName)
+        => ForShop(capId) ? ShopSupport(capId) is var said && said.StartsWith("the ", StringComparison.Ordinal) ? said[4..] : said
+                          : $"{Lower(Cap(capId).Label)} for {siteName}";
 
     /// <summary>DESK-183 (Claude play 21 Nov, ninth play, note P1-26): an SF 44 paid at each delivery takes no writing, but
     /// every delivery is a trip for the buyer and the paying agent (DESK-09), so its quote says the trip's hours, as the

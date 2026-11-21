@@ -46,11 +46,15 @@ public sealed partial class Session
         var ended = new List<string>();
         foreach (var r in _records.Where(r => r.Day == d))
         {
-            if (r.Kind == RecordKind.ArrangementStart && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } s && !ForShop(s.CapabilityId))
-                started.Add($"{SupplierName(s)} started {Lower(CapLabel(s.CapabilityId))} at {SiteName(s.SiteId)}{Amount(s, Cap(s.CapabilityId))}.");
-            if (r.Kind == RecordKind.ArrangementEnd && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } e && !ForShop(e.CapabilityId))
+            // DESK-189 (b) (Claude play 21 Nov, tenth play, note P2-9): the office's own support starts and ends here too,
+            // for the contracting office in place of a site, as the plan says it (DESK-185).
+            if (r.Kind == RecordKind.ArrangementStart && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } s)
+                started.Add(ForShop(s.CapabilityId)
+                    ? $"{SupplierName(s)} started {ShopSupport(s.CapabilityId)}."
+                    : $"{SupplierName(s)} started {Lower(CapLabel(s.CapabilityId))} at {SiteName(s.SiteId)}{Amount(s, Cap(s.CapabilityId))}.");
+            if (r.Kind == RecordKind.ArrangementEnd && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } e)
                 // DESK-160 (b), Claude play 21 Nov, fourth play, note 19: said the day after its last day, so it names that day.
-                ended.Add($"{Upper(Lower(CapLabel(e.CapabilityId)))} at {SiteName(e.SiteId)} from {SupplierName(e)} ended{(e.EndDay < d ? $": its last day was day {e.EndDay}" : "")}.");
+                ended.Add($"{Upper(ForShop(e.CapabilityId) ? ShopSupport(e.CapabilityId) : $"{Lower(CapLabel(e.CapabilityId))} at {SiteName(e.SiteId)}")} from {SupplierName(e)} ended{(e.EndDay < d ? $": its last day was day {e.EndDay}" : "")}.");
         }
 
         // Short: every capability below full that day, with why (DESK-38).
