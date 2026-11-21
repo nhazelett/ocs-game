@@ -201,6 +201,12 @@ public sealed partial class Session
         if (sooner is null) return "";
         var soon = CorQuality(sooner).LagDays;
         var lead = unforeseen ? " The failure itself could not be foreseen." : "";
-        return $"{lead} {cor.Name} reports problems {Plural(lag, "day")} late; with {sooner.Name}, who reports {(soon == 0 ? "the same day" : $"{Plural(soon, "day")} late")}, its report would have been due on day {r.FailureDay + soon}.";
+        // DESK-159 (Claude play 21 Nov, fourth play, note 21): what hearing sooner would have changed, so the clause does
+        // not read as the reason for the verdict: nothing for the day itself; something only if it went on failing after.
+        var heard = r.FailureDay + soon;
+        var after = _records.Any(x => x.Kind == RecordKind.VendorFailure && x.Subject == r.ArrangementId && x.Day > heard)
+            ? "you would have heard while it was still failing"
+            : "hearing sooner would not have changed that day";
+        return $"{lead} {cor.Name} reports problems {Plural(lag, "day")} late; with {sooner.Name}, who reports {(soon == 0 ? "the same day" : $"{Plural(soon, "day")} late")}, its report would have been due on day {heard}, but {after}.";
     }
 }

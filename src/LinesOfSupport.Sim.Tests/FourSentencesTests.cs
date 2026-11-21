@@ -46,7 +46,7 @@ public class FourSentencesTests
         var factor = Assert.Single(waste.Factors, f => f.Text.Contains("still on the way", StringComparison.Ordinal));
         // DESK-155 (a): when the office would have heard, not why it happened, beside the unforeseeable verdict.
         Assert.Equal(GapTag.Unforeseeable, factor.Tag);
-        Assert.Contains("when the game ended. The failure itself could not be foreseen. TSgt Pratt reports problems 2 days late; with SSgt Lane, who reports the same day, its report would have been due on day 15.", factor.Text);
+        Assert.Contains("when the game ended. The failure itself could not be foreseen. TSgt Pratt reports problems 2 days late; with SSgt Lane, who reports the same day, its report would have been due on day 15, but hearing sooner would not have changed that day.", factor.Text);
     }
 
     [Fact]
