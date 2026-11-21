@@ -46,28 +46,33 @@ public sealed partial class Session
         foreach (var m in _team)
         {
             var left = m.HoursPerDayMilli;
-            var items = new List<DayPlanItem>();
-            void Take(string? workId, string label, long need)
+            var lines = new List<(string? WorkId, string Label, long Need, long Spend, string Late)>();
+            void Take(string? workId, string label, long need, string late = "")
             {
                 var spend = Math.Min(left, need);
                 left -= spend;
-                var after = need - spend;
-                var finishes = after <= 0 && workId is not null;
-                // DESK-132: the standing staff meeting and an SF 44 trip take hours today; they are not jobs that finish.
-                var sentence = workId is null && after <= 0 ? $"{label}: {HoursSaid(spend)} today."
-                    : finishes
-                    ? $"{label}: {HoursSaid(spend)} today, and it should be done today."
-                    : spend <= 0 ? $"{label}: no hours left for it today; {HoursSaid(after)} to go."
-                    : $"{label}: {HoursSaid(spend)} today, {HoursSaid(after)} left after today.";
-                items.Add(new DayPlanItem(workId, label, HalfHours(spend), HalfHours(after), finishes, SentenceCase(sentence)));
+                lines.Add((workId, label, need, spend, late));
             }
             foreach (var t in trips.Where(t => t.Who.Id == m.Id)) Take(null, t.Label, t.Milli);
             if (meeting?.Id == m.Id) Take(null, "Staff meeting", PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), m.Id));
             foreach (var w in order.Where(w => Member(w.Assignee).Id == m.Id))
+                Take(w.Id, WorkName(w), w.HoursRemainingMilli, AfterNeed(w));   // DESK-78: a buy that starts after its need ended says so
+            var shownToday = ShownToday(lines.Select(l => l.Spend).ToList());
+            var items = new List<DayPlanItem>();
+            for (var i = 0; i < lines.Count; i++)
             {
-                Take(w.Id, WorkName(w), w.HoursRemainingMilli);
-                if (AfterNeed(w) is { Length: > 0 } late)   // DESK-78: a buy that starts after its need ended says so
-                    items[^1] = items[^1] with { Sentence = items[^1].Sentence + late };
+                var (workId, label, need, spend, late) = lines[i];
+                var today = shownToday[i];
+                var finishes = need - spend <= 0 && workId is not null;
+                // What it says is left after today is what the team page will say tomorrow.
+                var after = TaskHours(need - spend);
+                // DESK-132: the standing staff meeting and an SF 44 trip take hours today; they are not jobs that finish.
+                var line = workId is null && need - spend <= 0 ? $"{label}: {Said(today)} today."
+                    : finishes
+                    ? $"{label}: {Said(today)} today, and it should be done today."
+                    : spend <= 0 ? $"{label}: no hours left for it today; {Said(after)} to go."
+                    : $"{label}: {Said(today)} today, {Said(after)} left after today.";
+                items.Add(new DayPlanItem(workId, label, today, after, finishes, SentenceCase(line) + late));
             }
             var waiting = _work.Where(w => w.CompletedDay is null && w.WaitUntilDay > d && w.Kind != WorkKind.GpcProgram && Member(w.Assignee).Id == m.Id)
                                .OrderBy(w => w.WaitUntilDay).ToList();
@@ -122,8 +127,29 @@ public sealed partial class Session
         _ => $"can start on day {w.WaitUntilDay}",
     };
 
+    /// <summary>DESK-179 (Claude play 21 Nov, eighth play, notes P2-15, P2-18): a task's hours as every view says them, rounded
+    /// up to the half hour: the team page, the decisions, the hand-over and the day's plan.</summary>
+    internal static double TaskHours(long milli) => HalfHours(milli);
+
+    /// <summary>DESK-179: one person's hours today, line by line in the order they are worked, in half hours that add up to
+    /// their running total rounded up, so "8 of 8 hours planned" is the sum of the lines shown: an experienced person's
+    /// 0.8-hour staff meeting and 7.2 hours of writing read 1 and 7. A line with any hours shows at least half an hour.</summary>
+    private static double[] ShownToday(IReadOnlyList<long> lines)
+    {
+        var shown = new double[lines.Count];
+        long run = 0; double said = 0;
+        for (var i = 0; i < lines.Count; i++)
+        {
+            if (lines[i] <= 0) continue;
+            run += lines[i];
+            shown[i] = Math.Max(0.5, HalfHours(run) - said);
+            said += shown[i];
+        }
+        return shown;
+    }
+
     /// <summary>"1 hour", "2.5 hours", rounded up to the half hour as every view rounds (DESK-14).</summary>
-    private static string HoursSaid(long milli) => HalfHours(milli) is var h && h == 1 ? "1 hour" : $"{HoursText(HalfHours(milli))} hours";
+    private static string HoursSaid(long milli) => TaskHours(milli) is var h && h == 1 ? "1 hour" : $"{HoursText(h)} hours";
 
     /// <summary>The SF 44 trips the day loop makes today before the queue, each with who makes it and their hours; what is
     /// due or held goes to <paramref name="due"/> when given. Shared by the day's plan and <c>FixedTodayMilli</c>.</summary>

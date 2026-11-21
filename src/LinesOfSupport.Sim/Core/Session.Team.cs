@@ -211,7 +211,8 @@ public sealed partial class Session
             var readyMilli = open.Where(w => w.WaitUntilDay <= Day).Sum(w => w.HoursRemainingMilli);
             var perDay = HalfHours(m.HoursPerDayMilli);
             var today = planned.TryGetValue(m.Id, out var h) ? h : HalfHours(Math.Min(m.HoursPerDayMilli, readyMilli));   // DESK-78: as the plan counts
-            var work = open.Select(w => new TeamWorkView(w.Id, w.Label, HalfHours(w.HoursRemainingMilli), w.WaitUntilDay <= Day,
+            var work = open.Select(w => new TeamWorkView(w.Id, w.Label, TaskHours(w.HoursRemainingMilli),   // DESK-179: as the decisions say it
+                w.WaitUntilDay <= Day,
                 w.WaitUntilDay > Day ? w.WaitUntilDay : null, StopSentence(w))).ToList();
             result.Add(new TeamMemberView(m.Id, m.Role, m.Role == "you" ? "You" : m.Name, m.Rank, m.Portrait,
                 m.Role switch { "you" => "You", "experienced" => "Experienced contracting officer", _ => "Junior contracting officer" },
