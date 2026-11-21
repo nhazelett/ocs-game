@@ -182,6 +182,8 @@ jobs:
           grep -Fq 'AWARD_CHOICES_SMOKE_PASS:' "$RUNNER_TEMP/godot-award-choices.log"
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/DebriefAccountsSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-debrief-accounts.log"
           grep -Fq 'DEBRIEF_ACCOUNTS_SMOKE_PASS:' "$RUNNER_TEMP/godot-debrief-accounts.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/DebriefVerdictSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-debrief-verdict.log"
+          grep -Fq 'DEBRIEF_VERDICT_SMOKE_PASS:' "$RUNNER_TEMP/godot-debrief-verdict.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/DebriefSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-debrief.log"
           grep -Fq 'DEBRIEF_SMOKE_PASS:' "$RUNNER_TEMP/godot-debrief.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/SupportSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-support.log"
