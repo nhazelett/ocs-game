@@ -8,6 +8,53 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class VendorsSmokeTest : Node
 {
+    private async Task CheckMeetingEffect(GameShell shell)
+    {
+        var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+        var log = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-5", "input-log.json"));
+        var morning = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 1);
+        var directory = Path.Combine(Path.GetTempPath(), "ocs-meeting-" + Guid.NewGuid()); Directory.CreateDirectory(directory);
+        var path = Path.Combine(directory, "Day 2.json");
+        try { File.WriteAllText(path, morning.ToSave().ToJson()); shell.LoadSavedGame(path); }
+        finally { Directory.Delete(directory, true); }
+        shell.DeveloperToggle.ButtonPressed = false;
+        var view = shell.Session.View!; var hash = shell.Session.StateHash;
+        var card = view.VendorCards().Single(c => c.Id == "harborEquipment");
+        Require(view.Day == 2 && card.StillToLearn is null && card.MeetingBrings is not null,
+            "The fifth play's exact day-two preparation supplies Harbor's known terms and meeting explanation.");
+        var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.VendorsTab;
+        Pick(shell.VendorCardPicker, card.Id);
+        var line = PlayScreen.Descendants(shell.VendorCardContents[card.Id]).OfType<Label>().Single(l => l.HasMeta("action_cost"));
+        var effect = "Meets " + view.NameOf(card.Id) + ". " + card.MeetingBrings;
+        Require(line.Text.Contains(effect, StringComparison.Ordinal) && !line.Text.Contains("Their terms are already known."),
+            "The vendor button gives the complete authoritative meeting effect without the former fixed fallback.");
+        var scroll = shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>();
+        await Frames(); scroll.EnsureControlVisible(line); await Frames();
+        Require(scroll.GetGlobalRect().Encloses(line.GetGlobalRect()), "The entire meeting explanation is reachable on the vendor card.");
+        var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--meeting-screenshot");
+        if (at >= 0)
+        {
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[at + 1]) == Error.Ok, "The real day-two Harbor meeting explanation is captured.");
+        }
+        tabs.CurrentTab = GameShell.TodayTab; shell.PeopleToggle.ButtonPressed = true;
+        Pick(shell.PersonContactInput, "vendor:" + card.Rep!.Id);
+        Require(PlayScreen.Descendants(shell.VisitButtons["vendor"].GetParent()).OfType<Label>()
+            .Any(l => l.HasMeta("action_cost") && l.Text.Contains(effect, StringComparison.Ordinal)),
+            "The visits form gives the same complete Sim meeting effect.");
+        Require(shell.Session.StateHash == hash, "Reading both meeting explanations changes no state.");
+        Scenario(shell, "tutorial", preview: false);
+        view = shell.Session.View!; hash = shell.Session.StateHash;
+        card = view.VendorCards().First(c => c.Rep is not null && c.StillToLearn is not null);
+        tabs.CurrentTab = GameShell.VendorsTab; Pick(shell.VendorCardPicker, card.Id);
+        line = PlayScreen.Descendants(shell.VendorCardContents[card.Id]).OfType<Label>().Single(l => l.HasMeta("action_cost"));
+        Require(line.Text.Contains("Meets " + view.NameOf(card.Id) + ". " + card.StillToLearn, StringComparison.Ordinal)
+            && shell.Session.StateHash == hash, "Unknown terms retain the Sim's exact StillToLearn explanation without acting.");
+        GD.Print("VENDOR_MEETING_EFFECT_SMOKE_PASS: exact fifth-play known-terms explanation on Vendors and visits, full containment, unknown-terms fallback and pure reading.");
+        async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+    }
+
     private async Task CheckNotice(GameShell shell)
     {
         Scenario(shell, "tutorial", preview: false); shell.DeveloperToggle.ButtonPressed = false;
@@ -109,6 +156,7 @@ public partial class VendorsSmokeTest : Node
         try
         {
             var shell = Shell(this);
+            await CheckMeetingEffect(shell);
             await CheckNotice(shell);
             await CheckHeard(shell);
             Scenario(shell, "tutorial");
