@@ -120,6 +120,56 @@ public sealed partial class Session
         }
     }
 
+    /// <summary>DESK-184: failure records whose day another arrangement covered, and who covered it ("the purchase order
+    /// from Main Island Sanitation").</summary>
+    private readonly Dictionary<string, string> _coveredBy = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// DESK-184 (D50; Claude play 21 Nov, ninth play, notes P1-29, P1-35). A vendor's equipment down on a day another
+    /// arrangement kept the site fully supplied says so in the failure's own record, which the morning board, the COR
+    /// report and the debrief's record all read: "The SF 44 from Main Island Sanitation had equipment down on waste removal
+    /// at Hub; the purchase order from Main Island Sanitation covered the day, so nothing was short." The ninth play's
+    /// player saw "had equipment down" beside "met so far" and 0 alerts and could not tell a false alarm from a bridge that
+    /// worked. Continuous capabilities only: a missed consumable delivery on a day the site was not short already says the
+    /// stock covered it (DESK-87). A failure nothing covered is unchanged. A sentence, not a measure: the score is unchanged.
+    /// </summary>
+    private void OtherCoveredFailures(Dictionary<string, Today> today)
+    {
+        foreach (var (id, t) in today)
+        {
+            if (!t.Failed || t.FailureRecord is not { } recId) continue;
+            var a = _arrangements.First(x => x.Id == id);
+            var cap = Cap(a.CapabilityId);
+            if (cap.Delivery == "consumable" || CapState(a.SiteId, a.CapabilityId) is not { TodayPermille: >= 1000 }) continue;
+            var covers = _arrangements.Where(x => x.Id != id && x.SiteId == a.SiteId && today.TryGetValue(x.Id, out var xt)
+                                                  && !xt.Failed && !xt.Suspended && xt.FactorPermille > 0 && xt.NoDeliveryRecord is null
+                                                  && ((x.CapabilityId == a.CapabilityId && x.QuantityMilli > 0
+                                                       && x.Lines.Any(l => cap.Lines.First(c => c.Id == l).Kind == "core"))
+                                                      || x.SuppliedQuantityMilli.GetValueOrDefault(a.CapabilityId) > 0))
+                                      .Select(x => Called(x) is var c && c == Called(a) && c.StartsWith("the ", StringComparison.Ordinal) ? "the other " + c[4..] : c)
+                                      .Distinct(StringComparer.Ordinal).ToList();
+            if (covers.Count == 0) continue;
+            var cover = JoinAnd(covers);
+            var where = $"{Lower(cap.Label)} at {SiteName(a.SiteId)}";
+            var failed = t.FailureStopped
+                ? $"{Upper(Called(a))} for {where} stopped: nobody was there to run it{t.FailureWhy}"
+                : $"{Upper(Called(a))} had equipment down on {where}{t.FailureWhy}";
+            var i = _records.FindIndex(r => r.Id == recId);
+            _records[i] = _records[i] with { Text = $"{failed}; {cover} covered the day, so nothing was short." };
+            _coveredBy[recId] = cover;
+        }
+    }
+
+    /// <summary>DESK-184: an arrangement by what it is and who supplies it, so two from one vendor read apart: "the SF 44
+    /// from Main Island Sanitation", "the purchase order from Main Island Sanitation", "Main Island Utilities (host nation)".
+    /// A cover called the same as the failure is "the other purchase order from North Island Telecom".</summary>
+    private string Called(Arrangement a)
+    {
+        if (a.Instrument is HostNationInstrument or AcsaInstrument || a.IsCoordination) return SupplierName(a);
+        var what = a.Instrument switch { "sf44" => "SF 44", "gpc" => "card buy", _ => InstrumentWords(a.Instrument) };
+        return $"the {what} from {SupplierName(a)}";
+    }
+
     /// <summary>After supply resolves: schedule reports of today's failures, deliver the ones due, open issues on them.</summary>
     private void CorReporting(int d, Dictionary<string, Today> today)
     {
@@ -146,7 +196,8 @@ public sealed partial class Session
             var a = _arrangements.First(x => x.Id == r.ArrangementId);
             var what = Cap(a.CapabilityId).Delivery == "consumable" ? "missed its delivery" : "had equipment down";
             var late = (d > r.FailureDay ? $", reported {Plural(d - r.FailureDay, "day")} later" : "")
-                       + (_stockCovered.Contains(r.FailureRecordId) ? "; the stock on hand covered it" : "");   // DESK-87
+                       + (_stockCovered.Contains(r.FailureRecordId) ? "; the stock on hand covered it" : "")   // DESK-87
+                       + (_coveredBy.TryGetValue(r.FailureRecordId, out var cover) ? $"; {cover} covered the day, so nothing was short" : "");   // DESK-184
             r.RecordId = CorOf(r.CorId) is { } cor
                 ? AddRecord(d, RecordKind.CorReport, a.Id, $"COR report ({cor.Name}): {NameOf(a.Id)} {what} on day {r.FailureDay}{late}.", [r.FailureRecordId])
                 : AddRecord(d, RecordKind.CorReport, a.Id,

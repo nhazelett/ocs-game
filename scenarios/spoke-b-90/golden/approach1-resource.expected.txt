@@ -221,7 +221,7 @@ Day 62
   OK        Power at Spoke B restored to 100%.
 Day 63
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Island Power Rentals power at Spoke B had equipment down (no operators).
+  FAIL      The purchase order from Island Power Rentals had equipment down on power at Spoke B (no operators); the BPA call from Harbor Equipment Co covered the day, so nothing was short.
 Day 64
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
@@ -233,7 +233,7 @@ Day 65
   FUNDING   Comptroller: the O&M line good through day 75 reaches its fiscal-year end with day 75, $746,640 still unobligated. Awards, definitizations and ratifications that complete after day 75 need another line; a service awarded before then may run up to 12 months past it.
 Day 66
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
+  FAIL      The BPA call from Harbor Equipment Co had equipment down on power at Spoke B (no maintenance and repair, no operators); the purchase order from Island Power Rentals covered the day, so nothing was short.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 67
@@ -474,4 +474,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.806)
 
-State hash 4f6ecf008c87d1621c02cf278e85464f1efc15a10e66eecb2291eed970af6bdc
+State hash 87e4cef5651f76fd12ec2da6845e87262bbc6acecb1be9b52a31ce25267591ab
