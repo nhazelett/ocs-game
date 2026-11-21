@@ -42,6 +42,7 @@ public partial class GameShell
     internal OptionButton FundingInput => fundingInput;
     internal OptionButton? CorInput { get; private set; }
     internal Label? SupplierKnowledge { get; private set; }
+    internal Label? SupplierNotice { get; private set; }
     internal OptionButton VendorInput => vendorInput;
     internal OptionButton VehicleInput => vehicleInput;
     internal SpinBox QuantityInput => quantityInput;
@@ -190,7 +191,8 @@ public partial class GameShell
         AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
-        SupplierKnowledge = null;
+        SupplierKnowledge = null; SupplierNotice = null;
+        VBoxContainer? supplierFacts = null;
         awardPanel.AddChild(DeskUi.Heading("Arrange support"));
         var targets = AwardTargets(view);
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
@@ -244,13 +246,16 @@ public partial class GameShell
         {
             var notice = view.VendorCards().FirstOrDefault(c => c.Id == supplier.Id)?.Sells
                 .FirstOrDefault(s => s.CapabilityId == editor.CapabilityId)?.NoticeSays;
-            SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
-                + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)
-                + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
+            supplierFacts = new VBoxContainer(); supplierFacts.AddThemeConstantOverride("separation", 10);
+            supplierFacts.AddChild(DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
+                + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)));
+            SupplierKnowledge = DeskUi.Label("Usual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
                 + " · Uncommitted: " + (supplier.CapacityKnown ? DeskUi.Quantity(supplier.CapacityFreeToday) : "—")
-                + (supplier.Heard is { } heard ? "\n" + heard : "")
-                + (supplier.PaymentKnown ? "\nStarts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "\nTime after a signed order: —")
+                + (supplier.Heard is { } heard ? "\n" + heard : ""));
+            supplierFacts.AddChild(SupplierKnowledge);
+            SupplierNotice = DeskUi.Label((supplier.PaymentKnown ? "Starts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "Time after a signed order: —")
                 + (notice is null ? "" : "\n" + notice));
+            supplierFacts.AddChild(SupplierNotice);
 
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
@@ -291,7 +296,7 @@ public partial class GameShell
         foreach (var reason in awardChoiceReasons) awardPanel.AddChild(reason);
         if (priorityHelp is not null) awardPanel.AddChild(priorityHelp);
         foreach (var reason in CorReasonLabels) awardPanel.AddChild(reason);
-        if (SupplierKnowledge is not null) awardPanel.AddChild(SupplierKnowledge);
+        if (supplierFacts is not null) awardPanel.AddChild(supplierFacts);
         if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
         {
             previewPanel.AddChild(DeskUi.Label("Choose an arrangement and an available supplier, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
