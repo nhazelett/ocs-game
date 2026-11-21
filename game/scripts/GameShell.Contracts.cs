@@ -83,6 +83,7 @@ public partial class GameShell
         contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement)));
         if (arrangement.NoticeDays is { } days)
             contractContents.AddChild(DeskUi.Label($"The contract requires {days} days of notice."));
+        var hasModification = AddContractModification(contractContents, view, arrangement.Id);
         foreach (var issue in view.PerformanceIssues.Where(i => i.ArrangementId == arrangement.Id && i.Outcome != CureOutcome.Cured))
         {
             contractContents.AddChild(DeskUi.Heading(DeskUi.ListLabel(view.NameOf(issue.Id))));
@@ -93,7 +94,7 @@ public partial class GameShell
         if (blocked is not null) { contractContents.AddChild(DeskUi.Label(blocked)); return; }
         if (arrangement.IsCoordination) return;
         var ending = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
-        var endPanel = ContractPerformanceChoices.Count > 0 ? contractContents : contractFooter;
+        var endPanel = ContractPerformanceChoices.Count > 0 || hasModification ? contractContents : contractFooter;
         var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
         var assigned = AddAssignedAction(endPanel, endPanel, view, action,
             ending ? "Ending this contract is in work" : "End this contract…",
