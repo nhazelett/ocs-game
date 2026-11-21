@@ -82,6 +82,7 @@ public partial class RequestWorkspaceSmokeTest : Node
             Require(decision is not null, "The committed ask/add has a request-linked decision.");
             decision!.EmitSignal(Button.SignalName.Pressed); await Frames();
             Require(shell.RequestWorkspace.Visible && shell.SelectedCard == decision.GetMeta("decision_card").AsString(), "A decisions entry opens the same request page.");
+            await OwnInitiativeSmokeChecks.Run(this, shell);
             shell.QueueFree(); shell = null; await Frames();
             GD.Print("REQUEST_WORKSPACE_SMOKE_PASS: compact list, exact request/ask/add/form, two independent scrolls, pinned commit, strip, Back/Esc return, decisions and own initiative."); GetTree().Quit();
 

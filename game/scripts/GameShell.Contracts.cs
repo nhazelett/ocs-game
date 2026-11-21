@@ -12,7 +12,7 @@ public partial class GameShell
     private VBoxContainer contractContents = null!, contractFooter = null!;
     private TerminateAction? contractToEnd;
     private string? contractToEndHash;
-    private string? contractReturnVendor, contractReturnRequest;
+    private string? contractReturnVendor, contractReturnRequest, contractReturnInitiative;
     private int contractReturnScroll;
     internal Dictionary<(string Id, string Choice), Button> ContractPerformanceChoices { get; } = [];
 
@@ -56,27 +56,33 @@ public partial class GameShell
 
     internal void CloseContractView()
     {
-        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear(); contractReturnVendor = contractReturnRequest = null;
+        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear(); contractReturnVendor = contractReturnRequest = contractReturnInitiative = null;
     }
 
-    internal void OpenContractView(string id, string? fromVendor = null, string? fromRequest = null)
+    internal void OpenContractView(string id, string? fromVendor = null, string? fromRequest = null, string? fromInitiative = null)
     {
         if (session.View?.Arrangements.Any(a => a.Id == id) != true) return;
-        if (fromRequest is null) CloseRequestWorkspace(restore: false);
+        if (fromRequest is null && fromInitiative is null) CloseRequestWorkspace(restore: false);
         var vendorScroll = vendorCardsScroll.ScrollVertical;
-        if (fromRequest is null) GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
-        contractReturnRequest = fromRequest; contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
+        if (fromRequest is null && fromInitiative is null) GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
+        contractReturnRequest = fromRequest; contractReturnInitiative = fromInitiative; contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
         SelectedArrangement = id; SelectedFunding = null; RenderLedgerContext(session.View);
         ContractView.Show(); RefreshContractView(session.View);
     }
 
     private void ReturnFromContract()
     {
-        var vendor = contractReturnVendor; var request = contractReturnRequest; var scroll = contractReturnScroll;
+        var vendor = contractReturnVendor; var request = contractReturnRequest; var initiative = contractReturnInitiative; var scroll = contractReturnScroll;
         CloseContractView();
         if (request is not null)
         {
             if (!RequestWorkspace.Visible || SelectedCard != request) GoToMarket(request);
+            return;
+        }
+        if (initiative is not null)
+        {
+            if (awardTarget != initiative) SelectAwardTarget(initiative);
+            OpenRequestWorkspace();
             return;
         }
         if (vendor is null) return;
@@ -97,7 +103,7 @@ public partial class GameShell
         terminations.Clear(); ContractPerformanceChoices.Clear(); DeskUi.Clear(contractContents); DeskUi.Clear(contractFooter);
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
-        var back = contractReturnRequest is not null ? "Back to the request" : contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
+        var back = contractReturnInitiative is not null ? "Back to your own buys" : contractReturnRequest is not null ? "Back to the request" : contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
         var navigation = new HBoxContainer(); contractContents.AddChild(navigation);
         navigation.AddChild(DeskUi.Button(back, ReturnFromContract));
         var bar = ContractDeskTabs = new TabBar { Name = "DeskNavigation", ClipTabs = false }; navigation.AddChild(bar);
