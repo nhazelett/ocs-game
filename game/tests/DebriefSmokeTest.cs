@@ -152,11 +152,10 @@ public partial class DebriefSmokeTest : Node
             {
                 var factor = gap.Factors[i];
                 var label = factors.Single(l => l.GetMeta("factor_index").AsInt32() == i);
-                var tagLine = $"{DebriefWords.Factor(factor.Kind)}." +
-                    (gap.Index == report.Summary.LeadGap && factor.Tag == gap.Tag ? "" : " " + DebriefWords.TagMeaning(factor.Tag));
+                var tagLine = $"{DebriefWords.Factor(factor.Kind)}.";
                 if (gap.Index == report.Summary.LeadGap && report.Summary.Quoted.Contains(i))
                 {
-                    Require(label.Text == tagLine && shell.DebriefSummaryText.Text.Contains(factor.Text), "Quoted lead factors keep their kind and only a different tag; their evidence stays verbatim in the paragraph.");
+                    Require(label.Text == tagLine && shell.DebriefSummaryText.Text.Contains(factor.Text), "Quoted lead factors keep their kind with no second verdict; their evidence stays verbatim in the paragraph.");
                     Require(!Labels(detail).Any(l => l.Text.Contains(factor.Text)), "The lead evidence does not repeat the paragraph's quoted sentence.");
                 }
                 else
