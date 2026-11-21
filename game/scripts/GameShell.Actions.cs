@@ -201,7 +201,7 @@ public partial class GameShell
                 var result = SendAction(action);
                 if (result.Accepted)
                 {
-                    if (action.Card is not null) SelectedCard = action.Card;
+                    SelectedCard = action.Card;
                     if (awardTarget is { } bought) awardDrafts.Remove(bought);
                     var target = action.Card ?? action.Site + "." + action.Capability;
                     if (result.RecordId is { } recordId) awardReceipts[target] = recordId;

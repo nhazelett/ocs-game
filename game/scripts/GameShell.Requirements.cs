@@ -11,6 +11,26 @@ public partial class GameShell
     internal Dictionary<string, Button> RequirementAskButtons { get; } = new(StringComparer.Ordinal);
     internal Dictionary<string, Button> RequirementAddButtons { get; } = new(StringComparer.Ordinal);
 
+    private void RenderOwnInitiativeBuys(SessionView view)
+    {
+        linkedRequirement.AddChild(DeskUi.Heading("Bought on your own initiative"));
+        var buys = view.Arrangements.Where(a => a.CardId is null && !a.IsCoordination)
+            .Select(a => (Arrangement: a, Decision: view.Decision(a.CauseId)))
+            .Where(b => b.Decision is not null).OrderByDescending(b => b.Decision!.Day).ToArray();
+        if (buys.Length == 0) linkedRequirement.AddChild(DeskUi.Label("Nothing bought on your own initiative yet."));
+        var hash = session.StateHash; var target = awardTarget;
+        foreach (var (arrangement, decision) in buys)
+        {
+            var button = DeskUi.Button(decision!.Sentence + "\n" + decision.Now + "\nOpen its contract page →", () =>
+            {
+                if (hash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
+                    || !RequestWorkspace.Visible || awardTarget != target || SelectedCard is not null) return;
+                OpenContractView(arrangement.Id, fromInitiative: target);
+            });
+            button.SetMeta("initiative_contract", arrangement.Id); linkedRequirement.AddChild(button);
+        }
+    }
+
     private void RenderRequirementContext(SessionView? view)
     {
         DeskUi.Clear(linkedRequirement); DeskUi.Clear(requirementFooter); RequirementAskButtons.Clear(); RequirementAddButtons.Clear();
@@ -27,6 +47,7 @@ public partial class GameShell
                 var explanation = view.OwnInitiative.FirstOrDefault(t => t.SiteId == target.Site && t.CapabilityId == target.Capability);
                 linkedRequirement.AddChild(DeskUi.Label(explanation?.Why ?? "Arrange support nobody has requested for this site and capability."));
             }
+            RenderOwnInitiativeBuys(view);
             return;
         }
         var cards = view?.Cards.Select(c => view.RequirementEditor(c.Id)).OfType<RequirementEditorView>().ToArray() ?? [];
