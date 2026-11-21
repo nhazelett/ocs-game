@@ -30,7 +30,7 @@ public sealed partial class Session
             ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
         var parts = new List<string>
         {
-            $"{vendor.Name}, {WhatFor(capId, site.Name)}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
+            $"{vendor.Name}, {WhatFor(capId, site.Name)}{WithLearned(chk)}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
         };
         var card = chk.Card;
         // D47 (DESK-158, Claude play 21 Nov, fourth play, note 14): what a written buy's start waits for, in one clause, so
@@ -61,7 +61,7 @@ public sealed partial class Session
             var onTop = InPlace(a, siteId, capId, start, start + duration - 1).Count > 0;
             if (card is not null && start > needEnd)
                 why = $"It starts after the need ends on day {needEnd}.";
-            else if (card is not null && ToldNotAdded(card) is { } told)
+            else if (card is not null && ToldNotAdded(card, chk) is { } told)
                 why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
             else if (card is not null && NotYetConfirmed(card, chk) is { } unconfirmed)
                 why = unconfirmed;   // D48, DESK-172: a part at risk left out while the requester has not answered
@@ -179,8 +179,10 @@ public sealed partial class Session
     /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include
     /// yet: "It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first." Null when
     /// there are none. Whatever the vendor, a buy is written for the request's parts, so it leaves these out until the
-    /// player adds them.</summary>
-    private string? ToldNotAdded(CardState card)
+    /// player adds them. DESK-202 (Claude play 21 Nov, twelfth play, notes P1-14, P2-10): when this vendor's offer carries
+    /// those parts, at its one price per unit, it says so: "...: add what you learned first; Coastal Rentals brings them at
+    /// the same price."</summary>
+    private string? ToldNotAdded(CardState card, AwardCheck? chk = null)
     {
         var told = Cap(card.CapabilityId).Lines
             .Where(l => !card.Lines.GetValueOrDefault(l.Id) && _learnedLines.ContainsKey((card.Id, l.Id)))
@@ -188,7 +190,19 @@ public sealed partial class Session
         if (told.Count == 0) return null;
         var said = told.Select(l => _learnedLines[(card.Id, l)].Person).Distinct().Select(BuildPerson).OfType<PersonView>().ToList();
         var who = said.Count > 0 ? $"which {string.Join(" and ", said.Select(p => p.DisplayName))} said" : "which you were told";
-        return $"It leaves out {PartsLabels(card.CapabilityId, told)}, {who} the request needs: add what you learned first.";
+        var samePrice = chk?.Offer is { } offer && chk.Vendor is { } vendor && told.All(offer.Lines.Contains)
+            ? $"; {vendor.Name} brings {(told.Count == 1 && !PartsLabels(card.CapabilityId, told).EndsWith('s') ? "it" : "them")} at the same price" : "";
+        return $"It leaves out {PartsLabels(card.CapabilityId, told)}, {who} the request needs: add what you learned first{samePrice}.";
+    }
+
+    /// <summary>DESK-202 (twelfth play, notes P1-14, P2-10): once a part someone asked said the request needs has been added,
+    /// the summary's first sentence names it, so the price beside it is seen to include it: "Coastal Rentals, material
+    /// handling equipment for Hub with operators: $8,580 ...". Empty otherwise.</summary>
+    private string WithLearned(AwardCheck chk)
+    {
+        if (chk.Card is not { } card || chk.CapabilityId is not { } capId) return "";
+        var added = chk.Lines.Where(l => _learnedLines.ContainsKey((card.Id, l)) && card.Lines.GetValueOrDefault(l)).ToList();
+        return added.Count == 0 ? "" : $" with {PartsLabels(capId, added)}";
     }
 
     /// <summary>D48 (DESK-172, Claude play 21 Nov, sixth play, notes 23, 24): the operator and maintenance parts at risk

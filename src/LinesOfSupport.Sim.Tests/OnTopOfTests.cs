@@ -49,7 +49,7 @@ public class OnTopOfTests
         Assert.DoesNotContain("which comes without", summary.Sentence, StringComparison.Ordinal);
         Assert.DoesNotContain("already covered", summary.Sentence, StringComparison.Ordinal);
         Assert.True(summary.Attention);
-        Assert.Equal("It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first.", summary.Why);
+        Assert.Equal("It leaves out operators, which SMSgt Ray Dunn said the request needs: add what you learned first; Coastal Rentals brings them at the same price.", summary.Why);
     }
 
     [Fact]
