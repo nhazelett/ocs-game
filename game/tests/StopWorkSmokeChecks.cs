@@ -30,9 +30,9 @@ internal static class StopWorkSmokeChecks
             OpenRequest(); await Frames();
             Require(shell.Session.StateHash == fixture.StateHash(), "Reading stop controls changes no Sim state.");
             MatchRequest(fixture);
-            var requestStop = StopButton(shell.RequestDecisionRows!, workId);
+            var requestStop = StopButton(shell.RequestContents, workId);
             MatchSentence(requestStop, sentence);
-            Require(StopButtons(shell.RequestDecisionRows!).Count() == 1,
+            Require(StopButtons(shell.RequestContents).Count() == 1,
                 "Only the unsigned buy has a request stop button; asks and the finished card buy do not.");
             Require(!StopButtons(shell.DecisionRows).Any(), "Today keeps its existing decision links.");
             await Capture("request-before", requestStop);
@@ -50,7 +50,7 @@ internal static class StopWorkSmokeChecks
             Require(shell.Session.StateHash == fixture.StateHash(), "The request button submits exactly the Sim action.");
             Require(shell.RequestWorkspace.Visible && shell.SelectedCard == "tutForklift", "Stopping keeps the request page open.");
             MatchRequest(fixture);
-            Require(!StopButtons(shell.RequestDecisionRows!).Any(), "The stopped buy loses its button immediately.");
+            Require(!StopButtons(shell.RequestContents).Any(), "The stopped buy loses its button immediately.");
             Require(shell.GetNode<Label>("%BuildStatus").Text.Contains(fixture.View.Decisions()[0].Sentence),
                 "Stopping confirms the exact new decision in a full sentence.");
             var afterStop = shell.Session.StateHash;
@@ -65,7 +65,7 @@ internal static class StopWorkSmokeChecks
             shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
             shell.SaveButton.EmitSignal(Button.SignalName.Pressed);
             shell.LoadSavedGame(shell.AutosavePath); OpenRequest();
-            Require(shell.Session.StateHash == afterStop && !StopButtons(shell.RequestDecisionRows!).Any(),
+            Require(shell.Session.StateHash == afterStop && !StopButtons(shell.RequestContents).Any(),
                 "Save and resume retain the stopped decision and restored request standing.");
 
             // DESK-118: a stopped buy keeps its name even after it leaves the active queue.
@@ -100,12 +100,46 @@ internal static class StopWorkSmokeChecks
             // Once the call is finished it has no button in either place.
             var finished = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 8);
             File.WriteAllText(savePath, finished.ToSave().ToJson()); shell.LoadSavedGame(savePath); OpenRequest();
-            Require(!StopButtons(shell.RequestDecisionRows!).Any(b => b.GetMeta("stop_work").AsString() == workId),
+            Require(!StopButtons(shell.RequestContents).Any(b => b.GetMeta("stop_work").AsString() == workId),
                 "A finished call has no request stop button.");
             shell.TeamButtons["avery"].EmitSignal(Button.SignalName.Pressed);
             Require(!StopButtons(shell.TeamPanel).Any(b => b.GetMeta("stop_work").AsString() == workId),
                 "A finished call has no team stop button.");
             shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
+            // Fifth-play day five: the new Coastal order must not hide Avery's older Harbor call.
+            var fifthLog = InputLog.Load(Path.Combine(root, "docs/reviews/plays/2026-11-21-5/input-log.json"));
+            var fifth = LinesOfSupport.Sim.Replay.Run(bundle, fifthLog, stopAfterDay: 4);
+            File.WriteAllText(savePath, fifth.ToSave().ToJson()); shell.LoadSavedGame(savePath); OpenRequest();
+            var addOperator = fifthLog.Actions.OfType<AddLineAction>().Single(a => a.Day == 5);
+            Require(shell.SendAction(addOperator).Accepted && fifth.Apply(addOperator).Accepted, "Day-five operators are added to both exact sessions.");
+            var coastal = fifthLog.Actions.OfType<AwardAction>().Single(a => a.Day == 5);
+            shell.GoToMarket("tutForklift"); Pick(shell.InstrumentInput, coastal.Instrument); Pick(shell.VendorInput, coastal.Vendor);
+            Pick(shell.FundingInput, coastal.FundingLine!); Pick(shell.CorInput!, coastal.Cor!); PickPriorities(shell, coastal.Priorities!.ToArray());
+            shell.QuantityInput.Value = coastal.Quantity; shell.StartInput.Value = coastal.StartDay!.Value; shell.DurationInput.Value = coastal.DurationDays;
+            Require(!shell.AwardButton.Disabled && fifth.Apply(coastal).Accepted, "The fifth-play Coastal order is accepted.");
+            shell.AwardButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.Session.StateHash == fifth.StateHash(), "The exact day-five order is sent through Arrange support.");
+            var harbor = fifth.Work.Single(w => w.SubjectId == "player-award-2");
+            var other = shell.RequestContents.GetChildren().OfType<VBoxContainer>().Single(r => r.HasMeta("other_request_buy") && r.GetMeta("other_request_buy").AsString() == harbor.Id);
+            var otherStop = StopButton(other, harbor.Id); MatchSentence(otherStop, fifth.View.StopWorkSentence(harbor.Id)!);
+            var otherLine = other.GetChildren().OfType<Label>().First();
+            Require(otherLine.Text.Contains("Avery") && otherLine.Text.Contains("Harbor Equipment") && otherLine.Text.Contains("6.5 hours")
+                && shell.RequestScroll.GetGlobalRect().Encloses(other.GetGlobalRect()), "The older teammate buy, stop and whole explanation are visible at the request's top after the new order.");
+            Require(StopButtons(shell.RequestContents).Count(b => b.GetMeta("stop_work").AsString() == harbor.Id) == 1
+                && StopButtons(shell.RequestContents).Count() == 2, "Each unsigned buy has one stop: Avery's near the heading, the player's in its decision.");
+            var args5 = OS.GetCmdlineUserArgs(); var at5 = Array.IndexOf(args5, "--stop-screenshots");
+            if (at5 >= 0)
+            {
+                await scene.ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = scene.GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args5[at5 + 1] + "-fifth-day5.png") == Error.Ok, "Captured the exact fifth-play older buy beside its stop control.");
+            }
+            otherStop.EmitSignal(Button.SignalName.Pressed);
+            Require(fifth.Apply(new StopWorkAction { Day = 5, Work = harbor.Id }).Accepted && shell.Session.StateHash == fifth.StateHash(), "The request stops only Avery's named buy.");
+            Require(shell.RequestWorkspace.Visible && !StopButtons(shell.RequestContents).Any(b => b.GetMeta("stop_work").AsString() == harbor.Id)
+                && shell.Session.View!.Work.Single(w => w.SubjectId == coastal.Id).CompletedDay is null, "The old buy disappears while the new Coastal order keeps running.");
+            otherStop.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == fifth.StateHash() && LinesOfSupport.Sim.Replay.Resume(bundle, shell.Session.CreateSave()).StateHash() == fifth.StateHash(), "The stale stop is harmless and exact stop execution survives replay.");
             GD.Print("STOP_WORK_SMOKE_PASS: day-five request and team controls, exact sentences, independent state hashes, standing and queue refresh, save/resume, spent hours, finished buys and stale/duplicate guards.");
         }
         finally { Directory.Delete(temporary, true); }

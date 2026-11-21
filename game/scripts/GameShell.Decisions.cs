@@ -39,12 +39,33 @@ public partial class GameShell
         decisionsPanel.Visible = view is not null;
     }
 
-    private void RenderRequestDecisions(SessionView view, string card)
+    private void RenderRequestDecisions(SessionView view, string card, IReadOnlySet<string> stopsShown)
     {
         RequestDecisionRows = new VBoxContainer { Name = "RequestDecisions" };
         RequestDecisionRows.AddThemeConstantOverride("separation", 10);
         linkedRequirement.AddChild(RequestDecisionRows);
-        if (view.Decisions(card).Count > 0) RenderDecisionRows(RequestDecisionRows, view.Decisions(card), false);
+        if (view.Decisions(card).Count > 0) RenderDecisionRows(RequestDecisionRows, view.Decisions(card), false, stopsShown);
+    }
+
+    private (HashSet<string> Stops, bool StandingShown) RenderOtherRequestBuys(SessionView view, string card, RequestStanding? standing)
+    {
+        var shown = new HashSet<string>(); var standingShown = false;
+        var others = view.Decisions(card).Where(d => d.StopWorkId is not null && view.Team.Any(m => m.Role != "you" && m.Id == d.TeammateId)).ToArray();
+        foreach (var decision in others)
+        {
+            if (decision.StopWorkId is not { } id || decision.StopSentence is not { } sentence || shown.Contains(id)) continue;
+            var member = view.Team.FirstOrDefault(m => m.Role != "you" && m.Id == decision.TeammateId);
+            var work = member?.Work.FirstOrDefault(w => w.WorkId == id);
+            if (member is null || work is null) continue;
+            var row = new VBoxContainer(); row.SetMeta("other_request_buy", id); linkedRequirement.AddChild(row);
+            var useStanding = others.Length == 1 && standing?.State == RequestStanding.Buying && standing.TeammateId == member.Id;
+            var label = DeskUi.Label(useStanding ? standing!.Sentence
+                : $"{TeamName(member)} · {work.Label.TrimEnd('.')} · about {DeskUi.Count(work.HoursLeft, "hour")} of work left.");
+            if (useStanding) { label.SetMeta("request_standing", card); standingShown = true; }
+            row.AddChild(label);
+            AddStopWork(row, id, sentence); shown.Add(id);
+        }
+        return (shown, standingShown);
     }
 
     private void AddStopWork(VBoxContainer parent, string workId, string sentence)
@@ -63,7 +84,7 @@ public partial class GameShell
         parent.AddChild(explanation);
     }
 
-    private void RenderDecisionRows(VBoxContainer parent, IEnumerable<DecisionView> decisions, bool openRequest)
+    private void RenderDecisionRows(VBoxContainer parent, IEnumerable<DecisionView> decisions, bool openRequest, IReadOnlySet<string>? stopsShown = null)
     {
         var hash = session.StateHash;
         var any = false;
@@ -90,7 +111,7 @@ public partial class GameShell
                 var frame = new PanelContainer(); row.AddChild(frame);
                 frame.AddChild(DeskUi.Label(decision.Sentence + "\n" + now));
             }
-            if (!openRequest && decision.StopWorkId is { } workId && decision.StopSentence is { } sentence)
+            if (!openRequest && decision.StopWorkId is { } workId && decision.StopSentence is { } sentence && stopsShown?.Contains(workId) != true)
                 AddStopWork(row, workId, sentence);
             row.SetMeta("decision_now", decision.Now);
             row.SetMeta("decision_teammate", decision.Teammate);

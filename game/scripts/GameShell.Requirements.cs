@@ -36,11 +36,12 @@ public partial class GameShell
         var requester = DeskUi.Label(card.Person?.WithUnit ?? card.SubmittedBy); requester.SetMeta("request_asker", card.CardId); linkedRequirement.AddChild(requester);
         linkedRequirement.AddChild(DeskUi.Heading(card.Title));
         var standing = view!.WhereThingsStand().FirstOrDefault(e => e.CardId == card.CardId);
-        if (standing is not null)
+        var otherBuys = RenderOtherRequestBuys(view!, card.CardId, standing);
+        if (standing is not null && !otherBuys.StandingShown)
         {
             var state = DeskUi.Label(standing.Sentence); state.SetMeta("request_standing", card.CardId); linkedRequirement.AddChild(state);
         }
-        RenderRequestDecisions(view!, card.CardId);
+        RenderRequestDecisions(view!, card.CardId, otherBuys.Stops);
         var capability = view.Rules.Model.Capabilities.Single(c => c.Id == card.CapabilityId);
         var rate = capability.Delivery == "consumable" || card.Unit is "gal" or "L" or "m3" ? card.Unit + "/day" : card.Unit;
         var peak = DeskUi.Label($"Peak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {rate}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days");
