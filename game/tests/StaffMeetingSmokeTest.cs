@@ -43,6 +43,13 @@ public partial class StaffMeetingSmokeTest : Node
                 Require(shell.VisitButtons.Keys.SequenceEqual(action is null ? Array.Empty<string>() : new[] { action }),
                     "Only the action appropriate to the current meeting state is reachable.");
                 Require(shell.VisitOptions.Keys.SequenceEqual(shell.VisitButtons.Keys), "No stale action or preview survives a state change.");
+                if (action == "meeting")
+                {
+                    var effect = shell.VisitButtons[action].GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("action_cost"));
+                    Require(effect.Text.Contains(shell.Session.View!.StaffMeeting.JoinSays, StringComparison.Ordinal)
+                        && effect.Text.Contains("2 hours of your time", StringComparison.Ordinal),
+                        "Joining keeps the exact Sim daily-cost effect and the separate enrollment hours beneath its button.");
+                }
                 Require(shell.Session.StateHash == expected.StateHash(), "Meeting presentation preserves exact Sim state.");
             }
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
@@ -50,7 +57,10 @@ public partial class StaffMeetingSmokeTest : Node
             {
                 for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var scroll = shell.GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Today/TodayPane/Body/Body");
-                scroll.EnsureControlVisible(Labels(shell.PersonContactInput.GetParent()).Single(l => l.HasMeta("meeting_cost")));
+                var focus = state == "not-attending"
+                    ? shell.VisitButtons["meeting"].GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("action_cost"))
+                    : Labels(shell.PersonContactInput.GetParent()).Single(l => l.HasMeta("meeting_cost"));
+                scroll.EnsureControlVisible(focus);
                 for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 if (shot < 0) return;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);

@@ -169,7 +169,7 @@ public partial class GameShell
         if (meeting.Joining) return;
         var key = meeting.Attending ? "leave-meeting" : "meeting";
         var action = new JoinStaffMeetingAction { Day = view.Day, Attend = !meeting.Attending };
-        var effect = meeting.Attending ? "Stops attending the staff meeting." : "Joins the staff meeting so requests reach you in the room.";
+        var effect = meeting.Attending ? "Stops attending the staff meeting." : meeting.JoinSays;
         if (!meeting.Attending)
         {
             var assigned = AddAssignedAction(visitsForm, visitsFooter, view, action, "Join the staff meeting", effect,
