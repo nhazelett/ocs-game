@@ -436,6 +436,7 @@ public sealed partial class Session
         if (CorGap(a, inst) is { } corGap) gaps.Add(corGap);
         if (inst.RequiresSystemOrManual && Day < _systemOnlineDay)
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
+        gaps.AddRange(SummaryNotes(a, chk, startMin, startMax));   // D46, DESK-156: what the pinned summary no longer says
 
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
                                  hMin, hMax, startMin, startMax, queue, PickTrade(a, inst, chk.TotalCents))

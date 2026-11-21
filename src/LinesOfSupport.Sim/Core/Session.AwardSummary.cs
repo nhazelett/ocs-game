@@ -14,14 +14,17 @@ public sealed partial class Session
         var preview = BuildPreview(a);
         if (!preview.Accepted) return null;
         var chk = CheckAward(a);
-        if (chk.SiteId is not { } siteId || chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) return null;
+        if (chk.SiteId is null || chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) return null;
         var cap = Cap(capId);
-        var site = SiteData(siteId);
-        var duration = Math.Max(1, a.DurationDays);
+        var site = SiteData(chk.SiteId);
         var start = preview.EarliestStartMin;
         var max = preview.EarliestStartMax;
         var startSaid = max == start ? $"on day {start}" : max == start + 1 ? $"on day {start} or {max}" : $"between day {start} and day {max}";
 
+        // D46 (DESK-156, Claude play 21 Nov, third play, note 22): at most three sentences, as the summary is pinned above
+        // Arrange support and a long one pushed pick two out of reach. What it brings, the cover before it starts, finance
+        // or the proposal, what it is on top of, and whichever of the allowance cost and the answer due did not fit are in
+        // the quote's notes (BuildPreview's soft gaps, SummaryNotes), each once.
         // DESK-86: a card buy's price carries the vendor's card surcharge, which the vendor's per-unit price leaves out.
         var surcharge = a.Instrument == "gpc" && Fixed.Permille(vendor.GpcSurchargeFraction) is var sur and > 0
             ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
@@ -30,54 +33,56 @@ public sealed partial class Session
             $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {HoursOf(preview, a.Assignee)}.",
         };
         var card = chk.Card;
-        // DESK-86: what the buy brings, when the capability has more than one part, and what it leaves out of the request.
-        var brings = chk.Lines.Select(l => Lower(LineLabel(capId, l))).ToList();
-        var without = (card?.Lines.Where(kv => kv.Value).Select(kv => kv.Key) ?? []).Where(l => !chk.Lines.Contains(l))
-                                                                                 .Select(l => Lower(LineLabel(capId, l))).ToList();
-        if (brings.Count > 1 || without.Count > 0)
-            parts.Add($"It brings {(brings.Count > 0 ? JoinAnd(brings) : "none of it")}{(without.Count > 0 ? $", not {JoinAnd(without)}" : "")}.");
-        var needEnd = card is null ? (int?)null : card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1;
         if (card is null) parts.Add($"It starts {startSaid}.");
         else if (start <= card.RequestedStartDay) parts.Add($"It starts {startSaid}; it is wanted from day {card.RequestedStartDay}.");
-        else
-        {
-            parts.Add($"It starts {startSaid}; it was wanted from day {card.RequestedStartDay}.");
-            if (start <= needEnd && BeforeStartCover(card, start) is { } cover) parts.Add(cover);
-        }
-        // D43, DESK-129: what the late end of the quoted range costs against the commander's allowance.
-        var passCost = card is null ? null : PassLineCost(card, max);
-        if (passCost is not null) parts.Add(passCost);
-        // DESK-86: why a written buy starts when it does: finance certifies the funds before the writing can start. The
-        // range's other causes stay in the quote (DESK-78); the summary is pinned above the button and must stay short.
-        // DESK-134: a purchase order with a vendor that prices first is written once the priced proposal is in, which is
-        // after the funds; one sentence in place of the funds one, as the summary is pinned and must stay short.
-        if (PricesFirst(a.Instrument, vendor) is { } pricing)
-            parts.Add($"It is written once {Possessive(vendor.Name)} priced proposal comes, between day {Day + pricing.Min} and day {Day + pricing.Max}.");
-        else if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
-            parts.Add($"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}.");
-        // DESK-110: what it is on top of, and what of the request that thing leaves out and this buy brings.
-        var inPlace = InPlace(a, siteId, capId, start, start + duration - 1).DistinctBy(x => x.Name).ToList();
-        var onTop = inPlace.Select(x => x.Name).ToList();
-        if (inPlace is [{ Without.Count: > 0 } only])
-            parts.Add($"It is on top of {only.Name}, which comes without {PartsLabels(capId, only.Without)}.");
-        else if (onTop.Count > 0)
-        {
-            parts.Add($"It is on top of {JoinAnd(onTop)}.");
-            parts.AddRange(inPlace.Where(x => x.Without.Count > 0).Select(x => $"{Upper(x.Name)} comes without {PartsLabels(capId, x.Without)}."));
-        }
+        else parts.Add($"It starts {startSaid}; it was wanted from day {card.RequestedStartDay}.");
+        var third = SummaryThird(a, start, max);
+        if (third.Said is { } said) parts.Add(said);
+        return new AwardSummaryView(string.Join(" ", parts), third.Why is not null, third.Why, third.Answer, third.PassCost);
+    }
 
-        string? why = null;
-        if (card is not null && start > needEnd)
-            why = $"It starts after the need ends on day {needEnd}.";
-        else if (card is not null && ToldNotAdded(card) is { } told)
-            why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
-        else if (onTop.Count > 0 && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
-            why = "Every day it would run is already covered.";
-        if (why is not null) parts.Add(why);
-        // D42, DESK-123: the summary's last sentence, after any attention reason; never one itself.
-        var answer = card is null ? null : AnswerDue(card);
-        if (answer is not null) parts.Add(answer);
-        return new AwardSummaryView(string.Join(" ", parts), why is not null, why, answer, passCost);
+    /// <summary>D46 (DESK-156): the candidates for the summary's third sentence, in order: the attention reason (D33), the
+    /// allowance cost of the quote's latest start (D43), the answer due from someone asked (D42). <c>Said</c> is the first
+    /// of them; <c>Notes</c> the ones that did not fit, for the quote's notes. Each field keeps its value whether or not it
+    /// is said. A forecast from the plan; it ignores rolls.</summary>
+    private (string? Why, string? PassCost, string? Answer, string? Said, List<string> Notes) SummaryThird(AwardAction a, int start, int latestStart)
+    {
+        var chk = CheckAward(a);
+        var card = chk.Card;
+        string? why = null, passCost = null, answer = null;
+        if (chk.SiteId is { } siteId && chk.CapabilityId is { } capId)
+        {
+            var duration = Math.Max(1, a.DurationDays);
+            var needEnd = card is null ? (int?)null : card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1;
+            var onTop = InPlace(a, siteId, capId, start, start + duration - 1).Count > 0;
+            if (card is not null && start > needEnd)
+                why = $"It starts after the need ends on day {needEnd}.";
+            else if (card is not null && ToldNotAdded(card) is { } told)
+                why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
+            else if (onTop && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
+                why = "Every day it would run is already covered.";
+            passCost = card is null ? null : PassLineCost(card, latestStart);
+            answer = card is null ? null : AnswerDue(card);
+        }
+        var all = new[] { why, passCost, answer }.OfType<string>().ToList();
+        return (why, passCost, answer, all.FirstOrDefault(), all.Skip(1).ToList());
+    }
+
+    /// <summary>D46 (DESK-156): what the summary used to say that the quote's notes did not, for <c>BuildPreview</c>'s soft
+    /// gaps: what the buy brings when it brings more than one part and leaves nothing out (a part left out has its own note),
+    /// when finance certifies the funds for a written buy or when a vendor's priced proposal comes, and whichever of the summary's third-sentence candidates did not
+    /// fit. The cover before it starts, the priced proposal and what it is on top of already have their notes.</summary>
+    private IEnumerable<string> SummaryNotes(AwardAction a, AwardCheck chk, int start, int latestStart)
+    {
+        if (chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) yield break;
+        var brings = chk.Lines.Select(l => Lower(LineLabel(capId, l))).ToList();
+        var leftOut = chk.Card is { } c && LeftOut(c, chk.Lines).Count > 0;
+        if (brings.Count > 1 && !leftOut) yield return $"{vendor.Name} brings {JoinAnd(brings)}.";
+        if (PricesFirst(a.Instrument, vendor) is { } pricing)   // DESK-134: the days, which the pricing note leaves out
+            yield return $"It is written once {Possessive(vendor.Name)} priced proposal comes, between day {Day + pricing.Min} and day {Day + pricing.Max}.";
+        else if (chk.Instrument is { RequiresSystemOrManual: true } && chk.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
+            yield return $"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}, before the writing starts.";
+        foreach (var note in SummaryThird(a, start, latestStart).Notes) yield return note;
     }
 
     /// <summary>D43 (DESK-129, Claude play 20 Nov, third play, note 1): when the quote's latest start is after the day the
