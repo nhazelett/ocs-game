@@ -169,12 +169,13 @@ public partial class GameShell
             {
                 var action = PendingAward;
                 awardPriorities.Clear(); // DESK-26: each new written contract gets its own pick.
-                if (SendAction(action).Accepted)
+                var result = SendAction(action);
+                if (result.Accepted)
                 {
                     if (action.Card is not null) SelectedCard = action.Card;
                     if (awardTarget is { } bought) awardDrafts.Remove(bought);
                     var target = action.Card ?? action.Site + "." + action.Capability;
-                    if (session.View!.Decisions().FirstOrDefault() is { } decision) awardReceipts[target] = "Arranged: " + decision.Sentence + "\n" + decision.Now;
+                    if (result.RecordId is { } recordId) awardReceipts[target] = recordId;
                     ResetAwardForm(); awardTarget = target; RefreshActionDesk(session.View);
                     ShowRequests();
                     RequestScroll.ScrollVertical = 0; AwardScroll.ScrollVertical = 0;
@@ -200,9 +201,9 @@ public partial class GameShell
             SelectAwardTarget(id);
         }
         var target = targets.Single(t => t.Id == awardTarget);
-        if (awardReceipts.TryGetValue(target.Id, out var receipt))
+        if (awardReceipts.TryGetValue(target.Id, out var recordId) && view.Decision(recordId) is { } receipt)
         {
-            var acknowledgement = DeskUi.Label(receipt); acknowledgement.SetMeta("arranged_award", target.Id);
+            var acknowledgement = DeskUi.Label(receipt.Sentence + "\n" + receipt.Now); acknowledgement.SetMeta("arranged_award", target.Id);
             awardPanel.AddChild(acknowledgement); awardPanel.MoveChild(acknowledgement, 0);
         }
         SelectedCard = target.Card; RenderRequirementContext(view);
