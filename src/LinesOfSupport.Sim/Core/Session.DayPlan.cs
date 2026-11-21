@@ -75,8 +75,10 @@ public sealed partial class Session
                 var spend = Math.Min(left, need);
                 left -= spend;
                 var after = need - spend;
-                var finishes = after <= 0;
-                var sentence = finishes
+                var finishes = after <= 0 && workId is not null;
+                // DESK-132: the standing staff meeting and an SF 44 trip take hours today; they are not jobs that finish.
+                var sentence = workId is null && after <= 0 ? $"{label}: {HoursSaid(spend)} today."
+                    : finishes
                     ? $"{label}: {HoursSaid(spend)} today, and it should be done today."
                     : spend <= 0 ? $"{label}: no hours left for it today; {HoursSaid(after)} to go."
                     : $"{label}: {HoursSaid(spend)} today, {HoursSaid(after)} left after today.";
@@ -100,11 +102,13 @@ public sealed partial class Session
             var perDay = HalfHours(m.HoursPerDayMilli);
             var shown = Math.Min(perDay, items.Sum(i => i.HoursToday));
             var leftShown = perDay - shown;
-            var done = items.Count(i => i.FinishesToday);
-            var carried = items.Count - done;
+            var jobs = items.Where(i => i.WorkId is not null).ToList();   // DESK-132: only queued work is a job that finishes
+            var done = jobs.Count(i => i.FinishesToday);
+            var carried = jobs.Count - done;
             var sentence = items.Count == 0
                 ? $"Nothing to work on today; {Said(perDay)} go to walk-in small buys."
-                : $"{HoursText(shown)} of {Said(perDay)} planned. {Jobs(done)} should finish today{(carried > 0 ? $", and {Jobs(carried).ToLowerInvariant()} carr{(carried == 1 ? "ies" : "y")} over" : "")}."
+                : $"{HoursText(shown)} of {Said(perDay)} planned."
+                  + (jobs.Count == 0 ? "" : $" {Jobs(done)} should finish today{(carried > 0 ? $", and {Jobs(carried).ToLowerInvariant()} carr{(carried == 1 ? "ies" : "y")} over" : "")}.")
                   + (leftShown > 0 ? $" {Said(leftShown)} left over {(leftShown == 1 ? "goes" : "go")} to walk-in small buys." : "");
             // DESK-60 (D19; Claude play note 19): say why a job waits, not "not ready until a later day".
             foreach (var w in waiting) sentence += $" {WorkName(w)} {WaitReason(w)}.{AfterNeed(w)}";
