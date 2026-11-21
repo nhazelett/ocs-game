@@ -60,7 +60,7 @@ internal static class MorningScreenFixChecks
                     shell.PeopleToggle.ButtonPressed = true;
                     var card = view.VendorCards().First(c => c.Rep is not null && c.StillToLearn is null && c.MetDay is null);
                     Pick(shell.PersonContactInput, "vendor:" + card.Rep!.Id);
-                    Require(PlayScreen.Descendants(shell.VisitButtons["vendor"].GetParent()).OfType<Label>().Any(l => l.Text.Contains("Their terms are already known.")), "A meeting with a listed vendor admits its terms are already known.");
+                    Require(PlayScreen.Descendants(shell.VisitButtons["vendor"].GetParent()).OfType<Label>().Any(l => l.Text.Contains(card.MeetingBrings!, StringComparison.Ordinal)), "A meeting with a listed vendor gives the Sim's complete explanation of what it brings.");
                 }
                 else if (day == 5)
                 {

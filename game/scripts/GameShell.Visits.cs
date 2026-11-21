@@ -227,7 +227,7 @@ public partial class GameShell
     private static string VendorMeetingEffect(SessionView view, string vendor)
     {
         var card = view.VendorCards().FirstOrDefault(c => c.Id == vendor);
-        return "Meets " + view.NameOf(vendor) + ". " + (card?.StillToLearn ?? "Their terms are already known.");
+        return "Meets " + view.NameOf(vendor) + ". " + (card?.StillToLearn ?? card?.MeetingBrings);
     }
 
     private void OpenJ4FuelVisit(string site)
