@@ -17,6 +17,7 @@ public partial class SchematicMap : Node2D
     internal IReadOnlyList<MapChange> KnownChanges { get; private set; } = [];
     internal IReadOnlyList<CapabilityTile> Tiles { get; private set; } = [];
     internal event Action<string>? SitePicked;
+    internal event Action<string>? CapabilityPicked;
     internal float CameraZoom => zoom;
     internal Vector2 CameraOffset => offset;
     private readonly Dictionary<string, Vector2> islands = new(StringComparer.Ordinal), sites = new(StringComparer.Ordinal);
@@ -93,6 +94,8 @@ public partial class SchematicMap : Node2D
                         {
                             var request = tabletop.RequestAt(mouse.Position);
                             if (request is not null) { RequestPicked?.Invoke(request); return; }
+                            if (tabletop.ReportedCapabilityAt(mouse.Position) is { } capability)
+                            { CapabilityPicked?.Invoke(capability); return; }
                             var site = tabletop.SiteAt(mouse.Position);
                             if (site is not null)
                             {

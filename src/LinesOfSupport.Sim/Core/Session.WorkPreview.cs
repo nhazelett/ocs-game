@@ -50,7 +50,8 @@ public sealed partial class Session
         if (arr.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return $"{NameOf(t.Arrangement)} is not running";
         if (NotOursToEnd(arr) is { } notOurs) return notOurs;
         if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == t.Arrangement))
-            return $"termination of {NameOf(t.Arrangement)} is already in work";
+            return IsCardBuy(arr) ? $"cancelling the card buy for {NameOf(t.Arrangement)} is already in work"   // Claude play 21 Nov, seventh play
+                : $"termination of {NameOf(t.Arrangement)} is already in work";
         if (t.WithNotice && arr.NoticeDays is not > 0) return $"{NameOf(t.Arrangement)} has no termination notice clause";
         return null;
     }

@@ -7,6 +7,7 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     internal PanelContainer ContractView { get; private set; } = null!;
+    internal TabBar ContractDeskTabs { get; private set; } = null!;
     internal ConfirmationDialog EndContractDialog { get; private set; } = null!;
     private VBoxContainer contractContents = null!, contractFooter = null!;
     private TerminateAction? contractToEnd;
@@ -29,7 +30,17 @@ public partial class GameShell
         }
         void QueueFit() => Callable.From(Fit).CallDeferred();
         ContractView.MinimumSizeChanged += QueueFit; ContractView.VisibilityChanged += QueueFit; Resized += QueueFit;
-        contractContents = DeskUi.Pane(ContractView, "ContractRecord", out contractFooter);
+        var page = new VBoxContainer(); ContractView.AddChild(page);
+        ContractDeskTabs = new TabBar { Name = "DeskNavigation" }; page.AddChild(ContractDeskTabs);
+        var tabs = GetNode<TabContainer>("%DeskTabs");
+        for (var i = 0; i < tabs.GetTabCount(); i++) ContractDeskTabs.AddTab(tabs.GetTabTitle(i));
+        ContractDeskTabs.TabSelected += index =>
+        {
+            if (!ContractView.Visible) return;
+            CloseContractView(); tabs.CurrentTab = (int)index;
+        };
+        var record = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; page.AddChild(record);
+        contractContents = DeskUi.Pane(record, "ContractRecord", out contractFooter);
         EndContractDialog = new ConfirmationDialog { Title = "End this contract?", Exclusive = true };
         AddChild(EndContractDialog);
         EndContractDialog.GetLabel().AutowrapMode = TextServer.AutowrapMode.WordSmart;
@@ -66,6 +77,7 @@ public partial class GameShell
         GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
         contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
         SelectedArrangement = id; SelectedFunding = null; RenderLedgerContext(session.View);
+        ContractDeskTabs.CurrentTab = PaymentsTab;
         ContractView.Show(); RefreshContractView(session.View);
     }
 

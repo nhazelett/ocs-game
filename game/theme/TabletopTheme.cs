@@ -38,7 +38,7 @@ internal static class TabletopTheme
             using (box) theme.SetStylebox(name, type, box);
         }
         theme.SetTypeVariation("TabletopHeading","Label");theme.SetFont("font","TabletopHeading",bold);theme.SetFontSize("font_size","TabletopHeading",28);
-        foreach(var type in new[]{"Label","Button","OptionButton","CheckBox","LineEdit","TextEdit","PopupMenu","Tree","ItemList","TabContainer","Window","TooltipLabel"})
+        foreach(var type in new[]{"Label","Button","OptionButton","CheckBox","LineEdit","TextEdit","PopupMenu","Tree","ItemList","TabContainer","TabBar","Window","TooltipLabel"})
         {
             theme.SetColor("font_color",type,Ink);theme.SetColor("font_hover_color",type,Ink);theme.SetColor("font_pressed_color",type,Ink);
             theme.SetColor("font_hover_pressed_color",type,Ink);theme.SetColor("font_focus_color",type,Ink);theme.SetColor("font_disabled_color",type,Muted);theme.SetColor("font_selected_color",type,Paper);
@@ -89,10 +89,13 @@ internal static class TabletopTheme
             SetBox("normal",type,Box(Input,6));SetBox("read_only",type,Box(Background,6));
             SetBox("focus",type,Box(Colors.Transparent,0));theme.SetColor("caret_color",type,Ink);theme.SetColor("selection_color",type,Moss);
         }
-        SetBox("panel","TabContainer",Box(Paper,10));SetBox("tab_selected","TabContainer",Box(Paper,8));
-        SetBox("tab_unselected","TabContainer",Box(Background,8));SetBox("tab_hovered","TabContainer",Box(Hover,8));
-        SetBox("tab_disabled","TabContainer",Box(Background,8));
-        theme.SetColor("font_selected_color","TabContainer",Ink);theme.SetColor("font_unselected_color","TabContainer",Muted);
+        SetBox("panel","TabContainer",Box(Paper,10));
+        foreach (var type in new[] { "TabContainer", "TabBar" })
+        {
+            SetBox("tab_selected",type,Box(Paper,8)); SetBox("tab_unselected",type,Box(Background,8));
+            SetBox("tab_hovered",type,Box(Hover,8)); SetBox("tab_disabled",type,Box(Background,8));
+            theme.SetColor("font_selected_color",type,Ink); theme.SetColor("font_unselected_color",type,Muted);
+        }
         foreach(var type in new[]{"HScrollBar","VScrollBar"})
         {
             SetBox("scroll",type,Box(Background,0,3));SetBox("grabber",type,Box(Moss,0,3));

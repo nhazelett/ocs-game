@@ -27,6 +27,18 @@ public partial class TabletopMap3D
         internal Vector2 PlacedAnchor;
     }
     private readonly List<MapCallout> callouts=[];
+    private readonly Dictionary<Label, string[]> reportedCapabilityLines = [];
+    internal string? ReportedCapabilityAt(Vector2 point)
+    {
+        foreach (var (label, keys) in reportedCapabilityLines)
+        {
+            if (!label.IsVisibleInTree() || !label.GetGlobalRect().HasPoint(point + GlobalPosition)) continue;
+            var line = Math.Clamp((int)((point.Y + GlobalPosition.Y - label.GlobalPosition.Y)
+                / (label.GetLineHeight() + label.GetThemeConstant("line_spacing"))), 0, keys.Length - 1);
+            return string.IsNullOrEmpty(keys[line]) ? null : keys[line];
+        }
+        return null;
+    }
     private readonly List<Aabb> solidBounds=[];
     private readonly List<string?> solidIslands=[];
     private readonly Dictionary<int,Vector3[]> solidSilhouettes=[];
@@ -113,7 +125,7 @@ public partial class TabletopMap3D
             pair.Key.Text=pair.Value;pair.Key.RemoveMeta("reported_change");
             callouts.Single(c=>c.Words==pair.Key).ShortWords!.Text=pair.Value;
         }
-        movingLabels.Clear();calloutLayoutKey=null;
+        reportedCapabilityLines.Clear(); movingLabels.Clear();calloutLayoutKey=null;
     }
     private void LaneCaption(string text,Vector3 point,bool closed)
     {
