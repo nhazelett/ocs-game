@@ -15,17 +15,30 @@ public sealed partial class Session
         var d = Day;
         var (people, due) = PlanPeople();
 
-        // Support due to start or to end today.
-        foreach (var a in _arrangements.Where(a => a.Status == ArrangementStatus.Pending && a.StartDay == d && !ForShop(a.CapabilityId)).OrderBy(a => a.SiteId).ThenBy(a => a.CapabilityId))
+        // Support due to start or to end today. DESK-185 (Claude play 21 Nov, ninth play, note P2-21): the office's own
+        // support (its vehicle, a boat of its own) is said too, for the contracting office in place of a site, or the plan
+        // said "No deliveries or support starts or ends are due today" on the morning the office vehicle started.
+        foreach (var a in _arrangements.Where(a => a.Status == ArrangementStatus.Pending && a.StartDay == d).OrderBy(a => a.SiteId).ThenBy(a => a.CapabilityId))
         {
+            if (ForShop(a.CapabilityId)) { due.Add($"{SupplierName(a)} should start {ShopSupport(a.CapabilityId)} today."); continue; }
             var site = SiteData(a.SiteId);
             var crossing = Cap(a.CapabilityId).Delivery == "consumable" && a.SupplierIslandId != site.Island && !a.PaidPerDelivery;
             due.Add($"{SupplierName(a)} should start {Lower(CapLabel(a.CapabilityId))} at {site.Name} today{(crossing ? ", if the boat runs" : "")}.");
         }
-        foreach (var a in _arrangements.Where(a => a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay == d && d < LastDay && !ForShop(a.CapabilityId)))
-            due.Add($"Today is the last day of {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)} from {SupplierName(a)}.");
+        foreach (var a in _arrangements.Where(a => a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay == d && d < LastDay))
+            due.Add(ForShop(a.CapabilityId)
+                ? $"Today is the last day of {ShopSupport(a.CapabilityId)} from {SupplierName(a)}."
+                : $"Today is the last day of {Lower(CapLabel(a.CapabilityId))} at {SiteName(a.SiteId)} from {SupplierName(a)}.");
 
         return new DayPlanView(d, people, [.. due.Select(SentenceCase)], BuildEndOfDayCheck());
+    }
+
+    /// <summary>DESK-185: the office's own support by name, for the contracting office: "the vehicle for the contracting
+    /// office" (its label says so already), "boat between islands for the contracting office".</summary>
+    private string ShopSupport(string capabilityId)
+    {
+        var label = Lower(CapLabel(capabilityId));
+        return label.Contains("contracting office", StringComparison.Ordinal) ? $"the {label}" : $"{label} for the contracting office";
     }
 
     /// <summary>Each teammate's day as the day loop will work it, and the deliveries due (DESK-39); the strip's hours come
