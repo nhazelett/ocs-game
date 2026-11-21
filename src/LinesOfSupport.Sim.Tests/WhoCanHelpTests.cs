@@ -39,7 +39,9 @@ public class WhoCanHelpTests
         var asking = s.View.RequirementEditor("tutForklift")!.WhoCanHelp!.First(h => h.Kind == "ask");
         Assert.Equal(HelperView.Asking, asking.State);
         Assert.Equal("novak", asking.TeammateId);
-        Assert.Equal($"SrA Eli Novak is on it; the answer should be in on day {asking.Day}.", asking.Sentence);
+        // D44 (DESK-144): the answer is read the morning after the day it is done.
+        Assert.Equal(asking.Day == s.Day ? "SrA Eli Novak is on it; the answer comes in tonight, after you end the day."
+            : $"SrA Eli Novak is on it; the answer comes in on the night of day {asking.Day}.", asking.Sentence);
         while (s.Day <= asking.Day) s.AdvanceDay();
         var answered = s.View.RequirementEditor("tutForklift")!.WhoCanHelp!.First(h => h.Kind == "ask");
         Assert.Equal(HelperView.Answered, answered.State);

@@ -97,8 +97,8 @@ public sealed partial class Session
     }
 
     /// <summary>D42 (DESK-123, Claude play 20 Nov, second play, note 1): an ask about this request still in work, the
-    /// earliest answer first: "SMSgt Ray Dunn's answer about this request is due on day 4; what they say may change what
-    /// this buy needs." The day is that work's forecast, as the decisions list gives it. Null when no ask is out.</summary>
+    /// earliest answer first: "SMSgt Ray Dunn's answer about this request comes in tonight, after you end the day; what
+    /// they say may change what this buy needs." (D44, DESK-144: "on the night of day 6" for a later day.) The day is that work's forecast, as the decisions list gives it. Null when no ask is out.</summary>
     private string? AnswerDue(CardState card)
     {
         var due = _work.Where(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.StoppedDay is null
@@ -107,7 +107,7 @@ public sealed partial class Session
                                      Day: PlayQueue(Member(w.Assignee), 0, Day, w, w.HoursRemainingMilli) ?? Day))
                        .OrderBy(x => x.Day).FirstOrDefault();
         if (due.Person is null || BuildPerson(due.Person) is not { } person) return null;
-        return $"{Possessive(person.DisplayName)} answer about this request is due on day {due.Day}; what they say may change what this buy needs.";
+        return $"{Possessive(person.DisplayName)} answer about this request comes in {ComesIn(due.Day)}; what they say may change what this buy needs.";
     }
 
     /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include

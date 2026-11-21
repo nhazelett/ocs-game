@@ -23,11 +23,11 @@ public partial class GoingToPeopleSmokeTest : Node
             Require(shell.Session.View!.Scenario.Tutorial && !shell.DeveloperToggle.ButtonPressed, "Tutorial starts without developer controls.");
             var tutorial = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
             var expectedTutorial = Session.Create(tutorial, 1);
-            for (var day = 1; day <= 3; day++)
+            for (var day = 1; day <= 2; day++)   // D44 (DESK-144): the card note is on the turnover; notes on the nights of days 1 and 2
             {
                 Step(shell); expectedTutorial.AdvanceDay();
                 var notes = expectedTutorial.Records.Where(r => r.Day == day && expectedTutorial.View.RecordPerson(r)?.Role == "outgoingCco").ToArray();
-                Require(notes.Length > 0, "The Sim authors mentor news on each of the first three days.");
+                Require(notes.Length > 0, "The Sim authors mentor news on each of the first two days.");
                 foreach (var note in notes)
                 {
                     var news = shell.MorningBrief.GetChildren().OfType<PanelContainer>()
@@ -42,7 +42,7 @@ public partial class GoingToPeopleSmokeTest : Node
                 Require(shell.Session.StateHash == expectedTutorial.StateHash(), "Mentor presentation changes no rules or replay state.");
                 if (day == 1) await Screenshot(shell, "--mentor-screenshot");
             }
-            Step(shell); Require(!shell.MentorMessages.Visible, "The mentor leaves after the authored third day.");
+            Step(shell); Require(!shell.MentorMessages.Visible, "The mentor leaves after the authored second day.");
             // The taught path covers the first need; A single day must still stop at a mentor note, even without a lead.
             Scenario(shell, "tutorial"); Replay(shell, "approach1 taught");
             var startingDay = shell.Session.View!.Day;

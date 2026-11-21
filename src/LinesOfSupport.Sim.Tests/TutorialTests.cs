@@ -40,15 +40,20 @@ public class TutorialTests
     }
 
     [Fact]
-    public void The_mentor_speaks_on_the_first_three_days_and_then_is_gone()
+    public void The_mentor_speaks_on_the_first_two_nights_and_then_is_gone()
     {
+        // D44 (DESK-144): each note reaches the player the morning before the choice it is about; the card-or-cash note
+        // is on the turnover's last page, so the mentor's inbox notes are the nights of days 1 and 2.
         var s = Session.Create(Repo.Load("tutorial"), 1);
         var mentor = s.Scenario.People.Single(p => p.Role == "outgoingCco").Id;
         var notes = s.Scenario.Events.Where(e => e.From == mentor).ToList();
-        Assert.Equal(3, notes.Count);
-        Assert.All(notes, e => Assert.InRange(e.Window.LatestDay, 1, 3));
+        Assert.Equal(2, notes.Count);
+        Assert.All(notes, e => Assert.InRange(e.Window.LatestDay, 1, 2));
+        var money = s.View.Turnover().Sections.Single(x => x.Kind == TurnoverSectionKind.Money).Text;
+        Assert.Contains("Small buys go on the card if the vendor takes it, up to $20,000 for one buy; Island Mart does.", money);
+        Assert.Contains("the paying agent can't buy what isn't in it.", money);
         while (!s.Finished) s.AdvanceDay();
-        Assert.Equal(3, s.Records.Count(r => r.Kind == RecordKind.Event && notes.Any(e => e.Id == r.Subject)));
+        Assert.Equal(2, s.Records.Count(r => r.Kind == RecordKind.Event && notes.Any(e => e.Id == r.Subject)));
     }
 
     [Fact]

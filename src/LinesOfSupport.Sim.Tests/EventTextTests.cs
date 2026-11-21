@@ -47,10 +47,10 @@ public class EventTextTests
     {
         var s = Session.Create(Repo.Load("tutorial"), 1);
         s.AdvanceDay();
-        var item = s.View.MorningBoard().Items.Single(i => i.LinkId == "mentorDay1");
-        // DESK-128: the card first, with its limit for one buy; the cash box only when paying cash.
-        Assert.StartsWith("Capt Mills on paying for small buys. \"Small buys go on the card if the vendor takes it, up to $20,000 each;", item.Text);
-        Assert.EndsWith("the paying agent can't buy what isn't in it.\"", item.Text);
+        // D44 (DESK-144): the agreements and staff-meeting note is read the morning of day 2, before the forklift request.
+        var item = s.View.MorningBoard().Items.Single(i => i.LinkId == "mentorAgreements");
+        Assert.StartsWith("Capt Mills on agreements. \"The forklift question is coming;", item.Text);
+        Assert.EndsWith("getting in takes a couple of hours.\"", item.Text);
         Assert.Equal("mills", item.Person?.Id);
     }
 
