@@ -81,7 +81,7 @@ internal static class MorningScreenFixChecks
                     Require(board.Tiles.Any(t => t.TodayPermille == 500) && !title.Text.Contains("down"), "A real 50% report never labels the site down by matching the end of 50%.");
                     await Capture("day12-alert");
                 }
-                if (day != 3) Require(hash == shell.Session.StateHash, "Inspection, Escape, forms and captures do not alter the saved game.");
+                if (day != 2) Require(hash == shell.Session.StateHash, "Inspection, Escape, forms and captures do not alter the saved game.");
                 GD.Print("MORNING_SCREEN_FIX_DAY_PASS: " + day);
             }
             File.WriteAllText(path, (input with { SavedDay = null }).ToJson()); shell.LoadSavedGame(path); await Frames();
