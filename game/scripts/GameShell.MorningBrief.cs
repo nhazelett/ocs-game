@@ -33,7 +33,7 @@ public partial class GameShell
                 var key = tile.SiteId + "." + tile.CapabilityId;
                 var panel = new PanelContainer(); panel.SetMeta("morning_shortfall", key); MorningAlerts.AddChild(panel);
                 var row = new VBoxContainer(); panel.AddChild(row);
-                var open = DeskUi.Button(view.NameOf(tile.SiteId) + " · " + tile.Label + ": " + TileLevel(tile) + "\nOpen site details →", () => SelectCapability(key));
+                var open = DeskUi.Button(view.NameOf(tile.SiteId) + " · " + tile.Label + ": " + TileLevel(tile) + "\nOpen site details →", () => SelectCapability(key, openDetails: true));
                 row.AddChild(open);
                 if (tile.WhyShort is { } why) row.AddChild(DeskUi.Label(why));
             }
