@@ -227,7 +227,7 @@ jobs:
           # DESK-193: the assertions used to pass before Mono crashed at exit. Require repeated clean exits.
           for attempt in 1 2 3; do
             log="$RUNNER_TEMP/godot-disruption-$attempt.log"
-            timeout 60 "$GODOT_BIN" --headless --path game res://tests/DisruptionSmokeTest.tscn 2>&1 | tee "$log"
+            timeout 60 "$GODOT_BIN" --headless --verbose --path game res://tests/DisruptionSmokeTest.tscn 2>&1 | tee "$log"
             grep -Fq 'DISRUPTION_TEARDOWN_PASS:' "$log"
             grep -Fq 'DISRUPTION_SMOKE_PASS:' "$log"
             if grep -Eq 'Leaked unsafe reference|ObjectDB instances leaked|resources still in use|handle_crash' "$log"; then exit 1; fi
