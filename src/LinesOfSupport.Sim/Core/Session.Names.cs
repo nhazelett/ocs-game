@@ -96,6 +96,16 @@ public sealed partial class Session
         _declinesCallsThrough[vendorId] = day + Math.Max(1, days) - 1;
         if (cause is not null) _declinesCallsHeard[vendorId] = cause;
     }
+    // Event vendor.short (DESK-174, Claude play 21 Nov, sixth play, note 22): the vendor has nothing to spare through this day,
+    // whatever the instrument. Calls are declined at award as declinesCalls does (the tutorial's lesson about a BPA); any
+    // other buy that would start on those days is refused with the shortage, so the card cannot buy what the call could not.
+    private readonly Dictionary<string, int> _shortThrough = new(StringComparer.Ordinal);
+    internal void GoesShort(string vendorId, int day, int days, string? cause = null)
+    {
+        DeclineCalls(vendorId, day, days, cause);
+        _shortThrough[vendorId] = day + Math.Max(1, days) - 1;
+    }
+    private int? ShortThrough(string vendorId, int day) => _shortThrough.TryGetValue(vendorId, out var through) && day <= through ? through : null;
     private bool DeclinesCalls(string? vendorId, int day) => vendorId is not null && _declinesCallsThrough.TryGetValue(vendorId, out var through) && day <= through;
 
     /// <summary>D39, DESK-111: the shop has heard (an event on the news board) that this vendor is turning calls down, and

@@ -231,6 +231,10 @@ public sealed partial class Session
                 ? $"{vendor.Name} has {Amount(left, cap)} left on those days, after {Qty(committed / 1000)} already committed. Ask for {Qty(left)} or less, or buy the rest from someone else."
                 : $"{vendor.Name} has nothing left on those days, with all {Amount(all, cap)} already committed. Buy from someone else, or pick days when they are free.");
         }
+        // DESK-174: a vendor that is short (event vendor.short) cannot start anything on those days; a call is still sent and
+        // declined at award, as the tutorial teaches.
+        if (a.Instrument != "bpaCall" && ShortThrough(vendor.Id, newStart) is { } shortThrough)
+            stops.Add($"{vendor.Name} has no {Lower(CapLabel(capId))} to spare through day {shortThrough}. Start it on day {shortThrough + 1} or later, or buy from someone else.");
         if (vendor.VehicleOnly && a.Instrument is not ("bpaCall" or "idiqOrder")) stops.Add($"{vendor.Name} is reachable only through its vehicle");
 
         if (_standing.TryGetValue(vendor.Id, out var standing) && standing.DeclinesWork)

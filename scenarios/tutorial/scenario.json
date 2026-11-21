@@ -823,7 +823,7 @@
       "preconditions": [],
       "effects": [
         {
-          "kind": "vendor.declinesCalls",
+          "kind": "vendor.short",
           "target": "harborEquipment",
           "days": 5
         }
