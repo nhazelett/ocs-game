@@ -438,8 +438,11 @@ public sealed record VendorOption(
 /// <param name="LeadTimeDays">Days' notice they need; null until met or dealt with.</param>
 /// <param name="ShipsFrom">DESK-78: the island they ship this from, when it is not their own and the office has been told
 /// (met, dealt with, or surveyed); null otherwise.</param>
+/// <param name="NoticeSays">DESK-145 (d), Claude play 21 Nov, note 5: beside a known notice, that it counts from the signed
+/// order and the quote gives the first day ("Counted from the signed order, which comes after the buy is written; the quote
+/// gives the first day it can start."); null while the notice is unknown.</param>
 public sealed record VendorCardOffer(string CapabilityId, string Label, string Unit, int? CapacityPerDay, long? UnitPriceCents, int? LeadTimeDays,
-    string? ShipsFrom = null);
+    string? ShipsFrom = null, string? NoticeSays = null);
 
 /// <summary>
 /// One vendor's card (DESK-05, D6), for the Vendors tab that replaces the Directory and Vehicles tabs. Every vendor the

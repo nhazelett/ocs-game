@@ -850,6 +850,7 @@
     {
       "id": "diningSlips",
       "label": "Island Camp Services short-staffs the dining hall two days running",
+      "playerVisibleAs": "Once the misses are reported to the office, they come to your desk as a decision on what to do with the vendor.",
       "window": {
         "earliestDay": 11,
         "latestDay": 11

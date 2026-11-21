@@ -11,6 +11,9 @@ namespace LinesOfSupport.Sim.Core;
 // Knowledge never gates an action: the Sim still awards on the true facts, so no replay changes.
 public sealed partial class Session
 {
+    /// <summary>DESK-145 (d): a vendor's notice counts from the signed order, not from the day the buy is made.</summary>
+    internal const string NoticeSays = "Counted from the signed order, which comes after the buy is written; the quote gives the first day it can start.";
+
     private readonly HashSet<string> _islandsSurveyedInPlay = new(StringComparer.Ordinal);
 
     /// <summary>Host nation and ACSA suppliers are not vendors this office buys from (D10), so they get no card.</summary>
@@ -79,7 +82,8 @@ public sealed partial class Session
                     supply ? (int)Math.Floor(o.CapacityPerDay) : null,
                     terms ? UnitPriceFor(v, o) : null,
                     terms ? o.LeadTimeDays : null,
-                    supply && o.SourceIsland is { } src && src != v.Island ? IslandData(src).Name : null);   // DESK-78
+                    supply && o.SourceIsland is { } src && src != v.Island ? IslandData(src).Name : null,   // DESK-78
+                    terms ? NoticeSays : null);   // DESK-145 (d)
             }).ToList();
             var rep = VendorRep(v.Id);
             var met = VendorMetDay(v.Id);

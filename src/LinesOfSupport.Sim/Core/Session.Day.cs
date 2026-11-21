@@ -553,6 +553,7 @@ public sealed partial class Session
             var output = (sortie * _missionWeights[0] + throughput * _missionWeights[1] + endurance * _missionWeights[2] + resilience * _missionWeights[3]) / Math.Max(1, wsum);
             // Each open site counts equally: a small spoke carrying the flying mission matters as much as a large hub.
             _mission += output;
+            _missionLowestPermille = Math.Min(_missionLowestPermille, output);
             _sortie += sortie;
             _throughput += throughput;
             _endurance += endurance;
