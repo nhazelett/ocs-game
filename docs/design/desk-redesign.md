@@ -527,6 +527,6 @@ Also from this play, no decision needed: an SF 44 quote counts its trips (DESK-1
 
 Sim notes (Fable):
 
-- DESK-183: the award summary's hours for an `sf44` with more than one delivery add `Perf`-free trip hours (`TripsToday`'s per-delivery figure for the buyer) per delivery day, said as "2 shop hours of your time on each delivery day"; the one-delivery case keeps its single trip.
+- DESK-183: the award summary's hours for an `sf44` with more than one delivery name the buyer's trip hours per delivery (the figure `TripsToday` charges), said as "2 shop hours of your time on each delivery day"; the one-delivery case keeps its single trip.
 - DESK-184: where the morning board makes a vendor failure a warning (no shortfall), find the arrangements that delivered on that site and capability that day beyond the failed one and append "; X covered the day, so nothing was short."; the debrief's record keeps the FAIL line and adds the cover.
 - DESK-185: `BuildDayPlan` lists `ForShop` starts and ends with "for the contracting office" in place of the site.
