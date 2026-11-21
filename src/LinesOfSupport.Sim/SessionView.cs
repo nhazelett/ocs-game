@@ -269,6 +269,14 @@ public sealed class SessionView
     /// added from which day. Null for an unknown id or a coordination. Changes nothing.</summary>
     public ModifyView? ModifyOptions(string arrangementId, string? assignee = null) => _s.BuildModifyView(arrangementId, assignee);
 
+    /// <summary>Where an arrangement stands this morning (Q27, DESK-139). The day's lifecycle closes a buy whose last day was
+    /// yesterday only when today is played, so this morning its stored status can still read Active or Pending; this says
+    /// Ended for it. Bind the contract page and lists to this, not to <see cref="Arrangement.Status"/>. Null for an unknown id.</summary>
+    public ArrangementStatus? StatusToday(string arrangementId)
+        => _s.Arrangements.FirstOrDefault(a => a.Id == arrangementId) is not { } a ? null
+         : a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended or ArrangementStatus.Pending && a.EndDay < _s.Day
+             ? ArrangementStatus.Ended : a.Status;
+
     /// <summary>What can be picked together in the award editor given the vendor and instrument already picked, with a
     /// plain reason on everything that cannot (M2R-35). Null for an unknown site or capability.</summary>
     public AwardChoicesView? AwardChoices(string siteId, string capabilityId, string? cardId = null, string? vendorId = null, string? instrumentId = null)
