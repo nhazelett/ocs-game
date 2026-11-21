@@ -83,6 +83,7 @@ public partial class GameShell
         contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement)));
         if (arrangement.NoticeDays is { } days)
             contractContents.AddChild(DeskUi.Label($"The contract requires {days} days of notice."));
+        var hasModification = AddContractModification(contractContents, view, arrangement.Id);
         foreach (var issue in view.PerformanceIssues.Where(i => i.ArrangementId == arrangement.Id && i.Outcome != CureOutcome.Cured))
         {
             contractContents.AddChild(DeskUi.Heading(DeskUi.ListLabel(view.NameOf(issue.Id))));
@@ -91,20 +92,24 @@ public partial class GameShell
         }
         var blocked = view.TerminateBlocked(arrangement.Id);
         if (blocked is not null) { contractContents.AddChild(DeskUi.Label(blocked)); return; }
-        if (arrangement.IsCoordination) return;
+        if (arrangement.IsCoordination || view.EndWords(arrangement.Id) is not { } endWords) return;
         var ending = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
-        var endPanel = ContractPerformanceChoices.Count > 0 ? contractContents : contractFooter;
+        var endPanel = ContractPerformanceChoices.Count > 0 || hasModification ? contractContents : contractFooter;
         var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
         var assigned = AddAssignedAction(endPanel, endPanel, view, action,
-            ending ? "Ending this contract is in work" : "End this contract…",
-            "Ends this contract's support when the work and any notice are complete.",
+            ending ? endWords.Button + " (in work)" : endWords.Button + "…",
+            endWords.Says,
             stillCurrent: () => ContractView.Visible && SelectedArrangement == arrangement.Id && !EndContractDialog.Visible,
             commit: chosen =>
             {
                 var current = session.View!;
+                var words = current.EndWords(arrangement.Id)!;
                 contractToEnd = (TerminateAction)chosen; contractToEndHash = session.StateHash;
-                EndContractDialog.DialogText = $"End this contract? Here is what stops.\n\n{DeskUi.ListLabel(current.ArrangementName(arrangement.Id))} supplies {supplies}.\nIncludes {scope}.\n\n"
-                    + ActionCostText(current, chosen, "Its support stops when that work is complete.");
+                EndContractDialog.Title = words.Button + "?";
+                EndContractDialog.GetOkButton().Text = words.Button;
+                EndContractDialog.GetCancelButton().Text = arrangement.Instrument == "gpc" ? "Keep this card buy" : "Keep this contract";
+                EndContractDialog.DialogText = $"{words.Button}? Here is what stops.\n\n{DeskUi.ListLabel(current.ArrangementName(arrangement.Id))} supplies {supplies}.\nIncludes {scope}.\n\n"
+                    + ActionCostText(current, chosen, words.Says);
                 EndContractDialog.PopupCentered(new Vector2I(620, 300));
                 EndContractDialog.GetCancelButton().GrabFocus();
             });
@@ -121,10 +126,10 @@ public partial class GameShell
         return (arrangement.Instrument == "gpc" ? "Paid from the card program.\n" : "") + $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
     }
 
-    private static string ArrangementStatusText(SessionView view, Arrangement arrangement) => arrangement.Status switch
+    private static string ArrangementStatusText(SessionView view, Arrangement arrangement) => view.StatusToday(arrangement.Id) switch
     {
         ArrangementStatus.Pending => arrangement.StartDay == view.Day ? "Starts today" : $"Starts on day {arrangement.StartDay}", ArrangementStatus.Active => "Providing support",
         ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended",
-        ArrangementStatus.Declined => "Declined", _ => arrangement.Status.ToString()
+        ArrangementStatus.Declined => "Declined", _ => view.StatusToday(arrangement.Id)?.ToString() ?? ""
     };
 }

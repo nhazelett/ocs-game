@@ -10,7 +10,7 @@ public partial class GameShell
     // Assignee changes only the proposed action. Sim owns the hours, queue and completion forecast.
     private (Button Button, AssigneePicker Picker, Label Cost) AddAssignedAction(
         VBoxContainer body, VBoxContainer footer, SessionView view, PlayerAction action, string text, string effect,
-        Func<bool>? stillCurrent = null, Action<PlayerAction, ActionPreview>? updated = null, Action? accepted = null, Action<PlayerAction>? commit = null, Func<string?>? blocked = null)
+        Func<bool>? stillCurrent = null, Action<PlayerAction, ActionPreview>? updated = null, Action? accepted = null, Action<PlayerAction>? commit = null, Func<string?>? blocked = null, Func<PlayerAction, ActionPreview, string>? costText = null)
     {
         var hash = session.StateHash;
         var selected = action.Assignee ?? view.Team.Single(m => m.Role == "you").Id;
@@ -33,7 +33,7 @@ public partial class GameShell
             var preview = view.PreviewAny(action);
             DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : blocked?.Invoke() is { } stop ? stop : preview.HardStops.Count > 0 ? string.Join("\n\n", preview.HardStops) : null);
             warnings.Text = string.Join("\n\n", preview.SoftGaps); warnings.Visible = preview.SoftGaps.Count > 0;
-            cost.Text = ActionCostText(view, action, effect, preview);
+            cost.Text = costText?.Invoke(action, preview) ?? ActionCostText(view, action, effect, preview);
             updated?.Invoke(action, preview);
         }
         picker.SelectionChanged = () =>
