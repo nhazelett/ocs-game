@@ -127,7 +127,7 @@
         "operator": { "person": "dunn", "says": "I should have written this down: I've got nobody licensed on forklifts this rotation. The rental has to come with drivers." }
       },
       "person": "dunn",
-      "message": "The host nation wants its forklifts back after day 7 and the warehouse can't move pallets by hand. Three forklifts from day 8, through the end of the month.",
+      "message": "The host nation wants its forklifts back after day 7 and the warehouse can't move pallets by hand. Three forklifts from day 8, for thirteen days.",
       "flaggedEnduring": false
     },
     {
@@ -906,7 +906,7 @@
       "metric": "site.hubSite.waste.downDays",
       "comparator": "<=",
       "value": 0,
-      "says": "The latrines get pumped every day, not one day missed."
+      "says": "The latrines get pumped every day, not one day missed, and a day under half pumped counts as missed."
     },
     {
       "id": "mission",
