@@ -22,7 +22,7 @@ public class CorFitTests
         Assert.False(lane.Fits);
         Assert.Equal(2, lane.Watching);                     // billeting and dining, inherited
         Assert.Equal(1000 - 300 - 2 * 150, lane.ReportPermille);
-        Assert.Equal("SSgt Lane (3 FSS) does not work with material handling equipment and already watches 2 other contracts: catches about 40% of problems, reported the same day. Naming SSgt Lane here also lowers the watch on the 2 other contracts.", lane.Why);   // DESK-112
+        Assert.Equal("SSgt Lane (3 FSS) does not work with material handling equipment and already watches 2 other contracts (Island Camp Services' lodging and food service at Hub): catches about 40% of problems, reported the same day. Naming SSgt Lane here also lowers the watch on the 2 other contracts.", lane.Why);   // DESK-112
     }
 
     [Fact]

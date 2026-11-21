@@ -125,6 +125,10 @@ public class TrueSentencesTests
             Id = "w", Instrument = "sf44", Vendor = "harborBottling", Card = "tutWater", Quantity = 4500, StartDay = 2, DurationDays = 8, Day = 1,
         });
         Assert.Contains(preview.SoftGaps, g => g.StartsWith("No written terms on an 8-day service", StringComparison.Ordinal));
+        // Claude play 21 Nov, fifth play, note 21: the quote said "execution-confusion events", a report column's name.
+        var noTerms = Assert.Single(preview.SoftGaps, g => g.StartsWith("No written terms", StringComparison.Ordinal));
+        Assert.Equal("No written terms on an 8-day service: on a day the vendor and the unit disagree on how much or when, nothing on paper settles it and only half of that day's supply arrives.", noTerms);
+        Assert.DoesNotContain("confusion", noTerms, StringComparison.Ordinal);
     }
 
     [Fact]
