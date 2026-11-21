@@ -81,6 +81,26 @@ public partial class ShortfallSmokeTest : Node
                 Require(spokeHash == shell.Session.StateHash, "Zooming and fitting the opened reason preserve the simulation.");
                 map.Tabletop!.CloseShortfall(); MapCalloutSmokeTest.Check(map);
             }
+            var bundle = LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+            var log = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-5", "input-log.json"));
+            var day16 = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 15);
+            var save = Path.Combine(Path.GetTempPath(), "ocs-shortfall-" + Guid.NewGuid() + ".json");
+            File.WriteAllText(save, day16.ToSave().ToJson()); shell.LoadSavedGame(save); File.Delete(save);
+            shell.DeveloperToggle.ButtonPressed = false; map.FitMap(); map.SetMovementProgress(1); await Frames();
+            Require(shell.Session.View!.Day == 16 && shell.Session.StateHash == day16.StateHash(), "The fifth play's exact day-sixteen morning is loaded.");
+            var tile16 = shell.Session.View.MorningBoard().Tiles.First(t => t.Status is "down" or "degraded");
+            var key16 = tile16.SiteId + "." + tile16.CapabilityId;
+            Button Alert() => shell.MorningAlerts.GetChildren().OfType<PanelContainer>().Single(p => p.HasMeta("morning_shortfall")
+                && p.GetMeta("morning_shortfall").AsString() == key16).GetChild<VBoxContainer>(0).GetChildren().OfType<Button>().Single();
+            Alert().EmitSignal(Button.SignalName.Pressed); await Frames(); CheckOpen(tile16.SiteId);
+            Require(shell.SelectedCapability == key16 && shell.Session.StateHash == day16.StateHash(), "Open site details opens the actual site's card without acting.");
+            var openCard = map.Tabletop!.ShortfallCard;
+            Alert().EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(map.Tabletop!.ShortfallCard == openCard, "Opening an already-open site leaves its detail open.");
+            await Capture("day16-alert-open");
+            var card16 = map.Tabletop.RequestButtons.First().Key;
+            map.Tabletop.RequestButtons[card16].EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.RequestWorkspace.Visible && shell.SelectedCard == card16 && shell.Session.StateHash == day16.StateHash(), "The opened card's request link is usable and pure.");
             shell.QueueFree(); shell = null; await Frames();
             GD.Print("SHORTFALL_SMOKE_PASS: verbatim reasons on Today/request/map, unchanged resting placement, opaque in-view cards in all looks, real clicks/drag/close/playback and pure inspection."); GetTree().Quit();
 

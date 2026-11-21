@@ -179,7 +179,7 @@ public partial class GameShell
         }
     }
 
-    private void SelectCapability(string key)
+    private void SelectCapability(string key, bool openDetails = false)
     {
         BoardDetailsToggle.ButtonPressed = true;
         if (session.View is not { } view) return;
@@ -189,6 +189,8 @@ public partial class GameShell
         Map.SelectSite(tile.SiteId);
         GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
         RefreshMorningDesk(view, view.MorningBoard());
+        if (openDetails && Map.Tabletop is { } tabletop && tabletop.OpenShortfallSite != tile.SiteId)
+            tabletop.ToggleShortfall(tile.SiteId);
     }
 
     private void RenderLedgerContext(SessionView? view)
