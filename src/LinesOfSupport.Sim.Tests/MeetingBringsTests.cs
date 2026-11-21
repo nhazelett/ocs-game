@@ -14,7 +14,7 @@ public class MeetingBringsTests
     private static Session Start(string sc) => sc == "tutorial" ? Session.Create(Repo.Load(sc), 1, Prep) : Session.Create(Repo.Load(sc), 1);
 
     private static string Expected(VendorCard c)
-        => $"Their terms are on file already, so meeting {c.Rep!.DisplayName} adds nothing to their card; a vendor you meet does raise any contract of theirs this office has left unfinished.";
+        => $"Their terms are on file already, so meeting {c.Rep!.DisplayName} adds nothing to their card; a vendor you meet will bring up any contract of theirs this office has left unfinished.";
 
     [Fact]
     public void Only_a_vendor_with_nothing_left_to_learn_and_someone_to_meet_says_it()
@@ -58,6 +58,6 @@ public class MeetingBringsTests
         var s = Session.Create(Repo.Load("tutorial"), 1, ["cashAndPayingAgent", "systemAccess", "pullVehicles", "vendorLists", "templatesAndKit"]);
         var c = s.View.VendorCards().Single(x => x.Id == "harborEquipment");
         Assert.Null(c.StillToLearn);
-        Assert.Equal("Their terms are on file already, so meeting Mr. Tomas Reyna adds nothing to their card; a vendor you meet does raise any contract of theirs this office has left unfinished.", c.MeetingBrings);
+        Assert.Equal("Their terms are on file already, so meeting Mr. Tomas Reyna adds nothing to their card; a vendor you meet will bring up any contract of theirs this office has left unfinished.", c.MeetingBrings);
     }
 }

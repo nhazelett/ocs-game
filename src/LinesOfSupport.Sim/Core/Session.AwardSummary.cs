@@ -30,7 +30,7 @@ public sealed partial class Session
             ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
         var parts = new List<string>
         {
-            $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {HoursOf(preview, a.Assignee)}.",
+            $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
         };
         var card = chk.Card;
         // D47 (DESK-158, Claude play 21 Nov, fourth play, note 14): what a written buy's start waits for, in one clause, so
@@ -200,6 +200,18 @@ public sealed partial class Session
 
     /// <summary>"3%", "2.5%".</summary>
     private static string PercentSaid(int permille) => permille % 10 == 0 ? $"{permille / 10}%" : $"{permille / 10}.{permille % 10}%";
+
+    /// <summary>DESK-183 (Claude play 21 Nov, ninth play, note P1-26): an SF 44 paid at each delivery takes no writing, but
+    /// every delivery is a trip for the buyer and the paying agent (DESK-09), so its quote says the trip's hours, as the
+    /// buy's record and the day loop charge them: "2 shop hours of your time on each delivery day". A one-day SF 44 is paid
+    /// on the spot with no trip and keeps "no shop hours". A forecast from today's trip; a shop vehicle bought later cuts it.</summary>
+    private string TripHoursOf(AwardAction a, string siteId, string stockIsland)
+    {
+        var m = Member(a.Assignee);
+        var whose = m.Role == "you" ? "your" : MemberName(m) + "'s";
+        var h = HalfHours(PersonHours(TripMilli(siteId, stockIsland, Day), m.Id));
+        return $"{(h == 1 ? "1 shop hour" : $"{HoursText(h)} shop hours")} of {whose} time on each delivery day";
+    }
 
     /// <summary>"no shop hours", "6 hours of your time", "6 to 9 hours of MSgt Joan Avery's time".</summary>
     private string HoursOf(ActionPreview p, string? assignee)

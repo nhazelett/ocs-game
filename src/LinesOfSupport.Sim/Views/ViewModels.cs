@@ -486,7 +486,7 @@ public sealed record VendorCard(
 {
     /// <summary>DESK-166 (Claude play 21 Nov, fifth play, note 13): what a meeting brings when nothing on the card is left to
     /// learn, so the two hours are not a mystery ("Their terms are on file already, so meeting Mr. Tomas Reyna adds nothing to
-    /// their card; a vendor you meet does raise any contract of theirs this office has left unfinished."). The same words for
+    /// their card; a vendor you meet will bring up any contract of theirs this office has left unfinished."). The same words for
     /// every vendor, so it never hints at a contract the handover left out. Null when there is something still to learn
     /// (<see cref="StillToLearn"/> says it), when nobody from them can be met, or once met.</summary>
     public string? MeetingBrings { get; init; }

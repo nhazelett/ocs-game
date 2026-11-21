@@ -527,6 +527,6 @@ Also from this play, no decision needed: an SF 44 quote counts its trips (DESK-1
 
 Sim notes (Fable):
 
-- DESK-183: the award summary's hours for an `sf44` with more than one delivery name the buyer's trip hours per delivery (the figure `TripsToday` charges), said as "2 shop hours of your time on each delivery day"; the one-delivery case keeps its single trip.
+- DESK-183: the award summary's hours for an `sf44` with more than one delivery name the buyer's trip hours per delivery (the figure `TripsToday` charges), said as "2 shop hours of your time on each delivery day"; the one-delivery case keeps its single trip. Built 21 Nov: the ninth play's day 8 bridge reads "Main Island Sanitation, waste removal for Hub: $192 and 2 shop hours of your time on each delivery day." The trip is said in the hours of whoever makes it, from today's trip (a shop vehicle bought later cuts it, as it does the plan's). A one-day SF 44 is paid on the spot with no trip and still reads "no shop hours". The meeting sentence now ends "a vendor you meet will bring up any contract of theirs this office has left unfinished". Records and goldens unchanged.
 - DESK-184: where the morning board makes a vendor failure a warning (no shortfall), find the arrangements that delivered on that site and capability that day beyond the failed one and append "; X covered the day, so nothing was short."; the debrief's record keeps the FAIL line and adds the cover.
 - DESK-185: `BuildDayPlan` lists `ForShop` starts and ends with "for the contracting office" in place of the site.

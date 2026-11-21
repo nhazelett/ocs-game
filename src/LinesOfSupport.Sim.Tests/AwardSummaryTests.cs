@@ -28,7 +28,8 @@ public class AwardSummaryTests
         Assert.StartsWith($"Harbor Bottling, water for Hub: {(preview.TotalCents / 100m).ToString("$#,##0", System.Globalization.CultureInfo.InvariantCulture)} and ", summary.Sentence);
         // An SF 44 written on day 1 starts on day 3 or 4 at the earliest; the stock covers day 2.
         // D46 (DESK-156): two sentences here, and the cover before it starts and what it is on top of are in the notes.
-        Assert.Contains("and no shop hours. It starts on day 3 or 4; it was wanted from day 2. If it starts on day 4,", summary.Sentence);
+        // DESK-183: each delivery of a multi-day SF 44 is a trip for the buyer and the paying agent.
+        Assert.Contains("and 2 shop hours of your time on each delivery day. It starts on day 3 or 4; it was wanted from day 2. If it starts on day 4,", summary.Sentence);
         Assert.Contains(preview.SoftGaps, g => g.EndsWith("The water stock on hand should cover day 2.", StringComparison.Ordinal));
         // The host nation's water point opens on day 9, inside these days, so the buy is on top of it; days 2 to 8 are not
         // covered, so it is not only adding to covered days.
@@ -113,7 +114,9 @@ public class AwardSummaryTests
         var hours = lo == hi ? $"{lo} hours" : $"{lo} to {hi} hours";
         Assert.Contains($"and {hours} of MSgt Joan Avery's time.", s.View.AwardSummary(buy)!.Sentence);
         Assert.Contains(".5", hours);
-        Assert.Contains("and no shop hours.", s.View.AwardSummary(Water("x", 2, 7))!.Sentence);
+        // A one-day SF 44 is paid on the spot; one that runs longer costs a trip each delivery day (DESK-183).
+        Assert.Contains("and no shop hours.", s.View.AwardSummary(Water("x", 2, 1))!.Sentence);
+        Assert.Contains("shop hours of your time on each delivery day.", s.View.AwardSummary(Water("x", 2, 7))!.Sentence);
     }
 
     [Fact]
