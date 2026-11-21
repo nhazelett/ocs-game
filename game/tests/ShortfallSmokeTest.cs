@@ -101,6 +101,17 @@ public partial class ShortfallSmokeTest : Node
             var card16 = map.Tabletop.RequestButtons.First().Key;
             map.Tabletop.RequestButtons[card16].EmitSignal(Button.SignalName.Pressed); await Frames();
             Require(shell.RequestWorkspace.Visible && shell.SelectedCard == card16 && shell.Session.StateHash == day16.StateHash(), "The opened card's request link is usable and pure.");
+            shell.CloseRequestWorkspace();
+            log = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-6", "input-log.json"));
+            day16 = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 15);
+            File.WriteAllText(save, day16.ToSave().ToJson()); shell.LoadSavedGame(save); File.Delete(save);
+            shell.DeveloperToggle.ButtonPressed = false; map.FitMap(); map.SetMovementProgress(1); await Frames();
+            var changeLabel = map.Tabletop!.SiteStatuses["hubSite"];
+            Require(changeLabel.Text.Contains("Fuel: supplier failure reported"), "The sixth play's exact fuel report is visible.");
+            Click(changeLabel.GetGlobalRect().GetCenter() - map.Tabletop.GlobalPosition); await Frames();
+            Require(shell.SelectedCapability == "hubSite.fuel" && shell.BoardFocus.Text.StartsWith("Selected: Fuel at Hub")
+                && shell.Session.StateHash == day16.StateHash(), "Clicking the named fuel report selects fuel, not the site's first capability, without acting.");
+            await Capture("day16-fuel-label");
             shell.QueueFree(); shell = null; await Frames();
             GD.Print("SHORTFALL_SMOKE_PASS: verbatim reasons on Today/request/map, unchanged resting placement, opaque in-view cards in all looks, real clicks/drag/close/playback and pure inspection."); GetTree().Quit();
 

@@ -7,6 +7,7 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     internal PanelContainer ContractView { get; private set; } = null!;
+    internal TabBar ContractDeskTabs { get; private set; } = null!;
     internal ConfirmationDialog EndContractDialog { get; private set; } = null!;
     private VBoxContainer contractContents = null!, contractFooter = null!;
     private TerminateAction? contractToEnd;
@@ -92,7 +93,17 @@ public partial class GameShell
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
         var back = contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
-        contractContents.AddChild(DeskUi.Button(back, ReturnFromContract));
+        var navigation = new HBoxContainer(); contractContents.AddChild(navigation);
+        navigation.AddChild(DeskUi.Button(back, ReturnFromContract));
+        var bar = ContractDeskTabs = new TabBar { Name = "DeskNavigation", ClipTabs = false }; navigation.AddChild(bar);
+        var tabs = GetNode<TabContainer>("%DeskTabs");
+        for (var i = 0; i < tabs.GetTabCount(); i++) bar.AddTab(tabs.GetTabTitle(i));
+        bar.CurrentTab = PaymentsTab;
+        bar.TabSelected += index =>
+        {
+            if (!ContractView.Visible || !bar.IsInsideTree()) return;
+            CloseContractView(); tabs.CurrentTab = (int)index;
+        };
         var title = DeskUi.Label(DeskUi.ListLabel(view.ArrangementName(arrangement.Id)));
         title.AddThemeFontSizeOverride("font_size", 28); contractContents.AddChild(title);
         var site = view.NameOf(arrangement.SiteId);

@@ -210,13 +210,20 @@ public partial class TabletopMap3D:Control
                     &&t.Status is "down" or "degraded").Select(t=>t.Label+(t.Status=="down"?" down":" partly supported"));
                 var confidence=label.GetMeta("confidence_lost").AsBool()?new[]{"Commander confidence lost"}:Array.Empty<string>();
                 label.Text=string.Join("\n",new[]{changeWords}.Concat(stillShort).Concat(confidence));label.SetMeta("reported_change",true);
+                var otherKeys = capabilityTiles.Where(t => t.SiteId == group.Key && !group.Any(c => c.CapabilityId == t.CapabilityId)
+                    && t.Status is "down" or "degraded").Select(t => group.Key + "." + t.CapabilityId).Concat(confidence.Select(_ => ""));
+                reportedCapabilityLines[label] = group.Select(c => group.Key + "." + c.CapabilityId).Concat(otherKeys).ToArray();
                 var summary=group.GroupBy(c=>(c.Kind,c.Permille)).Select(reports=>
                 {
                     var name=SentenceCase(CapabilityNames(reports.Select(c=>capabilityTiles.FirstOrDefault(t=>t.CapabilityId==c.CapabilityId)?.Label??"Support")));
                     return reports.Key.Kind=="restored"?$"{name} restored":reports.Key.Kind=="vendorFailure"?$"{name}: supplier failure reported"
                         :reports.Key.Permille==0?$"{name} down":$"{name}\n{reports.Key.Permille/10m:0.#}% supplied";
                 });
-                callouts.Single(c=>c.Words==label).ShortWords!.Text=string.Join("\n",summary.Concat(stillShort).Concat(confidence));
+                var shortLabel = callouts.Single(c=>c.Words==label).ShortWords!;
+                shortLabel.Text=string.Join("\n",summary.Concat(stillShort).Concat(confidence));
+                reportedCapabilityLines[shortLabel] = group.GroupBy(c => (c.Kind, c.Permille)).SelectMany(reports =>
+                    Enumerable.Repeat(group.Key + "." + reports.First().CapabilityId,
+                        reports.Key.Kind is "restored" or "vendorFailure" || reports.Key.Permille == 0 ? 1 : 2)).Concat(otherKeys).ToArray();
                 movingLabels.Add((label,marker,null));
             }
         }

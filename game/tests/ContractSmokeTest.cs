@@ -81,7 +81,30 @@ public partial class ContractSmokeTest : Node
             Require(cardRow.Text.Contains("Paid from the card program.") && shell.Session.StateHash == cardHash,
                 "Payments also names the card program without changing play.");
             shell.OpenContractView(cardBuy.Id); await Capture("card-payment");
-            shell.CloseContractView(); shell.QueueFree();
+            var contractHash = shell.Session.StateHash;
+            Require(new PlayScreen(shell).Read().Count(e => e.Kind == "tab" && e.Text == "Today") == 1,
+                "Only the visible contract navigation is offered, without covered desk controls.");
+            using (var selected = shell.ContractDeskTabs.GetThemeStylebox("tab_selected") as StyleBoxFlat)
+                Require(selected is not null && selected.BgColor.IsEqualApprox(TabletopTheme.Paper), "Contract desk navigation uses the shared paper theme.");
+            await Capture("desk-tabs");
+            ClickTab(GameShell.TodayTab); await Capture("today-after-contract");
+            Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.TodayTab && shell.Session.StateHash == contractHash,
+                "A real Today tab click closes the contract and returns to the desk without acting.");
+            shell.OpenContractView(cardBuy.Id); await Capture("payments-tab");
+            ClickTab(GameShell.PaymentsTab); await Capture("payments-after-contract");
+            Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.PaymentsTab && shell.Session.StateHash == contractHash,
+                "Clicking the already-selected Payments tab also closes the contract.");
+            shell.QueueFree();
+            void ClickTab(int index)
+            {
+                var bar = shell.ContractDeskTabs;
+                var point = bar.GlobalPosition + bar.GetTabRect(index).GetCenter();
+                foreach (var pressed in new[] { true, false })
+                {
+                    using var mouse = new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = pressed };
+                    GetViewport().PushInput(mouse, true);
+                }
+            }
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await PaymentReportsSmokeChecks.Run(this);
             GD.Print("CONTRACT_SMOKE_PASS: plain payment list, inherited support protected, own contract detail, cancel and exact confirmed termination.");

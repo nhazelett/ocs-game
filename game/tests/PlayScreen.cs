@@ -32,6 +32,12 @@ internal sealed class PlayScreen(GameShell shell)
             if (cover.ZIndex <= 15) yield return shell.GetNode("Navigation");
             yield break;
         }
+        if (shell.ContractView.IsVisibleInTree())
+        {
+            yield return shell.ContractView;
+            yield return shell.GetNode("Navigation");
+            yield break;
+        }
         if (shell.RequestWorkspace.IsVisibleInTree())
         {
             yield return shell.RequestWorkspace;

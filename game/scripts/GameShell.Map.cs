@@ -21,6 +21,7 @@ public partial class GameShell
                 LinesOfSupport.Sim.Views.BoardCategory.Request, LinesOfSupport.Sim.Views.BoardSeverity.Info,
                 LinesOfSupport.Sim.Views.BoardLinkKind.Card, card, "", []));
         };
+        Map.CapabilityPicked += key => SelectCapability(key, openDetails: true);
         Map.SitePicked += id => { var tile = session.View?.MorningBoard().Tiles.FirstOrDefault(t => t.SiteId == id); if (tile is not null) SelectCapability(id + "." + tile.CapabilityId); };
     }
 }
