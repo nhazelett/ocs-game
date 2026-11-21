@@ -124,7 +124,7 @@ public sealed partial class Session
                 // change (the confidence tier it raises changes nothing the player sees), and the vendor raises an
                 // unfinished letter contract of theirs if there is one.
                 MeetingBrings = missing.Count == 0 && rep is not null && met is null
-                    ? $"Their terms are on file already, so meeting {rep.DisplayName} adds nothing to their card; a vendor you meet does raise any contract of theirs this office has left unfinished."
+                    ? $"Their terms are on file already, so meeting {rep.DisplayName} adds nothing to their card; a vendor you meet will bring up any contract of theirs this office has left unfinished."
                     : null,
             });
         }
