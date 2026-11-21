@@ -15,7 +15,7 @@ internal static class MorningScreenFixChecks
         var input = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-18", "input-log.json"));
         try
         {
-            foreach (var day in new[] { 3, 4, 5, 12 })
+            foreach (var day in new[] { 2, 4, 5, 12 })   // D44 (DESK-144): Mills's staff-meeting note is read on day 2
             {
                 var save = input with { SavedDay = day, Actions = input.Actions.Where(a => a.Day < day).ToList() };
                 File.WriteAllText(path, save.ToJson()); shell.DeveloperToggle.ButtonPressed = false; shell.LoadSavedGame(path);
@@ -30,7 +30,7 @@ internal static class MorningScreenFixChecks
                     Require(tile.WhyShort is null || PlayScreen.Descendants(row).OfType<Label>().Any(l => l.Text == tile.WhyShort), "Every current shortfall carries its Sim explanation in the first group.");
                 }
                 Require(shell.MorningHeading.Text.Contains(DeskUi.Count(shell.MorningAlerts.GetChildCount(), "alert")), "The alert count counts the visible alert entries.");
-                if (day == 3)
+                if (day == 2)
                 {
                     var mills = board.New.Single(n => n.Person?.Role == "outgoingCco");
                     Require(!shell.LeadWords.IsVisibleInTree() && !shell.MentorMessages.Visible,
