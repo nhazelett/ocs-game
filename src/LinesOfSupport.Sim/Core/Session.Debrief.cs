@@ -72,9 +72,14 @@ public sealed partial class Session
         foreach (var lf in LiftDelayFactors(siteId, capId, d)) yield return lf;
 
         var contributors = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && ActiveOn(a, d)).ToList();
+        // DESK-168 (a): a buy the office cut short that would have supplied this day, named first, on a day what was left
+        // was too small (not a day the rest was sized right and fell short for another reason).
+        var cuts = contributors.Sum(a => (a.CapabilityId == capId ? a.QuantityMilli : 0) + a.SuppliedQuantityMilli.GetValueOrDefault(capId)) < DemandMilli(site, capId, d)
+            ? CutFactors(siteId, capId, d).ToList() : [];
+        foreach (var cf in cuts) yield return cf;
         if (contributors.Count == 0)
         {
-            var any = false;
+            var any = cuts.Count > 0;
             // Only the most recent loss of supply counts: a coordination withdrawn on day 12 does not explain day 77
             // if a contract supplied the need in between.
             var lastContractEnd = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && !a.IsCoordination && a.Status != ArrangementStatus.Declined && a.EndDay < d)
@@ -217,7 +222,7 @@ public sealed partial class Session
         {
             var late = d >= jump.ArrivalDay + PopulationJumpReactDays;
             var perDay = PerDay(cap) ? " a day" : "";
-            var text = $"{Qty(jump.Extra)} unplanned personnel arrived at {site.Name} on day {jump.ArrivalDay} on {jump.ArrivalDay - jump.NoticeDay} days' notice (day {jump.NoticeDay}); arrangements sized for the plan's {Qty(planned / 1000)} {cap.Unit}{perDay} fell short of {demand / 1000}{perDay}.";
+            var text = $"{Qty(jump.Extra)} unplanned personnel arrived at {site.Name} on day {jump.ArrivalDay} on {jump.ArrivalDay - jump.NoticeDay} days' notice (day {jump.NoticeDay}); arrangements sized for the plan's {UnitCount(planned / 1000, cap)}{perDay} fell short of {demand / 1000}{perDay}.";
             yield return (late ? $"jump|{jump.RecordId}|late" : $"jump|{jump.RecordId}", late
                 ? new GapFactor(GapFactorKind.PopulationJump, GapTag.Avoidable, d, text + $" Still short {PopulationJumpReactDays} days after they arrived: the notice left time to resize.", [jump.RecordId])
                 : new GapFactor(GapFactorKind.PopulationJump, GapTag.Unforeseeable, d, text + " Nothing before the notice showed it coming.", [jump.RecordId]));
@@ -228,7 +233,7 @@ public sealed partial class Session
             var growth = step is { Day: > 1 } ? $" Population rose to {step.Count} on day {step.Day}, which the plan showed from day 1." : "";
             var perDay = PerDay(cap) ? " a day" : "";
             yield return ($"demand|{step?.Day}", new GapFactor(GapFactorKind.DemandAboveSupply, GapTag.Avoidable, d,
-                $"Arrangements at {site.Name} were sized for {Qty(supplyCap / 1000)} {cap.Unit}{perDay} against demand of {Qty(demand / 1000)}{perDay}.{growth}", contributors.Select(a => a.CauseId).ToList()));
+                $"Arrangements at {site.Name} were sized for {UnitCount(supplyCap / 1000, cap)}{perDay} against demand of {Qty(demand / 1000)}{perDay}.{growth}", contributors.Select(a => a.CauseId).ToList()));
         }
 
         foreach (var a in contributors)
@@ -566,6 +571,65 @@ public sealed partial class Session
             ? $"none waited long enough for {customer} to go to the commander"
             : $"{customer} went to the commander about the ones waiting on {(complaints.Count == 1 ? $"day {complaints[0]}" : "days " + JoinAnd(complaints.Select(d => d.ToString()).ToList()))}";
         return $"{worked}; {reached}.";
+    }
+
+    // ------------------------------------------------------------------ a buy the player cut short (DESK-168)
+
+    /// <summary>
+    /// DESK-168 (a), Claude play 21 Nov, sixth play, note 36: the player cancelled a right-sized card buy because it left
+    /// out operators and could rebuy only one forklift, and the debrief said only that the arrangements were sized for one.
+    /// A buy of this office's that was cancelled or terminated, and whose days as ordered covered this day, is named in the
+    /// gap: "The card buy with Coastal Rentals for 3 forklifts from day 8 was cancelled on day 7, before it started; it had
+    /// left out operators, which SMSgt Ray Dunn said the request needs." Its order, the cut and the answer that named the
+    /// part are the evidence. Avoidable: the cut was the player's.
+    /// </summary>
+    private IEnumerable<(string Key, GapFactor F)> CutFactors(string siteId, string capId, int d)
+    {
+        foreach (var a in _arrangements.Where(a => a is { CutDay: not null, IsCoordination: false } && a.Status != ArrangementStatus.Declined
+                                                   && a.SiteId == siteId && Supplies(a, capId)
+                                                   && a.StartDay <= d && d <= a.PlannedEndDay && a.EndDay < d))
+        {
+            // Only the most recent loss counts, as for a withdrawn coordination: a replacement that itself ended before
+            // this day explains it, not the cut.
+            if (_arrangements.Any(o => o != a && o.SiteId == siteId && Supplies(o, capId) && o.Status != ArrangementStatus.Declined
+                                       && o.EndDay > a.EndDay && o.EndDay < d)) continue;
+            var cap = Cap(capId);
+            var cut = a.CutDay!.Value;
+            var card = IsCardBuy(a);
+            var buy = a.Instrument switch { "gpc" => "card buy", "sf44" => "cash buy", _ => Rules.Instruments.ContainsKey(a.Instrument) ? InstrumentWords(a.Instrument) : "buy" };
+            var with = VendorData(a.VendorId) is { } v ? $" with {v.Name}" : "";
+            var qty = a.CapabilityId == capId ? a.QuantityMilli : a.SuppliedQuantityMilli.GetValueOrDefault(capId);
+            var what = qty > 0 ? $" for {UnitCount(qty / 1000, cap)}{(PerDay(cap) ? " a day" : "")}" : "";
+            var verb = card ? "cancelled" : "terminated";
+            var when = a.EndDay < a.StartDay
+                ? $"was {verb} on day {cut}, before it started"
+                : a.EndDay > cut ? $"was {verb} on day {cut}, effective day {a.EndDay}; it was to run to day {a.PlannedEndDay}"
+                : $"was {verb} on day {cut}; it was to run to day {a.PlannedEndDay}";
+            var ids = new List<string> { a.CauseId };
+            if (_records.LastOrDefault(r => r.Kind == RecordKind.ArrangementEnd && r.Subject == a.Id && r.Day == cut) is { } end) ids.Add(end.Id);
+            var why = "";
+            if (a.CardId is { } cardId && _cards.FirstOrDefault(c => c.Id == cardId) is { } rq)
+            {
+                var left = Cap(rq.CapabilityId).Lines
+                    .Where(l => !a.Lines.Contains(l.Id) && a.Added.All(p => p.Line != l.Id)
+                                && _learnedLines.TryGetValue((rq.Id, l.Id), out var t) && t.Day <= cut)
+                    .ToList();
+                if (left.Count > 0)
+                {
+                    var said = left.GroupBy(l => _learnedLines[(rq.Id, l.Id)].Person)
+                                   .Select(g => BuildPerson(g.Key)?.DisplayName ?? "someone").ToList();
+                    why = $"; it had left out {PartsLabels(rq.CapabilityId, left.Select(l => l.Id))}, which {JoinAnd(said)} said the request needs";
+                    foreach (var l in left)
+                    {
+                        var info = _learnedLines[(rq.Id, l.Id)];
+                        if (_records.LastOrDefault(r => r.Kind == RecordKind.Visit && r.Day == info.Day && r.Subject == PersonSubject(info.Person, rq.Id)) is { } heard
+                            && !ids.Contains(heard.Id)) ids.Add(heard.Id);
+                    }
+                }
+            }
+            yield return ($"cut|{a.Id}", new GapFactor(GapFactorKind.BuyCut, GapTag.Avoidable, d,
+                $"The {buy}{with}{what} from day {a.StartDay} {when}{why}.", ids));
+        }
     }
 
     private static string JoinAnd(IReadOnlyList<string> items) => items.Count switch

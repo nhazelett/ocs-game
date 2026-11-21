@@ -59,6 +59,10 @@ public sealed class Arrangement
     /// support inherited or arranged by others). The debrief names it when a gap came from the late end of it.</summary>
     public int QuotedStartMin { get; init; }
     public int QuotedStartMax { get; init; }
+    /// <summary>DESK-168: the day the office cancelled or terminated this buy, when that cut its days short, and the last
+    /// day it was to run before that (null and 0 otherwise). The debrief names the cut on a gap the buy would have covered.</summary>
+    public int? CutDay { get; set; }
+    public int PlannedEndDay { get; set; }
 }
 
 /// <summary>A part added to a running contract by modification (DESK-97): the line, the first day the vendor brings it,

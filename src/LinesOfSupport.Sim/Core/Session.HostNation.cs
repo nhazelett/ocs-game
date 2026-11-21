@@ -81,7 +81,7 @@ public sealed partial class Session
         var start = Math.Max(o.StartDay ?? Day, Day);
         var committed = HostNationCommittedMilli(capId, start, start + Math.Max(1, o.DurationDays) - 1);
         if (o.Quantity * 1000 + committed > Fixed.Milli(capacity))
-            stops.Add($"the agreement provides {Qty(capacity)} {Cap(capId).Unit}/day of {CapLabel(capId).ToLowerInvariant()} and {Qty(committed / 1000)} is already requested");
+            stops.Add($"the agreement provides {UnitCount(capacity, Cap(capId))}/day of {CapLabel(capId).ToLowerInvariant()} and {Qty(committed / 1000)} is already requested");
         var lines = Cap(capId).Lines.Where(l => l.Kind != "supplies").Select(l => l.Id).ToList();
         var daily = o.Quantity * hn.UnitPriceCents.GetValueOrDefault(capId);
         var total = daily * Math.Max(0, o.DurationDays);
@@ -110,7 +110,7 @@ public sealed partial class Session
         var capId = chk.CapabilityId!;
         var cost = chk.TotalCents > 0 ? $"cost share {Money(chk.TotalCents)} from {NameOf(o.FundingLine)}" : "no cost to the shop";
         var rec = AddRecord(Day, RecordKind.Action, o.Id,
-            $"Host nation support request to {HostNationName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {Qty(o.Quantity)} {Cap(capId).Unit}/day for {o.DurationDays} days; {cost}; {Plural(shopDays, "shop day")}.", []);
+            $"Host nation support request to {HostNationName} started: {CapLabel(capId)} at {SiteName(chk.SiteId!)}, {UnitCount(o.Quantity, Cap(capId))}/day for {o.DurationDays} days; {cost}; {Plural(shopDays, "shop day")}.", []);
         // A request with no cost share does not wait for FM to certify funds.
         var lagFm = chk.TotalCents > 0 ? Scenario.Actors.Fm.CertificationLagDays : 0;
         AddWork(WorkKind.HostNationRequest, $"Host nation support request for {Lower(CapLabel(capId))} at {SiteName(chk.SiteId!)}", Hours(shopDays, inst.RequiresSystemOrManual), Day + lagFm,
@@ -199,7 +199,7 @@ public sealed partial class Session
             if (GapIfOff(cap, l) is { } g) gaps.Add(g);
         var peak = (PeakDemandMilli(siteId, capId, Math.Min(startMin, LastDay), Math.Min(startMax + Math.Max(1, o.DurationDays) - 1, LastDay)) + 999) / 1000;
         if (o.Quantity < peak)
-            gaps.Add($"{Qty(o.Quantity)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
+            gaps.Add($"{Amount(o.Quantity, cap)} against peak demand of {Amount(peak, cap)} at {site.Name}; the difference is a shortfall unless another arrangement covers it.");
         if (chk.Card is { } card && startMin > card.RequestedStartDay)
             gaps.Add($"Earliest start is day {startMin}; the requirement asks for day {card.RequestedStartDay}.");
         if (Agreement?.Island is { } island && island != site.Island)

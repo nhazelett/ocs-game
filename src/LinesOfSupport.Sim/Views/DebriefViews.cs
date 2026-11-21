@@ -25,6 +25,8 @@ public enum GapFactorKind
     TransitionGap,
     /// <summary>The capability has a usual owner (fuel: the J4 through the ACSA partner) who was never engaged, or engaged too late, and no stopgap was bought (M2R-06, R10).</summary>
     OwnerNotEngaged,
+    /// <summary>The office cancelled or terminated a buy whose days as ordered covered the gap (DESK-168).</summary>
+    BuyCut,
 }
 
 /// <summary>One contributor to a gap, with its own tag, the day it first applied and the evidence in plain words.</summary>
@@ -133,6 +135,7 @@ public static class DebriefWords
         GapFactorKind.LiftDelay => "Held up in the airlift or customs",
         GapFactorKind.TransitionGap => "A hand-off left a gap",
         GapFactorKind.OwnerNotEngaged => "Nobody owned it",
+        GapFactorKind.BuyCut => "You ended a buy that would have covered it",
         _ => "Another cause",
     };
 

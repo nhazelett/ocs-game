@@ -170,7 +170,7 @@ public sealed partial class Session
                 var peak = (PeakDemandMilli(t.SiteId, t.CapabilityId, from, to) + 999) / 1000;
                 var cap = Cap(t.CapabilityId);
                 if (qty / 1000 < peak)
-                    w.Add($"{Upper(NameOf(t.IncomingId))} supplies {Qty(qty / 1000)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} after the cut-over: the difference is a shortfall unless something else covers it.");
+                    w.Add($"{Upper(NameOf(t.IncomingId))} supplies {Amount(qty / 1000, cap)} against peak demand of {Amount(peak, cap)} after the cut-over: the difference is a shortfall unless something else covers it.");
             }
             if (_external.FirstOrDefault(x => x.Id == t.IncomingId) is { Status: not ExternalSupportStatus.Awarded } req
                 && _funding.FirstOrDefault(f => f.Id == req.FundingLineId) is { } line)

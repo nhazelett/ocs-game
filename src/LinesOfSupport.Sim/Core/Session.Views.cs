@@ -21,10 +21,21 @@ public sealed partial class Session
     internal static string Qty(decimal n) => n.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture);
 
     /// <summary>A count in the capability's unit, singular for one ("1 forklift", "500 gal/day").</summary>
-    private static string Amount(long n, CapabilityData cap)
+    private static string Amount(decimal n, CapabilityData cap)
+        => PerDay(cap) ? $"{UnitCount(n, cap)}/day" : UnitCount(n, cap);
+    private static string Amount(long n, CapabilityData cap) => Amount((decimal)n, cap);
+    private static string Amount(double n, CapabilityData cap) => Amount((decimal)n, cap);
+
+    /// <summary>A whole count with the capability's unit agreeing with it: "1 forklift", "3 forklifts", "4,500 gal"
+    /// (DESK-168 b, Claude play 21 Nov, sixth play, note 36: "sized for 1 forklifts"). Every count the Sim prints with
+    /// its unit goes through here; the caller adds "/day" or " a day".</summary>
+    internal static string UnitCount(long n, CapabilityData cap) => UnitCount((decimal)n, cap);
+    internal static string UnitCount(double n, CapabilityData cap) => UnitCount((decimal)n, cap);
+    internal static string UnitCount(decimal n, CapabilityData cap)
     {
-        var unit = n == 1 && cap.Unit.Length > 3 && cap.Unit.EndsWith('s') && cap.Unit.All(char.IsLower) ? cap.Unit[..^1] : cap.Unit;
-        return PerDay(cap) ? $"{Qty(n)} {unit}/day" : $"{Qty(n)} {unit}";
+        var said = Qty(n);
+        var unit = said == "1" && cap.Unit.Length > 3 && cap.Unit.EndsWith('s') && cap.Unit.All(char.IsLower) ? cap.Unit[..^1] : cap.Unit;
+        return $"{said} {unit}";
     }
 
     /// <summary>
@@ -395,7 +406,7 @@ public sealed partial class Session
         if (a.Quantity < peak)
         {
             var pd = PeakDay(site, capId, Math.Min(startMin, LastDay), Math.Min(end, LastDay));
-            gaps.Add($"{Qty(a.Quantity)} {Rate(cap)} against peak demand of {Qty(peak)} {Rate(cap)} at {site.Name} on day {pd}, when {Qty(PopulationOn(site, pd))} people are there; the difference is a shortfall unless another arrangement covers it.");
+            gaps.Add($"{Amount(a.Quantity, cap)} against peak demand of {Amount(peak, cap)} at {site.Name} on day {pd}, when {Qty(PopulationOn(site, pd))} people are there; the difference is a shortfall unless another arrangement covers it.");
         }
         if (startMax > startMin && StartRange(a, inst, hMin, hMax, lift, pricing) is { } range)   // DESK-78: what decides the range
             gaps.Add($"Earliest start is day {startMin} to {startMax}: {range}.");
@@ -416,7 +427,7 @@ public sealed partial class Session
         {
             var free = Math.Max(0, Fixed.Milli(offer.CapacityPerDay) - CommittedMilli(vendor.Id, capId, startMin, Math.Min(end, LastDay)));
             if (a.Quantity * 1000 > free)
-                gaps.Add($"{vendor.Name} has about {Qty(free / 1000)} {Rate(cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
+                gaps.Add($"{vendor.Name} has about {Amount(free / 1000, cap)} of capacity left on those days: the order is binding and accepted, but delivery above capacity falls short (a capacity event).");
             if (Idiq(a.Vehicle) is { GuaranteeUnorderedCents: > 0 } q)
                 gaps.Add($"{Money(Math.Min(chk.TotalCents, Math.Max(0, q.GuaranteeUnorderedCents - PendingOrderCents(q.VehicleId))))} of this order comes from {NameOf(q.VehicleId)}'s minimum guarantee, already obligated.");
         }

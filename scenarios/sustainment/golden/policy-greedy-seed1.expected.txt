@@ -577,9 +577,9 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 150 beds fell short of 210. Still short 7 days after they arrived: the notice left time to resize.
       [avoidable] Third Island Camp Services lodging at Spoke C stopped work on day 48: incurred costs went past the obligation cap; it had been past due for definitization since day 8. Higher HQ's inquiry on day 13 brought its definitization clock to light.
   #33 spokeCSite.mhe days 30-60, lowest 0%, 16 day(s) down: AVOIDABLE
-      [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 1 forklifts fell short of 2. Nothing before the notice showed it coming.
+      [unforeseeable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 1 forklift fell short of 2. Nothing before the notice showed it coming.
       [avoidable] Material handling equipment depends on fuel, which was short. (see #30)
-      [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 1 forklifts fell short of 2. Still short 7 days after they arrived: the notice left time to resize.
+      [avoidable] 60 unplanned personnel arrived at Spoke C on day 30 on 8 days' notice (day 22); arrangements sized for the plan's 1 forklift fell short of 2. Still short 7 days after they arrived: the notice left time to resize.
       [avoidable] Material handling equipment depends on fuel, which was short. (see #31)
 
 PASS CRITERIA
