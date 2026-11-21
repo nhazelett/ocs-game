@@ -10,13 +10,13 @@ public partial class GameShell
     // Assignee changes only the proposed action. Sim owns the hours, queue and completion forecast.
     private (Button Button, AssigneePicker Picker, Label Cost) AddAssignedAction(
         VBoxContainer body, VBoxContainer footer, SessionView view, PlayerAction action, string text, string effect,
-        Func<bool>? stillCurrent = null, Action<PlayerAction, ActionPreview>? updated = null, Action? accepted = null, Action<PlayerAction>? commit = null, Func<string?>? blocked = null, Func<PlayerAction, ActionPreview, string>? costText = null)
+        Func<bool>? stillCurrent = null, Action<PlayerAction, ActionPreview>? updated = null, Action? accepted = null, Action<PlayerAction>? commit = null, Func<string?>? blocked = null, Func<PlayerAction, ActionPreview, string>? costText = null, bool inWork = false)
     {
         var hash = session.StateHash;
         var selected = action.Assignee ?? view.Team.Single(m => m.Role == "you").Id;
         var picker = new AssigneePicker(view.AssigneeChoices(action), selected, view.Finished, "Who does it");
-        body.AddChild(picker);
-        bool Current() => picker.IsInsideTree() && hash == session.StateHash
+        picker.Visible = !inWork; body.AddChild(picker);
+        bool Current() => !inWork && picker.IsInsideTree() && hash == session.StateHash
             && !AtFrontDoor && !ReadingTurnover && !PlayingDay && !ReadingDaySummary
             && session.View is { Finished: false } && (stillCurrent?.Invoke() ?? true);
         var warnings = DeskUi.Label(""); body.AddChild(warnings);
@@ -27,6 +27,7 @@ public partial class GameShell
             else if (SendAction(action).Accepted) accepted?.Invoke();
         });
         var reason = DeskUi.ActionReason(footer, button);
+        if (inWork) reason.AddThemeColorOverride("font_color", TabletopTheme.Ink);
         var cost = AddActionCost(footer, view, action, effect);
         void Refresh()
         {
