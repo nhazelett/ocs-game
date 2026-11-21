@@ -55,6 +55,10 @@ public sealed class Arrangement
     public int? NoticeDays { get; init; }
     /// <summary>Parts added by modification (D37, DESK-97): each from the day after it was signed, at its own daily price.</summary>
     public List<AddedPart> Added { get; } = [];
+    /// <summary>DESK-130 (D43): the start day range the buy was quoted when it was ordered (0 when it was not quoted, as for
+    /// support inherited or arranged by others). The debrief names it when a gap came from the late end of it.</summary>
+    public int QuotedStartMin { get; init; }
+    public int QuotedStartMax { get; init; }
 }
 
 /// <summary>A part added to a running contract by modification (DESK-97): the line, the first day the vendor brings it,

@@ -211,7 +211,8 @@ public sealed partial class Session
         var gaps = new List<string>();
         if (action is EngageJ4Action && Partner is { } p)
             gaps.Add($"{p.Name} can cut this back when its own needs rise: ACSA support is what the partner can spare, not a contract.");
-        return new ActionPreview(stops.Count == 0, stops, gaps, 0, 0, 0, CeilHours(hours), CeilHours(hours), ready, readyMax, queue);
+        return new ActionPreview(stops.Count == 0, stops, gaps, 0, 0, 0, CeilHours(hours), CeilHours(hours), ready, readyMax, queue)
+            { HoursMinMilli = hours, HoursMaxMilli = hours };
     }
 
     private IntRange ScoLag()

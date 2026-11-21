@@ -35,6 +35,7 @@ public partial class CardCancellationSmokeTest : Node
                 Require(shell.Session.StateHash == hash && Cost(button).Text.Contains("Novak") && Cost(button).Text.Contains(words.Says), "Selecting the caller is pure and keeps the Sim explanation.");
                 var preview = expected.View.PreviewAny(action);
                 Require(Cost(button).Text.Contains($"Earliest result: day {preview.EarliestStartMin}") && Cost(button).Text.Contains(preview.ShopHoursMax.ToString()), "Hours and result day come from the selected caller's preview.");
+                Require(!PlayScreen.Descendants(shell.ContractView).Any(n => n.HasMeta("contract_modify")), "A water card buy with no missing parts omits the modification button.");
                 await Capture(day == 1 ? "before-first" : "day4", Cost(button));
                 button.EmitSignal(Button.SignalName.Pressed);
                 Require(shell.EndContractDialog.Visible && shell.EndContractDialog.Title == "Cancel this card buy?"
@@ -58,6 +59,13 @@ public partial class CardCancellationSmokeTest : Node
                     "The call finishes on the intended day, credits the unperformed portion and matches Sim without a settlement.");
                 Require(day != 1 || cancelled.Status == ArrangementStatus.Ended && cancelled.ObligatedCents == 0,
                     "Before first delivery the full charge comes back and the buy never starts.");
+                shell.OpenContractView("water"); await Frames();
+                Require(PlayScreen.Descendants(shell.ContractView).OfType<Label>().Any(l => l.Text.StartsWith("Ended. Supplies")),
+                    "The cancellation reads Ended the next morning through Sim StatusToday, including a day-four cancellation.");
+                shell.CloseContractView();
+                var ledger = shell.GetNode<TabContainer>("%DeskTabs").GetNode("Payments/LedgerContext/Contents");
+                Require(ledger.GetChildren().OfType<Button>().Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == "water").Text.Contains(" · Ended"),
+                    "Payments uses the same morning status as the contract page.");
                 Require(LinesOfSupport.Sim.Replay.Resume(bundle, shell.Session.CreateSave()).StateHash() == expected.StateHash(), "The cancellation and caller survive save/replay.");
             }
             var contract = Fresh(); while (contract.Day < 4) contract.AdvanceDay();

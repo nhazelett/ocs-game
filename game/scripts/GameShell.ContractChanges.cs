@@ -13,14 +13,17 @@ public partial class GameShell
         {
             var line = DeskUi.Label(added); line.SetMeta("contract_added", id); parent.AddChild(line);
         }
+        if (!change.Offered) return false;
         var row = new VBoxContainer(); parent.AddChild(row);
+        row.SortChildren += row.UpdateMinimumSize;
         if (change.Parts.Count == 0)
         {
             var button = DeskUi.Button(change.Button, () => { });
             var reason = DeskUi.ActionReason(row, button);
+            reason.SetMeta("contract_modify_reason", id);
             DeskUi.Gate(button, reason, view.Finished ? DeskUi.FinishedReason : change.Why);
             button.SetMeta("contract_modify", id);
-            return false;
+            return true;
         }
         var action = new ModifyAction { Day = view.Day, Arrangement = id, Lines = change.Parts.ToList() };
         var assigned = AddAssignedAction(row, row, view, action, change.Button, "",

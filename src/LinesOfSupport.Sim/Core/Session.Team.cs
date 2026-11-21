@@ -248,12 +248,14 @@ public sealed partial class Session
             else if (p.Accepted)
             {
                 var days = p.EarliestStartMin == p.EarliestStartMax ? $"day {p.EarliestStartMin}" : $"day {p.EarliestStartMin} to {p.EarliestStartMax}";
-                // DESK-120: handing work over says the hours left in that person's hours to the half hour, as the team view
-                // will once it is theirs; a quote for new work keeps the preview's whole-hour range.
+                // DESK-120, DESK-131: a named person's hours to the half hour, as the strip, the team page and the work list
+                // say them: the hours left of work handed over, and new work's range ("6.5 to 13 hours") where the preview
+                // has it unrounded (whole hours otherwise).
                 var handed = handOver is null ? null : _work.FirstOrDefault(w => w.Id == handOver.Work && w.CompletedDay is null);
+                var (lo, hi) = p.HoursMaxMilli >= 0 ? (HalfHours(p.HoursMinMilli), HalfHours(p.HoursMaxMilli)) : (p.ShopHoursMin, (double)p.ShopHoursMax);
                 var hours = handed is not null ? (HalfHours(HoursIfAssignedMilli(handed, Member(m.Id))) is var h and > 0 ? Hrs(h) : null)
-                    : p.ShopHoursMax <= 0 ? null
-                    : p.ShopHoursMin == p.ShopHoursMax ? Hrs(p.ShopHoursMax) : $"{p.ShopHoursMin} to {Hrs(p.ShopHoursMax)}";
+                    : hi <= 0 ? null
+                    : lo == hi ? Hrs(hi) : $"{lo:0.#} to {Hrs(hi)}";
                 var lead = hours is null ? "With " + them : $"This takes {them} {hours}";
                 when = starts ? $"{lead}; it could start {days}." : $"{lead}; it would be done {days}.";
             }

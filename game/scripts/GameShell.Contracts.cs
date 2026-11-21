@@ -126,10 +126,10 @@ public partial class GameShell
         return (arrangement.Instrument == "gpc" ? "Paid from the card program.\n" : "") + $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
     }
 
-    private static string ArrangementStatusText(SessionView view, Arrangement arrangement) => arrangement.Status switch
+    private static string ArrangementStatusText(SessionView view, Arrangement arrangement) => view.StatusToday(arrangement.Id) switch
     {
         ArrangementStatus.Pending => arrangement.StartDay == view.Day ? "Starts today" : $"Starts on day {arrangement.StartDay}", ArrangementStatus.Active => "Providing support",
         ArrangementStatus.Suspended => "Support paused", ArrangementStatus.Ended => "Ended",
-        ArrangementStatus.Declined => "Declined", _ => arrangement.Status.ToString()
+        ArrangementStatus.Declined => "Declined", _ => view.StatusToday(arrangement.Id)?.ToString() ?? ""
     };
 }
