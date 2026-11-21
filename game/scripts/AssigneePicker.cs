@@ -15,7 +15,17 @@ internal partial class AssigneePicker : VBoxContainer
     {
         Choices = choices; Selected = selected;
         AddThemeConstantOverride("separation", 6);
-        AddChild(DeskUi.Label(caption));
+        VBoxContainer rows = this;
+        if (compact)
+        {
+            var line = new HBoxContainer(); AddChild(line);
+            var label = DeskUi.Label(caption); label.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;
+            label.SizeFlagsHorizontal = Control.SizeFlags.ShrinkBegin; label.AutowrapMode = TextServer.AutowrapMode.Off;
+            line.AddChild(label);
+            rows = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+            rows.AddThemeConstantOverride("separation", 0); line.AddChild(rows);
+        }
+        else AddChild(DeskUi.Label(caption));
         foreach (var choice in choices)
         {
             string CompactText() => (choice.MemberId == Selected ? "✓ " : "") + choice.Name
@@ -29,16 +39,16 @@ internal partial class AssigneePicker : VBoxContainer
                 button.SetMeta("compact_assignee", CompactText().TrimStart('✓', ' '));
             }
             button.ToggleMode = true; button.ButtonPressed = choice.MemberId == selected;
-            button.Disabled = disabled; button.CustomMinimumSize = new Vector2(0, compact ? 36 : 88);
-            button.ThemeTypeVariation = "TabletopPerson";
+            button.Disabled = disabled; button.CustomMinimumSize = new Vector2(0, compact ? 28 : 88);
+            button.ThemeTypeVariation = compact ? "TabletopCompactPerson" : "TabletopPerson";
             button.TextureFilter = TextureFilterEnum.LinearWithMipmaps;
-            button.ExpandIcon = true; button.AddThemeConstantOverride("icon_max_width", compact ? 28 : 48);
+            button.ExpandIcon = true; button.AddThemeConstantOverride("icon_max_width", compact ? 22 : 48);
             var portrait = new PersonPortrait();
             portrait.SetPerson(new PersonView(choice.MemberId, choice.Name, "", "Contracting shop", "team", choice.Portrait, new Dictionary<string, string>()));
             using (var icon = portrait.Texture) button.Icon = icon;
             portrait.Free();
             button.SetMeta("assignee", choice.MemberId);
-            AddChild(button); ChoiceButtons.Add(choice.MemberId, button);
+            rows.AddChild(button); ChoiceButtons.Add(choice.MemberId, button);
         }
     }
 

@@ -65,6 +65,8 @@ public partial class BuyFormSmokeTest : Node
                 var scroll = shell.AwardScroll;
                 var pane = shell.RequestBuyColumn.GetGlobalRect();
                 GD.Print($"BUY_FORM_LAYOUT {suffix}: scroll={scroll.Size.Y}, pane={pane.Size.Y}, summary={shell.AwardSummaryLabel.Size.Y}");
+                if (shell.AwardWriterPicker is { } writer)
+                    GD.Print($"WRITER_LAYOUT: picker={writer.Size}, rows={string.Join(",", writer.ChoiceButtons.Values.Select(b => b.Size.Y))}, summary={shell.AwardSummaryLabel.Size}, button={shell.AwardButton.Size}, reason={shell.AwardBlockedReason.Size} visible={shell.AwardBlockedReason.Visible}");
                 Require(scroll.Size.Y >= pane.Size.Y / 2, "The form keeps at least half the pane, including the longer forklift summary.");
                 Require(shell.AwardSummaryLabel.Text == shell.Session.View!.AwardSummary(shell.PendingAward!)!.Sentence, "The pinned summary retains the complete Sim sentence.");
                 var button = shell.AwardButton.GetGlobalRect();
