@@ -130,7 +130,7 @@ public partial class GameShell
             foreach (var id in card.ArrangementIds)
             {
                 var arrangement = view.Arrangements.Single(a => a.Id == id);
-                box.AddChild(DeskUi.Button(view.ArrangementName(id) + " · " + arrangement.Status, () => OpenContractView(id)));
+                box.AddChild(DeskUi.Button(view.ArrangementName(id) + " · " + ArrangementStatusText(view, arrangement), () => OpenContractView(id)));
             }
             foreach (var id in card.VehicleIds)
             {

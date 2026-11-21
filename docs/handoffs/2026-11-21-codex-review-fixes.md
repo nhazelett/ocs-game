@@ -20,7 +20,7 @@ Game build, headless Modification and native Godot 4.6.1 OpenGL Modification pas
 
 ## Unresolved
 
-PR 406 needs this fix merged into its branch, StatusToday bindings and fresh card captures. Hosted CI and Fable review remain. No new Nick-only issue; no FOR-NICK addition. No PR merge, main push, force-push or shared-branch deletion.
+PR 406 incorporates the fix, binds StatusToday on the contract page, Payments and vendor-held arrangement lists, and marks Q27 answered. Its cancellation regression now checks day-one and day-four cancellations read Ended the next morning on both the page and Payments; water buys offer no modification. Four refreshed native captures were inspected (each below 130 KB); native CardCancellation passes in 6.5 seconds. Hosted run 44854340154 passed Modification and CardCancellation, then found LedgerSmokeTest still asserting stored Arrangement.Status. Its assertion now binds StatusToday too; Ledger, Contract and CardCancellation are rerun locally. Hosted CI and Fable review remain. No new Nick-only issue; no FOR-NICK addition. No PR merge, main push, force-push or shared-branch deletion.
 
 ## Next
 
