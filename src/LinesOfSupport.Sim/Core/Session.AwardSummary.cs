@@ -22,9 +22,9 @@ public sealed partial class Session
         var startSaid = max == start ? $"on day {start}" : max == start + 1 ? $"on day {start} or {max}" : $"between day {start} and day {max}";
 
         // D46 (DESK-156, Claude play 21 Nov, third play, note 22): at most three sentences, as the summary is pinned above
-        // Arrange support and a long one pushed pick two out of reach. What it brings, the cover before it starts, finance
-        // or the proposal, what it is on top of, and whichever of the allowance cost and the answer due did not fit are in
-        // the quote's notes (BuildPreview's soft gaps, SummaryNotes), each once.
+        // Arrange support and a long one pushed pick two out of reach. What it brings, the cover before it starts, what it
+        // is on top of, and whichever of the allowance cost and the answer due did not fit are in the quote's notes
+        // (BuildPreview's soft gaps, SummaryNotes), each once. D47 (DESK-158) keeps finance or the proposal in the start.
         // DESK-86: a card buy's price carries the vendor's card surcharge, which the vendor's per-unit price leaves out.
         var surcharge = a.Instrument == "gpc" && Fixed.Permille(vendor.GpcSurchargeFraction) is var sur and > 0
             ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
@@ -33,6 +33,9 @@ public sealed partial class Session
             $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {HoursOf(preview, a.Assignee)}.",
         };
         var card = chk.Card;
+        // D47 (DESK-158, Claude play 21 Nov, fourth play, note 14): what a written buy's start waits for, in one clause, so
+        // the funds wait the Now line names after committing is in view before it.
+        startSaid += WaitsFor(a, chk);
         if (card is null) parts.Add($"It starts {startSaid}.");
         else if (start <= card.RequestedStartDay) parts.Add($"It starts {startSaid}; it is wanted from day {card.RequestedStartDay}.");
         else parts.Add($"It starts {startSaid}; it was wanted from day {card.RequestedStartDay}.");
@@ -70,19 +73,30 @@ public sealed partial class Session
 
     /// <summary>D46 (DESK-156): what the summary used to say that the quote's notes did not, for <c>BuildPreview</c>'s soft
     /// gaps: what the buy brings when it brings more than one part and leaves nothing out (a part left out has its own note),
-    /// when finance certifies the funds for a written buy or when a vendor's priced proposal comes, and whichever of the summary's third-sentence candidates did not
-    /// fit. The cover before it starts, the priced proposal and what it is on top of already have their notes.</summary>
+    /// and whichever of the summary's third-sentence candidates did not fit. The cover before it starts, the priced proposal
+    /// and what it is on top of already have their notes; finance's day is in the summary's start (D47).</summary>
     private IEnumerable<string> SummaryNotes(AwardAction a, AwardCheck chk, int start, int latestStart)
     {
         if (chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) yield break;
         var brings = chk.Lines.Select(l => Lower(LineLabel(capId, l))).ToList();
         var leftOut = chk.Card is { } c && LeftOut(c, chk.Lines).Count > 0;
         if (brings.Count > 1 && !leftOut) yield return $"{vendor.Name} brings {JoinAnd(brings)}.";
-        if (PricesFirst(a.Instrument, vendor) is { } pricing)   // DESK-134: the days, which the pricing note leaves out
-            yield return $"It is written once {Possessive(vendor.Name)} priced proposal comes, between day {Day + pricing.Min} and day {Day + pricing.Max}.";
-        else if (chk.Instrument is { RequiresSystemOrManual: true } && chk.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
-            yield return $"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}, before the writing starts.";
+        // D47 (DESK-158): finance's day and the priced proposal's days are in the summary's start sentence (WaitsFor).
         foreach (var note in SummaryThird(a, start, latestStart).Notes) yield return note;
+    }
+
+    /// <summary>D47 (DESK-158): the clause after the start days saying what a written buy waits for before the vendor's
+    /// notice: ", after finance certifies the funds on day 6 and the buy is written"; with a vendor that prices first
+    /// (DESK-134), ", after Meridian Site Services' priced proposal comes (day 15 to 21) and the buy is written". Empty for a
+    /// buy with no writing, or one that waits for neither.</summary>
+    private string WaitsFor(AwardAction a, AwardCheck chk)
+    {
+        if (chk.Vendor is not { } vendor) return "";
+        if (PricesFirst(a.Instrument, vendor) is { } pricing)
+            return $", after {Possessive(vendor.Name)} priced proposal comes (day {Day + pricing.Min} to {Day + pricing.Max}) and the buy is written";
+        if (chk.Instrument is { RequiresSystemOrManual: true } && chk.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
+            return $", after finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays} and the buy is written";
+        return "";
     }
 
     /// <summary>D43 (DESK-129, Claude play 20 Nov, third play, note 1): when the quote's latest start is after the day the

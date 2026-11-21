@@ -22,7 +22,7 @@ public class PassLineCostTests
         const string cost = "If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows.";
         var po = s.View.AwardSummary(Forklifts("purchaseOrder", "fast+good"))!;
         Assert.Equal(cost, po.PassLineCost);
-        Assert.Contains("It starts on day 8 or 9; it is wanted from day 8. " + cost, po.Sentence);
+        Assert.Contains("It starts on day 8 or 9, after finance certifies the funds on day 6 and the buy is written; it is wanted from day 8. " + cost, po.Sentence);
         Assert.False(po.Attention);
         var card = s.View.AwardSummary(Forklifts("gpc"))!;
         Assert.Null(card.PassLineCost);

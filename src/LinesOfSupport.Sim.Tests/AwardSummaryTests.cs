@@ -166,9 +166,9 @@ public class AwardSummaryTests
         var summary = s.View.AwardSummary(buy)!.Sentence;
         // D43 (DESK-129): the late end of the range says what it costs against the commander's allowance; D46 (DESK-156):
         // that is the third sentence, and what it brings and finance's day are in the notes.
-        Assert.EndsWith("It starts on day 8 or 9; it is wanted from day 8. If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows.", summary);
+        Assert.EndsWith("It starts on day 8 or 9, after finance certifies the funds on day 6 and the buy is written; it is wanted from day 8. If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows.", summary);
         Assert.Contains("Coastal Rentals brings forklifts, operators, and maintenance.", preview.SoftGaps);
-        Assert.Contains("Finance certifies the funds on day 6, before the writing starts.", preview.SoftGaps);
+        Assert.DoesNotContain(preview.SoftGaps, g => g.Contains("certifies", StringComparison.Ordinal));   // D47: in the start, once
     }
 
     [Fact]
@@ -212,6 +212,8 @@ public class AwardSummaryTests
             Assert.DoesNotContain(rest, summary.Sentence);
             Assert.Single(gaps, g => g == rest);
         }
-        Assert.Contains(gaps, g => g.StartsWith("Finance certifies the funds on day ", StringComparison.Ordinal));
+        // D47 (DESK-158): what the start waits for is in the start sentence, not the notes.
+        Assert.Contains(", after finance certifies the funds on day 8 and the buy is written; it is wanted from day 13.", summary.Sentence);
+        Assert.DoesNotContain(gaps, g => g.Contains("certifies", StringComparison.Ordinal));
     }
 }
