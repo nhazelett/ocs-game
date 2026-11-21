@@ -235,6 +235,11 @@ public sealed partial class Session
         // declined at award, as the tutorial teaches.
         if (a.Instrument != "bpaCall" && ShortThrough(vendor.Id, newStart) is { } shortThrough)
             stops.Add($"{vendor.Name} has no {Lower(CapLabel(capId))} to spare through day {shortThrough}. Start it on day {shortThrough + 1} or later, or buy from someone else.");
+        // DESK-178 (Claude play 21 Nov, eighth play, note P2-10): once the shop has heard the vendor is short, a call is
+        // refused too, so its quote never promises a start the card cannot have. A call made before the news still goes in
+        // and is declined at award.
+        if (a.Instrument == "bpaCall" && HeardDeclining(vendor.Id) && ShortThrough(vendor.Id, Day) is { } callsResume)
+            stops.Add($"{vendor.Name} is short of {Lower(CapLabel(capId))} through day {callsResume} and is turning calls down. Call after day {callsResume}, or buy from someone else.");
         if (vendor.VehicleOnly && a.Instrument is not ("bpaCall" or "idiqOrder")) stops.Add($"{vendor.Name} is reachable only through its vehicle");
 
         if (_standing.TryGetValue(vendor.Id, out var standing) && standing.DeclinesWork)

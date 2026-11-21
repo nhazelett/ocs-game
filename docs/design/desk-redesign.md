@@ -516,5 +516,5 @@ No decision needed. Both players asked Dunn because the pinned summary named ope
 
 Sim notes (Fable):
 
-- DESK-178: in `CheckAward`, the DESK-174 stop applies to a `bpaCall` when `HeardDeclining(vendor.Id)`; the stop for a call names the day calls resume (`ShortThrough + 1`) instead of a start day.
+- DESK-178: in `CheckAward`, the DESK-174 stop applies to a `bpaCall` when `HeardDeclining(vendor.Id)`; the stop for a call names the day calls resume (`ShortThrough + 1`) instead of a start day. Built 21 Nov: "Harbor Equipment Co is short of material handling equipment through day 8 and is turning calls down. Call after day 8, or buy from someone else." on the eighth play's second log, day 5; a call quoted on day 4, before the news, is unchanged and still declined at award. Tutorial balance (200 seeds, three policies) identical before and after; no golden moved. The 17 Nov hasty review log's day-7 call is now refused instead of written and declined, so its Coastal order is written sooner: forklifts out 3 days (was 4), mission output 94% (was 92%), the same three lines missed.
 - DESK-179: `PlanPeople` rounds the running total of a person's spend to the half hour and gives each line the difference, so the lines add to `HoursPlanned`; the team page and the decisions list read a task's remaining hours through the same helper.
