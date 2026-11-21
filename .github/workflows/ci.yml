@@ -162,6 +162,8 @@ jobs:
           grep -Fq 'MORNING_SMOKE_PASS:' "$RUNNER_TEMP/godot-morning.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PlainBoardSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-plain-board.log"
           grep -Fq 'PLAIN_BOARD_SMOKE_PASS:' "$RUNNER_TEMP/godot-plain-board.log"
+          timeout 60 "$GODOT_BIN" --headless --path game res://tests/VendorNewsSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-vendor-news.log"
+          grep -Fq 'VENDOR_NEWS_SMOKE_PASS:' "$RUNNER_TEMP/godot-vendor-news.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/CommitmentSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-commitment.log"
           grep -Fq 'COMMITMENT_SMOKE_PASS:' "$RUNNER_TEMP/godot-commitment.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/J4DependencySmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-j4-dependency.log"
