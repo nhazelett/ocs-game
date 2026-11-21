@@ -66,7 +66,7 @@ public class SaysOneThingTests
         var t = s.View.Turnover();
         var all = string.Join(" ", t.Sections.Select(x => x.Text).Append(t.Briefing!.Situation).Append(t.Briefing.Due));
         Assert.DoesNotContain("the outgoing contracting officer", all);
-        Assert.Contains("I'm here for your first three days", all);
+        Assert.Contains("I'm here for your first two days", all);
         while (s.Day <= 2) s.AdvanceDay();
         Assert.Contains(s.Records, r => r.Day <= 2 && r.Kind == RecordKind.Event && r.Text.Contains("staff meeting", StringComparison.Ordinal));
     }
