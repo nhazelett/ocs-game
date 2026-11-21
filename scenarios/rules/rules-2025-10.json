@@ -675,7 +675,10 @@
       "ratificationShopDays": 2,
       "paymentErrorReworkHours": 8,
       "hhqInquiryResponseHours": 4,
-      "terminationShopDays": 1
+      "terminationShopDays": 1,
+      "cardCancelShopHours": 1,
+      "modificationShopHours": 4,
+      "modificationPartPricePermille": 250
     },
     "supplyLineSizingPermille": 1250,
     "cashReplenishThresholdPermille": 500,

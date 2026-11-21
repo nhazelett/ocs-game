@@ -9,11 +9,9 @@ namespace LinesOfSupport.Sim.Core;
 // it ignores rolls and events. Read only.
 public sealed partial class Session
 {
-    /// <summary>
-    /// What should cover the request's days before <paramref name="start"/>: "The water stock on hand should cover day 2."
-    /// or "Nothing covers days 2 to 4."; null when the start is not later than the request asked.
-    /// </summary>
-    internal string? BeforeStartCover(CardState card, int start)
+    /// <summary>The request's days before <paramref name="start"/>, sorted by what should cover them: the stock on hand,
+    /// support already arranged, or nothing. Null when the start is not later than the request asked.</summary>
+    private (List<int> Stock, List<int> Other, List<int> None, CapabilityData Cap)? CoverDays(CardState card, int start)
     {
         var from = Math.Max(card.RequestedStartDay, Math.Max(Day, 1));
         var until = Math.Min(start - 1, LastDay);
@@ -43,6 +41,17 @@ public sealed partial class Session
             if (g < from) continue;
             (covered == "other" ? other : covered == "stock" ? stock : none).Add(g);
         }
+        return (stock, other, none, cap);
+    }
+
+    /// <summary>
+    /// What should cover the request's days before <paramref name="start"/>: "The water stock on hand should cover day 2."
+    /// or "Nothing covers days 2 to 4."; null when the start is not later than the request asked.
+    /// </summary>
+    internal string? BeforeStartCover(CardState card, int start)
+    {
+        if (CoverDays(card, start) is not { } days) return null;
+        var (stock, other, none, cap) = days;
         var said = new List<string>();
         if (stock.Count > 0) said.Add($"The {Lower(cap.Label)} stock on hand should cover {DaysSaid(stock)}.");
         if (other.Count > 0) said.Add($"Support already arranged should cover {DaysSaid(other)}.");

@@ -44,6 +44,9 @@ public sealed partial class Session
             parts.Add($"It starts {startSaid}; it was wanted from day {card.RequestedStartDay}.");
             if (start <= needEnd && BeforeStartCover(card, start) is { } cover) parts.Add(cover);
         }
+        // D43, DESK-129: what the late end of the quoted range costs against the commander's allowance.
+        var passCost = card is null ? null : PassLineCost(card, max);
+        if (passCost is not null) parts.Add(passCost);
         // DESK-86: why a written buy starts when it does: finance certifies the funds before the writing can start. The
         // range's other causes stay in the quote (DESK-78); the summary is pinned above the button and must stay short.
         if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
@@ -67,7 +70,44 @@ public sealed partial class Session
         else if (onTop.Count > 0 && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
             why = "Every day it would run is already covered.";
         if (why is not null) parts.Add(why);
-        return new AwardSummaryView(string.Join(" ", parts), why is not null, why);
+        // D42, DESK-123: the summary's last sentence, after any attention reason; never one itself.
+        var answer = card is null ? null : AnswerDue(card);
+        if (answer is not null) parts.Add(answer);
+        return new AwardSummaryView(string.Join(" ", parts), why is not null, why, answer, passCost);
+    }
+
+    /// <summary>D43 (DESK-129, Claude play 20 Nov, third play, note 1): when the quote's latest start is after the day the
+    /// request wants it and a pass line counts down days for that site and capability, the days nothing covers until then
+    /// added to the days already out, against the allowance: "If it starts on day 9, material handling equipment at Hub is
+    /// out 1 day in all: all the commander allows." Null otherwise. A forecast from the plan; it ignores rolls.</summary>
+    private string? PassLineCost(CardState card, int latestStart)
+    {
+        if (latestStart <= card.RequestedStartDay) return null;
+        var metric = $"site.{card.SiteId}.{card.CapabilityId}.downDays";
+        if (Scenario.PassCriteria.FirstOrDefault(p => p.Metric == metric && p.Comparator == "<=") is not { } line) return null;
+        if (CoverDays(card, latestStart) is not { None.Count: > 0 } days) return null;
+        var used = Metrics.TryGetValue(metric, out var v) ? (long)v : 0;
+        var total = used + days.None.Count;
+        var allowed = (long)line.Value;
+        var verdict = total == allowed ? "all the commander allows"
+            : total < allowed ? $"within the {Plural(allowed, "day")} the commander allows"
+            : total - allowed == 1 ? "one more than the commander allows"
+            : $"{total - allowed} more than the commander allows";
+        return $"If it starts on day {latestStart}, {Lower(CapLabel(card.CapabilityId))} at {SiteName(card.SiteId)} is out {Plural(total, "day")} in all: {verdict}.";
+    }
+
+    /// <summary>D42 (DESK-123, Claude play 20 Nov, second play, note 1): an ask about this request still in work, the
+    /// earliest answer first: "SMSgt Ray Dunn's answer about this request is due on day 4; what they say may change what
+    /// this buy needs." The day is that work's forecast, as the decisions list gives it. Null when no ask is out.</summary>
+    private string? AnswerDue(CardState card)
+    {
+        var due = _work.Where(w => w.Kind == WorkKind.Visit && w.CompletedDay is null && w.StoppedDay is null
+                                   && w.Payload is VisitPayload { Extra: AskAboutAction q } && q.Card == card.Id)
+                       .Select(w => (Person: ((AskAboutAction)((VisitPayload)w.Payload!).Extra!).Person,
+                                     Day: PlayQueue(Member(w.Assignee), 0, Day, w, w.HoursRemainingMilli) ?? Day))
+                       .OrderBy(x => x.Day).FirstOrDefault();
+        if (due.Person is null || BuildPerson(due.Person) is not { } person) return null;
+        return $"{Possessive(person.DisplayName)} answer about this request is due on day {due.Day}; what they say may change what this buy needs.";
     }
 
     /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include

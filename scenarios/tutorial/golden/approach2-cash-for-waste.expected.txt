@@ -16,7 +16,7 @@ Before day 1
 Day 1
   ACTION    Government purchase card to Island Mart: Water at Hub, 4,500 gal/day for 7 days (Potable water supply); $9,734 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $9,734.
-  EVENT     Capt Mills on the cash box. "Watch the cash box. It only gets refilled every few days, and the paying agent can't buy what isn't in it. Island Mart takes the card; Harbor Bottling only takes cash."
+  EVENT     Capt Mills on paying for small buys. "Small buys go on the card if the vendor takes it, up to $20,000 each; Island Mart does. Harbor Bottling only takes cash, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it."
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
   EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
@@ -101,9 +101,9 @@ PERFORMANCE ISSUES (FAR 49.402-3)
   pi1 (day 12): hubDining at hubSite.food, failed days 11, 12. Decision: no decision.
 
 PASS CRITERIA
-  [met] Hub water never out more than one day (site.hubSite.water.downDays = 0)
-  [met] Forklifts never out more than one day (site.hubSite.mhe.downDays = 0)
+  [met] Hub water out no more than one day in all (site.hubSite.water.downDays = 0)
+  [met] Forklifts out no more than one day in all (site.hubSite.mhe.downDays = 0)
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 9132b474cedab260221558393e4e545c3e2963015b6eb5cc093abbc30c193338
+State hash 5828d89e7303e1b13ae91ea777c96b175e26b202df345317d7ce2a2e55be964e

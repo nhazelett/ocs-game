@@ -129,6 +129,7 @@ Day 27
 Day 28
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
 Day 29
   DONE      CE small buys: 8 worked today (4 h of shop time).
 Day 30
@@ -143,9 +144,9 @@ Hub Fuel                  ..............................
 Hub Lodging               ..............................
 Hub Food service          ..............................
 Hub Waste removal         ..............................
-Spoke B Power                   ...XXX..7XXXXXXXXXXX2222
+Spoke B Power                   ...XXX..7XXXXXXXXXXX2X22
 Spoke B Fuel                    ...XXX..7XXXXXXXXXXX5555
-Spoke B Lodging                 ...XXX..7XXXXXXXXXXX2222
+Spoke B Lodging                 ...XXX..7XXXXXXXXXXX2X22
 Spoke B Waste removal           ........................
 Spoke C Water                 ..XX......7777777775555555
 Spoke C Lodging               ..........................
@@ -157,7 +158,7 @@ SCORECARD
   Mission output 71% (sortie generation 79%, throughput 79%, endurance 71%, resilience 38%)
   Obligated $185,112; incurred $157,005; incurred but not obligated $61,720
   Unauthorized commitments 2; UCAs past due 0; HHQ inquiries 2
-  Surveys 0; shop hours worked 199; payment errors 0; execution-confusion days 0; vendor failures 6; declined BPA calls 0
+  Surveys 0; shop hours worked 199; payment errors 0; execution-confusion days 0; vendor failures 7; declined BPA calls 0
   spokeBSite.power: 18 day(s) down, 1 degraded, lowest 0%
   spokeBSite.fuel: 14 day(s) down, 5 degraded, lowest 0%
   spokeBSite.lodging: 18 day(s) down, 1 degraded, lowest 0%
@@ -253,10 +254,10 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [unforeseeable] Coastal Provisions food service at Spoke C missed a delivery on day 17. It delivers goods, so the miss is its own delivery record, not a part left out.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 18)
-  [not met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 14)
-  [not met] Spoke C water never out more than one day (site.spokeCSite.water.downDays = 2)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 18)
+  [not met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 14)
+  [not met] Spoke C water out no more than one day in all (site.spokeCSite.water.downDays = 2)
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
-  [not met] Mission output at least 90% (mission.output = 0.71)
+  [not met] Mission output at least 90% (mission.output = 0.706)
 
-State hash 756fe353a857c54703f5f206f738f8e63bedd92c6f39b99c24a365742d10703d
+State hash 2da1ff3483b0e6c22b44f8527f3f837617a7ce24554c87ea300bb3616201eccb

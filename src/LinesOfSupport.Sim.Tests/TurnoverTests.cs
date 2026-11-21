@@ -102,7 +102,8 @@ public class TurnoverTests
         Assert.StartsWith("Here's who I've used. Half of these I've never called.", t.Text(TurnoverSectionKind.Vendors));
         Assert.Contains("Port Fuel Haulers came by last week asking for work.", t.Text(TurnoverSectionKind.Vendors));
         Assert.Equal("Port Fuel Haulers came by last week asking for work.", t.Vendors.Single(v => v.VendorId == "vendorE").Remark);
-        Assert.Contains("$900,000", t.Text(TurnoverSectionKind.Money));
+        // DESK-81: Spoke B has room for its food order after the turnkey power; Spoke B 90 has no food order.
+        Assert.Contains(id == "spoke-b" ? "$1,100,000" : "$900,000", t.Text(TurnoverSectionKind.Money));
     }
 
     [Fact]

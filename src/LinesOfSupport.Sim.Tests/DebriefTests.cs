@@ -79,13 +79,16 @@ public class DebriefTests
     [Fact]
     public void Approach_3_has_no_gaps_and_approach_4_is_late_not_unlucky()
     {
-        // Approach 3 covers every planned need. With the team (DESK-12) the only gap left at seed 1 is one day of the
-        // turnkey package's equipment down with full operator and maintenance coverage, and it tags unforeseeable, not
-        // as the player's; nothing at Spoke B is ever down.
+        // Approach 3 covers every planned need. With the team (DESK-12) one gap at seed 1 is a day of the turnkey
+        // package's equipment down with full operator and maintenance coverage, tagged unforeseeable. Since DESK-81 the
+        // Harbor bridge it never ends has nobody to run it after ten days and stops on day 19, the same day Meridian has a
+        // set down: discoverable (Capt Ruiz knew), never avoidable, and nothing at Spoke B is ever down.
         var gaps = Debrief("spoke-b", "approach3-uca-turnkey-with-bridge").Gaps;
         Assert.NotEmpty(gaps);
-        Assert.All(gaps, g => Assert.Equal(GapTag.Unforeseeable, g.Tag));
+        Assert.All(gaps, g => Assert.NotEqual(GapTag.Avoidable, g.Tag));
         Assert.All(gaps, g => Assert.Equal(0, g.DownDays));
+        Assert.Contains(gaps, g => g.Tag == GapTag.Discoverable && g.StartDay == 19
+                                   && g.Factors.Any(f => f.Text.Contains("Capt Ana Ruiz knew it needed operators")));
         var power = GapOn(Debrief("spoke-b", "approach4-enduring-only"), "spokeBSite.power", 7);
         Assert.Equal(GapTag.Avoidable, power.Tag);
         Assert.Contains(power.Factors, f => f.Kind == GapFactorKind.Uncovered && f.Text.Contains("did not start until"));

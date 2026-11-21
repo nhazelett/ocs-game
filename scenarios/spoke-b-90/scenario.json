@@ -837,15 +837,15 @@
   "passCriteria": [
     {
       "id": "powerUp",
-      "label": "Spoke B power never down more than one day",
+      "label": "Spoke B power down no more than one day in all",
       "metric": "site.spokeBSite.power.downDays",
       "comparator": "<=",
       "value": 1,
-      "says": "Spoke B never goes without power more than a day."
+      "says": "Spoke B goes without power no more than one day in all."
     },
     {
       "id": "fuelUp",
-      "label": "Spoke B fuel never out more than one day",
+      "label": "Spoke B fuel out no more than one day in all",
       "metric": "site.spokeBSite.fuel.downDays",
       "comparator": "<=",
       "value": 1,
@@ -877,6 +877,12 @@
     "Main Island utilities never fail in this scenario so the lesson stays at Spoke B.",
     "Mission output counts each open site equally, so the spoke weighs as much as the hub.",
     "Fiscal year money: om1 expires day 75; the next year's line, om2, is planned for day 76 and is released 3 to 10 days late (event fyFundingLate). Nothing can be obligated in between.",
-    "COR reporting (M3-04): SSG Reyes (good) reports a vendor failure the same day; SGT Okafor (fair) two days late and about 80% of the time; Reyes rotates home between days 44 and 60 and her relief is poor. A contract with no COR is reported by the unit only when its failure shows as a shortfall."
-  ]
+    "COR reporting (M3-04): SSG Reyes (good) reports a vendor failure the same day; SGT Okafor (fair) two days late and about 80% of the time; Reyes rotates home between days 44 and 60 and her relief is poor. A contract with no COR is reported by the unit only when its failure shows as a shortfall.",
+    "Generators with nobody to run them keep going for about ten days while the advance team is near them; after that a set that trips stays dark for the day."
+  ],
+  "failure": {
+    "missingOperatorPermillePerDay": 150,
+    "missingOperatorGraceDays": 10,
+    "missingOperatorFailureSupplyPermille": 0
+  }
 }

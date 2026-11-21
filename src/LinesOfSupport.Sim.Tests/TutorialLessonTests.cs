@@ -52,9 +52,16 @@ public class TutorialLessonTests
         Assert.Equal(16, Repo.Load("tutorial").Scenario.Days);
         Assert.Equal(100, Repo.Load("tutorial").Rules.Model.Failure.MissingOperatorPermillePerDay);
         Assert.Equal(0.99, Repo.Load("tutorial").Scenario.Vendors.Single(v => v.Id == "coastalRentals").Reliability);
-        // Spoke B keeps the rules value until DESK-81 prices its own lesson.
-        foreach (var id in new[] { "spoke-b", "spoke-b-90", "sustainment" })
-            Assert.Equal(20, Repo.Load(id).Rules.Model.Failure.MissingOperatorPermillePerDay);
+        // DESK-81: Spoke B prices its own lesson (generators nobody runs stop after ten days); sustainment keeps the rules.
+        foreach (var id in new[] { "spoke-b", "spoke-b-90" })
+        {
+            var f = Repo.Load(id).Rules.Model.Failure;
+            Assert.Equal((150, 10, 0), (f.MissingOperatorPermillePerDay, f.MissingOperatorGraceDays, f.MissingOperatorFailureSupplyPermille));
+        }
+        var rules = Repo.Load("sustainment").Rules.Model.Failure;
+        Assert.Equal((20, 0, (int?)null), (rules.MissingOperatorPermillePerDay, rules.MissingOperatorGraceDays, rules.MissingOperatorFailureSupplyPermille));
+        var tutorial = Repo.Load("tutorial").Rules.Model.Failure;
+        Assert.Equal((0, (int?)null), (tutorial.MissingOperatorGraceDays, tutorial.MissingOperatorFailureSupplyPermille));
     }
 
     [Fact]

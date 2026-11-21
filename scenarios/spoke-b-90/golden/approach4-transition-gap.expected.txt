@@ -82,6 +82,8 @@ Day 19
 Day 20
   END       Harbor Equipment Co power at Spoke B terminated; performance ends day 20. $38,088 deobligated back to the O&M line good through day 75.
   DONE      CE small buys: 6 worked today (3 h of shop time).
+  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no operators).
+  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 20.
 Day 21
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
@@ -258,7 +260,7 @@ SCORECARD
   Mission output 91% (sortie generation 97%, throughput 97%, endurance 100%, resilience 53%)
   Obligated $648,207; incurred $560,317; incurred but not obligated $0
   Unauthorized commitments 0; UCAs past due 0; HHQ inquiries 0
-  Surveys 1; shop hours worked 364; payment errors 0; execution-confusion days 0; vendor failures 3; declined BPA calls 0
+  Surveys 1; shop hours worked 364; payment errors 0; execution-confusion days 0; vendor failures 4; declined BPA calls 0
   spokeBSite.power: 5 day(s) down, 1 degraded, lowest 0%
   spokeBSite.fuel: 0 day(s) down, 1 degraded, lowest 77%
 
@@ -287,9 +289,9 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [avoidable] The hand-off from Meridian Site Services power at Spoke B to the external contract's power at Spoke B left a gap: Meridian Site Services power at Spoke B ended day 42 before the external contract's power at Spoke B was delivering. The external contract's power at Spoke B started day 48. The transition planner flagged it on day 37; a bridge or an earlier start would have covered it. Gap owner: CCO seat.
 
 PASS CRITERIA
-  [not met] Spoke B power never down more than one day (site.spokeBSite.power.downDays = 5)
-  [met] Spoke B fuel never out more than one day (site.spokeBSite.fuel.downDays = 0)
+  [not met] Spoke B power down no more than one day in all (site.spokeBSite.power.downDays = 5)
+  [met] Spoke B fuel out no more than one day in all (site.spokeBSite.fuel.downDays = 0)
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.91)
 
-State hash e7c93cd0954db73cc6c5f3e1af51621d4015a4879f429f9a459ea7d375dec61c
+State hash 3b8b84f0caeb937fa30c665e4c8ac5e0ed975f3dbf96f5c9488b04510c5d114c

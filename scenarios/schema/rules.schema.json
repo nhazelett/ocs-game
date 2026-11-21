@@ -404,6 +404,17 @@
               "minimum": 0,
               "maximum": 1000,
               "description": "Share of rated supply still delivered on a failure day for continuous capabilities"
+            },
+            "missingOperatorGraceDays": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "DESK-81: days in service before the operator odds apply; 0 or absent, from the start"
+            },
+            "missingOperatorFailureSupplyPermille": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000,
+              "description": "DESK-81: share of rated supply on a failure the missing operators caused; absent, as any failure"
             }
           }
         },
@@ -416,7 +427,10 @@
             "ratificationShopDays",
             "paymentErrorReworkHours",
             "hhqInquiryResponseHours",
-            "terminationShopDays"
+            "terminationShopDays",
+            "cardCancelShopHours",
+            "modificationShopHours",
+            "modificationPartPricePermille"
           ],
           "properties": {
             "surveyShopHours": {
@@ -442,6 +456,21 @@
             "terminationShopDays": {
               "type": "integer",
               "minimum": 0
+            },
+            "cardCancelShopHours": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Shop hours to cancel a card buy with the vendor (DESK-94): a short call, no notice, no settlement."
+            },
+            "modificationShopHours": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Shop hours to write a modification adding a part to a running contract (D37, DESK-97)."
+            },
+            "modificationPartPricePermille": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Each added part's price a day, in permille of the contract's daily price (D37, DESK-97)."
             }
           }
         },

@@ -102,6 +102,12 @@ public partial class MapSmokeTest : Node
                 }
                 await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
                 MapCalloutSmokeTest.Check(map);
+                if (day == 19)
+                {
+                    await Capture("busy-day19");
+                    Require(map.Tabletop!.ToggleShortfall("spokeBSite"), "The constrained site still opens its full shortfall reasons.");
+                    await Capture("busy-day19-detail"); map.Tabletop.CloseShortfall();
+                }
                 Require(shell.Session.StateHash == hash, "Animation, rendering and snapshot queries never mutate Sim.");
             }
             Require(capturedRun && capturedClosure && capturedDay18, "Real authored approach exercises a delivery and a closed route holding cargo.");

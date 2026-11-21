@@ -121,7 +121,7 @@ public sealed partial class Session
     {
         var stop = CheckTerminate(t);
         var arr = _arrangements.FirstOrDefault(x => x.Id == t.Arrangement);
-        var h = arr is { IsCoordination: true } ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true);
+        var h = arr is null ? 0 : EndMilli(arr);
         // The result day is the last day the arrangement runs: the day the termination is done, plus any notice.
         var notice = t.WithNotice && stop is null ? arr!.NoticeDays ?? 0 : 0;
         return WorkPreview(t, stop is null ? [] : [stop], h, h, notice);
@@ -188,6 +188,7 @@ public sealed partial class Session
         CoordinateAction x => BuildCoordinatePreview(x),
         DefinitizeAction x => BuildDefinitizePreview(x),
         TerminateAction x => BuildTerminatePreview(x),
+        ModifyAction x => BuildModifyPreview(x),
         CureNoticeAction x => BuildCureNoticePreview(x),
         ResolveCommitmentAction x => BuildResolvePreview(x),
         AssignAction x => BuildAssignPreview(x),

@@ -239,7 +239,7 @@ public sealed partial class Session
                     var rec = AddRecord(d, RecordKind.Transition, outA.Id,
                         $"{Upper(NameOf(t.Id))}: {why}; cut-over started, termination of {NameOf(outA.Id)} in work so its last day is day {d + 1} if the shop gets to it.", [t.CauseId]);
                     if (!_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (w.Payload as string) == outA.Id))
-                        AddWork(WorkKind.Terminate, $"Terminate {NameOf(outA.Id)}", outA.IsCoordination ? 0 : Hours(Rules.Model.Work.TerminationShopDays, true), d, outA.Id, rec);
+                        AddWork(WorkKind.Terminate, EndWorkName(outA), EndMilli(outA), d, outA.Id, rec);
                 }
             }
 

@@ -530,7 +530,14 @@ public sealed record SkipStopsView(string Sentence, int UntilDay);
 /// starts after the need ends or only adds to days already covered; Why is that reason, and is also the sentence's
 /// last part. A forecast; it ignores rolls.
 /// </summary>
-public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why);
+/// <param name="AnswerDue">D42 (DESK-123): while someone asked about the request has not answered, one sentence saying when
+/// the answer is due ("SMSgt Ray Dunn's answer about this request is due on day 4; what they say may change what this buy
+/// needs."); also the last sentence of <paramref name="Sentence"/>. Not an attention reason and not a stop. Null otherwise.</param>
+/// <param name="PassLineCost">D43 (DESK-129): when the quote's latest start is after the request's from-day and a pass line
+/// counts down days there, what that late start costs against the commander's allowance ("If it starts on day 9, material
+/// handling equipment at Hub is out 1 day in all: all the commander allows."); also a sentence of <paramref name="Sentence"/>,
+/// after the start. Not an attention reason. Null otherwise.</param>
+public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why, string? AnswerDue = null, string? PassLineCost = null);
 
 /// <summary>
 /// What an award would do if applied today, without applying it. HardStops are the same strings Apply would return
@@ -634,4 +641,15 @@ public sealed record BarLine(string Id, string Says, string Text, double Count, 
 /// <param name="Final">True once the scenario is over: the states are the verdict.</param>
 /// <param name="Spoken">The commander's lines in order, then the length ("That's for the 20 days you're here.").</param>
 public sealed record BarView(PersonView? From, int Days, bool Final, string Spoken, IReadOnlyList<BarLine> Lines);
+
+/// <summary>How ending an arrangement reads on its own page (DESK-94): the button's words and the line under it. A card buy
+/// is cancelled with the vendor ("Cancel this card buy"); a contract or a call is terminated ("End this contract").</summary>
+public sealed record ArrangementEndView(string Button, string Says);
+
+/// <summary>D37 (DESK-97): "Add to this contract" on a contract's own page. Can is false with Why (one plain sentence) when
+/// the Sim says no; Button names the parts ("Add operators to this contract"); Says is the line under it (hours, price for
+/// the days left, the first day). Parts are line ids for <c>ModifyAction.Lines</c>. Added says what earlier changes added
+/// and from which day ("Operators added from day 10."), whether or not more can be added.</summary>
+public sealed record ModifyView(bool Can, string? Why, IReadOnlyList<string> Parts, string Button, int ShopHours, long PriceCents,
+    long DailyCents, int FromDayMin, int FromDayMax, string? Says, IReadOnlyList<string> Added);
 

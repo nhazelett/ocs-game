@@ -32,7 +32,11 @@ public sealed partial class Session
         if (parts is ["site", var site, var cap, "downDays"] && Scenario.Sites.Any(s => s.Id == site) && _capData.ContainsKey(cap))
         {
             var n = (long)count;
-            text = $"{CapLabel(cap)} at {SiteName(site)}: out {Plural(n, "day")}{sofar}.";
+            // D43 (DESK-129): the allowance is a total for the stay, so the count says it against what is allowed.
+            text = p.Comparator == "<=" && p.Value >= 1
+                ? $"{CapLabel(cap)} at {SiteName(site)}: out {n} of the {Plural((long)p.Value, "day")} allowed{sofar}."
+                : p.Comparator == "<=" && p.Value == 0 ? $"{CapLabel(cap)} at {SiteName(site)}: out {Plural(n, "day")}{sofar}; none allowed."
+                : $"{CapLabel(cap)} at {SiteName(site)}: out {Plural(n, "day")}{sofar}.";
             // Amber once the days allowed are used up: one more bad day misses it. A line that allows none is met or missed.
             state = !ok ? BarState.Missed : !Finished && p.Comparator == "<=" && p.Value > 0 && n >= p.Value ? BarState.AtRisk : BarState.Met;
         }

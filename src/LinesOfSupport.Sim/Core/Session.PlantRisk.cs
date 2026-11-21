@@ -22,10 +22,15 @@ public sealed partial class Session
     }
 
     /// <summary>The operator and maintenance parts this arrangement left out that carry their failure risk.</summary>
-    internal List<CapabilityLineData> MissingPlantParts(Arrangement a, CapabilityData cap)
+    /// On a day: a part added by modification (DESK-97) counts from its first day, so failures before it keep their reason.
+    internal List<CapabilityLineData> MissingPlantParts(Arrangement a, CapabilityData cap, int? day = null)
         => cap.Lines.Where(l => l.Kind is "operator" or "maintenance"
-                                && !a.Lines.Any(id => cap.Lines.FirstOrDefault(x => x.Id == id)?.Kind == l.Kind)
+                                && !LinesOn(a, day ?? Day).Any(id => cap.Lines.FirstOrDefault(x => x.Id == id)?.Kind == l.Kind)
                                 && PlantPartAtRisk(cap, l, a.VendorId)).ToList();
+
+    /// <summary>The parts an arrangement brings on a day: what it was bought with, and what a modification added by then.</summary>
+    internal static IEnumerable<string> LinesOn(Arrangement a, int day)
+        => a.Added.Count == 0 ? a.Lines : a.Lines.Concat(a.Added.Where(x => x.FromDay <= day).Select(x => x.Line));
 
     /// <summary>
     /// The debrief's opening for a failure with no part left out that counts: full coverage, or goods whose plant is the
@@ -34,7 +39,7 @@ public sealed partial class Session
     internal string FailedCovered(Arrangement a, CapabilityData cap, int day)
     {
         var goods = !a.IsCoordination && cap.Lines.Any(l => l.Kind is "operator" or "maintenance"
-                                       && !a.Lines.Any(id => cap.Lines.FirstOrDefault(x => x.Id == id)?.Kind == l.Kind)
+                                       && !LinesOn(a, day).Any(id => cap.Lines.FirstOrDefault(x => x.Id == id)?.Kind == l.Kind)
                                        && !PlantPartAtRisk(cap, l, a.VendorId));
         return goods
             ? $"{Upper(NameOf(a.Id))} missed a delivery on day {day}. It delivers goods, so the miss is its own delivery record, not a part left out."
