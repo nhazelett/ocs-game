@@ -35,6 +35,7 @@ public static class Events
         "hostNation.withdraw",           // target: capability id, or absent for all; days or daysRange: notice, else rules hostNation.withdrawalNoticeDays (M3-06)
         "vendor.reliabilityDrop",        // target: inherited arrangement id; value: its reliability from the event day, 0..1 (M3-18)
         "vendor.declinesCalls",          // target: vendor id; days: every BPA call to it that reaches award in that window is declined (M2R-08)
+        "vendor.short",                  // target: vendor id; days: declinesCalls, and no other buy with it may start in that window (DESK-174)
         "vendor.slips",                  // target: inherited arrangement id; days: it under-delivers on each of that many days from the event day, and each slip reaches the office (DESK-80)
         "inbox",                         // message only (playerVisibleAs)
     };
@@ -148,6 +149,9 @@ public static class Events
             }
             case "vendor.declinesCalls":
                 s.DeclineCalls(e.Target ?? throw new InvalidDataException("vendor.declinesCalls needs a vendor"), day, s.EffectDays(ev, index, 1), cause);
+                break;
+            case "vendor.short":
+                s.GoesShort(e.Target ?? throw new InvalidDataException("vendor.short needs a vendor"), day, s.EffectDays(ev, index, 1), cause);
                 break;
             case "vendor.slips":
                 s.Slips(e.Target ?? throw new InvalidDataException("vendor.slips needs an arrangement"), day, s.EffectDays(ev, index, 1));

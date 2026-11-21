@@ -110,9 +110,10 @@ public sealed partial class Session
         if (m.HoursPerDayMilli <= 0) return Math.Max(Day, target >= 0 ? items[target].Wait : items.Max(i => i.Wait));
         var done = new int?[items.Count];
         var lastWait = items.Max(i => i.Wait);
+        var fixedToday = FixedTodayMilli(m);   // DESK-176: trips and the staff meeting go first today, as the plan says
         for (var d = Day; done.Any(x => x is null); d++)
         {
-            var left = m.HoursPerDayMilli;
+            var left = d == Day ? Math.Max(0, m.HoursPerDayMilli - fixedToday) : m.HoursPerDayMilli;
             for (var i = 0; i < items.Count; i++)
             {
                 if (done[i] is not null || items[i].Wait > d) continue;

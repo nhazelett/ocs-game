@@ -496,6 +496,7 @@ Also from this play, no decision needed: the quote's "price already includes its
 Sim notes (Fable):
 
 - DESK-172: in `BuildAwardSummary`, from `LeftOut(card, lines)` filtered by `PlantPartAtRisk`, and the ask's state from the request's helper views (`HelperView`: not asked, under way with its day, answered). Built (21 Nov): `LeftOut` holds only parts the request lists, and the sixth play's operators were not listed, so the parts are the request's operator and maintenance parts at risk that the buy leaves out and nobody has told (`LineKnown`); the person is the requester the quote's ask-first warning names (DESK-58), so the sentence never marks the ask that pays off. It is an attention reason, unlike D42's answer due, which moves to the notes.
+- DESK-174 (built 21 Nov): the scenario effect `vendor.short` replaces the tutorial's `vendor.declinesCalls`; it keeps the call's decline at award (the lesson) and refuses any other buy that would start in the short days, with the shortage and the first free day in the stop. No rule changed; no policy moved.
 - DESK-168: the cancelled arrangement is `ArrangementStatus.Terminated` (or ended) with `StartDay` on or before the short day; name it in `DiagnoseDay`'s sizing branch and add its cause and end records to the factor's evidence.
 
 ## 29. The 21 Nov seventh play: D49 (21 Nov 2026)
@@ -506,5 +507,5 @@ Also from this play, no decision needed: the hand-over picker's done day counts 
 
 Sim notes (Fable):
 
-- DESK-175: in `SummaryThird`, after `ToldNotAdded` and before `OnlyCoveredDays`: `LeftOut(card, chk.Lines)` filtered to parts at risk (`PlantPartAtRisk`, DESK-59), so a goods buy with no plant risk is not flagged; the `SummaryNotes` vendor-brings line is unchanged.
-- DESK-176: the hand-over preview (`PreviewAny` of an `AssignAction` with `To`) plays the queue from the person's hours left today after the work already planned (the standing staff meeting, `PlanPeople`), as the day's plan does, so `EarliestStartMin` is the day the plan finishes it.
+- DESK-175: in `SummaryThird`, after `ToldNotAdded` and before `OnlyCoveredDays`: `LeftOut(card, chk.Lines)` filtered to parts at risk (`PlantPartAtRisk`, DESK-59), so a goods buy with no plant risk is not flagged; the `SummaryNotes` vendor-brings line is unchanged. Built 21 Nov as `IncludedLeftOut`, after D48's `NotYetConfirmed`; when it takes the place and the days are also covered, the covered sentence is the first of the quote's notes.
+- DESK-176: the hand-over preview (`PreviewAny` of an `AssignAction` with `To`) plays the queue from the person's hours left today after the work already planned (the standing staff meeting, `PlanPeople`), as the day's plan does, so `EarliestStartMin` is the day the plan finishes it. Built 21 Nov in `PlayQueue` itself, so every forecast that plays a queue (pickers, the team page's clear-by day, the answer-due day) agrees with the plan; no record or golden moved.

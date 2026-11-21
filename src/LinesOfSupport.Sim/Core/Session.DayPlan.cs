@@ -37,30 +37,7 @@ public sealed partial class Session
         var due = new List<string>();
 
         // Before the shop works, as AdvanceDay does: SF 44 deliveries due today (made or held), then the staff meeting.
-        var trips = new List<(TeamMember Who, string Label, long Milli)>();
-        var cash = _cash;
-        foreach (var a in _arrangements.Where(x => x.PaidPerDelivery))
-        {
-            if (!(a.StartDay <= d && a.EndDay >= d && a.Status is ArrangementStatus.Active or ArrangementStatus.Pending
-                  && PopulationOn(SiteData(a.SiteId), d) > 0)) continue;
-            var site = SiteData(a.SiteId);
-            var what = $"The SF 44 delivery of {Lower(CapLabel(a.CapabilityId))} from {SupplierName(a)} at {site.Name}";
-            if (SurfaceClosed(a.SupplierIslandId, site.Island, d))
-            {
-                due.Add($"{what} will not happen today: the boat to {IslandData(site.Island).Name} is not running.");
-                continue;
-            }
-            var cost = a.DailyCostCents + (a.MobilizationCharged ? 0 : a.MobilizationCents);
-            if (cost > cash)
-            {
-                due.Add($"{what} will not happen today: it is paid in cash at the door, {Money(cost)}, and the cash box holds {Money(cash)}.");
-                continue;
-            }
-            cash -= cost;
-            var who = Member(a.TripAssignee);
-            trips.Add((who, $"SF 44 delivery and payment at {site.Name}", PersonHours(TripMilli(a, d), who.Id)));
-            due.Add($"{what} is due today: {(who.Role == "you" ? "you make" : MemberName(who) + " makes")} the trip and pays {Money(cost)} in cash.");
-        }
+        var trips = TripsToday(due);
         var meeting = _attendingMeetings && _nextMeetingDay == d ? Member(_meetingAssignee) : null;
 
         // Then the queue, in the order the day loop works it.
@@ -147,4 +124,47 @@ public sealed partial class Session
 
     /// <summary>"1 hour", "2.5 hours", rounded up to the half hour as every view rounds (DESK-14).</summary>
     private static string HoursSaid(long milli) => HalfHours(milli) is var h && h == 1 ? "1 hour" : $"{HoursText(HalfHours(milli))} hours";
+
+    /// <summary>The SF 44 trips the day loop makes today before the queue, each with who makes it and their hours; what is
+    /// due or held goes to <paramref name="due"/> when given. Shared by the day's plan and <c>FixedTodayMilli</c>.</summary>
+    private List<(TeamMember Who, string Label, long Milli)> TripsToday(List<string>? due = null)
+    {
+        var d = Day;
+        var trips = new List<(TeamMember Who, string Label, long Milli)>();
+        var cash = _cash;
+        foreach (var a in _arrangements.Where(x => x.PaidPerDelivery))
+        {
+            if (!(a.StartDay <= d && a.EndDay >= d && a.Status is ArrangementStatus.Active or ArrangementStatus.Pending
+                  && PopulationOn(SiteData(a.SiteId), d) > 0)) continue;
+            var site = SiteData(a.SiteId);
+            var what = $"The SF 44 delivery of {Lower(CapLabel(a.CapabilityId))} from {SupplierName(a)} at {site.Name}";
+            if (SurfaceClosed(a.SupplierIslandId, site.Island, d))
+            {
+                due?.Add($"{what} will not happen today: the boat to {IslandData(site.Island).Name} is not running.");
+                continue;
+            }
+            var cost = a.DailyCostCents + (a.MobilizationCharged ? 0 : a.MobilizationCents);
+            if (cost > cash)
+            {
+                due?.Add($"{what} will not happen today: it is paid in cash at the door, {Money(cost)}, and the cash box holds {Money(cash)}.");
+                continue;
+            }
+            cash -= cost;
+            var who = Member(a.TripAssignee);
+            trips.Add((who, $"SF 44 delivery and payment at {site.Name}", PersonHours(TripMilli(a, d), who.Id)));
+            due?.Add($"{what} is due today: {(who.Role == "you" ? "you make" : MemberName(who) + " makes")} the trip and pays {Money(cost)} in cash.");
+        }
+        return trips;
+    }
+
+    /// <summary>DESK-176 (Claude play 21 Nov, seventh play, note P2-13): the hours of this person's day that go before their
+    /// queue today, as the day loop and the day's plan spend them: SF 44 trips, then the standing staff meeting. The
+    /// queue forecasts (<c>PlayQueue</c>) start today from what is left, so a hand-over's done day matches the plan.</summary>
+    private long FixedTodayMilli(TeamMember m)
+    {
+        var milli = TripsToday().Where(t => t.Who.Id == m.Id).Sum(t => t.Milli);
+        if (_attendingMeetings && _nextMeetingDay == Day && Member(_meetingAssignee).Id == m.Id)
+            milli += PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), m.Id);
+        return milli;
+    }
 }
