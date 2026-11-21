@@ -874,7 +874,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.waste days 60-60, lowest 51%, 0 day(s) down: UNFORESEEABLE
-      [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 60; no part was left out of its terms. Its report was still on the way (due day 62) when the game ended. SSG Park reports problems 2 days late; SSG Mensah reports them the same day.
+      [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 60; no part was left out of its terms. Its report was still on the way (due day 62) when the game ended. The failure itself could not be foreseen. SSG Park reports problems 2 days late; with SSG Mensah, who reports the same day, its report would have been due on day 60.
   #1 hubSite.transport days 2-2, lowest 53%, 0 day(s) down: AVOIDABLE
       [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed.
   #2 hubSite.transport days 28-28, lowest 53%, 0 day(s) down: AVOIDABLE
@@ -884,7 +884,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #4 hubSite.transport days 57-57, lowest 53%, 0 day(s) down: AVOIDABLE
       [avoidable] Main Island Motor Pool Rentals ground transport at Hub failed (first on day 57) and was bought without maintenance; its failure odds were higher every day it ran. The COR reported it on day 59.
   #5 hubSite.transport days 60-60, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] Main Island Motor Pool Rentals ground transport at Hub failed (first on day 60) and was bought without maintenance; its failure odds were higher every day it ran. Its report was still on the way (due day 62) when the game ended. SSG Park reports problems 2 days late; SSG Mensah reports them the same day.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub failed (first on day 60) and was bought without maintenance; its failure odds were higher every day it ran. Its report was still on the way (due day 62) when the game ended. SSG Park reports problems 2 days late; with SSG Mensah, who reports the same day, its report would have been due on day 60.
   #6 spokeASite.power days 13-13, lowest 54%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] North Island Power and Light power at Spoke A failed on day 13 with full operator and maintenance coverage.
   #7 spokeASite.power days 28-28, lowest 54%, 0 day(s) down: UNFORESEEABLE
@@ -932,7 +932,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #28 spokeBSite.fuel days 57-57, lowest 56%, 0 day(s) down: AVOIDABLE
       [avoidable] Second Island Fuel fuel at Spoke B failed on day 57 with full maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its COR (fair) did not report it. The performance issue with Second Island Fuel on fuel at Spoke B opened day 23; decision: no decision.
   #29 spokeBSite.fuel days 60-60, lowest 56%, 0 day(s) down: AVOIDABLE
-      [avoidable] Second Island Fuel fuel at Spoke B failed on day 60 with full maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its report was still on the way (due day 62) when the game ended. SSG Park reports problems 2 days late; SSG Mensah reports them the same day. The performance issue with Second Island Fuel on fuel at Spoke B opened day 23; decision: no decision.
+      [avoidable] Second Island Fuel fuel at Spoke B failed on day 60 with full maintenance coverage. The file review on day 2 showed its real delivery record (88% on time, not the 97% reported at handover). A cure notice or a second source would have covered it. Its report was still on the way (due day 62) when the game ended. SSG Park reports problems 2 days late; with SSG Mensah, who reports the same day, its report would have been due on day 60. The performance issue with Second Island Fuel on fuel at Spoke B opened day 23; decision: no decision.
   #30 spokeBSite.power days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Harbor Equipment Co power at Spoke B failed (first on day 27) and was bought without operators; its failure odds were higher every day it ran. The COR reported it on day 29.
   #31 spokeBSite.power days 29-29, lowest 64%, 0 day(s) down: AVOIDABLE
@@ -989,7 +989,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #55 spokeBSite.lodging days 57-57, lowest 56%, 0 day(s) down: AVOIDABLE
       [avoidable] Lodging depends on power, which was short. (see #41)
   #56 spokeBSite.lodging days 59-60, lowest 51%, 0 day(s) down: AVOIDABLE
-      [avoidable] Second Island Camp Services lodging at Spoke B failed (first on day 59) and was bought without maintenance; its failure odds were higher every day it ran. Its report was still on the way (due day 61) when the game ended. SGT Oyelaran reports problems 2 days late; SSG Mensah reports them the same day.
+      [avoidable] Second Island Camp Services lodging at Spoke B failed (first on day 59) and was bought without maintenance; its failure odds were higher every day it ran. Its report was still on the way (due day 61) when the game ended. SGT Oyelaran reports problems 2 days late; with SSG Mensah, who reports the same day, its report would have been due on day 59.
       [avoidable] Lodging depends on power, which was short. (see #42)
   #57 spokeBSite.food days 27-27, lowest 64%, 0 day(s) down: AVOIDABLE
       [avoidable] Food service depends on power, which was short. (see #30)

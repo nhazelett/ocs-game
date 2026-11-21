@@ -21,7 +21,7 @@ public class PickTwoTests
         var s = Session.Create(Repo.Load("spoke-b"), 1);
         var p = s.View.Preview(PowerPo());
         Assert.True(p.Accepted);
-        Assert.Null(p.Trade);
+        Assert.StartsWith("Pick two of fast, cheap and good", p.Trade);   // DESK-155 (d): said before a pick, changes nothing
         Assert.True(s.Apply(PowerPo()).Accepted);
         Assert.DoesNotContain("Picked", s.Records.Last(r => r.Subject == "po").Text);
     }

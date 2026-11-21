@@ -171,7 +171,8 @@ public sealed partial class Session
     }
 
     /// <summary>Debrief: how a failure on the day reached the office, or that it never did (M3-04).</summary>
-    internal string CorNote(Arrangement a, int day)
+    /// <param name="unforeseen">The gap's verdict is that nobody could have seen the failure coming (DESK-155 a).</param>
+    internal string CorNote(Arrangement a, int day, bool unforeseen = false)
     {
         if (Observed(a)) return "";
         var r = _corReports.FirstOrDefault(x => x.ArrangementId == a.Id && x.FailureDay == day);
@@ -179,7 +180,7 @@ public sealed partial class Session
             return r.CorId is null
                 ? $" With no COR, the unit reported it on day {r.ArriveDay}, after the mission effect."
                 : r.ArriveDay > day ? $" The COR reported it on day {r.ArriveDay}." : "";
-        if (r is not null) return $" Its report was still on the way (due day {r.ArriveDay}) when the game ended.{SoonerCor(r)}";
+        if (r is not null) return $" Its report was still on the way (due day {r.ArriveDay}) when the game ended.{SoonerCor(r, unforeseen)}";
         return a.CorId is null
             ? " No COR was designated, so nobody reported it to the office."
             : $" Its COR ({CorOf(a.CorId)!.Quality}) did not report it.";
@@ -187,15 +188,19 @@ public sealed partial class Session
 
     /// <summary>DESK-149 (b), Claude play 21 Nov, second play, note 9: a report still on the way at the end was late because
     /// of the COR's lag, and the debrief said only "due day 17", so the monitor the player chose made no visible
-    /// difference. When another COR on the roster reports sooner, name both lags: " TSgt Pratt reports problems 2 days
-    /// late; SSgt Lane reports them the same day." Empty with no COR, no lag, or nobody sooner.</summary>
-    private string SoonerCor(CorReport r)
+    /// difference. DESK-155 (a), third play, note 29: said as why it happened, the lag read against "Unforeseeable", so it
+    /// says when the office would have heard instead: " TSgt Pratt reports problems 2 days late; with SSgt Lane, who
+    /// reports the same day, its report would have been due on day 15." A report, not a promise: the other COR's odds of
+    /// catching it are not certain. On an unforeseeable gap it opens with "The failure itself could not be foreseen."
+    /// Empty with no COR, no lag, or nobody sooner.</summary>
+    private string SoonerCor(CorReport r, bool unforeseen)
     {
         if (CorOf(r.CorId) is not { } cor || CorQuality(cor).LagDays is var lag && lag <= 0) return "";
         var sooner = _cors.Where(c => c.Id != cor.Id && c.RotatedDay is null && CorQuality(c).LagDays < lag)
                           .OrderBy(c => CorQuality(c).LagDays).FirstOrDefault();
         if (sooner is null) return "";
         var soon = CorQuality(sooner).LagDays;
-        return $" {cor.Name} reports problems {Plural(lag, "day")} late; {sooner.Name} reports them {(soon == 0 ? "the same day" : $"{Plural(soon, "day")} late")}.";
+        var lead = unforeseen ? " The failure itself could not be foreseen." : "";
+        return $"{lead} {cor.Name} reports problems {Plural(lag, "day")} late; with {sooner.Name}, who reports {(soon == 0 ? "the same day" : $"{Plural(soon, "day")} late")}, its report would have been due on day {r.FailureDay + soon}.";
     }
 }

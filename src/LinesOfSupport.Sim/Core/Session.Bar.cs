@@ -16,12 +16,24 @@ public sealed partial class Session
         var m = Metrics;
         var lines = Scenario.PassCriteria.Select(p => BarLineFor(p, m)).ToList();
         var says = string.Join(" ", Scenario.PassCriteria.Select(p => p.Says ?? Upper(p.Label.TrimEnd('.')) + "."));
+        // DESK-155 (c), Claude play 21 Nov, third play, note 28: what counts as out, said once with the lines that count it.
+        if (Scenario.PassCriteria.Any(p => p.Metric.EndsWith(".downDays", StringComparison.Ordinal)))
+            says += " " + OutDaySaid();
         var length = $"That's for the {Plural(LastDay, "day")} you're here.";
         var from = BuildPerson(Scenario.Actors.Commander.Person);
         return new BarView(from, LastDay, Finished, (says.Length == 0 ? length : says + " " + length).Trim(), lines)
         {
             Closing = Finished && Scenario.Tutorial && lines.Count > 0 ? TutorialClosing(from, lines) : null,
         };
+    }
+
+    /// <summary>"A day counts as out when less than half of it is supplied; at half or more it is short." From
+    /// model.downThresholdPermille.</summary>
+    private string OutDaySaid()
+    {
+        var at = Rules.Model.DownThresholdPermille;
+        var share = at == 500 ? "half" : $"{PercentSaid(at)}";
+        return $"A day counts as out when less than {share} of it is supplied; at {share} or more it is short.";
     }
 
     /// <summary>DESK-149 (a), Claude play 21 Nov, second play, note 10: the debrief had four Met lines and Play again, and

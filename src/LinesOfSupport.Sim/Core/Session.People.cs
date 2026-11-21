@@ -484,7 +484,11 @@ public sealed partial class Session
     // ------------------------------------------------------------------ views
 
     internal StaffMeetingView BuildStaffMeeting()
-        => new(_attendingMeetings, VisitInWork("joinMeeting"), _nextMeetingDay, [.. _meetingDays], [.. _previewedCards]);
+        => new(_attendingMeetings, VisitInWork("joinMeeting"), _nextMeetingDay, [.. _meetingDays], [.. _previewedCards])
+        {
+            JoinSays = $"Joins the staff meeting so requests reach you in the room; whoever goes then spends {Plural(People.StaffMeeting.WeeklyShopHours, "hour")} at each meeting, "
+                     + (People.StaffMeeting.EveryDays <= 1 ? "every day." : $"every {People.StaffMeeting.EveryDays} days."),
+        };
 
     internal IReadOnlyList<ScoQuestionView> BuildScoQuestions()
         => People.AskSco.Questions.Select(q => new ScoQuestionView(q.Id, q.Label,

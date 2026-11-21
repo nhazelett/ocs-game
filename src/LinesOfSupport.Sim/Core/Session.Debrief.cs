@@ -265,7 +265,7 @@ public sealed partial class Session
                             ? new GapFactor(GapFactorKind.VendorFailure, knew is null ? GapTag.Avoidable : GapTag.Discoverable, d,
                                 $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{knew}{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{FailedCovered(a, cap, d)}{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id]));
+                                $"{FailedCovered(a, cap, d)}{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d, unforeseen: PickFailureNote(a).Length == 0 && DropNote(a, d).Length == 0)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:
