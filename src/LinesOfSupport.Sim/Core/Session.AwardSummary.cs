@@ -30,7 +30,7 @@ public sealed partial class Session
             ? $" with {Possessive(vendor.Name)} {PercentSaid(sur)} card surcharge" : "";
         var parts = new List<string>
         {
-            $"{vendor.Name}, {Lower(cap.Label)} for {site.Name}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
+            $"{vendor.Name}, {WhatFor(capId, site.Name)}: {Money(preview.TotalCents)}{surcharge} and {(PerDelivery(a) ? TripHoursOf(a, chk.SiteId, StockIsland(vendor, capId)) : HoursOf(preview, a.Assignee))}.",
         };
         var card = chk.Card;
         // D47 (DESK-158, Claude play 21 Nov, fourth play, note 14): what a written buy's start waits for, in one clause, so
@@ -200,6 +200,13 @@ public sealed partial class Session
 
     /// <summary>"3%", "2.5%".</summary>
     private static string PercentSaid(int permille) => permille % 10 == 0 ? $"{permille / 10}%" : $"{permille / 10}.{permille % 10}%";
+
+    /// <summary>DESK-189 (Claude play 21 Nov, tenth play, note P1-10): what a buy is and where it goes, "water for Hub". The
+    /// office's own support leaves out the site, which it is bought at but does not serve: "vehicle for the contracting
+    /// office", as the plan says it (DESK-185).</summary>
+    private string WhatFor(string capId, string siteName)
+        => ForShop(capId) ? ShopSupport(capId) is var said && said.StartsWith("the ", StringComparison.Ordinal) ? said[4..] : said
+                          : $"{Lower(Cap(capId).Label)} for {siteName}";
 
     /// <summary>DESK-183 (Claude play 21 Nov, ninth play, note P1-26): an SF 44 paid at each delivery takes no writing, but
     /// every delivery is a trip for the buyer and the paying agent (DESK-09), so its quote says the trip's hours, as the
