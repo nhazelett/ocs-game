@@ -46,11 +46,13 @@ internal static class MorningBriefChecks
                 var view = shell.Session.View!; var board = view.MorningBoard();
                 Require(view.Day == day, "The review save resumes on the exact morning.");
                 var hash = shell.Session.StateHash;
+                var shownAlerts = shell.MorningAlerts.GetChildren().Where(n => n.HasMeta("alert_record")).Select(n => n.GetMeta("alert_record").AsString()).ToHashSet();
+                var news = board.New.Where(n => n.RecordId is null || !shownAlerts.Contains(n.RecordId)).ToArray();
                 var labels = PlayScreen.Descendants(shell.MorningBrief).OfType<Label>().ToArray();
-                Require(labels.Where(l => l.HasMeta("news_surface")).Select(l => l.Text).SequenceEqual(board.New.Select(n => n.Text)),
+                Require(labels.Where(l => l.HasMeta("news_surface")).Select(l => l.Text).SequenceEqual(news.Select(n => n.Text)),
                     "The uncollapsed morning contains every new request, full answer and news sentence in Sim order.");
                 Require(labels.Where(l => l.HasMeta("asked_by")).Select(l => l.GetMeta("asked_by").AsString())
-                    .SequenceEqual(board.New.Where(n => n.AskedBy is not null).Select(n => n.AskedBy)), "Answers name who asked.");
+                    .SequenceEqual(news.Where(n => n.AskedBy is not null).Select(n => n.AskedBy)), "Answers name who asked.");
                 Require(shell.MorningBrief.GetParent() == shell.StandingRows.GetParent().GetParent()
                     && shell.MorningBrief.GetIndex() < shell.StandingRows.GetParent().GetIndex() && !shell.BoardDetailsVisible,
                     "The brief precedes standings outside Other updates.");

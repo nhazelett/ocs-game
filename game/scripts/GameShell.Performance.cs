@@ -81,7 +81,7 @@ public partial class GameShell
         var cureAction = new CureNoticeAction { Day = view.Day, Issue = issue.Id };
         var cure = AddAssignedAction(row, row, view, cureAction, curing ? "Cure notice in work" : "Cure notice",
             "Issues a cure notice to put this vendor problem right.",
-            blocked: () => terminating ? "Ending this contract is already in work." : null).Button;
+            blocked: () => terminating ? "Ending this contract is already in work." : null, inWork: curing).Button;
         var resource = DeskUi.Button("Re-source…", () =>
         {
             CloseContractView(); SwitchAwardTarget(issue.SiteId + "." + issue.CapabilityId);
@@ -139,7 +139,8 @@ public partial class GameShell
             || hash != session.StateHash || tabs.CurrentTab != InboxTab
             || !PerformanceChoices.TryGetValue((issueId, "cure"), out var cure)
             || !PerformanceChoices.TryGetValue((issueId, "resource"), out var resource)) return;
-        cure.GrabFocus();
-        tabs.GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(resource);
+        var heading = cure.GetParent().GetChild<Control>(0);
+        heading.FocusMode = Control.FocusModeEnum.All; heading.GrabFocus();
+        tabs.GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(heading);
     }
 }
