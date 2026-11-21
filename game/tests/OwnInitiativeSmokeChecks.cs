@@ -16,6 +16,7 @@ internal static class OwnInitiativeSmokeChecks
         var save = shell.AutosavePathOverride + ".initiative";
         try
         {
+            await CheckUnwrittenBuy();
             var expected = LinesOfSupport.Sim.Replay.Run(bundle, input, stopAfterDay: 2);
             await Load(expected);
             shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed);
@@ -79,6 +80,60 @@ internal static class OwnInitiativeSmokeChecks
             GD.Print("OWN_INITIATIVE_SMOKE_PASS: exact day-three receipt, persistent own-only list, day-ten contract/Back/cancellation, live ended status and stale controls.");
         }
         finally { File.Delete(save); }
+
+        async Task CheckUnwrittenBuy()
+        {
+            var eleventh = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-11", "input-log-2.json"));
+            var buy = eleventh.Actions.OfType<AwardAction>().Single(a => a.Card is null);
+            var expected = LinesOfSupport.Sim.Replay.Run(bundle, eleventh, stopAfterDay: 1);
+            await Load(expected); shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed);
+            Pick(shell.InitiativeTargetInput!, "hubSite.mhe"); Pick(shell.InstrumentInput, buy.Instrument); Pick(shell.VendorInput, buy.Vendor);
+            Pick(shell.VehicleInput!, buy.Vehicle!); Pick(shell.FundingInput!, buy.FundingLine!);
+            shell.QuantityInput.Value = buy.Quantity; shell.StartInput.Value = buy.StartDay!.Value; shell.DurationInput.Value = buy.DurationDays;
+            shell.AwardWriterPicker!.ChoiceButtons[buy.Assignee!].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.PendingAward == buy && !shell.AwardButton.Disabled, "The eleventh play's day-two own-initiative BPA call is ready through the real form.");
+            var applied = expected.Apply(buy); Require(applied.Accepted, "Independent Sim accepts the eleventh play's buy.");
+            shell.AwardButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            var record = applied.RecordId!;
+            CheckEntry(expected, record, signed: false);
+            var receipt = PlayScreen.Descendants(shell.RequestWorkspace).OfType<Label>().Single(l => l.HasMeta("arranged_award"));
+            Require(receipt.Text == expected.View.Decision(record)!.Sentence + "\n" + expected.View.Decision(record)!.Now,
+                "Receipt and list show the same accepted decision while no contract exists.");
+            await Capture("initiative-day2-in-work");
+            shell.RequestBackButton.EmitSignal(Button.SignalName.Pressed); shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            CheckEntry(expected, record, signed: false);
+            var work = expected.View.Work.Single(w => w.CauseId == record);
+            var handover = new AssignAction { Day = expected.Day, Work = work.Id, To = "you" };
+            Require(expected.Apply(handover).Accepted && shell.SendAction(handover).Accepted, "The pending own buy can change writers.");
+            await Frames(); CheckEntry(expected, record, signed: false);
+            // A stopped buy remains a truthful historical entry and never acquires a contract link.
+            var stopped = LinesOfSupport.Sim.Replay.Resume(bundle, expected.ToSave());
+            Require(stopped.Apply(new StopWorkAction { Day = stopped.Day, Work = work.Id }).Accepted, "The own buy can be stopped before signing.");
+            await Load(stopped); shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            CheckEntry(stopped, record, signed: false);
+            await Load(expected); shell.RequestInitiativeButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            while (!expected.Arrangements.Any(a => a.CauseId == record)) { expected.AdvanceDay(); Step(shell); await Frames(); }
+            shell.GoToOwnInitiative(); await Frames();
+            CheckEntry(expected, record, signed: true);
+            var contract = OwnBuys().Single(); var hash = shell.Session.StateHash;
+            contract.EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.ContractView.Visible && shell.SelectedArrangement == buy.Id && shell.Session.StateHash == hash,
+                "The same entry opens the exact contract once signed without changing Sim.");
+            GD.Print("OWN_INITIATIVE_PENDING_SMOKE_PASS: eleventh-play day-two commit/receipt/list, live hand-over, stopped/reloaded work and signed contract link.");
+        }
+        void CheckEntry(Session expected, string record, bool signed)
+        {
+            var entries = PlayScreen.Descendants(shell.RequestContents).OfType<Control>().Where(c => c.HasMeta("initiative_decision")).ToArray();
+            var decision = expected.View.Decision(record)!;
+            Require(entries.Length == 1 && entries[0].GetMeta("initiative_decision").AsString() == record,
+                "One accepted own-initiative buy is listed once, excluding the request buy, inherited arrangements and hand-over decisions.");
+            var text = entries[0] switch { Label l => l.Text, Button b => b.Text, _ => "" };
+            Require(text == decision.Sentence + "\n" + decision.Now + (signed ? "\nOpen its contract page →" : "")
+                && (entries[0] is Button) == signed && shell.Session.StateHash == expected.StateHash(),
+                "The own-buy entry uses the live Sim sentence/status, and only signed contracts have links.");
+            Require(!PlayScreen.Descendants(shell.RequestContents).OfType<Label>().Any(l => l.Text == "Nothing bought on your own initiative yet."),
+                "A buy in work never sits beside an empty-list claim.");
+        }
 
         Button[] OwnBuys() => PlayScreen.Descendants(shell.RequestContents).OfType<Button>().Where(b => b.HasMeta("initiative_contract")).ToArray();
         Button Back() => PlayScreen.Descendants(shell.ContractView).OfType<Button>().Single(b => b.Text == "Back to your own buys");

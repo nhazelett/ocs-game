@@ -14,20 +14,28 @@ public partial class GameShell
     private void RenderOwnInitiativeBuys(SessionView view)
     {
         linkedRequirement.AddChild(DeskUi.Heading("Bought on your own initiative"));
-        var buys = view.Arrangements.Where(a => a.CardId is null && !a.IsCoordination)
-            .Select(a => (Arrangement: a, Decision: view.Decision(a.CauseId)))
-            .Where(b => b.Decision is not null).OrderByDescending(b => b.Decision!.Day).ToArray();
+        var ownAwards = session.CreateSave().Actions.OfType<AwardAction>().Where(a => a.Card is null).Select(a => a.Id).ToHashSet(StringComparer.Ordinal);
+        var records = view.Arrangements.Where(a => a.CardId is null && !a.IsCoordination).Select(a => a.CauseId)
+            .Concat(view.Work.Where(w => w.Kind == WorkKind.Award && w.SubjectId is { } id && ownAwards.Contains(id)).Select(w => w.CauseId))
+            .ToHashSet(StringComparer.Ordinal);
+        var buys = view.Decisions().Where(d => records.Contains(d.RecordId)).ToArray();
         if (buys.Length == 0) linkedRequirement.AddChild(DeskUi.Label("Nothing bought on your own initiative yet."));
         var hash = session.StateHash; var target = awardTarget;
-        foreach (var (arrangement, decision) in buys)
+        foreach (var decision in buys)
         {
-            var button = DeskUi.Button(decision!.Sentence + "\n" + decision.Now + "\nOpen its contract page →", () =>
+            var text = decision.Sentence + "\n" + decision.Now;
+            if (view.Arrangements.FirstOrDefault(a => a.CauseId == decision.RecordId) is not { } arrangement)
+            {
+                var entry = DeskUi.Label(text); entry.SetMeta("initiative_decision", decision.RecordId); linkedRequirement.AddChild(entry);
+                continue;
+            }
+            var button = DeskUi.Button(text + "\nOpen its contract page →", () =>
             {
                 if (hash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
                     || !RequestWorkspace.Visible || awardTarget != target || SelectedCard is not null) return;
                 OpenContractView(arrangement.Id, fromInitiative: target);
             });
-            button.SetMeta("initiative_contract", arrangement.Id); linkedRequirement.AddChild(button);
+            button.SetMeta("initiative_contract", arrangement.Id); button.SetMeta("initiative_decision", decision.RecordId); linkedRequirement.AddChild(button);
         }
     }
 
