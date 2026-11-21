@@ -33,6 +33,9 @@ public sealed partial class Session
             var name = MemberName(Member(who));
             var stopLine = work is null ? null : StopSentence(work);
             var what = stopped?.Payload is AwardPayload ? StoppedWhat(stopped) : DecisionWhat(action, rec, work);
+            // DESK-179 (Claude play 21 Nov, eighth play, note P2-18): the record says the work's usual size ("4 shop hours");
+            // the decision says it in the hours of the person who has it, as the team page and the day's plan do.
+            if (work is not null) what = ShopHoursWords().Replace(what, _ => HoursSaid(work.HoursTotalMilli), 1);
             var givenTo = work is not null || action is AssignAction ? $", given to {name}" : "";
             list.Add(new DecisionView(rec.Day, SentenceCase($"Day {rec.Day}: {Upper(what)}{givenTo}."),
                 Member(who).Id, name, card, card is null ? null : CardTitle(_cards.First(c => c.Id == card)),
@@ -122,6 +125,9 @@ public sealed partial class Session
         var stop = text.IndexOf(". ", StringComparison.Ordinal);
         return (stop > 0 ? text[..stop] : text).TrimEnd('.');
     }
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"\b\d+(?:\.\d+)? shop hours?\b")]
+    private static partial System.Text.RegularExpressions.Regex ShopHoursWords();
 
     /// <summary>"a" or "an" by the sound: "an SF 44 cash purchase", "an IDIQ order", "a purchase order".</summary>
     private static string Article(string words)
