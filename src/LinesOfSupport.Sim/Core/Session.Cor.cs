@@ -78,8 +78,10 @@ public sealed partial class Session
         if (a.CorId == cor.Id) return ActionResult.Stop($"{cor.Name} is already the COR on {NameOf(a.Id)}");
         var was = CorOf(a.CorId);
         a.CorId = cor.Id;
+        // DESK-197 (Claude play 21 Nov, eleventh play): the rate on this contract, as the picker and Payments say it; the
+        // base rate read "about 100% of problems" for a COR every screen gave 40% on waste removal.
         AddRecord(Day, RecordKind.Action, a.Id,
-            $"{cor.Name} designated COR on {NameOf(a.Id)}{(was is null ? "" : $", replacing {was.Name}")} ({CorSummary(cor)}).", []);
+            $"{cor.Name} designated COR on {NameOf(a.Id)}{(was is null ? "" : $", replacing {was.Name}")} ({CorSummary(cor, a)}).", []);
         return ActionResult.Ok("designated");
     }
 
