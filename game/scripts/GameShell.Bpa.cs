@@ -120,7 +120,7 @@ public partial class GameShell
                 box.AddChild(DeskUi.Label(sell.Label + "\nUsual capacity per day: " + (sell.CapacityPerDay is { } capacity ? $"{capacity.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} {sell.Unit}" : "—")
                     + (heard is null ? "" : "\n" + heard)
                     + $"\nPrice per {DeskUi.SingleUnit(sell.Unit)}{(view.Rules.Model.Capabilities.Single(c => c.Id == sell.CapabilityId).Delivery == "consumable" ? "" : " per day")}: " + (sell.UnitPriceCents is { } price ? DeskUi.Money(price) : "—")
-                    + " · Notice: " + (sell.LeadTimeDays is { } days ? (days == 1 ? "1 day" : $"{days} days") : "—")));
+                    + (sell.LeadTimeDays is { } days ? "\nStarts " + DeskUi.Count(days, "day") + " after a signed order" : "\nTime after a signed order: —")));
                 heard = null; // A vendor's news is said once, even when it sells several capabilities.
             }
             if (card.Standing is not null) box.AddChild(DeskUi.Label("Standing: " + card.Standing));
@@ -130,7 +130,8 @@ public partial class GameShell
             foreach (var id in card.ArrangementIds)
             {
                 var arrangement = view.Arrangements.Single(a => a.Id == id);
-                box.AddChild(DeskUi.Button(view.ArrangementName(id) + " · " + ArrangementStatusText(view, arrangement), () => OpenContractView(id)));
+                var contract = DeskUi.Button(view.ArrangementName(id) + " · " + ArrangementStatusText(view, arrangement), () => OpenContractView(id, card.Id));
+                contract.SetMeta("vendor_contract", id); box.AddChild(contract);
             }
             foreach (var id in card.VehicleIds)
             {

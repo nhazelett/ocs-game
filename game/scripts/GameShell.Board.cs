@@ -65,10 +65,23 @@ public partial class GameShell
         SelectedCard = SelectedCapability = SelectedArrangement = SelectedFunding = null;
         boardFocus.Text = "";
         Map.SelectSite(null);
-        awardDrafts.Clear(); awardDraftDay = 0; ResetAwardForm();
+        awardDrafts.Clear(); awardReceipts.Clear(); awardDraftDay = 0; ResetAwardForm();
         RenderRequirementContext(session.View); RenderRequestList(session.View);
         ResetBpaForm();
         coordinationQuantity = 1; coordinationTarget = null;
+    }
+
+    private void RefreshMorningHeading(SessionView? view, MorningBoardView? board)
+    {
+        if (board is null) { morningHeading.Text = "No scenario loaded"; return; }
+        // Count the decisions actually reachable from Today, once each. Sim still owns their availability.
+        var decisions = TodayPerformanceLinks.Count;
+        if (board.Lead is { Kind: LeadKind.Decision, LinkKind: BoardLinkKind.Arrangement } lead
+            && view!.Commitments.Any(c => c.ArrangementId == lead.LinkId && c.Unresolved)) decisions++;
+        var alerts = MorningAlerts.GetChildCount();
+        var count = decisions > 0 ? DeskUi.Count(decisions, "decision waiting", "decisions waiting") : DeskUi.Count(alerts, "alert");
+        if (decisions > 0 && alerts > 0) count += " · " + DeskUi.Count(alerts, "alert");
+        morningHeading.Text = $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {count} · {DeskUi.Count(board.OpenRequests, "request")}";
     }
 
     private void RefreshMorningDesk(SessionView? view, MorningBoardView? board)
@@ -79,8 +92,7 @@ public partial class GameShell
         RefreshLead(view, board);
         RefreshStandings(view);
         RefreshDecisions(view);
-        morningHeading.Text = board is null ? "No scenario loaded" :
-            $"Morning of day {Math.Min(board.Day, board.Strip.LastDay)} · {DeskUi.Count(MorningAlerts.GetChildCount(), "alert")} · {DeskUi.Count(board.OpenRequests, "request")}";
+
         if (board?.Items.Count is null or 0) morningItems.AddChild(DeskUi.Label("No overnight changes."));
         foreach (var item in board?.Items ?? [])
         {

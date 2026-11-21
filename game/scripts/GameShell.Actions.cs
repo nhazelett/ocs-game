@@ -13,6 +13,7 @@ public partial class GameShell
         string? Cor, string? Assignee, long? Quantity, int? Start, int? Duration, string[] Priorities, bool Touched);
     private readonly Dictionary<string, AwardDraft> awardDrafts = [];
     private int awardDraftDay;
+    private readonly Dictionary<string, string> awardReceipts = [];
     private VBoxContainer awardPanel = null!;
     private VBoxContainer previewPanel = null!, awardFooter = null!;
     private string? awardTarget, awardInstrument, awardVendor, awardVehicle, awardFunding, awardCor, awardAssignee;
@@ -91,7 +92,7 @@ public partial class GameShell
     private void RefreshAwardDraftDay(SessionView? view)
     {
         if (awardDraftDay == (view?.Day ?? 0)) return;
-        awardDrafts.Clear(); awardDraftDay = view?.Day ?? 0;
+        awardDrafts.Clear(); awardReceipts.Clear(); awardDraftDay = view?.Day ?? 0;
     }
 
     private void SwitchAwardTarget(string? id)
@@ -172,9 +173,11 @@ public partial class GameShell
                 {
                     if (action.Card is not null) SelectedCard = action.Card;
                     if (awardTarget is { } bought) awardDrafts.Remove(bought);
-                    ResetAwardForm(); awardTarget = action.Card ?? action.Site + "." + action.Capability; RefreshActionDesk(session.View);
+                    var target = action.Card ?? action.Site + "." + action.Capability;
+                    if (session.View!.Decisions().FirstOrDefault() is { } decision) awardReceipts[target] = "Arranged: " + decision.Sentence + "\n" + decision.Now;
+                    ResetAwardForm(); awardTarget = target; RefreshActionDesk(session.View);
                     ShowRequests();
-                    RequestScroll.ScrollVertical = 0;
+                    RequestScroll.ScrollVertical = 0; AwardScroll.ScrollVertical = 0;
 
                 }
             }
@@ -197,6 +200,11 @@ public partial class GameShell
             SelectAwardTarget(id);
         }
         var target = targets.Single(t => t.Id == awardTarget);
+        if (awardReceipts.TryGetValue(target.Id, out var receipt))
+        {
+            var acknowledgement = DeskUi.Label(receipt); acknowledgement.SetMeta("arranged_award", target.Id);
+            awardPanel.AddChild(acknowledgement); awardPanel.MoveChild(acknowledgement, 0);
+        }
         SelectedCard = target.Card; RenderRequirementContext(view);
         var ownTargets = targets.Where(t => t.Card is null).ToArray();
         BuyRequestLabel = DeskUi.Label(target.Card is null ? target.Label : view.RequirementEditor(target.Card)!.Title);
@@ -236,7 +244,7 @@ public partial class GameShell
                 + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
                 + " · Uncommitted: " + (supplier.CapacityKnown ? DeskUi.Quantity(supplier.CapacityFreeToday) : "—")
                 + (supplier.Heard is { } heard ? "\n" + heard : "")
-                + "\nNotice: " + (supplier.PaymentKnown ? (supplier.LeadTimeDays == 1 ? "1 day" : $"{supplier.LeadTimeDays} days") : "—"));
+                + (supplier.PaymentKnown ? "\nStarts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "\nTime after a signed order: —"));
 
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";

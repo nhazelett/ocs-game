@@ -22,6 +22,7 @@ public partial class CommitmentSmokeTest : Node
                 var shell = Shell(this); Replay(shell, replay);
                 while (!shell.Session.View!.Finished && !shell.Session.View.Commitments.Any(c => c.Kind == kind && c.Unresolved)) Step(shell);
                 var commitment = shell.Session.View.Commitments.First(c => c.Kind == kind && c.Unresolved);
+                Require(shell.MorningHeading.Text.Contains("decision waiting") || shell.MorningHeading.Text.Contains("decisions waiting"), "The morning counts the unauthorized-commitment decision reachable from Today.");
                 Require(choices.All(c => shell.CommitmentChoices.ContainsKey((commitment.Id, c))), "The kind's required choices are offered.");
                 var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
                 var log = InputLog.Load(Path.Combine(bundle.Directory, "golden", replay.Replace(' ', '-') + ".json"));

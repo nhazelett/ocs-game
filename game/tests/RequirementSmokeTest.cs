@@ -125,7 +125,7 @@ public partial class RequirementSmokeTest : Node
 
             // Exact provenance for both an attended and a missed meeting.
             Scenario(shell, "tutorial"); Step(shell, 8); Open("tutWaste"); HeardAt(false);
-            Require(panel.GetChildren().OfType<Label>().Any(l => l.Text.Contains("Peak demand: 3,600 gal")), "The request prints a real large demand with commas.");
+            Require(panel.GetChildren().OfType<Label>().Any(l => l.Text.Contains("Peak demand: 3,600 gal/day")), "The request prints a real continuous volume with commas and the Sim daily-rate words.");
             shell.DeveloperToggle.ButtonPressed = false; await Frames(); await Frames();
             var dayNineAsk = shell.RequirementAskButtons.Values.First(b => !b.Disabled);
             dayNineAsk.EmitSignal(Button.SignalName.Pressed);
