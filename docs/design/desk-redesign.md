@@ -497,3 +497,14 @@ Sim notes (Fable):
 
 - DESK-172: in `BuildAwardSummary`, from `LeftOut(card, lines)` filtered by `PlantPartAtRisk`, and the ask's state from the request's helper views (`HelperView`: not asked, under way with its day, answered).
 - DESK-168: the cancelled arrangement is `ArrangementStatus.Terminated` (or ended) with `StartDay` on or before the short day; name it in `DiagnoseDay`'s sizing branch and add its cause and end records to the factor's evidence.
+
+## 29. The 21 Nov seventh play: D49 (21 Nov 2026)
+
+D49. **The pinned summary names a part the request includes and the buy leaves out.** When the request includes a part (added from what someone said, or listed from the start) and the buy does not bring it, because the vendor cannot, the summary's third sentence says so ahead of "Every day it would run is already covered.": "Harbor Equipment Co does not bring operators, which the request includes; without them it fails more often every day it runs." The seventh play's second player replaced a card buy with a written order from Harbor on day 10 and read only the pinned footer, which DESK-148 made the place players decide; the quote's note above said Harbor brings forklifts without operators, and the summary said only that the days were covered. This is the third case of one rule: D40 (told, not yet added), D48 (not yet confirmed), D49 (added, and this vendor cannot bring it). Still at most three sentences (D46): the left-out sentence takes the third place and "already covered" moves to the quote's notes. Left out: refusing the buy (a partial buy can be a choice), and naming who could bring all of it (the vendors' cards and the quote's note already do).
+
+Also from this play, no decision needed: the hand-over picker's done day counts the hours already planned for that person today (DESK-176); ending a card buy no longer speaks of termination (the Sim's two sentences are fixed in the play's PR; the contract page keeps the person who has it, DESK-177 b); each monitor in the picker says what they catch and how late they report (DESK-177 a).
+
+Sim notes (Fable):
+
+- DESK-175: in `SummaryThird`, after `ToldNotAdded` and before `OnlyCoveredDays`: `LeftOut(card, chk.Lines)` filtered to parts at risk (`PlantPartAtRisk`, DESK-59), so a goods buy with no plant risk is not flagged; the `SummaryNotes` vendor-brings line is unchanged.
+- DESK-176: the hand-over preview (`PreviewAny` of an `AssignAction` with `To`) plays the queue from the person's hours left today after the work already planned (the standing staff meeting, `PlanPeople`), as the day's plan does, so `EarliestStartMin` is the day the plan finishes it.
