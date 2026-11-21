@@ -71,7 +71,7 @@ public partial class PlayDriverSmokeTest : Node
             GD.Print($"After confirmation: completed={shell.Session.CompletedDay}, plan={shell.EndDayDialog.Visible}, playback={shell.PlayingDay}, results={shell.ReadingDaySummary}; scratch={scratch}");
             Require(shell.Session.CompletedDay == 1 && shell.ReadingDaySummary, "One confirmation plays one day and settles on results.");
             await Review("results");
-            await Click("Back to Today");
+            await Click("On to the morning of day 2");
             Require(screen.Read().Any(e => e.Pane == "Map" && e.Text.Contains("Hub")), "Map words come from the rendered map controls.");
             var paths = await driver.Capture("PLAY_DRIVER_SMOKE_PASS");
             using var image = Image.LoadFromFile(paths.png);

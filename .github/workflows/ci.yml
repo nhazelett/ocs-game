@@ -232,6 +232,8 @@ jobs:
           grep -Fq 'AWARD_CONTEXT_SMOKE_PASS:' "$RUNNER_TEMP/godot-award-context.log"
           timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/CommitPreviewSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-commit-preview.log"
           grep -Fq 'COMMIT_PREVIEW_SMOKE_PASS:' "$RUNNER_TEMP/godot-commit-preview.log"
+          timeout 60 "$GODOT_BIN" --headless --audio-driver Dummy --path game res://tests/ScreenPolishSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-screen-polish.log"
+          grep -Fq 'SCREEN_POLISH_SMOKE_PASS:' "$RUNNER_TEMP/godot-screen-polish.log"
           python3 -m py_compile tools/bpy/generate_kit.py
           python3 tools/validate/validate_kit.py
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/KitExperiment.tscn -- --smoke-test 2>&1 | tee "$RUNNER_TEMP/godot-kit.log"

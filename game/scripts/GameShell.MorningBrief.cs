@@ -24,6 +24,7 @@ public partial class GameShell
     {
         DeskUi.Clear(MorningBrief); DeskUi.Clear(MorningAlerts);
         var view = session.View;
+        var alertRecords = new HashSet<string>();
         if (board is not null && view is not null)
         {
             // The current Sim tiles supply both state and explanation, including a continuing shortfall.
@@ -39,7 +40,8 @@ public partial class GameShell
             foreach (var item in board.Items.Where(i => i.Severity == BoardSeverity.Alert
                 && !board.Tiles.Any(t => t.SiteId + "." + t.CapabilityId == i.LinkId && t.Status is "down" or "degraded")))
             {
-                var row = new VBoxContainer(); MorningAlerts.AddChild(row);
+                alertRecords.Add(item.RecordId);
+                var row = new VBoxContainer(); row.SetMeta("alert_record", item.RecordId); MorningAlerts.AddChild(row);
                 var open = DeskUi.Button(item.Text, () => NavigateBoardItem(item));
                 var reason = DeskUi.ActionReason(row, open);
                 DeskUi.Gate(open, reason, item.LinkKind == BoardLinkKind.None ? "This update has no further detail to open." : null);
@@ -48,8 +50,10 @@ public partial class GameShell
         MorningAlerts.Visible = MorningAlerts.GetChildCount() > 0;
         MorningBrief.AddChild(DeskUi.Heading("New since yesterday"));
         if (board is null) return;
-        if (board.New.Count == 0) MorningBrief.AddChild(DeskUi.Label("Nothing new since yesterday."));
-        foreach (var item in board.New) AddNewsItem(MorningBrief, item, "morning");
+        var news = board.New.Where(item => item.RecordId is null || !alertRecords.Contains(item.RecordId)).ToArray();
+        MorningBrief.Visible = news.Length > 0 || board.New.Count == 0;
+        if (news.Length == 0 && board.New.Count == 0) MorningBrief.AddChild(DeskUi.Label("Nothing new since yesterday."));
+        foreach (var item in news) AddNewsItem(MorningBrief, item, "morning");
     }
 
     // The Sim supplies both the order and the full words. The same answer is readable on the results page and Today.
