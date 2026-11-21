@@ -28,6 +28,11 @@ internal static class BarSmokeChecks
             Load(hasty, atRisk); Check(shell.TodayBar, shell.Session.View!.Bar());
             Require(shell.Session.View!.Bar().Lines.Any(l => l.State == BarState.AtRisk), "A real review day exercises the amber state.");
             await Capture("at-risk", shell.TodayBar);
+            var secondPlay = InputLog.Load(Path.Combine(root, "docs", "reviews", "plays", "2026-11-21-2", "input-log-1.json"));
+            Load(secondPlay, null); Check(shell.DebriefBar!, shell.DisplayedDebrief!.Bar!);
+            Require(shell.DisplayedDebrief.Bar!.Closing == "The tutorial is done: all four of Col Ward's lines held.",
+                "The required full play's exact final bar says the tutorial is done.");
+            await Capture("tutorial-done", shell.DebriefBar!);
             Load(careful, null); var pass = shell.DisplayedDebrief!.Bar!;
             Require(pass.Final && pass.Lines.All(l => l.State == BarState.Met), "The careful review log passes every real line.");
             Check(shell.DebriefBar!, pass); await Capture("pass", shell.DebriefBar!);
@@ -61,7 +66,7 @@ internal static class BarSmokeChecks
             Require(shell.AtFrontDoor && shell.TutorialGameButton.IsVisibleInTree() && shell.SpokeBGameButton.IsVisibleInTree()
                 && hash == shell.Session.StateHash, "Choose a scenario opens the real choice without changing the finished game.");
             var spoke = InputLog.Load(Path.Combine(logs, "spoke-b-input-log.json"));
-            Load(spoke, null); shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed);
+            Load(spoke, null); Check(shell.DebriefBar!, shell.DisplayedDebrief!.Bar!); shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed);
             var picker = PlayScreen.Descendants(shell.DebriefFullRecord).OfType<OptionButton>().Single();
             picker.Select(13); picker.EmitSignal(OptionButton.SignalName.ItemSelected, 13);
             var calendar = PlayScreen.Descendants(shell.DebriefFullRecord).OfType<Label>().Where(l => l.HasMeta("event_record")).ToArray();
@@ -83,6 +88,16 @@ internal static class BarSmokeChecks
         {
             var hash = shell.Session.StateHash;
             var labels = PlayScreen.Descendants(panel).OfType<Label>().Where(l => l.HasMeta("bar_line")).ToArray();
+            var closing = panel.GetChildren().OfType<Label>().Where(l => l.HasMeta("bar_closing")).ToArray();
+            if (bar.Closing is { } sentence)
+            {
+                Require(closing.Length == 1 && closing[0].Text == sentence && closing[0].GetIndex() == 2,
+                    "The exact closing appears once just after the commander and before the four lines.");
+                Require(closing[0].GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink)
+                    && closing[0].GetThemeFontSize("font_size") == shell.DebriefSummaryText.GetThemeFontSize("font_size"),
+                    "The closing uses plain ink at the summary's readable size.");
+            }
+            else Require(closing.Length == 0, "A running tutorial or another scenario invents no closing line.");
             Require(panel.GetChildren().OfType<Label>().First().ThemeTypeVariation == "TabletopHeading", "The bar title is a pane heading.");
             Require(labels.Length == bar.Lines.Count, "Every pass criterion is shown exactly once.");
             for (var i = 0; i < labels.Length; i++)
