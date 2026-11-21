@@ -30,7 +30,8 @@ public class AnswerDueTests
         Assert.True(s.Apply(new AskAboutAction { Card = "tutWater", Person = "ortiz" }).Accepted);
         var ask = s.Work.Last();
         var summary = s.View.AwardSummary(water)!;
-        Assert.Equal("MSgt Carla Ortiz's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs.", summary.AnswerDue);
+        // DESK-190 (D51) adds what the same buy placed tomorrow would get (NightsWaitTests).
+        Assert.StartsWith("MSgt Carla Ortiz's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs. Ordered tomorrow, after the answer, it starts on day ", summary.AnswerDue);
         Assert.EndsWith(summary.AnswerDue, summary.Sentence);
         Assert.False(summary.Attention);
         Assert.Null(summary.Why);

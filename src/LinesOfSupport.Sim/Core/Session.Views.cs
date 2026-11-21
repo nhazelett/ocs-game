@@ -354,6 +354,30 @@ public sealed partial class Session
                                     card?.RequestedStartDay, card?.DurationDays, card?.QuantityHint);
     }
 
+    /// <summary>
+    /// The earliest start of a buy placed on <paramref name="orderDay"/>, best and worst roll, behind the work already queued
+    /// for the assignee (DESK-37), and the days its writing is done. <c>BuildPreview</c> asks for today; DESK-190 (D51) asks
+    /// for the day after the requester's answer, with the same queue, to say what a night's wait costs.
+    /// </summary>
+    private (int StartMin, int StartMax, int MinDone, int MaxDone) StartWindow(AwardAction a, InstrumentData inst, VendorOfferData offer, AwardCheck chk, int orderDay)
+    {
+        var immediate = a.Instrument is "sf44" or "gpc";
+        var pricing = chk.Vendor is { } pv ? PricesFirst(a.Instrument, pv) : null;   // DESK-134
+        int Completion(int shopDays, int approvalLag, int proposalLag)
+        {
+            if (immediate) return orderDay;
+            var wait = Math.Max(orderDay + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0), orderDay + proposalLag);
+            var hours = Hours(shopDays, inst.RequiresSystemOrManual);
+            return FinishDay(PersonHours(hours, a.Assignee), a.Assignee, wait);
+        }
+        var compete = CompeteDays(PickFor(a, inst));   // DESK-06, DESK-65
+        var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min, pricing?.Min ?? 0);
+        var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max, pricing?.Max ?? 0);
+        var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
+        return (Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1),
+                Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2), minDone, maxDone);
+    }
+
     internal ActionPreview BuildPreview(AwardAction a)
     {
         var chk = CheckAward(a);
@@ -364,19 +388,9 @@ public sealed partial class Session
         // Timing, best and worst roll, behind the work already queued for the assignee (DESK-37).
         var immediate = a.Instrument is "sf44" or "gpc";
         var pricing = chk.Vendor is { } pv ? PricesFirst(a.Instrument, pv) : null;   // DESK-134
-        int Completion(int shopDays, int approvalLag, int proposalLag)
-        {
-            if (immediate) return Day;
-            var wait = Math.Max(Day + Scenario.Actors.Fm.CertificationLagDays + (a.Instrument == "uca" ? approvalLag : 0), Day + proposalLag);
-            var hours = Hours(shopDays, inst.RequiresSystemOrManual);
-            return FinishDay(PersonHours(hours, a.Assignee), a.Assignee, wait);
-        }
-        var compete = CompeteDays(PickFor(a, inst));   // DESK-06, DESK-65
-        var minDone = Completion(inst.ShopDays.Min + compete, Rules.Uca.ApprovalLagDays.Min, pricing?.Min ?? 0);
-        var maxDone = Completion(inst.ShopDays.Max + compete, Rules.Uca.ApprovalLagDays.Max, pricing?.Max ?? 0);
+        var (startMin, startMax, minDone, maxDone) = StartWindow(a, inst, offer, chk, Day);
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
-        var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
-        var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
+        var compete = CompeteDays(PickFor(a, inst));   // DESK-06, DESK-65
         var hMinMilli = immediate ? 0 : PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee);
         var hMaxMilli = immediate ? 0 : PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee);
         var hMin = CeilHours(hMinMilli);
