@@ -96,6 +96,8 @@ public partial class CardCancellationSmokeTest : Node
             {
                 await Frames();
                 if (target is not null)
+                    GD.Print($"CANCEL_LAYOUT {suffix}: target={target.GetGlobalRect()}, page={shell.ContractView.GetGlobalRect()}, window={GetViewport().GetVisibleRect()}");
+                if (target is not null)
                     Require(GetViewport().GetVisibleRect().Encloses(target.GetGlobalRect()) && target.IsVisibleInTree(), "The committing explanation is visible in the actual viewport.");
                 var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--screenshots"); if (at < 0) return;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);

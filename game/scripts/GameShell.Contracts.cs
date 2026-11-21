@@ -30,17 +30,7 @@ public partial class GameShell
         }
         void QueueFit() => Callable.From(Fit).CallDeferred();
         ContractView.MinimumSizeChanged += QueueFit; ContractView.VisibilityChanged += QueueFit; Resized += QueueFit;
-        var page = new VBoxContainer(); ContractView.AddChild(page);
-        ContractDeskTabs = new TabBar { Name = "DeskNavigation" }; page.AddChild(ContractDeskTabs);
-        var tabs = GetNode<TabContainer>("%DeskTabs");
-        for (var i = 0; i < tabs.GetTabCount(); i++) ContractDeskTabs.AddTab(tabs.GetTabTitle(i));
-        ContractDeskTabs.TabSelected += index =>
-        {
-            if (!ContractView.Visible) return;
-            CloseContractView(); CloseRequestWorkspace(restore: false); tabs.CurrentTab = (int)index;
-        };
-        var record = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; page.AddChild(record);
-        contractContents = DeskUi.Pane(record, "ContractRecord", out contractFooter);
+        contractContents = DeskUi.Pane(ContractView, "ContractRecord", out contractFooter);
         EndContractDialog = new ConfirmationDialog { Title = "End this contract?", Exclusive = true };
         AddChild(EndContractDialog);
         EndContractDialog.GetLabel().AutowrapMode = TextServer.AutowrapMode.WordSmart;
@@ -77,7 +67,6 @@ public partial class GameShell
         if (fromRequest is null) GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
         contractReturnRequest = fromRequest; contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
         SelectedArrangement = id; SelectedFunding = null; RenderLedgerContext(session.View);
-        ContractDeskTabs.CurrentTab = PaymentsTab;
         ContractView.Show(); RefreshContractView(session.View);
     }
 
@@ -109,7 +98,17 @@ public partial class GameShell
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
         var back = contractReturnRequest is not null ? "Back to the request" : contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
-        contractContents.AddChild(DeskUi.Button(back, ReturnFromContract));
+        var navigation = new HBoxContainer(); contractContents.AddChild(navigation);
+        navigation.AddChild(DeskUi.Button(back, ReturnFromContract));
+        var bar = ContractDeskTabs = new TabBar { Name = "DeskNavigation", ClipTabs = false }; navigation.AddChild(bar);
+        var tabs = GetNode<TabContainer>("%DeskTabs");
+        for (var i = 0; i < tabs.GetTabCount(); i++) bar.AddTab(tabs.GetTabTitle(i));
+        bar.CurrentTab = PaymentsTab;
+        bar.TabSelected += index =>
+        {
+            if (!ContractView.Visible || !bar.IsInsideTree()) return;
+            CloseContractView(); CloseRequestWorkspace(restore: false); tabs.CurrentTab = (int)index;
+        };
         var title = DeskUi.Label(DeskUi.ListLabel(view.ArrangementName(arrangement.Id)));
         title.AddThemeFontSizeOverride("font_size", 28); contractContents.AddChild(title);
         var site = view.NameOf(arrangement.SiteId);
