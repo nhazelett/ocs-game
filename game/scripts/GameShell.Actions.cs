@@ -28,7 +28,7 @@ public partial class GameShell
     private SpinBox quantityInput = null!, startInput = null!, durationInput = null!;
     private Label previewCost = null!, previewTiming = null!, previewStops = null!, previewGaps = null!;
     private Button awardButton = null!;
-    private VBoxContainer? previewLearned;
+    private VBoxContainer? previewLearned, awardLearnedActions;
     internal Label AwardSummaryLabel { get; private set; } = null!;
     internal Dictionary<string, Button> AwardAddButtons { get; } = [];
     internal Label VehicleChoiceReason { get; private set; } = null!;
@@ -42,6 +42,7 @@ public partial class GameShell
     internal OptionButton FundingInput => fundingInput;
     internal OptionButton? CorInput { get; private set; }
     internal Label? SupplierKnowledge { get; private set; }
+    internal Label? SupplierNotice { get; private set; }
     internal OptionButton VendorInput => vendorInput;
     internal OptionButton VehicleInput => vehicleInput;
     internal SpinBox QuantityInput => quantityInput;
@@ -76,6 +77,7 @@ public partial class GameShell
     private void BuildActionDesk()
     {
         var body = DeskUi.Pane(RequestBuyColumn, "AwardEditor", out awardFooter);
+        awardFooter.AddThemeConstantOverride("separation", 2);
         awardPanel = new VBoxContainer { Name = "Inputs" }; body.AddChild(awardPanel);
         awardPanel.AddThemeConstantOverride("separation", 10);
         previewPanel = new VBoxContainer { Name = "Quote" }; body.AddChild(previewPanel);
@@ -185,10 +187,13 @@ public partial class GameShell
         });
         awardButton.ThemeTypeVariation="TabletopPrimary";
         AwardBackButton = RequestBackButton;
+        awardWriters = new VBoxContainer(); awardFooter.AddChild(awardWriters);
+        awardLearnedActions = new VBoxContainer(); awardFooter.AddChild(awardLearnedActions);
         AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
-        SupplierKnowledge = null;
+        SupplierKnowledge = null; SupplierNotice = null;
+        VBoxContainer? supplierFacts = null;
         awardPanel.AddChild(DeskUi.Heading("Arrange support"));
         var targets = AwardTargets(view);
         if (targets.Count == 0) { awardPanel.AddChild(DeskUi.Label("No site capabilities are available.")); return; }
@@ -242,13 +247,16 @@ public partial class GameShell
         {
             var notice = view.VendorCards().FirstOrDefault(c => c.Id == supplier.Id)?.Sells
                 .FirstOrDefault(s => s.CapabilityId == editor.CapabilityId)?.NoticeSays;
-            SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
-                + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)
-                + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
+            supplierFacts = new VBoxContainer(); supplierFacts.AddThemeConstantOverride("separation", 10);
+            supplierFacts.AddChild(DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
+                + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)));
+            SupplierKnowledge = DeskUi.Label("Usual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
                 + " · Uncommitted: " + (supplier.CapacityKnown ? DeskUi.Quantity(supplier.CapacityFreeToday) : "—")
-                + (supplier.Heard is { } heard ? "\n" + heard : "")
-                + (supplier.PaymentKnown ? "\nStarts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "\nTime after a signed order: —")
+                + (supplier.Heard is { } heard ? "\n" + heard : ""));
+            supplierFacts.AddChild(SupplierKnowledge);
+            SupplierNotice = DeskUi.Label((supplier.PaymentKnown ? "Starts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "Time after a signed order: —")
                 + (notice is null ? "" : "\n" + notice));
+            supplierFacts.AddChild(SupplierNotice);
 
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
@@ -265,7 +273,6 @@ public partial class GameShell
         FundingChoiceReason = fundingReason;
         fundingInput.Disabled = immediate;
         fundingInput.GetParent<Control>().Visible = !immediate;
-        BuildAwardPriorities(view); GateAward(view); // DESK-26
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {
             var cors = view.CorChoices(editor.CapabilityId);
@@ -286,10 +293,11 @@ public partial class GameShell
                 CorReasonLabels.Add(reason);
             }
         }
+        BuildAwardPriorities(view); GateAward(view); // DESK-26
         foreach (var reason in awardChoiceReasons) awardPanel.AddChild(reason);
         if (priorityHelp is not null) awardPanel.AddChild(priorityHelp);
         foreach (var reason in CorReasonLabels) awardPanel.AddChild(reason);
-        if (SupplierKnowledge is not null) awardPanel.AddChild(SupplierKnowledge);
+        if (supplierFacts is not null) awardPanel.AddChild(supplierFacts);
         if (string.IsNullOrEmpty(awardVendor) || string.IsNullOrEmpty(awardInstrument))
         {
             previewPanel.AddChild(DeskUi.Label("Choose an arrangement and an available supplier, and any vehicle and funding line they need. The quote will then show the cost, timing and anything the terms leave uncovered."));
@@ -300,7 +308,6 @@ public partial class GameShell
             previewPanel.AddChild(DeskUi.Label("Choose a contract vehicle and funding line for these terms before asking for the quote."));
             return;
         }
-        awardWriters = new VBoxContainer(); previewPanel.AddChild(awardWriters);
         if (AwardTrade is null) { AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); }
         previewTiming = DeskUi.Label(); previewPanel.AddChild(previewTiming);
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
@@ -340,12 +347,12 @@ public partial class GameShell
             AwardSummaryLabel.AddThemeColorOverride("font_color", summary?.Attention == true ? TabletopTheme.Warning : TabletopTheme.Ink);
             if (previewLearned is not null)
             {
-                DeskUi.Clear(previewLearned); AwardAddButtons.Clear();
+                DeskUi.Clear(previewLearned); DeskUi.Clear(awardLearnedActions!); AwardAddButtons.Clear();
                 foreach (var line in (editor.CardId is null ? null : view.RequirementEditor(editor.CardId))?.Lines.Where(l => l.Known && !l.On && l.CanAdd) ?? [])
                 {
                     var text = (line.LearnedFrom is { } person ? person.WithUnit + " told you: " : "") + (line.Learned ?? line.GapIfOff ?? line.Label);
                     var warning = DeskUi.Label(text); warning.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewLearned.AddChild(warning);
-                    var add = AddLearnedLineButton(previewLearned, view, editor.CardId!, line);
+                    var add = AddLearnedLineButton(awardLearnedActions!, view, editor.CardId!, line);
                     AwardAddButtons[line.Id] = add;
                 }
             }

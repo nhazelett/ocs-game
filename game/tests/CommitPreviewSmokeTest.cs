@@ -75,7 +75,7 @@ public partial class CommitPreviewSmokeTest : Node
             shell.QuantityInput.Value = order.Quantity; shell.StartInput.Value = order.StartDay!.Value; shell.DurationInput.Value = order.DurationDays;
             shell.AwardWriterPicker!.ChoiceButtons["avery"].EmitSignal(Button.SignalName.Pressed);
             Require(shell.AwardTiming.Text.StartsWith("It would take 6.5 to 13 shop hours."), "Avery's real day-seven order keeps the half hour in the buy timing line.");
-            Require(shell.AwardWriterPicker!.ChoiceButtons["avery"].Text.Contains("This takes them 6.5 to 13 hours;"), "The buy timing and selected writer agree.");
+            Require(shell.AwardWriterPicker!.ChoiceButtons["avery"].TooltipText.Contains("This takes them 6.5 to 13 hours;"), "The buy timing and selected writer agree.");
             Require(shell.Session.StateHash == expected.StateHash(), "Changing buy terms and writer remains a pure preview.");
             var precise = shell.AwardPreview!;
             var culture = CultureInfo.CurrentCulture;

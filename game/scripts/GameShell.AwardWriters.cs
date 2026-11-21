@@ -22,7 +22,7 @@ public partial class GameShell
         var choices = view.AssigneeChoices(PendingAward);
         if (AwardWriterPicker is { } current && current.Selected == awardAssignee && current.Choices.SequenceEqual(choices)) return;
         ClearAwardWriter();
-        var picker = new AssigneePicker(choices, awardAssignee!, view.Finished, "Who writes it");
+        var picker = new AssigneePicker(choices, awardAssignee!, view.Finished, "Who writes it", compact: true);
         AwardWriterPicker = picker; awardWriters.AddChild(picker);
         var version = awardFormVersion; var hash = session.StateHash;
         picker.SelectionChanged = () =>
