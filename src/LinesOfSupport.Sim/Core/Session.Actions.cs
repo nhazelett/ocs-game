@@ -69,6 +69,7 @@ public sealed partial class Session
         _appliedRejected.Add(!result.Accepted);
         // DESK-41: the record that says what this decision was, for the decisions list.
         _appliedRecord.Add(result.Accepted ? _records.Skip(recordsBefore).FirstOrDefault(r => r.Kind == RecordKind.Action)?.Id : null);
+        if (_appliedRecord[^1] is { } madeId) result = result with { RecordId = madeId };   // Q29
         if (!result.Accepted)
         {
             _rejected++;
