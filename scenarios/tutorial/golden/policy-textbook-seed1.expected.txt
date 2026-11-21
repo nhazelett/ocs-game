@@ -20,18 +20,17 @@ Day 1
   ACTION    The request for water for Hub: Maintenance switched on.
   ACTION    Government purchase card to Island Mart: Water at Hub, 4,950 gal/day for 7 days (Potable water supply); $10,707 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $10,707.
-  EVENT     Capt Mills on paying for small buys. "Small buys go on the card if the vendor takes it, up to $20,000 each; Island Mart does. Harbor Bottling only takes cash, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it."
+  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
   VISIT     MSgt Joan Avery got the shop into the commander's staff meeting. Col Helen Ward, Hub commander, ran it. If we run short, Hub comes first. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
-  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
+  EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Operations briefed tomorrow's sorties and a change to the alert posture. Nothing for contracting.
   SURVEY    File review: lodging at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review: food service at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   START     Water at Hub from Island Mart began, 4,950 gal/day.
 Day 3
-  EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
   EVENT     The host nation takes its forklifts back. Main Island Utilities: our forklifts go back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
@@ -132,4 +131,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 121772f8d8fb353db09c1e9b918ab0abff954f48a3bb6b43f883b7e6f285f4de
+State hash b0aa8b13f50fedcbbfa89724eb3ead9e37f6483f8c0c4e30d83777bab472ca2f

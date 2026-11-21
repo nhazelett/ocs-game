@@ -72,6 +72,11 @@ public sealed partial class Session
         return list;
     }
 
+    /// <summary>D44 (DESK-144): work finishes when the day is played, so what it brings is read the next morning.
+    /// "tonight, after you end the day" for today; "on the night of day 6" for a later day.</summary>
+    internal string ComesIn(int? due) => due is null ? "once it is done"
+        : due <= Day ? "tonight, after you end the day" : $"on the night of day {due}";
+
     // Q25: the J4 line carries the capability it is about, and a line nobody is on yet carries the action that starts it,
     // so the game binds the line to the Sim's own target instead of working one out.
     private HelperView Pending(string kind, PersonView? person, string name, string does, long hoursMilli, bool informs, WorkItem? work,
@@ -84,7 +89,7 @@ public sealed partial class Session
         var who = Member(work.Assignee);
         // DESK-131: once someone is on it, the hours are that person's, to the half hour, as the strip and the team page say.
         return new HelperView(kind, person, name, does, HalfHours(work.HoursRemainingMilli), informs, HelperView.Asking, who.Id, MemberName(who), due, null,
-            $"{Upper(WhoIs(who.Id))} on it; {(kind == "vendor" ? "the meeting should be done" : "the answer should be in")} on day {due}.",
+            $"{Upper(WhoIs(who.Id))} on it; {(kind == "vendor" ? "the meeting is done" : "the answer comes in")} {ComesIn(due)}.",
             capabilityId);
     }
 }

@@ -15,7 +15,7 @@ internal static class MorningScreenFixChecks
         var input = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-18", "input-log.json"));
         try
         {
-            foreach (var day in new[] { 3, 4, 5, 12 })
+            foreach (var day in new[] { 2, 4, 5, 12 })   // D44 (DESK-144): Mills's staff-meeting note is read on day 2
             {
                 var save = input with { SavedDay = day, Actions = input.Actions.Where(a => a.Day < day).ToList() };
                 File.WriteAllText(path, save.ToJson()); shell.DeveloperToggle.ButtonPressed = false; shell.LoadSavedGame(path);
@@ -30,7 +30,7 @@ internal static class MorningScreenFixChecks
                     Require(tile.WhyShort is null || PlayScreen.Descendants(row).OfType<Label>().Any(l => l.Text == tile.WhyShort), "Every current shortfall carries its Sim explanation in the first group.");
                 }
                 Require(shell.MorningHeading.Text.Contains(DeskUi.Count(shell.MorningAlerts.GetChildCount(), "alert")), "The alert count counts the visible alert entries.");
-                if (day == 3)
+                if (day == 2)
                 {
                     var mills = board.New.Single(n => n.Person?.Role == "outgoingCco");
                     Require(!shell.LeadWords.IsVisibleInTree() && !shell.MentorMessages.Visible,
@@ -81,7 +81,7 @@ internal static class MorningScreenFixChecks
                     Require(board.Tiles.Any(t => t.TodayPermille == 500) && !title.Text.Contains("down"), "A real 50% report never labels the site down by matching the end of 50%.");
                     await Capture("day12-alert");
                 }
-                if (day != 3) Require(hash == shell.Session.StateHash, "Inspection, Escape, forms and captures do not alter the saved game.");
+                if (day != 2) Require(hash == shell.Session.StateHash, "Inspection, Escape, forms and captures do not alter the saved game.");
                 GD.Print("MORNING_SCREEN_FIX_DAY_PASS: " + day);
             }
             File.WriteAllText(path, (input with { SavedDay = null }).ToJson()); shell.LoadSavedGame(path); await Frames();

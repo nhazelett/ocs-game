@@ -698,7 +698,7 @@
     "shop": "Here's the shop.",
     "contracts": "Most of what keeps the hub running is the host nation's. Billeting and dining are calls on our camp BPA.",
     "vendorList": "These are the vendors I've used, and a couple I know by name.",
-    "money": "Last, the money. There's enough. The card covers up to $20,000 for one buy. The cash box only matters if you pay cash, on an SF 44 to a vendor like Harbor Bottling that takes nothing else.",
+    "money": "Last, the money. There's enough. Small buys go on the card if the vendor takes it, up to $20,000 for one buy; Island Mart does. Harbor Bottling only takes cash, on an SF 44, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it.",
     "remarks": {
       "arrangements": {
         "hubWaterPoint": "The water point's been down since last week; the host nation says day 9."
@@ -761,8 +761,8 @@
   },
   "events": [
     {
-      "id": "mentorDay1",
-      "label": "Capt Mills on paying for small buys",
+      "id": "mentorAgreements",
+      "label": "Capt Mills on agreements",
       "window": {
         "earliestDay": 1,
         "latestDay": 1
@@ -775,31 +775,14 @@
         }
       ],
       "from": "mills",
-      "playerVisibleAs": "Small buys go on the card if the vendor takes it, up to $20,000 each; Island Mart does. Harbor Bottling only takes cash, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it."
-    },
-    {
-      "id": "mentorDay2",
-      "label": "Capt Mills on agreements",
-      "window": {
-        "earliestDay": 2,
-        "latestDay": 2
-      },
-      "fixed": true,
-      "preconditions": [],
-      "effects": [
-        {
-          "kind": "inbox"
-        }
-      ],
-      "from": "mills",
       "playerVisibleAs": "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
     },
     {
-      "id": "mentorDay3",
+      "id": "mentorLastNote",
       "label": "Capt Mills's last note",
       "window": {
-        "earliestDay": 3,
-        "latestDay": 3
+        "earliestDay": 2,
+        "latestDay": 2
       },
       "fixed": true,
       "preconditions": [],
@@ -891,9 +874,8 @@
     "tutWater",
     "tutForklift",
     "tutWaste",
-    "mentorDay1",
-    "mentorDay2",
-    "mentorDay3",
+    "mentorAgreements",
+    "mentorLastNote",
     "forkliftBack",
     "forkliftsOut",
     "honeyTrucksBack",
