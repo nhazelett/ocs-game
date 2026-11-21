@@ -41,10 +41,23 @@ public partial class GameShell
                 if (chosen) awardPriorities.Add(priority); else awardPriorities.Remove(priority);
                 RefreshPriorityToggles(view.Finished);
                 UpdateAwardPreview();
+                if (awardPriorities.Count == 2) FocusAwardMonitor(formVersion, formHash);
             };
         }
         AwardTrade = DeskUi.Label(); AwardTrade.Hide(); awardPanel.AddChild(AwardTrade);
         RefreshPriorityToggles(view.Finished);
+    }
+
+    private async void FocusAwardMonitor(int version, string? hash)
+    {
+        var tree = GetTree();
+        // The chosen pair changes the pinned summary and writer dates, then the scroll body's height.
+        for (var frame = 0; frame < 4; frame++) await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        if (!IsInstanceValid(this) || !IsInsideTree() || IsQueuedForDeletion() || version != awardFormVersion
+            || hash != session.StateHash || awardPriorities.Count != 2 || !RequestWorkspace.IsVisibleInTree()
+            || CorInput is null || !CorInput.IsVisibleInTree()) return;
+        var row = CorInput.GetParent<Control>();
+        AwardScroll.ScrollVertical += Mathf.RoundToInt(row.GlobalPosition.Y - AwardScroll.GlobalPosition.Y);
     }
 
     private void RefreshPriorityToggles(bool finished)

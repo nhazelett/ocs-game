@@ -74,6 +74,7 @@ public partial class BuyFormSmokeTest : Node
             Require(shell.AwardButton.Disabled && shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good"
                 && !shell.SupplierNotice!.Visible, "The written buy keeps its actual quote and plain pick-two reason.");
             await Layout("day6-pick-two", shell.PriorityInputs["fast"]);
+            await CheckRecordedNavigation(shell);
             shell.QueueFree(); await Frames(); shell = null;
             GD.Print("BUY_FORM_SMOKE_PASS: early amount and timing, correct labels, supplier refusal refresh, pure exact previews, preserved terms and half-pane space with pinned summaries.");
             GetTree().Quit();
@@ -114,4 +115,82 @@ public partial class BuyFormSmokeTest : Node
         }
         catch (Exception error) { GD.PushError("BUY_FORM_SMOKE_FAIL: " + error); GetTree().Quit(1); }
     }
+    private async Task CheckRecordedNavigation(GameShell shell)
+    {
+        var bundle = LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+        var root = Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-9");
+        var save = shell.AutosavePathOverride + ".navigation";
+        var tabs = shell.GetNode<TabContainer>("%DeskTabs");
+        var payments = tabs.GetNode<ScrollContainer>("Payments/LedgerContext");
+        try
+        {
+            var first = LinesOfSupport.Sim.InputLog.Load(Path.Combine(root, "input-log-1.json"));
+            var expected = LinesOfSupport.Sim.Replay.Run(bundle, first, stopAfterDay: 14);
+            Load(); await Frames();
+            var view = shell.Session.View!;
+            var failure = view.MorningBoard().Items.First(i => i.Severity == LinesOfSupport.Sim.Views.BoardSeverity.Warning
+                && view.Arrangements.Any(a => a.Id == i.LinkId && a.CapabilityId == "waste"));
+            var failed = view.Arrangements.Single(a => a.Id == failure.LinkId);
+            Require(failed.Instrument == "sf44" && failure.Text.Contains("equipment down"), "The recorded warning belongs to the SF 44 bridge, from its authoritative arrangement link.");
+            shell.BoardDetailsToggle.ButtonPressed = true;
+            var open = shell.MorningItems.GetChildren().OfType<Button>().Single(b => b.Text.Contains(failure.Text));
+            foreach (var oldScroll in new[] { 0, 100000 })
+            {
+                tabs.CurrentTab = GameShell.PaymentsTab; await Frames(); payments.ScrollVertical = oldScroll; await Frames();
+                tabs.CurrentTab = GameShell.TodayTab; open.EmitSignal(Button.SignalName.Pressed); await Frames();
+                var row = tabs.GetNode<VBoxContainer>("Payments/LedgerContext/Contents").GetChildren().OfType<Button>()
+                    .Single(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == failed.Id);
+                Require(tabs.CurrentTab == GameShell.PaymentsTab && row.ButtonPressed
+                    && payments.GetGlobalRect().Encloses(row.GetGlobalRect())
+                    && Math.Abs(row.GlobalPosition.Y - payments.GlobalPosition.Y) <= 2,
+                    $"The exact ninth-play day-fifteen failure opens its own complete entry at Payments' top after either old scroll: old={oldScroll}, now={payments.ScrollVertical}, tab={tabs.CurrentTab}, selected={row.ButtonPressed}, row={row.GetGlobalRect()}, scroll={payments.GetGlobalRect()}.");
+                Require(shell.Session.StateHash == expected.StateHash(), "Opening the failed contract's payment entry is pure navigation.");
+            }
+            await Capture("failure-payments");
+            open.EmitSignal(Button.SignalName.Pressed); tabs.CurrentTab = GameShell.TodayTab; await Frames();
+            Require(tabs.CurrentTab == GameShell.TodayTab, "Deferred payment focus respects a player who immediately leaves Payments.");
+
+            var second = LinesOfSupport.Sim.InputLog.Load(Path.Combine(root, "input-log-2.json"));
+            expected = LinesOfSupport.Sim.Replay.Run(bundle, second, stopAfterDay: 4);
+            foreach (var action in second.Actions.Where(a => a.Day == 5).TakeWhile(a => a is not LinesOfSupport.Sim.Core.AwardAction))
+                Require(expected.Apply(action).Accepted, "The exact day-five add-part and stop actions are accepted.");
+            Load(); shell.GoToMarket("tutForklift");
+            Pick(shell.InstrumentInput, "purchaseOrder"); Pick(shell.VendorInput, "coastalRentals"); Pick(shell.FundingInput, "om1");
+            shell.QuantityInput.Value = 3; shell.StartInput.Value = 8; shell.DurationInput.Value = 13; await Frames();
+            shell.AwardScroll.ScrollVertical = 0;
+            shell.AwardBlockedReason.EmitSignal(Button.SignalName.Pressed); await Frames();
+            shell.PriorityInputs["fast"].ButtonPressed = true; shell.PriorityInputs["good"].ButtonPressed = true; await Frames();
+            var monitorRow = shell.CorInput!.GetParent<Control>();
+            var pairRow = shell.PriorityInputs["fast"].GetParent<Control>();
+            var pane = shell.RequestBuyColumn.GetGlobalRect(); var scroll = shell.AwardScroll.GetGlobalRect();
+            Require(scroll.Encloses(monitorRow.GetGlobalRect()) && scroll.Encloses(pairRow.GetGlobalRect()),
+                "After choosing pick two, the full COR caption/picker and both chosen priorities fit above the pinned footer without manual scrolling.");
+            Require(scroll.Size.Y >= pane.Size.Y / 2 && pane.Encloses(shell.AwardSummaryLabel.GetGlobalRect())
+                && shell.AwardSummaryLabel.Text == shell.Session.View!.AwardSummary(shell.PendingAward!)!.Sentence,
+                "The long forklift quote keeps its complete summary and at least half the column for the form.");
+            Require(shell.PendingAward!.Priorities!.Order().SequenceEqual(new[] { "fast", "good" })
+                && shell.Session.StateHash == expected.StateHash(), "Auto-scrolling preserves the exact chosen terms and Sim state.");
+            await Capture("cor-pick-two");
+            shell.PriorityInputs["good"].ButtonPressed = false; shell.PriorityInputs["good"].ButtonPressed = true;
+            shell.CloseRequestWorkspace(); await Frames();
+            Require(!shell.RequestWorkspace.Visible && shell.Session.StateHash == expected.StateHash(), "Deferred monitor scrolling respects closing the request.");
+            GD.Print("BUY_NAVIGATION_SMOKE_PASS: ninth-play day-fifteen failure opens its exact Payments entry at the top after old scrolls; day-five full COR/pick-two rows, complete half-pane footer, pure navigation and stale navigation guards.");
+
+            void Load()
+            {
+                File.WriteAllText(save, expected.ToSave().ToJson()); shell.LoadSavedGame(save); shell.DeveloperToggle.ButtonPressed = false;
+                Require(shell.Session.StateHash == expected.StateHash(), "The ninth-play moment loads exactly through the save boundary.");
+            }
+            async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+            async Task Capture(string suffix)
+            {
+                var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--navigation-screenshots"); if (at < 0) return;
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[at + 1] + "-" + suffix + ".png") == Error.Ok, "The exact ninth-play navigation screenshot is saved.");
+            }
+        }
+        finally { File.Delete(save); }
+    }
+
 }
