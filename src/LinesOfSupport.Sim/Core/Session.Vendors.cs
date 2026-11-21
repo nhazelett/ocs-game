@@ -118,7 +118,15 @@ public sealed partial class Session
                 supply ? VendorReach(v) : null,
                 holding, vehicles, rep, met, VisitInWork("vendor", v.Id),
                 _standing.TryGetValue(v.Id, out var st) ? (st.DeclinesWork ? "Declines work after an unpaid handshake." : $"Quotes {st.MarkupPermille / 10}% higher after an unpaid handshake.") : null,
-                knownFrom, still, HeardAboutVendor(v.Id)));
+                knownFrom, still, HeardAboutVendor(v.Id))
+            {
+                // DESK-166: true to CompleteMeetVendor for a vendor whose terms and reach are known: the card does not
+                // change (the confidence tier it raises changes nothing the player sees), and the vendor raises an
+                // unfinished letter contract of theirs if there is one.
+                MeetingBrings = missing.Count == 0 && rep is not null && met is null
+                    ? $"Their terms are on file already, so meeting {rep.DisplayName} adds nothing to their card; a vendor you meet does raise any contract of theirs this office has left unfinished."
+                    : null,
+            });
         }
         return cards;
     }

@@ -111,8 +111,8 @@ internal static class AwardWriterSmokeChecks
                 && PlayScreen.Descendants(shell.RequestWorkspace).OfType<ScrollContainer>().Count(s => s.IsVisibleInTree()) == 2,
                 "All three writer choices stay pinned outside the one buy scroll; no new scroll is added.");
             foreach (var button in picker.ChoiceButtons.Values)
-                Require(button.Size.Y < 60 && button.AutowrapMode == TextServer.AutowrapMode.Off && button.ButtonPressed == button.Text.StartsWith("✓ "),
-                    "Each writer is one compact line and selection has a visible check mark.");
+                Require(button.Size.Y <= 28 && button.AutowrapMode == TextServer.AutowrapMode.Off && button.ButtonPressed == button.Text.StartsWith("✓ "),
+                    "Each writer fits a 28-pixel line and selection has a visible check mark.");
             var before = picker.GetGlobalRect(); scroll.ScrollVertical = 100000; await Frames();
             Require(picker.GetGlobalRect() == before && scroll.GetGlobalRect().End.Y <= picker.GetGlobalRect().Position.Y,
                 "Scrolling the quote leaves the writer pinned above the summary and clear of the quote.");
