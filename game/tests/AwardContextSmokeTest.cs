@@ -103,7 +103,7 @@ public partial class AwardContextSmokeTest : Node
     private async Task CheckMonitorChoices(GameShell shell)
     {
         var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
-        var log = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-7", "input-log-1.json"));
+        var log = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-9", "input-log-2.json"));
         var expected = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 6);
         var path = shell.AutosavePathOverride + ".monitor-day7";
         File.WriteAllText(path, expected.ToSave().ToJson()); shell.LoadSavedGame(path); File.Delete(path);
@@ -117,8 +117,10 @@ public partial class AwardContextSmokeTest : Node
         {
             var index = Enumerable.Range(1, picker.ItemCount - 1).Single(i => picker.GetItemMetadata(i).AsString() == c.Id);
             var odds = $"catches about {c.ReportPermille / 10m:0.#}%, reports " + (c.LagDays == 0 ? "the same day" : DeskUi.Count(c.LagDays, "day") + " late");
-            Require(picker.GetItemText(index).EndsWith(odds) && picker.GetItemTooltip(index) == c.Why
-                && shell.CorReasonLabels.Any(l => l.Text == c.Why), "Every monitor's effective odds and lag are in its choice; the complete Sim sentence remains below.");
+            Require(picker.GetItemText(index).StartsWith(c.Why.Split(" and ", 2, StringSplitOptions.None)[0] + " · ")
+                && picker.GetItemText(index).Contains(c.Fits == true ? "knows waste removal" : "does not work with waste removal")
+                && picker.GetItemText(index).EndsWith(odds) && picker.GetItemTooltip(index) == c.Why
+                && shell.CorReasonLabels.Any(l => l.Text == c.Why), "Every monitor choice carries the Sim's fit words before its effective odds and lag; the complete sentence remains below.");
         }
         Require(shell.Session.StateHash == expected.StateHash() && shell.PendingAward!.Cor is null, "Reading monitor choices is pure and retains None until chosen.");
         for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -136,7 +138,7 @@ public partial class AwardContextSmokeTest : Node
         }
         Pick(picker, order.Cor!);
         Require(shell.PendingAward!.Cor == order.Cor && shell.Session.StateHash == expected.StateHash(), "Choosing from the explained roster binds the exact monitor without committing.");
-        GD.Print("MONITOR_CHOICES_SMOKE_PASS: exact seventh-play day-seven waste quote, every effective odds/lag choice, full Sim reasons, None and exact selection.");
+        GD.Print("MONITOR_CHOICES_SMOKE_PASS: exact ninth-play day-seven waste quote, every fit/odds/lag choice, full Sim reasons, None and exact selection.");
     }
 
 }

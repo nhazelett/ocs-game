@@ -154,7 +154,7 @@ public partial class GameShell
             case BoardLinkKind.SiteCapability: SelectCapability(item.LinkId); break;
             case BoardLinkKind.Arrangement:
                 SelectedArrangement = item.LinkId; SelectedFunding = null; tabs.CurrentTab = PaymentsTab;
-                RenderLedgerContext(session.View); break;
+                RenderLedgerContext(session.View); FocusPaymentArrangement(item.LinkId, session.StateHash); break;
             case BoardLinkKind.Funding:
                 SelectedArrangement = null;
                 SelectedFunding = session.View?.Funding.Any(f => f.Id == item.LinkId) == true ? item.LinkId : null;
@@ -177,6 +177,19 @@ public partial class GameShell
             case BoardLinkKind.Event:
                 tabs.CurrentTab = TodayTab; boardFocus.Text = item.Text; break;
         }
+    }
+
+    private async void FocusPaymentArrangement(string id, string? hash)
+    {
+        var tree = GetTree();
+        for (var frame = 0; frame < 4; frame++) await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        if (!IsInstanceValid(this) || !IsInsideTree() || IsQueuedForDeletion() || hash != session.StateHash
+            || SelectedArrangement != id || GetNode<TabContainer>("%DeskTabs").CurrentTab != PaymentsTab) return;
+        var row = linkedLedger.GetChildren().OfType<Button>()
+            .FirstOrDefault(b => b.HasMeta("arrangement") && b.GetMeta("arrangement").AsString() == id);
+        if (row is null) return;
+        var scroll = linkedLedger.GetParent<ScrollContainer>();
+        scroll.ScrollVertical += Mathf.RoundToInt(row.GlobalPosition.Y - scroll.GlobalPosition.Y);
     }
 
     private void SelectCapability(string key, bool openDetails = false)
@@ -214,7 +227,8 @@ public partial class GameShell
         }
         if (view.Funding.Count == 0) linkedLedger.AddChild(DeskUi.Label("No funding lines."));
         linkedLedger.AddChild(DeskUi.Heading("What we are paying for"));
-        foreach (var arrangement in view.Arrangements)
+        // Keep the selected entry first, including a final cash row with nothing below it to scroll past.
+        foreach (var arrangement in view.Arrangements.OrderByDescending(a => a.Id == SelectedArrangement))
         {
             var button = DeskUi.Button($"{DeskUi.ListLabel(view.ArrangementName(arrangement.Id))} · {ArrangementStatusText(view, arrangement)}\n{ArrangementPaymentText(view, arrangement)}", () =>
             {
