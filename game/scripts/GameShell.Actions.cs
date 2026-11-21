@@ -77,6 +77,7 @@ public partial class GameShell
     private void BuildActionDesk()
     {
         var body = DeskUi.Pane(RequestBuyColumn, "AwardEditor", out awardFooter);
+        awardFooter.AddThemeConstantOverride("separation", 2);
         awardPanel = new VBoxContainer { Name = "Inputs" }; body.AddChild(awardPanel);
         awardPanel.AddThemeConstantOverride("separation", 10);
         previewPanel = new VBoxContainer { Name = "Quote" }; body.AddChild(previewPanel);

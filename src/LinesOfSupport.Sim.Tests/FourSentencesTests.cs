@@ -73,9 +73,9 @@ public class FourSentencesTests
             Id = "t-coastal", Instrument = "gpc", Vendor = "coastalRentals", Card = "tutForklift", Site = "hubSite", Capability = "mhe",
             Quantity = 3, StartDay = 8, DurationDays = 13, Day = 5,
         };
-        Assert.DoesNotContain(s.View.Preview(award).SoftGaps, g => g.Contains("already includes", StringComparison.Ordinal));
+        Assert.DoesNotContain(s.View.Preview(award).SoftGaps, g => g.Contains("charges the same", StringComparison.Ordinal));
         Assert.True(s.Apply(new AddLineAction { Card = "tutForklift", Line = "operator", Day = 5 }).Accepted);
-        Assert.Contains("Coastal Rentals' price already includes its operators.", s.View.Preview(award).SoftGaps);
-        Assert.DoesNotContain("already includes", s.View.AwardSummary(award)!.Sentence);   // the pinned summary stays short
+        Assert.Contains("Coastal Rentals charges the same with its operators as without, and an order brings only the parts it names.", s.View.Preview(award).SoftGaps);
+        Assert.DoesNotContain("charges the same", s.View.AwardSummary(award)!.Sentence);   // the pinned summary stays short
     }
 }

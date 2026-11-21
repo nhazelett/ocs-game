@@ -77,6 +77,10 @@ internal static class TabletopTheme
         SetBox("hover","TabletopPerson",Box(Hover,0));SetBox("pressed","TabletopPerson",Box(Pressed,0));
         theme.SetConstant("icon_max_width","TabletopPerson",36);theme.SetConstant("h_separation","TabletopPerson",8);
         theme.SetFontSize("font_size","TabletopPerson",18);
+        theme.SetTypeVariation("TabletopCompactPerson", "TabletopPerson");
+        foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed", "disabled" })
+            SetBox(state, "TabletopCompactPerson", Box(state == "disabled" ? Background
+                : state == "hover" || state == "hover_pressed" ? Hover : state == "pressed" ? Pressed : Paper, 0));
         theme.SetTypeVariation("TabletopHours","ProgressBar");
         using(var track=Box(Track,0,3))theme.SetStylebox("background","TabletopHours",track);
         using(var fill=Box(Moss,0,3)){fill.SetBorderWidthAll(0);theme.SetStylebox("fill","TabletopHours",fill);}

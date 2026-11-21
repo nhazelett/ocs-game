@@ -52,8 +52,8 @@ public partial class GameShell
         var header = new HBoxContainer(); header.AddThemeConstantOverride("separation", 24); layout.AddChild(header); header.AddChild(RequestBackButton);
         var columns = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
         columns.AddThemeConstantOverride("separation", 24); layout.AddChild(columns);
-        RequestColumn = new Control { Name = "Request", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = .9f };
-        RequestBuyColumn = new Control { Name = "Buy", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = 1.1f };
+        RequestColumn = new Control { Name = "Request", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = .75f };
+        RequestBuyColumn = new Control { Name = "Buy", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsStretchRatio = 1.25f };
         columns.AddChild(RequestColumn); columns.AddChild(RequestBuyColumn);
         void Fit()
         {
