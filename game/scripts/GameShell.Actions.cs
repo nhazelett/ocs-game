@@ -239,12 +239,15 @@ public partial class GameShell
         VendorChoiceReason = vendorReason;
         if (!string.IsNullOrEmpty(awardVendor) && editor.Vendors.FirstOrDefault(v => v.Id == awardVendor) is { } supplier)
         {
+            var notice = view.VendorCards().FirstOrDefault(c => c.Id == supplier.Id)?.Sells
+                .FirstOrDefault(s => s.CapabilityId == editor.CapabilityId)?.NoticeSays;
             SupplierKnowledge = DeskUi.Label($"{supplier.Name} is based on {supplier.IslandName}.\nCash: "
                 + Payment(supplier.PaymentKnown ? supplier.AcceptsCash : null) + " · Card: " + Payment(supplier.PaymentKnown ? supplier.AcceptsGpc : null)
                 + "\nUsual capacity per day: " + (supplier.CapacityKnown ? $"{DeskUi.Quantity(supplier.CapacityPerDay)} {editor.Unit}" : "—")
                 + " · Uncommitted: " + (supplier.CapacityKnown ? DeskUi.Quantity(supplier.CapacityFreeToday) : "—")
                 + (supplier.Heard is { } heard ? "\n" + heard : "")
-                + (supplier.PaymentKnown ? "\nStarts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "\nTime after a signed order: —"));
+                + (supplier.PaymentKnown ? "\nStarts " + DeskUi.Count(supplier.LeadTimeDays, "day") + " after a signed order" : "\nTime after a signed order: —")
+                + (notice is null ? "" : "\n" + notice));
 
         }
         var needsVehicle = awardInstrument is "bpaCall" or "idiqOrder";
