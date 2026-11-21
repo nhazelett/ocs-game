@@ -455,3 +455,14 @@ Also from this play, no decision needed: the buy column's receipt reads the deci
 Sim notes (Fable):
 
 - DESK-149: (a) a first debrief line for the tutorial from the pass criteria; (b) in the gap's factor text, when the COR's report was due after the end, name his lag and the soonest-reporting other monitor the player could have named, only when one reports sooner; (c) a once-per-game clause on the first plan line that sends idle hours to walk-in buys; (d) in `AwardSummary`, when the parts added by what was learned change no price, say the vendor's price includes them. Goldens move where they print these (state which).
+
+## 25. The 21 Nov third play: D46 (21 Nov 2026)
+
+D46. **The pinned buy summary stays short.** The summary pinned above Arrange support is at most three sentences: what it costs and whose hours, when it starts against when it is wanted, and one more, the first of the attention reason, the allowance cost and the answer due. Everything else it used to say (what it brings, the cover before it starts, finance or the price proposal, what it is on top of, and whichever of the allowance cost and the answer due did not fit) is in the quote's notes above, once. The third play's player clicked Cheap and nothing happened: on a written buy with an ask out and a late end to its quote the summary ran to six lines and the scrolling part of the column shrank until pick two was out of view. D45 puts the writer picker in the same footer, so the summary has to give room. Left out: a scrolling summary (a second scroll box, D13), a collapsed summary with a toggle, and a smaller font.
+
+Also from this play, no decision needed: the debrief's lag clause says when the office would have heard, not why the gap happened, so it no longer reads against "Unforeseeable"; joining the staff meeting says its hour a day; the commander's words say once what counts as out; and before any pick the trade line names all three pairs (DESK-155). Open vendor decision puts the decision at the top of the pane (DESK-153).
+
+Sim notes (Fable):
+
+- DESK-155: (a) rewrite `SoonerCor` as "The failure itself could not be foreseen. <COR> reports problems <lag> late; with <sooner COR>, who reports <lag>, its report would have been due on day <failure day + that lag>" (a report, not a promise: the sooner COR's odds of catching it are not 100%); (b) the join preview's effect line; (c) one clause in `BarView.Spoken`; (d) `PickTrade` with no pick on an open-price written buy. Goldens move where they print these (state which).
+- DESK-156: `BuildAwardSummary` keeps three parts and hands the rest to `BuildPreview`'s soft gaps, each once.

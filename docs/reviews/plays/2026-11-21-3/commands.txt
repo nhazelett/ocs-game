@@ -1,0 +1,166 @@
+0002 look
+0003 scroll "Preparation" down
+0004 click "I can pull the agreements the last rotation left you, so you can see which requests they cover before you land. (1 day)"
+0005 click "I can send you our vendor list with the terms we have, so you know who takes cash and who takes the card. (2 days)"
+0006 click "Bring templates and a paper kit, and the manual work goes faster until the system's up. (1 day)"
+0007 click "I'm ready to leave"
+0008 click "Continue"
+0009 click "Continue"
+0010 click "Continue"
+0011 click "Open the desk and meet people"
+0012 scroll "Today" down
+0013 scroll "Today" down
+0014 click "Open request"
+0015 click "Water for Hub · MSgt Carla Ortiz"
+0016 click "Requests"
+0017 click "Water for Hub"
+0018 click "Water for Hub / Nothing is arranged yet. MSgt Carla Ortiz wants it from day 2 for 7 days. / Order today: a card buy from Island Mart starts on day 2 or 3, with no written terms; it is wanted from day 2. The water stock on hand should cover day 2."
+0019 scroll "Request" down
+0020 scroll "Request" down
+0021 click "SrA Eli Novak: 8 hours free today, nothing queued. This takes them 1.5 hours; it would be done day 1."
+0022 click "Ask MSgt Carla Ortiz"
+0023 click "Choose an arrangement…"
+0024 click "Government purchase card"
+0025 click "Choose a supplier…"
+0026 click "Island Mart"
+0027 click "Government purchase card"
+0028 click "SF 44 cash purchase"
+0029 key Escape
+0030 click "Arrange support"
+0031 click "Back to the desk"
+0032 click "Inbox"
+0033 scroll "Inbox" down
+0034 click "Vendors"
+0035 click "End the day"
+0036 scroll "Dialog" down
+0037 click "End the day"
+0038 click "On to the morning of day 2"
+0039 scroll "Today" down
+0040 scroll "Today" down
+0041 click "Join the staff meeting"
+0042 click "People to reach"
+0043 scroll "Today" down
+0044 scroll "Today" down
+0045 click "People to reach"
+0046 scroll "Today" down
+0047 click "Choose someone to reach…"
+0048 click "Harbor Equipment Co · Mr. Tomas Reyna"
+0049 scroll "Today" down
+0050 click "Vendors"
+0051 click "Island Camp Services"
+0052 click "Harbor Equipment Co"
+0053 scroll "Vendors" down
+0054 click "Harbor Equipment Co"
+0055 click "Coastal Rentals"
+0056 click "End the day"
+0057 click "End the day"
+0058 click "On to the morning of day 3"
+0059 scroll "Today" down
+0060 scroll "Today" down
+0061 click "You"
+0062 click "Back to the desk"
+0063 click "End the day"
+0064 click "End the day"
+0065 click "On to the morning of day 4"
+0066 click "Open request"
+0067 scroll "Request" down
+0068 click "Choose an arrangement…"
+0069 click "BPA call"
+0070 click "Arrange support"
+0071 click "You"
+0072 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 6.5 hours; it would be done day 5."
+0073 click "Give them this task"
+0074 click "Back to the desk"
+0075 click "Back to the desk"
+0076 click "End the day"
+0077 click "End the day"
+0078 click "On to the morning of day 5"
+0079 click "Requests"
+0080 click "Material handling equipment for Hub / MSgt Joan Avery is writing the BPA call with Harbor Equipment Co, about 6.5 hours of work left."
+0081 click "Choose a supplier…"
+0082 click "Coastal Rentals"
+0083 click "Choose an arrangement…"
+0084 click "Government purchase card"
+0085 click "Back to the desk"
+0086 click "End the day"
+0087 click "End the day"
+0088 click "On to the morning of day 6"
+0089 click "Requests"
+0090 click "Material handling equipment for Hub / Nothing is arranged yet. SMSgt Ray Dunn wants it from day 8 for 13 days. Harbor Equipment Co turned down the call on day 5. / Order today to start by day 8: a card buy from Coastal Rentals starts 1 or 2 days after it goes in, with no written terms."
+0091 click "Arrange support"
+0092 click "Back to the desk"
+0093 click "End the day"
+0094 click "End the day"
+0095 click "On to the morning of day 7"
+0096 click "Open request"
+0097 scroll "Request" down
+0098 scroll "Request" down
+0099 click "SrA Eli Novak: 8 hours free today, nothing queued. This takes them 1.5 hours; it would be done day 7."
+0100 click "Ask Capt Ana Ruiz"
+0101 click "Choose an arrangement…"
+0102 click "Written purchase order"
+0103 click "Choose a supplier…"
+0104 click "Main Island Sanitation"
+0105 click "Good"
+0106 click "Cheap"
+0107 click "Cheap"
+0108 click "Fast"
+0109 scroll "Buy" down
+0110 click "Cheap"
+0111 click "Fast"
+0112 click "None"
+0113 click "TSgt Pratt · 3 CES"
+0114 click "Arrange support"
+0115 click "You"
+0116 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 6.5 hours; it would be done day 8."
+0117 click "Give them this task"
+0118 click "Back to the desk"
+0119 click "End the day"
+0120 click "End the day"
+0121 click "On to the morning of day 8"
+0122 scroll "Today" down
+0123 scroll "Today" down
+0124 scroll "Today" down
+0125 scroll "Today" down
+0126 scroll "Today" down
+0127 scroll "Today" down
+0128 scroll "Today" down
+0129 scroll "Today" down
+0130 click "Other updates and sites"
+0131 scroll "Today" down
+0132 scroll "Today" down
+0133 click "End the day"
+0134 click "End the day"
+0135 click "On to the morning of day 9"
+0136 click "Payments"
+0137 click "End the day"
+0138 click "End the day"
+0139 click "On to the morning of day 10"
+0140 click "End the day"
+0141 click "Skip ahead"
+0142 click "On to the morning of day 12"
+0143 click "Inbox"
+0144 click "End the day"
+0145 click "End the day"
+0146 click "On to the morning of day 13"
+0147 click "Open vendor decision"
+0148 scroll "Inbox" down
+0149 scroll "Inbox" down
+0150 scroll "Inbox" down
+0151 click "SrA Eli Novak: 8 hours free today, nothing queued. This takes them 5.5 hours; it would be done day 13."
+0152 click "Cure notice"
+0153 click "End the day"
+0154 click "End the day"
+0155 click "On to the morning of day 14"
+0156 click "End the day"
+0157 click "Skip ahead"
+0158 click "On to the morning of day 16"
+0159 scroll "Today" down
+0160 scroll "Today" up
+0161 click "Hub · Waste removal: 50% · partly supported / Open site details →"
+0162 click "End the day"
+0163 click "End the day"
+0164 click "On to the debrief"
+0165 scroll "Debrief" down
+0166 click "Trace the evidence"
+0167 quit
