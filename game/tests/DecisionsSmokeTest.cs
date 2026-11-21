@@ -83,6 +83,7 @@ public partial class DecisionsSmokeTest : Node
             Require(Rows(shell.DecisionRows).Count() == 0 && !shell.AllDecisionsButton.Visible,
                 "A different deployment clears the old decision list and expanded state.");
             await StopWorkSmokeChecks.Run(this, shell);
+            await CheckContractLinks(shell);
             shell.QueueFree(); await Frames();
             GD.Print("DECISIONS_SMOKE_PASS: exact committed history and current status, newest-first short/all, pure request links, drafts/refusals, stale guard and save/reset.");
             GetTree().Quit();
@@ -106,6 +107,54 @@ public partial class DecisionsSmokeTest : Node
             }
         }
         catch (Exception error) { GD.PushError("DECISIONS_SMOKE_FAIL: " + error); GetTree().Quit(1); }
+    }
+
+    private async Task CheckContractLinks(GameShell shell)
+    {
+        var bundle = LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+        var log = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-6", "input-log.json"));
+        var expected = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 6);
+        var path = shell.AutosavePathOverride + ".day7";
+        File.WriteAllText(path, expected.ToSave().ToJson()); shell.LoadSavedGame(path); File.Delete(path);
+        shell.DeveloperToggle.ButtonPressed = false; shell.GoToMarket("tutForklift"); await Frames();
+        var coastal = expected.Arrangements.Single(a => a.VendorId == "coastalRentals");
+        var links = PlayScreen.Descendants(shell.RequestDecisionRows!).OfType<Button>().Where(b => b.HasMeta("decision_contract")).ToArray();
+        Require(links.Length == 1 && links[0].GetMeta("decision_contract").AsString() == coastal.Id
+            && expected.View.StatusToday(coastal.Id) == ArrangementStatus.Pending,
+            "The signed Coastal buy has its exact contract link before delivery; the declined Harbor call has none.");
+        var link = links[0]; shell.RequestScroll.EnsureControlVisible(link); await Frames();
+        await Capture("request");
+        var scroll = shell.RequestScroll.ScrollVertical; var draft = shell.PendingAward; var hash = shell.Session.StateHash;
+        link.EmitSignal(Button.SignalName.Pressed); await Frames();
+        Require(shell.ContractView.Visible && shell.SelectedArrangement == coastal.Id && shell.TerminateButtons.ContainsKey(coastal.Id)
+            && shell.TerminateButtons[coastal.Id].Text.StartsWith("Cancel this card buy") && shell.Session.StateHash == hash,
+            "The request opens the same cancellable contract page as Payments, without acting.");
+        await Capture("contract");
+        PlayScreen.Descendants(shell.ContractView).OfType<Button>().Single(b => b.Text == "Back to the request").EmitSignal(Button.SignalName.Pressed);
+        await Frames();
+        Require(!shell.ContractView.Visible && shell.RequestWorkspace.Visible && shell.SelectedCard == "tutForklift"
+            && shell.RequestScroll.ScrollVertical == scroll && shell.PendingAward == draft && shell.Session.StateHash == hash,
+            "Back returns to the same request, scroll and draft without acting.");
+        link.EmitSignal(Button.SignalName.Pressed);
+        using (var escape = new InputEventKey { Keycode = Key.Escape, Pressed = true }) shell._UnhandledKeyInput(escape);
+        Require(!shell.ContractView.Visible && shell.RequestWorkspace.Visible, "Escape returns from the contract before closing its request.");
+        link.EmitSignal(Button.SignalName.Pressed);
+        shell.ContractDeskTabs.EmitSignal(TabBar.SignalName.TabSelected, GameShell.TodayTab);
+        Require(!shell.ContractView.Visible && !shell.RequestWorkspace.Visible && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.TodayTab,
+            "A desk tab leaves both contract and request pages.");
+        Step(shell); link.EmitSignal(Button.SignalName.Pressed);
+        Require(!shell.ContractView.Visible && shell.Session.View!.Day == 8, "A stale request link cannot navigate on a different morning.");
+        shell.GoToMarket("tutForklift");
+        Require(PlayScreen.Descendants(shell.RequestDecisionRows!).Any(n => n.HasMeta("decision_contract") && n.GetMeta("decision_contract").AsString() == coastal.Id),
+            "The same signed buy keeps its contract link once delivery starts.");
+        GD.Print("REQUEST_CONTRACT_SMOKE_PASS: exact sixth-play pending and running buy links, no declined link, same contract, request/scroll/draft return, Escape, desk tabs and stale guard.");
+        async Task Capture(string suffix)
+        {
+            await Frames(); var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--contract-screenshots"); if (at < 0) return;
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[at + 1] + "-" + suffix + ".png") == Error.Ok, "Native request-to-contract capture saved.");
+        }
     }
 
     private async Task Frames() { for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }

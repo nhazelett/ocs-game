@@ -106,6 +106,7 @@ public partial class GameShell
         if (@event is not InputEventKey { Pressed: true, Echo: false, Keycode: Key.Escape }
             || EndDayDialog.Visible || LeaveGameDialog.Visible) return;
         if (TeamPanel.Visible) { CloseTeam(); GetViewport().SetInputAsHandled(); }
+        else if (ContractView.Visible && !EndContractDialog.Visible) { ReturnFromContract(); GetViewport().SetInputAsHandled(); }
         else if (RequestWorkspace.Visible) { CloseRequestWorkspace(); GetViewport().SetInputAsHandled(); }
     }
 

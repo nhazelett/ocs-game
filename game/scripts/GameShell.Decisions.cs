@@ -113,6 +113,17 @@ public partial class GameShell
             }
             if (!openRequest && decision.StopWorkId is { } workId && decision.StopSentence is { } sentence && stopsShown?.Contains(workId) != true)
                 AddStopWork(row, workId, sentence);
+            if (!openRequest && session.View is { } view && view.Arrangements.FirstOrDefault(a => a.CauseId == decision.RecordId
+                && !a.IsCoordination && view.StatusToday(a.Id) is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended) is { } contract)
+            {
+                var link = DeskUi.Button("Open its contract page →", () =>
+                {
+                    if (hash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
+                        || !RequestWorkspace.Visible || SelectedCard != decision.CardId) return;
+                    OpenContractView(contract.Id, fromRequest: decision.CardId);
+                });
+                link.SetMeta("decision_contract", contract.Id); row.AddChild(link);
+            }
             row.SetMeta("decision_now", decision.Now);
             row.SetMeta("decision_teammate", decision.Teammate);
         }
