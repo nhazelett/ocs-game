@@ -113,6 +113,20 @@ public partial class AwardFeedbackSmokeTest : Node
             shell.WorkAssignButtons[accepted.StopWorkId!].EmitSignal(Button.SignalName.Pressed);
             var current = shell.Session.View!.Decision(accepted.RecordId)!;
             Require(current.TeammateId == "avery" && current.RecordId == accepted.RecordId, "The decision keeps its identity through a real team hand-over.");
+            var give = shell.WorkAssignButtons[accepted.StopWorkId!];
+            var pickReason = give.GetParent().GetChildren().OfType<Label>().First(l => l.GetIndex() > give.GetIndex());
+            var handoverHash = shell.Session.StateHash;
+            Require(give.Disabled && pickReason.Text == "Pick who should take it." && pickReason.Visible
+                && pickReason.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink), "The current holder prompts a pick in ordinary ink.");
+            var teamScroll = PlayScreen.Descendants(shell.TeamPanel).OfType<ScrollContainer>().Single();
+            await Frames(); teamScroll.EnsureControlVisible(pickReason); await Capture("day4-handover-prompt");
+            var handoverPicker = shell.WorkAssignees[accepted.StopWorkId!];
+            handoverPicker.ChoiceButtons["you"].EmitSignal(Button.SignalName.Pressed);
+            Require(!give.Disabled && !pickReason.Visible && pickReason.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Alert),
+                "A real candidate enables the action with ordinary refusal colour restored for any Sim stop.");
+            handoverPicker.ChoiceButtons["avery"].EmitSignal(Button.SignalName.Pressed);
+            Require(give.Disabled && pickReason.Text == "Pick who should take it." && pickReason.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink)
+                && shell.Session.StateHash == handoverHash, "Returning to the holder restores the neutral prompt without acting.");
             shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
             // An unrelated, newer decision must never become this receipt.
             Require(shell.SendAction(new LinesOfSupport.Sim.Core.AskAboutAction { Day = 4, Card = "tutWater", Person = "silva", Assignee = "novak" }).Accepted, "A newer unrelated ask is accepted.");
