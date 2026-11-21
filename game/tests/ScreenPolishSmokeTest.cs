@@ -30,19 +30,29 @@ public partial class ScreenPolishSmokeTest : Node
             var input = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-20-3", "input-log.json"));
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
             var tabs = shell.GetNode<TabContainer>("%DeskTabs");
-            void Load(int day)
+            void Load(int day, InputLog? selected = null)
             {
-                var expected = LinesOfSupport.Sim.Replay.Run(bundle, input, stopAfterDay: day - 1);
+                var expected = LinesOfSupport.Sim.Replay.Run(bundle, selected ?? input, stopAfterDay: day - 1);
                 File.WriteAllText(save, expected.ToSave().ToJson()); shell.LoadSavedGame(save); shell.DeveloperToggle.ButtonPressed = false;
                 Require(shell.Session.StateHash == expected.StateHash(), "The exact authored morning loads through the save boundary.");
             }
-            Load(13); var hash = shell.Session.StateHash;
+            var thirdPlay = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-3", "input-log.json"));
+            Load(13, thirdPlay); var hash = shell.Session.StateHash;
             var issue = shell.Session.View!.PerformanceIssues.Single(i => i.CureNoticeDay is null);
             var inbox = shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents");
-            tabs.CurrentTab = GameShell.InboxTab; await Frames(); inbox.ScrollVertical = 100000;
             tabs.CurrentTab = GameShell.TodayTab; shell.TodayPerformanceLinks[issue.Id].EmitSignal(Button.SignalName.Pressed); await Frames();
             var cure = shell.PerformanceChoices[(issue.Id, "cure")];
-            Require(inbox.GetGlobalRect().Encloses(cure.GetParent().GetChild<Control>(0).GetGlobalRect()), "Open vendor decision starts at the issue's heading even after an old Inbox scroll.");
+            var heading = cure.GetParent().GetChild<Control>(0);
+            Require(inbox.GetGlobalRect().Encloses(heading.GetGlobalRect())
+                && Math.Abs(heading.GlobalPosition.Y - inbox.GlobalPosition.Y) <= 2,
+                "The exact third-play vendor decision aligns its heading with the top, including after an old Inbox scroll.");
+            var firstChoice = cure.GetParent().GetChildren().OfType<AssigneePicker>().Single().ChoiceButtons.Values.First();
+            Require(inbox.GetGlobalRect().Encloses(firstChoice.GetGlobalRect()), "Opening at the heading also exposes the first complete choice below its context.");
+            await Capture("vendor-decision-top");
+            inbox.ScrollVertical = 100000; tabs.CurrentTab = GameShell.TodayTab;
+            shell.TodayPerformanceLinks[issue.Id].EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(Math.Abs(heading.GlobalPosition.Y - inbox.GlobalPosition.Y) <= 2,
+                "Reopening after a previous bottom scroll also returns the heading to the top.");
             Require(shell.Session.StateHash == hash, "Opening the decision is pure navigation.");
             var picker = cure.GetParent().GetChildren().OfType<AssigneePicker>().Single();
             picker.ChoiceButtons["avery"].EmitSignal(Button.SignalName.Pressed); cure.EmitSignal(Button.SignalName.Pressed);

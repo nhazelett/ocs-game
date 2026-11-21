@@ -72,14 +72,15 @@ public partial class GameShell
         {
             var commitment = view.Commitments.FirstOrDefault(c => c.ArrangementId == lead.LinkId && c.Decision == LinesOfSupport.Sim.Core.CommitmentDecision.Open);
             var issue = view.PerformanceIssues.FirstOrDefault(i => i.ArrangementId == lead.LinkId);
-            Button? target = null;
-            if (commitment is not null) target = commitmentChoices.FirstOrDefault(kv => kv.Key.Id == commitment.Id).Value;
-            else if (issue is not null && PerformanceChoices.TryGetValue((issue.Id, "resource"), out var resource)) target = resource;
-            if (target is not null)
+            if (commitment is not null)
             {
-                GetNode<TabContainer>("%DeskTabs").CurrentTab = InboxTab;
-                GetNode<TabContainer>("%DeskTabs").GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(target);
-                target.GrabFocus(); return;
+                var row = commitmentRows.GetChildren().OfType<Control>()
+                    .FirstOrDefault(c => c.HasMeta("commitment") && c.GetMeta("commitment").AsString() == commitment.Id);
+                if (row is not null) { FocusInboxDecision(row.GetChild<Control>(0), session.StateHash); return; }
+            }
+            else if (issue is not null)
+            {
+                OpenPerformanceDecision(issue.Id, session.StateHash); return;
             }
         }
         NavigateBoardItem(new BoardItem(lead.RecordId ?? "", view.Day, BoardCategory.Report, BoardSeverity.Info,

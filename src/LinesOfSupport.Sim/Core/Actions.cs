@@ -363,6 +363,10 @@ public sealed record EngageJ4Action : PlayerAction
 
 public sealed record ActionResult(bool Accepted, string Message, IReadOnlyList<string> HardStops)
 {
+    /// <summary>Q29 (DESK-147): for an accepted action, the record it made, which is <c>DecisionView.RecordId</c> of the
+    /// decision it became; null when refused or when it made none.</summary>
+    public string? RecordId { get; init; }
+
     public static ActionResult Ok(string message) => new(true, message, []);
     public static ActionResult Stop(params string[] reasons) => new(false, string.Join("; ", reasons), reasons);
 }

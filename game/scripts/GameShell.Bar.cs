@@ -18,6 +18,11 @@ public partial class GameShell
         {
             parent.AddChild(DeskUi.Heading("The commander's verdict"));
             parent.AddChild(DeskUi.Label($"{bar.From?.DisplayName ?? "The commander"} · {bar.Days} days"));
+            if (bar.Closing is { } closing)
+            {
+                var conclusion = DeskUi.Label(closing); conclusion.SetMeta("bar_closing", true);
+                conclusion.AddThemeFontSizeOverride("font_size", 23); parent.AddChild(conclusion);
+            }
         }
         else parent.AddChild(DeskUi.Heading($"The commander's bar · {bar.Days} days"));
         foreach (var line in bar.Lines)

@@ -67,6 +67,15 @@ public partial class LeadSmokeTest : Node
                     hash = shell.Session.StateHash; shell.LeadOpen.EmitSignal(Button.SignalName.Pressed);
                     Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab && shell.Session.StateHash == hash,
                         "A real commitment lead reaches its Inbox decision without taking that decision.");
+                    for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    var openCommitment = shell.Session.View.Commitments.First(c => c.ArrangementId == current.LinkId && c.Decision == CommitmentDecision.Open);
+                    var inbox = shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents");
+                    var decision = PlayScreen.Descendants(inbox).OfType<Control>().Single(c => c.HasMeta("commitment")
+                        && c.GetMeta("commitment").AsString() == openCommitment.Id);
+                    var heading = decision.GetChild<Control>(0);
+                    Require(Math.Abs(heading.GlobalPosition.Y - inbox.GlobalPosition.Y) <= 2
+                        && inbox.GetGlobalRect().Encloses(heading.GetGlobalRect()),
+                        "The real commitment lead opens its heading at the top of Inbox, not the first action at the bottom.");
                     foundCommitment = true; break;
                 }
                 Step(shell);

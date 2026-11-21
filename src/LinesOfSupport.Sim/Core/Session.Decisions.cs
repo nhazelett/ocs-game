@@ -37,7 +37,7 @@ public sealed partial class Session
             list.Add(new DecisionView(rec.Day, SentenceCase($"Day {rec.Day}: {Upper(what)}{givenTo}."),
                 Member(who).Id, name, card, card is null ? null : CardTitle(_cards.First(c => c.Id == card)),
                 SentenceCase(stopped is not null ? $"Stopped. {SpentWords(stopped, stopped: true)}" : DecisionNow(action, work, arr)),
-                stopLine is null ? null : work!.Id, stopLine));
+                stopLine is null ? null : work!.Id, stopLine) { RecordId = recId });
         }
         return list;
     }

@@ -260,10 +260,15 @@ public sealed partial class Session
                 when = starts ? $"{lead}; it could start {days}." : $"{lead}; it would be done {days}.";
             }
             var shown = p.Accepted || current;
+            // Q30: the day they are done with their part; a buy's is the day the writing is done, not the day support starts.
+            var (doneMin, doneMax) = !shown ? ((int?)null, (int?)null)
+                : action is AwardAction ? (p.WrittenDayMin >= 0 ? p.WrittenDayMin : null, p.WrittenDayMax >= 0 ? p.WrittenDayMax : null)
+                : starts ? (null, null)
+                : (p.EarliestStartMin, p.EarliestStartMax);
             result.Add(new AssigneeChoice(m.Id, who, m.Portrait, m.FreeHoursToday, m.HoursQueued, m.QueueClearsDay,
                 shown ? p.ShopHoursMin : 0, shown ? p.ShopHoursMax : 0,
                 shown ? p.EarliestStartMin : null, shown ? p.EarliestStartMax : null,
-                when is null ? load : $"{load} {when}", current));
+                when is null ? load : $"{load} {when}", current) { DoneDayMin = doneMin, DoneDayMax = doneMax });
         }
         return result;
 

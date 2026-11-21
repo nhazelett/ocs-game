@@ -94,7 +94,16 @@ public sealed record TeamMemberView(
 /// for the work where it is; handing it to them is refused.</param>
 public sealed record AssigneeChoice(
     string MemberId, string Name, string? Portrait, double FreeHoursToday, double HoursQueued, int? QueueClearsDay,
-    int HoursMin, int HoursMax, int? ResultDayMin, int? ResultDayMax, string Sentence, bool Current = false);
+    int HoursMin, int HoursMax, int? ResultDayMin, int? ResultDayMax, string Sentence, bool Current = false)
+{
+    /// <summary>Q30 (DESK-148): the day this person would be done with their part, best roll: for a written buy the day the
+    /// writing is done (before finance's later steps, the vendor's notice and any lift, which <see cref="ResultDayMin"/>
+    /// counts), for anything else the same as <see cref="ResultDayMin"/>. Null when the preview refuses the action, and for a
+    /// buy that takes no shop hours (an SF 44 or card buy), which has no writing to be done with.</summary>
+    public int? DoneDayMin { get; init; }
+    /// <summary>The same at the worst roll.</summary>
+    public int? DoneDayMax { get; init; }
+}
 
 /// <summary>
 /// The plan of the day before it ends (DESK-39, D19): what End the day opens. A forecast, worded as one: the hours follow
@@ -196,7 +205,13 @@ public sealed record DaySummaryLine(string TeammateId, string Sentence);
 /// <param name="StopWorkId">DESK-104: for a buy still being written, the work item for StopWorkAction.Work; null otherwise. Never shown.</param>
 /// <param name="StopSentence">DESK-104: the line under "Stop this work" beside this decision; null when it cannot be stopped.</param>
 public sealed record DecisionView(int Day, string Sentence, string TeammateId, string Teammate, string? CardId, string? Request, string Now,
-    string? StopWorkId = null, string? StopSentence = null);
+    string? StopWorkId = null, string? StopSentence = null)
+{
+    /// <summary>Q29 (DESK-147): the record the accepted action made, which names this decision for as long as the session
+    /// runs, through hand-overs, stops and completion, and the same on a replay of the same inputs. <c>ActionResult.RecordId</c>
+    /// gives it when the action is applied; <c>SessionView.Decision(id)</c> reads the decision as it stands. Never shown.</summary>
+    public string RecordId { get; init; } = "";
+}
 
 /// <summary>
 /// One request as it stands this morning (DESK-31, D16): who asked, where it is, and who on the team is on it. The Today
@@ -559,6 +574,11 @@ public sealed record ActionPreview(
     /// hour as the strip and the team page do; -1 where the preview has only whole hours.</summary>
     public long HoursMinMilli { get; init; } = -1;
     public long HoursMaxMilli { get; init; } = -1;
+    /// <summary>Q30 (DESK-148): for a written buy, the day the assignee is done writing it, best and worst roll, behind their
+    /// queue and after finance and any priced proposal it waits for; the start days add the instrument's lag, the vendor's
+    /// notice and any lift to these. -1 where the action has no writing (an SF 44 or card buy) or the preview gives none.</summary>
+    public int WrittenDayMin { get; init; } = -1;
+    public int WrittenDayMax { get; init; } = -1;
 }
 
 /// <summary>
