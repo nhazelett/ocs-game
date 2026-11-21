@@ -118,7 +118,36 @@ public partial class PlayDriverSmokeTest : Node
             await driver.Execute(new("test", "key", "Escape"));
             Require(!shell.TeamPanel.Visible && shell.RequestWorkspace.Visible && screen.Read().Any(e => e.Pane == "Request")
                 && shell.Session.StateHash == overlayHash, "Escape returns both screen reading and control reachability to the same unchanged request.");
-            GD.Print("PLAY_DRIVER_SMOKE_PASS: visible New game, seed, duplicate/numeric fields, popup, clipped text, greyed/missing controls, modal Escape, one real day, native screenshot, exact replay and the day-four team page over its request.");
+            Pick(shell.VendorInput, "harborEquipment"); Pick(shell.InstrumentInput, "purchaseOrder");
+            PickPriorities(shell, "fast", "good");
+            shell.AwardScroll.ScrollVertical = 0;
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            var draftHash = shell.Session.StateHash;
+            foreach (var (input, value) in new[] { (shell.QuantityInput, 4), (shell.StartInput, 6), (shell.DurationInput, 8) })
+            {
+                var caption = input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
+                var field = screen.Read().Single(e => e.Control == input.GetLineEdit());
+                Require(field.Text == caption, "Each written-buy number field uses its own visible caption.");
+                Require(!screen.Describe("").Contains("field \"Name\""), "The written buy has no anonymous Name fields.");
+                await driver.Execute(new("test", "type", caption, value.ToString()));
+                Require(input.Value == value, "The caption targets exactly its number field.");
+            }
+            Require(shell.PendingAward is { Quantity: 4, StartDay: 6, DurationDays: 8 }
+                && shell.Session.StateHash == draftHash, "Typing the named fields updates the exact draft without committing it.");
+            await Review("written-buy-fields");
+            var numberCaption = shell.StartInput.GetParent().GetChild<Label>(shell.StartInput.GetIndex() - 1);
+            shell.AwardScroll.ScrollVertical += Mathf.CeilToInt(numberCaption.GetGlobalRect().End.Y - shell.AwardScroll.GetGlobalRect().Position.Y + 2);
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(numberCaption.GetGlobalRect().End.Y < shell.AwardScroll.GetGlobalRect().Position.Y,
+                "The number's caption has scrolled out of the buy column.");
+            var scrolledNumber = screen.Read().Single(e => e.Control == shell.StartInput.GetLineEdit());
+            Require(scrolledNumber.Text == numberCaption.Text,
+                "A visible numeric field keeps its associated caption when the caption has scrolled above it.");
+            await driver.Execute(new("test", "type", numberCaption.Text, "7"));
+            Require(shell.StartInput.Value == 7 && shell.PendingAward?.StartDay == 7 && shell.Session.StateHash == draftHash,
+                "The scrolled caption still targets exactly the pending start day without committing it.");
+            await Review("scrolled-buy-fields");
+            GD.Print("PLAY_DRIVER_SMOKE_PASS: visible New game, seed, duplicate/numeric fields, popup, clipped text, greyed/missing controls, modal Escape, one real day, native screenshot, exact replay, the day-four team page over its request and all three written-buy numeric captions, including after scrolling.");
             Directory.Delete(scratch, true);
             GetTree().Quit();
         }

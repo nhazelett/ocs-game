@@ -1,0 +1,47 @@
+Native play-driver review: scrolled-buy-fields
+
+[Desk]
+button "Menu" [enabled]
+button "You" [enabled]
+button "MSgt Joan Avery" [enabled]
+button "SrA Eli Novak" [enabled]
+Cash: $15,000 of $15,000
+button "End the day" [enabled]
+Morning of day 4
+1 of 8 h assigned
+0 of 8 h assigned
+0 of 8 h assigned
+
+[Request page]
+button "Back to the desk" [enabled]
+
+[Request]
+scroll "Request" (up: False, more below: True)
+SMSgt Ray Dunn, LRS
+Material handling equipment for Hub
+Nothing is arranged yet. SMSgt Ray Dunn wants it from day 8 for 13 days.
+Peak demand: 3 forklifts
+Requested day 8 for 13 days
+Order by day 5: a BPA call with Harbor Equipment Co starts 3 days after it goes in.
+Harbor Equipment Co has a BPA this office can call against for material handling equipment, up to $25,000 a call, open until day 120.
+The host nation wants its forklifts back after day 7 and the warehouse can't move pallets by hand. Three forklifts from day 8, through the end of the month.
+The request includes Forklifts.
+
+[Buy]
+scroll "Buy" (up: True, more below: True)
+field "Quantity (forklifts) · Asked: 3 forklifts" [enabled] = "4"
+field "Start day · Asked: day 8" [enabled] = "7"
+field "Duration (days) · Asked: 13 days" [enabled] = "8"
+picker "Harbor Equipment Co" [enabled]
+Supplier
+picker "The O&M line" [enabled]
+Funding line
+button "Fast" [enabled] [checked]
+button "Cheap" [greyed] [unchecked]
+button "Good" [enabled] [checked]
+Pick two
+Fast and good: you pay a 15% premium for a quick award without cutting corners, about $864 of this price.
+Choose the two that matter most. To change a pair, turn one off first.
+Harbor Equipment Co, material handling equipment for Hub: $6,624 and 8 to 16 hours of your time. It starts between day 7 and day 9, after finance certifies the funds on day 5 and the buy is written; it is wanted from day 8. If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows.
+button "Arrange support" [enabled]
+

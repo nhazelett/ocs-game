@@ -92,6 +92,14 @@ internal sealed class PlayScreen(GameShell shell)
 
     private static string FieldName(LineEdit field)
     {
+        // A SpinBox's editable child has no name of its own. Its adjacent caption
+        // names the visible field even when scrolling has moved that caption above it.
+        if (field.GetParent() is SpinBox number && number.GetParent() is Control group)
+        {
+            var caption = group.GetChildren().TakeWhile(n => n != number).OfType<Label>()
+                .LastOrDefault(label => label.IsVisibleInTree() && label.Modulate.A > 0);
+            if (caption is not null) return caption.Text.Trim().TrimEnd(':');
+        }
         if (!string.IsNullOrWhiteSpace(field.PlaceholderText)) return field.PlaceholderText;
         // Use the same caption a player reads beside the field, never an internal node name.
         for (Node node = field; node.GetParent() is Control parent; node = parent)
