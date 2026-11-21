@@ -82,7 +82,8 @@ public sealed partial class Session
                 $"{(kind == "vendor" ? "Not met yet" : "Not asked yet")}, about {HoursSaid(hoursMilli)}.", capabilityId, start);
         var due = PlayQueue(Member(work.Assignee), 0, Day, work, work.HoursRemainingMilli);
         var who = Member(work.Assignee);
-        return new HelperView(kind, person, name, does, HalfHours(hoursMilli), informs, HelperView.Asking, who.Id, MemberName(who), due, null,
+        // DESK-131: once someone is on it, the hours are that person's, to the half hour, as the strip and the team page say.
+        return new HelperView(kind, person, name, does, HalfHours(work.HoursRemainingMilli), informs, HelperView.Asking, who.Id, MemberName(who), due, null,
             $"{Upper(WhoIs(who.Id))} on it; {(kind == "vendor" ? "the meeting should be done" : "the answer should be in")} on day {due}.",
             capabilityId);
     }

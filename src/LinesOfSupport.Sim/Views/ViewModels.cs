@@ -550,7 +550,13 @@ public sealed record AwardSummaryView(string Sentence, bool Attention, string? W
 public sealed record ActionPreview(
     bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps,
     long DailyCents, long MobilizationCents, long TotalCents,
-    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours, string? Trade = null);
+    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours, string? Trade = null)
+{
+    /// <summary>DESK-131: the assignee's own hours before rounding (thousandths), so a named person's quote reads to the half
+    /// hour as the strip and the team page do; -1 where the preview has only whole hours.</summary>
+    public long HoursMinMilli { get; init; } = -1;
+    public long HoursMaxMilli { get; init; } = -1;
+}
 
 /// <summary>
 /// A transition plan as the transition planner shows it (M3-05, SPEC 3 "Transition plan"): both arrangements on a
