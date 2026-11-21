@@ -12,7 +12,7 @@ public partial class GameShell
     private VBoxContainer contractContents = null!, contractFooter = null!;
     private TerminateAction? contractToEnd;
     private string? contractToEndHash;
-    private string? contractReturnVendor;
+    private string? contractReturnVendor, contractReturnRequest;
     private int contractReturnScroll;
     internal Dictionary<(string Id, string Choice), Button> ContractPerformanceChoices { get; } = [];
 
@@ -37,7 +37,7 @@ public partial class GameShell
         ContractDeskTabs.TabSelected += index =>
         {
             if (!ContractView.Visible) return;
-            CloseContractView(); tabs.CurrentTab = (int)index;
+            CloseContractView(); CloseRequestWorkspace(restore: false); tabs.CurrentTab = (int)index;
         };
         var record = new Control { SizeFlagsVertical = SizeFlags.ExpandFill }; page.AddChild(record);
         contractContents = DeskUi.Pane(record, "ContractRecord", out contractFooter);
@@ -66,16 +66,16 @@ public partial class GameShell
 
     internal void CloseContractView()
     {
-        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear(); contractReturnVendor = null;
+        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear(); contractReturnVendor = contractReturnRequest = null;
     }
 
-    internal void OpenContractView(string id, string? fromVendor = null)
+    internal void OpenContractView(string id, string? fromVendor = null, string? fromRequest = null)
     {
         if (session.View?.Arrangements.Any(a => a.Id == id) != true) return;
-        CloseRequestWorkspace(restore: false);
+        if (fromRequest is null) CloseRequestWorkspace(restore: false);
         var vendorScroll = vendorCardsScroll.ScrollVertical;
-        GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
-        contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
+        if (fromRequest is null) GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
+        contractReturnRequest = fromRequest; contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
         SelectedArrangement = id; SelectedFunding = null; RenderLedgerContext(session.View);
         ContractDeskTabs.CurrentTab = PaymentsTab;
         ContractView.Show(); RefreshContractView(session.View);
@@ -83,8 +83,13 @@ public partial class GameShell
 
     private void ReturnFromContract()
     {
-        var vendor = contractReturnVendor; var scroll = contractReturnScroll;
+        var vendor = contractReturnVendor; var request = contractReturnRequest; var scroll = contractReturnScroll;
         CloseContractView();
+        if (request is not null)
+        {
+            if (!RequestWorkspace.Visible || SelectedCard != request) GoToMarket(request);
+            return;
+        }
         if (vendor is null) return;
         var changedVendor = selectedVendor != vendor; selectedVendor = vendor;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = VendorsTab;
@@ -103,7 +108,7 @@ public partial class GameShell
         terminations.Clear(); ContractPerformanceChoices.Clear(); DeskUi.Clear(contractContents); DeskUi.Clear(contractFooter);
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
-        var back = contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
+        var back = contractReturnRequest is not null ? "Back to the request" : contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
         contractContents.AddChild(DeskUi.Button(back, ReturnFromContract));
         var title = DeskUi.Label(DeskUi.ListLabel(view.ArrangementName(arrangement.Id)));
         title.AddThemeFontSizeOverride("font_size", 28); contractContents.AddChild(title);
