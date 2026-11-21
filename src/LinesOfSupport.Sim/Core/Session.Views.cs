@@ -365,8 +365,10 @@ public sealed partial class Session
         var lift = chk.Vendor is { OffIsland: true } && a.Lift is { } mode ? LiftRange(mode) : (0, 0);
         var startMin = Math.Max(a.StartDay ?? 0, minDone + 1 + inst.StartLagDays.Min + offer.LeadTimeDays + lift.Item1);
         var startMax = Math.Max(a.StartDay ?? 0, maxDone + 1 + inst.StartLagDays.Max + offer.LeadTimeDays + lift.Item2);
-        var hMin = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee));
-        var hMax = immediate ? 0 : CeilHours(PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee));
+        var hMinMilli = immediate ? 0 : PersonHours(Hours(inst.ShopDays.Min + compete, inst.RequiresSystemOrManual), a.Assignee);
+        var hMaxMilli = immediate ? 0 : PersonHours(Hours(inst.ShopDays.Max + compete, inst.RequiresSystemOrManual), a.Assignee);
+        var hMin = CeilHours(hMinMilli);
+        var hMax = CeilHours(hMaxMilli);
 
         var gaps = new List<string>(AlreadyInPlace(a, siteId, capId, startMin, startMin + Math.Max(1, a.DurationDays) - 1));   // DESK-32, DESK-78
         var cap = Cap(capId);
@@ -427,6 +429,7 @@ public sealed partial class Session
             gaps.Add($"The contract-writing system is offline until day {_systemOnlineDay}: the action takes longer and invoices are manual, which carries payment-error risk.");
 
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
-                                 hMin, hMax, startMin, startMax, queue, PickTrade(a, inst, chk.TotalCents));
+                                 hMin, hMax, startMin, startMax, queue, PickTrade(a, inst, chk.TotalCents))
+            { HoursMinMilli = hMinMilli, HoursMaxMilli = hMaxMilli };
     }
 }

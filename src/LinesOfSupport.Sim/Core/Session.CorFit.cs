@@ -67,6 +67,10 @@ public sealed partial class Session
         };
         var others = CorWatching(c, arrangementId);
         var load = others == 0 ? "watches no other contract" : $"already watches {Plural(others, "other contract")}";
+        // DESK-132 (Claude play 20 Nov, third play, note 5): a buy being written that names this COR is one more to watch.
+        var writing = _work.Count(w => w.Kind == WorkKind.Award && w.CompletedDay is null && w.StoppedDay is null
+                                       && w.Payload is AwardPayload p && p.Action.Cor == c.Id && p.Action.Id != arrangementId);
+        if (writing > 0) load += $" and is named on {(writing == 1 ? "one more" : $"{Qty(writing)} more")} being written";
         var lag = CorQuality(c).LagDays;
         var why = $"{who} {fit} and {load}: catches about {CorReportPermille(c, capId, arrangementId) / 10}% of problems, reported {(lag == 0 ? "the same day" : $"{Plural(lag, "day")} late")}.";
         return naming && CorLoadNote(c) is { } note ? $"{why} {note}" : why;
