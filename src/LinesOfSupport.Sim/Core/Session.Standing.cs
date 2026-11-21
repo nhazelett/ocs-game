@@ -80,13 +80,13 @@ public sealed partial class Session
             var yesterday = cs is { History.Count: > 0 } ? cs.History[^1] : 1000;
             var trips = Trips(a);
             if (a.Status == ArrangementStatus.Suspended)
-                return Entry(RequestStanding.Short, $"{SupplierName(a)} is on hold{(a.EndDay >= LastDay ? "" : $"; it runs through day {a.EndDay}")}{More(running.Count)}.{trips}", a.TripAssignee);
+                return Entry(RequestStanding.Short, $"{SupplierName(a)} is on hold{(a.EndDay >= LastDay ? "" : $"; it runs through day {a.EndDay}")}{More(running.Count)}{TakesOver(a, live, to)}.{trips}", a.TripAssignee);
             // Yesterday's level speaks only for support that was already running yesterday: on the day a contract
             // starts, the gap before it is not its shortfall (DESK-31 follow-up).
             if (yesterday < 1000 && a.StartDay < Day)
                 return Entry(RequestStanding.Short,
                     $"{SupplierName(a)} is meant to deliver{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}, but {Lower(cap.Label)} at {SiteName(card.SiteId)} was at {yesterday / 10}% yesterday.{trips}", a.TripAssignee);
-            return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}.{trips}", a.TripAssignee);
+            return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}{TakesOver(a, live, to)}.{trips}", a.TripAssignee);
         }
         var coming = live.Where(a => a.StartDay > Day).ToList();
         if (coming.Count > 0)
@@ -162,6 +162,21 @@ public sealed partial class Session
 
     private static string Amount(Arrangement a, Data.CapabilityData cap)
         => a.QuantityMilli > 0 ? $" {Amount(a.QuantityMilli / 1000, cap)}" : "";
+
+    /// <summary>
+    /// DESK-188 (Claude play 21 Nov, tenth play, note P1-15). Running support that ends before the request's need does,
+    /// with another arrangement starting the day after it ends, names what takes over: "Coastal Rentals is delivering 3
+    /// forklifts through day 9; the purchase order from Coastal Rentals takes over on day 10." The tenth play's player read
+    /// "through day 9" on days 8 and 9 with the order from day 10 already signed, and thought the forklifts were about to
+    /// stop. Said as D50 calls an arrangement (DESK-184). Nothing when nothing starts the next day: the gap is then real,
+    /// and the plan flags it.
+    /// </summary>
+    private string TakesOver(Arrangement a, List<Arrangement> live, int to)
+    {
+        if (a.EndDay >= to || a.EndDay >= LastDay) return "";
+        var next = live.FirstOrDefault(b => b.Id != a.Id && b.StartDay == a.EndDay + 1);
+        return next is null ? "" : $"; {Called(next)} takes over on day {next.StartDay}";
+    }
 
     /// <summary>" through day 8", or nothing for support that runs past the end of the game (host nation, inherited).</summary>
     private string Through(int end) => end >= LastDay ? "" : $" through day {end}";

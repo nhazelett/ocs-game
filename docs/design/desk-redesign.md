@@ -539,7 +539,7 @@ Also from this play, no decision needed: a running line names the order that tak
 
 Sim notes (Fable):
 
-- DESK-188: `WhereThingsStand`'s running entry, when the running arrangement ends before the request's need does and a live arrangement starts the day after it ends, adds "; the purchase order from Coastal Rentals takes over on day 10" (D50's way of calling an arrangement).
+- DESK-188: `WhereThingsStand`'s running entry, when the running arrangement ends before the request's need does and a live arrangement starts the day after it ends, adds "; the purchase order from Coastal Rentals takes over on day 10" (D50's way of calling an arrangement). Built 21 Nov (`TakesOver`): on the tenth play's first log, day 8, Requests reads "Coastal Rentals is delivering 3 forklifts through day 9; the purchase order from Coastal Rentals takes over on day 10." Only an arrangement starting the day after the running one ends takes over; a line with nothing after it is unchanged, and an arrangement on hold says it the same way. Records and goldens unchanged.
 - DESK-189: the award summary of a `ForShop` capability leaves out the site ("Coastal Rentals, vehicle for the contracting office: $1,440 and no shop hours."); `DaySummary` lists its starts and ends as DESK-185 made the plan do.
 - DESK-190: `AnswerDue` adds the start of the same award with `Day + 1` (the preview's minimum, behind the same queue) and, when that start is past the day wanted, `PassLineCost` for it; nothing when tomorrow's start is the same as today's.
 - DESK-192: Dunn's request text says "for thirteen days" in place of "through the end of the month"; Mills's waste line says a day under half pumped is a day missed, as the pass line counts it.
