@@ -25,8 +25,8 @@ internal static class AssignedHelpSmokeChecks
         {
             var quote = shell.Session.View!.PreviewAny(action);
             var label = button.GetParent().GetChildren().OfType<Label>().First(l => l.GetIndex() > button.GetIndex() && l.HasMeta("action_cost"));
-            var hours = quote.ShopHoursMin == quote.ShopHoursMax ? quote.ShopHoursMin.ToString() : $"{quote.ShopHoursMin} to {quote.ShopHoursMax}";
-            Require(label.Text.StartsWith(hours + (quote.ShopHoursMax == 1 ? " hour" : " hours") + " of ")
+            var hours = GameShell.PreviewHours(quote);
+            Require(label.Text.StartsWith(hours + " of ")
                 && label.Text.Contains(member) && label.Text.Contains("Earliest result: day " + quote.EarliestStartMin),
                 "The cost under the button names the chosen person's actual preview hours and result day.");
             return label;
