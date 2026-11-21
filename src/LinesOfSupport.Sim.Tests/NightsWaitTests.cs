@@ -51,9 +51,25 @@ public class NightsWaitTests
         var buy = new AwardAction { Id = "x", Instrument = "purchaseOrder", Vendor = "sanitation", Card = "tutWaste", Site = "hubSite",
                                     Capability = "waste", Quantity = 3600, StartDay = 13, DurationDays = 8, FundingLine = "om1", Assignee = "avery", Day = 7 };
         var summary = s.View.AwardSummary(buy)!;
-        // Starting on day 13 either way: waiting costs nothing, so nothing is said.
-        Assert.DoesNotContain("Ordered tomorrow", summary.AnswerDue);
+        // Starting on day 13 either way: waiting costs nothing, and D53 (DESK-201) says so.
+        Assert.EndsWith(" Ordered tomorrow, after the answer, it still starts on day 13.", summary.AnswerDue);
         var asap = buy with { StartDay = null };
         Assert.EndsWith(" Ordered tomorrow, after the answer, it starts between day 11 and day 13.", s.View.AwardSummary(asap)!.AnswerDue);
+    }
+
+    /// <summary>DESK-201 (D53; twelfth play, notes P1-11, P2-8): on day 4 Harbor's call waited for finance on day 5 whatever
+    /// the day, so waiting a night for Dunn cost nothing, and the quote was silent. It now says so.</summary>
+    [Fact]
+    public void Twelfth_play_day_4_harbor_call_says_the_wait_costs_nothing()
+    {
+        var log = InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-21-12", "input-log-1.json"));
+        var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 3);
+        Assert.Equal(4, s.Day);
+        var ask = log.Actions.OfType<AskAboutAction>().First(x => x.Day == 4);
+        Assert.True(s.Apply(ask).Accepted);
+        var buy = log.Actions.OfType<AwardAction>().First(x => x.Day == 4);
+        var summary = s.View.AwardSummary(buy)!;
+        Assert.Contains("starts on day 8", summary.Sentence);
+        Assert.EndsWith(" Ordered tomorrow, after the answer, it still starts on day 8.", summary.AnswerDue);
     }
 }

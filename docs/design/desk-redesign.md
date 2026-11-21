@@ -566,5 +566,5 @@ Also from this play, no decision needed: a quote whose vendor brings a part at t
 
 Sim notes (Fable):
 
-- DESK-201: `AfterTheAnswer` returns " Ordered tomorrow, after the answer, it still starts on day 8." (or "on day 7 or 8") where it now returns nothing because the window is the same; no allowance count, since nothing is lost.
+- DESK-201: `AfterTheAnswer` returns " Ordered tomorrow, after the answer, it still starts on day 8." (or "on day 7 or 8") where it now returns nothing because the window is the same; no allowance count, since nothing is lost. Built 21 Nov: on the twelfth play's first log, day 4, Harbor's call ends "MSgt Joan Avery's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs. Ordered tomorrow, after the answer, it still starts on day 8."; day 7's waste order for day 13 now says "it still starts on day 13". Records and goldens unchanged.
 - DESK-202: where the buy leaves out a part the vendor's offer carries at its one unit price, the leaves-out sentence ends "; Coastal Rentals brings them at the same price", and once added the summary's first sentence names what the buy brings ("material handling equipment with operators and maintenance for Hub"). A vendor that does not offer the part is unchanged.
