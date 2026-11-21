@@ -47,7 +47,7 @@ Day 9
 Day 10
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
-  EVENT     Island Camp Services short-staffs the dining hall two days running
+  EVENT     Island Camp Services short-staffs the dining hall two days running. Once the misses are reported to the office, they come to your desk as a decision on what to do with the vendor.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Island Camp Services food service at Hub missed today's delivery. The stock on hand covered today's demand.
   COR       COR report (SSgt Lane): Island Camp Services food service at Hub missed its delivery on day 11; the stock on hand covered it.
@@ -119,4 +119,4 @@ PASS CRITERIA
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash a551c30708c8c0899c06fcc24bdcdfc32a4924b8ca64c0a0910854f3d0400044
+State hash b00bdc9ba19edd9245966ffc7a30d57c1569f003ee3f9b428f28565defc901ee

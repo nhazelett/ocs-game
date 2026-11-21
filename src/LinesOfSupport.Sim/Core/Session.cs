@@ -65,6 +65,8 @@ public sealed partial class Session
 
     // Counters for metrics
     private long _mission, _sortie, _throughput, _endurance, _resilience, _missionWeightDays;
+    /// <summary>DESK-145 (b): the lowest one site's mission output reached on any day, per mille; 1000 when it never dipped.</summary>
+    private int _missionLowestPermille = 1000;
     private int _unauthorized, _ucaOverdue, _hhqInquiries, _ratifications, _surveys, _paymentErrors,
         _confusionDays, _vendorFailures, _bpaDeclines, _eventsFired, _rejected;
     private long _hoursWorkedMilli;

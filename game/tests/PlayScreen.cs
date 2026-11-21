@@ -223,7 +223,11 @@ internal sealed class PlayScreen(GameShell shell)
                         }
                         break;
                     case Button button:
-                        entries.Add(new Entry(button, pane, button is OptionButton ? "picker" : "button", ButtonWords(button, rect), rect, button.Disabled));
+                        var words = ButtonWords(button, rect);
+                        // A clipped checkbox may expose its icon but none of its text lines.
+                        // Wait for readable words after scrolling; never offer an empty label or hidden text.
+                        if (!string.IsNullOrWhiteSpace(words))
+                            entries.Add(new Entry(button, pane, button is OptionButton ? "picker" : "button", words, rect, button.Disabled));
                         break;
                     case LineEdit field:
                         entries.Add(new Entry(field, pane, "field", FieldName(field), rect, !field.Editable));

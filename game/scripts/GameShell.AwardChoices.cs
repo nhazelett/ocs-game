@@ -42,6 +42,13 @@ public partial class GameShell
         if (awardInstrument is not ("bpaCall" or "idiqOrder")) awardVehicle = "";
         else if (string.IsNullOrEmpty(awardVehicle) && choices.Vehicles.Where(v => v.Available).ToArray() is { Length: 1 } fitting)
             awardVehicle = fitting[0].Id;
+        if (string.IsNullOrEmpty(awardVendor) && awardInstrument is "bpaCall" or "idiqOrder"
+            && view.Vehicles.FirstOrDefault(v => v.Id == awardVehicle) is { } vehicle
+            && choices.Vendors.Any(v => v.Id == vehicle.Vendor && v.Available))
+        {
+            awardVendor = vehicle.Vendor;
+            choices = Read();
+        }
         if (reasons.Count > 0) awardChoiceNotice = string.Join(" ", reasons.Distinct());
         CurrentAwardChoices = choices;
         return choices;

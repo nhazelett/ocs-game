@@ -134,9 +134,12 @@ public sealed partial class Session
         if (p.ShopHoursMax == 0) return "no shop hours";
         var m = Member(assignee);
         var whose = m.Role == "you" ? "your" : MemberName(m) + "'s";
-        var hours = p.ShopHoursMin == p.ShopHoursMax
-            ? (p.ShopHoursMin == 1 ? "1 hour" : $"{p.ShopHoursMin} hours")
-            : $"{p.ShopHoursMin} to {p.ShopHoursMax} hours";
+        // Q28 (DESK-142): the same half hours as the picker and the line under the button; whole hours where the preview
+        // has only those.
+        var (lo, hi) = p.HoursMaxMilli >= 0 ? (HalfHours(p.HoursMinMilli), HalfHours(p.HoursMaxMilli)) : (p.ShopHoursMin, (double)p.ShopHoursMax);
+        var hours = lo == hi
+            ? (lo == 1 ? "1 hour" : $"{HoursText(lo)} hours")
+            : $"{HoursText(lo)} to {HoursText(hi)} hours";
         return $"{hours} of {whose} time";
     }
 

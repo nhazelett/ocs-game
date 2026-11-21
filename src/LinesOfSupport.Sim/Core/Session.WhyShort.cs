@@ -31,7 +31,13 @@ public sealed partial class Session
         string? depText = dep.State is null ? null
             : dep.State.TodayPermille == 0 ? $"no {Lower(CapLabel(dep.Id))}, so no {label}: {label} needs {Lower(CapLabel(dep.Id))}"
             : $"{Lower(CapLabel(dep.Id))} was at {dep.State.TodayPermille / 10}%, and {label} needs it";
-        if (own is null) return SentenceCase((depText ?? NotToldYet.TrimEnd('.')) + ".");
+        if (own is null)
+        {
+            if (depText is not null) return SentenceCase(depText + ".");
+            var due = _arrangements.Where(a => a.SiteId == siteId && (a.CapabilityId == capId || a.SuppliedQuantityMilli.ContainsKey(capId)))
+                                   .Select(a => ReportDue(a, d)).FirstOrDefault(x => x.Length > 0) ?? "";
+            return NotToldYet.TrimEnd('.') + due + ".";
+        }
         return SentenceCase(depText is null ? own + "." : $"{own}; it also needs {Lower(CapLabel(dep.Id))}, which was at {dep.State!.TodayPermille / 10}%.");
     }
 
@@ -91,7 +97,8 @@ public sealed partial class Session
             var failure = _records.LastOrDefault(r => r.Kind == RecordKind.VendorFailure && r.Subject == a.Id && r.Day == d);
             if (failure is not null)
             {
-                if (!FailureKnown(failure)) return qty is null ? null : qty + ". The site reports it lower still, and nobody has told you why yet";
+                // DESK-145 (c), Claude play 21 Nov, note 2: when the COR's report is on the way, say when it comes.
+                if (!FailureKnown(failure)) return qty is null ? null : qty + ". The site reports it lower still, and nobody has told you why yet" + ReportDue(a, d);
                 var missing = failure.Text.IndexOf(" (", StringComparison.Ordinal) is var i and > 0 ? failure.Text[i..].TrimEnd('.') : "";
                 var what = cap.Delivery == "consumable" ? $"{who} missed the delivery{missing}" : $"{Possessive(who)} equipment was down{missing}";
                 return With(what + NextStep(a));
@@ -103,6 +110,13 @@ public sealed partial class Session
         }
 
         return qty;   // its own supply covered the day: the cause is something it depends on, or not known
+    }
+
+    /// <summary>"; TSgt Pratt's report is due on day 17" while a COR's report of this failure is on the way; "" otherwise.</summary>
+    private string ReportDue(Arrangement a, int d)
+    {
+        var r = _corReports.FirstOrDefault(x => x.ArrangementId == a.Id && x.FailureDay == d && x.RecordId is null && x.CorId is not null);
+        return r is not null && CorOf(r.CorId) is { } c ? $"; {Possessive(c.Name)} report is due on day {r.ArriveDay}" : "";
     }
 
     /// <summary>Nothing fed it on the day: say what is coming, being bought or being asked about, or that nothing is.</summary>

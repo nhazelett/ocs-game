@@ -1,5 +1,7 @@
 using Godot;
 using System.Globalization;
+using LinesOfSupport.Sim;
+using LinesOfSupport.Sim.Data;
 using LinesOfSupport.Sim.Core;
 using LinesOfSupport.Sim.Views;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
@@ -20,8 +22,8 @@ public partial class CommitPreviewSmokeTest : Node
             {
                 var label = button.GetParent().GetChildren().OfType<Label>().First(l => l.GetIndex() > button.GetIndex() && l.HasMeta("action_cost") && l.GetMeta("action_cost").AsString() == action.GetType().Name);
                 var p = shell.Session.View!.PreviewAny(action);
-                var hours = p.ShopHoursMin == p.ShopHoursMax ? p.ShopHoursMin.ToString() : $"{p.ShopHoursMin} to {p.ShopHoursMax}";
-                Require(label.Text.StartsWith(p.ShopHoursMax == 0 ? "No shop hours." : hours + (p.ShopHoursMax == 1 ? " hour" : " hours") + " of your time."), "The line under the committing button has the exact preview hours and whose time.");
+                var hours = GameShell.PreviewHours(p);
+                Require(label.Text.StartsWith(p.ShopHoursMax == 0 ? "No shop hours." : hours + " of your time."), "The line under the committing button has the exact preview hours and whose time.");
                 Require(label.GetIndex() > button.GetIndex() && label.Text.Length > 30, "The cost and effect are under the button before it is pressed.");
                 return label;
             }
@@ -33,13 +35,61 @@ public partial class CommitPreviewSmokeTest : Node
                 var ancestor = focus.GetParent();
                 while (ancestor is not null && ancestor is not ScrollContainer) ancestor = ancestor.GetParent();
                 if (ancestor is ScrollContainer scroll) { scroll.EnsureControlVisible(focus); await Frames(); }
-                Require(GetViewport().GetVisibleRect().Encloses(focus.GetGlobalRect()), "The complete review sentence is inside the window.");
+                Require(GetViewport().GetVisibleRect().Encloses(focus.GetGlobalRect()), $"The complete review sentence ({suffix}) is inside the window.");
                 if (ancestor is ScrollContainer clip) Require(clip.GetGlobalRect().Encloses(focus.GetGlobalRect()), "The complete cost/effect sentence fits its scroll viewport.");
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Native review capture saved.");
                 shell.DeveloperToggle.ButtonPressed = true;
             }
+            // DESK-142: the actual third play's named assignees must read the same everywhere.
+            var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+            var log = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-20-3", "input-log.json"));
+            var saved = Path.Combine(Path.GetTempPath(), "ocs-hours-" + Guid.NewGuid() + ".json");
+            var expected = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 0);
+            void LoadMorning()
+            {
+                try { File.WriteAllText(saved, expected.ToSave().ToJson()); shell.LoadSavedGame(saved); }
+                finally { File.Delete(saved); }
+            }
+            LoadMorning(); PickAwardTarget(shell, "tutWater"); shell.ShowRequests();
+            shell.RequestHelperAssignees["ask:ortiz"].ChoiceButtons["novak"].EmitSignal(Button.SignalName.Pressed);
+            var askButton = shell.RequestHelperButtons["ask:ortiz"];
+            var askCost = askButton.GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("action_cost"));
+            Require(askCost.Text.StartsWith("1.5 hours of SrA Eli Novak's time."), "Novak's real day-one ask costs 1.5 hours beneath its committing button.");
+            Require(shell.RequestHelperAssignees["ask:ortiz"].ChoiceButtons["novak"].Text.Contains("This takes them 1.5 hours;"), "The selected picker agrees with the committing cost.");
+            Require(shell.Session.StateHash == expected.StateHash(), "Selecting an assignee and reading exact hours spend nothing.");
+            await Capture("novak-ask", askCost);
+            var ask = (AskAboutAction)log.Actions.First();
+            Require(expected.Apply(ask).Accepted, "The independent day-one ask is accepted.");
+            askButton.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash == expected.StateHash() && shell.Session.View!.Team.Single(m => m.Id == "novak").HoursSpokenForToday == 1.5,
+                "Committing sends the selected assignee and the strip charges the displayed 1.5 hours.");
+
+            expected = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 6);
+            foreach (var earlier in log.Actions.Where(a => a.Day == 7 && a is not AwardAction)) Require(expected.Apply(earlier).Accepted, "Day-seven setup is accepted.");
+            LoadMorning(); PickAwardTarget(shell, "tutWaste"); shell.ShowRequests(); shell.GoToMarket("tutWaste");
+            var order = log.Actions.OfType<AwardAction>().Single(a => a.Day == 7);
+            Pick(shell.VendorInput, order.Vendor); Pick(shell.InstrumentInput, order.Instrument);
+            Pick(shell.FundingInput, order.FundingLine!); Pick(shell.CorInput!, order.Cor!); PickPriorities(shell, order.Priorities!.ToArray());
+            shell.QuantityInput.Value = order.Quantity; shell.StartInput.Value = order.StartDay!.Value; shell.DurationInput.Value = order.DurationDays;
+            shell.AwardWriterPicker!.ChoiceButtons["avery"].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.AwardTiming.Text.StartsWith("It would take 6.5 to 13 shop hours."), "Avery's real day-seven order keeps the half hour in the buy timing line.");
+            Require(shell.AwardWriterPicker!.ChoiceButtons["avery"].Text.Contains("This takes them 6.5 to 13 hours;"), "The buy timing and selected writer agree.");
+            Require(shell.Session.StateHash == expected.StateHash(), "Changing buy terms and writer remains a pure preview.");
+            var precise = shell.AwardPreview!;
+            var culture = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("fr-FR");
+                Require(GameShell.PreviewHours(precise) == "6.5 to 13 hours", "Half hours keep the game's decimal notation in every locale.");
+                Require(GameShell.PreviewHours(precise with { HoursMinMilli = 1001, HoursMaxMilli = 1499 }) == "1.5 hours", "Milli-hours round up to the half hour, never down.");
+                Require(GameShell.PreviewHours(precise with { HoursMinMilli = -1, HoursMaxMilli = -1, ShopHoursMin = 1, ShopHoursMax = 1 }) == "1 hour", "Whole-hour-only previews keep their singular wording.");
+                Require(GameShell.PreviewHours(precise with { HoursMinMilli = -1, HoursMaxMilli = -1, ShopHoursMin = 0, ShopHoursMax = 0 }, shop: true) == "0 shop hours", "Zero-cost previews keep their whole-hour fallback.");
+            }
+            finally { CultureInfo.CurrentCulture = culture; }
+            await Capture("avery-order", shell.AwardTiming);
+            shell.QueueFree(); await Frames(); shell = Shell(this); tabs = shell.GetNode<TabContainer>("%DeskTabs");
             var before = shell.Session.StateHash;
             foreach (var contact in new[] { "finance", "meeting", "sco" })
             {
