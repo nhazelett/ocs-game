@@ -36,6 +36,11 @@ public partial class PerformanceSmokeTest : Node
             open.EmitSignal(Button.SignalName.Pressed);
             for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             var cure = shell.PerformanceChoices[(issue.Id, "cure")];
+            var heading = cure.GetParent().GetChild<Control>(0);
+            var decisionScroll = shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents");
+            Require(decisionScroll.GetGlobalRect().Encloses(heading.GetGlobalRect()), "The vendor decision opens at its context heading.");
+            decisionScroll.EnsureControlVisible(cure);
+            for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab
                 && shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents").GetGlobalRect().Encloses(cure.GetGlobalRect())
                 && shell.Session.StateHash == hash, "The alert opens the exact pending decision without spending hours.");
@@ -95,6 +100,8 @@ public partial class PerformanceSmokeTest : Node
             var inbox = shell.GetNode<ScrollContainer>("%DeskTabs/Inbox/Contents");
             var cureChoice = shell.PerformanceChoices[(tutorialIssue.Id, "cure")];
             var resourceChoice = shell.PerformanceChoices[(tutorialIssue.Id, "resource")];
+            Require(inbox.GetGlobalRect().Encloses(cureChoice.GetParent().GetChild<Control>(0).GetGlobalRect()), "The tutorial vendor decision opens at the top of its context.");
+            inbox.EnsureControlVisible(resourceChoice); await Capture("day13-actions");
             Require(shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab
                 && inbox.GetGlobalRect().Encloses(cureChoice.GetGlobalRect())
                 && inbox.GetGlobalRect().Encloses(resourceChoice.GetGlobalRect()), $"The link opens Inbox scrolled to both actual decisions: scroll {inbox.ScrollVertical}/{inbox.GetVScrollBar().MaxValue}; viewport {inbox.GetGlobalRect()}, cure {cureChoice.GetGlobalRect()}, re-source {resourceChoice.GetGlobalRect()}.");
