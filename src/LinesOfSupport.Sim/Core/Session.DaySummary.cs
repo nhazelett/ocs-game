@@ -49,7 +49,8 @@ public sealed partial class Session
             if (r.Kind == RecordKind.ArrangementStart && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } s && !ForShop(s.CapabilityId))
                 started.Add($"{SupplierName(s)} started {Lower(CapLabel(s.CapabilityId))} at {SiteName(s.SiteId)}{Amount(s, Cap(s.CapabilityId))}.");
             if (r.Kind == RecordKind.ArrangementEnd && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } e && !ForShop(e.CapabilityId))
-                ended.Add($"{Upper(Lower(CapLabel(e.CapabilityId)))} at {SiteName(e.SiteId)} from {SupplierName(e)} ended.");
+                // DESK-160 (b), Claude play 21 Nov, fourth play, note 19: said the day after its last day, so it names that day.
+                ended.Add($"{Upper(Lower(CapLabel(e.CapabilityId)))} at {SiteName(e.SiteId)} from {SupplierName(e)} ended{(e.EndDay < d ? $": its last day was day {e.EndDay}" : "")}.");
         }
 
         // Short: every capability below full that day, with why (DESK-38).

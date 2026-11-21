@@ -127,7 +127,9 @@ public sealed partial class Session
         var vendorSentences = new List<string>();
         foreach (var island in vendors.GroupBy(v => v.IslandName))
         {
-            var groups = island.GroupBy(v => Join(v.CapabilityLabels.Select(c => c.ToLowerInvariant()).ToList()))
+            // DESK-160 (a), Claude play 21 Nov, fourth play, note 3: the office's own vehicle is one thing, so it takes "a".
+            var shopLabels = Scenario.Vendors.SelectMany(v => v.Offers).Select(o => o.Capability).Where(ForShop).Select(CapLabel).ToHashSet();
+            var groups = island.GroupBy(v => Join(v.CapabilityLabels.Select(c => (shopLabels.Contains(c) ? "a " : "") + c.ToLowerInvariant()).ToList()))
                                .Select(g => $"{Join(g.Select(v => v.Name).ToList())} for {g.Key}").ToList();
             vendorSentences.Add($"On {island.Key} there's {JoinGroups(groups)}.");
         }
