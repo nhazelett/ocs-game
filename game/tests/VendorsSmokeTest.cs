@@ -8,6 +8,38 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class VendorsSmokeTest : Node
 {
+    private async Task CheckNotice(GameShell shell)
+    {
+        Scenario(shell, "tutorial", preview: false); shell.DeveloperToggle.ButtonPressed = false;
+        var view = shell.Session.View!; var hash = shell.Session.StateHash;
+        var offer = view.VendorCards().Single(c => c.Id == "islandMart").Sells.Single(s => s.CapabilityId == "water");
+        Require(offer.NoticeSays is not null, "Island Mart's day-one notice is known.");
+        shell.GetNode<TabContainer>("%DeskTabs").CurrentTab = GameShell.VendorsTab;
+        Pick(shell.VendorCardPicker, "islandMart");
+        var facts = shell.VendorCardContents["islandMart"].GetChildren().OfType<Label>().Single(l => l.Text.Contains(offer.NoticeSays!));
+        Check(facts); await Capture("vendor", facts, shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>());
+        PickAwardTarget(shell, "tutWater"); Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc"); shell.ShowMarket();
+        Check(shell.SupplierKnowledge!); await Capture("supplier", shell.SupplierKnowledge!, shell.AwardScroll);
+        Require(shell.Session.StateHash == hash, "Reading both notice explanations changes no simulation state.");
+        void Check(Label label)
+        {
+            Require(label.Text.EndsWith("after a signed order\n" + offer.NoticeSays)
+                && label.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink),
+                "The exact Sim notice explanation follows the notice in ordinary ink.");
+        }
+        async Task Capture(string suffix, Control facts, ScrollContainer scroll)
+        {
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            scroll.EnsureControlVisible(facts);
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(scroll.GetGlobalRect().Encloses(facts.GetGlobalRect()), "The full notice and explanation can be read together.");
+            var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--notice-screenshots"); if (at < 0) return;
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[at + 1] + "-" + suffix + ".png") == Error.Ok, "Native notice capture saved.");
+        }
+    }
+
     private async Task CheckHeard(GameShell shell)
     {
         var input = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-19", "input-log.json"));
@@ -77,6 +109,7 @@ public partial class VendorsSmokeTest : Node
         try
         {
             var shell = Shell(this);
+            await CheckNotice(shell);
             await CheckHeard(shell);
             Scenario(shell, "tutorial");
             var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
@@ -101,6 +134,8 @@ public partial class VendorsSmokeTest : Node
             Require(shell.SupplierKnowledge!.Text.Contains("Cash: — · Card: —") && shell.SupplierKnowledge.Text.Contains("Usual capacity per day: — · Uncommitted: —"),
                 "The award editor also blanks unknown payment and capacity instead of disclosing its raw numbers.");
             var blank = CardText("harborBottling");
+            Require(!blank.Contains("Counted from the signed order") && !shell.SupplierKnowledge!.Text.Contains("Counted from the signed order"),
+                "An unknown notice reveals no explanation on either surface.");
             Require(blank.Contains("Cash: — · Card: —") && blank.Contains("Islands reached: —")
                 && blank.Contains("Usual capacity per day: —") && blank.Contains("Price per gal: —\nTime after a signed order: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
             Require(blank.Contains(expected.View.VendorCards().Single(c => c.Id == "harborBottling").StillToLearn!), "The exact engine sentence explains how to fill the blanks.");
@@ -117,6 +152,9 @@ public partial class VendorsSmokeTest : Node
             tabs.CurrentTab = GameShell.VendorsTab; Pick(shell.VendorCardPicker, "harborBottling");
             var known = expected.View.VendorCards().Single(c => c.Id == "harborBottling");
             var sale = known.Sells.Single(); var text = CardText(known.Id);
+            Require(sale.NoticeSays is not null && text.Contains("after a signed order\n" + sale.NoticeSays)
+                && shell.SupplierKnowledge!.Text.EndsWith(sale.NoticeSays),
+                "Meeting the vendor reveals the same authoritative notice explanation on both surfaces.");
             Require(shell.Session.StateHash == expected.StateHash() && text.Contains("Cash: yes · Card: no")
                 && text.Contains(DeskUi.Money(sale.UnitPriceCents!.Value)) && text.Contains(sale.CapacityPerDay!.Value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " " + sale.Unit)
                 && text.Contains(known.KnownFrom!), "A completed meeting fills in the exact price, supply, payment and source supplied by Sim.");
