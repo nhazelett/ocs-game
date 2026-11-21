@@ -21,7 +21,6 @@ public class OnTopOfTests
     /// <summary>The play's day 5 purchase order with Coastal Rentals, which brings forklifts, operators and maintenance.</summary>
     private static AwardAction CoastalOrder() => (AwardAction)Play().Actions.Single(a => a.Day == 5 && a is AwardAction);
 
-    private const string OnTopWithout = "It is on top of the BPA call being written with Harbor Equipment Co, which comes without operators.";
 
     [Fact]
     public void The_order_with_drivers_is_not_a_double_buy_of_the_call_without_them()
@@ -29,8 +28,10 @@ public class OnTopOfTests
         var s = Day5();
         Assert.True(s.Apply(Play().Actions.Single(a => a.Day == 5 && a is AddLineAction)).Accepted);
         var summary = s.View.AwardSummary(CoastalOrder())!;
-        Assert.Contains("It brings forklifts, operators, and maintenance.", summary.Sentence);
-        Assert.EndsWith(OnTopWithout, summary.Sentence, StringComparison.Ordinal);
+        // D46 (DESK-156): what it brings and what it is on top of are in the quote's notes.
+        var gaps = s.View.Preview(CoastalOrder()).SoftGaps;
+        Assert.Contains("Coastal Rentals brings forklifts, operators, and maintenance.", gaps);
+        Assert.Contains(gaps, g => g.Contains("BPA call with Harbor Equipment Co", StringComparison.Ordinal) && g.EndsWith("without operators; this would be on top of it.", StringComparison.Ordinal));
         Assert.DoesNotContain("already covered", summary.Sentence, StringComparison.Ordinal);
         Assert.False(summary.Attention);
         Assert.Null(summary.Why);
@@ -70,8 +71,9 @@ public class OnTopOfTests
         Assert.True(s.Apply(Play().Actions.Single(a => a.Day == 5 && a is AddLineAction)).Accepted);
         Assert.True(s.Apply(CoastalOrder()).Accepted);
         var summary = s.View.AwardSummary(CoastalOrder() with { Id = "again", Quantity = 1 })!;
-        Assert.Contains("It is on top of the BPA call being written with Harbor Equipment Co and the written purchase order being written with Coastal Rentals.", summary.Sentence);
-        Assert.Contains("The BPA call being written with Harbor Equipment Co comes without operators.", summary.Sentence);
+        var gaps = s.View.Preview(CoastalOrder() with { Id = "again", Quantity = 1 }).SoftGaps;   // D46 (DESK-156)
+        Assert.Contains(gaps, g => g.Contains("BPA call with Harbor Equipment Co", StringComparison.Ordinal) && g.EndsWith("without operators; this would be on top of it.", StringComparison.Ordinal));
+        Assert.Contains(gaps, g => g.Contains("purchase order with Coastal Rentals", StringComparison.Ordinal) && g.EndsWith("this would be on top of it.", StringComparison.Ordinal));
         Assert.True(summary.Attention);
         Assert.Equal("Every day it would run is already covered.", summary.Why);
     }
@@ -84,7 +86,8 @@ public class OnTopOfTests
         var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 3);
         foreach (var a in log.Actions.Where(a => a.Day == 4)) Assert.True(s.Apply(a).Accepted);
         var summary = s.View.AwardSummary(CoastalOrder() with { Day = 4 })!;
-        Assert.Contains("It is on top of the BPA call being written with Harbor Equipment Co.", summary.Sentence);
+        Assert.Contains(s.View.Preview(CoastalOrder() with { Day = 4 }).SoftGaps,
+                        g => g.Contains("BPA call with Harbor Equipment Co", StringComparison.Ordinal) && g.EndsWith("; this would be on top of it.", StringComparison.Ordinal));
         Assert.True(summary.Attention);
     }
 

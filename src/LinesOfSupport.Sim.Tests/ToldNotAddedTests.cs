@@ -44,7 +44,7 @@ public class ToldNotAddedTests
         Assert.True(s.Apply(new AddLineAction { Day = 5, Card = "tutForklift", Line = "operator" }).Accepted);
         var summary = s.View.AwardSummary(Coastal(s, "gpc"))!;
         Assert.DoesNotContain("leaves out operators", summary.Sentence, StringComparison.Ordinal);
-        Assert.Contains("It brings forklifts, operators, and maintenance.", summary.Sentence);
+        Assert.Contains("Coastal Rentals brings forklifts, operators, and maintenance.", s.View.Preview(Coastal(s, "gpc")).SoftGaps);   // D46
         Assert.Null(summary.Why);
     }
 

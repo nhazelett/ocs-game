@@ -29,10 +29,10 @@ public class PricesFirstTests
         // Day 1 plus the proposal, the writing and the vendor's lead: no earlier than day 16 plus its lead.
         Assert.True(po.EarliestStartMin >= 1 + 14 + 1 + 1, $"{po.EarliestStartMin}");
         Assert.True(uca.EarliestStartMax < po.EarliestStartMin, $"UCA {uca.EarliestStartMax}, PO {po.EarliestStartMin}");
-        var summary = s.View.AwardSummary(Power("purchaseOrder"))!.Sentence;
-        Assert.Contains("It is written once Meridian Site Services' priced proposal comes, between day 15 and day 21.", summary);
-        Assert.DoesNotContain("Finance certifies", summary);
-        Assert.DoesNotContain("priced proposal", s.View.AwardSummary(Power("uca"))!.Sentence);
+        // D46 (DESK-156): the proposal's days are in the quote's notes, not the pinned summary.
+        Assert.Contains("It is written once Meridian Site Services' priced proposal comes, between day 15 and day 21.", po.SoftGaps);
+        Assert.DoesNotContain(po.SoftGaps, g => g.StartsWith("Finance certifies", StringComparison.Ordinal));
+        Assert.DoesNotContain(uca.SoftGaps, g => g.Contains("priced proposal comes", StringComparison.Ordinal));
     }
 
     [Fact]

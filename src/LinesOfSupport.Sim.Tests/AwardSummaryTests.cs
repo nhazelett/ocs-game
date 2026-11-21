@@ -27,10 +27,12 @@ public class AwardSummaryTests
         var summary = s.View.AwardSummary(buy)!;
         Assert.StartsWith($"Harbor Bottling, water for Hub: {(preview.TotalCents / 100m).ToString("$#,##0", System.Globalization.CultureInfo.InvariantCulture)} and ", summary.Sentence);
         // An SF 44 written on day 1 starts on day 3 or 4 at the earliest; the stock covers day 2.
-        Assert.Contains("and no shop hours. It starts on day 3 or 4; it was wanted from day 2. The water stock on hand should cover day 2.", summary.Sentence);
+        // D46 (DESK-156): two sentences here, and the cover before it starts and what it is on top of are in the notes.
+        Assert.Contains("and no shop hours. It starts on day 3 or 4; it was wanted from day 2. If it starts on day 4,", summary.Sentence);
+        Assert.Contains(preview.SoftGaps, g => g.EndsWith("The water stock on hand should cover day 2.", StringComparison.Ordinal));
         // The host nation's water point opens on day 9, inside these days, so the buy is on top of it; days 2 to 8 are not
         // covered, so it is not only adding to covered days.
-        Assert.Contains("It is on top of Main Island Utilities (host nation).", summary.Sentence);
+        Assert.Contains(preview.SoftGaps, g => g.StartsWith("Main Island Utilities (host nation) is already set to supply", StringComparison.Ordinal));
         Assert.False(summary.Attention);
         Assert.Null(summary.Why);
     }
@@ -41,7 +43,7 @@ public class AwardSummaryTests
         var s = Tutorial();
         var summary = s.View.AwardSummary(Water("w", 5, 4))!;
         Assert.Contains("It starts on day 5; it was wanted from day 2.", summary.Sentence);
-        Assert.Contains("The water stock on hand should cover day 2. Nothing covers days 3 and 4.", summary.Sentence);
+        Assert.Contains(s.View.Preview(Water("w", 5, 4)).SoftGaps, g => g.EndsWith("The water stock on hand should cover day 2. Nothing covers days 3 and 4.", StringComparison.Ordinal));
         Assert.False(summary.Attention);
     }
 
@@ -65,7 +67,8 @@ public class AwardSummaryTests
         var summary = s.View.AwardSummary(again)!;
         Assert.True(summary.Attention);
         Assert.Equal("Every day it would run is already covered.", summary.Why);
-        Assert.Contains("It is on top of Harbor Bottling and Main Island Utilities (host nation).", summary.Sentence);
+        Assert.EndsWith("from day 2. Every day it would run is already covered.", summary.Sentence);
+        Assert.Contains(s.View.Preview(again).SoftGaps, g => g.StartsWith("Harbor Bottling is already set to supply", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -75,7 +78,7 @@ public class AwardSummaryTests
         Assert.True(s.Apply(Water("first", 2, 7, 1000)).Accepted);
         var summary = s.View.AwardSummary(Water("second", 2, 7, 3500))!;
         Assert.False(summary.Attention);
-        Assert.Contains("It is on top of", summary.Sentence);
+        Assert.Contains(s.View.Preview(Water("second", 2, 7, 3500)).SoftGaps, g => g.EndsWith("this would be on top of it.", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -84,7 +87,7 @@ public class AwardSummaryTests
         var s = Tutorial();
         Assert.True(s.Apply(Water("po", 6, 3, instrument: "purchaseOrder") with { Assignee = "avery" }).Accepted);
         var summary = s.View.AwardSummary(Water("again", 6, 3, 500))!;
-        Assert.Contains("being written with Harbor Bottling", summary.Sentence);
+        Assert.Contains(s.View.Preview(Water("again", 6, 3, 500)).SoftGaps, g => g.Contains("already writing the written purchase order with Harbor Bottling", StringComparison.Ordinal));
         Assert.True(summary.Attention);
         Assert.Equal("Every day it would run is already covered.", summary.Why);
     }
@@ -161,9 +164,11 @@ public class AwardSummaryTests
         var preview = s.View.Preview(buy);
         Assert.True(preview.Accepted, string.Join(" ", preview.HardStops));
         var summary = s.View.AwardSummary(buy)!.Sentence;
-        Assert.True(summary.Contains("It brings forklifts, operators, and maintenance.", StringComparison.Ordinal), summary);
-        // D43 (DESK-129): the late end of the range says what it costs against the commander's allowance.
-        Assert.Contains("It starts on day 8 or 9; it is wanted from day 8. If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows. Finance certifies the funds on day 6.", summary);
+        // D43 (DESK-129): the late end of the range says what it costs against the commander's allowance; D46 (DESK-156):
+        // that is the third sentence, and what it brings and finance's day are in the notes.
+        Assert.EndsWith("It starts on day 8 or 9; it is wanted from day 8. If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows.", summary);
+        Assert.Contains("Coastal Rentals brings forklifts, operators, and maintenance.", preview.SoftGaps);
+        Assert.Contains("Finance certifies the funds on day 6, before the writing starts.", preview.SoftGaps);
     }
 
     [Fact]
@@ -171,13 +176,42 @@ public class AwardSummaryTests
     {
         // The same request with the operators added, bought from a vendor whose offer lacks them, says what it leaves out.
         var s = OperatorsAdded();
+        // D46 (DESK-156): in the quote's notes now, not the pinned summary.
         var tried = new[] { "harborEquipment", "coastalRentals" }
-            .Select(v => s.View.AwardSummary(new AwardAction
+            .Select(v => new AwardAction
             {
                 Id = "c", Instrument = "gpc", Vendor = v, Card = "tutForklift", Quantity = 3, StartDay = 8, DurationDays = 13, Day = 5,
-            }))
-            .Where(x => x is not null).Select(x => x!.Sentence).ToList();
+            })
+            .Where(a => s.View.AwardSummary(a) is not null).Select(a => s.View.Preview(a).SoftGaps).ToList();
         Assert.NotEmpty(tried);
-        Assert.All(tried, t => Assert.Matches("It brings [a-z ,]+(, not [a-z ,]+)?\\.", t));
+        Assert.All(tried, gaps => Assert.Contains(gaps, g => System.Text.RegularExpressions.Regex.IsMatch(g, "^[A-Z][A-Za-z ]+ brings [a-z ,]+( without [a-z ,]+;.*)?\\.")));
+    }
+
+    // ------------------------------------------------------------------ D46 (DESK-156, Claude play 21 Nov, third play, note 22)
+
+    [Fact]
+    public void The_pinned_summary_is_at_most_three_sentences_and_the_rest_is_in_the_notes_once()
+    {
+        // The third play's day 7 waste purchase order, cheap and good, with Ruiz asked: it ran to six lines and pushed pick
+        // two out of reach.
+        var log = InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-21-3", "input-log.json"));
+        var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 6);
+        Assert.True(s.Apply(log.Actions.Single(a => a.Day == 7 && a is AskAboutAction)).Accepted);
+        var order = (AwardAction)log.Actions.Single(a => a.Day == 7 && a is AwardAction) with { Priorities = ["cheap", "good"] };
+        var summary = s.View.AwardSummary(order)!;
+        var sentences = System.Text.RegularExpressions.Regex.Matches(summary.Sentence, @"[.!?](\s|$)").Count;
+        Assert.InRange(sentences, 2, 3);
+        Assert.StartsWith("Main Island Sanitation, waste removal for Hub: ", summary.Sentence);
+        Assert.NotNull(summary.AnswerDue);   // the field keeps its value whether or not it is said
+        var gaps = s.View.Preview(order).SoftGaps;
+        Assert.Equal(gaps.Count, gaps.Distinct().Count());
+        var third = new[] { summary.Why, summary.PassLineCost, summary.AnswerDue }.OfType<string>().ToList();
+        Assert.EndsWith(third[0], summary.Sentence);
+        foreach (var rest in third.Skip(1))
+        {
+            Assert.DoesNotContain(rest, summary.Sentence);
+            Assert.Single(gaps, g => g == rest);
+        }
+        Assert.Contains(gaps, g => g.StartsWith("Finance certifies the funds on day ", StringComparison.Ordinal));
     }
 }

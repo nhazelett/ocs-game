@@ -543,18 +543,19 @@ public sealed record InheritedFileView(
 public sealed record SkipStopsView(string Sentence, int UntilDay);
 
 /// <summary>
-/// The buy summary above Arrange support (DESK-82, D33): one sentence with the cost, the hours and whose, the start
-/// against the wanted day and what is uncovered between, and what the buy is on top of. Attention is true when the buy
-/// starts after the need ends or only adds to days already covered; Why is that reason, and is also the sentence's
-/// last part. A forecast; it ignores rolls.
+/// The buy summary above Arrange support (DESK-82, D33; D46, DESK-156): at most three sentences: the cost and the hours
+/// and whose, the start against the wanted day, then the first of Why, PassLineCost and AnswerDue. The rest (what it
+/// brings, the cover before it starts, finance or the priced proposal, what it is on top of, and whichever of the three
+/// did not fit) is in the quote's notes, once. Attention is true when the buy starts after the need ends, leaves out a
+/// part someone said is needed, or only adds to days already covered; Why is that reason. A forecast; it ignores rolls.
 /// </summary>
 /// <param name="AnswerDue">D42 (DESK-123): while someone asked about the request has not answered, one sentence saying when
 /// the answer comes in ("SMSgt Ray Dunn's answer about this request comes in tonight, after you end the day; what they say may
-/// change what this buy needs."; "on the night of day 6" for a later day, D44); also the last sentence of <paramref name="Sentence"/>. Not an attention reason and not a stop. Null otherwise.</param>
+/// change what this buy needs."; "on the night of day 6" for a later day, D44); the third sentence of <paramref name="Sentence"/> when there is no Why or PassLineCost, a quote note otherwise. Not an attention reason and not a stop. Null otherwise.</param>
 /// <param name="PassLineCost">D43 (DESK-129): when the quote's latest start is after the request's from-day and a pass line
 /// counts down days there, what that late start costs against the commander's allowance ("If it starts on day 9, material
-/// handling equipment at Hub is out 1 day in all: all the commander allows."); also a sentence of <paramref name="Sentence"/>,
-/// after the start. Not an attention reason. Null otherwise.</param>
+/// handling equipment at Hub is out 1 day in all: all the commander allows."); the third sentence of <paramref name="Sentence"/>
+/// when there is no Why, a quote note otherwise. Not an attention reason. Null otherwise.</param>
 public sealed record AwardSummaryView(string Sentence, bool Attention, string? Why, string? AnswerDue = null, string? PassLineCost = null);
 
 /// <summary>
