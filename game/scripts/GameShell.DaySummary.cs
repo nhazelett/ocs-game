@@ -75,7 +75,7 @@ public partial class GameShell
             People("Carried into tomorrow", day.CarriedOver, "carried");
         }
         DaySummaryScroll.ScrollVertical = 0;
-        DaySummaryDialog.GetOkButton().Text = session.View?.Finished == true ? "Back to the debrief" : $"On to the morning of day {session.View!.Day}";
+        DaySummaryDialog.GetOkButton().Text = session.View?.Finished == true ? "On to the debrief" : $"On to the morning of day {session.View!.Day}";
         var viewport = GetViewportRect().Size;
         DaySummaryDialog.PopupCentered(new Vector2I((int)Math.Min(960, viewport.X - 32), (int)Math.Min(650, viewport.Y - 32)));
         RefreshDayAdvanceControls();

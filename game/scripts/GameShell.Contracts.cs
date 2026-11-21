@@ -9,7 +9,8 @@ public partial class GameShell
     internal PanelContainer ContractView { get; private set; } = null!;
     internal ConfirmationDialog EndContractDialog { get; private set; } = null!;
     private VBoxContainer contractContents = null!, contractFooter = null!;
-    private string? contractToEnd;
+    private TerminateAction? contractToEnd;
+    private string? contractToEndHash;
     internal Dictionary<(string Id, string Choice), Button> ContractPerformanceChoices { get; } = [];
 
     private void BuildContractView()
@@ -17,6 +18,15 @@ public partial class GameShell
         ContractView = new PanelContainer { Name = "ContractDetails", ZIndex = 14, Visible = false };
         AddChild(ContractView); ContractView.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         ContractView.OffsetTop = 64;
+        // Rebuilding a hidden, wrapped picker can temporarily enlarge the page. Refit when its minimum settles.
+        void Fit()
+        {
+            if (!GodotObject.IsInstanceValid(ContractView) || !ContractView.IsInsideTree() || !ContractView.Visible) return;
+            ContractView.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect); ContractView.OffsetTop = 64;
+            ContractView.Size = Size - new Vector2(0, 64);
+        }
+        void QueueFit() => Callable.From(Fit).CallDeferred();
+        ContractView.MinimumSizeChanged += QueueFit; ContractView.VisibilityChanged += QueueFit; Resized += QueueFit;
         contractContents = DeskUi.Pane(ContractView, "ContractRecord", out contractFooter);
         EndContractDialog = new ConfirmationDialog { Title = "End this contract?", Exclusive = true };
         AddChild(EndContractDialog);
@@ -27,11 +37,11 @@ public partial class GameShell
         EndContractDialog.Canceled += () => contractToEnd = null;
         EndContractDialog.Confirmed += () =>
         {
-            var id = contractToEnd; contractToEnd = null; EndContractDialog.Hide();
-            if (id is null || session.View is not { Finished: false } view) return;
-            var arrangement = view.Arrangements.FirstOrDefault(a => a.Id == id);
-            if (arrangement is null || !CanEndContract(view, arrangement)) return;
-            SendAction(new TerminateAction { Day = view.Day, Arrangement = id });
+            var action = contractToEnd; contractToEnd = null; EndContractDialog.Hide();
+            if (action is null || contractToEndHash != session.StateHash || session.View is not { Finished: false } view) return;
+            var arrangement = view.Arrangements.FirstOrDefault(a => a.Id == action.Arrangement);
+            if (arrangement is null || !CanEndContract(view, arrangement) || !view.PreviewAny(action).Accepted) return;
+            SendAction(action);
         };
         GetNode<TabContainer>("%DeskTabs").TabChanged += _ => CloseContractView();
     }
@@ -83,23 +93,22 @@ public partial class GameShell
         if (blocked is not null) { contractContents.AddChild(DeskUi.Label(blocked)); return; }
         if (arrangement.IsCoordination) return;
         var ending = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == arrangement.Id);
-        var end = DeskUi.Button(ending ? "Ending this contract is in work" : "End this contract…", () =>
-        {
-            var current = session.View;
-            var target = current?.Arrangements.FirstOrDefault(a => a.Id == arrangement.Id);
-            if (current is null || target is null || !CanEndContract(current, target)) return;
-            contractToEnd = target.Id;
-            EndContractDialog.DialogText = $"End this contract? Here is what stops.\n\n{DeskUi.ListLabel(current.ArrangementName(target.Id))} supplies {supplies}.\nIncludes {scope}.\n\nEnding it uses shop time. Its support stops when that work is complete.";
-            EndContractDialog.PopupCentered(new Vector2I(620, 300));
-            EndContractDialog.GetCancelButton().GrabFocus();
-        });
-        var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
-        var preview = view.PreviewAny(action);
         var endPanel = ContractPerformanceChoices.Count > 0 ? contractContents : contractFooter;
-        var reason = DeskUi.ActionReason(endPanel, end);
-        AddActionCost(endPanel, view, action, "Ends this contract's support when the work and any notice are complete.", preview);
-        DeskUi.Gate(end, reason, view.Finished ? DeskUi.FinishedReason : ending ? "Ending this contract is already in work."
-            : arrangement.Status is ArrangementStatus.Ended or ArrangementStatus.Declined ? "This contract is no longer providing support." : preview.HardStops.FirstOrDefault()); terminations[arrangement.Id] = end;
+        var action = new TerminateAction { Day = view.Day, Arrangement = arrangement.Id };
+        var assigned = AddAssignedAction(endPanel, endPanel, view, action,
+            ending ? "Ending this contract is in work" : "End this contract…",
+            "Ends this contract's support when the work and any notice are complete.",
+            stillCurrent: () => ContractView.Visible && SelectedArrangement == arrangement.Id && !EndContractDialog.Visible,
+            commit: chosen =>
+            {
+                var current = session.View!;
+                contractToEnd = (TerminateAction)chosen; contractToEndHash = session.StateHash;
+                EndContractDialog.DialogText = $"End this contract? Here is what stops.\n\n{DeskUi.ListLabel(current.ArrangementName(arrangement.Id))} supplies {supplies}.\nIncludes {scope}.\n\n"
+                    + ActionCostText(current, chosen, "Its support stops when that work is complete.");
+                EndContractDialog.PopupCentered(new Vector2I(620, 300));
+                EndContractDialog.GetCancelButton().GrabFocus();
+            });
+        terminations[arrangement.Id] = assigned.Button;
     }
 
     private static string ArrangementPaymentText(SessionView view, Arrangement arrangement)

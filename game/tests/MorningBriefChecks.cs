@@ -54,7 +54,7 @@ internal static class MorningBriefChecks
                 Require(shell.MorningBrief.GetParent() == shell.StandingRows.GetParent().GetParent()
                     && shell.MorningBrief.GetIndex() < shell.StandingRows.GetParent().GetIndex() && !shell.BoardDetailsVisible,
                     "The brief precedes standings outside Other updates.");
-                Require(shell.MorningHeading.Text.EndsWith($"{board.OpenRequests} open requests"), "The heading counts open requests, not overnight records.");
+                Require(shell.MorningHeading.Text.EndsWith($"{board.OpenRequests} requests"), "The heading counts open requests, not overnight records.");
                 Require(!shell.LeadWords.IsVisibleInTree() || shell.LeadWords.Text != "There is no priority message this morning.",
                     "News never follows a no-priority headline.");
                 foreach (var entry in view.WhereThingsStand().Where(e => e.OrderBy is not null))
