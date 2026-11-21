@@ -165,8 +165,8 @@ Day 25
 Day 26
   ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke C, 630 gal/day for 20 days (Fuel delivery, On-site storage); quoted $56,700.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
-  FAIL      North Island Telecom comms backhaul at Spoke A had equipment down.
-  COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 26.
+  FAIL      The purchase order from North Island Telecom had equipment down on comms backhaul at Spoke A; the other purchase order from North Island Telecom covered the day, so nothing was short.
+  COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 26; the other purchase order from North Island Telecom covered the day, so nothing was short.
 Day 27
   DONE      Written purchase order awarded to Port Fuel Haulers for fuel at Spoke C; performance starts day 41, ends day 60. Obligated $56,700.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
@@ -181,11 +181,11 @@ Day 28
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 1 forklift/day.
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
+  FAIL      The BPA call from Harbor Equipment Co had equipment down on material handling equipment at Spoke C (no maintenance, no operators); the purchase order from Harbor Equipment Co and the SF 44 from Harbor Equipment Co covered the day, so nothing was short.
   COMPLY    Island Provisions cured the performance issue with Island Provisions on food service at Spoke B: the cure period ended with a corrective plan in place (0 failure days during the period). Performance is back to standard.
   OK        Waste removal at Hub restored to 100%.
   OK        Lodging at Spoke C restored to 100%.
-  COR       COR report (SSG Mensah): Harbor Equipment Co material handling equipment at Spoke C had equipment down on day 28.
+  COR       COR report (SSG Mensah): Harbor Equipment Co material handling equipment at Spoke C had equipment down on day 28; the purchase order from Harbor Equipment Co and the SF 44 from Harbor Equipment Co covered the day, so nothing was short.
 Day 29
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
   FAIL      Port Fuel Haulers fuel at Spoke A missed today's delivery. The stock on hand covered today's demand.
@@ -335,13 +335,13 @@ Day 49
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 50
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  FAIL      North Island Telecom comms backhaul at Spoke A had equipment down.
+  FAIL      The purchase order from North Island Telecom had equipment down on comms backhaul at Spoke A; the other purchase order from North Island Telecom covered the day, so nothing was short.
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
   COMPLY    Harbor Equipment Co did not cure the performance issue with Harbor Equipment Co on material handling equipment at Spoke C and is in default. Performance keeps slipping; the contracting officer may terminate Harbor Equipment Co material handling equipment at Spoke C for default.
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
-  COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 50.
+  COR       COR report (SSG Mensah): North Island Telecom comms backhaul at Spoke A had equipment down on day 50; the other purchase order from North Island Telecom covered the day, so nothing was short.
   COR       COR report (SSG Mensah): Harbor Equipment Co power at Spoke B had equipment down on day 50.
 Day 51
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
@@ -364,7 +364,7 @@ Day 53
 Day 54
   DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
-  FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
+  FAIL      The SF 44 from Harbor Equipment Co had equipment down on material handling equipment at Spoke C (no maintenance, no operators); the purchase order from Harbor Equipment Co covered the day, so nothing was short.
   SHORT     Power at Spoke B degraded to 64%: supply 200 kW against demand 312.
   SHORT     Lodging at Spoke B degraded to 64%: power at 64%.
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
@@ -666,4 +666,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.914)
 
-State hash 03f718d8c89a57d8fc3b8fc1d17e2982401cb9e3030c44b6137997d282594fd1
+State hash 600d1eded623b9ab5b4867ac07f2137f4d3facc32df98f15094e978fdddcd33b

@@ -80,8 +80,8 @@ Day 20
   ACTION    Termination of Harbor Equipment Co power at Spoke B started.
   END       Harbor Equipment Co power at Spoke B terminated; performance ends day 20. $38,088 deobligated back to the O&M line good through day 75.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no operators).
-  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 20.
+  FAIL      The BPA call from Harbor Equipment Co for power at Spoke B stopped: nobody was there to run it (no operators); the undefinitized contract action from Meridian Site Services covered the day, so nothing was short.
+  COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 20; the undefinitized contract action from Meridian Site Services covered the day, so nothing was short.
 Day 21
   DONE      CE small buys: 6 worked today (3 h of shop time).
   END       Harbor Equipment Co power at Spoke B ended.
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.932)
 
-State hash 3ff43a2b5eec4c68d7eff028bea29ab5a5abc86a53dfd816621f2f5b514e5281
+State hash 65b28162de59cc984fcb0eefc2c91e297d69a7a5863f822a0c47f3f6e24d1209

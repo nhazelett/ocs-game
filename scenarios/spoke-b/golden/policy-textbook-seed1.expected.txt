@@ -124,7 +124,7 @@ Day 18
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Lt Col Daniel Park, Hub commander, ran it. Most of it was the flying schedule: two sorties slipped for weather and one jet is down waiting on a part. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
   START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
-  FAIL      Harbor Equipment Co power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators).
+  FAIL      The BPA call from Harbor Equipment Co for power at Spoke B stopped: nobody was there to run it (no maintenance and repair, no operators); the undefinitized contract action from Meridian Site Services covered the day, so nothing was short.
   FAIL      Third Island Water Works food service at Spoke C missed today's delivery. The stock on hand covered today's demand.
   INBOX     Performance issue: Harbor Equipment Co under-delivered on power at Spoke B on days 17 and 18. Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
   OK        Power at Spoke B restored to 100%.
@@ -266,4 +266,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.915)
 
-State hash 9362c61e564601dd067c1d61e74a563dccf16fb4c823548657a97174e64bc50e
+State hash 243c1834c8a757ccd1812e8885a4e36b863a431845f23ccc9b70398e450d0ca1

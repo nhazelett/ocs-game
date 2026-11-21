@@ -7,6 +7,10 @@ public sealed partial class Session
         public int FactorPermille = 1000;          // multiplier on this arrangement's supply today
         public bool Failed, Confused, Suspended;
         public string? FailureRecord, ConfusionRecord, CapacityRecord;
+        /// <summary>DESK-184: the failure's reasons in brackets (" (no operators)"), and whether nobody was there to run it,
+        /// so a failure another arrangement covered can be said again with the cover.</summary>
+        public string FailureWhy = "";
+        public bool FailureStopped;
         /// <summary>DESK-09: an SF 44 delivery that did not happen today (no cash, or the link closed), and why.</summary>
         public string? NoDeliveryRecord, NoDeliveryReason;
     }
@@ -44,6 +48,7 @@ public sealed partial class Session
         PerformanceChecks(d, today);
         ResolveCapabilities(d, today);
         StockCoveredFailures(today);
+        OtherCoveredFailures(today);   // DESK-184 (D50)
         CorReporting(d, today);
         TransitionClocks(d, today);
         Settle(d, today);
@@ -293,6 +298,8 @@ public sealed partial class Session
                 if (!a.IsCoordination && missingMaintenance) why.AddRange(cap.Lines.Where(l => l.Kind == "maintenance").Select(l => $"no {l.Label!.ToLowerInvariant()}"));
                 if (!a.IsCoordination && missingOperator) why.AddRange(cap.Lines.Where(l => l.Kind == "operator").Select(l => $"no {l.Label!.ToLowerInvariant()}"));
                 var stopped = !consumable && unrun && f.MissingOperatorFailureSupplyPermille is not null;
+                t.FailureStopped = stopped;
+                t.FailureWhy = why.Count > 0 ? $" ({string.Join(", ", why)})" : "";
                 t.FailureRecord = AddRecord(d, RecordKind.VendorFailure, a.Id,
                     stopped
                         ? $"{Upper(NameOf(a.Id))} stopped: nobody was there to run it ({string.Join(", ", why)})."
