@@ -127,20 +127,28 @@ public partial class GameShell
         open.SetMeta("performance_link", issueId); parent.AddChild(open); TodayPerformanceLinks[issueId] = open;
     }
 
-    private async void OpenPerformanceDecision(string issueId, string? hash)
+    private void OpenPerformanceDecision(string issueId, string? hash)
+    {
+        if (hash != session.StateHash || PlayingDay || ReadingDaySummary || ReadingTurnover || AtFrontDoor
+            || !PerformanceChoices.TryGetValue((issueId, "cure"), out var cure)) return;
+        FocusInboxDecision(cure.GetParent().GetChild<Control>(0), hash);
+    }
+
+    private async void FocusInboxDecision(Control heading, string? hash)
     {
         if (hash != session.StateHash || PlayingDay || ReadingDaySummary || ReadingTurnover || AtFrontDoor) return;
         var tabs = GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = InboxTab;
         var tree = GetTree();
-        // The first visit to Inbox must wrap and size its long record list before it can scroll.
+        // The first visit wraps and sizes the record list before coordinates are reliable.
         await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
         if (!GodotObject.IsInstanceValid(this) || !IsInsideTree() || IsQueuedForDeletion()
             || hash != session.StateHash || tabs.CurrentTab != InboxTab
-            || !PerformanceChoices.TryGetValue((issueId, "cure"), out var cure)
-            || !PerformanceChoices.TryGetValue((issueId, "resource"), out var resource)) return;
-        var heading = cure.GetParent().GetChild<Control>(0);
+            || !GodotObject.IsInstanceValid(heading) || !heading.IsInsideTree() || heading.IsQueuedForDeletion()) return;
         heading.FocusMode = Control.FocusModeEnum.All; heading.GrabFocus();
-        tabs.GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(heading);
+        var inbox = tabs.GetNode<ScrollContainer>("Inbox/Contents");
+        // EnsureControlVisible only exposes the heading at the nearest edge. Align its
+        // top instead, so the context and the choices below it open together.
+        inbox.ScrollVertical += Mathf.RoundToInt(heading.GlobalPosition.Y - inbox.GlobalPosition.Y);
     }
 }
