@@ -55,6 +55,10 @@ public partial class ContractSmokeTest : Node
             Require(shell.EndContractDialog.Visible && shell.Session.StateHash == hash, "Opening the confirmation sends no action.");
             Require(shell.EndContractDialog.DialogText.Contains("End this contract? Here is what stops.")
                 && shell.EndContractDialog.DialogText.Contains(DeskUi.ListLabel(shell.Session.View.ArrangementName(own.Id))), "Confirmation names the real support being ended.");
+            // DESK-196: the confirmation says what ending it costs, as the Sim's termination would charge it.
+            var endSays = shell.Session.View.EndWords(own.Id, new TerminateAction { Day = shell.Session.View.Day, Arrangement = own.Id })!.Says;
+            Require(endSays.Contains(" is owed for what it supplies through day ") && shell.EndContractDialog.DialogText.Contains(endSays),
+                "Confirmation says what stays owed and what comes back to the line.");
             using (var panel = shell.EndContractDialog.GetThemeStylebox("panel", "AcceptDialog") as StyleBoxFlat)
                 Require(panel is not null && panel.BgColor.IsEqualApprox(TabletopTheme.Paper), "Confirmation has the readable shared paper background.");
             await Capture("confirm");
