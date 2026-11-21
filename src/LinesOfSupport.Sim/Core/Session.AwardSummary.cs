@@ -52,7 +52,7 @@ public sealed partial class Session
     {
         var chk = CheckAward(a);
         var card = chk.Card;
-        string? why = null, passCost = null, answer = null;
+        string? why = null, passCost = null, answer = null, covered = null;
         if (chk.SiteId is { } siteId && chk.CapabilityId is { } capId)
         {
             var duration = Math.Max(1, a.DurationDays);
@@ -64,12 +64,18 @@ public sealed partial class Session
                 why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
             else if (card is not null && NotYetConfirmed(card, chk) is { } unconfirmed)
                 why = unconfirmed;   // D48, DESK-172: a part at risk left out while the requester has not answered
+            else if (card is not null && IncludedLeftOut(card, chk) is { } included)
+            {
+                why = included;   // D49, DESK-175: ahead of "already covered", which moves to the quote's notes
+                if (onTop && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
+                    covered = "Every day it would run is already covered.";
+            }
             else if (onTop && OnlyCoveredDays(a, siteId, capId, start, Math.Min(start + duration - 1, needEnd ?? int.MaxValue)))
                 why = "Every day it would run is already covered.";
             passCost = card is null ? null : PassLineCost(card, latestStart);
             answer = card is null ? null : AnswerDue(card);
         }
-        var all = new[] { why, passCost, answer }.OfType<string>().ToList();
+        var all = new[] { why, covered, passCost, answer }.OfType<string>().ToList();
         return (why, passCost, answer, all.FirstOrDefault(), all.Skip(1).ToList());
     }
 
@@ -174,6 +180,22 @@ public sealed partial class Session
         var day = PlayQueue(asker, 0, Day, w, w.HoursRemainingMilli) ?? Day;
         var who = asker.Role == "you" ? "you are" : $"{MemberName(asker)} is";
         return $"It leaves out {parts}; {who} asking {p.DisplayName}, answer due day {day}.";
+    }
+
+    /// <summary>D49 (DESK-175, Claude play 21 Nov, seventh play, note P2-14): the operator and maintenance parts at risk
+    /// (DESK-59) the request includes and this buy does not bring, because the vendor cannot: "Harbor Equipment Co does not
+    /// bring operators, which the request includes; without them it fails more often every day it runs." Null when there are
+    /// none, or when the vendor's offer leaves the plant out of goods (no risk to name).</summary>
+    private string? IncludedLeftOut(CardState card, AwardCheck chk)
+    {
+        if (chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) return null;
+        var cap = Cap(capId);
+        var left = LeftOut(card, chk.Lines)
+            .Where(id => cap.Lines.FirstOrDefault(l => l.Id == id) is { } l && PlantPartAtRisk(cap, l, vendor.Id)).ToList();
+        if (left.Count == 0) return null;
+        var parts = PartsLabels(capId, left);
+        var them = left.Count > 1 || parts.EndsWith('s') ? "them" : parts;
+        return $"{vendor.Name} does not bring {parts}, which the request includes; without {them} it fails more often every day it runs.";
     }
 
     /// <summary>"3%", "2.5%".</summary>

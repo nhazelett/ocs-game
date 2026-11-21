@@ -507,5 +507,5 @@ Also from this play, no decision needed: the hand-over picker's done day counts 
 
 Sim notes (Fable):
 
-- DESK-175: in `SummaryThird`, after `ToldNotAdded` and before `OnlyCoveredDays`: `LeftOut(card, chk.Lines)` filtered to parts at risk (`PlantPartAtRisk`, DESK-59), so a goods buy with no plant risk is not flagged; the `SummaryNotes` vendor-brings line is unchanged.
+- DESK-175: in `SummaryThird`, after `ToldNotAdded` and before `OnlyCoveredDays`: `LeftOut(card, chk.Lines)` filtered to parts at risk (`PlantPartAtRisk`, DESK-59), so a goods buy with no plant risk is not flagged; the `SummaryNotes` vendor-brings line is unchanged. Built 21 Nov as `IncludedLeftOut`, after D48's `NotYetConfirmed`; when it takes the place and the days are also covered, the covered sentence is the first of the quote's notes.
 - DESK-176: the hand-over preview (`PreviewAny` of an `AssignAction` with `To`) plays the queue from the person's hours left today after the work already planned (the standing staff meeting, `PlanPeople`), as the day's plan does, so `EarliestStartMin` is the day the plan finishes it.
