@@ -90,6 +90,14 @@ public sealed partial class Session
     private string PickFailureNote(Arrangement a)
         => a.Pick == FirstQuotePick ? " You took the first quote (fast and cheap), which made a failure more likely every day it ran." : "";
 
+    /// <summary>DESK-165 (a), Claude play 21 Nov, fifth play, note 39: a failure on a buy picked fast and good, or cheap and
+    /// good, says what the pick did to the odds, so a player who paid to avoid failure learns whether it mattered: the pick
+    /// kept the vendor at its own odds, and only fast and cheap would have raised them. Empty for any other pick.</summary>
+    private string PickKeptNote(Arrangement a)
+        => a.Pick is PremiumPick or CompetedPick
+            ? $" {Upper(PickWordsText(a.Pick))} kept {VendorData(a.VendorId)?.Name ?? "the vendor"} at its usual odds of failing; fast and cheap would have raised them."
+            : "";
+
     private string PickLateNote(Arrangement a)
         => a.Pick == CompetedPick ? $" It was competed (cheap and good), which added about {Plural(PickTwo.CompeteShopDays, "day")} of shop work." : "";
 }

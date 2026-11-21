@@ -96,7 +96,8 @@ public sealed record CarriedView(string LineId, string Sentence);
 public sealed record RunningCure(string IssueId, string ArrangementId, int LastDay, string Text);
 
 /// <summary>The debrief's opening paragraph in a person's words (M2R-27, R9): the SCO's staff, else the commander; null
-/// From when the cast has neither. Text is prose, no lists or labels. LeadGap indexes Gaps for the gap the paragraph is about
+/// From when the cast has neither. Text is prose, no lists or labels; it closes with the threads the player started (DESK-165:
+/// each cure notice issued, where it stands and how its support went after it, then the walk-in small buys). LeadGap indexes Gaps for the gap the paragraph is about
 /// (null when there were no gaps), so the game can open that gap's evidence under it. Quoted (M2R-29) indexes that gap's
 /// Factors for the factors whose text the paragraph already says word for word, in the order said, so the evidence under it
 /// can show those by their tag line alone and the player reads each sentence once; empty when there is no lead gap.</summary>
