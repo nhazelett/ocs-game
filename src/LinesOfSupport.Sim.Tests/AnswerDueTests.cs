@@ -26,7 +26,8 @@ public class AnswerDueTests
         var summary = s.View.AwardSummary(Forklifts())!;
         var due = s.View.Decisions().First().Now;   // "In work: done about day N." from the same forecast
         var day = int.Parse(due[(due.LastIndexOf(' ') + 1)..].TrimEnd('.'));
-        Assert.Equal($"SMSgt Ray Dunn's answer about this request is due on day {day}; what they say may change what this buy needs.", summary.AnswerDue);
+        Assert.Equal(4, day);   // an hour of your day 4
+        Assert.Equal("SMSgt Ray Dunn's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs.", summary.AnswerDue);
         Assert.EndsWith(summary.AnswerDue, summary.Sentence);
         Assert.False(summary.Attention);
         Assert.Null(summary.Why);
@@ -36,6 +37,28 @@ public class AnswerDueTests
         var after = s.View.AwardSummary(Forklifts())!;
         Assert.Null(after.AnswerDue);
         Assert.DoesNotContain("answer about this request", after.Sentence);
+    }
+
+    [Fact]
+    public void An_answer_due_on_a_later_day_names_that_night()
+    {
+        // D44 (DESK-144): a purchase order given to Novak on day 1 is certified on day 2 and fills his day, so an ask he
+        // takes on day 2 waits behind it and its answer comes in on a later night.
+        var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
+        AwardAction Water(string id) => new()
+        {
+            Id = id, Instrument = "purchaseOrder", Vendor = "islandMart", Card = "tutWater", Quantity = 4500, StartDay = 3,
+            DurationDays = 7, FundingLine = "om1", Assignee = "novak",
+        };
+        var first = s.Apply(Water("first"));
+        Assert.True(first.Accepted, first.Message);
+        s.AdvanceDay();
+        var ask = s.Apply(new AskAboutAction { Card = "tutWater", Person = "ortiz", Assignee = "novak" });
+        Assert.True(ask.Accepted, ask.Message);
+        var helper = s.View.RequirementEditor("tutWater")!.WhoCanHelp!.First(h => h.Kind == "ask");
+        Assert.True(helper.Day > s.Day, $"due day {helper.Day} on day {s.Day}");
+        Assert.Equal($"SrA Eli Novak is on it; the answer comes in on the night of day {helper.Day}.", helper.Sentence);
+        // The buy's answer-due sentence uses the same words (Session.ComesIn); a second buy for an arranged request has no summary.
     }
 
     [Fact]

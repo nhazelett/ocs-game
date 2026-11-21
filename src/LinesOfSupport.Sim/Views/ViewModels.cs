@@ -531,8 +531,8 @@ public sealed record SkipStopsView(string Sentence, int UntilDay);
 /// last part. A forecast; it ignores rolls.
 /// </summary>
 /// <param name="AnswerDue">D42 (DESK-123): while someone asked about the request has not answered, one sentence saying when
-/// the answer is due ("SMSgt Ray Dunn's answer about this request is due on day 4; what they say may change what this buy
-/// needs."); also the last sentence of <paramref name="Sentence"/>. Not an attention reason and not a stop. Null otherwise.</param>
+/// the answer comes in ("SMSgt Ray Dunn's answer about this request comes in tonight, after you end the day; what they say may
+/// change what this buy needs."; "on the night of day 6" for a later day, D44); also the last sentence of <paramref name="Sentence"/>. Not an attention reason and not a stop. Null otherwise.</param>
 /// <param name="PassLineCost">D43 (DESK-129): when the quote's latest start is after the request's from-day and a pass line
 /// counts down days there, what that late start costs against the commander's allowance ("If it starts on day 9, material
 /// handling equipment at Hub is out 1 day in all: all the commander allows."); also a sentence of <paramref name="Sentence"/>,
