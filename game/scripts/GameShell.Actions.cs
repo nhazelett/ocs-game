@@ -327,7 +327,7 @@ public partial class GameShell
             RefreshAwardWriter(view);
             AwardTrade!.Text = AwardPreview.Trade ?? ""; AwardTrade.Visible = AwardPreview.Trade is not null; // DESK-26
             static string Range(int low, int high) => low == high ? low.ToString() : $"{low}–{high}";
-            previewTiming.Text = $"It would take {Range(AwardPreview.ShopHoursMin, AwardPreview.ShopHoursMax)} shop hours. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
+            previewTiming.Text = $"It would take {PreviewHours(AwardPreview, shop: true)}. The earliest start is day {Range(AwardPreview.EarliestStartMin, AwardPreview.EarliestStartMax)}{DeskUi.QueueClause(AwardPreview.QueueAheadHours)}.";
             previewCost.Text = $"This would cost {DeskUi.Money(AwardPreview.DailyCents)} a day and {DeskUi.Money(AwardPreview.MobilizationCents)} to mobilize, for {DeskUi.Money(AwardPreview.TotalCents)} in total.";
             previewStops.Text = string.Join("\n\n", AwardPreview.HardStops);
             previewGaps.Text = string.Join("\n\n", AwardPreview.SoftGaps);

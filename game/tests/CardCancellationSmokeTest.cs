@@ -34,7 +34,7 @@ public partial class CardCancellationSmokeTest : Node
                 picker.ChoiceButtons["novak"].EmitSignal(Button.SignalName.Pressed);
                 Require(shell.Session.StateHash == hash && Cost(button).Text.Contains("Novak") && Cost(button).Text.Contains(words.Says), "Selecting the caller is pure and keeps the Sim explanation.");
                 var preview = expected.View.PreviewAny(action);
-                Require(Cost(button).Text.Contains($"Earliest result: day {preview.EarliestStartMin}") && Cost(button).Text.Contains(preview.ShopHoursMax.ToString()), "Hours and result day come from the selected caller's preview.");
+                Require(Cost(button).Text.Contains($"Earliest result: day {preview.EarliestStartMin}") && Cost(button).Text.StartsWith(GameShell.PreviewHours(preview) + " of "), "Hours and result day come from the selected caller's preview.");
                 Require(!PlayScreen.Descendants(shell.ContractView).Any(n => n.HasMeta("contract_modify")), "A water card buy with no missing parts omits the modification button.");
                 await Capture(day == 1 ? "before-first" : "day4", Cost(button));
                 button.EmitSignal(Button.SignalName.Pressed);
