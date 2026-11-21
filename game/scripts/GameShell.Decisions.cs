@@ -63,12 +63,13 @@ public partial class GameShell
                 : $"{TeamName(member)} · {work.Label.TrimEnd('.')} · about {DeskUi.Count(work.HoursLeft, "hour")} of work left.");
             if (useStanding) { label.SetMeta("request_standing", card); standingShown = true; }
             row.AddChild(label);
-            AddStopWork(row, id, sentence); shown.Add(id);
+            AddStopWork(row, id, sentence);
+            AddRequestHandOver(linkedRequirement, id); shown.Add(id);
         }
         return (shown, standingShown);
     }
 
-    private void AddStopWork(VBoxContainer parent, string workId, string sentence)
+    private void AddStopWork(VBoxContainer parent, string workId, string sentence, bool handOver = false)
     {
         var hash = session.StateHash;
         var button = DeskUi.Button("Stop this work", () =>
@@ -82,6 +83,14 @@ public partial class GameShell
         var explanation = DeskUi.Label(sentence);
         explanation.SetMeta("stop_work_sentence", workId);
         parent.AddChild(explanation);
+        if (handOver) AddRequestHandOver(parent, workId);
+    }
+
+    private void AddRequestHandOver(VBoxContainer parent, string workId)
+    {
+        if (session.View is { } view && view.Team.Count > 1
+            && view.Team.FirstOrDefault(m => m.Work.Any(w => w.WorkId == workId)) is { } holder)
+            AddWorkHandOver(parent, view, workId, holder.Id, onRequest: true);
     }
 
     private void RenderDecisionRows(VBoxContainer parent, IEnumerable<DecisionView> decisions, bool openRequest, IReadOnlySet<string>? stopsShown = null)
@@ -112,7 +121,7 @@ public partial class GameShell
                 frame.AddChild(DeskUi.Label(decision.Sentence + "\n" + now));
             }
             if (!openRequest && decision.StopWorkId is { } workId && decision.StopSentence is { } sentence && stopsShown?.Contains(workId) != true)
-                AddStopWork(row, workId, sentence);
+                AddStopWork(row, workId, sentence, handOver: true);
             if (!openRequest && session.View is { } view && view.Arrangements.FirstOrDefault(a => a.CauseId == decision.RecordId
                 && !a.IsCoordination && view.StatusToday(a.Id) is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended) is { } contract)
             {

@@ -94,7 +94,13 @@ public partial class GameShell
         if (includeContractLink)
         {
             row.AddChild(DeskUi.Label("To end this contract, open its contract page."));
-            var terminate = DeskUi.Button("View contract", () => OpenContractView(issue.ArrangementId));
+            var hash = session.StateHash;
+            var terminate = DeskUi.Button("Open its contract page →", () =>
+            {
+                if (hash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary) return;
+                OpenContractView(issue.ArrangementId);
+            });
+            terminate.SetMeta("performance_contract", issue.ArrangementId);
             var contractReason = DeskUi.ActionReason(row, terminate);
             DeskUi.Gate(terminate, contractReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running."
                 : terminating ? "Ending this contract is already in work." : null);

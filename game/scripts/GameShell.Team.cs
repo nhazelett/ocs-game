@@ -235,28 +235,39 @@ public partial class GameShell
                     (work.Ready ? "" : $" · waiting until day {work.WaitsUntilDay}")));
                 if (work.StopSentence is { } sentence) AddStopWork(card, work.WorkId, sentence);
                 if (!canHandOver) continue;
-                var action = new AssignAction { Day = view.Day, Work = work.WorkId };
-                var choices = view.AssigneeChoices(action);
-                var picker = new AssigneePicker(choices, member.Id, view.Finished);
-                card.AddChild(picker); WorkAssignees[work.WorkId] = picker;
-                var assignmentHash = session.StateHash;
-                var give = DeskUi.Button("Give them this task", () =>
-                {
-                    if (assignmentHash != session.StateHash || PlayingDay) return;
-                    SendAction(action with { To = picker.Selected });
-                });
-                var reason = DeskUi.ActionReason(card, give);
-                void GateAssignment()
-                {
-                    var preview = view.PreviewAny(action with { To = picker.Selected });
-                    var awaitingPick = !view.Finished && picker.Selected == member.Id;
-                    DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason
-                        : awaitingPick ? "Pick who should take it." : preview.HardStops.FirstOrDefault());
-                    reason.AddThemeColorOverride("font_color", awaitingPick ? TabletopTheme.Ink : TabletopTheme.Alert);
-                }
-                picker.SelectionChanged = GateAssignment;
-                GateAssignment(); WorkAssignButtons[work.WorkId] = give;
+                var handOver = AddWorkHandOver(card, view, work.WorkId, member.Id);
+                WorkAssignees[work.WorkId] = handOver.Picker; WorkAssignButtons[work.WorkId] = handOver.Button;
             }
         }
     }
+    // The same authoritative action, forecasts and gate on the team and request pages.
+    private (AssigneePicker Picker, Button Button) AddWorkHandOver(VBoxContainer parent, SessionView view,
+        string workId, string holder, bool onRequest = false)
+    {
+        var action = new AssignAction { Day = view.Day, Work = workId };
+        var picker = new AssigneePicker(view.AssigneeChoices(action), holder, view.Finished, "Who does it");
+        picker.SetMeta("handover_work", workId); parent.AddChild(picker);
+        var hash = session.StateHash; var card = SelectedCard;
+        bool Current() => picker.IsInsideTree() && hash == session.StateHash && !AtFrontDoor && !ReadingTurnover
+            && !PlayingDay && !ReadingDaySummary && (!onRequest || RequestWorkspace.Visible && SelectedCard == card);
+        var give = DeskUi.Button("Give them this task", () =>
+        {
+            if (!Current() || givePreview()?.Accepted != true || picker.Selected == holder) return;
+            SendAction(action with { To = picker.Selected });
+        });
+        give.SetMeta("handover_work", workId);
+        var reason = DeskUi.ActionReason(parent, give);
+        ActionPreview? givePreview() => session.View?.PreviewAny(action with { To = picker.Selected });
+        void GateAssignment()
+        {
+            var preview = view.PreviewAny(action with { To = picker.Selected });
+            var awaitingPick = !view.Finished && picker.Selected == holder;
+            DeskUi.Gate(give, reason, view.Finished ? DeskUi.FinishedReason
+                : awaitingPick ? "Pick who should take it." : preview.HardStops.FirstOrDefault());
+            reason.AddThemeColorOverride("font_color", awaitingPick ? TabletopTheme.Ink : TabletopTheme.Alert);
+        }
+        picker.SelectionChanged = () => { if (Current()) GateAssignment(); };
+        GateAssignment(); return (picker, give);
+    }
+
 }
