@@ -1,4 +1,6 @@
 using Godot;
+using LinesOfSupport.Sim;
+using LinesOfSupport.Sim.Data;
 using LinesOfSupport.Sim.Views;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
 
@@ -6,6 +8,7 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class MapSmokeTest : Node
 {
+    protected virtual bool LaterDays => false;
     public override async void _Ready()
     {
         try
@@ -28,24 +31,45 @@ public partial class MapSmokeTest : Node
                 Require(GetViewport().GetTexture().GetImage().SavePng(args[shot + 1] + "-" + name + ".png") == Error.Ok, "Screenshot saved.");
             }
             var hash = shell.Session.StateHash;
-            Require(map.Day?.Day == 0 && map.Day.Runs.Count == 0, "No fictional movements before any day is played.");
-            Require(map.Tiles.SequenceEqual(shell.Session.View!.MorningBoard().Tiles), "Every equipment symbol reads its actual capability tile.");
-            Require(map.Tabletop is not null && map.Tabletop.SiteCount==map.Data!.Sites.Count && map.Tabletop.CapabilityObjects==map.Tiles.Count,"Native 3D board includes every authored site and actual capability tile.");
-            await Capture("day1");
-            var oldZoom = map.CameraZoom; var oldOffset = map.CameraOffset;
-            var oldPoint=map.SiteScreenPoint("hubSite");var oldSize=map.Tabletop!.CameraSize;
-            map.ZoomAt(new Vector2(250, 200), 1.3f); map.PanBy(new Vector2(40, -20));
-            Require(map.CameraZoom > oldZoom && map.CameraOffset != oldOffset && shell.Session.StateHash == hash, "Pan/zoom are real camera changes without Sim mutation.");
-            Require(map.Tabletop.CameraSize<oldSize && map.SiteScreenPoint("hubSite")!=oldPoint,"Real 3D camera and projected site position change.");
-            map.FitMap(); var point = map.SiteScreenPoint("hubSite");
-            map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = true });
-            map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = false });
-            Require(map.SelectedSite == "hubSite" && shell.SelectedCapability?.StartsWith("hubSite.") == true, "Clicking a site reaches its actual support details.");
-            Require(shell.Session.StateHash == hash, "Site inspection is read-only.");
-            shell.DeveloperToggle.ButtonPressed = true; Replay(shell);shell.DeveloperToggle.ButtonPressed=false;
-            var capturedRun = false; var capturedClosure = false; var capturedDay18 = false;
-            for (var day = 1; day <= 20; day++)
+            InputLog? replayInput = null;
+            ScenarioBundle? bundle = null;
+            if (LaterDays)
             {
+                bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
+                replayInput = InputLog.Load(Path.Combine(bundle.Directory, "golden", "approach1-as-written.json"));
+                var expected = LinesOfSupport.Sim.Replay.Run(bundle, replayInput, stopAfterDay: 10);
+                var path = Path.Combine(Path.GetTempPath(), "ocs-map-replay-" + Guid.NewGuid() + ".json");
+                try
+                {
+                    File.WriteAllText(path, expected.ToSave().ToJson()); shell.LoadSavedGame(path);
+                    Require(shell.Session.StateHash == expected.StateHash(), "The second scene resumes the exact authored day-ten state.");
+                }
+                finally { File.Delete(path); }
+            }
+            else
+            {
+                Require(map.Day?.Day == 0 && map.Day.Runs.Count == 0, "No fictional movements before any day is played.");
+                Require(map.Tiles.SequenceEqual(shell.Session.View!.MorningBoard().Tiles), "Every equipment symbol reads its actual capability tile.");
+                Require(map.Tabletop is not null && map.Tabletop.SiteCount==map.Data!.Sites.Count && map.Tabletop.CapabilityObjects==map.Tiles.Count,"Native 3D board includes every authored site and actual capability tile.");
+                await Capture("day1");
+                var oldZoom = map.CameraZoom; var oldOffset = map.CameraOffset;
+                var oldPoint=map.SiteScreenPoint("hubSite");var oldSize=map.Tabletop!.CameraSize;
+                map.ZoomAt(new Vector2(250, 200), 1.3f); map.PanBy(new Vector2(40, -20));
+                Require(map.CameraZoom > oldZoom && map.CameraOffset != oldOffset && shell.Session.StateHash == hash, "Pan/zoom are real camera changes without Sim mutation.");
+                Require(map.Tabletop.CameraSize<oldSize && map.SiteScreenPoint("hubSite")!=oldPoint,"Real 3D camera and projected site position change.");
+                map.FitMap(); var point = map.SiteScreenPoint("hubSite");
+                map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = true });
+                map._Input(new InputEventMouseButton { Position = point, ButtonIndex = MouseButton.Left, Pressed = false });
+                Require(map.SelectedSite == "hubSite" && shell.SelectedCapability?.StartsWith("hubSite.") == true, "Clicking a site reaches its actual support details.");
+                Require(shell.Session.StateHash == hash, "Site inspection is read-only.");
+                shell.DeveloperToggle.ButtonPressed = true; Replay(shell); shell.DeveloperToggle.ButtonPressed = false;
+            }
+            var capturedRun = false; var capturedClosure = false; var capturedDay18 = false;
+            for (var day = LaterDays ? 11 : 1; day <= (LaterDays ? 20 : 10); day++)
+            {
+                // A resumed save has only past inputs. Apply the authored future inputs just as the replay bridge does.
+                if (replayInput is not null)
+                    foreach (var action in replayInput.Actions.Where(a => a.Day == shell.Session.View!.Day)) shell.Session.Apply(action);
                 Step(shell); hash = shell.Session.StateHash;
                 var facts = shell.Session.View!.MapDay();
                 Require(map.Day!.Day == facts.Day && map.Day.Runs.SequenceEqual(facts.Runs) && map.Day.Held.SequenceEqual(facts.Held)
@@ -110,30 +134,37 @@ public partial class MapSmokeTest : Node
                 }
                 Require(shell.Session.StateHash == hash, "Animation, rendering and snapshot queries never mutate Sim.");
             }
-            Require(capturedRun && capturedClosure && capturedDay18, "Real authored approach exercises a delivery and a closed route holding cargo.");
-            var actual = shell.Session.View!.MapDay();
-            map.ShowMapDay(actual with { Changes = [.. actual.Changes, new MapChange("hubSite", "power", "vendorFailure", 0, null, "unreported-test", false)] });
-            Require(map.KnownChanges.All(c => c.RecordId != "unreported-test"), "An explicitly unreported change is never drawn.");
-            map.ShowMapDay(actual with { Changes = [
-                new MapChange("spokeBSite", "fuel", "shortfall", 375, null, "partial-supply-test", true),
-                new MapChange("spokeBSite", "power", "restored", 1000, null, "restored-test", true),
-                new MapChange("spokeBSite", "lodging", "vendorFailure", 0, null, "failure-test", true)] });
-            var captions = string.Join("\n", map.Tabletop!.ReportedChangeLabels);
-            Require(captions.Contains("Fuel 37.5% supplied") && captions.Contains("Power restored")
-                && captions.Contains("Lodging: supplier failure reported"),
-                "Partial supply uses the reported percentage; restoration and supplier-failure wording stay specific.");
-            Require(shell.Session.StateHash == hash, "Caption fixtures leave the real session unchanged.");
-            map.ShowConfidence(["spokeBSite"]);
-            map.ShowMapDay(actual with{Changes=[new MapChange("spokeBSite","power","restored",1000,null,"partial-update-test",true)]});
-            var partial=map.Tabletop!.SiteStatuses["spokeBSite"].Text;
-            Require(partial.Contains("Commander confidence lost"),"A new capability report keeps the commander's confidence loss visible.");
-            foreach(var tile in map.Tiles.Where(t=>t.SiteId=="spokeBSite"&&t.CapabilityId!="power"&&t.Status=="down"))
-                Require(partial.Contains(tile.Label+" down"),"A partial report keeps every other current outage in words.");
-            map.ShowConfidence([]);map.ShowMapDay(actual);
+            if (LaterDays)
+            {
+                Require(capturedRun && capturedClosure && capturedDay18, "Real authored approach exercises a delivery and a closed route holding cargo.");
+                Require(shell.Session.StateHash == LinesOfSupport.Sim.Replay.Run(bundle!, replayInput!, stopAfterDay: 20).StateHash(),
+                    "The resumed range and all future inputs finish at the exact original day-twenty replay state.");
+                var actual = shell.Session.View!.MapDay();
+                map.ShowMapDay(actual with { Changes = [.. actual.Changes, new MapChange("hubSite", "power", "vendorFailure", 0, null, "unreported-test", false)] });
+                Require(map.KnownChanges.All(c => c.RecordId != "unreported-test"), "An explicitly unreported change is never drawn.");
+                map.ShowMapDay(actual with { Changes = [
+                    new MapChange("spokeBSite", "fuel", "shortfall", 375, null, "partial-supply-test", true),
+                    new MapChange("spokeBSite", "power", "restored", 1000, null, "restored-test", true),
+                    new MapChange("spokeBSite", "lodging", "vendorFailure", 0, null, "failure-test", true)] });
+                var captions = string.Join("\n", map.Tabletop!.ReportedChangeLabels);
+                Require(captions.Contains("Fuel 37.5% supplied") && captions.Contains("Power restored")
+                    && captions.Contains("Lodging: supplier failure reported"),
+                    "Partial supply uses the reported percentage; restoration and supplier-failure wording stay specific.");
+                Require(shell.Session.StateHash == hash, "Caption fixtures leave the real session unchanged.");
+                map.ShowConfidence(["spokeBSite"]);
+                map.ShowMapDay(actual with{Changes=[new MapChange("spokeBSite","power","restored",1000,null,"partial-update-test",true)]});
+                var partial=map.Tabletop!.SiteStatuses["spokeBSite"].Text;
+                Require(partial.Contains("Commander confidence lost"),"A new capability report keeps the commander's confidence loss visible.");
+                foreach(var tile in map.Tiles.Where(t=>t.SiteId=="spokeBSite"&&t.CapabilityId!="power"&&t.Status=="down"))
+                    Require(partial.Contains(tile.Label+" down"),"A partial report keeps every other current outage in words.");
+                map.ShowConfidence([]);map.ShowMapDay(actual);
+            }
             File.Delete(shell.AutosavePath);
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            GD.Print("MAP_SMOKE_PASS: illustrated tiles, camera/site input, exact runs/closures/cargo, known filtering and pure animation."); GetTree().Quit();
+            GD.Print(LaterDays
+                ? "MAP_REPLAY_SMOKE_PASS: days eleven to twenty, closures/cargo, busy day nineteen, known filtering, exact replay and pure animation."
+                : "MAP_SMOKE_PASS: illustrated tiles, camera/site input, days one to ten, exact runs, complete callouts and pure animation."); GetTree().Quit();
         }
-        catch (Exception error) { GD.PushError($"MAP_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
+        catch (Exception error) { GD.PushError($"{(LaterDays ? "MAP_REPLAY_SMOKE_FAIL" : "MAP_SMOKE_FAIL")}: {error}"); GetTree().Quit(1); }
     }
 }
