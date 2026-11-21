@@ -50,7 +50,7 @@ public partial class AwardFeedbackSmokeTest : Node
             Require(shell.Session.CreateSave().Actions.Count == before + 1, "A stale button cannot submit a duplicate arrangement.");
             await Frames();
             var receipt = PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Single(l => l.HasMeta("arranged_award"));
-            Require(receipt.Text == "Arranged: " + decision.Sentence + "\n" + decision.Now && shell.AwardScroll.GetGlobalRect().Encloses(receipt.GetGlobalRect()),
+            Require(receipt.Text == decision.Sentence + "\n" + decision.Now && shell.AwardScroll.GetGlobalRect().Encloses(receipt.GetGlobalRect()),
                 "The fresh buy column opens with the exact committed sentence, fully visible.");
             await Capture("arranged");
             Require(requestScroll.ScrollVertical == 0 && requestScroll.GetGlobalRect().Encloses(rows.GetChild<Control>(0).GetGlobalRect()),
@@ -93,9 +93,40 @@ public partial class AwardFeedbackSmokeTest : Node
             PickAwardTarget(shell, "hubSite.food");
             Require(!PlayScreen.Descendants(shell.RequestBuyColumn).Any(n => n.HasMeta("arranged_award")), "A different target inherits no receipt.");
             PickAwardTarget(shell, water);
-            Require(PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.HasMeta("arranged_award") && l.Text == "Arranged: " + decision.Sentence + "\n" + decision.Now), "Returning to the same request retains its receipt for this morning.");
+            Require(PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.HasMeta("arranged_award") && l.Text == decision.Sentence + "\n" + decision.Now), "Returning to the same request retains its receipt for this morning.");
             Step(shell);
             Require(!PlayScreen.Descendants(shell.RequestBuyColumn).Any(n => n.HasMeta("arranged_award")), "A new morning clears the old receipt.");
+            // A receipt follows the exact accepted record, even after newer decisions and a hand-over.
+            var bundle = LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+            var input = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-3", "input-log.json"));
+            var morning = LinesOfSupport.Sim.Replay.Run(bundle, input, stopAfterDay: 3);
+            var save = shell.AutosavePathOverride + ".day4";
+            File.WriteAllText(save, morning.ToSave().ToJson()); shell.LoadSavedGame(save); File.Delete(save);
+            shell.DeveloperToggle.ButtonPressed = false;
+            PickAwardTarget(shell, "tutForklift"); shell.GoToMarket("tutForklift"); Pick(shell.InstrumentInput, "bpaCall");
+            Require(!shell.AwardButton.Disabled, "The day-four Harbor call is valid.");
+            shell.AwardButton.EmitSignal(Button.SignalName.Pressed);
+            var accepted = shell.Session.View!.Decisions("tutForklift").First();
+            Require(accepted.StopWorkId is not null, "The call is in work for a hand-over.");
+            shell.TeamButtons[accepted.TeammateId].EmitSignal(Button.SignalName.Pressed);
+            shell.WorkAssignees[accepted.StopWorkId!].ChoiceButtons["avery"].EmitSignal(Button.SignalName.Pressed);
+            shell.WorkAssignButtons[accepted.StopWorkId!].EmitSignal(Button.SignalName.Pressed);
+            var current = shell.Session.View!.Decision(accepted.RecordId)!;
+            Require(current.TeammateId == "avery" && current.RecordId == accepted.RecordId, "The decision keeps its identity through a real team hand-over.");
+            shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
+            // An unrelated, newer decision must never become this receipt.
+            Require(shell.SendAction(new LinesOfSupport.Sim.Core.AskAboutAction { Day = 4, Card = "tutWater", Person = "silva", Assignee = "novak" }).Accepted, "A newer unrelated ask is accepted.");
+            PickAwardTarget(shell, "tutForklift"); shell.ShowRequests(); shell.GoToMarket("tutForklift"); await Frames();
+            current = shell.Session.View!.Decision(accepted.RecordId)!;
+            var liveReceipt = PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Single(l => l.HasMeta("arranged_award"));
+            Require(liveReceipt.Text == current.Sentence + "\n" + current.Now && !liveReceipt.Text.StartsWith("Arranged:") && liveReceipt.Text.Contains("Avery"),
+                "The receipt rereads its own decision and Now line once, naming the new holder.");
+            Require(shell.AwardScroll.GetGlobalRect().Encloses(liveReceipt.GetGlobalRect()), "The updated receipt is fully visible.");
+            await Capture("day4-handover");
+            shell.SendAction(new StopWorkAction { Day = 4, Work = accepted.StopWorkId! });
+            current = shell.Session.View!.Decision(accepted.RecordId)!;
+            Require(PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Single(l => l.HasMeta("arranged_award")).Text == current.Sentence + "\n" + current.Now
+                && current.Now.Contains("Stopped"), "The same receipt refreshes after stopping the work.");
             tabs.CurrentTab = GameShell.InboxTab;
             var countHeading = PlayScreen.Descendants(tabs.GetNode("Inbox")).OfType<Label>().Single(l => l.Text.StartsWith("Unauthorized commitments to decide"));
             await Frames(); tabs.GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(countHeading);

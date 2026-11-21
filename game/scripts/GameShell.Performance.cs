@@ -76,12 +76,13 @@ public partial class GameShell
     {
         var arrangement = view.Arrangements.Single(a => a.Id == issue.ArrangementId);
         var running = arrangement.Status is ArrangementStatus.Active or ArrangementStatus.Suspended;
-        var curing = view.Work.Any(w => w.Kind == WorkKind.CureNotice && w.CompletedDay is null && (string?)w.Payload == issue.Id);
+        var cureWork = view.Work.FirstOrDefault(w => w.Kind == WorkKind.CureNotice && w.CompletedDay is null && (string?)w.Payload == issue.Id);
+        var curing = cureWork is not null;
         var terminating = view.Work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == issue.ArrangementId);
         var cureAction = new CureNoticeAction { Day = view.Day, Issue = issue.Id };
         var cure = AddAssignedAction(row, row, view, cureAction, curing ? "Cure notice in work" : "Cure notice",
             "Issues a cure notice to put this vendor problem right.",
-            blocked: () => terminating ? "Ending this contract is already in work." : null, inWork: curing).Button;
+            blocked: () => terminating ? "Ending this contract is already in work." : null, inWork: cureWork?.Id).Button;
         var resource = DeskUi.Button("Re-source…", () =>
         {
             CloseContractView(); SwitchAwardTarget(issue.SiteId + "." + issue.CapabilityId);

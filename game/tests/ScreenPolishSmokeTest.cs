@@ -60,7 +60,13 @@ public partial class ScreenPolishSmokeTest : Node
             var reason = working.GetParent().GetChildren().OfType<Label>().First(l => l.GetIndex() > working.GetIndex());
             Require(working.Disabled && reason.Visible && reason.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink), "In-work refusal uses ordinary ink.");
             Require(!working.GetParent().GetChildren().OfType<AssigneePicker>().Any(p => p.IsVisibleInTree()), "Work already assigned offers no Who does it picker.");
-            await Frames(); inbox.EnsureControlVisible(reason); await Capture("cure-in-work");
+            var cost = working.GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("action_cost"));
+            var holder = shell.Session.View!.Team.Single(m => m.Id == "avery");
+            var work = holder.Work.Single(w => shell.Session.View!.Work.Any(item => item.Id == w.WorkId && item.Kind == WorkKind.CureNotice));
+            Require(cost.Text.Contains("Avery") && cost.Text.Contains(DeskUi.Count(work.HoursLeft, "hour")) && !cost.Text.Contains("your time"),
+                "The disabled cure names its actual holder and the Sim's remaining personal hours.");
+            Require(cost.GetThemeColor("font_color").IsEqualApprox(TabletopTheme.Ink), "The in-work hours also use ordinary ink.");
+            await Frames(); inbox.EnsureControlVisible(cost); await Capture("cure-in-work");
             shell.OpenContractView(issue.ArrangementId);
             var contractCure = shell.ContractPerformanceChoices[(issue.Id, "cure")];
             Require(contractCure.Disabled && !contractCure.GetParent().GetChildren().OfType<AssigneePicker>().Last(p => p.GetIndex() < contractCure.GetIndex()).IsVisibleInTree(), "The contract's in-work action follows the same rule.");
