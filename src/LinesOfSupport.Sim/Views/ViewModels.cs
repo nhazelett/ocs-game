@@ -650,6 +650,9 @@ public sealed record ArrangementEndView(string Button, string Says);
 /// the Sim says no; Button names the parts ("Add operators to this contract"); Says is the line under it (hours, price for
 /// the days left, the first day). Parts are line ids for <c>ModifyAction.Lines</c>. Added says what earlier changes added
 /// and from which day ("Operators added from day 10."), whether or not more can be added.</summary>
+/// <param name="Offered">D37 (DESK-139): false when there is nothing this buy could ever take, so the page leaves the button off
+/// (a buy that already brings every part, a card or cash buy that left nothing out, a buy that is not running, being ended or
+/// not this office's). True with no parts: the button shows greyed with <paramref name="Why"/> under it.</param>
 public sealed record ModifyView(bool Can, string? Why, IReadOnlyList<string> Parts, string Button, int ShopHours, long PriceCents,
-    long DailyCents, int FromDayMin, int FromDayMax, string? Says, IReadOnlyList<string> Added);
+    long DailyCents, int FromDayMin, int FromDayMax, string? Says, IReadOnlyList<string> Added, bool Offered = true);
 
