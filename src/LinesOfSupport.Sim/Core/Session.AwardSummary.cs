@@ -56,6 +56,9 @@ public sealed partial class Session
         // range's other causes stay in the quote (DESK-78); the summary is pinned above the button and must stay short.
         if (chk.Instrument is { RequiresSystemOrManual: true } && preview.TotalCents > 0 && Scenario.Actors.Fm.CertificationLagDays > 0)
             parts.Add($"Finance certifies the funds on day {Day + Scenario.Actors.Fm.CertificationLagDays}.");
+        // DESK-134: a purchase order with a vendor that prices first is written once the priced proposal is in.
+        if (PricesFirst(a.Instrument, vendor) is { } pricing)
+            parts.Add($"It is written once {Possessive(vendor.Name)} priced proposal comes, between day {Day + pricing.Min} and day {Day + pricing.Max}.");
         // DESK-110: what it is on top of, and what of the request that thing leaves out and this buy brings.
         var inPlace = InPlace(a, siteId, capId, start, start + duration - 1).DistinctBy(x => x.Name).ToList();
         var onTop = inPlace.Select(x => x.Name).ToList();

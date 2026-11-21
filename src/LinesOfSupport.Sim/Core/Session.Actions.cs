@@ -8,7 +8,16 @@ public sealed partial class Session
 
     private sealed record AwardPayload(AwardAction Action, string SiteId, string CapabilityId, List<string> Lines,
         long DailyCostCents, long MobilizationCents, long TotalCents, int StartLag, int LeadTime, int ReliabilityPermille, string SupplierIsland,
-        int QuotedStartMin = 0, int QuotedStartMax = 0);
+        int QuotedStartMin = 0, int QuotedStartMax = 0, int? ProposalDay = null);
+
+    /// <summary>
+    /// DESK-134 (design doc section 20): a vendor that must price a complex service first (its scenario sets
+    /// <c>qualifyingProposalLagDays</c>) needs that long to send a priced proposal, and a written purchase order cannot be
+    /// signed before it arrives: the writing waits for it. A UCA lets the work start while the proposal comes, under its
+    /// obligation cap until then (the UCA's present rules). Null for any other vendor or instrument.
+    /// </summary>
+    internal static Data.IntRange? PricesFirst(string instrument, Data.VendorData vendor)
+        => instrument == "purchaseOrder" ? vendor.QualifyingProposalLagDays : null;
 
     /// <summary>
     /// Applies an action on the current day. Hard stops (legal limits, missing prerequisites) reject it and change nothing
@@ -372,6 +381,14 @@ public sealed partial class Session
                     var lag = _rngWork.NextInt(Rules.Uca.ApprovalLagDays);
                     wait += lag;
                     approval = $" Approval request routed through the SCO; answer expected in {Plural(lag, "day")}.";
+                }
+                // DESK-134: drawn on the UCA stream, so the work stream and every award that does not price first are unchanged.
+                if (PricesFirst(a.Instrument, vendor) is { } pricing)
+                {
+                    var proposal = Day + _rngUca.NextInt(pricing);
+                    payload = payload with { ProposalDay = proposal };
+                    wait = Math.Max(wait, proposal);
+                    approval += $" {vendor.Name} prices the work first: its priced proposal is expected on day {proposal}, and the order is written when it arrives.";
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
                     $"{inst.Label} started with {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);

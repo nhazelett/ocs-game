@@ -36,9 +36,10 @@ public sealed partial class Session
 
     /// <summary>What decides an earliest-start range, without a final period: the vendor's days to start after the order,
     /// the hours the paperwork takes, the lift.</summary>
-    private string? StartRange(AwardAction a, InstrumentData inst, int hMin, int hMax, (int Min, int Max) lift)
+    private string? StartRange(AwardAction a, InstrumentData inst, int hMin, int hMax, (int Min, int Max) lift, Data.IntRange? pricing = null)
     {
         var parts = new List<string>();
+        if (pricing is { } p && p.Max > p.Min) parts.Add($"the priced proposal takes {p.Min} to {Plural(p.Max, "day")}");   // DESK-134
         if (hMax > hMin) parts.Add($"writing it takes {hMin} to {Plural(hMax, "shop hour")}");
         if (a.Instrument == "uca" && Rules.Uca.ApprovalLagDays.Max > Rules.Uca.ApprovalLagDays.Min)
             parts.Add($"approval takes {Rules.Uca.ApprovalLagDays.Min} to {Plural(Rules.Uca.ApprovalLagDays.Max, "day")}");

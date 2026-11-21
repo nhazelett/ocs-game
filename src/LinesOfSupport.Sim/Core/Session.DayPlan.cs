@@ -134,6 +134,10 @@ public sealed partial class Session
     /// <summary>Why a work item cannot be worked yet, without a final period: "waits for finance to certify the funds on day 5".</summary>
     internal string WaitReason(WorkItem w) => w.Kind switch
     {
+        // DESK-134: a purchase order with a vendor that prices first waits for the proposal when it comes after the funds.
+        WorkKind.Award when w.Payload is AwardPayload { ProposalDay: { } pd } p && pd >= w.WaitUntilDay
+                            && VendorData(p.Action.Vendor) is { } pricer =>
+            $"waits for {Possessive(pricer.Name)} priced proposal, due on day {w.WaitUntilDay}",
         WorkKind.Award when w.Payload is AwardPayload { Action.Instrument: "uca" } =>
             $"waits for finance to certify the funds and for the UCA to be approved, until day {w.WaitUntilDay}",
         WorkKind.Award or WorkKind.AcsaOrder or WorkKind.HostNationRequest or WorkKind.ExternalSupportRequest =>
