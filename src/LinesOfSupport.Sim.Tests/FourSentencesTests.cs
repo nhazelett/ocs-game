@@ -44,7 +44,9 @@ public class FourSentencesTests
         var s = Play("2026-11-21", "input-log.json");
         var waste = s.View.Debrief().Gaps.Single(g => g.CapabilityId == "waste" && g.SiteId == "hubSite");
         var factor = Assert.Single(waste.Factors, f => f.Text.Contains("still on the way", StringComparison.Ordinal));
-        Assert.Contains("when the game ended. TSgt Pratt reports problems 2 days late; SSgt Lane reports them the same day.", factor.Text);
+        // DESK-155 (a): when the office would have heard, not why it happened, beside the unforeseeable verdict.
+        Assert.Equal(GapTag.Unforeseeable, factor.Tag);
+        Assert.Contains("when the game ended. The failure itself could not be foreseen. TSgt Pratt reports problems 2 days late; with SSgt Lane, who reports the same day, its report would have been due on day 15.", factor.Text);
     }
 
     [Fact]

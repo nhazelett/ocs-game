@@ -624,7 +624,13 @@ public sealed record OwnInitiativeView(string SiteId, string CapabilityId, strin
 /// <param name="MeetingDays">Days the shop was at the meeting.</param>
 /// <param name="PreviewedCards">Requirement cards heard about at a meeting before they were submitted (card ids, for
 /// linking; show the card's title).</param>
-public sealed record StaffMeetingView(bool Attending, bool Joining, int? NextDay, IReadOnlyList<int> MeetingDays, IReadOnlyList<string> PreviewedCards);
+public sealed record StaffMeetingView(bool Attending, bool Joining, int? NextDay, IReadOnlyList<int> MeetingDays, IReadOnlyList<string> PreviewedCards)
+{
+    /// <summary>DESK-155 (b): the effect line under Join the staff meeting, with its standing cost: "Joins the staff meeting
+    /// so requests reach you in the room; whoever goes then spends 1 hour at each meeting, every day." The line under the
+    /// button gives the hours to get in.</summary>
+    public string JoinSays { get; init; } = "";
+}
 
 /// <summary>One question the SCO's staff take (rules goingToPeople.askSco). Show Label; Id is what AskScoAction sends.</summary>
 /// <param name="Pending">Asked and not yet answered.</param>

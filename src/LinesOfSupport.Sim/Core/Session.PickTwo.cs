@@ -63,8 +63,19 @@ public sealed partial class Session
             case FirstQuotePick:
                 return "Fast and cheap: you take the first quote, so the award is quick and the price is the vendor's, but the vendor is more likely to fall down on the job later.";
             default:
-                return null;
+                return inst.PicksTwo ? AllThreePairs(a) : null;
         }
+    }
+
+    /// <summary>DESK-155 (d), Claude play 21 Nov, third play, note 21: before a pair is picked, what each pair costs, in one
+    /// sentence, with the numbers each pick's own line gives (the premium from this award priced with fast and good).</summary>
+    private string AllThreePairs(AwardAction a)
+    {
+        var paid = CheckAward(a with { Priorities = ["fast", "good"] }).TotalCents;
+        var premium = paid - paid * 1000 / (1000 + PickTwo.PremiumPermille);
+        return $"Pick two of fast, cheap and good, and the third pays: cheap and good competes it among vendors, adding about {Plural(PickTwo.CompeteShopDays, "day")} of shop work; "
+             + $"fast and good pays a {PickTwo.PremiumPermille / 10}% premium, about {Money(premium)} of the price; "
+             + "fast and cheap takes the first quote, and the vendor is more likely to fall down on the job later.";
     }
 
     private string VehicleTerms(AwardAction a)
