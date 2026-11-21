@@ -66,7 +66,9 @@ public partial class VendorsSmokeTest : Node
         var facts = shell.VendorCardContents["islandMart"].GetChildren().OfType<Label>().Single(l => l.Text.Contains(offer.NoticeSays!));
         Check(facts); await Capture("vendor", facts, shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>());
         PickAwardTarget(shell, "tutWater"); Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc"); shell.ShowMarket();
-        Check(shell.SupplierNotice!); await Capture("supplier", shell.SupplierNotice!, shell.AwardScroll);
+        Require(!shell.SupplierNotice!.Visible && shell.AwardTiming.Text.Contains("The earliest start is day "),
+            "The buy quote replaces the supplier notice; the Vendors card keeps its full explanation.");
+        await Capture("supplier", shell.SupplierKnowledge!, shell.AwardScroll);
         Require(shell.Session.StateHash == hash, "Reading both notice explanations changes no simulation state.");
         void Check(Label label)
         {
@@ -203,7 +205,7 @@ public partial class VendorsSmokeTest : Node
             var sale = known.Sells.Single(); var text = CardText(known.Id);
             Require(sale.NoticeSays is not null && text.Contains("after a signed order\n" + sale.NoticeSays)
                 && shell.SupplierNotice!.Text.EndsWith(sale.NoticeSays),
-                "Meeting the vendor reveals the same authoritative notice explanation on both surfaces.");
+                "Meeting the vendor retains the authoritative notice on Vendors and in the unquoted supplier facts.");
             Require(shell.Session.StateHash == expected.StateHash() && text.Contains("Cash: yes · Card: no")
                 && text.Contains(DeskUi.Money(sale.UnitPriceCents!.Value)) && text.Contains(sale.CapacityPerDay!.Value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " " + sale.Unit)
                 && text.Contains(known.KnownFrom!), "A completed meeting fills in the exact price, supply, payment and source supplied by Sim.");
