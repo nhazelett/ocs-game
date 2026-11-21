@@ -266,7 +266,7 @@ public sealed class SessionView
     /// <summary>How ending the arrangement reads (DESK-94): "Cancel this card buy" with its line for a card buy, "End this
     /// contract" for a contract or a call; null where <see cref="TerminateBlocked"/> says no, for a coordination, or for an
     /// unknown id. The shop hours and the day come from the terminate preview.</summary>
-    public ArrangementEndView? EndWords(string arrangementId) => _s.BuildEndWords(arrangementId);
+    public ArrangementEndView? EndWords(string arrangementId, TerminateAction? end = null) => _s.BuildEndWords(arrangementId, end);
 
     /// <summary>D37 (DESK-97): whether this arrangement can take the part it left out, which parts, the hours (for
     /// <paramref name="assignee"/>, you by default) and the price for the days left, or why not; and what earlier changes

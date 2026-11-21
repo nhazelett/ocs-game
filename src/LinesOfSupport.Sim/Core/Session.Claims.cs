@@ -13,16 +13,24 @@ public sealed partial class Session
 
     private void FileClaimIfOwed(Arrangement arr, int plannedEnd, int day, string causeId)
     {
-        if (arr.NoticeDays is not > 0 || arr.IsCoordination || plannedEnd <= day) return;
-        if (_issues.Any(i => i.ArrangementId == arr.Id && i.Outcome == CureOutcome.Default)) return;
-        var days = Math.Min(Rules.Claims.SettlementDays, plannedEnd - day);
-        var amount = arr.DailyCostCents * days;
+        var amount = ClaimCents(arr, plannedEnd, day, out var days);
         if (amount <= 0) return;
         var vendor = VendorData(arr.VendorId)?.Name ?? "The vendor";
         var rec = AddRecord(day, RecordKind.Compliance, arr.Id,
             $"{vendor} filed a claim on {NameOf(arr.Id)}: terminated without the {arr.NoticeDays} days' notice the contract requires. Settlement about {Money(amount)} ({days} days of its cost); settling it is shop work.", [causeId]);
         _claims.Add(new ClaimState { ArrangementId = arr.Id, FiledDay = day, AmountCents = amount, FiledRecordId = rec });
         AddWork(WorkKind.ClaimSettlement, $"Settle claim on {NameOf(arr.Id)}", Fixed.Milli(Rules.Claims.SettleShopHours), day + 1, arr.Id, rec);
+    }
+
+    /// <summary>The claim a termination without notice done on <paramref name="day"/> draws (0 for none): rules
+    /// claims.settlementDays of the daily cost, capped at the days cut short. Shared with the end-contract quote (DESK-196).</summary>
+    private long ClaimCents(Arrangement arr, int plannedEnd, int day, out int days)
+    {
+        days = 0;
+        if (arr.NoticeDays is not > 0 || arr.IsCoordination || plannedEnd <= day) return 0;
+        if (_issues.Any(i => i.ArrangementId == arr.Id && i.Outcome == CureOutcome.Default)) return 0;
+        days = Math.Min(Rules.Claims.SettlementDays, plannedEnd - day);
+        return Math.Max(0, arr.DailyCostCents * days);
     }
 
     private void SettleClaim(string arrangementId, int day, string causeId)

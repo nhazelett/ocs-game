@@ -145,10 +145,12 @@ public partial class GameShell
             ending ? endWords.Button + " (in work)" : endWords.Button + "…",
             endWords.Says,
             stillCurrent: () => ContractView.Visible && SelectedArrangement == arrangement.Id && !EndContractDialog.Visible,
+            // DESK-196: what ending it costs depends on the day it is done, so the words follow who does it.
+            costText: (chosen, preview) => ActionCostText(view, chosen, view.EndWords(arrangement.Id, (TerminateAction)chosen)?.Says ?? endWords.Says, preview),
             commit: chosen =>
             {
                 var current = session.View!;
-                var words = current.EndWords(arrangement.Id)!;
+                var words = current.EndWords(arrangement.Id, (TerminateAction)chosen)!;
                 contractToEnd = (TerminateAction)chosen; contractToEndHash = session.StateHash;
                 EndContractDialog.Title = words.Button + "?";
                 EndContractDialog.GetOkButton().Text = words.Button;

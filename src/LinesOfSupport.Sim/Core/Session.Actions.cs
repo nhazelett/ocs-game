@@ -551,15 +551,66 @@ public sealed partial class Session
     private long EndMilli(Arrangement a)
         => a.IsCoordination ? 0 : IsCardBuy(a) ? Fixed.Milli(Rules.Model.Work.CardCancelShopHours) : Hours(Rules.Model.Work.TerminationShopDays, true);
 
-    /// <summary>How ending this arrangement reads on its page (DESK-94); null when the office cannot end it or the id is unknown.</summary>
-    internal Views.ArrangementEndView? BuildEndWords(string arrangementId)
+    /// <summary>What stays owed when a fully obligated award's performance ends after <paramref name="endDay"/>: its days
+    /// through then, its mobilization once it has started, ratified work outside the contract and added parts, never less
+    /// than the part of an IDIQ order paid from the minimum guarantee (owed regardless), never more than is committed.</summary>
+    private long TerminationKeepCents(Arrangement arr, int endDay)
+    {
+        var performedDays = Math.Max(0, endDay - arr.StartDay + 1);
+        var ratifiedExtra = _commitments.Where(c => c.Kind == CommitmentKind.OutOfScope && c.ArrangementId == arr.Id && c.Decision == CommitmentDecision.Ratified)
+                                        .Sum(c => c.AmountCents);
+        return Math.Min(arr.ObligatedCents, Math.Max(arr.FromGuaranteeCents,
+            arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra + AddedPartsCost(arr, endDay)));
+    }
+
+    /// <summary>How ending this arrangement reads on its page (DESK-94); null when the office cannot end it or the id is unknown.
+    /// DESK-196 (Claude play 21 Nov, eleventh play, note P2-12): for a contract or a call it also says what ending it costs, as
+    /// the termination charges it: what stays owed, what comes back to the line, and any claim for skipping the notice. The
+    /// day it is done is <paramref name="end"/>'s for its assignee, the termination in work's if there is one, or yours.</summary>
+    internal Views.ArrangementEndView? BuildEndWords(string arrangementId, TerminateAction? end = null)
     {
         if (_arrangements.FirstOrDefault(x => x.Id == arrangementId) is not { } a || NotOursToEnd(a) is not null || a.IsCoordination) return null;
-        if (!IsCardBuy(a)) return new("End this contract", "Ends this contract's support when the work and any notice are complete.");
+        if (!IsCardBuy(a))
+            return new("End this contract", "Ends this contract's support when the work and any notice are complete." + EndMoney(a, end));
         var vendor = VendorData(a.VendorId)?.Name ?? "the vendor";
         return new("Cancel this card buy", a.StartDay > Day
             ? $"A short call to {vendor} cancels it before its first delivery, and the whole charge comes back off the card."
             : $"A short call to {vendor} stops it at the end of the day the call is made, and the days not delivered come back off the card. No notice, and nothing more is owed.");
+    }
+
+    /// <summary>DESK-196: " Nothing is owed: it has not started, and the $4,860 committed comes back to the O&M line." for a
+    /// contract or call ended the day its termination would be done (plus notice); empty when it is not running.</summary>
+    private string EndMoney(Arrangement a, TerminateAction? end)
+    {
+        if (a.Status is ArrangementStatus.Ended or ArrangementStatus.Declined) return "";
+        int done; bool withNotice;
+        if (_work.FirstOrDefault(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == a.Id) is { } inWork)
+        {
+            done = PlayQueue(Member(inWork.Assignee), 0, Day, inWork, inWork.HoursRemainingMilli) ?? Day;
+            withNotice = _noticeTerminations.Contains(inWork.Id);
+        }
+        else
+        {
+            done = FinishDay(PersonHours(EndMilli(a), end?.Assignee), end?.Assignee, Day);
+            withNotice = end?.WithNotice == true && a.NoticeDays is > 0;
+        }
+        var last = Math.Min(a.EndDay, done + (withNotice ? a.NoticeDays ?? 0 : 0));
+        var started = last >= a.StartDay;
+        var line = a.FundingLineId is null ? null : _funding.FirstOrDefault(f => f.Id == a.FundingLineId);
+        // A letter contract commits money as it goes (definitized or not, the termination deobligates nothing from it).
+        var keep = a.Uca is null && line is not null ? TerminationKeepCents(a, last) : a.ObligatedCents;
+        var back = a.ObligatedCents - keep;
+        var owed = !started && keep == 0 ? "Nothing is owed: it has not started"
+            : !started ? $"{Money(keep)} stays owed: it has not started, but the minimum guarantee is owed regardless"
+            : $"{Money(keep)} is owed for what it supplies through day {last}";
+        var rest = back <= 0 ? (a.ObligatedCents > 0 && a.Uca is not null ? ", and nothing committed comes back: a letter contract commits money as it goes" : "")
+            : $", and {(keep == 0 ? "the" : "the other")} {Money(back)} committed "
+              + (line!.UsableOn(done) ? $"comes back to {NameOf(line.Id)}" : $"lapses, because {NameOf(line.Id)} will have expired");
+        var claim = withNotice ? 0 : ClaimCents(a, a.EndDay, done, out _);
+        var claimText = claim > 0
+            ? $" Ending it without the {a.NoticeDays} days' notice the contract requires also brings a claim from {VendorData(a.VendorId)?.Name ?? "the vendor"} of about {Money(claim)}, charged to {(line is null ? "its line" : NameOf(line.Id))}."
+            : "";
+        return $" {owed}{rest}.{claimText}";
     }
 
     private string EndWorkName(Arrangement a) => IsCardBuy(a) ? $"Cancel the card buy for {NameOf(a.Id)}" : $"Terminate {NameOf(a.Id)}";
@@ -674,12 +725,7 @@ public sealed partial class Session
                 }
                 if (arr.Uca is null && arr.FundingLineId is not null && _funding.FirstOrDefault(f => f.Id == arr.FundingLineId) is { } fl)
                 {
-                    var performedDays = Math.Max(0, arr.EndDay - arr.StartDay + 1);
-                    var ratifiedExtra = _commitments.Where(c => c.Kind == CommitmentKind.OutOfScope && c.ArrangementId == arr.Id && c.Decision == CommitmentDecision.Ratified)
-                                                    .Sum(c => c.AmountCents);
-                    // The part of an IDIQ order paid from the minimum guarantee stays spent: the guarantee is owed regardless.
-                    var keep = Math.Min(arr.ObligatedCents, Math.Max(arr.FromGuaranteeCents,
-                        arr.DailyCostCents * performedDays + (performedDays > 0 ? arr.MobilizationCents : 0) + ratifiedExtra + AddedPartsCost(arr, arr.EndDay)));
+                    var keep = TerminationKeepCents(arr, arr.EndDay);
                     var back = arr.ObligatedCents - keep;
                     if (back > 0)
                     {
