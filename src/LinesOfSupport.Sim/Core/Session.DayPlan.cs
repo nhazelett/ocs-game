@@ -114,11 +114,22 @@ public sealed partial class Session
             foreach (var w in waiting) sentence += $" {WorkName(w)} {WaitReason(w)}.{AfterNeed(w)}";
             people.Add(new DayPlanPerson(m.Id, name, m.Portrait, perDay, shown, items, sentence));
         }
+        // DESK-149 (c), Claude play 21 Nov, second play, note 11: three plays in a row asked whether hours going to walk-in
+        // small buys was good or bad. Until spare hours have first gone to them, the first plan line that sends hours there
+        // says once what they are and what happens when they pile up (SmallBuys: the customer goes to the commander once
+        // about three days' worth wait).
+        if (_smallBuyHoursMilli == 0 && !_smallBuysHeld
+            && people.FindIndex(p => p.Sentence.Contains("to walk-in small buys", StringComparison.Ordinal)) is var first and >= 0)
+            people[first] = people[first] with { Sentence = people[first].Sentence + " " + WalkInsSaid() };
         return (people, due);
 
         static string Jobs(int n) => n switch { 0 => "Nothing", 1 => "One job", _ => $"{n} jobs" };
         static string Said(double h) => h == 1 ? "1 hour" : $"{HoursText(h)} hours";
     }
+
+    /// <summary>DESK-149 (c): what walk-in small buys are, in the Sim's terms (SmallBuys.cs).</summary>
+    private string WalkInsSaid()
+        => $"Walk-in small buys are the lumber, tools and parts {SmallBuyCustomer} brings to the counter; spare hours there are well spent, because once about {Rules.SmallBuys.ComplainAfterHeldDays} {(Rules.SmallBuys.ComplainAfterHeldDays == 1 ? "day's" : "days'")} worth are waiting, {SmallBuyCustomer} goes to the commander.";
 
     /// <summary>Why a work item cannot be worked yet, without a final period: "waits for finance to certify the funds on day 5".</summary>
     internal string WaitReason(WorkItem w) => w.Kind switch

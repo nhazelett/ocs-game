@@ -36,6 +36,11 @@ public sealed partial class Session
                                                                                  .Select(l => Lower(LineLabel(capId, l))).ToList();
         if (brings.Count > 1 || without.Count > 0)
             parts.Add($"It brings {(brings.Count > 0 ? JoinAnd(brings) : "none of it")}{(without.Count > 0 ? $", not {JoinAnd(without)}" : "")}.");
+        // DESK-149 (d), Claude play 21 Nov, second play, note 12: a vendor's price is per unit whatever parts it brings, so a
+        // part added from what someone said can leave the total unchanged; say so, or the player wonders whether it was free.
+        var learned = card is null ? [] : chk.Lines.Where(l => card.Lines.GetValueOrDefault(l) && _learnedLines.ContainsKey((card.Id, l))).ToList();
+        if (learned.Count > 0)
+            parts.Add($"{Possessive(vendor.Name)} price already includes its {PartsLabels(capId, learned)}.");
         var needEnd = card is null ? (int?)null : card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1;
         if (card is null) parts.Add($"It starts {startSaid}.");
         else if (start <= card.RequestedStartDay) parts.Add($"It starts {startSaid}; it is wanted from day {card.RequestedStartDay}.");
