@@ -495,7 +495,7 @@ Also from this play, no decision needed: the quote's "price already includes its
 
 Sim notes (Fable):
 
-- DESK-172: in `BuildAwardSummary`, from `LeftOut(card, lines)` filtered by `PlantPartAtRisk`, and the ask's state from the request's helper views (`HelperView`: not asked, under way with its day, answered).
+- DESK-172: in `BuildAwardSummary`, from `LeftOut(card, lines)` filtered by `PlantPartAtRisk`, and the ask's state from the request's helper views (`HelperView`: not asked, under way with its day, answered). Built (21 Nov): `LeftOut` holds only parts the request lists, and the sixth play's operators were not listed, so the parts are the request's operator and maintenance parts at risk that the buy leaves out and nobody has told (`LineKnown`); the person is the requester the quote's ask-first warning names (DESK-58), so the sentence never marks the ask that pays off. It is an attention reason, unlike D42's answer due, which moves to the notes.
 - DESK-168: the cancelled arrangement is `ArrangementStatus.Terminated` (or ended) with `StartDay` on or before the short day; name it in `DiagnoseDay`'s sizing branch and add its cause and end records to the factor's evidence.
 
 ## 29. The 21 Nov seventh play: D49 (21 Nov 2026)

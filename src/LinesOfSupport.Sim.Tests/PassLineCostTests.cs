@@ -18,7 +18,11 @@ public class PassLineCostTests
     public void A_purchase_order_that_may_start_a_day_late_says_it_uses_the_whole_allowance_and_a_card_buy_says_nothing()
     {
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
-        while (s.Day < 5) s.AdvanceDay();
+        // Dunn asked on day 4 and his operators added on day 5, so D48 (DESK-172) has no part at risk to name.
+        while (s.Day < 4) s.AdvanceDay();
+        Assert.True(s.Apply(new AskAboutAction { Card = "tutForklift", Person = "dunn" }).Accepted);
+        s.AdvanceDay();
+        Assert.True(s.Apply(new AddLineAction { Card = "tutForklift", Line = "operator" }).Accepted);
         const string cost = "If it starts on day 9, material handling equipment at Hub is out 1 day in all: all the commander allows.";
         var po = s.View.AwardSummary(Forklifts("purchaseOrder", "fast+good"))!;
         Assert.Equal(cost, po.PassLineCost);

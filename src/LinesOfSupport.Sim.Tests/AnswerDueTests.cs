@@ -15,26 +15,29 @@ public class AnswerDueTests
     };
 
     [Fact]
-    public void The_forklift_buy_on_day_4_says_when_Dunn_answers_and_stops_saying_it_once_he_has()
+    public void The_water_buy_on_day_1_says_when_Ortiz_answers_and_stops_saying_it_once_he_has()
     {
+        // D48 (DESK-172): the forklift buy this test used now names the operators it leaves out while Dunn is asked
+        // (NotYetConfirmedTests); Island Mart's water is goods (DESK-59), so the answer due is still its last sentence.
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
-        while (s.Day < 4) s.AdvanceDay();
-        Assert.Null(s.View.AwardSummary(Forklifts())!.AnswerDue);
+        AwardAction water = new()
+        {
+            Id = "water", Instrument = "gpc", Vendor = "islandMart", Card = "tutWater", Quantity = 4500, StartDay = 2,
+            DurationDays = 7,
+        };
+        Assert.Null(s.View.AwardSummary(water)!.AnswerDue);
 
-        Assert.True(s.Apply(new AskAboutAction { Card = "tutForklift", Person = "dunn" }).Accepted);
+        Assert.True(s.Apply(new AskAboutAction { Card = "tutWater", Person = "ortiz" }).Accepted);
         var ask = s.Work.Last();
-        var summary = s.View.AwardSummary(Forklifts())!;
-        var due = s.View.Decisions().First().Now;   // "In work: done about day N." from the same forecast
-        var day = int.Parse(due[(due.LastIndexOf(' ') + 1)..].TrimEnd('.'));
-        Assert.Equal(4, day);   // an hour of your day 4
-        Assert.Equal("SMSgt Ray Dunn's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs.", summary.AnswerDue);
+        var summary = s.View.AwardSummary(water)!;
+        Assert.Equal("MSgt Carla Ortiz's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs.", summary.AnswerDue);
         Assert.EndsWith(summary.AnswerDue, summary.Sentence);
         Assert.False(summary.Attention);
         Assert.Null(summary.Why);
-        Assert.True(s.View.Preview(Forklifts()).Accepted);
+        Assert.True(s.View.Preview(water).Accepted);
 
         while (ask.CompletedDay is null) s.AdvanceDay();
-        var after = s.View.AwardSummary(Forklifts())!;
+        var after = s.View.AwardSummary(water)!;
         Assert.Null(after.AnswerDue);
         Assert.DoesNotContain("answer about this request", after.Sentence);
     }
