@@ -126,8 +126,10 @@ public sealed partial class Session
             // inherited UCA's clock is not news until its file is reviewed (M3-17).
             if (!RecordKnown(r)) continue;
             if (_fundingReleases.Contains(r.Id)) sev = BoardSeverity.Info;
+            var text = r.Text;
+            if (CoveredWithdrawal(r) is { } covered) { text = covered; sev = BoardSeverity.Info; }   // DESK-198
             var (lk, lid) = Link(r.Subject);
-            items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, r.Text, r.CausedBy, PersonFor(lk, lid)));
+            items.Add(new BoardItem(r.Id, r.Day, cat, sev, lk, lid, text, r.CausedBy, PersonFor(lk, lid)));
         }
         items.AddRange(LeavesOutAlerts());   // DESK-103
         var ordered = items.Select((it, i) => (it, i)).OrderByDescending(x => x.it.Severity).ThenBy(x => x.i).Select(x => x.it).ToList();
