@@ -96,9 +96,11 @@ public class LeavesOutTests
     {
         // Dunn's answer is in before the call goes in (D34): the request names the drivers as still to find, no alert.
         var log = Play();
-        var s = Replay.Run(Repo.Load("tutorial"), log with { Actions = [.. log.Actions.Where(a => !(a.Day == 4 && a is AwardAction or AssignAction))] }, stopAfterDay: 4);
+        // DESK-178: a call made after the shop heard of Harbor's short week (days 4 to 8) is refused, so the late call goes in on day 9 (the play's own later
+        // buys are left out).
+        var s = Replay.Run(Repo.Load("tutorial"), log with { Actions = [.. log.Actions.Where(a => a.Day <= 4 && !(a.Day == 4 && a is AwardAction or AssignAction))] }, stopAfterDay: 8);
         var call = (AwardAction)log.Actions.Single(a => a.Day == 4 && a is AwardAction);
-        Assert.True(s.Apply(call with { Day = 5 }).Accepted);
+        Assert.True(s.Apply(call with { Day = 9, StartDay = 10 }).Accepted);
         var f = Forklifts(s);
         Assert.Equal(RequestStanding.Buying, f.State);
         Assert.Null(f.LeavesOut);
