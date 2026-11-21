@@ -35,7 +35,7 @@ public partial class GameShell
         if (session.IsReplay) commitmentRows.AddChild(DeskUi.Label("Making a decision takes control and stops future replay actions."));
         foreach (var commitment in all)
         {
-            var row = new VBoxContainer(); commitmentRows.AddChild(row);
+            var row = new VBoxContainer(); row.SetMeta("commitment", commitment.Id); commitmentRows.AddChild(row);
             var site = view!.Scenario.Sites.Single(s => s.Id == commitment.SiteId).Name;
             var kind = commitment.Kind == CommitmentKind.Handshake ? "Handshake" : "Out-of-scope work";
             row.AddChild(DeskUi.Label($"{kind} · {view.NameOf(commitment.Id)}\nDecision: {commitment.Decision}" + (commitment.DecidedDay is { } day ? $" on day {day}" : "")));

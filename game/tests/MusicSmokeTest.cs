@@ -7,6 +7,23 @@ public partial class MusicSmokeTest : Node
 {
     public override async void _Ready()
     {
+        try
+        {
+            // Keep audio/player/scene wrappers in the completed helper, out of this
+            // continuation, and finish their finalizers while Godot is still alive.
+            await CheckMusic();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GD.Print("MUSIC_SMOKE_PASS: real Ogg playback, title/desk contexts, alternating faded playlist and gaps, harbor crossfade/visibility, actual-cue ducking, independent mute/zero, restart settings and missing-file silence.");
+            GetTree().Quit();
+        }
+        catch (Exception error) { GD.PushError("MUSIC_SMOKE_FAIL: " + error); GetTree().Quit(1); }
+    }
+
+    private async Task CheckMusic()
+    {
         var folder=Path.Combine(Path.GetTempPath(),"ocs-music-"+Guid.NewGuid());Directory.CreateDirectory(folder);
         GameShell? shell=null;
         try
@@ -78,10 +95,7 @@ public partial class MusicSmokeTest : Node
                 using var image=GetViewport().GetTexture().GetImage();Require(image.SavePng(args[shot+1])==Error.Ok,"Native settings screenshot saved.");
             }
             shell.Free();shell=null;await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
-            GD.Print("MUSIC_SMOKE_PASS: real Ogg playback, title/desk contexts, alternating faded playlist and gaps, harbor crossfade/visibility, actual-cue ducking, independent mute/zero, restart settings and missing-file silence.");
-            GetTree().Quit();
         }
-        catch(Exception error){GD.PushError("MUSIC_SMOKE_FAIL: "+error);GetTree().Quit(1);}
-        finally{shell?.QueueFree();Directory.Delete(folder,true);}
+        finally { shell?.Free(); Directory.Delete(folder, true); }
     }
 }
