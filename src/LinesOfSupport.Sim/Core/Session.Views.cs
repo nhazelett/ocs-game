@@ -439,6 +439,6 @@ public sealed partial class Session
 
         return new ActionPreview(chk.Stops.Count == 0, chk.Stops, gaps, chk.DailyCents, chk.MobilizationCents, chk.TotalCents,
                                  hMin, hMax, startMin, startMax, queue, PickTrade(a, inst, chk.TotalCents))
-            { HoursMinMilli = hMinMilli, HoursMaxMilli = hMaxMilli };
+            { HoursMinMilli = hMinMilli, HoursMaxMilli = hMaxMilli, WrittenDayMin = immediate ? -1 : minDone, WrittenDayMax = immediate ? -1 : maxDone };
     }
 }

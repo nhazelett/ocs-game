@@ -225,6 +225,10 @@ public sealed class SessionView
     /// to, the request it was for and how it stands now. With a request, only the decisions for it. Read only.</summary>
     public IReadOnlyList<DecisionView> Decisions(string? cardId = null) => _s.BuildDecisions(cardId);
 
+    /// <summary>Q29 (DESK-147): one decision as it stands now, by the record its action made (<c>ActionResult.RecordId</c>,
+    /// <c>DecisionView.RecordId</c>); null when no decision has that id.</summary>
+    public DecisionView? Decision(string recordId) => _s.BuildDecisions(null).FirstOrDefault(d => d.RecordId == recordId);
+
     /// <summary>DESK-104 (FOR-NICK #23 (a)): the line under "Stop this work" for a work item, or null when it cannot be
     /// stopped (anything but a buy still being written, or work already done or stopped). The team page and the decisions
     /// list carry the same sentence; stop it with <see cref="StopWorkAction"/>. Read only.</summary>
