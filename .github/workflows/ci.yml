@@ -224,8 +224,14 @@ jobs:
           grep -Fq 'CONFIDENCE_SMOKE_PASS:' "$RUNNER_TEMP/godot-confidence.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/PerformanceSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-performance.log"
           grep -Fq 'PERFORMANCE_SMOKE_PASS:' "$RUNNER_TEMP/godot-performance.log"
-          timeout 60 "$GODOT_BIN" --headless --path game res://tests/DisruptionSmokeTest.tscn 2>&1 | tee "$RUNNER_TEMP/godot-disruption.log"
-          grep -Fq 'DISRUPTION_SMOKE_PASS:' "$RUNNER_TEMP/godot-disruption.log"
+          # DESK-193: the assertions used to pass before Mono crashed at exit. Require repeated clean exits.
+          for attempt in 1 2 3; do
+            log="$RUNNER_TEMP/godot-disruption-$attempt.log"
+            timeout 60 "$GODOT_BIN" --headless --path game res://tests/DisruptionSmokeTest.tscn 2>&1 | tee "$log"
+            grep -Fq 'DISRUPTION_TEARDOWN_PASS:' "$log"
+            grep -Fq 'DISRUPTION_SMOKE_PASS:' "$log"
+            if grep -Eq 'Leaked unsafe reference|ObjectDB instances leaked|resources still in use|handle_crash' "$log"; then exit 1; fi
+          done
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/SaveSmokeTest.tscn -- --save-path "$RUNNER_TEMP/save-restart/autosave.json" --write-only 2>&1 | tee "$RUNNER_TEMP/godot-save-write.log"
           grep -Fq 'SAVE_WRITTEN:' "$RUNNER_TEMP/godot-save-write.log"
           timeout 60 "$GODOT_BIN" --headless --path game res://tests/SaveSmokeTest.tscn -- --save-path "$RUNNER_TEMP/save-restart/autosave.json" --resume-only 2>&1 | tee "$RUNNER_TEMP/godot-save.log"

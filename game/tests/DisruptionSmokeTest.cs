@@ -8,11 +8,14 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class DisruptionSmokeTest : Node
 {
-    public override void _Ready()
+    public override async void _Ready()
     {
+        GameShell? shell = null;
+        var passed = false;
         try
         {
-            var shell = Shell(this);
+            shell = Shell(this);
+            await DrainFrames();
             var expected = Session.Create(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b")), 1);
             var survey = new SurveyAction { Day = 1, Island = "spokeC" };
             Require(expected.Apply(survey).Accepted && shell.SendAction(survey).Accepted, "Survey fixture accepted.");
@@ -49,8 +52,37 @@ public partial class DisruptionSmokeTest : Node
             var gap = shell.DisplayedDebrief!.Gaps.First(g => g.Factors.Any(f => f.Kind == GapFactorKind.PopulationJump));
             shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index).EmitSignal(Button.SignalName.Pressed);
             Require(shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.Text.Contains(DebriefWords.Factor(GapFactorKind.PopulationJump))), "Expanded gap uses the readable PopulationJump label.");
-            GD.Print("DISRUPTION_SMOKE_PASS: ferry forecast, arrival notice, refreshed actual/planned population and gap label."); GetTree().Quit();
+            var args = OS.GetCmdlineUserArgs(); var screenshot = Array.IndexOf(args, "--screenshot");
+            if (screenshot >= 0)
+            {
+                await DrainFrames(); await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(args[screenshot + 1]) == Error.Ok, "The unchanged population-gap screen is captured.");
+            }
+            passed = true;
         }
-        catch (Exception error) { GD.PushError($"DISRUPTION_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
+        catch (Exception error) { GD.PushError($"DISRUPTION_SMOKE_FAIL: {error}"); }
+
+        // Release the complete shell before Mono/RenderingServer shutdown, on success and failure.
+        // Otherwise the synchronous 120-day fixture quits with queued map/UI frees and a live shell.
+        if (GodotObject.IsInstanceValid(shell)) shell!.QueueFree();
+        shell = null;
+        await DrainFrames();
+        GC.Collect(); GC.WaitForPendingFinalizers();
+        await DrainFrames();
+        var clean = GetChildCount() == 0;
+        if (!clean) GD.PushError("DISRUPTION_SMOKE_FAIL: test-owned scene children remain after teardown.");
+        if (passed && clean)
+        {
+            GD.Print("DISRUPTION_TEARDOWN_PASS: test-owned shell freed and deferred scene/resource cleanup drained before quit.");
+            GD.Print("DISRUPTION_SMOKE_PASS: ferry forecast, arrival notice, refreshed actual/planned population and gap label.");
+        }
+        GetTree().Quit(passed && clean ? 0 : 1);
+    }
+
+    private async Task DrainFrames()
+    {
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
     }
 }
