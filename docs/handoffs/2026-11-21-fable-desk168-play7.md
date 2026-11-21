@@ -16,4 +16,4 @@ Unchanged layout. A card buy's cancel in work reads "Cancelling the card buy for
 
 ## Next
 
-Fable: DESK-170, DESK-172, DESK-174, DESK-175, DESK-176 (DESK-172 and DESK-175 both change `SummaryThird`; build them in one sitting). Codex: DESK-169, DESK-171, DESK-173, DESK-177. A verification play is due once DESK-175 and DESK-176 land.
+Fable: DESK-172, DESK-174, DESK-175, DESK-176 (DESK-170 built in PR DESK-170 after this note) (DESK-172 and DESK-175 both change `SummaryThird`; build them in one sitting). Codex: DESK-169, DESK-171, DESK-173, DESK-177. A verification play is due once DESK-175 and DESK-176 land.
