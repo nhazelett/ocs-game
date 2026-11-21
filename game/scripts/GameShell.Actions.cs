@@ -52,7 +52,8 @@ public partial class GameShell
     internal Button AwardBackButton { get; private set; } = null!;
     internal Label AwardTiming => previewTiming;
     internal Label AwardCost => previewCost;
-    internal Label AwardBlockedReason { get; private set; } = null!;
+    internal Button AwardBlockedReason { get; private set; } = null!;
+    internal Control? AwardBlockedControl { get; private set; }
     internal ScrollContainer AwardScroll => (ScrollContainer)awardPanel.GetParent().GetParent();
 
     private void GateAward(SessionView? view)
@@ -66,11 +67,38 @@ public partial class GameShell
             : awardInstrument is not ("sf44" or "gpc") && string.IsNullOrEmpty(awardFunding) ? "Choose an available funding line."
             : AwardPreview?.HardStops.FirstOrDefault();
         reason ??= AwardPreview is null ? "Complete the terms to see the quote." : null;
-        DeskUi.Gate(awardButton, AwardBlockedReason, reason);
+        SetAwardGate(reason, AwardGateControl(view, reason));
         // An untouched form is an invitation to start another buy, including after a successful one.
         // Keep submission gated, but wait for an edit before showing missing-field errors.
         if (!awardFormTouched && view is { Finished: false } && CurrentActionEditor is not null)
         { AwardBlockedReason.Text = ""; AwardBlockedReason.Hide(); }
+    }
+
+    private void SetAwardGate(string? reason, Control? control)
+    {
+        awardButton.Disabled = reason is not null;
+        AwardBlockedReason.Text = reason ?? ""; AwardBlockedReason.Visible = reason is not null;
+        AwardBlockedControl = control;
+        AwardBlockedReason.Disabled = control is null;
+        AwardBlockedReason.TooltipText = control is null ? "" : "Show this choice in the buy form";
+    }
+
+    // Compare authoritative previews to identify a field's reason without interpreting its prose.
+    private string? PickTwoReason(SessionView view)
+        => WrittenAward && awardPriorities.Count != 2 && PendingAward is { } action && AwardPreview is { } preview
+            ? preview.HardStops.Except(view.Preview(action with { Priorities = ["fast", "good"] }).HardStops).FirstOrDefault() : null;
+
+    private Control? AwardGateControl(SessionView? view, string? reason)
+    {
+        if (view is null || view.Finished || reason is null || CurrentActionEditor is null) return null;
+        if (string.IsNullOrEmpty(awardVendor)) return vendorInput;
+        if (string.IsNullOrEmpty(awardInstrument)) return instrumentInput;
+        if (awardInstrument is "bpaCall" or "idiqOrder" && string.IsNullOrEmpty(awardVehicle)) return vehicleInput;
+        if (awardInstrument is not ("sf44" or "gpc") && string.IsNullOrEmpty(awardFunding)) return fundingInput;
+        if (reason == PickTwoReason(view)) return PriorityInputs.Values.FirstOrDefault()?.GetParent<Control>();
+        if (PendingAward is { Cor: not null } action && CorInput is not null
+            && !view.Preview(action with { Cor = null }).HardStops.Contains(reason)) return CorInput;
+        return null;
     }
 
     private void BuildActionDesk()
@@ -189,7 +217,21 @@ public partial class GameShell
         awardWriters = new VBoxContainer(); awardFooter.AddChild(awardWriters);
         awardLearnedActions = new VBoxContainer(); awardFooter.AddChild(awardLearnedActions);
         AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
-        AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
+        awardFooter.AddChild(awardButton);
+        AwardBlockedReason = DeskUi.Button("", () =>
+        {
+            if (formVersion != awardFormVersion || formHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay) return;
+            if (AwardBlockedControl is { } control && IsInstanceValid(control) && control.IsVisibleInTree())
+                AwardScroll.EnsureControlVisible(control);
+        });
+        AwardBlockedReason.Flat = true;
+        AwardBlockedReason.MouseDefaultCursorShape = CursorShape.PointingHand;
+        using (var empty = new StyleBoxEmpty())
+            foreach (var state in new[] { "normal", "hover", "pressed", "disabled" }) AwardBlockedReason.AddThemeStyleboxOverride(state, empty);
+        AwardBlockedReason.AddThemeColorOverride("font_color", TabletopTheme.Moss);
+        AwardBlockedReason.AddThemeColorOverride("font_hover_color", TabletopTheme.Ink);
+        AwardBlockedReason.AddThemeColorOverride("font_disabled_color", TabletopTheme.Alert);
+        awardFooter.AddChild(AwardBlockedReason); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
         SupplierKnowledge = null; SupplierNotice = null;
         VBoxContainer? supplierFacts = null;
@@ -279,7 +321,7 @@ public partial class GameShell
                 c.Name + (string.IsNullOrEmpty(c.Unit) ? "" : " · " + c.Unit)
                 + $" · catches about {c.ReportPermille / 10m:0.#}%, reports "
                 + (c.LagDays == 0 ? "the same day" : DeskUi.Count(c.LagDays, "day") + " late")))).ToArray();
-            CorInput = AddPick(awardPanel, "Contract monitor", options, awardCor, id =>
+            CorInput = AddPick(awardPanel, "Contract monitor (COR)", options, awardCor, id =>
             {
                 if (formVersion != awardFormVersion || formHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay
                     || session.View is not { Finished: false }) return;
@@ -367,7 +409,7 @@ public partial class GameShell
             AwardSummaryLabel.Text = ""; AwardSummaryLabel.Hide(); ClearAwardWriter();
             SupplierNotice?.Show();
             AwardPreview = null; AwardTrade!.Text = ""; AwardTrade.Hide(); previewCost.Text = ""; previewTiming.Text = ""; previewStops.Text = "These values are too large to preview."; previewStops.Visible = true;
-            previewGaps.Text = ""; RefreshRequestBuyWarnings(); DeskUi.Gate(awardButton, AwardBlockedReason, "These values are too large to preview.");
+            previewGaps.Text = ""; RefreshRequestBuyWarnings(); SetAwardGate("These values are too large to preview.", null);
         }
     }
 
