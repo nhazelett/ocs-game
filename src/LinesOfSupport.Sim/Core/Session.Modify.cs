@@ -116,6 +116,22 @@ public sealed partial class Session
             $"{Upper(NameOf(a.Id))} changed: {VendorData(a.VendorId)?.Name ?? "the vendor"} brings {words} from day {from}; {funded}.", [causeId]);
     }
 
+    /// <summary>D37 (DESK-139): the button is offered only where the buy left out a part the request could want. Off the page
+    /// for a buy that is not this office's, not running or being ended, that already brings every part, or a card or cash buy
+    /// whose request asks for nothing it left out. Everything else shows the button, greyed with its reason when it cannot.</summary>
+    private bool ModifyOffered(Arrangement a)
+    {
+        if (NotOursToEnd(a) is not null) return false;
+        if (a.Status is not (ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended) || a.EndDay < Day) return false;
+        if (_work.Any(w => w.Kind == WorkKind.Terminate && w.CompletedDay is null && (string?)w.Payload == a.Id)) return false;
+        var has = LinesOn(a, int.MaxValue).ToHashSet();
+        var leftOut = Cap(a.CapabilityId).Lines.Where(l => l.Kind is "operator" or "maintenance" && !has.Contains(l.Id)).ToList();
+        if (leftOut.Count == 0) return false;
+        if (Modifiable.Contains(a.Instrument) || a.Uca is not null) return true;
+        var card = a.CardId is null ? null : _cards.FirstOrDefault(c => c.Id == a.CardId);
+        return leftOut.Any(l => card is not null && card.Lines.TryGetValue(l.Id, out var on) && on);
+    }
+
     /// <summary>The view of D37's button for one arrangement.</summary>
     internal ModifyView? BuildModifyView(string arrangementId, string? assignee)
     {
@@ -126,7 +142,7 @@ public sealed partial class Session
         var (parts, why) = AddableParts(a);
         var words = parts.Count == 0 ? "" : JoinWords(parts.Select(l => LineLabel(a.CapabilityId, l).ToLowerInvariant()).ToList());
         var button = parts.Count == 0 ? "Add to this contract" : $"Add {words} to this contract";
-        if (why is not null) return new ModifyView(false, why, [], button, 0, 0, 0, 0, 0, null, added);
+        if (why is not null) return new ModifyView(false, why, [], button, 0, 0, 0, 0, 0, null, added, ModifyOffered(a));
         var p = BuildModifyPreview(new ModifyAction { Arrangement = a.Id, Lines = parts, Assignee = assignee, Day = Day });
         var says = p.Accepted
             ? $"{Plural(p.ShopHoursMax, "hour")} to write the change; {Money(p.TotalCents)} for the days left, obligated when it is signed. {Capitalize(words)} from day {p.EarliestStartMin}{(p.EarliestStartMax > p.EarliestStartMin ? $" or {p.EarliestStartMax}" : "")}."

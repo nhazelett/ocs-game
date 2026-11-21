@@ -25,6 +25,7 @@ public partial class ModificationSmokeTest : Node
             var blocked = Modify();
             Require(blocked.Disabled && Words().Any(l => l.Text == expected.View.ModifyOptions("fork")!.Why),
                 "A request that has not learned it needs drivers shows Sim's refusal beside the disabled control.");
+            await Capture("refused", Reason());
             expected = LinesOfSupport.Sim.Replay.Resume(bundle, beforeKnowledge);
             Require(expected.Apply(new AskAboutAction { Card = "tutForklift", Person = "dunn" }).Accepted, "Dunn can be asked.");
             while (expected.Day < 8) expected.AdvanceDay();
@@ -51,12 +52,26 @@ public partial class ModificationSmokeTest : Node
             Require(shell.Session.View!.Team.Single(m => m.Id == "novak").Work.Any(w => w.Label.StartsWith("Add operators")), "Novak receives the actual modification work.");
             button.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.StateHash == expected.StateHash(), "A repeated stale click cannot duplicate the change.");
+            await Capture("in-work", Reason());
             while (expected.Work.Any(w => w.Kind == WorkKind.Modify && w.CompletedDay is null)) { expected.AdvanceDay(); Step(shell); }
             Require(shell.Session.StateHash == expected.StateHash(), "Signing and advancing match independent Sim execution.");
             shell.OpenContractView("fork");
             foreach (var line in expected.View.ModifyOptions("fork")!.Added)
                 Require(Words().Any(l => l.HasMeta("contract_added") && l.Text == line), "The contract names each added part and first day.");
+            Require(!PlayScreen.Descendants(shell.ContractView).Any(n => n.HasMeta("contract_modify")), "After signing the page keeps the added-part sentence and omits the modification control.");
             await Capture("after", Words().First(l => l.HasMeta("contract_added")));
+            var card = Session.Create(bundle, 1, ["gpcAccounts", "cashAndPayingAgent", "systemAccess"]);
+            while (card.Day < 4) card.AdvanceDay();
+            Require(card.Apply(new AwardAction { Id = "card-fork", Instrument = "gpc", Vendor = "coastalRentals", Card = "tutForklift", Quantity = 3,
+                StartDay = 8, DurationDays = 2, FundingLine = "om1" }).Accepted, "A short card forklift buy is accepted.");
+            Require(card.Apply(new AskAboutAction { Card = "tutForklift", Person = "dunn" }).Accepted, "The card buyer asks Dunn about drivers.");
+            while (card.Day < 8) card.AdvanceDay();
+            Require(card.Apply(new AddLineAction { Card = "tutForklift", Line = "operator" }).Accepted, "The card request now includes the learned drivers.");
+            var signed = expected; expected = card; await Load("card-fork");
+            Require(expected.View.ModifyOptions("card-fork")!.Offered && PlayScreen.Descendants(shell.ContractView).OfType<Button>().Single(b => b.HasMeta("contract_modify")).Disabled,
+                "A card buy missing a part keeps its exact refusal.");
+            await Capture("card-refused", Reason());
+            expected = signed; await Load();
             shell.CloseContractView();
             var decision = expected.View.Decisions().Single(d => d.Sentence.Contains("Add operators"));
             Require(shell.DecisionRows.GetChildren().Any(n => n.HasMeta("decision_sentence") && n.GetMeta("decision_sentence").AsString() == decision.Sentence
@@ -67,12 +82,13 @@ public partial class ModificationSmokeTest : Node
 
             Button Modify() => PlayScreen.Descendants(shell.ContractView).OfType<Button>().Single(b => b.HasMeta("contract_modify") && b.GetMeta("contract_modify").AsString() == "fork");
             IEnumerable<Label> Words() => PlayScreen.Descendants(shell.ContractView).OfType<Label>();
+            Label Reason() => Words().Single(l => l.HasMeta("contract_modify_reason"));
             Label Cost(Button b) => b.GetParent().GetChildren().OfType<Label>().Single(l => l.HasMeta("action_cost"));
             async Task Frames() { for (var f = 0; f < 8; f++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
-            async Task Load()
+            async Task Load(string id = "fork")
             {
                 File.WriteAllText(path, expected.ToSave().ToJson()); shell.LoadSavedGame(path); shell.DeveloperToggle.ButtonPressed = false;
-                shell.OpenContractView("fork"); await Frames();
+                shell.OpenContractView(id); await Frames();
                 Require(shell.Session.StateHash == expected.StateHash(), "The fixture loads through the real saved-game path.");
             }
             async Task Capture(string suffix, Control target)
@@ -81,6 +97,12 @@ public partial class ModificationSmokeTest : Node
                 if (target is Button b) target = Cost(b);
                 var scroll = PlayScreen.Descendants(shell.ContractView).OfType<ScrollContainer>().Single(); scroll.EnsureControlVisible(target); await Frames();
                 Require(scroll.GetGlobalRect().Encloses(target.GetGlobalRect()) && GetViewport().GetVisibleRect().Encloses(shell.ContractView.GetGlobalRect()), "The changed control is reachable in the actual viewport with one body scroll.");
+                if (target is Label reason && reason.HasMeta("contract_modify_reason"))
+                {
+                    Require(reason.Size.Y >= reason.GetMinimumSize().Y && reason.IsVisibleInTree(), "The entire refusal label fits inside the one scroll.");
+                    var end = shell.TerminateButtons.Values.Single();
+                    Require(scroll.IsAncestorOf(end), "Ending controls stay in the same scroll as an offered, disabled modification.");
+                }
                 var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--screenshots"); if (at < 0) return;
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage(); Require(image.SavePng(args[at + 1] + "-" + suffix + ".png") == Error.Ok, "Modification screenshot saved.");

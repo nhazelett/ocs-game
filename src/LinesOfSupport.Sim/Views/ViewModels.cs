@@ -550,7 +550,13 @@ public sealed record AwardSummaryView(string Sentence, bool Attention, string? W
 public sealed record ActionPreview(
     bool Accepted, IReadOnlyList<string> HardStops, IReadOnlyList<string> SoftGaps,
     long DailyCents, long MobilizationCents, long TotalCents,
-    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours, string? Trade = null);
+    int ShopHoursMin, int ShopHoursMax, int EarliestStartMin, int EarliestStartMax, int QueueAheadHours, string? Trade = null)
+{
+    /// <summary>DESK-131: the assignee's own hours before rounding (thousandths), so a named person's quote reads to the half
+    /// hour as the strip and the team page do; -1 where the preview has only whole hours.</summary>
+    public long HoursMinMilli { get; init; } = -1;
+    public long HoursMaxMilli { get; init; } = -1;
+}
 
 /// <summary>
 /// A transition plan as the transition planner shows it (M3-05, SPEC 3 "Transition plan"): both arrangements on a
@@ -650,6 +656,9 @@ public sealed record ArrangementEndView(string Button, string Says);
 /// the Sim says no; Button names the parts ("Add operators to this contract"); Says is the line under it (hours, price for
 /// the days left, the first day). Parts are line ids for <c>ModifyAction.Lines</c>. Added says what earlier changes added
 /// and from which day ("Operators added from day 10."), whether or not more can be added.</summary>
+/// <param name="Offered">D37 (DESK-139): false when there is nothing this buy could ever take, so the page leaves the button off
+/// (a buy that already brings every part, a card or cash buy that left nothing out, a buy that is not running, being ended or
+/// not this office's). True with no parts: the button shows greyed with <paramref name="Why"/> under it.</param>
 public sealed record ModifyView(bool Can, string? Why, IReadOnlyList<string> Parts, string Button, int ShopHours, long PriceCents,
-    long DailyCents, int FromDayMin, int FromDayMax, string? Says, IReadOnlyList<string> Added);
+    long DailyCents, int FromDayMin, int FromDayMax, string? Says, IReadOnlyList<string> Added, bool Offered = true);
 

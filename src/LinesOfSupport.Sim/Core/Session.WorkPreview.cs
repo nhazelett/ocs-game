@@ -102,7 +102,8 @@ public sealed partial class Session
         var lo = PersonHours(minMilli, a.Assignee);
         var hi = PersonHours(maxMilli, a.Assignee);
         return new ActionPreview(stops.Count == 0, stops, gaps ?? [], 0, 0, 0, CeilHours(lo), CeilHours(hi),
-            FinishDay(lo, a.Assignee, Day) + afterDays, FinishDay(hi, a.Assignee, Day) + afterDays, QueueHours(a.Assignee));
+            FinishDay(lo, a.Assignee, Day) + afterDays, FinishDay(hi, a.Assignee, Day) + afterDays, QueueHours(a.Assignee))
+            { HoursMinMilli = lo, HoursMaxMilli = hi };
     }
 
     private ActionPreview BuildSurveyPreview(SurveyAction s)

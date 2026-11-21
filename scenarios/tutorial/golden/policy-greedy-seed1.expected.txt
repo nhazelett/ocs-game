@@ -113,7 +113,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #0 hubSite.mhe days 8-8, lowest 0%, 1 day(s) down: AVOIDABLE
       [discoverable] Inherited host nation support for material handling equipment at Hub was withdrawn by the host nation on day 3 (last day of support 7) and nothing contractual was in place behind it. It was host nation support from day 1, so it could be withdrawn; a contract behind it would have held.
       [unforeseeable] The BPA call for material handling equipment at Hub was declined on day 6. A BPA is not binding; any call can be declined.
-      [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7. Coastal Rentals material handling equipment at Hub did not start until day 9.
+      [avoidable] The request for material handling equipment for Hub (submitted day 4, needed from day 8) had nothing supplying it from day 8. The last arrangement supplying it, Main Island Utilities (host nation) material handling equipment at Hub, ended on day 7. The card buy with Coastal Rentals was quoted to start on day 8 or 9 and started on day 9.
   #1 hubSite.mhe days 11-12, lowest 50%, 0 day(s) down: DISCOVERABLE
       [discoverable] Coastal Rentals material handling equipment at Hub failed (first on day 11) and was bought without operators; its failure odds were higher every day it ran. SMSgt Ray Dunn knew it needed operators, and nobody asked. Asking about the request for material handling equipment for Hub before the buy would have put that in the request.
 
