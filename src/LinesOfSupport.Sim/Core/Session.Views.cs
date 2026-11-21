@@ -408,7 +408,7 @@ public sealed partial class Session
         else if (startMin > site.OpensDay && Day <= site.OpensDay)
             gaps.Add($"Earliest start is day {startMin}; {site.Name} opens day {site.OpensDay}.");
         if (!inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays)
-            gaps.Add($"No written terms on {Article(a.DurationDays)} {a.DurationDays}-day service: execution-confusion events can occur while it runs.");
+            gaps.Add($"No written terms on {Article(a.DurationDays)} {a.DurationDays}-day service: on a day the vendor and the unit disagree on how much or when, nothing on paper settles it and only half of that day's supply arrives.");
         if (a.Instrument == "bpaCall") gaps.Add("A BPA is not binding: the vendor may decline the call.");
         if (a.Instrument == "idiqOrder")
         {

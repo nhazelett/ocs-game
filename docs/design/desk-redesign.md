@@ -477,3 +477,12 @@ Sim notes (Fable):
 
 - DESK-158: `BuildAwardSummary`'s start part takes the clause from the same values as `SummaryNotes`, which then drops finance's day and the proposal's days.
 - DESK-159: `SoonerCor` adds "; the day itself would still have been short" (or "out") when the failure did not continue past the sooner report day, and says "a cure notice could have started on day N" when it did.
+
+## 27. The 21 Nov fifth play: no new decision (21 Nov 2026)
+
+The verification play of DESK-154 and DESK-157 to DESK-161 (docs/reviews/2026-11-21-claude-play-5.md) needed no new decision. Every fix it checked read as meant. Two Sim sentences were still report words or a mystery and are fixed in the play's PR: the quote's note on a service with no written terms says what happens in plain words, and a COR's "already watches 2 other contracts" names them. The rest is small game rows (DESK-162 to DESK-164) and two Fable rows: the debrief closes the threads the player started, a pick, a cure notice and the walk-in buys (DESK-165), and meeting a vendor whose terms are known says what it brings (DESK-166). Left out: a tutorial that teaches out loud, which this player asked for as the 20 Nov second and 21 Nov fourth players did in other words; Mills's notes and the quote remain the teaching until Nick's own play says otherwise.
+
+Sim notes (Fable):
+
+- DESK-165: from records the debrief already has: the arrangement's pick (`Arrangement.Pick`) and `PickTwo.FirstQuoteFailurePermille`; the cure notice's period end and the arrangement's failed days after it; the small-buy counts the day's plan already writes.
+- DESK-166: from `CompleteMeetVendor`: say only what is true for every vendor (the confidence tier it raises and what that changes); never hint at a hidden old contract.

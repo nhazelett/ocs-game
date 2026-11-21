@@ -1,0 +1,145 @@
+{
+  "scenario": "tutorial",
+  "rulesVersion": "2025-10",
+  "seed": 20261121,
+  "prepChoices": [
+    "cashAndPayingAgent",
+    "systemAccess",
+    "pullVehicles",
+    "vendorLists",
+    "templatesAndKit"
+  ],
+  "actions": [
+    {
+      "kind": "askAbout",
+      "card": "tutWater",
+      "person": "ortiz",
+      "day": 1,
+      "assignee": "avery"
+    },
+    {
+      "kind": "award",
+      "id": "player-award-1",
+      "instrument": "gpc",
+      "vendor": "islandMart",
+      "card": "tutWater",
+      "site": "hubSite",
+      "capability": "water",
+      "quantity": 4500,
+      "startDay": 2,
+      "durationDays": 7,
+      "day": 1
+    },
+    {
+      "kind": "joinStaffMeeting",
+      "attend": true,
+      "day": 2
+    },
+    {
+      "kind": "askAbout",
+      "card": "tutForklift",
+      "person": "dunn",
+      "day": 4,
+      "assignee": "novak"
+    },
+    {
+      "kind": "award",
+      "id": "player-award-2",
+      "instrument": "bpaCall",
+      "vendor": "harborEquipment",
+      "vehicle": "equipBpa",
+      "card": "tutForklift",
+      "site": "hubSite",
+      "capability": "mhe",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "day": 4,
+      "assignee": "you"
+    },
+    {
+      "kind": "assign",
+      "work": "w5",
+      "to": "avery",
+      "day": 4
+    },
+    {
+      "kind": "addLine",
+      "card": "tutForklift",
+      "line": "operator",
+      "day": 5
+    },
+    {
+      "kind": "award",
+      "id": "player-award-3",
+      "instrument": "purchaseOrder",
+      "vendor": "coastalRentals",
+      "card": "tutForklift",
+      "site": "hubSite",
+      "capability": "mhe",
+      "quantity": 3,
+      "startDay": 8,
+      "durationDays": 13,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 5,
+      "assignee": "you"
+    },
+    {
+      "kind": "stopWork",
+      "work": "w5",
+      "day": 5
+    },
+    {
+      "kind": "assign",
+      "work": "w7",
+      "to": "avery",
+      "day": 5
+    },
+    {
+      "kind": "askAbout",
+      "card": "tutWaste",
+      "person": "ruizT",
+      "day": 7,
+      "assignee": "novak"
+    },
+    {
+      "kind": "award",
+      "id": "player-award-4",
+      "instrument": "purchaseOrder",
+      "vendor": "sanitation",
+      "card": "tutWaste",
+      "site": "hubSite",
+      "capability": "waste",
+      "quantity": 3600,
+      "startDay": 13,
+      "durationDays": 8,
+      "fundingLine": "om1",
+      "cor": "corPratt",
+      "priorities": [
+        "fast",
+        "good"
+      ],
+      "day": 7,
+      "assignee": "you"
+    },
+    {
+      "kind": "assign",
+      "work": "w11",
+      "to": "avery",
+      "day": 7
+    },
+    {
+      "kind": "cureNotice",
+      "issue": "pi1",
+      "day": 13,
+      "assignee": "avery"
+    }
+  ]
+}

@@ -14,6 +14,26 @@ public sealed partial class Session
         => _arrangements.Count(a => a.CorId == c.Id && a.Id != excludingArrangementId
                                     && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended);
 
+    /// <summary>
+    /// Claude play 21 Nov, fifth play, note 16: which contracts a COR already watches, so "already watches 2 other
+    /// contracts" is not a mystery until his first report. One supplier at one site reads "Island Camp Services' lodging
+    /// and food service at Hub"; otherwise up to two arrangements by name. Null for more than two mixed ones.
+    /// </summary>
+    private string? WatchedNames(CorState c, string? excludingArrangementId)
+    {
+        var watched = _arrangements.Where(a => a.CorId == c.Id && a.Id != excludingArrangementId
+                                               && a.Status is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended).ToList();
+        if (watched.Count == 0) return null;
+        if (watched.Count > 1 && watched.Select(Supplier).Distinct().Count() == 1 && watched.Select(a => a.SiteId).Distinct().Count() == 1)
+        {
+            var caps = watched.Select(a => Lower(CapLabel(a.CapabilityId))).Distinct().ToList();
+            var list = caps.Count == 1 ? caps[0] : string.Join(", ", caps.Take(caps.Count - 1)) + " and " + caps[^1];
+            var who = Supplier(watched[0]);
+            return $"{who}{(who.EndsWith('s') ? "'" : "'s")} {list} at {SiteName(watched[0].SiteId)}";
+        }
+        return watched.Count <= 2 ? string.Join(" and ", watched.Select(a => ArrName(a))) : null;
+    }
+
     internal bool? CorFits(CorState c, string capId) => c.Knows is null ? null : c.Knows.Contains(capId);
 
     /// <summary>The odds, in thousandths, that this COR reports a failure on a contract for this capability.</summary>
@@ -66,7 +86,8 @@ public sealed partial class Session
             null => $"is rated {c.Quality}",
         };
         var others = CorWatching(c, arrangementId);
-        var load = others == 0 ? "watches no other contract" : $"already watches {Plural(others, "other contract")}";
+        var load = others == 0 ? "watches no other contract"
+            : $"already watches {Plural(others, "other contract")}{(WatchedNames(c, arrangementId) is { } named ? $" ({named})" : "")}";
         // DESK-132 (Claude play 20 Nov, third play, note 5): a buy being written that names this COR is one more to watch.
         var writing = _work.Count(w => w.Kind == WorkKind.Award && w.CompletedDay is null && w.StoppedDay is null
                                        && w.Payload is AwardPayload p && p.Action.Cor == c.Id && p.Action.Id != arrangementId);
