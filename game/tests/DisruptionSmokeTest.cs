@@ -65,19 +65,42 @@ public partial class DisruptionSmokeTest : Node
 
         // Release the complete shell before Mono/RenderingServer shutdown, on success and failure.
         // Otherwise the synchronous 120-day fixture quits with queued map/UI frees and a live shell.
+        var audio = GodotObject.IsInstanceValid(shell) ? StopAudio(shell!) : [];
         if (GodotObject.IsInstanceValid(shell)) shell!.QueueFree();
         shell = null;
         await DrainFrames();
         GC.Collect(); GC.WaitForPendingFinalizers();
         await DrainFrames();
-        var clean = GetChildCount() == 0;
-        if (!clean) GD.PushError("DISRUPTION_SMOKE_FAIL: test-owned scene children remain after teardown.");
+        // Stop() queues the mixer-side playback retirement; process frames alone do not prove it finished.
+        // DESK-200 reproduced leaked Ogg streams/playbacks after the old child-count check passed.
+        var deadline = Time.GetTicksMsec() + 2000;
+        while (audio.Any(GodotObject.IsInstanceIdValid) && Time.GetTicksMsec() < deadline) await DrainFrames();
+        var clean = GetChildCount() == 0 && !audio.Any(GodotObject.IsInstanceIdValid);
+        if (!clean) GD.PushError("DISRUPTION_SMOKE_FAIL: scene children or tracked audio streams/playbacks remain after teardown.");
         if (passed && clean)
         {
-            GD.Print("DISRUPTION_TEARDOWN_PASS: test-owned shell freed and deferred scene/resource cleanup drained before quit.");
+            GD.Print("DISRUPTION_TEARDOWN_PASS: test-owned shell freed, audio streams/playbacks retired and deferred cleanup drained before quit.");
             GD.Print("DISRUPTION_SMOKE_PASS: ferry forecast, arrival notice, refreshed actual/planned population and gap label.");
         }
         GetTree().Quit(passed && clean ? 0 : 1);
+    }
+
+    private static ulong[] StopAudio(GameShell shell)
+    {
+        // Keep real music/cues throughout the fixture. Prevent a new track during teardown, then stop every
+        // player and release its stream. Observe native instance ids without holding new resource references.
+        shell.Music.SetProcess(false);
+        var instances = new HashSet<ulong>();
+        foreach (var player in PlayScreen.Descendants(shell).OfType<AudioStreamPlayer>())
+        {
+            if (player.HasStreamPlayback())
+            {
+                using var playback = player.GetStreamPlayback(); instances.Add(playback.GetInstanceId());
+            }
+            using (var stream = player.Stream) if (stream is not null) instances.Add(stream.GetInstanceId());
+            player.Stop(); player.Stream = null;
+        }
+        return instances.ToArray();
     }
 
     private async Task DrainFrames()
