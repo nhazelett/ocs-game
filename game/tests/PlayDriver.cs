@@ -116,7 +116,11 @@ public partial class PlayDriver : Node
             await Settle(); return "Pressed Escape.";
         }
         var kind = verb == "type" ? new[] { "field" } : verb == "scroll" ? new[] { "scroll" } : new[] { "button", "picker", "tab", "choice" };
-        var matches = entries.Where(e => (kind.Contains(e.Kind) || (verb == "click" && e.Kind == "text" && e.Pane == "Map")) && e.Text.Equals(command.Label, StringComparison.OrdinalIgnoreCase)).ToArray();
+        // Match complete lines of the already clipped button text, never hidden words or arbitrary substrings.
+        var matches = entries.Where(e => (kind.Contains(e.Kind) || (verb == "click" && e.Kind == "text" && e.Pane == "Map"))
+            && (e.Text.Equals(command.Label, StringComparison.OrdinalIgnoreCase)
+                || (verb == "click" && e.Kind == "button" && e.Text.Split('\n')
+                    .Any(line => line.Trim().TrimEnd('→').TrimEnd().Equals(command.Label, StringComparison.OrdinalIgnoreCase))))).ToArray();
         if (command.Occurrence < 1 || command.Occurrence > matches.Length)
         {
             var labels = entries.Where(e => kind.Contains(e.Kind)).Select(e => e.Text).Distinct()

@@ -51,8 +51,17 @@ public partial class PlayDriverSmokeTest : Node
             for (var i = 0; i < 10 && shell.ReadingTurnover; i++)
                 await Click(screen.Read().Any(e => e.Text == "Open the desk and meet people") ? "Open the desk and meet people" : "Continue");
             Require(!shell.ReadingTurnover, "Turnover uses only the visible Continue choices.");
-            await Click("Requests");
-            await Click(shell.RequestListButtons["tutWater"].Text);
+            var standingHash = shell.Session.StateHash;
+            for (var i = 0; i < 12 && !screen.Read().Any(e => e.Control == shell.StandingOpenButtons["tutWater"]
+                && e.Text.Split('\n').Any(line => line.Trim() == "Open request →")); i++)
+                await driver.Execute(new("test", "scroll", "Today", "down"));
+            Require(screen.Read().Any(e => e.Control == shell.StandingOpenButtons["tutWater"]
+                && e.Text.Contains("Open request →")), "Today's request link line is visibly reachable by scrolling.");
+            await Review("today-request-link");
+            await Click("Open request");
+            Require(shell.RequestWorkspace.Visible && shell.SelectedCard == "tutWater" && shell.Session.StateHash == standingHash,
+                "The visible Open request line opens its real request without spending anything.");
+            await Review("opened-request");
             for (var i = 0; i < 12 && !screen.Read().Any(e => e.Kind == "button" && e.Text == "Ask MSgt Carla Ortiz"); i++)
                 await driver.Execute(new("test", "scroll", "Request", "down"));
             Require(screen.Read().Any(e => e.Text == "Ask MSgt Carla Ortiz"), "The helper becomes reachable through visible scrolling.");
@@ -99,6 +108,21 @@ public partial class PlayDriverSmokeTest : Node
                 "A greyed control cannot invoke its handler.");
             await driver.Execute(new("test", "type", "Test quantity", "7"));
             Require(number.Value == 7, "Typing a numeric field uses its visible caption and commits the value.");
+            var selectedLink = 0;
+            var firstLink = new Button { Text = "First request\nOpen request →" };
+            var secondLink = new Button { Text = "Second request\nOpen request →" };
+            firstLink.Pressed += () => selectedLink = 1; secondLink.Pressed += () => selectedLink = 2;
+            fixture.AddChild(firstLink); fixture.AddChild(secondLink);
+            for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await driver.Execute(new("test", "click", "Open request", Occurrence: 2));
+            Require(selectedLink == 2, "Duplicate visible link lines use the same occurrence ordering as whole buttons.");
+            await driver.Execute(new("test", "click", "open request"));
+            Require(selectedLink == 1, "A link line matches case-insensitively and defaults to its first occurrence.");
+            Require((await driver.Execute(new("test", "click", "Open"))).Contains("Nothing changed") && selectedLink == 1,
+                "An arbitrary substring cannot click a longer button.");
+            secondLink.Disabled = true;
+            Require((await driver.Execute(new("test", "click", "Open request", Occurrence: 2))).Contains("greyed") && selectedLink == 1,
+                "Matching a link line still respects its button's disabled state.");
             cover.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             // Reproduce the actual day-four overlay; only the test oracle reads the saved input.
@@ -118,7 +142,36 @@ public partial class PlayDriverSmokeTest : Node
             await driver.Execute(new("test", "key", "Escape"));
             Require(!shell.TeamPanel.Visible && shell.RequestWorkspace.Visible && screen.Read().Any(e => e.Pane == "Request")
                 && shell.Session.StateHash == overlayHash, "Escape returns both screen reading and control reachability to the same unchanged request.");
-            GD.Print("PLAY_DRIVER_SMOKE_PASS: visible New game, seed, duplicate/numeric fields, popup, clipped text, greyed/missing controls, modal Escape, one real day, native screenshot, exact replay and the day-four team page over its request.");
+            Pick(shell.VendorInput, "harborEquipment"); Pick(shell.InstrumentInput, "purchaseOrder");
+            PickPriorities(shell, "fast", "good");
+            shell.AwardScroll.ScrollVertical = 0;
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            var draftHash = shell.Session.StateHash;
+            foreach (var (input, value) in new[] { (shell.QuantityInput, 4), (shell.StartInput, 6), (shell.DurationInput, 8) })
+            {
+                var caption = input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
+                var field = screen.Read().Single(e => e.Control == input.GetLineEdit());
+                Require(field.Text == caption, "Each written-buy number field uses its own visible caption.");
+                Require(!screen.Describe("").Contains("field \"Name\""), "The written buy has no anonymous Name fields.");
+                await driver.Execute(new("test", "type", caption, value.ToString()));
+                Require(input.Value == value, "The caption targets exactly its number field.");
+            }
+            Require(shell.PendingAward is { Quantity: 4, StartDay: 6, DurationDays: 8 }
+                && shell.Session.StateHash == draftHash, "Typing the named fields updates the exact draft without committing it.");
+            await Review("written-buy-fields");
+            var numberCaption = shell.StartInput.GetParent().GetChild<Label>(shell.StartInput.GetIndex() - 1);
+            shell.AwardScroll.ScrollVertical += Mathf.CeilToInt(numberCaption.GetGlobalRect().End.Y - shell.AwardScroll.GetGlobalRect().Position.Y + 2);
+            for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(numberCaption.GetGlobalRect().End.Y < shell.AwardScroll.GetGlobalRect().Position.Y,
+                "The number's caption has scrolled out of the buy column.");
+            var scrolledNumber = screen.Read().Single(e => e.Control == shell.StartInput.GetLineEdit());
+            Require(scrolledNumber.Text == numberCaption.Text,
+                "A visible numeric field keeps its associated caption when the caption has scrolled above it.");
+            await driver.Execute(new("test", "type", numberCaption.Text, "7"));
+            Require(shell.StartInput.Value == 7 && shell.PendingAward?.StartDay == 7 && shell.Session.StateHash == draftHash,
+                "The scrolled caption still targets exactly the pending start day without committing it.");
+            await Review("scrolled-buy-fields");
+            GD.Print("PLAY_DRIVER_SMOKE_PASS: visible New game, seed, duplicate/numeric fields, popup, clipped text, greyed/missing controls, modal Escape, one real day, native screenshot, exact replay, the day-four team page over its request and all three written-buy numeric captions after scrolling, real Today link-line navigation and duplicate/greyed link-line clicks.");
             Directory.Delete(scratch, true);
             GetTree().Quit();
         }
