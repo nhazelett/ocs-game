@@ -53,6 +53,34 @@ public sealed partial class Session
         return new NewItem(NewKind.News, text, PersonFor(lk, lid), null, null, lk, lid, r.Id);
     }
 
+    /// <summary>
+    /// DESK-170 (Claude play 21 Nov, sixth play, note 34): the map said "Hub · Fuel: supplier failure reported" on the
+    /// morning of day 16 and Today said nothing new. A host nation or partner supplier that missed a delivery, or had
+    /// equipment down, on a day the site was not short for it is news, in one sentence that says whose it is: "Main Island
+    /// Utilities, the host nation, missed a fuel delivery at Hub on day 15; the stock on hand covered it, and the host
+    /// nation puts it right." Not an alert: there is nothing for the office to do. A failure that left the site short is
+    /// already an alert with its reason; the office's own vendors' failures reach it through the COR or the unit.
+    /// </summary>
+    private NewItem? TheirsCovered(CauseRecord r)
+    {
+        if (r.Kind != RecordKind.VendorFailure) return null;
+        if (_arrangements.FirstOrDefault(a => a.Id == r.Subject) is not { } a) return null;
+        if (a.Instrument != HostNationInstrument && a.Instrument != AcsaInstrument) return null;
+        var cs = _caps.FirstOrDefault(c => c.SiteId == a.SiteId && c.CapabilityId == a.CapabilityId);
+        if (cs is null || r.Day < 1 || r.Day > DaysPlayed || Band(cs)[r.Day - 1] is >= 0 and < 1000) return null;
+        var cap = Cap(a.CapabilityId);
+        var hostNation = a.Instrument == HostNationInstrument;
+        var name = SupplierName(a);
+        if (name.IndexOf(" (", StringComparison.Ordinal) is var paren and > 0) name = name[..paren];   // "Main Island Utilities (host nation)"
+        var who = hostNation ? $"{name}, the host nation," : $"{name}, under the ACSA,";
+        var what = cap.Delivery == "consumable" ? $"missed a {Lower(cap.Label)} delivery" : $"had {Lower(cap.Label)} equipment down";
+        var covered = cap.Delivery == "consumable" ? "the stock on hand covered it" : $"{SiteName(a.SiteId)} was not short for it";
+        var owner = hostNation ? "the host nation puts it right" : "the J4 takes it up with them";
+        var (lk, lid) = Link(r.Subject);
+        return new NewItem(NewKind.News, $"{who} {what} at {SiteName(a.SiteId)} on day {r.Day}; {covered}, and {owner}.",
+                           PersonFor(lk, lid), null, null, lk, lid, r.Id);
+    }
+
     /// <summary>The contract-writing system comes up on a set day; nothing wrote that down (the Spoke B player was told
     /// "down until about day 12" and never heard it come back). Said on the morning it is up, and on the results page of
     /// the day before. Derived, not a record, so no record id or golden moves.</summary>
@@ -78,6 +106,7 @@ public sealed partial class Session
         // back, then the withdrawal it brings), the one it caused says it in full and the cause is not listed again.
         var causes = newsRecords.SelectMany(r => r.CausedBy).ToHashSet(StringComparer.Ordinal);
         var news = newsRecords.Where(r => !causes.Contains(r.Id)).Select(News).ToList();
+        news.AddRange(Overnight().Select(TheirsCovered).OfType<NewItem>());   // DESK-170
         if (SystemUp(Day) is { } up) news.Add(up);
         return (said, news);
     }
