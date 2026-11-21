@@ -24,6 +24,8 @@ public partial class PerformanceSmokeTest : Node
             Require(alert.IsAncestorOf(open) && open.Text == "Open vendor decision",
                 "The recorded day-seven lodging alert carries its existing vendor decision directly below the reason.");
             var hash = shell.Session.StateHash;
+            Require(shell.MorningHeading.Text.Contains(DeskUi.Count(shell.TodayPerformanceLinks.Count, "decision waiting", "decisions waiting"))
+                && !shell.MorningHeading.Text.Contains("0 alerts"), "The morning counts the decisions actually waiting on Today.");
             var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
             if (shot >= 0)
             {
@@ -116,6 +118,23 @@ public partial class PerformanceSmokeTest : Node
                 && contractEnd.GetParent().GetChildren().OfType<AssigneePicker>().Any(p => p.GetIndex() > contractResource.GetIndex() && p.GetIndex() < contractEnd.GetIndex())
                 && GetViewport().GetVisibleRect().Encloses(reportText.GetGlobalRect()), "The reason is visible and termination follows re-source with its teammate picker.");
             await Capture("contract-decisions");
+            shell.CloseContractView();
+            var tabs = shell.GetNode<TabContainer>("%DeskTabs"); tabs.CurrentTab = GameShell.VendorsTab;
+            var vendor = shell.Session.View!.VendorCards().Single(c => c.ArrangementIds.Contains(tutorialIssue.ArrangementId));
+            Pick(shell.VendorCardPicker, vendor.Id); await Capture("vendor-card");
+            foreach (var offer in vendor.Sells.Where(o => o.LeadTimeDays is not null))
+                Require(shell.VendorCardContents[vendor.Id].GetChildren().OfType<Label>().Any(l => l.Text.Contains("Starts " + DeskUi.Count(offer.LeadTimeDays!.Value, "day") + " after a signed order")), "The vendor's lead time says what starts it.");
+            var vendorScroll = shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>();
+            var scrollPosition = vendorScroll.ScrollVertical;
+            shell.VendorCardContents[vendor.Id].GetChildren().OfType<Button>().Single(b => b.HasMeta("vendor_contract") && b.GetMeta("vendor_contract").AsString() == tutorialIssue.ArrangementId).EmitSignal(Button.SignalName.Pressed);
+            await Capture("vendor-contract");
+            var back = PlayScreen.Descendants(shell.ContractView).OfType<Button>().Single(b => b.Text == "Back to " + vendor.Name);
+            back.EmitSignal(Button.SignalName.Pressed); await Capture("vendor-return");
+            Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.VendorsTab && shell.VendorCardPicker.GetItemMetadata(shell.VendorCardPicker.Selected).AsString() == vendor.Id
+                && vendorScroll.ScrollVertical == scrollPosition && shell.Session.StateHash == tutorialHash, "Back returns to the same vendor card and scroll without changing Sim.");
+            shell.OpenContractView(tutorialIssue.ArrangementId);
+            Require(PlayScreen.Descendants(shell.ContractView).OfType<Button>().Any(b => b.Text == "Back to what we are paying for"), "An ordinary contract opening resets its return destination.");
+
             shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
             Require(!shell.ContractView.Visible && shell.MarketOpen && shell.CurrentActionEditor!.SiteId == tutorialIssue.SiteId
                 && shell.CurrentActionEditor.CapabilityId == tutorialIssue.CapabilityId && shell.Session.StateHash == tutorialHash,

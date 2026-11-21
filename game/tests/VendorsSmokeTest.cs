@@ -102,7 +102,7 @@ public partial class VendorsSmokeTest : Node
                 "The award editor also blanks unknown payment and capacity instead of disclosing its raw numbers.");
             var blank = CardText("harborBottling");
             Require(blank.Contains("Cash: — · Card: —") && blank.Contains("Islands reached: —")
-                && blank.Contains("Usual capacity per day: —") && blank.Contains("Price per gal: — · Notice: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
+                && blank.Contains("Usual capacity per day: —") && blank.Contains("Price per gal: —\nTime after a signed order: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
             Require(blank.Contains(expected.View.VendorCards().Single(c => c.Id == "harborBottling").StillToLearn!), "The exact engine sentence explains how to fill the blanks.");
             var hash = shell.Session.StateHash;
             await Capture("blank");

@@ -11,6 +11,8 @@ public partial class GameShell
     private VBoxContainer contractContents = null!, contractFooter = null!;
     private TerminateAction? contractToEnd;
     private string? contractToEndHash;
+    private string? contractReturnVendor;
+    private int contractReturnScroll;
     internal Dictionary<(string Id, string Choice), Button> ContractPerformanceChoices { get; } = [];
 
     private void BuildContractView()
@@ -53,16 +55,35 @@ public partial class GameShell
 
     internal void CloseContractView()
     {
-        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear();
+        ContractView?.Hide(); EndContractDialog?.Hide(); contractToEnd = null; terminations.Clear(); ContractPerformanceChoices.Clear(); contractReturnVendor = null;
     }
 
-    internal void OpenContractView(string id)
+    internal void OpenContractView(string id, string? fromVendor = null)
     {
         if (session.View?.Arrangements.Any(a => a.Id == id) != true) return;
         CloseRequestWorkspace(restore: false);
+        var vendorScroll = vendorCardsScroll.ScrollVertical;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = PaymentsTab;
+        contractReturnVendor = fromVendor; contractReturnScroll = vendorScroll;
         SelectedArrangement = id; SelectedFunding = null; RenderLedgerContext(session.View);
         ContractView.Show(); RefreshContractView(session.View);
+    }
+
+    private void ReturnFromContract()
+    {
+        var vendor = contractReturnVendor; var scroll = contractReturnScroll;
+        CloseContractView();
+        if (vendor is null) return;
+        var changedVendor = selectedVendor != vendor; selectedVendor = vendor;
+        GetNode<TabContainer>("%DeskTabs").CurrentTab = VendorsTab;
+        if (changedVendor) RefreshBpaDesk(session.View);
+        var hash = session.StateHash;
+        Callable.From(() =>
+        {
+            if (GodotObject.IsInstanceValid(this) && IsInsideTree() && session.StateHash == hash
+                && selectedVendor == vendor && GetNode<TabContainer>("%DeskTabs").CurrentTab == VendorsTab)
+                vendorCardsScroll.ScrollVertical = scroll;
+        }).CallDeferred();
     }
 
     private void RefreshContractView(SessionView? view)
@@ -70,7 +91,8 @@ public partial class GameShell
         terminations.Clear(); ContractPerformanceChoices.Clear(); DeskUi.Clear(contractContents); DeskUi.Clear(contractFooter);
         var arrangement = view?.Arrangements.FirstOrDefault(a => a.Id == SelectedArrangement);
         if (view is null || arrangement is null) { CloseContractView(); return; }
-        contractContents.AddChild(DeskUi.Button("Back to what we are paying for", CloseContractView));
+        var back = contractReturnVendor is { } vendor ? "Back to " + view.VendorCards().Single(c => c.Id == vendor).Name : "Back to what we are paying for";
+        contractContents.AddChild(DeskUi.Button(back, ReturnFromContract));
         var title = DeskUi.Label(DeskUi.ListLabel(view.ArrangementName(arrangement.Id)));
         title.AddThemeFontSizeOverride("font_size", 28); contractContents.AddChild(title);
         var site = view.NameOf(arrangement.SiteId);

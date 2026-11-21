@@ -195,6 +195,7 @@ public partial class GameShell : Control
         RefreshVisits(view, board);
         RefreshCommitments(view);
         RefreshPerformance(view);
+        RefreshMorningHeading(view, board);
         RefreshActionDesk(view);
         RefreshBpaDesk(view);
         RefreshDebrief(view);

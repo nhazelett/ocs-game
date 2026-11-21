@@ -22,6 +22,8 @@ public partial class AwardFeedbackSmokeTest : Node
             shell.NavigateBoardItem(new BoardItem("", 1, BoardCategory.Request, BoardSeverity.Info, BoardLinkKind.Card, water, "", []));
             var pane = shell.RequestColumn;
             Require(PlayScreen.Descendants(pane).OfType<Label>().Any(l => l.Text == shell.Session.View!.RequirementEditor(water)!.Title), "The left column identifies the same request as the buy.");
+            var peak = PlayScreen.Descendants(pane).OfType<Label>().Single(l => l.HasMeta("request_peak"));
+            Require(peak.Text.StartsWith("Peak demand: 4,500 gal/day"), "Peak demand uses the same daily-rate words as the Sim.");
             await Capture("request-before");
             shell.GoToMarket(shell.SelectedCard!);
             Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc");
@@ -47,6 +49,9 @@ public partial class AwardFeedbackSmokeTest : Node
             stale.EmitSignal(Button.SignalName.Pressed);
             Require(shell.Session.CreateSave().Actions.Count == before + 1, "A stale button cannot submit a duplicate arrangement.");
             await Frames();
+            var receipt = PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Single(l => l.HasMeta("arranged_award"));
+            Require(receipt.Text == "Arranged: " + decision.Sentence + "\n" + decision.Now && shell.AwardScroll.GetGlobalRect().Encloses(receipt.GetGlobalRect()),
+                "The fresh buy column opens with the exact committed sentence, fully visible.");
             await Capture("arranged");
             Require(requestScroll.ScrollVertical == 0 && requestScroll.GetGlobalRect().Encloses(rows.GetChild<Control>(0).GetGlobalRect()),
                 "The new arrangement and its actual state are on screen at the top.");
@@ -85,6 +90,12 @@ public partial class AwardFeedbackSmokeTest : Node
             }
             await Frames(); shell.AwardScroll.EnsureControlVisible(shell.VehicleInput); await Capture("contract-vehicle");
             Require(DeskUi.DaySpan(17, 17) == "day 17" && DeskUi.DaySpan(17, 18) == "days 17–18", "One-day and multi-day gaps use readable dates.");
+            PickAwardTarget(shell, "hubSite.food");
+            Require(!PlayScreen.Descendants(shell.RequestBuyColumn).Any(n => n.HasMeta("arranged_award")), "A different target inherits no receipt.");
+            PickAwardTarget(shell, water);
+            Require(PlayScreen.Descendants(shell.RequestBuyColumn).OfType<Label>().Any(l => l.HasMeta("arranged_award") && l.Text == "Arranged: " + decision.Sentence + "\n" + decision.Now), "Returning to the same request retains its receipt for this morning.");
+            Step(shell);
+            Require(!PlayScreen.Descendants(shell.RequestBuyColumn).Any(n => n.HasMeta("arranged_award")), "A new morning clears the old receipt.");
             tabs.CurrentTab = GameShell.InboxTab;
             var countHeading = PlayScreen.Descendants(tabs.GetNode("Inbox")).OfType<Label>().Single(l => l.Text.StartsWith("Unauthorized commitments to decide"));
             await Frames(); tabs.GetNode<ScrollContainer>("Inbox/Contents").EnsureControlVisible(countHeading);

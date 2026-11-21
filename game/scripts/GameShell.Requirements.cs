@@ -41,7 +41,10 @@ public partial class GameShell
             var state = DeskUi.Label(standing.Sentence); state.SetMeta("request_standing", card.CardId); linkedRequirement.AddChild(state);
         }
         RenderRequestDecisions(view!, card.CardId);
-        linkedRequirement.AddChild(DeskUi.Label($"Peak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {card.Unit}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days"));
+        var capability = view.Rules.Model.Capabilities.Single(c => c.Id == card.CapabilityId);
+        var rate = capability.Delivery == "consumable" || card.Unit is "gal" or "L" or "m3" ? card.Unit + "/day" : card.Unit;
+        var peak = DeskUi.Label($"Peak demand: {DeskUi.Quantity(card.PeakDemandUnits)} {rate}\nRequested day {card.RequestedStartDay} for {card.DurationDays} days");
+        peak.SetMeta("request_peak", card.CardId); linkedRequirement.AddChild(peak);
         if (standing?.WhyShort is { } whyShort)
         {
             var reason = DeskUi.Label(whyShort); reason.SetMeta("request_why_short", card.CardId); linkedRequirement.AddChild(reason);

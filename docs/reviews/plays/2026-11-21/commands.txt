@@ -1,0 +1,205 @@
+0002 look
+0003 scroll "Preparation" down
+0004 click "I can pull the agreements the last rotation left you, so you can see which requests they cover before you land. (1 day)"
+0005 click "I can send you our vendor list with the terms we have, so you know who takes cash and who takes the card. (2 days)"
+0006 click "Bring templates and a paper kit, and the manual work goes faster until the system's up. (1 day)"
+0007 click "I'm ready to leave"
+0008 click "Continue"
+0009 click "Continue"
+0010 click "Continue"
+0011 click "Open the desk and meet people"
+0012 click "Open request"
+0013 scroll "Request" down
+0014 scroll "Request" down
+0015 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 1 hour; it would be done day 1."
+0016 click "Ask MSgt Carla Ortiz"
+0017 click "Choose an arrangement…"
+0018 click "Government purchase card"
+0019 click "Choose a supplier…"
+0020 click "Island Mart"
+0021 click "Government purchase card"
+0022 click "SF 44 cash purchase"
+0023 click "Choose an arrangement…"
+0024 click "Island Mart"
+0025 click "Harbor Bottling"
+0026 click "Choose an arrangement…"
+0027 click "SF 44 cash purchase"
+0028 click "SF 44 cash purchase"
+0029 click "Choose an arrangement…"
+0030 click "Harbor Bottling"
+0031 click "Island Mart"
+0032 click "Choose an arrangement…"
+0033 click "Government purchase card"
+0034 click "Arrange support"
+0035 click "Back to the desk"
+0036 click "Inbox"
+0037 click "End the day"
+0038 click "End the day" #2
+0039 click "End the day"
+0040 click "On to the morning of day 2"
+0041 scroll "Today" down
+0042 scroll "Today" down
+0043 click "Requests"
+0044 click "End the day"
+0045 scroll "Dialog" down
+0046 click "End the day"
+0047 click "On to the morning of day 3"
+0048 scroll "Today" down
+0049 click "SrA Eli Novak: 8 hours free today, nothing queued. This takes them 3 hours; it would be done day 3."
+0050 click "Join the staff meeting"
+0051 click "Vendors"
+0052 click "Island Camp Services"
+0053 click "Harbor Equipment Co"
+0054 click "Harbor Equipment Co"
+0055 click "Coastal Rentals"
+0056 click "Coastal Rentals"
+0057 click "Main Island Sanitation"
+0058 click "End the day"
+0059 click "End the day"
+0060 scroll "Dialog" down
+0061 click "On to the morning of day 4"
+0062 click "Open request"
+0063 scroll "Request" down
+0064 scroll "Request" down
+0065 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 1 hour; it would be done day 4."
+0066 click "Ask SMSgt Ray Dunn"
+0067 click "Choose an arrangement…"
+0068 click "BPA call"
+0069 click "Choose a supplier…"
+0070 click "Harbor Equipment Co"
+0071 scroll "Buy" down
+0072 scroll "Buy" down
+0073 click "Back to the desk"
+0074 click "End the day"
+0075 click "End the day"
+0076 click "On to the morning of day 5"
+0077 click "Requests"
+0078 click "Material handling equipment for Hub
+Nothing is arranged yet. SMSgt Ray Dunn wants it from day 8 for 13 days.
+Order by day 6: a card buy from Coastal Rentals starts 1 or 2 days after it goes in, with no written terms."
+0079 scroll "Request" down
+0080 click "Add what you learned"
+0081 click "BPA call"
+0082 click "Government purchase card"
+0083 click "Harbor Equipment Co"
+0084 click "Coastal Rentals"
+0085 click "Government purchase card"
+0086 click "Written purchase order"
+0087 click "Fast"
+0088 click "Good"
+0089 click "Written purchase order"
+0090 click "Government purchase card"
+0091 click "Arrange support"
+0092 click "Back to the desk"
+0093 click "End the day"
+0094 click "End the day"
+0095 click "On to the morning of day 6"
+0096 scroll "Today" down
+0097 click "Requests"
+0098 click "Buy on your own initiative"
+0099 click "Vehicle for the contractin…"
+0100 click "Hub waste removal"
+0101 click "Choose an arrangement…"
+0102 click "Written purchase order"
+0103 click "Choose a supplier…"
+0104 click "Main Island Sanitation"
+0105 click "Fast"
+0106 click "Good"
+0107 click "Back to the desk"
+0108 click "End the day"
+0109 click "End the day"
+0110 click "On to the morning of day 7"
+0111 click "Open request"
+0112 scroll "Request" down
+0113 scroll "Request" down
+0114 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 1 hour; it would be done day 7."
+0115 click "Ask Capt Ana Ruiz"
+0116 click "Choose an arrangement…"
+0117 click "Written purchase order"
+0118 click "Choose a supplier…"
+0119 click "Main Island Sanitation"
+0120 click "Fast"
+0121 click "Good"
+0122 scroll "Buy" down
+0123 click "Back to the desk"
+0124 click "End the day"
+0125 click "End the day"
+0126 click "On to the morning of day 8"
+0127 click "Requests"
+0128 click "Waste removal for Hub
+Nothing is arranged yet. Capt Ana Ruiz wants it from day 13 for 8 days.
+Order today to start by day 13: a purchase order with Main Island Sanitation starts 3 to 5 days after it goes in."
+0129 scroll "Buy" down
+0130 click "None"
+0131 click "TSgt Pratt · 3 CES"
+0132 click "Arrange support"
+0133 click "Back to the desk"
+0134 click "You"
+0135 click "Back to the desk"
+0136 click "End the day"
+0137 click "End the day"
+0138 click "On to the morning of day 9"
+0139 click "End the day"
+0140 click "End the day"
+0141 click "On to the morning of day 10"
+0142 click "End the day"
+0143 click "End the day"
+0144 click "On to the morning of day 11"
+0145 click "Requests"
+0146 click "Payments"
+0147 click "End the day"
+0148 click "End the day"
+0149 click "On to the morning of day 12"
+0150 click "Payments"
+0151 scroll "Payments" down
+0152 scroll "Payments" down
+0153 scroll "Payments" down
+0154 click "Island Camp Services food service at Hub · 
+Providing support
+Money committed 
+$324,000.00 · cost of support received 
+$89,100.00
+Received but not covered by 
+committed funds $0.00"
+0155 click "Back to what we are paying for"
+0156 click "End the day"
+0157 click "End the day"
+0158 click "On to the morning of day 13"
+0159 click "Open vendor decision"
+0160 click "MSgt Joan Avery: 8 hours free today, nothing queued. This takes them 3.5 hours; it would be done day 13."
+0161 click "Cure notice"
+0162 click "End the day"
+0163 scroll "Dialog" down
+0164 click "End the day"
+0165 click "On to the morning of day 14"
+0166 click "End the day"
+0167 click "End the day"
+0168 click "On to the morning of day 15"
+0169 click "End the day"
+0170 click "End the day"
+0171 click "On to the morning of day 16"
+0172 scroll "Today" down
+0173 scroll "Today" up
+0174 click "Hub · Waste removal: 50% · partly supported
+Open site details →"
+0175 click "Hub · partly supported"
+0176 click "Open request: Waste removal for Hub"
+0177 scroll "Request" down
+0178 click "Choose an arrangement…"
+0179 click "SF 44 cash purchase"
+0180 click "Choose a supplier…"
+0181 click "Main Island Sanitation"
+0182 type "Quantity (gal) · Asked: Waste removal, 3,600 gal a day" "1800"
+0183 type "Start day · Asked: day 13" "16"
+0184 type "Duration (days) · Asked: 8 days" "1"
+0185 click "Back to the desk"
+0186 click "Payments"
+0187 scroll "Payments" down
+0188 scroll "Payments" down
+0189 scroll "Payments" down
+0190 click "End the day"
+0191 click "End the day"
+0192 click "On to the debrief"
+0193 scroll "Debrief" down
+0194 click "Trace the evidence"
+0195 quit
