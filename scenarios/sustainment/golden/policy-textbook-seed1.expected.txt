@@ -153,7 +153,7 @@ Day 22
   START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
   START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
 Day 23
-  ACTION    SF 44 cash purchase to Harbor Equipment Co: Material handling equipment at Spoke C, 1 forklifts/day for 37 days (Forklifts). Paid in cash at each delivery, $180 a day, about $6,660 in all. Each delivery is a trip for you and the paying agent: 6 shop hours.
+  ACTION    SF 44 cash purchase to Harbor Equipment Co: Material handling equipment at Spoke C, 1 forklift/day for 37 days (Forklifts). Paid in cash at each delivery, $180 a day, about $6,660 in all. Each delivery is a trip for you and the paying agent: 6 shop hours.
   DONE      SF 44 cash purchase awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 64. Obligated as each delivery is paid.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 24
@@ -180,7 +180,7 @@ Day 28
   END       Harbor Equipment Co material handling equipment at Spoke C ended.
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
   START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 1 forklifts/day.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 1 forklift/day.
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   COMPLY    Island Provisions cured the performance issue with Island Provisions on food service at Spoke B: the cure period ended with a corrective plan in place (0 failure days during the period). Performance is back to standard.
   OK        Waste removal at Hub restored to 100%.
@@ -666,4 +666,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.914)
 
-State hash ecc2639bb5c02c8b3a62ed90f86ea29ce1b0c987f8a191c9bcd6b26135ded3b1
+State hash 03f718d8c89a57d8fc3b8fc1d17e2982401cb9e3030c44b6137997d282594fd1

@@ -98,12 +98,12 @@ public sealed partial class Session
             return (site ?? c?.SiteId, cap ?? c?.CapabilityId);
         }
         string For(string site, string cap, long quantity, int days)
-            => $"{Lower(CapLabel(cap))} at {SiteName(site)}, {Qty(quantity)} {Rate(Cap(cap))} for {Plural(days, "day")}";
+            => $"{Lower(CapLabel(cap))} at {SiteName(site)}, {Amount(quantity, Cap(cap))} for {Plural(days, "day")}";
         switch (action)
         {
             case AwardAction a when Where(a.Card, a.Site, a.Capability) is ({ } site, { } cap) && VendorData(a.Vendor) is { } v:
                 var inst = InstrumentWords(a.Instrument);
-                return $"{Lower(CapLabel(cap))} at {SiteName(site)} from {v.Name}, {Qty(a.Quantity)} {Rate(Cap(cap))} for {Plural(a.DurationDays, "day")} on {Article(inst)} {inst}";
+                return $"{Lower(CapLabel(cap))} at {SiteName(site)} from {v.Name}, {Amount(a.Quantity, Cap(cap))} for {Plural(a.DurationDays, "day")} on {Article(inst)} {inst}";
             case HostNationRequestAction h when Where(h.Card, h.Site, h.Capability) is ({ } site, { } cap):
                 return $"asked {HostNationName} for {For(site, cap, h.Quantity, h.DurationDays)}";
             case AcsaOrderAction o when Where(o.Card, o.Site, o.Capability) is ({ } site, { } cap):

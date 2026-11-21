@@ -375,6 +375,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
       [discoverable] Harbor Equipment Co power at Spoke B failed (first on day 17) and was bought without operators or maintenance and repair; its failure odds were higher every day it ran. Capt Ana Ruiz knew it needed operators as well as maintenance and repair, and nobody asked. Asking about the request for power for Spoke B before the buy would have put that in the request. The performance issue with Harbor Equipment Co on power at Spoke B opened day 29; decision: terminated.
       [avoidable] Arrangements at Spoke B were sized for 360 kW against demand of 468. Population rose to 260 on day 20, which the plan showed from day 1.
       [discoverable] Power depends on fuel, which was short. (see #2)
+      [avoidable] The BPA call with Harbor Equipment Co for 360 kW from day 7 was terminated on day 43; it was to run to day 66.
       [avoidable] The request for power for Spoke B (submitted day 1, needed from day 7) had nothing supplying it from day 44. The last arrangement supplying it, Harbor Equipment Co power at Spoke B, ended on day 43.
       [discoverable] Power depends on fuel, which was short. (see #3)
       [discoverable] Power depends on fuel, which was short. (see #4)

@@ -359,7 +359,7 @@ public sealed partial class Session
                 // DESK-09 (D11): paid in cash at each delivery, and each delivery is a trip (Sf44Deliveries).
                 var trip = CeilHours(TripMilli(siteId, StockIsland(vendor, capId), Day));
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
-                    $"{inst.Label} to {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}). Paid in cash at each delivery, {Money(daily)} a day{(mob > 0 ? $" and {Money(mob)} with the first" : "")}, about {Money(total)} in all. Each delivery is a trip for {(Member(_assigneeNow).Role == "you" ? "you" : MemberName(Member(_assigneeNow)))} and the paying agent: {Plural(trip, "shop hour")}.", []);
+                    $"{inst.Label} to {vendor.Name}: {where}, {UnitCount(a.Quantity, Cap(capId))}/day for {a.DurationDays} days ({lineText}). Paid in cash at each delivery, {Money(daily)} a day{(mob > 0 ? $" and {Money(mob)} with the first" : "")}, about {Money(total)} in all. Each delivery is a trip for {(Member(_assigneeNow).Role == "you" ? "you" : MemberName(Member(_assigneeNow)))} and the paying agent: {Plural(trip, "shop hour")}.", []);
                 CompleteAward(payload, Day, rec);
                 return ActionResult.Ok("bought");
             }
@@ -368,7 +368,7 @@ public sealed partial class Session
             {
                 if (a.Instrument == "sf44") { _cash -= total; ScheduleReplenish(); }
                 else _gpcSpend.Add((Day, total));
-                var rec = AddRecord(Day, RecordKind.Action, a.Id, $"{inst.Label} to {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); {Money(total)} paid on the spot.", []);
+                var rec = AddRecord(Day, RecordKind.Action, a.Id, $"{inst.Label} to {vendor.Name}: {where}, {UnitCount(a.Quantity, Cap(capId))}/day for {a.DurationDays} days ({lineText}); {Money(total)} paid on the spot.", []);
                 CompleteAward(payload, Day, rec);
                 return ActionResult.Ok("bought");
             }
@@ -392,7 +392,7 @@ public sealed partial class Session
                     approval += $" {vendor.Name} prices the work first: its priced proposal is expected on day {proposal}, and the order is written when it arrives.";
                 }
                 var rec = AddRecord(Day, RecordKind.Action, a.Id,
-                    $"{inst.Label} started with {vendor.Name}: {where}, {Qty(a.Quantity)} {Cap(capId).Unit}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);
+                    $"{inst.Label} started with {vendor.Name}: {where}, {UnitCount(a.Quantity, Cap(capId))}/day for {a.DurationDays} days ({lineText}); quoted {Money(total)}.{approval}{(pick is null ? "" : $" Picked {PickWordsText(pick)}.")}", []);
                 AddWork(WorkKind.Award, $"{inst.Label} with {vendor.Name} for {Lower(CapLabel(capId))} at {SiteName(siteId)}", Hours(shopDays, inst.RequiresSystemOrManual), wait, payload, rec);
                 return ActionResult.Ok("in work");
             }
@@ -496,7 +496,7 @@ public sealed partial class Session
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
         var from = SiteData(c.FromSite);
         var lag = _rngWork.NextInt(Rules.Instruments["coordination"].StartLagDays);
-        var rec = AddRecord(Day, RecordKind.Action, c.Id, $"Coordinated with the {from.Name} unit for {Qty(c.Quantity)} {Cap(c.Capability).Unit}/day of {CapLabel(c.Capability)} to {SiteName(c.Site)}. Not a contract; they can withdraw it.", []);
+        var rec = AddRecord(Day, RecordKind.Action, c.Id, $"Coordinated with the {from.Name} unit for {UnitCount(c.Quantity, Cap(c.Capability))}/day of {CapLabel(c.Capability)} to {SiteName(c.Site)}. Not a contract; they can withdraw it.", []);
         var core = Cap(c.Capability).Lines.First(l => l.Kind == "core").Id;
         _arrangements.Add(new Arrangement
         {
@@ -653,6 +653,7 @@ public sealed partial class Session
                 var plannedEnd = arr.EndDay;
                 var notice = _noticeTerminations.Contains(w.Id) ? arr.NoticeDays ?? 0 : 0;
                 arr.EndDay = Math.Min(arr.EndDay, day + notice);
+                if (arr.EndDay < plannedEnd) { arr.CutDay = day; arr.PlannedEndDay = plannedEnd; }   // DESK-168
                 if (arr.Status == ArrangementStatus.Pending && (notice == 0 || arr.EndDay < arr.StartDay)) arr.Status = ArrangementStatus.Ended;
                 // Deobligate the unperformed portion of a fully obligated award. It returns to its line only while
                 // the line is still current; otherwise it lapses. UCAs obligate as they go, so nothing comes back.

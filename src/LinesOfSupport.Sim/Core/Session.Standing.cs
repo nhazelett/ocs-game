@@ -161,7 +161,7 @@ public sealed partial class Session
     }
 
     private static string Amount(Arrangement a, Data.CapabilityData cap)
-        => a.QuantityMilli > 0 ? $" {Qty(a.QuantityMilli / 1000)} {Rate(cap)}" : "";
+        => a.QuantityMilli > 0 ? $" {Amount(a.QuantityMilli / 1000, cap)}" : "";
 
     /// <summary>" through day 8", or nothing for support that runs past the end of the game (host nation, inherited).</summary>
     private string Through(int end) => end >= LastDay ? "" : $" through day {end}";
@@ -223,7 +223,7 @@ public sealed partial class Session
                 AwardPayload p when p.Action.Id != award.Id && p.SiteId == siteId && p.CapabilityId == capId
                                     && (p.Action.StartDay ?? w.CreatedDay) <= to && (p.Action.StartDay ?? w.CreatedDay) + Math.Max(1, p.Action.DurationDays) - 1 >= from
                     => ($"the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} being written with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"}",
-                        $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {Qty(p.Action.Quantity)} {Rate(cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}{Without(Lacks(p.Lines))}; this would be on top of it.",
+                        $"{Upper(WhoIs(w.Assignee))} already writing the {LowerLabel(Rules.Instruments[p.Action.Instrument].Label)} with {VendorData(p.Action.Vendor)?.Name ?? "the vendor"} for {where}, {Amount(p.Action.Quantity, cap)}{(p.Action.StartDay is { } sd ? $" from day {sd}" : "")}{Without(Lacks(p.Lines))}; this would be on top of it.",
                         Lacks(p.Lines)),
                 AcsaPayload p when p.SiteId == siteId && p.CapabilityId == capId
                     => ($"the order being placed with {PartnerName}",
