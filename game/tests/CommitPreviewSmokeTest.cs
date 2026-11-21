@@ -131,6 +131,7 @@ public partial class CommitPreviewSmokeTest : Node
             var original = shell.PendingAward!;
             Pick(shell.InstrumentInput, "bpaCall"); Pick(shell.VehicleInput, "equipBpa"); Pick(shell.InstrumentInput, "purchaseOrder");
             Require(shell.PendingAward!.FundingLine == original.FundingLine && shell.PendingAward.Cor == original.Cor && shell.PendingAward.Priorities!.SequenceEqual(original.Priorities!), "An arrangement round trip keeps applicable funding, pick and COR.");
+            shell.StartInput.Value = 9;   // DESK-174: Harbor is short of forklifts through day 8, so the order starts on day 9
             var hash = shell.Session.StateHash;
             var summary = shell.Session.View!.AwardSummary(shell.PendingAward!)!;
             Require(shell.AwardSummaryLabel.Visible && shell.AwardSummaryLabel.Text == summary.Sentence, "The fixed summary binds the Sim sentence verbatim.");
