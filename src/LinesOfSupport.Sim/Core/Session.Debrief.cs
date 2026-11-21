@@ -152,7 +152,7 @@ public sealed partial class Session
                 var ended = _arrangements.Where(a => a.SiteId == siteId && Supplies(a, capId) && a.Status != ArrangementStatus.Declined && a.EndDay < d)
                                          .OrderByDescending(a => a.EndDay).FirstOrDefault();
                 var tail = (ended is null ? "" : $" The last arrangement supplying it, {NameOf(ended.Id)}, ended on day {ended.EndDay}.")
-                           + (later is null ? "" : $" {NameOf(later.Id)} did not start until day {later.StartDay}.{ExternalNote(later)}{PickLateNote(later)}")
+                           + (later is null ? "" : $" {QuotedLate(later, card.RequestedStartDay) ?? $"{NameOf(later.Id)} did not start until day {later.StartDay}."}{ExternalNote(later)}{PickLateNote(later)}")
                            + (card.Heard is { } h && card.RaisedInRoomDay is null && h.FromDay < card.SubmittedDay
                                ? $" It was raised at the commander's staff meeting on day {h.FromDay}, when the shop was not in the room." : "");
                 yield return ($"card|{card.Id}|{ended?.Id}", new GapFactor(GapFactorKind.Uncovered, GapTag.Avoidable, d,
@@ -519,4 +519,20 @@ public sealed partial class Session
         2 => $"{items[0]} and {items[1]}",
         _ => string.Join(", ", items.Take(items.Count - 1)) + ", and " + items[^1],
     };
+    /// <summary>DESK-130 (D43): a buy quoted to start on a range that held the day its request wanted it and ran past it,
+    /// and that started late inside that range: "The purchase order with Coastal Rentals was quoted to start on day 8
+    /// or 9 and started on day 9." Null when the buy was not quoted, its whole quote was on time or its whole quote was
+    /// late (the plain "did not start until" says that), it started outside its quote (a delay the debrief names on its
+    /// own), or it has no vendor.</summary>
+    private string? QuotedLate(Arrangement a, int wantedFrom)
+    {
+        if (a.QuotedStartMax <= 0 || a.QuotedStartMin > wantedFrom || a.QuotedStartMax <= wantedFrom
+            || a.StartDay <= wantedFrom || a.StartDay > a.QuotedStartMax) return null;
+        if (VendorData(a.VendorId) is not { } vendor || !Rules.Instruments.ContainsKey(a.Instrument)) return null;
+        var buy = a.Instrument switch { "gpc" => "card buy", "sf44" => "cash buy", _ => InstrumentWords(a.Instrument) };
+        var range = a.QuotedStartMax == a.QuotedStartMin ? $"on day {a.QuotedStartMin}"
+            : a.QuotedStartMax == a.QuotedStartMin + 1 ? $"on day {a.QuotedStartMin} or {a.QuotedStartMax}"
+            : $"between day {a.QuotedStartMin} and day {a.QuotedStartMax}";
+        return $"The {buy} with {vendor.Name} was quoted to start {range} and started on day {a.StartDay}.";
+    }
 }
