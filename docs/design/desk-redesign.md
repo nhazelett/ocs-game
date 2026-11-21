@@ -486,3 +486,14 @@ Sim notes (Fable):
 
 - DESK-165: from records the debrief already has: the arrangement's pick (`Arrangement.Pick`) and `PickTwo.FirstQuoteFailurePermille`; the cure notice's period end and the arrangement's failed days after it; the small-buy counts the day's plan already writes.
 - DESK-166: from `CompleteMeetVendor`: say only what is true for every vendor (the confidence tier it raises and what that changes); never hint at a hidden old contract.
+
+## 28. The 21 Nov sixth play: D48 (21 Nov 2026)
+
+D48. **The pinned summary names a part at risk that nobody has confirmed.** When a buy leaves out a part that can make it fail (an operator or maintenance part at risk, DESK-59) and the person who knows has not answered, the summary's last sentence says so: "It leaves out operators; SMSgt Ray Dunn has not been asked." or "...; MSgt Joan Avery is asking SMSgt Ray Dunn, answer due day 6." The sixth play's player bought three forklifts on day 6 to lock the start date while its ask of Dunn was in work; the warning sat in the quote above the pinned footer, and its one change was to put the parts at risk beside the button. The tutorial still lets the player buy before asking (that is its lesson); the summary only makes sure the player chose it. Still at most three sentences (D46). Left out: a parts list beside the button (the request page has it), and blocking the buy.
+
+Also from this play, no decision needed: the quote's "price already includes its operators" said the opposite of the lesson and is reworded in the play's PR ("Coastal Rentals charges the same with its operators as without, and an order brings only the parts it names."); the debrief names a buy the player cancelled (DESK-168); Harbor's short week holds for any buy (DESK-174); a covered host-nation failure is in New since yesterday (DESK-170); the request page links to the contract page where a signed buy is cancelled (DESK-173).
+
+Sim notes (Fable):
+
+- DESK-172: in `BuildAwardSummary`, from `LeftOut(card, lines)` filtered by `PlantPartAtRisk`, and the ask's state from the request's helper views (`HelperView`: not asked, under way with its day, answered).
+- DESK-168: the cancelled arrangement is `ArrangementStatus.Terminated` (or ended) with `StartDay` on or before the short day; name it in `DiagnoseDay`'s sizing branch and add its cause and end records to the factor's evidence.

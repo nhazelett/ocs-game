@@ -263,9 +263,9 @@ public sealed partial class Session
                         var knew = missing.Count > 0 && !a.IsCoordination ? WhoKnew(a, cap, d) : null;
                         yield return ($"fail|{a.Id}|{missing.Count > 0}", missing.Count > 0 && !a.IsCoordination
                             ? new GapFactor(GapFactorKind.VendorFailure, knew is null ? GapTag.Avoidable : GapTag.Discoverable, d,
-                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{knew}{PickFailureNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
+                                $"{Upper(NameOf(a.Id))} failed (first on day {d}) and was bought without {string.Join(" or ", missing)}; its failure odds were higher every day it ran.{knew}{PickFailureNote(a)}{PickKeptNote(a)}{CorNote(a, d)}{IssueNote(a.Id)}", [r.Id, a.CauseId])
                             : new GapFactor(GapFactorKind.VendorFailure, GapTag.Unforeseeable, d,
-                                $"{FailedCovered(a, cap, d)}{PickFailureNote(a)}{DropNote(a, d)}{CorNote(a, d, unforeseen: PickFailureNote(a).Length == 0 && DropNote(a, d).Length == 0)}{IssueNote(a.Id)}", [r.Id]));
+                                $"{FailedCovered(a, cap, d)}{PickFailureNote(a)}{PickKeptNote(a)}{DropNote(a, d)}{CorNote(a, d, unforeseen: PickFailureNote(a).Length == 0 && DropNote(a, d).Length == 0)}{IssueNote(a.Id)}", [r.Id]));
                         break;
                     }
                     case RecordKind.ExecutionConfusion:
@@ -440,8 +440,9 @@ public sealed partial class Session
         var from = BuildPerson(Scenario.Actors.Sco.Person) ?? BuildPerson(Scenario.Actors.Commander.Person);
         var parts = new List<string>();
         var span = played == 1 ? "Over one day" : $"Over {DebriefWords.Number(played)} days";
+        var threads = ClosingThreads(played);   // DESK-165 (b), (c): what the player started, said last
         if (gaps.Count == 0)
-            return new DebriefSummary(from, $"{span}, no site ran short of anything.", null, []);
+            return new DebriefSummary(from, string.Join(" ", [$"{span}, no site ran short of anything.", .. threads]), null, []);
         parts.Add(score.MissionOutput switch
         {
             >= 0.98 => $"{span}, every site had what it needed nearly every day.",
@@ -509,7 +510,62 @@ public sealed partial class Session
                 parts.Add($"There were {DebriefWords.Number(rest.Count)} more gaps: {JoinAnd(kinds)}.");
             }
         }
+        parts.AddRange(threads);
         return new DebriefSummary(from, string.Join(" ", parts), lead.Index, own.Select(x => x.I).ToList());
+    }
+
+    // ------------------------------------------------------------------ the threads the player started (DESK-165)
+
+    /// <summary>DESK-165 (b), (c), Claude play 21 Nov, fifth play, note 40: the debrief's paragraph closes the threads the
+    /// player started and nothing else closed: each cure notice the player issued, where it stands at the end and how the
+    /// support it was about went after it; then the walk-in small buys, how many the spare hours worked and whether any
+    /// reached the commander. Facts from the records and the bands only; nothing drawn, nothing graded.</summary>
+    private List<string> ClosingThreads(int played)
+    {
+        var said = new List<string>();
+        foreach (var i in _issues.Where(i => i.CureNoticeDay is >= 1 && i.CureNoticeDay <= played && i.CureEndsDay is not null)
+                                 .OrderBy(i => i.CureNoticeDay).ThenBy(i => i.OpenedDay))
+            said.Add(CureThread(i, played));
+        if (SmallBuysThread(played) is { } buys) said.Add(buys);
+        return said;
+    }
+
+    private string CureThread(PerformanceIssueState i, int played)
+    {
+        var a = _arrangements.First(x => x.Id == i.ArrangementId);
+        var vendor = VendorData(i.VendorId)?.Name ?? "the vendor";
+        var end = i.CureEndsDay!.Value;
+        var where = $"{Lower(CapLabel(i.CapabilityId))} at {SiteName(i.SiteId)}";
+        var standing = i.Outcome switch
+        {
+            CureOutcome.None => $"Your cure notice to {vendor} runs to day {end}",
+            CureOutcome.Cured when a.EndDay < end => $"Your cure notice to {vendor} closed with its contract, which ended on day {a.EndDay}",
+            CureOutcome.Cured => $"{vendor} cured after your cure notice and was back to standard on day {end}",
+            _ => $"{vendor} did not cure after your cure notice and was in default from day {end}",
+        };
+        // How the support it was about went from the day after the notice to the end (or to the contract's end).
+        var cs = _caps.FirstOrDefault(c => c.SiteId == i.SiteId && c.CapabilityId == i.CapabilityId);
+        var to = Math.Min(played, a.EndDay);
+        if (cs is null || i.CureNoticeDay >= to) return Upper(standing) + ".";
+        var band = Band(cs);
+        var shortDays = Enumerable.Range(i.CureNoticeDay!.Value + 1, to - i.CureNoticeDay.Value).Count(d => band[d - 1] is >= 0 and < 1000);
+        var after = shortDays == 0 ? $"{where} was never short after it" : $"{where} was short on {Plural(shortDays, "day")} after it";
+        return $"{Upper(standing)}; {after}.";
+    }
+
+    private string? SmallBuysThread(int played)
+    {
+        if (Rules.SmallBuys.BuysPerPersonPerDayMilli <= 0) return null;
+        var complaints = _records.Where(r => r.Kind == RecordKind.Compliance && r.Subject == "smallBuys" && r.Day <= played).Select(r => r.Day).ToList();
+        if (_smallBuysWorked == 0 && complaints.Count == 0) return null;
+        var customer = SmallBuyCustomer;
+        var worked = _smallBuysWorked == 0
+            ? $"Spare shop hours went to none of {customer}'s walk-in small buys"
+            : $"Spare shop hours went to {Plural(_smallBuysWorked, "walk-in small buy")} for {customer}";
+        var reached = complaints.Count == 0
+            ? $"none waited long enough for {customer} to go to the commander"
+            : $"{customer} went to the commander about the ones waiting on {(complaints.Count == 1 ? $"day {complaints[0]}" : "days " + JoinAnd(complaints.Select(d => d.ToString()).ToList()))}";
+        return $"{worked}; {reached}.";
     }
 
     private static string JoinAnd(IReadOnlyList<string> items) => items.Count switch
