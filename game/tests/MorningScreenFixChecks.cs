@@ -37,7 +37,7 @@ internal static class MorningScreenFixChecks
                         "The lead and mentor do not repeat Mills' morning news.");
                     Require(PlayScreen.Descendants(shell.MorningBrief).OfType<Label>().Count(l => l.Text == mills.Text) == 1, "Mills' full note appears exactly once.");
                     var join = PlayScreen.Descendants(shell.MorningBrief).OfType<Button>().Single(b => b.HasMeta("news_staff_meeting"));
-                    Require(join.GetParent().GetChildren().OfType<Label>().Any(l => l.HasMeta("action_cost") && l.Text.Contains("hours")), "The news carries its meeting action and exact previewed cost.");
+                    Require(join.GetParent().GetChildren().OfType<Label>().Any(l => l.HasMeta("action_cost") && l.Text.Contains(view.StaffMeeting.JoinSays, StringComparison.Ordinal)), "The news carries the Sim's verbatim meeting effect, including the daily hour.");
                     await Capture("day3-news");
                     scroll.EnsureControlVisible(join.GetParent().GetChildren().OfType<Label>().Last()); await Frames();
                     await Capture("day3-meeting");

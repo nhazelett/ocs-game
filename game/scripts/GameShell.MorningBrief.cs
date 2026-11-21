@@ -76,7 +76,7 @@ public partial class GameShell
         {
             var action = new JoinStaffMeetingAction { Day = view.Day, Attend = true };
             var assigned = AddAssignedAction(row, row, view, action, "Join the staff meeting",
-                "Joins the staff meeting so requests reach you in the room.");
+                view.StaffMeeting.JoinSays);
             assigned.Button.SetMeta("news_staff_meeting", true);
         }
         if (surface != "morning" || item.Kind != NewKind.Request || item.LinkKind != BoardLinkKind.Card) return;
