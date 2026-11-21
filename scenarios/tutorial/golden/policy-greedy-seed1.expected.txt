@@ -54,7 +54,7 @@ Day 9
 Day 10
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
-  EVENT     Island Camp Services short-staffs the dining hall two days running
+  EVENT     Island Camp Services short-staffs the dining hall two days running. Once the misses are reported to the office, they come to your desk as a decision on what to do with the vendor.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Main Island Utilities (host nation) water at Hub missed today's delivery. The stock on hand covered today's demand.
   FAIL      Island Camp Services food service at Hub missed today's delivery. The stock on hand covered today's demand.
@@ -122,4 +122,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 0.968)
 
-State hash 9211d84ccd611c4d27b85a5c44cdb3f47c0689f57a28e5b154360f625fe79bfa
+State hash b90af730e7549bebf46e28f8e8c348a5f7f21e9df435c1ba5ca5d1d112d678fa
