@@ -78,7 +78,7 @@ public partial class RequestBuyFitSmokeTest : Node
             Require(shell.AwardPreview!.TotalCents == exact.TotalCents && shell.AwardSummaryLabel.Text == shell.Session.View.AwardSummary(quote)!.Sentence, "The compact written form keeps the complete exact quote.");
             Alternatives(); await Capture("forklifts-top");
             var pure = shell.Session.StateHash; var pinned = shell.AwardButton.GetGlobalRect();
-            shell.AwardScroll.ScrollVertical = (int)(shell.AwardScroll.Size.Y * .75f); await Frames();
+            shell.AwardScroll.EnsureControlVisible(shell.PriorityInputs["good"]); await Frames();
             Require(shell.PriorityInputs.Values.All(InForm) && InForm(shell.CorInput!) && InForm(shell.CorInput!.GetParent().GetChild<Control>(0)), "One normal scroll reaches pick two and the contract monitor together.");
             Require(shell.AwardButton.GetGlobalRect() == pinned && shell.AwardSummaryLabel.Text == shell.Session.View.AwardSummary(quote)!.Sentence, "Scrolling leaves the action and entire summary fixed.");
             Require(shell.Session.StateHash == pure, "Scrolling and warning marks are read only.");

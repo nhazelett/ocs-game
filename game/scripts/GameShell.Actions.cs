@@ -28,7 +28,7 @@ public partial class GameShell
     private SpinBox quantityInput = null!, startInput = null!, durationInput = null!;
     private Label previewCost = null!, previewTiming = null!, previewStops = null!, previewGaps = null!;
     private Button awardButton = null!;
-    private VBoxContainer? previewLearned;
+    private VBoxContainer? previewLearned, awardLearnedActions;
     internal Label AwardSummaryLabel { get; private set; } = null!;
     internal Dictionary<string, Button> AwardAddButtons { get; } = [];
     internal Label VehicleChoiceReason { get; private set; } = null!;
@@ -185,6 +185,8 @@ public partial class GameShell
         });
         awardButton.ThemeTypeVariation="TabletopPrimary";
         AwardBackButton = RequestBackButton;
+        awardWriters = new VBoxContainer(); awardFooter.AddChild(awardWriters);
+        awardLearnedActions = new VBoxContainer(); awardFooter.AddChild(awardLearnedActions);
         AwardSummaryLabel = DeskUi.Label(); AwardSummaryLabel.Hide(); awardFooter.AddChild(AwardSummaryLabel);
         AwardBlockedReason = DeskUi.ActionReason(awardFooter, awardButton); GateAward(view);
         if (view is null) { awardPanel.AddChild(DeskUi.Label("Load a scenario to assemble an action.")); return; }
@@ -265,7 +267,6 @@ public partial class GameShell
         FundingChoiceReason = fundingReason;
         fundingInput.Disabled = immediate;
         fundingInput.GetParent<Control>().Visible = !immediate;
-        BuildAwardPriorities(view); GateAward(view); // DESK-26
         if (view.CorModeled && view.Rules.Instruments.TryGetValue(awardInstrument ?? "", out var instrument) && instrument.WrittenTerms)
         {
             var cors = view.CorChoices(editor.CapabilityId);
@@ -286,6 +287,7 @@ public partial class GameShell
                 CorReasonLabels.Add(reason);
             }
         }
+        BuildAwardPriorities(view); GateAward(view); // DESK-26
         foreach (var reason in awardChoiceReasons) awardPanel.AddChild(reason);
         if (priorityHelp is not null) awardPanel.AddChild(priorityHelp);
         foreach (var reason in CorReasonLabels) awardPanel.AddChild(reason);
@@ -300,7 +302,6 @@ public partial class GameShell
             previewPanel.AddChild(DeskUi.Label("Choose a contract vehicle and funding line for these terms before asking for the quote."));
             return;
         }
-        awardWriters = new VBoxContainer(); previewPanel.AddChild(awardWriters);
         if (AwardTrade is null) { AwardTrade = DeskUi.Label(); previewPanel.AddChild(AwardTrade); }
         previewTiming = DeskUi.Label(); previewPanel.AddChild(previewTiming);
         previewCost = DeskUi.Label(); previewPanel.AddChild(previewCost);
@@ -340,12 +341,12 @@ public partial class GameShell
             AwardSummaryLabel.AddThemeColorOverride("font_color", summary?.Attention == true ? TabletopTheme.Warning : TabletopTheme.Ink);
             if (previewLearned is not null)
             {
-                DeskUi.Clear(previewLearned); AwardAddButtons.Clear();
+                DeskUi.Clear(previewLearned); DeskUi.Clear(awardLearnedActions!); AwardAddButtons.Clear();
                 foreach (var line in (editor.CardId is null ? null : view.RequirementEditor(editor.CardId))?.Lines.Where(l => l.Known && !l.On && l.CanAdd) ?? [])
                 {
                     var text = (line.LearnedFrom is { } person ? person.WithUnit + " told you: " : "") + (line.Learned ?? line.GapIfOff ?? line.Label);
                     var warning = DeskUi.Label(text); warning.AddThemeColorOverride("font_color", TabletopTheme.Warning); previewLearned.AddChild(warning);
-                    var add = AddLearnedLineButton(previewLearned, view, editor.CardId!, line);
+                    var add = AddLearnedLineButton(awardLearnedActions!, view, editor.CardId!, line);
                     AwardAddButtons[line.Id] = add;
                 }
             }
