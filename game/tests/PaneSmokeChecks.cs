@@ -72,9 +72,10 @@ internal static class PaneSmokeChecks
             void CheckFooter(Button button)
             {
                 Require(parent.GetViewport().GetVisibleRect().Encloses(button.GetGlobalRect()), "The primary action stays in the window.");
-                var reason = button.GetParent().GetChild<Label>(button.GetIndex() + 1);
+                var reason = button.GetParent().GetChild<Control>(button.GetIndex() + 1);
+                var text = reason is Label label ? label.Text : ((Button)reason).Text;
                 if (button.Disabled)
-                    Require(reason.IsVisibleInTree() && reason.Text.Length > 0
+                    Require(reason.IsVisibleInTree() && text.Length > 0
                         && reason.GetGlobalRect().Position.Y >= button.GetGlobalRect().End.Y
                         && parent.GetViewport().GetVisibleRect().Encloses(reason.GetGlobalRect()), "The complete reason is immediately under the button and visible.");
             }

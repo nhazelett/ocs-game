@@ -22,7 +22,11 @@ public partial class GameShell
         var choices = view.AssigneeChoices(PendingAward);
         if (AwardWriterPicker is { } current && current.Selected == awardAssignee && current.Choices.SequenceEqual(choices)) return;
         ClearAwardWriter();
-        var picker = new AssigneePicker(choices, awardAssignee!, view.Finished, "Who writes it", compact: true);
+        // The two-word instruction is the leading verb phrase of Sim's actual missing-pair reason.
+        var unavailable = PickTwoReason(view) is { } reason
+            ? "done day after you " + string.Join(" ", reason.Split(' ').Take(2)).ToLowerInvariant()
+            : "done day unavailable";
+        var picker = new AssigneePicker(choices, awardAssignee!, view.Finished, "Who writes it", compact: true, unavailableDoneDay: unavailable);
         AwardWriterPicker = picker; awardWriters.AddChild(picker);
         var version = awardFormVersion; var hash = session.StateHash;
         picker.SelectionChanged = () =>

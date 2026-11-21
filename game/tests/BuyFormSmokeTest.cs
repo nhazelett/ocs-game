@@ -16,6 +16,11 @@ public partial class BuyFormSmokeTest : Node
             var hash = shell.Session.StateHash;
             Pick(shell.VendorInput, "harborBottling");
             Require(CardReason().Contains("Harbor Bottling does not accept the card"), "The disabled card choice explains the supplier's refusal in the arrangement picker.");
+            await Frames(); shell.AwardScroll.ScrollVertical = 100000; await Frames();
+            Require(shell.AwardBlockedControl == shell.InstrumentInput, "A missing arrangement links to the arrangement picker.");
+            shell.AwardBlockedReason.EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.AwardScroll.GetGlobalRect().Encloses(shell.InstrumentInput.GetGlobalRect()), "The arrangement reason reveals its offscreen picker.");
+            await Layout("arrangement-link", shell.InstrumentInput);
             Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc");
             Require(!CardReason().Contains("Harbor Bottling does not accept the card") && !shell.AwardBlockedReason.Text.Contains("Harbor Bottling does not accept the card"), "Changing suppliers clears the previous supplier's refusal line.");
             Order();
@@ -28,7 +33,19 @@ public partial class BuyFormSmokeTest : Node
             Pick(shell.InstrumentInput, "purchaseOrder"); Order();
             Require(shell.QuantityInput.Value == 4500 && shell.StartInput.Value == 2 && shell.DurationInput.Value == 7, "Arrangement changes keep the chosen amount and timing.");
             Require(shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good", "The pick-two reason does not point below the pinned footer.");
+            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => b.Text.EndsWith("done day after you pick two")),
+                "Every writer explains its missing date from the Sim's pick-two refusal.");
+            var beforeJump = shell.Session.StateHash;
+            await Frames(); shell.AwardScroll.ScrollVertical = 100000; await Frames();
+            var pickRow = shell.PriorityInputs["fast"].GetParent<Control>();
+            Require(shell.AwardBlockedControl == pickRow && !shell.AwardBlockedReason.Disabled, "The reason links to the exact missing-pair control.");
+            shell.AwardBlockedReason.EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.AwardScroll.GetGlobalRect().Encloses(pickRow.GetGlobalRect()) && beforeJump == shell.Session.StateHash,
+                "The blocking reason brings pick two into view without changing any terms or Sim state.");
+            await Layout("pick-two-link", pickRow);
             PickPriorities(shell, "fast", "good");
+            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => !b.Text.Contains("after you pick two")), "Picking a pair restores authoritative done dates.");
+            Require(PlayScreen.Descendants(shell.CorInput!.GetParent()).OfType<Label>().Any(l => l.Text == "Contract monitor (COR)"), "The buy form uses the same COR name as Mills and Payments.");
             Require(shell.CorInput is not null && shell.DurationInput.GetParent().GetParent().GetIndex() < shell.CorInput.GetParent().GetIndex()
                 && shell.PriorityInputs.Values.All(p => shell.DurationInput.GetParent().GetParent().GetIndex() < p.GetParent().GetIndex()), "Amount and timing precede priorities and the COR.");
             await Layout("written-water", shell.DurationInput);
@@ -83,7 +100,7 @@ public partial class BuyFormSmokeTest : Node
                 if (shell.AwardWriterPicker is { } writer)
                     GD.Print($"WRITER_LAYOUT: picker={writer.Size}, rows={string.Join(",", writer.ChoiceButtons.Values.Select(b => b.Size.Y))}, summary={shell.AwardSummaryLabel.Size}, button={shell.AwardButton.Size}, reason={shell.AwardBlockedReason.Size} visible={shell.AwardBlockedReason.Visible}");
                 Require(scroll.Size.Y >= pane.Size.Y / 2, "The form keeps at least half the pane, including the longer forklift summary.");
-                Require(shell.AwardSummaryLabel.Text == (shell.Session.View!.AwardSummary(shell.PendingAward!)?.Sentence ?? ""), "The pinned summary retains the complete Sim sentence.");
+                Require(shell.AwardSummaryLabel.Text == ((shell.PendingAward is { } pending ? shell.Session.View!.AwardSummary(pending)?.Sentence : null) ?? ""), "The pinned summary retains the complete Sim sentence.");
                 var button = shell.AwardButton.GetGlobalRect();
                 scroll.EnsureControlVisible(focus); await Frames();
                 Require(scroll.GetGlobalRect().Encloses(focus.GetGlobalRect()) && button == shell.AwardButton.GetGlobalRect()

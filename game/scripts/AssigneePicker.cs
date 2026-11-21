@@ -11,7 +11,7 @@ internal partial class AssigneePicker : VBoxContainer
     internal string Selected { get; private set; }
     internal Action? SelectionChanged { get; set; }
 
-    internal AssigneePicker(IReadOnlyList<AssigneeChoice> choices, string selected, bool disabled, string caption = "Who should take this task?", bool compact = false)
+    internal AssigneePicker(IReadOnlyList<AssigneeChoice> choices, string selected, bool disabled, string caption = "Who should take this task?", bool compact = false, string unavailableDoneDay = "done day unavailable")
     {
         Choices = choices; Selected = selected;
         AddThemeConstantOverride("separation", 6);
@@ -30,7 +30,7 @@ internal partial class AssigneePicker : VBoxContainer
         {
             string CompactText() => (choice.MemberId == Selected ? "✓ " : "") + choice.Name
                 + $" · {choice.FreeHoursToday} h free · " + (choice.DoneDayMin is { } lo && choice.DoneDayMax is { } hi
-                    ? lo == hi ? $"done day {lo}" : $"done day {lo}–{hi}" : "done day unavailable");
+                    ? lo == hi ? $"done day {lo}" : $"done day {lo}–{hi}" : unavailableDoneDay);
             var button = DeskUi.Button(compact ? CompactText() : choice.Sentence, () => Select(choice.MemberId));
             if (compact)
             {
