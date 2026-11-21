@@ -11,6 +11,15 @@ public sealed partial class Session
 {
     private static readonly HashSet<string> Modifiable = ["purchaseOrder", "bpaCall", "idiqOrder"];
 
+    /// <summary>DESK-195 (Claude play 21 Nov, eleventh play, note P2-11): the request a contract is changed by. A contract
+    /// bought on the office's own initiative has no request of its own, so it is the request on the desk for its site and
+    /// capability whose days overlap it; null when there is none.</summary>
+    private CardState? RequestFor(Arrangement a)
+        => a.CardId is not null ? _cards.FirstOrDefault(c => c.Id == a.CardId)
+            : _cards.Where(c => c.SubmittedDay <= Day && c.SiteId == a.SiteId && c.CapabilityId == a.CapabilityId
+                                && c.RequestedStartDay <= a.EndDay && c.RequestedStartDay + Math.Max(1, c.DurationDays) - 1 >= a.StartDay)
+                    .OrderBy(c => c.RequestedStartDay).FirstOrDefault();
+
     /// <summary>The parts (line ids) this arrangement could take today: operators or maintenance that its request has,
     /// that it left out, and that its vendor sells; or why none can be added, as one plain sentence.</summary>
     private (List<string> Parts, string? Why) AddableParts(Arrangement? a)
@@ -29,13 +38,15 @@ public sealed partial class Session
         if (_work.Any(w => w.Kind == WorkKind.Modify && w.CompletedDay is null && ((ModifyAction)w.Payload!).Arrangement == a.Id))
             return ([], $"A change to {NameOf(a.Id)} is already being written.");
         var cap = Cap(a.CapabilityId);
-        var card = a.CardId is null ? null : _cards.FirstOrDefault(c => c.Id == a.CardId);
+        var card = RequestFor(a);   // DESK-195
         var has = LinesOn(a, int.MaxValue).ToHashSet();
         var leftOut = cap.Lines.Where(l => l.Kind is "operator" or "maintenance" && !has.Contains(l.Id)).ToList();
         if (leftOut.Count == 0) return ([], $"{Capitalize(NameOf(a.Id))} already brings everything it can.");
         var asked = leftOut.Where(l => card is not null && card.Lines.TryGetValue(l.Id, out var on) && on).ToList();
         if (asked.Count == 0)
-            return ([], $"The request does not ask for {JoinWords(leftOut.Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList())}. Find out what it needs first.");
+            return ([], card is null
+                ? $"Nothing on your desk asks for {JoinWords(leftOut.Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList())} at {SiteName(a.SiteId)}."
+                : $"The request does not ask for {JoinWords(leftOut.Select(l => (l.Label ?? l.Id).ToLowerInvariant()).ToList())}. Find out what it needs first.");
         var offer = VendorData(a.VendorId)?.Offers.FirstOrDefault(o => o.Capability == a.CapabilityId);
         var sold = asked.Where(l => offer is not null && offer.Lines.Contains(l.Id)).ToList();
         if (sold.Count == 0)
@@ -128,7 +139,7 @@ public sealed partial class Session
         var leftOut = Cap(a.CapabilityId).Lines.Where(l => l.Kind is "operator" or "maintenance" && !has.Contains(l.Id)).ToList();
         if (leftOut.Count == 0) return false;
         if (Modifiable.Contains(a.Instrument) || a.Uca is not null) return true;
-        var card = a.CardId is null ? null : _cards.FirstOrDefault(c => c.Id == a.CardId);
+        var card = RequestFor(a);   // DESK-195
         return leftOut.Any(l => card is not null && card.Lines.TryGetValue(l.Id, out var on) && on);
     }
 

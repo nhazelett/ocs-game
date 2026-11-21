@@ -48,9 +48,29 @@ public sealed partial class Session
     {
         var (lk, lid) = Link(r.Subject);
         // A scenario event's record can be its bare title ("Harbor Equipment Co is short of forklifts this week").
-        var text = r.Text.TrimEnd();
+        var text = (CoveredWithdrawal(r) ?? r.Text).TrimEnd();   // DESK-198
         if (text.Length > 0 && !".!?\"'".Contains(text[^1])) text += ".";
         return new NewItem(NewKind.News, text, PersonFor(lk, lid), null, null, lk, lid, r.Id);
+    }
+
+    /// <summary>
+    /// DESK-198 (Claude play 21 Nov, eleventh play, note P1-16). A withdrawal whose site and capability already have support
+    /// arranged from the day after its last day reads as news, not an alert, and names what takes over: "The host nation
+    /// withdrew inherited host nation support for waste removal at Hub; last day of support 12; the purchase order from Main
+    /// Island Sanitation takes over on day 13. ..." The eleventh play's first player had ordered that purchase order on day 7
+    /// and still met "1 alert" on day 9, which "reads as if I still needed to act". Said as DESK-188 says a running line's
+    /// follow-on. The record is unchanged; a withdrawal with nothing behind it stays an alert. Null when not covered.
+    /// </summary>
+    private string? CoveredWithdrawal(CauseRecord r)
+    {
+        if (r.Kind != RecordKind.Withdrawal || _arrangements.FirstOrDefault(a => a.Id == r.Subject) is not { } a) return null;
+        var last = $"last day of support {a.EndDay}";
+        if (!r.Text.Contains(last + ".", StringComparison.Ordinal)) return null;
+        var next = _arrangements.Where(b => b.Id != a.Id && b.SiteId == a.SiteId && b.CapabilityId == a.CapabilityId && Live(b)
+                                            && b.StartDay <= a.EndDay + 1 && b.EndDay > a.EndDay)
+                                .OrderBy(b => b.StartDay).FirstOrDefault();
+        if (next is null) return null;
+        return r.Text.Replace(last + ".", $"{last}; {Called(next)} takes over on day {Math.Max(next.StartDay, a.EndDay + 1)}.", StringComparison.Ordinal);
     }
 
     /// <summary>

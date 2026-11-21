@@ -72,7 +72,10 @@ public partial class ScreenPolishSmokeTest : Node
             Require(contractCure.Disabled && !contractCure.GetParent().GetChildren().OfType<AssigneePicker>().Last(p => p.GetIndex() < contractCure.GetIndex()).IsVisibleInTree(), "The contract's in-work action follows the same rule.");
             shell.CloseContractView();
 
-            Load(9); hash = shell.Session.StateHash; tabs.CurrentTab = GameShell.TodayTab;
+            // DESK-198: a withdrawal covered from the day after its last day is news, not an alert, so the day nine fixture
+            // leaves out the waste order to keep the honey trucks' withdrawal an alert that New also carries.
+            var uncovered = input with { Actions = [.. input.Actions.Where(a => a is not AwardAction { Card: "tutWaste" })] };
+            Load(9, uncovered); hash = shell.Session.StateHash; tabs.CurrentTab = GameShell.TodayTab;
             var board = shell.Session.View!.MorningBoard();
             var duplicates = board.New.Where(n => board.Items.Any(i => i.RecordId == n.RecordId && i.Severity == BoardSeverity.Alert)).ToArray();
             Require(duplicates.Length > 0, "Day nine exercises an alert also supplied in New since yesterday.");
