@@ -530,7 +530,7 @@ public sealed partial class Session
             : t.WithNotice ? $"Termination of {NameOf(t.Arrangement)} with {arr.NoticeDays} days' notice started." : $"Termination of {NameOf(t.Arrangement)} started.", []);
         var w = AddWork(WorkKind.Terminate, EndWorkName(arr), EndMilli(arr), Day, t.Arrangement, rec);
         if (t.WithNotice) _noticeTerminations.Add(w.Id);
-        return ActionResult.Ok("termination in work");
+        return ActionResult.Ok(IsCardBuy(arr) ? "cancelling the card buy in work" : "termination in work");   // Claude play 21 Nov, seventh play
     }
 
     /// <summary>DESK-94: a card buy is not a contract. It is cancelled with the vendor in a short call: no notice, no
