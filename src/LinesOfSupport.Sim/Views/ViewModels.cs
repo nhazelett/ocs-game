@@ -482,7 +482,15 @@ public sealed record VendorCard(
     string Id, string Name, string IslandId, string IslandName, IReadOnlyList<VendorCardOffer> Sells,
     bool? AcceptsCash, bool? AcceptsGpc, IReadOnlyList<string>? IslandsReached,
     IReadOnlyList<string> ArrangementIds, IReadOnlyList<string> VehicleIds,
-    PersonView? Rep, int? MetDay, bool MeetingSetUp, string? Standing, string? KnownFrom, string? StillToLearn, string? Heard = null);
+    PersonView? Rep, int? MetDay, bool MeetingSetUp, string? Standing, string? KnownFrom, string? StillToLearn, string? Heard = null)
+{
+    /// <summary>DESK-166 (Claude play 21 Nov, fifth play, note 13): what a meeting brings when nothing on the card is left to
+    /// learn, so the two hours are not a mystery ("Their terms are on file already, so meeting Mr. Tomas Reyna adds nothing to
+    /// their card; a vendor you meet does raise any contract of theirs this office has left unfinished."). The same words for
+    /// every vendor, so it never hints at a contract the handover left out. Null when there is something still to learn
+    /// (<see cref="StillToLearn"/> says it), when nobody from them can be met, or once met.</summary>
+    public string? MeetingBrings { get; init; }
+}
 
 /// <summary>An existing vehicle the shop knows about that could carry this action.</summary>
 /// <param name="CeilingCents">IDIQs: the contract ceiling (null for BPAs, or an IDIQ with no ceiling in its data).</param>
