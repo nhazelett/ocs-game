@@ -19,7 +19,7 @@ public partial class VendorsSmokeTest : Node
         var facts = shell.VendorCardContents["islandMart"].GetChildren().OfType<Label>().Single(l => l.Text.Contains(offer.NoticeSays!));
         Check(facts); await Capture("vendor", facts, shell.VendorCardPicker.GetParent().GetParent<ScrollContainer>());
         PickAwardTarget(shell, "tutWater"); Pick(shell.VendorInput, "islandMart"); Pick(shell.InstrumentInput, "gpc"); shell.ShowMarket();
-        Check(shell.SupplierKnowledge!); await Capture("supplier", shell.SupplierKnowledge!, shell.AwardScroll);
+        Check(shell.SupplierNotice!); await Capture("supplier", shell.SupplierNotice!, shell.AwardScroll);
         Require(shell.Session.StateHash == hash, "Reading both notice explanations changes no simulation state.");
         void Check(Label label)
         {
@@ -77,7 +77,7 @@ public partial class VendorsSmokeTest : Node
                 {
                     shell.AwardScroll.EnsureControlVisible(shell.SupplierKnowledge); await Frames();
                     Require(shell.AwardScroll.GetGlobalRect().Encloses(shell.SupplierKnowledge.GetGlobalRect()),
-                        "The entire supplier facts and news sentence fit in the form's scroll.");
+                        "The full supplier capacity and news sentence fit together above the pinned footer.");
                     await Capture("day5-supplier");
                 }
                 Require(shell.Session.StateHash == hash, "Reading cards and quote facts spends no hours or money.");
@@ -127,14 +127,15 @@ public partial class VendorsSmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1] + "-" + suffix + ".png") == Error.Ok, "Native vendor screenshot saved.");
             }
+            string SupplierText() => string.Join("\n", shell.SupplierKnowledge!.GetParent().GetChildren().OfType<Label>().Select(l => l.Text));
             string CardText(string vendor) => string.Join("\n", shell.VendorCardContents[vendor].GetChildren().OfType<Label>().Select(l => l.Text));
             var pickerHash = shell.Session.StateHash; Pick(shell.VendorCardPicker, "campServices"); Pick(shell.VendorCardPicker, "harborBottling");
             Require(shell.Session.StateHash == pickerHash, "Choosing whose card to read never changes play.");
             PickAwardTarget(shell, "tutWater"); Pick(shell.VendorInput, "harborBottling");
-            Require(shell.SupplierKnowledge!.Text.Contains("Cash: — · Card: —") && shell.SupplierKnowledge.Text.Contains("Usual capacity per day: — · Uncommitted: —"),
+            Require(SupplierText().Contains("Cash: — · Card: —") && shell.SupplierKnowledge.Text.Contains("Usual capacity per day: — · Uncommitted: —"),
                 "The award editor also blanks unknown payment and capacity instead of disclosing its raw numbers.");
             var blank = CardText("harborBottling");
-            Require(!blank.Contains("Counted from the signed order") && !shell.SupplierKnowledge!.Text.Contains("Counted from the signed order"),
+            Require(!blank.Contains("Counted from the signed order") && !SupplierText().Contains("Counted from the signed order"),
                 "An unknown notice reveals no explanation on either surface.");
             Require(blank.Contains("Cash: — · Card: —") && blank.Contains("Islands reached: —")
                 && blank.Contains("Usual capacity per day: —") && blank.Contains("Price per gal: —\nTime after a signed order: —"), "An unmet vendor's unknown facts are visible blanks, not hidden or invented numbers.");
@@ -153,12 +154,12 @@ public partial class VendorsSmokeTest : Node
             var known = expected.View.VendorCards().Single(c => c.Id == "harborBottling");
             var sale = known.Sells.Single(); var text = CardText(known.Id);
             Require(sale.NoticeSays is not null && text.Contains("after a signed order\n" + sale.NoticeSays)
-                && shell.SupplierKnowledge!.Text.EndsWith(sale.NoticeSays),
+                && shell.SupplierNotice!.Text.EndsWith(sale.NoticeSays),
                 "Meeting the vendor reveals the same authoritative notice explanation on both surfaces.");
             Require(shell.Session.StateHash == expected.StateHash() && text.Contains("Cash: yes · Card: no")
                 && text.Contains(DeskUi.Money(sale.UnitPriceCents!.Value)) && text.Contains(sale.CapacityPerDay!.Value.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + " " + sale.Unit)
                 && text.Contains(known.KnownFrom!), "A completed meeting fills in the exact price, supply, payment and source supplied by Sim.");
-            Require(shell.SupplierKnowledge!.Text.Contains("Cash: yes · Card: no") && !shell.SupplierKnowledge.Text.Contains("Usual capacity per day: —"),
+            Require(SupplierText().Contains("Cash: yes · Card: no") && !shell.SupplierKnowledge.Text.Contains("Usual capacity per day: —"),
                 "The same award summary fills in after the engine reports learned terms and capacity.");
             Require(text.Contains("Usual capacity per day: 5,000 gal") && text.Contains("Price per gal: " + DeskUi.Money(sale.UnitPriceCents!.Value)),
                 "A consumable quote names its engine unit and groups thousands without adding another per-day charge.");
