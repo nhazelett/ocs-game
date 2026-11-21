@@ -318,7 +318,7 @@ public partial class GameShell
         {
             var cors = view.CorChoices(editor.CapabilityId);
             var options = new[] { new Pick("", "None") }.Concat(cors.Select(c => new Pick(c.Id,
-                c.Name + (string.IsNullOrEmpty(c.Unit) ? "" : " · " + c.Unit)
+                c.Why.Split(" and ", 2, StringSplitOptions.None)[0]
                 + $" · catches about {c.ReportPermille / 10m:0.#}%, reports "
                 + (c.LagDays == 0 ? "the same day" : DeskUi.Count(c.LagDays, "day") + " late")))).ToArray();
             CorInput = AddPick(awardPanel, "Contract monitor (COR)", options, awardCor, id =>
