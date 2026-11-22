@@ -128,7 +128,7 @@ public partial class GameShell
             .Where(line => arrangement.Lines.Contains(line.Id)).Select(line => line.Label?.ToLowerInvariant() ?? "support"));
         contractContents.AddChild(DeskUi.Label($"{ArrangementStatusText(view, arrangement)}. Supplies {supplies}."));
         if (scope.Length > 0) contractContents.AddChild(DeskUi.Label("Includes " + scope + "."));
-        contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement)));
+        contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement) + (view.DisputedDaysLine(arrangement.Id) is { } disputed ? "\n" + disputed : "")));
         if (arrangement.NoticeDays is { } days)
             contractContents.AddChild(DeskUi.Label($"The contract requires {days} days of notice."));
         var hasModification = AddContractModification(contractContents, view, arrangement.Id);
