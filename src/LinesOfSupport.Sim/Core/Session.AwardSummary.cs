@@ -54,6 +54,7 @@ public sealed partial class Session
         var chk = CheckAward(a);
         var card = chk.Card;
         string? why = null, passCost = null, answer = null, covered = null;
+        var answerSaid = false;
         if (chk.SiteId is { } siteId && chk.CapabilityId is { } capId)
         {
             var duration = Math.Max(1, a.DurationDays);
@@ -63,8 +64,11 @@ public sealed partial class Session
                 why = $"It starts after the need ends on day {needEnd}.";
             else if (card is not null && ToldNotAdded(card, chk) is { } told)
                 why = told;   // D40, DESK-119: in place of "already covered", which is beside the point while the part is missing
-            else if (card is not null && NotYetConfirmed(card, chk) is { } unconfirmed)
-                why = unconfirmed;   // D48, DESK-172: a part at risk left out while the requester has not answered
+            else if (card is not null && NotYetConfirmed(card, chk, a, start, latestStart) is { } unconfirmed)
+            {
+                why = unconfirmed.Sentence;   // D48, DESK-172: a part at risk left out while the requester has not answered
+                answerSaid = unconfirmed.SaysWait;   // D57 (a), DESK-218: what waiting costs is said there
+            }
             else if (card is not null && IncludedLeftOut(card, chk) is { } included)
             {
                 why = included;   // D49, DESK-175: ahead of "already covered", which moves to the quote's notes
@@ -85,7 +89,8 @@ public sealed partial class Session
         // third place went to Ortiz's answer tonight and the warning fell below the fold; the warning is about what is
         // being committed to, and the answer sentence still reads in the notes just under it.
         var noTerms = chk.Instrument is { } inst ? NoWrittenTerms(a, inst) : null;
-        var all = new[] { why, covered, passCost, noTerms, answer }.OfType<string>().ToList();
+        // D57 (a), DESK-218: an answer already said in D48's sentence, with what waiting for it costs, is not said again.
+        var all = new[] { why, covered, passCost, noTerms, answerSaid ? null : answer }.OfType<string>().ToList();
         return (why, passCost, answer, all.FirstOrDefault(), all.Skip(1).ToList());
     }
 
@@ -234,7 +239,13 @@ public sealed partial class Session
     /// warning names (AskFirst, DESK-58), so it marks no ask as the one that pays off. Null once they have answered: then
     /// D40 says what they told, or nothing does. A buy is written for the request's parts, so a part nobody listed is left
     /// out whatever the vendor offers.</summary>
-    private string? NotYetConfirmed(CardState card, AwardCheck chk)
+    /// <remarks>D57 (a), DESK-218 (Claude play 22 Nov, fourth play, notes P1-18, P2-13): with that ask in work, the sentence
+    /// says when the answer comes and what waiting for it costs, as D51 and D53 say it: "It leaves out operators; you are
+    /// asking SMSgt Ray Dunn, whose answer comes in tonight; ordered tomorrow, after the answer, it still starts on day 8."
+    /// On day 4 both fourth-play players read "answer due day 4" here, with D53's sentence below the fold, ordered blind,
+    /// and tore the order up the next morning. <c>SaysWait</c> is true when the wait is said, so the answer-due sentence
+    /// leaves the quote's notes.</remarks>
+    private (string Sentence, bool SaysWait)? NotYetConfirmed(CardState card, AwardCheck chk, AwardAction a, int start, int latestStart)
     {
         if (chk.CapabilityId is not { } capId || chk.Vendor is not { } vendor) return null;
         if (BuildPerson(card.PersonId) is not { } p) return null;
@@ -246,11 +257,15 @@ public sealed partial class Session
         if (left.Count == 0) return null;
         var parts = PartsLabels(capId, left);
         if (VisitWork("ask", AskTarget(new AskAboutAction { Card = card.Id, Person = p.Id })) is not { } w)
-            return $"It leaves out {parts}; {p.DisplayName} has not been asked.";
+            return ($"It leaves out {parts}; {p.DisplayName} has not been asked.", false);
         var asker = Member(w.Assignee);
         var day = PlayQueue(asker, 0, Day, w, w.HoursRemainingMilli) ?? Day;
         var who = asker.Role == "you" ? "you are" : $"{MemberName(asker)} is";
-        return $"It leaves out {parts}; {who} asking {p.DisplayName}, answer due day {day}.";
+        var comes = day <= Day ? "tonight" : $"on the night of day {day}";
+        var wait = AfterTheAnswer(card, a, chk, day + 1, start, latestStart).Trim().TrimEnd('.');
+        return wait.Length == 0
+            ? ($"It leaves out {parts}; {who} asking {p.DisplayName}, whose answer comes in {comes}.", false)
+            : ($"It leaves out {parts}; {who} asking {p.DisplayName}, whose answer comes in {comes}; {Lower(wait)}.", true);
     }
 
     /// <summary>D49 (DESK-175, Claude play 21 Nov, seventh play, note P2-14): the operator and maintenance parts at risk
