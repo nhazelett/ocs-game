@@ -84,6 +84,7 @@ public partial class DecisionsSmokeTest : Node
                 "A different deployment clears the old decision list and expanded state.");
             await StopWorkSmokeChecks.Run(this, shell);
             await CheckContractLinks(shell);
+            await CheckMultipleContractLinks(shell);
             await RequestHandOverSmokeChecks.Run(this, shell);
             shell.QueueFree(); await Frames();
             GD.Print("DECISIONS_SMOKE_PASS: exact committed history and current status, newest-first short/all, pure request links, drafts/refusals, stale guard and save/reset.");
@@ -156,6 +157,46 @@ public partial class DecisionsSmokeTest : Node
             using var image = GetViewport().GetTexture().GetImage();
             Require(image.SavePng(args[at + 1] + "-" + suffix + ".png") == Error.Ok, "Native request-to-contract capture saved.");
         }
+    }
+
+    private async Task CheckMultipleContractLinks(GameShell shell)
+    {
+        // Second 22 Nov play, day four: the request has a card buy and an SF 44 from different suppliers.
+        var bundle = LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+        var log = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-22-2", "input-log-2.json"));
+        var expected = LinesOfSupport.Sim.Replay.Run(bundle, log, stopAfterDay: 3);
+        Require(expected.Apply(log.Actions.First(a => a.Day == 4)).Accepted, "The original Harbor Bottling SF 44 is accepted.");
+        var path = shell.AutosavePathOverride + ".two-contracts";
+        File.WriteAllText(path, expected.ToSave().ToJson()); shell.LoadSavedGame(path); File.Delete(path);
+        shell.DeveloperToggle.ButtonPressed = false; shell.GoToMarket("tutWater"); await Frames();
+        var links = PlayScreen.Descendants(shell.RequestDecisionRows!).OfType<Button>().Where(b => b.HasMeta("decision_contract")).ToArray();
+        Require(links.Length == 2 && links.Select(b => b.Text).ToHashSet().SetEquals(new[]
+            { "Open Island Mart's contract page →", "Open Harbor Bottling's contract page →" }),
+            "Each water contract link names its supplier when both buys are on the same request.");
+        shell.RequestScroll.EnsureControlVisible(links.Last()); await Frames();
+        Require(links.All(b => shell.RequestScroll.GetGlobalRect().Encloses(b.GetGlobalRect())),
+            "Both supplier links fit together in the request column.");
+        var args = OS.GetCmdlineUserArgs(); var at = Array.IndexOf(args, "--supplier-screenshot");
+        if (at >= 0)
+        {
+            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            using var image = GetViewport().GetTexture().GetImage();
+            Require(image.SavePng(args[at + 1]) == Error.Ok, "The tutorial water request with both supplier links is captured.");
+        }
+        var hash = expected.StateHash();
+        foreach (var link in links)
+        {
+            var vendor = link.Text.StartsWith("Open Island Mart") ? "islandMart" : "harborBottling";
+            var contract = expected.Arrangements.Single(a => a.VendorId == vendor);
+            link.EmitSignal(Button.SignalName.Pressed); await Frames();
+            Require(shell.ContractView.Visible && shell.SelectedArrangement == contract.Id && shell.Session.StateHash == hash,
+                "The named supplier link opens its own contract without changing the game.");
+            PlayScreen.Descendants(shell.ContractView).OfType<Button>().Single(b => b.Text == "Back to the request").EmitSignal(Button.SignalName.Pressed);
+            await Frames();
+            Require(!shell.ContractView.Visible && shell.RequestWorkspace.Visible && shell.SelectedCard == "tutWater" && shell.Session.StateHash == hash,
+                "Each supplier's contract returns to the same water request without acting.");
+        }
+        GD.Print("REQUEST_SUPPLIER_LINKS_SMOKE_PASS: original day-four water request, two named suppliers, correct contract destinations and read-only return.");
     }
 
     private async Task Frames() { for (var i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
