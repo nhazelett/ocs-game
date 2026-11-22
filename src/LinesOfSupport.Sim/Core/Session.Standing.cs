@@ -86,14 +86,17 @@ public sealed partial class Session
             if (yesterday < 1000 && a.StartDay < Day)
                 return Entry(RequestStanding.Short,
                     $"{SupplierName(a)} is meant to deliver{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}, but {Lower(cap.Label)} at {SiteName(card.SiteId)} was at {yesterday / 10}% yesterday.{trips}", a.TripAssignee);
-            return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}{TakesOver(a, live, to)}.{trips}", a.TripAssignee);
+            return Entry(RequestStanding.Running, $"{SupplierName(a)} is delivering{Amount(a, cap)}{Through(a.EndDay)}{More(running.Count)}{FollowsOn(a, live, to, card)}.{trips}", a.TripAssignee);
         }
         var coming = live.Where(a => a.StartDay > Day).ToList();
         if (coming.Count > 0)
         {
             var a = coming[0];
+            // DESK-223: what follows it, as the running line says it (DESK-188), so a one-day bridge is not read as all there is.
+            var follows = FollowsOn(a, live, to, card);
+            var others = follows.Length > 0 && coming.Any(b => b.Id != a.Id && b.StartDay == a.EndDay + 1) ? coming.Count - 1 : coming.Count;
             return Entry(RequestStanding.Arranged,
-                $"{SupplierName(a)} starts on day {a.StartDay}:{Amount(a, cap)}{Through(a.EndDay)}{More(coming.Count)}{(a.StartDay > from ? $". It was wanted from day {from}" : "")}.{(BeforeStartCover(card, a.StartDay) is { } cover ? " " + cover : "")}{Trips(a)}", a.TripAssignee);
+                $"{SupplierName(a)} starts on day {a.StartDay}:{Amount(a, cap)}{Through(a.EndDay)}{More(others)}{follows}{(a.StartDay > from ? $". It was wanted from day {from}" : "")}.{(BeforeStartCover(card, a.StartDay) is { } cover ? " " + cover : "")}{Trips(a)}", a.TripAssignee);
         }
 
         var buying = _work.Where(w => w.CompletedDay is null && BuysFor(w, card)).OrderBy(w => w.CreatedDay).FirstOrDefault();
@@ -176,6 +179,26 @@ public sealed partial class Session
         if (a.EndDay >= to || a.EndDay >= LastDay) return "";
         var next = live.FirstOrDefault(b => b.Id != a.Id && b.StartDay == a.EndDay + 1);
         return next is null ? "" : $"; {Called(next)} takes over on day {next.StartDay}";
+    }
+
+    /// <summary>
+    /// DESK-223 (Claude play 22 Nov sixth, note P2-17). What takes over when support ends before the request's need does:
+    /// a signed arrangement starting the next day (<see cref="TakesOver"/>), or, while it is still being written, the buy
+    /// in hand: "Coastal Rentals starts on day 8: 3 forklifts through day 8; the purchase order with Coastal Rentals that
+    /// MSgt Joan Avery is writing takes over on day 9." The sixth play's second player bridged day 8 on the card and
+    /// ordered the rest in writing from day 9; on days 6 and 7 the request named only the one-day bridge, then "(and one
+    /// other arrangement)", and the player read it as forklifts for one day.
+    /// </summary>
+    private string FollowsOn(Arrangement a, List<Arrangement> live, int to, CardState card)
+    {
+        var next = TakesOver(a, live, to);
+        if (next.Length > 0 || a.EndDay >= to || a.EndDay >= LastDay) return next;
+        var writing = _work.Where(w => w.CompletedDay is null && w.StoppedDay is null && w.Payload is AwardPayload p
+                                       && p.Action.StartDay is { } s && s > a.EndDay && s <= to && BuysFor(w, card))
+                           .OrderBy(w => ((AwardPayload)w.Payload!).Action.StartDay).FirstOrDefault();
+        if (writing?.Payload is not AwardPayload { Action: var act }) return "";
+        var what = act.Instrument switch { "sf44" => "SF 44", "gpc" => "card buy", _ => InstrumentWords(act.Instrument) };
+        return $"; the {what} with {VendorData(act.Vendor)?.Name ?? "the vendor"} that {WhoIs(writing.Assignee)} writing takes over on day {act.StartDay}";
     }
 
     /// <summary>" through day 8", or nothing for support that runs past the end of the game (host nation, inherited).</summary>
