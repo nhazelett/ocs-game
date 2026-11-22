@@ -22,13 +22,24 @@ public partial class GameShell
         if (arrangement.CreatedDay <= 0 || arrangement.IsCoordination || arrangement.Unauthorized
             || arrangement.Status is not (ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended)) return;
         var selected = current?.Id ?? view.Cors.First().Id;
+        var formHash = session.StateHash;
         var submit = DeskUi.Button("Designate COR · " + view.ArrangementName(arrangement.Id), () =>
-            SendAction(new DesignateCorAction { Day = session.View!.Day, Arrangement = arrangement.Id, Cor = selected }));
+        {
+            if (formHash != session.StateHash || view.Finished || selected == arrangement.CorId) return;
+            SendAction(new DesignateCorAction { Day = session.View!.Day, Arrangement = arrangement.Id, Cor = selected });
+        });
         Label reason = null!;
-        void Gate() => DeskUi.Gate(submit, reason, view.Finished ? DeskUi.FinishedReason : selected == arrangement.CorId ? "This COR is already assigned to the contract." : null);
-        var picker = AddPick(parent, "Designate COR", view.Cors.Select(c => new Pick(c.Id, CorText(view, c, arrangement))).ToArray(), selected,
-            id => { selected = id; Gate(); });
+        var explanation = DeskUi.Label(); explanation.SetMeta("cor_designation_why", arrangement.Id);
+        void Gate()
+        {
+            DeskUi.Gate(submit, reason, view.Finished ? DeskUi.FinishedReason : selected == arrangement.CorId ? "This COR is already assigned to the contract." : null);
+            explanation.Text = view.CorDesignationWhy(selected, arrangement.Id) ?? "";
+            explanation.Visible = explanation.Text.Length > 0;
+        }
+        var picker = AddPick(parent, "COR for " + view.ArrangementName(arrangement.Id), view.Cors.Select(c => new Pick(c.Id, CorText(view, c, arrangement))).ToArray(), selected,
+            id => { if (formHash != session.StateHash) return; selected = id; Gate(); });
         picker.Disabled = view.Finished;
-        reason = DeskUi.ActionReason(parent, submit); Gate(); CorDesignations.Add(arrangement.Id, (picker, submit));
+        reason = DeskUi.ActionReason(parent, submit); parent.AddChild(explanation);
+        Gate(); CorDesignations.Add(arrangement.Id, (picker, submit));
     }
 }
