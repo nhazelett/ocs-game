@@ -52,6 +52,27 @@ internal static class PaymentReportsSmokeChecks
             var latest = shell.Session.View.Records.Last(r => r.Kind == RecordKind.CorReport && r.Day == 12 && r.Text.Contains("SSgt Lane"));
             Require(shell.GetNode<RichTextLabel>("%InboxRecords").Text.Contains(latest.Text),
                 "The Inbox retains Lane's exact arriving day-twelve report when the formal issue opens.");
+            // DESK-205 (22 Nov second play, notes P1-6, P2-10): the day-four water page says what the disputed day 3 cost.
+            var disputedLog = InputLog.Load(Path.Combine(Path.GetDirectoryName(GamePaths.ScenarioRoot)!, "docs", "reviews", "plays", "2026-11-22", "input-log-2.json"));
+            var disputedSave = disputedLog with { SavedDay = 4, Actions = disputedLog.Actions.Where(a => a.Day < 4).ToList() };
+            File.WriteAllText(path, disputedSave.ToJson()); shell.LoadSavedGame(path); shell.DeveloperToggle.ButtonPressed = false; await Frames();
+            var disputedWater = shell.Session.View!.Arrangements.Single(a => a.VendorId == "islandMart" && a.Instrument == "gpc");
+            var disputed = shell.Session.View.DisputedDaysLine(disputedWater.Id);
+            Require(disputed == "Day 3 was disputed and half arrived; the card had already paid for the whole day, and with nothing written there is no claim.",
+                "The Sim names the disputed day on the 22 Nov second play's day-four water buy.");
+            hash = shell.Session.StateHash;
+            shell.OpenContractView(disputedWater.Id); await Frames();
+            var money = PlayScreen.Descendants(shell.ContractView).OfType<Label>().SingleOrDefault(l => l.Text.Contains("cost of support received"));
+            Require(money is not null && money.Text.EndsWith("\n" + disputed, StringComparison.Ordinal) && money.IsVisibleInTree()
+                && shell.Session.StateHash == hash, "The contract page's money line adds the disputed-day sentence, and reading it never acts.");
+            Require(!PaymentRow(disputedWater.Id).Text.Contains(disputed), "The Payments list keeps its short line.");
+            var shotArgs = OS.GetCmdlineUserArgs(); var shotAt = Array.IndexOf(shotArgs, "--payment-report-screenshots");
+            if (shotAt >= 0)
+            {
+                await scene.ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = scene.GetViewport().GetTexture().GetImage();
+                Require(image.SavePng(shotArgs[shotAt + 1] + "-disputed-day.png") == Error.Ok, "Native disputed-day screenshot saved.");
+            }
             shell.QueueFree(); await Frames();
             GD.Print("PAYMENT_REPORTS_SMOKE_PASS: recorded day-two/day-nine starts, future start, contract consistency, day-twelve exact known COR reports without a false empty state, pure navigation and next-day issue decisions.");
         }
