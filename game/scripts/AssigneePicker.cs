@@ -11,12 +11,12 @@ internal partial class AssigneePicker : VBoxContainer
     internal string Selected { get; private set; }
     internal Action? SelectionChanged { get; set; }
 
-    internal AssigneePicker(IReadOnlyList<AssigneeChoice> choices, string selected, bool disabled, string caption = "Who should take this task?", bool compact = false, string unavailableDoneDay = "done day unavailable")
+    internal AssigneePicker(IReadOnlyList<AssigneeChoice> choices, string selected, bool disabled, string caption = "Who should take this task?", bool compact = false, string unavailableDoneDay = "done day unavailable", bool inlineCaption = true)
     {
         Choices = choices; Selected = selected;
         AddThemeConstantOverride("separation", 6);
         VBoxContainer rows = this;
-        if (compact)
+        if (compact && inlineCaption)
         {
             var line = new HBoxContainer(); AddChild(line);
             var label = DeskUi.Label(caption); label.SizeFlagsVertical = Control.SizeFlags.ShrinkBegin;

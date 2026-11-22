@@ -4,6 +4,8 @@ namespace LinesOfSupport.Game;
 
 internal static class DeskUi
 {
+    internal static string Possessive(string name) => name == "You" ? "your" : name.EndsWith('s') ? name + "'" : name + "'s";
+
     internal static VBoxContainer Panel(Control tab, string name)
     {
         var scroll = new ScrollContainer { Name = name, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, FollowFocus = true };

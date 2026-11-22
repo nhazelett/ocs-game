@@ -143,9 +143,11 @@ public partial class PerformanceSmokeTest : Node
             Require(PlayScreen.Descendants(shell.ContractView).OfType<Button>().Any(b => b.Text == "Back to what we are paying for"), "An ordinary contract opening resets its return destination.");
 
             shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
-            Require(!shell.ContractView.Visible && shell.MarketOpen && shell.CurrentActionEditor!.SiteId == tutorialIssue.SiteId
-                && shell.CurrentActionEditor.CapabilityId == tutorialIssue.CapabilityId && shell.Session.StateHash == tutorialHash,
-                "Contract re-source closes its page and opens the matching form without changing Sim.");
+            Require(shell.ContractView.Visible && !shell.MarketOpen && shell.Session.StateHash == tutorialHash
+                && shell.Session.View!.ResourceReason(tutorialIssue.Id) is not null
+                && shell.ContractPerformanceChoices[(tutorialIssue.Id, "resource")].Disabled,
+                "The tutorial's sole lodging supplier leaves Re-source greyed on its contract, without opening a redundant buy.");
+            shell.CloseContractView();
             Step(shell); Require(shell.TodayPerformanceLinks.ContainsKey(tutorialIssue.Id), "An undecided vendor problem remains on the next morning.");
             Require(shell.TodayPerformanceRows.Visible, "An older decision stays below New since yesterday.");
             var oldLink = shell.TodayPerformanceLinks[tutorialIssue.Id];
@@ -174,6 +176,20 @@ public partial class PerformanceSmokeTest : Node
             shell.PerformanceChoices[(issue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
             Require(shell.RequestWorkspace.Visible && shell.CurrentActionEditor!.SiteId == issue.SiteId && shell.CurrentActionEditor.CapabilityId == issue.CapabilityId, "Re-source opens the matching action editor.");
             Require(shell.Session.StateHash == hash && shell.Session.IsReplay, "Opening re-source neither changes Sim nor takes control.");
+            using (var escape = new InputEventKey { Keycode = Key.Escape, Pressed = true }) shell.GetViewport().PushInput(escape, true);
+            for (var frame = 0; frame < 8; frame++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(!shell.RequestWorkspace.Visible && !shell.ContractView.Visible
+                && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab && shell.Session.StateHash == hash,
+                "Escape from Re-source returns to the same vendor decision without acting.");
+            var resourceHeading = shell.PerformanceChoices[(issue.Id, "resource")].GetParent().GetChild<Control>(0);
+            Require(inbox.GetGlobalRect().Encloses(resourceHeading.GetGlobalRect()), "Escape restores the vendor decision's context heading.");
+            shell.OpenContractView(issue.ArrangementId);
+            shell.ContractPerformanceChoices[(issue.Id, "resource")].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.RequestBackButton.Text == "Back to vendor decision", "The re-source form names its return destination.");
+            shell.RequestBackButton.EmitSignal(Button.SignalName.Pressed);
+            for (var frame = 0; frame < 8; frame++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(!shell.RequestWorkspace.Visible && shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.InboxTab
+                && shell.Session.StateHash == hash, "Back from contract Re-source also returns to the existing vendor decision.");
             var result = expected.Apply(new CureNoticeAction { Day = expected.Day, Issue = issue.Id, Assignee = "avery" });
             Require(result.Accepted, "Cure fixture is accepted.");
             shell.OpenContractView(issue.ArrangementId);
