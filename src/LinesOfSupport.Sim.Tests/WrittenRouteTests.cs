@@ -19,7 +19,7 @@ public class WrittenRouteTests
         var d = Replay.Run(Repo.Load("tutorial"), Log("2026-11-22-2", 1)).View.Debrief();
         var water = d.Gaps.Single(g => g.CapabilityId == "water" && g.StartDay == 3);
         // (a) The purchase order the award form quoted on day 1 could not have started by day 3: the card was the way.
-        Assert.EndsWith("from day 3 the vendor and the unit disagreed on what was owed. A purchase order with Island Mart placed on day 1 "
+        Assert.EndsWith("on day 3 the vendor and the unit disagreed on what was owed. A purchase order with Island Mart placed on day 1 "
                         + "would have started day 4 to 6, with water at Hub out up to 3 days in all, 2 more than the commander allows; "
                         + "the card was the way to have water at Hub on day 3.", Assert.Single(water.Factors).Text);
         Assert.DoesNotContain("Written terms settle a dispute", water.Factors[0].Text, StringComparison.Ordinal);
@@ -80,5 +80,20 @@ public class WrittenRouteTests
         Assert.Equal("A risk worth taking: no written order could have started by day 3.", d.Gaps.Single(g => g.CapabilityId == "water").TagLine);
         Assert.Equal("It went down with water at Hub, a risk worth taking.", d.Gaps.Single(g => g.CapabilityId == "food").TagLine);
         Assert.DoesNotContain(d.Gaps, g => g.TagLine!.StartsWith("Avoidable", StringComparison.Ordinal));
+    }
+
+    /// <summary>DESK-220 (Claude play 22 Nov, fourth play, note P1-35): the disputed days as they were. "From day 3" read as a
+    /// dispute that went on; water was in full every other day.</summary>
+    [Fact]
+    public void A_confusion_factor_names_the_days_disputed()
+    {
+        var one = Replay.Run(Repo.Load("tutorial"), Log("2026-11-22-4", 1)).View.Debrief();
+        Assert.Contains("no written terms; on day 3 the vendor and the unit disagreed on what was owed.",
+                        Assert.Single(one.Gaps.Single(g => g.CapabilityId == "water").Factors).Text);
+        // The first 22 Nov play's Coastal card buy was disputed on days 12 and 15, two gaps: each says both days.
+        var two = Replay.Run(Repo.Load("tutorial"), Log("2026-11-22", 1)).View.Debrief();
+        var forklifts = two.Gaps.Where(g => g.CapabilityId == "mhe").SelectMany(g => g.Factors).Where(f => f.Text.Contains("disagreed")).ToList();
+        Assert.Equal(2, forklifts.Count);
+        Assert.All(forklifts, f => Assert.Contains("no written terms; on days 12 and 15 the vendor and the unit disagreed", f.Text));
     }
 }

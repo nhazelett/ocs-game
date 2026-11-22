@@ -446,7 +446,7 @@ PERFORMANCE ISSUES (FAR 49.402-3)
 
 GAP TAGS (avoidable: the information existed; discoverable: available for a cost; unforeseeable: no path to know)
   #0 hubSite.transport days 2-2, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed. Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; on day 2 the vendor and the unit disagreed on what was owed. Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.
   #1 hubSite.transport days 25-60, lowest 0%, 36 day(s) down: AVOIDABLE
       [avoidable] The request for ground transport for Hub (submitted day 5, needed from day 25) had nothing supplying it from day 25. The last arrangement supplying it, Main Island Motor Pool Rentals ground transport at Hub, ended on day 24.
       [avoidable] No funding line with money could pay for ground transport on day 46 (days 46 to 54). The O&M line good through day 45 reached its fiscal-year end with day 45. The O&M line from day 46 was released day 55, 9 days late (the comptroller warned on day 44). Money was usable until day 45: a follow-on awarded before then could have run through the window.

@@ -275,7 +275,7 @@ public sealed partial class Session
                     }
                     case RecordKind.ExecutionConfusion:
                         yield return ($"conf|{a.Id}", new GapFactor(GapFactorKind.ExecutionConfusion, GapTag.Avoidable, d,
-                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.{WrittenRouteSentence(a, d)}", [r.Id, a.CauseId]));   // DESK-211 (D55 a)
+                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; {DisputedDaysSaid(a.Id, d)} the vendor and the unit disagreed on what was owed.{WrittenRouteSentence(a, d)}", [r.Id, a.CauseId]));   // DESK-211 (D55 a)
                         break;
                 }
             }

@@ -31,12 +31,13 @@ public class NotYetConfirmedTests
         var ask = log.Actions.OfType<AskAboutAction>().Single(a => a.Day == 6);
         Assert.True(s.Apply(ask).Accepted);
         var asking = s.View.AwardSummary(buy)!;
-        Assert.Equal("It leaves out operators; MSgt Joan Avery is asking SMSgt Ray Dunn, answer due day 6.", asking.Why);
+        // D57 (a), DESK-218: when the answer comes and what waiting for it costs, in the same sentence.
+        Assert.Equal("It leaves out operators; MSgt Joan Avery is asking SMSgt Ray Dunn, whose answer comes in tonight; ordered tomorrow, after the answer, it starts on day 8 or 9: material handling equipment at Hub is out 1 day in all: all the commander allows.", asking.Why);
         Assert.EndsWith(asking.Why, asking.Sentence);
         Assert.Equal(3, SentenceCount(asking.Sentence));
-        // The answer-due sentence moves to the quote's notes (D46), once.
+        // The answer-due sentence has been said, so it is not in the quote's notes (D57 a); the view keeps it for the game.
         Assert.NotNull(asking.AnswerDue);
-        Assert.Single(s.View.Preview(buy).SoftGaps, g => g == asking.AnswerDue);
+        Assert.DoesNotContain(s.View.Preview(buy).SoftGaps, g => g == asking.AnswerDue);
 
         // Not bought this time: the next morning Dunn has answered, D40 names what he said (DESK-156), and D48 no longer applies.
         s.AdvanceDay();
@@ -52,7 +53,7 @@ public class NotYetConfirmedTests
         var ask = log.Actions.OfType<AskAboutAction>().Single(a => a.Day == 6) with { Assignee = null };
         Assert.True(s.Apply(ask).Accepted);
         var asking = s.View.AwardSummary(CoastalCard(log))!;
-        Assert.StartsWith("It leaves out operators; you are asking SMSgt Ray Dunn, answer due day ", asking.Why);
+        Assert.StartsWith("It leaves out operators; you are asking SMSgt Ray Dunn, whose answer comes in ", asking.Why);
     }
 
     [Fact]
@@ -71,4 +72,22 @@ public class NotYetConfirmedTests
     }
 
     private static int SentenceCount(string s) => s.Split(". ").Length;
+
+    /// <summary>DESK-218 (D57 a; Claude play 22 Nov, fourth play, notes P1-18, P2-13): on day 4 the second player asked Dunn
+    /// and put Avery on Harbor's BPA call in the same minute. The quote's third sentence said "answer due day 4" and D53's
+    /// "still starts on day 8" sat below the fold; the player ordered blind and stopped the call the next morning.</summary>
+    [Fact]
+    public void Fourth_play_day_4_harbor_call_says_the_wait_costs_nothing_where_the_answer_is_named()
+    {
+        var log = InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-22-4", "input-log-2.json"));
+        var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 3);
+        Assert.Equal(4, s.Day);
+        Assert.True(s.Apply(log.Actions.OfType<AskAboutAction>().First(x => x.Day == 4)).Accepted);
+        var buy = log.Actions.OfType<AwardAction>().First(x => x.Day == 4);
+        var summary = s.View.AwardSummary(buy)!;
+        Assert.Equal("It leaves out operators; you are asking SMSgt Ray Dunn, whose answer comes in tonight; ordered tomorrow, after the answer, it still starts on day 8.", summary.Why);
+        Assert.EndsWith(summary.Why, summary.Sentence);
+        Assert.Equal(3, SentenceCount(summary.Sentence));
+        Assert.DoesNotContain(s.View.Preview(buy).SoftGaps, g => g.Contains("Ordered tomorrow"));
+    }
 }

@@ -131,11 +131,11 @@ public class NewsTests
     public void An_open_request_gives_its_last_day_to_order_and_the_route()
     {
         // The hasty player: forklifts wanted day 8. A BPA call with Harbor Equipment has written terms and starts three
-        // days after it goes in on any roll, so the last sure day is 5 (D35).
+        // days after it is placed on any roll, so the last sure day is 5 (D35).
         var s = HastyWithoutVendorList(3);
         var ob = s.View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
         Assert.Equal(5, ob.Day);
-        Assert.Equal("Order by day 5: a BPA call with Harbor Equipment Co starts 3 days after it goes in.", ob.Sentence);
+        Assert.Equal("Order by day 5: a BPA call with Harbor Equipment Co starts 3 days after you place it, the writing included.", ob.Sentence);
 
         // D39 (Claude play 19 Nov, note 16): from the morning of day 5 the news says Harbor Equipment is short of forklifts
         // this week, and the only route this shop knows is with Harbor, so the line names none rather than send the player there.
@@ -155,7 +155,7 @@ public class NewsTests
         // The hasty player brought the vendor list: Coastal Rentals' card is filled in from day 1. On day 6 the BPA call
         // can no longer make day 8; the card buy can, and it says it has no written terms.
         var ob = Play("tutorial-hasty", "tutorial", 5).View.WhereThingsStand().Single(r => r.CardId == "tutForklift").OrderBy!;
-        Assert.Equal("Order today to start by day 8: a card buy from Coastal Rentals starts 1 or 2 days after it goes in, with no written terms.", ob.Sentence);
+        Assert.Equal("Order today to start by day 8: a card buy from Coastal Rentals starts 1 or 2 days after you place it, with no written terms.", ob.Sentence);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public class NewsTests
         // Note 30: on day 9 no route with written terms is sure of day 13 (a purchase order starts between day 12 and
         // day 14), so it names the cash buy and says it has no written terms, beside Mills' advice.
         var waste = Replay.Run(Repo.Load("tutorial"), TodaysPlay(), stopAfterDay: 8).View.WhereThingsStand().Single(r => r.CardId == "tutWaste").OrderBy!;
-        Assert.Equal("Order by day 10: a cash buy from Main Island Sanitation starts 2 or 3 days after it goes in, with no written terms.", waste.Sentence);
+        Assert.Equal("Order by day 10: a cash buy from Main Island Sanitation starts 2 or 3 days after you place it, with no written terms.", waste.Sentence);
     }
 
     [Fact]
@@ -211,5 +211,20 @@ public class NewsTests
         while (!a.Finished) { _ = a.View.WhereThingsStand(); a.AdvanceDay(); }
         while (!b.Finished) b.AdvanceDay();
         Assert.Equal(b.StateHash(), a.StateHash());
+    }
+
+    /// <summary>DESK-219 (D57 b; Claude play 22 Nov, fourth play, notes P1-26, P2-18): on day 8 both players read "starts 3 to 5
+    /// days after it goes in" as counting from the day the writing is done (day 10), against a quote that started on day 13.
+    /// The count is from the day the order is placed, writing included, and says so.</summary>
+    [Fact]
+    public void Fourth_play_day_8_waste_order_by_counts_from_the_day_it_is_placed()
+    {
+        var log = InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-22-4", "input-log-1.json"));
+        var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 7);
+        Assert.Equal(8, s.Day);
+        var ob = s.View.WhereThingsStand().Single(r => r.CardId == "tutWaste").OrderBy!;
+        Assert.Equal("Order today to start by day 13: a purchase order with Main Island Sanitation starts 3 to 5 days after you place it, the writing included.", ob.Sentence);
+        var buy = log.Actions.OfType<AwardAction>().First(a => a.Day == 8 && a.Card == "tutWaste");
+        Assert.Contains("It starts on day 13", s.View.AwardSummary(buy)!.Sentence);
     }
 }

@@ -634,10 +634,10 @@ D57. **Say what waiting costs where the answer is named, and count the order-by 
 
 Left out: a recommendation to wait or to order (the player weighs the days); folding the answer into the request without "Add what you learned" (DESK-77 keeps that step the player's); naming the writer's finish day on the order-by line (the quote has it).
 
-Also from this play, no decision needed: the debrief's confusion factor says "on day 3" for one disputed day, and "on 2 days from day 3" for more, not "from day 3", which read as a dispute that went on (DESK-220).
+Also from this play, no decision needed: the debrief's confusion factor names the days disputed, "on day 3" or "on days 12 and 15", not "from day 3", which read as a dispute that went on (DESK-220).
 
 Sim notes (Fable):
 
 - DESK-218: `NotYetConfirmed` takes the buy, its start and latest start; with the requester's ask in work it ends "whose answer comes in tonight" (or "on the night of day N") and D51/D53's clause from `AfterTheAnswer` for an order the day after the answer, joined with a semicolon. `SummaryThird` leaves the answer-due sentence out of the notes when that sentence is said; `AwardSummaryView.AnswerDue` keeps it for the game. Tests: the fourth play's second log on day 4 reads the new sentence with "still starts on day 8"; the sixth 21 Nov play's day-6 card buy keeps three sentences and no longer repeats the answer in the notes.
 - DESK-219: `OrderBy`'s "after it goes in" reads "after you place it", with ", the writing included" on a written route (`KnownRoute.Written`). No golden carries the sentence; NewsTests and the comment in ViewModels move with it.
-- DESK-220: the `ExecutionConfusion` gap factor counts that arrangement's confusion days in the record: one reads "on day 3 the vendor and the unit disagreed on what was owed", more read "on N days from day 3 ...". No golden moved.
+- DESK-220: the `ExecutionConfusion` gap factor names that arrangement's confusion days from the record: "on day 3 the vendor and the unit disagreed on what was owed", "on days 12 and 15 ..." (each gap of a buy disputed twice says both). The seven sustainment goldens move from "from day 2" to "on day 2" (Motor Pool Rentals, one disputed day).
