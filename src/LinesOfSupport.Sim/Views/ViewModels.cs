@@ -412,12 +412,15 @@ public sealed record RequirementDependency(string CapabilityId, string Label, st
 /// shop was in the room ("...and the shop was in the room." or "...so it reached you on day 9."). Null for any other.</param>
 /// <param name="WhoCanHelp">DESK-42 (D22): the people worth asking about this request, what talking to them can do, the
 /// hours and where each stands; then the J4 when the partner force can spare it, then vendors who sell it and are not met.</param>
+/// <param name="NeededBy">DESK-208 (22 Nov play, notes P1-5, P2-9): what at the site depends on this capability, from the
+/// rules' dependencies, as one sentence for the dependency checklist ("Food service at Hub needs water: when water runs
+/// short, food service runs short with it."). Null when nothing at the site depends on it.</param>
 public sealed record RequirementEditorView(
     string CardId, string SiteId, string SiteName, string CapabilityId, string CapabilityLabel, string Unit,
     string SubmittedBy, int SubmittedDay, int RequestedStartDay, int DurationDays, string? QuantityHint, long PeakDemandUnits,
     IReadOnlyList<RequirementLine> Lines, IReadOnlyList<RequirementDependency> Dependencies, IReadOnlyList<string> CoveredBy,
     string Title = "", PersonView? Person = null, string? Message = null, IReadOnlyList<AskOption>? WhoToAsk = null,
-    string? HeardAt = null, IReadOnlyList<HelperView>? WhoCanHelp = null, string? PeakSaid = null);
+    string? HeardAt = null, IReadOnlyList<HelperView>? WhoCanHelp = null, string? PeakSaid = null, string? NeededBy = null);
 
 // ------------------------------------------------------------------ action editor (CCO seat)
 

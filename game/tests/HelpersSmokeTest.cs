@@ -80,6 +80,21 @@ public partial class HelpersSmokeTest : Node
             Scenario(shell, "tutorial"); Step(shell, 3); Open("tutForklift");
             stale = shell.RequestHelperButtons["ask:dunn"]; Open("tutWater"); count = actions.Count; stale.EmitSignal(Button.SignalName.Pressed);
             Require(actions.Count == count, "An old helper cannot act on another request.");
+            // DESK-208 (22 Nov play, notes P1-5, P2-9): the water request's checklist names what depends on water.
+            var neededBy = PlayScreen.Descendants(shell.RequestColumn).OfType<Label>().SingleOrDefault(l => l.HasMeta("needed_by"));
+            Require(neededBy is not null && neededBy.Text == shell.Session.View!.RequirementEditor("tutWater")!.NeededBy
+                && neededBy.Text == "Food service at Hub needs water: when water runs short, food service runs short with it.",
+                "The water request's dependency checklist names food service.");
+            var neededArgs = OS.GetCmdlineUserArgs(); var neededAt = Array.IndexOf(neededArgs, "--screenshots");
+            if (neededAt >= 0)
+            {
+                shell.DeveloperToggle.ButtonPressed = false; await Frames();
+                Node up = neededBy!; while (up is not ScrollContainer && up.GetParent() is { } parent) up = parent;
+                if (up is ScrollContainer neededScroll) { neededScroll.EnsureControlVisible(neededBy); await Frames(); }
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var picture = GetViewport().GetTexture().GetImage();
+                Require(picture.SavePng(neededArgs[neededAt + 1] + "-needed-by.png") == Error.Ok, "Native needed-by screenshot saved.");
+            }
             while (!shell.Session.View!.Finished) Step(shell);
             Open("tutForklift"); before = shell.Session.StateHash;
             foreach (var button in shell.RequestHelperButtons.Values.ToArray()) { Require(button.Disabled, "Finished helper actions are disabled."); button.EmitSignal(Button.SignalName.Pressed); }

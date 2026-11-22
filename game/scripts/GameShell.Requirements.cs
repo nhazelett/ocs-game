@@ -133,6 +133,7 @@ public partial class GameShell
         }
         RenderRequestHelpers(view!, card);
         linkedRequirement.AddChild(DeskUi.Label("Dependency checklist"));
+        if (card.NeededBy is { } neededBy) { var needs = DeskUi.Label(neededBy); needs.SetMeta("needed_by", card.CapabilityId); linkedRequirement.AddChild(needs); }
         foreach (var dependency in card.Dependencies)
         {
             var label = DeskUi.Label($"{dependency.Label}: {Words(dependency.Coverage).ToLowerInvariant()}" +
