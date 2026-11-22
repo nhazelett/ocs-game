@@ -60,14 +60,15 @@ public sealed record KnownIsland(string IslandId, string Tier);
 /// <summary>A player action with what was known when it was taken.</summary>
 public sealed record DecisionEntry(int Day, string RecordId, string Text, bool Rejected, IReadOnlyList<KnownIsland> Known);
 
-/// <summary>SPEC 4 scorecard. Fractions are 0 to 1. InheritedObligatedCents (DESK-91) is the part of ObligatedCents that
+/// <summary>SPEC 4 scorecard. Fractions are 0 to 1. WorthTakingGaps (DESK-222, D58) counts the avoidable gaps whose
+/// button reads D56's "a risk worth taking" line or its knock-on line. InheritedObligatedCents (DESK-91) is the part of ObligatedCents that
 /// sits on the calls and contracts the last rotation left (they count from day 1, before the player has done anything).</summary>
 public sealed record ScorecardView(
     double MissionOutput, double SortieGeneration, double Throughput, double Endurance, double Resilience,
     long ObligatedCents, long IncurredCents, long UnobligatedIncurredCents,
     int UnauthorizedCommitments, int UcaOverdue, int HhqInquiries, int Surveys, int ShopHoursWorked,
     int GapCount, int AvoidableGaps, int DiscoverableGaps, int UnforeseeableGaps,
-    int Claims = 0, long ClaimCents = 0, long InheritedObligatedCents = 0);
+    int Claims = 0, long ClaimCents = 0, long InheritedObligatedCents = 0, int WorthTakingGaps = 0);
 
 /// <summary>An unauthorized commitment and how it was decided (ADR-0007).</summary>
 public sealed record CommitmentLine(string Id, string Kind, int OpenedDay, string Decision, int? DecidedDay, bool WalkedOff, bool InquiryDrawn, string Text);
@@ -151,6 +152,18 @@ public static class DebriefWords
 
     /// <summary>DESK-204 (D54): what would have settled a confusion day, added to its factor.</summary>
     public const string NoTermsSettle = " Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.";
+
+    /// <summary>D58 (DESK-222; Claude play 22 Nov, fifth play, notes P1-23, P2-22): the scorecard's gap count keeps its tags
+    /// and numbers and says how many avoidable gaps were risks worth taking, so it does not read "2 avoidable" above two
+    /// buttons that say otherwise: "2 gaps: 2 avoidable, both risks worth taking · 0 discoverable · 0 unforeseeable".</summary>
+    public static string GapCounts(ScorecardView s)
+    {
+        var worth = Math.Min(s.WorthTakingGaps, s.AvoidableGaps);
+        var avoidable = $"{s.AvoidableGaps} avoidable" + (worth <= 0 ? ""
+            : worth == s.AvoidableGaps ? worth switch { 1 => ", a risk worth taking", 2 => ", both risks worth taking", _ => ", all risks worth taking" }
+            : worth == 1 ? ", 1 of them a risk worth taking" : $", {worth} of them risks worth taking");
+        return $"{s.GapCount} {(s.GapCount == 1 ? "gap" : "gaps")}: {avoidable} · {s.DiscoverableGaps} discoverable · {s.UnforeseeableGaps} unforeseeable";
+    }
 
     /// <summary>What a tag means, in one sentence (SPEC 4).</summary>
     public static string TagMeaning(GapTag tag) => tag switch

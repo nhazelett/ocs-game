@@ -70,6 +70,11 @@ public sealed partial class Session
 
     private const string WorthTakingPrefix = "A risk worth taking: ";
 
+    /// <summary>DESK-222 (D58): an avoidable gap whose button reads D56's line or its knock-on line.</summary>
+    private static bool IsWorthTaking(GapView g)
+        => g.Tag == GapTag.Avoidable && g.TagLine is { } t
+           && (t.StartsWith(WorthTakingPrefix, StringComparison.Ordinal) || t.EndsWith(", a risk worth taking.", StringComparison.Ordinal));
+
     /// <summary>D56 (DESK-215; Claude play 22 Nov, third play, notes P1-18, P2-20): a gap that was the price of no written
     /// terms, where the written route the shop knew on each buy's day could not have started by the gap's day, or there
     /// was none, reads "A risk worth taking: no written order could have started by day 3." in place of D54's line. Both

@@ -382,7 +382,8 @@ public sealed partial class Session
             L("cost.obligatedCents"), L("cost.incurredCents"), L("cost.unobligatedIncurredCents"),
             I("compliance.unauthorizedCommitments"), I("compliance.ucaOverdue"), I("compliance.hhqInquiries"), I("info.surveys"), I("shop.hoursWorked"),
             gaps.Count, gaps.Count(g => g.Tag == GapTag.Avoidable), gaps.Count(g => g.Tag == GapTag.Discoverable), gaps.Count(g => g.Tag == GapTag.Unforeseeable),
-            _claims.Count, _claims.Sum(c => c.AmountCents), InheritedObligated().Sum(a => a.ObligatedCents));
+            _claims.Count, _claims.Sum(c => c.AmountCents), InheritedObligated().Sum(a => a.ObligatedCents),
+            gaps.Count(IsWorthTaking));   // DESK-222 (D58)
 
         var commitments = _commitments.Select(c => new CommitmentLine(
             c.Id, c.Kind == CommitmentKind.Handshake ? "handshake" : "outOfScope", c.OpenedDay, c.Decision.ToString().ToLowerInvariant(),

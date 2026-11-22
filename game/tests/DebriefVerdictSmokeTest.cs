@@ -41,7 +41,7 @@ public partial class DebriefVerdictSmokeTest : Node
             }
             shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed); await Frames();
             var score = PlayScreen.Descendants(shell.DebriefFullRecord).OfType<Label>().Single(l => l.HasMeta("scorecard"));
-            Require(score.Text.Contains($"{report.Scorecard.GapCount} gaps: {report.Scorecard.AvoidableGaps} avoidable · {report.Scorecard.DiscoverableGaps} discoverable · {report.Scorecard.UnforeseeableGaps} unforeseeable"), "The full record keeps all tag counts.");
+            Require(score.Text.Contains(DebriefWords.GapCounts(report.Scorecard)) && score.Text.Contains($" {report.Scorecard.AvoidableGaps} avoidable") && score.Text.Contains($" {report.Scorecard.DiscoverableGaps} discoverable · {report.Scorecard.UnforeseeableGaps} unforeseeable"), "The full record keeps all tag counts.");
             shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed);
             var fork = report.Gaps.Single(g => g.CapabilityId == "mhe"); var forkDetail = Detail(fork.Index); forkDetail.Show();
             var late = fork.Factors.Single(f => f.Text.Contains("was quoted to start on day 8 or 9 and started on day 9."));
@@ -76,6 +76,17 @@ public partial class DebriefVerdictSmokeTest : Node
                 await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
                 using var image = GetViewport().GetTexture().GetImage(); Require(image.SavePng(args[at + 1] + "-no-terms.png") == Error.Ok, "The 22 Nov no-terms screenshot is saved.");
             }
+            // DESK-222 (D58): the count says how many avoidable gaps were risks worth taking.
+            shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed); await Frames();
+            var tradeScore = PlayScreen.Descendants(shell.DebriefFullRecord).OfType<Label>().Single(l => l.HasMeta("scorecard"));
+            Require(tradeScore.Text.Contains("4 gaps: 4 avoidable, 2 of them risks worth taking · 0 discoverable · 0 unforeseeable"), "The gap count names the risks worth taking.");
+            if (at >= 0)
+            {
+                var countScroll = shell.DebriefPanel.GetParent<ScrollContainer>(); countScroll.EnsureControlVisible(tradeScore); await Frames();
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage(); Require(image.SavePng(args[at + 1] + "-count.png") == Error.Ok, "The gap count screenshot is saved.");
+            }
+            shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed);
             shell.QueueFree(); await Frames(); GD.Print("DEBRIEF_VERDICT_SMOKE_PASS: one verdict per gap, every factor and exact reason, quoted evidence, full-record counts, third-play late start and pure navigation."); GetTree().Quit();
             VBoxContainer Detail(int index) => shell.DebriefPanel.GetChildren().OfType<VBoxContainer>().Single(v => v.HasMeta("gap_detail") && v.GetMeta("gap_detail").AsInt32() == index);
             async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
