@@ -74,6 +74,9 @@ public sealed class SessionView
     /// <summary>DESK-78: a COR as this contract's order form reads them, with their fit and load for its work. Payments
     /// read 80% where the order form said 65% for the same COR on the same contract.</summary>
     public string CorSummary(CorState cor, Arrangement arrangement) => _s.CorSummary(cor, arrangement);
+    /// <summary>DESK-227: what naming this COR on a running contract does, in the order form's words: fit, load, odds, lag,
+    /// and what it lowers on contracts they already watch. Null for the COR already on it.</summary>
+    public string? CorDesignationWhy(string corId, string arrangementId) => _s.CorDesignationWhy(corId, arrangementId);
     /// <summary>The COR roster for a contract of this capability (DESK-07, D8), best odds first, each with why they fit the
     /// work or do not. Empty when the scenario has no roster. Read only.</summary>
     public IReadOnlyList<CorChoice> CorChoices(string capabilityId) => _s.BuildCorChoices(capabilityId);

@@ -657,3 +657,13 @@ Sim notes (Fable):
 - DESK-221: `Lifecycle`'s `ArrangementStart` record reads "... began on day {d}, ..." and its `ArrangementEnd` record "... ended: its last day was day {EndDay}." Goldens move wherever they print these lines (each start and end); no outcome moves.
 - DESK-222: `ScorecardView.WorthTakingGaps` counts the avoidable gaps whose button reads D56's line or its knock-on line; the debrief's count line (game, a FABLE-SESSION 2a fix of one line) reads it as above. Tests on the fifth play's first log: two avoidable, two worth taking.
 
+## 40. The 22 Nov seventh play: rows only (22 Nov 2026)
+
+The seventh play (docs/reviews/2026-11-22-claude-play-7.md) verified DESK-223 and DESK-224 and was the first to change a COR on a running contract. No decision: the rows below put on Payments and in the records the words the order form and the screens already use.
+
+Sim notes (Fable):
+
+- DESK-225: the hand-over record says its hours with `HoursSaid` (to the half hour, DESK-14): "6.5 hours left", not "7 hours left".
+- DESK-226: the day summary's first line counts the misses the office heard of that day (COR and unit reports that arrived, and the host nation or ACSA misses `TheirsCovered` names); with nothing short it reads "Day 11: nothing finished and nothing was short, though one missed delivery was reported." Left out: naming the vendor in the line (the report under it does).
+- DESK-227: `CorSummary(cor, arrangement)` leads with the fit words ("does not work with waste removal: about 40% of problems on this contract, reported the same day"), so the grade no longer sits beside a rate that contradicts it; `SessionView.CorDesignationWhy(corId, arrangementId)` is the order form's `CorWhy` sentence for that contract with DESK-112's load note. Payments shows it under Designate COR (DESK-228, Codex). Left out: what the swap gives back to the COR it replaces.
+
