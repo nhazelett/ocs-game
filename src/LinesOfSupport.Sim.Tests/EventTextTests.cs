@@ -50,8 +50,12 @@ public class EventTextTests
         // D44 (DESK-144): the agreements and staff-meeting note is read the morning of day 2, before the forklift request.
         var item = s.View.MorningBoard().Items.Single(i => i.LinkId == "mentorAgreements");
         Assert.StartsWith("Capt Mills on agreements. \"The forklift question is coming;", item.Text);
-        Assert.EndsWith("getting in takes a couple of hours.\"", item.Text);
+        Assert.EndsWith("know who you'd go to if they say no.\"", item.Text);
         Assert.Equal("mills", item.Person?.Id);
+        // DESK-207: the staff meeting sentence is its own note, sent because this shop has not joined.
+        var meeting = s.View.MorningBoard().Items.Single(i => i.LinkId == "mentorStaffMeeting");
+        Assert.Equal("Capt Mills on the staff meeting. \"Get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours.\"", meeting.Text);
+        Assert.Equal("mills", meeting.Person?.Id);
     }
 
     [Fact]

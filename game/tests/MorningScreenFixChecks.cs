@@ -32,7 +32,7 @@ internal static class MorningScreenFixChecks
                 Require(shell.MorningHeading.Text.Contains(DeskUi.Count(shell.MorningAlerts.GetChildCount(), "alert")), "The alert count counts the visible alert entries.");
                 if (day == 2)
                 {
-                    var mills = board.New.Single(n => n.Person?.Role == "outgoingCco");
+                    var mills = board.New.Single(n => n.Person?.Role == "outgoingCco" && n.Text.Contains("staff meeting"));   // DESK-207: its own note
                     Require(!shell.LeadWords.IsVisibleInTree() && !shell.MentorMessages.Visible,
                         "The lead and mentor do not repeat Mills' morning news.");
                     Require(PlayScreen.Descendants(shell.MorningBrief).OfType<Label>().Count(l => l.Text == mills.Text) == 1, "Mills' full note appears exactly once.");

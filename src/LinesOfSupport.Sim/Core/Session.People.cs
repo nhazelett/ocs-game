@@ -239,6 +239,11 @@ public sealed partial class Session
             $"Going to find the finance office: about {People.FindFinance.ShopHours} shop hours.");
     }
 
+    /// <summary>DESK-207 (22 Nov play, note P2-7): the shop attends the commander's staff meeting, or joining it is in
+    /// work. Mills's staff meeting note is sent only when this is false.</summary>
+    internal bool InOrJoiningStaffMeeting()
+        => _attendingMeetings || _work.Any(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "joinMeeting" });
+
     private ActionResult ApplyJoinStaffMeeting(JoinStaffMeetingAction j)
     {
         var cmd = Scenario.Actors.Commander.Person;
