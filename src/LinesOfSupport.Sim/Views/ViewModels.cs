@@ -311,7 +311,8 @@ public sealed record CapabilityTile(string SiteId, string CapabilityId, string L
 /// its RecordId is not a record.</param>
 /// <param name="Lead">The one thing the day leads with (M2R-05), or null on a quiet day.</param>
 /// <param name="OpenRequests">DESK-78: requests on the desk whose days are not over, for the morning's heading (the
-/// review's "0 requests" counted board items, not requests).</param>
+/// review's "0 requests" counted board items, not requests). DESK-206: also a request whose days are over while a buy for
+/// it is still supplying, as the Requests list still shows it.</param>
 /// <param name="New">DESK-73 (D29): everything new since yesterday in one ordered list: new requests, then what people
 /// answered, then news. Empty on a morning with nothing new.</param>
 public sealed record MorningBoardView(int Day, TopStripView Strip, IReadOnlyList<BoardItem> Items, IReadOnlyList<CapabilityTile> Tiles,
