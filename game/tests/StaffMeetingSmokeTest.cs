@@ -100,7 +100,27 @@ public partial class StaffMeetingSmokeTest : Node
             Require(actualLabels.Single(l=>l.HasMeta("meeting_state")).Text=="SrA Eli Novak is attending the staff meeting. The next is on day 15.","Committed attendance names Novak rather than the player.");
             Require(actualLabels.Single(l=>l.HasMeta("meeting_cost")).Text.Contains("1.5 hours of SrA Eli Novak's time"),"Actual standing cost matches the team bar.");
             await Capture("novak-attending");
+            shell.TeamButtons["novak"].EmitSignal(Button.SignalName.Pressed);
+            Require(shell.TeamPanel.Visible && shell.TeamMeetingButton is not null,"The attendee's Team page has a route to the standing meeting.");
+            var teamLabels=Labels(shell.TeamPanel).ToArray();
+            Require(teamLabels.Any(l=>l.Text=="Standing commitment: staff meeting · 1.5 hours each meeting. Next on day 15."),"Team shows actual recurring personal hours and next day without making it a one-off task.");
+            var teamButton=shell.TeamMeetingButton!;var teamHash=shell.Session.StateHash;
+            if(shot>=0)
+            {
+                var teamScroll=shell.TeamPanel.FindChildren("*","ScrollContainer",true,false).OfType<ScrollContainer>().Single();
+                for(var frame=0;frame<4;frame++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                teamScroll.EnsureControlVisible(teamButton);
+                for(var frame=0;frame<4;frame++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+                await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
+                using var teamImage=GetViewport().GetTexture().GetImage();Require(teamImage.SavePng(args[shot+1]+"-team-standing.png")==Error.Ok,"Native Team commitment screenshot saved.");
+            }
+            teamButton.EmitSignal(Button.SignalName.Pressed);
+            for(var frame=0;frame<4;frame++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+            Require(!shell.TeamPanel.Visible && shell.VisitButtons.ContainsKey("leave-meeting") && shell.Session.StateHash==teamHash,"Opening the existing meeting pane is read-only and exposes its existing Stop action.");
             shell.VisitButtons["leave-meeting"].EmitSignal(Button.SignalName.Pressed);
+            teamHash=shell.Session.StateHash;teamButton.EmitSignal(Button.SignalName.Pressed);
+            Require(shell.Session.StateHash==teamHash,"The retired Team link cannot submit or change a meeting action.");
+            shell.TeamButtons["novak"].EmitSignal(Button.SignalName.Pressed);Require(shell.TeamMeetingButton is null,"The standing commitment disappears after leaving.");shell.TeamBackButton.EmitSignal(Button.SignalName.Pressed);
             var selectionHash=shell.Session.StateHash;
             shell.VisitAssignees["meeting"].ChoiceButtons["novak"].EmitSignal(Button.SignalName.Pressed);
             actualLabels=Labels(shell.PersonContactInput.GetParent()).ToArray();

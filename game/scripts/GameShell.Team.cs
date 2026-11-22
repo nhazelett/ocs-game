@@ -15,6 +15,7 @@ public partial class GameShell
     internal Button TeamBackButton { get; private set; } = null!;
     internal Dictionary<string, ProgressBar> TeamBars { get; } = [];
     internal Dictionary<string, Button> TeamButtons { get; } = [];
+    internal Button? TeamMeetingButton { get; private set; }
     internal Dictionary<string, LineEdit> TeamNameInputs { get; } = [];
     internal Dictionary<string, OptionButton> TeamFaceInputs { get; } = [];
     internal Dictionary<string, PersonPortrait> TeamFaces { get; } = [];
@@ -171,6 +172,7 @@ public partial class GameShell
 
     private void RenderTeamPanel()
     {
+        TeamMeetingButton = null;
         DeskUi.Clear(teamContents);
         TeamNameInputs.Clear(); TeamFaceInputs.Clear(); TeamFaces.Clear();
         WorkAssignees.Clear(); WorkAssignButtons.Clear();
@@ -228,7 +230,21 @@ public partial class GameShell
             var role = member.Role == "you" ? "" : " · " + member.RoleLabel;
             var text = DeskUi.Label($"{TeamName(member)}{role}\n{member.Pace}\n{DeskUi.Count(member.FreeHoursToday, "hour")} free today · {DeskUi.Count(member.HoursQueued, "hour")} of unfinished work");
             text.SizeFlagsHorizontal = SizeFlags.ExpandFill; header.AddChild(text);
-            if (member.Work.Count == 0) card.AddChild(DeskUi.Label("No unfinished tasks."));
+            var meeting = view.StaffMeeting;
+            var attends = meeting.Attending && meeting.AttendeeId == member.Id;
+            if (attends)
+            {
+                card.AddChild(DeskUi.Label($"Standing commitment: staff meeting · {DeskUi.Count(meeting.MeetingHours,"hour")} each meeting. Next on day {meeting.NextDay}."));
+                var hash = session.StateHash;
+                TeamMeetingButton = DeskUi.Button("Open staff meeting", () =>
+                {
+                    if (!TeamPanel.Visible || hash != session.StateHash || session.View?.Finished != false) return;
+                    CloseTeam(); OpenStaffMeeting();
+                });
+                TeamMeetingButton.Disabled = view.Finished; card.AddChild(TeamMeetingButton);
+                card.AddChild(DeskUi.Label("To send someone else, stop attending there, then join with that person."));
+            }
+            if (member.Work.Count == 0) card.AddChild(DeskUi.Label(attends ? "No other tasks waiting." : "No unfinished tasks."));
             foreach (var work in member.Work)
             {
                 card.AddChild(DeskUi.Label(work.Label.TrimEnd('.') + $" · {DeskUi.Count(work.HoursLeft, "hour")} left" +
