@@ -180,4 +180,13 @@ public sealed partial class Session
     private bool FailureKnown(CauseRecord failure)
         => RecordKnown(failure) || _records.Any(r => r.Kind == RecordKind.CorReport && r.CausedBy.Contains(failure.Id));
 
+
+    /// <summary>DESK-216: the Re-source button opens the buy form for the issue's site and capability, whose suppliers are
+    /// the vendors offering it; with only the vendor at fault there, it led to a form that could buy nothing new.</summary>
+    internal string? BuildResourceReason(string issueId)
+    {
+        if (_issues.FirstOrDefault(i => i.Id == issueId) is not { } issue) return null;
+        if (Scenario.Vendors.Any(v => v.Id != issue.VendorId && v.Offers.Any(o => o.Capability == issue.CapabilityId))) return null;
+        return $"No other supplier the shop knows offers {Lower(CapLabel(issue.CapabilityId))} at {SiteName(issue.SiteId)}.";
+    }
 }

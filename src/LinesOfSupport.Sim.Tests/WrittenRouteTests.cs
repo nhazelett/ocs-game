@@ -23,12 +23,14 @@ public class WrittenRouteTests
                         + "would have started day 4 to 6, with water at Hub out up to 3 days in all, 2 more than the commander allows; "
                         + "the card was the way to have water at Hub on day 3.", Assert.Single(water.Factors).Text);
         Assert.DoesNotContain("Written terms settle a dispute", water.Factors[0].Text, StringComparison.Ordinal);
-        Assert.Equal(DebriefWords.NoTermsTagLine, water.TagLine);
+        // DESK-215 (D56): no written order could have started in time, so the button says the trade was worth taking.
+        Assert.Equal(GapTag.Avoidable, water.Tag);
+        Assert.Equal("A risk worth taking: no written order could have started by day 3.", water.TagLine);
 
         // (c) Food service went down with water: its button says so, not that it was in front of you.
         var food = d.Gaps.Single(g => g.CapabilityId == "food" && g.StartDay == 3);
         Assert.Equal(GapTag.Avoidable, food.Tag);
-        Assert.Equal("Avoidable: it went down with water at Hub.", food.TagLine);
+        Assert.Equal("It went down with water at Hub, a risk worth taking.", food.TagLine);
         Assert.Contains("Food service at Hub went down with it.", d.Summary!.Text, StringComparison.Ordinal);
     }
 
@@ -39,9 +41,15 @@ public class WrittenRouteTests
         // started day 7 to 9 and kept the commander's line, so the dispute was the price of the faster buy.
         var d = Replay.Run(Repo.Load("tutorial"), Log("2026-11-22", 1)).View.Debrief();
         foreach (var g in d.Gaps.Where(g => g.CapabilityId == "mhe"))
+        {
+            Assert.Equal(DebriefWords.NoTermsTagLine, g.TagLine);   // D56 keeps D54's line here
             Assert.EndsWith("Written terms settle a dispute, at a cost in days: a purchase order with Coastal Rentals placed on day 5 would have "
                             + "started day 7 to 9, with material handling equipment at Hub out up to 1 day in all, all the commander allows.",
                             Assert.Single(g.Factors).Text);
+        }
+        // Water in the same play could not have had a written order in time.
+        Assert.Equal("A risk worth taking: no written order could have started by day 3.", d.Gaps.Single(g => g.CapabilityId == "water").TagLine);
+        Assert.Equal("It went down with water at Hub, a risk worth taking.", d.Gaps.Single(g => g.CapabilityId == "food").TagLine);
     }
 
     [Fact]
@@ -59,5 +67,18 @@ public class WrittenRouteTests
         // Water on day 1: a purchase order would put water out three days against one allowed, so the card stays.
         var first = Replay.Run(Repo.Load("tutorial"), Log("2026-11-22-2", 1) with { Actions = [] }, stopAfterDay: 0);
         Assert.Equal("gpc", first.View.WhereThingsStand().Single(r => r.CardId == "tutWater").OrderBy!.InstrumentId);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void The_third_play_reads_the_trade_as_worth_taking(int n)
+    {
+        // DESK-215 (D56; Claude play 22 Nov, third play, notes P1-18, P2-20): both players read "Avoidable" above "the card
+        // was the way to have water at Hub on day 3" as a contradiction.
+        var d = Replay.Run(Repo.Load("tutorial"), Log("2026-11-22-3", n)).View.Debrief();
+        Assert.Equal("A risk worth taking: no written order could have started by day 3.", d.Gaps.Single(g => g.CapabilityId == "water").TagLine);
+        Assert.Equal("It went down with water at Hub, a risk worth taking.", d.Gaps.Single(g => g.CapabilityId == "food").TagLine);
+        Assert.DoesNotContain(d.Gaps, g => g.TagLine!.StartsWith("Avoidable", StringComparison.Ordinal));
     }
 }

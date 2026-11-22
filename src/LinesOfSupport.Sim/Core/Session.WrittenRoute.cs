@@ -50,8 +50,34 @@ public sealed partial class Session
         if (gap.Tag != GapTag.Avoidable || gap.Factors.Count == 0
             || !gap.Factors.All(f => f.Kind == GapFactorKind.Dependency && f.DependsOnGap is { } i && i < gaps.Count && gaps[i].PriceOfNoTerms))
             return null;
-        var with = gap.Factors.Select(f => gaps[f.DependsOnGap!.Value]).DistinctBy(g => (g.SiteId, g.CapabilityId))
-            .Select(g => $"{Lower(CapLabel(g.CapabilityId))} at {SiteName(g.SiteId)}").ToList();
-        return $"Avoidable: it went down with {string.Join(" and ", with)}.";
+        var parents = gap.Factors.Select(f => gaps[f.DependsOnGap!.Value]).DistinctBy(g => (g.SiteId, g.CapabilityId)).ToList();
+        var with = string.Join(" and ", parents.Select(g => $"{Lower(CapLabel(g.CapabilityId))} at {SiteName(g.SiteId)}"));
+        // DESK-215 (D56): what went down with a risk worth taking reads the same.
+        return parents.All(g => g.TagLine?.StartsWith(WorthTakingPrefix, StringComparison.Ordinal) == true)
+            ? $"It went down with {with}, a risk worth taking."
+            : $"Avoidable: it went down with {with}.";
+    }
+
+    private const string WorthTakingPrefix = "A risk worth taking: ";
+
+    /// <summary>D56 (DESK-215; Claude play 22 Nov, third play, notes P1-18, P2-20): a gap that was the price of no written
+    /// terms, where the written route the shop knew on each buy's day could not have started by the gap's day, or there
+    /// was none, reads "A risk worth taking: no written order could have started by day 3." in place of D54's line. Both
+    /// players read "Avoidable" above "the card was the way to have water at Hub on day 3" as a contradiction, and asked for
+    /// a move that did not exist. Null for any other gap, including one whose written route could have started in time.</summary>
+    private string? WorthTaking(GapView gap)
+    {
+        if (!gap.PriceOfNoTerms) return null;
+        string? line = null;
+        foreach (var f in gap.Factors)
+        {
+            var rec = f.RecordIds.Count > 0 ? _records.FirstOrDefault(r => r.Id == f.RecordIds[0]) : null;
+            if (_arrangements.FirstOrDefault(a => a.Id == rec?.Subject) is not { Written: { } w }) return null;
+            if (w.Route is not null && w.StartMin <= f.FirstDay) return null;
+            line ??= w.Route is null
+                ? $"{WorthTakingPrefix}the shop knew no written order on day {w.OrderDay}."
+                : $"{WorthTakingPrefix}no written order could have started by day {f.FirstDay}.";
+        }
+        return line;
     }
 }

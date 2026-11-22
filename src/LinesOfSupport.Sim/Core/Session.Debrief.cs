@@ -354,7 +354,7 @@ public sealed partial class Session
             var tag = factors.Count == 0 ? GapTag.Unforeseeable : factors.Max(f => f.Tag);
             var shortfalls = _records.Where(r => r.Kind == RecordKind.Shortfall && r.Subject == $"{siteId}.{capId}" && r.Day >= start && r.Day <= end).Select(r => r.Id).ToList();
             var gap = new GapView(gaps.Count, siteId, capId, Cap(capId).Label, start, end, lowest, down, tag, factors, shortfalls);
-            gaps.Add(gap with { TagLine = gap.PriceOfNoTerms ? DebriefWords.NoTermsTagLine   // DESK-204 (D54)
+            gaps.Add(gap with { TagLine = gap.PriceOfNoTerms ? WorthTaking(gap) ?? DebriefWords.NoTermsTagLine   // DESK-204 (D54), DESK-215 (D56)
                                          : KnockOnOfTrade(gap, gaps) ?? DebriefWords.TagMeaning(tag) });   // DESK-211 (D55 c)
         }
 

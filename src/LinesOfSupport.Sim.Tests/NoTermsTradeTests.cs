@@ -26,13 +26,14 @@ public class NoTermsTradeTests
         {
             Assert.Equal(GapTag.Avoidable, g.Tag);
             Assert.True(g.PriceOfNoTerms);
-            Assert.Equal(DebriefWords.NoTermsTagLine, g.TagLine);
+            // DESK-215 (D56): water's written route could not have started by day 3, so it reads as worth taking.
+            Assert.Equal(g == water ? "A risk worth taking: no written order could have started by day 3." : DebriefWords.NoTermsTagLine, g.TagLine);
             // DESK-211 (D55 a): the closing sentence names the written route the shop knew that day (WrittenRouteTests).
             Assert.DoesNotContain("a purchase order or a BPA call", Assert.Single(g.Factors).Text, StringComparison.Ordinal);
         }
         // A knock-on is not counted as a trade of its own; DESK-211 (D55 c) says it went down with water.
         Assert.False(food.PriceOfNoTerms);
-        Assert.Equal("Avoidable: it went down with water at Hub.", food.TagLine);
+        Assert.Equal("It went down with water at Hub, a risk worth taking.", food.TagLine);
 
         var text = d.Summary!.Text;
         Assert.Contains("Food service at Hub went down with it. There were two more gaps, both the price of buys with no written terms.", text);
