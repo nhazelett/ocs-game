@@ -62,7 +62,7 @@ internal static class PaymentReportsSmokeChecks
                 "The Sim names the disputed day on the 22 Nov second play's day-four water buy.");
             hash = shell.Session.StateHash;
             shell.OpenContractView(disputedWater.Id); await Frames();
-            var money = PlayScreen.Descendants(shell.ContractView).OfType<Label>().SingleOrDefault(l => l.Text.Contains("cost of support received"));
+            var money = PlayScreen.Descendants(shell.ContractView).OfType<Label>().SingleOrDefault(l => l.Text.Contains("cost incurred"));
             Require(money is not null && money.Text.EndsWith("\n" + disputed, StringComparison.Ordinal) && money.IsVisibleInTree()
                 && shell.Session.StateHash == hash, "The contract page's money line adds the disputed-day sentence, and reading it never acts.");
             Require(!PaymentRow(disputedWater.Id).Text.Contains(disputed), "The Payments list keeps its short line.");

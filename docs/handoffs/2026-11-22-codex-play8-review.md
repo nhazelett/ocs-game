@@ -16,7 +16,7 @@ Claude left the notes unsorted. The takeover must distinguish proven contradicti
 
 ## Validated how
 
-Both input logs replay through the current Harness, all four lines met, outputs 99.4% and 97%. Batch runs 200 seeds for each policy; textbook mission output 97.3/99.7/100%, every scored line met in every seed. Complete numeric results and hashes are in the report. Solution build, all 1,138 .NET tests, scenario/provenance and diff/conflict checks before publication. Initial external-output test setup lacked the fixture ancestors; after copying the fixture tree to scratch, all tests pass without source changes.
+Both input logs replay through the current Harness, all four lines met, outputs 99.4% and 97.9%. Batch runs 200 seeds for each policy; textbook mission output 97.3/99.7/100%, every scored line met in every seed. Complete numeric results and hashes are in the report. Solution build, all 1,138 .NET tests, scenario/provenance and diff/conflict checks before publication. Initial external-output test setup lacked the fixture ancestors; after copying the fixture tree to scratch, all tests pass without source changes.
 
 ## Unresolved
 

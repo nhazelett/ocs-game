@@ -128,7 +128,7 @@ public partial class GameShell
             .Where(line => arrangement.Lines.Contains(line.Id)).Select(line => line.Label?.ToLowerInvariant() ?? "support"));
         contractContents.AddChild(DeskUi.Label($"{ArrangementStatusText(view, arrangement)}. Supplies {supplies}."));
         if (scope.Length > 0) contractContents.AddChild(DeskUi.Label("Includes " + scope + "."));
-        contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement) + (view.DisputedDaysLine(arrangement.Id) is { } disputed ? "\n" + disputed : "")));
+        contractContents.AddChild(DeskUi.Label(ArrangementPaymentText(view, arrangement, shortDispute: false) + (view.DisputedDaysLine(arrangement.Id) is { } disputed ? "\n" + disputed : "")));
         if (arrangement.NoticeDays is { } days)
             contractContents.AddChild(DeskUi.Label($"The contract requires {days} days of notice."));
         var hasModification = AddContractModification(contractContents, view, arrangement.Id);
@@ -167,14 +167,15 @@ public partial class GameShell
         terminations[arrangement.Id] = assigned.Button;
     }
 
-    private static string ArrangementPaymentText(SessionView view, Arrangement arrangement)
+    private static string ArrangementPaymentText(SessionView view, Arrangement arrangement, bool shortDispute = true)
     {
         if (view.TerminateBlocked(arrangement.Id) is not null
             && arrangement.ObligatedCents == 0 && arrangement.IncurredCents == 0 && arrangement.UnobligatedIncurredCents == 0)
             return arrangement.Instrument == "hostNation"
                 ? "Provided under the host nation agreement; this office has no recorded costs."
                 : "Provided by the J4 under the ACSA; this office has no recorded costs.";
-        return (arrangement.Instrument == "gpc" ? "Paid from the card program.\n" : "") + $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost of support received {DeskUi.Money(arrangement.IncurredCents)}\nReceived but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}";
+        return (arrangement.Instrument == "gpc" ? "Paid from the card program.\n" : "") + $"Money committed {DeskUi.Money(arrangement.ObligatedCents)} · cost incurred {DeskUi.Money(arrangement.IncurredCents)}\nCost not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"
+            + (shortDispute && view.DisputedDaysLine(arrangement.Id) is not null ? "\nDisputed supply was paid in full; open for details." : "");
     }
 
     private static string ArrangementStatusText(SessionView view, Arrangement arrangement) => view.StatusToday(arrangement.Id) switch
