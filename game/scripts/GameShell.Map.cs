@@ -13,7 +13,7 @@ public partial class GameShell
         var board = GetNode<VBoxContainer>("Margin/Layout/WorkArea/BoardPanel/BoardLayout");
         var row = new HBoxContainer { Name = "MapControls" }; row.AddThemeConstantOverride("separation", 12);
         var fit = DeskUi.Button("Fit map", () => Map.FitMap()); fit.AutowrapMode = TextServer.AutowrapMode.Off; fit.SizeFlagsHorizontal = SizeFlags.ShrinkBegin; row.AddChild(fit);
-        var movement = MovementButton = DeskUi.Button("Show today's movement", () => Map.ReplayMovement()); movement.AutowrapMode = TextServer.AutowrapMode.Off; movement.SizeFlagsHorizontal = SizeFlags.ShrinkBegin; row.AddChild(movement);
+        var movement = MovementButton = DeskUi.Button("Replay island crossings", () => Map.ReplayMovement()); movement.AutowrapMode = TextServer.AutowrapMode.Off; movement.SizeFlagsHorizontal = SizeFlags.ShrinkBegin; row.AddChild(movement);
         var hint = MapHint = DeskUi.Label("Drag to move. Scroll to zoom."); hint.SizeFlagsHorizontal = SizeFlags.ExpandFill; row.AddChild(hint); board.AddChild(row);
         Map.RequestPicked += card =>
         {

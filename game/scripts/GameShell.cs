@@ -181,7 +181,8 @@ public partial class GameShell : Control
         Map.ShowCapabilities(board?.Tiles ?? []);
         Map.ShowMapDay(view?.MapDay());
         var moves = Map.Day is { } mapDay && (mapDay.Runs.Count > 0 || mapDay.Shipments.Any(s => !s.CustomsHeld));
-        MovementButton.Text = moves ? "Show today's movement" : "Nothing moves today";
+        MovementButton.Text = moves ? "Replay island crossings" : "No crossings today";
+        MovementButton.TooltipText = "This replay shows supplies crossing between islands. Local deliveries are listed in the day's results.";
         MovementButton.Disabled = !moves;
         MapHint.Text = Map.Tiles.Any(t => t.WhyShort is not null)
             ? "Click a site to see why it is short." : "Drag to move. Scroll to zoom.";

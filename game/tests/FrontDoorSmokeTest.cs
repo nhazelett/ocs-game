@@ -95,7 +95,7 @@ public partial class FrontDoorSmokeTest : Node
             Require(tabs.CurrentTab == GameShell.TodayTab && today.ScrollVertical == 0, "A new morning opens at the top of Today.");
             var facts = shell.Session.View.MapDay();
             var moves = facts.Runs.Count > 0 || facts.Shipments.Any(s => !s.CustomsHeld);
-            Require(shell.MovementButton.Disabled == !moves && shell.MovementButton.Text == (moves ? "Show today's movement" : "Nothing moves today"), "Movement wording follows actual Sim movement.");
+            Require(shell.MovementButton.Disabled == !moves && shell.MovementButton.Text == (moves ? "Replay island crossings" : "No crossings today"), "Movement wording follows actual Sim crossings.");
             var savedHash = shell.Session.StateHash;
             shell.AutosavePathOverride = temporary; // A directory cannot be atomically replaced by a save file.
             shell.GetNode<Button>("Navigation/Menu").EmitSignal(Button.SignalName.Pressed);
@@ -105,9 +105,17 @@ public partial class FrontDoorSmokeTest : Node
             DeveloperWorkspace(shell); Scenario(shell, "spoke-b"); Replay(shell);
             for (var day = 0; day < 15 && shell.Session.View!.MapDay().Runs.Count == 0; day++) Step(shell);
             Require(shell.Session.View!.MapDay().Runs.Count > 0 && !shell.MovementButton.Disabled
-                && shell.MovementButton.Text == "Show today's movement", "Actual crossing deliveries retain the replay-movement control.");
+                && shell.MovementButton.Text == "Replay island crossings", "Actual crossing deliveries retain the replay-movement control.");
             shell.DeveloperToggle.ButtonPressed = false;
             await Capture("-movement");
+            var localLog=LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot,"..","docs","reviews","plays","2026-11-22-8","input-log-1.json"));
+            var local=LinesOfSupport.Sim.Replay.Run(LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot,"tutorial")),localLog,stopAfterDay:3);
+            var localSave=Path.Combine(temporary,"local-delivery.json");File.WriteAllText(localSave,local.ToSave().ToJson());shell.LoadSavedGame(localSave);
+            Require(local.Arrangements.Any(a=>a.Instrument=="gpc"&&a.CapabilityId=="water"&&a.StartDay==3),"Fixture includes the real local water delivery day.");
+            Require(shell.Session.View!.MapDay().Runs.Count==0 && shell.MovementButton.Disabled && shell.MovementButton.Text=="No crossings today"
+                && shell.MovementButton.TooltipText.Contains("Local deliveries"),"A local delivery is compatible with no island crossing; the control states its scope.");
+            Require(shell.Session.StateHash==local.StateHash(),"Scoped movement wording changes no trip or simulation state.");
+            await Capture("-local-delivery");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("FRONT_DOOR_SMOKE_PASS: title settings, tutorial-first choices, leave/cancel/save/Continue, solo work, tab and morning scroll, movement wording and failed-save recovery."); GetTree().Quit();
         }
