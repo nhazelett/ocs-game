@@ -45,7 +45,7 @@ public partial class LedgerSmokeTest : Node
                         sawFreeSupport = true;
                     }
                     else
-                        Require(row.Text.Contains($"Money committed {DeskUi.Money(arrangement.ObligatedCents)}") && row.Text.Contains($"cost of support received {DeskUi.Money(arrangement.IncurredCents)}") && row.Text.Contains($"Received but not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"), "Payment amounts bind to Sim, including Q11.");
+                        Require(row.Text.Contains($"Money committed {DeskUi.Money(arrangement.ObligatedCents)}") && row.Text.Contains($"cost incurred {DeskUi.Money(arrangement.IncurredCents)}") && row.Text.Contains($"Cost not covered by committed funds {DeskUi.Money(arrangement.UnobligatedIncurredCents)}"), "Payment amounts bind to Sim, including Q11.");
                     sawUnpaid |= arrangement.UnobligatedIncurredCents > 0;
                     sawCoordination |= arrangement.IsCoordination;
                 }
