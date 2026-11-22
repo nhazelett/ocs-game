@@ -13,6 +13,7 @@ public partial class GameShell
     private IReadOnlyList<DaySummaryView> skippedDaySummaries = [];
     internal IReadOnlyList<DaySummaryView> DisplayedDaySummaries { get; private set; } = [];
     private Label daySummaryTitle = null!;
+    private bool pendingDaySummary;
     internal bool ReadingDaySummary => DaySummaryDialog?.Visible == true;
 
     private void BuildDaySummary()
@@ -57,6 +58,11 @@ public partial class GameShell
     {
         if (session.CompletedSummary is not { } summary || ReadingDaySummary || PlayingDay || AtFrontDoor
             || ReadingTurnover || EndDayDialog.Visible) return;
+        if (session.View?.Finished == true)
+        {
+            TodayBar.Hide();
+            GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab;
+        }
         DisplayedDaySummary = summary;
         DeskUi.Clear(DaySummaryContents);
         DisplayedDaySummaries = skippedDaySummaries.Count > 0 ? skippedDaySummaries : [summary];
@@ -127,7 +133,13 @@ public partial class GameShell
         if (!wasReading) return;
         RefreshDayAdvanceControls();
         if (!returnToMorning || AtFrontDoor || ReadingTurnover) return;
-        if (session.View?.Finished == true) GetNode<TabContainer>("%DeskTabs").CurrentTab = DebriefTab;
+        pendingDaySummary = false;
+        if (session.View?.Finished == true)
+        {
+            RenderBar(TodayBar, session.View.Bar(), compact: true);
+            RefreshDebrief(session.View);
+            GetNode<TabContainer>("%DeskTabs").CurrentTab = DebriefTab;
+        }
         else
         {
             FocusNewMorning();
@@ -137,6 +149,7 @@ public partial class GameShell
     private void ResetDaySummary()
     {
         CloseDaySummary(false);
+        pendingDaySummary = false;
         skippedDaySummaries = [];
         YesterdayButton.Visible = false;
     }

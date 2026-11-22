@@ -1,5 +1,7 @@
 using Godot;
+using LinesOfSupport.Sim;
 using LinesOfSupport.Sim.Core;
+using LinesOfSupport.Sim.Data;
 using LinesOfSupport.Sim.Views;
 using static LinesOfSupport.Game.Tests.DeskSmokeSupport;
 
@@ -134,11 +136,64 @@ public partial class DaySummarySmokeTest : Node
                 "Resuming reconstructs Yesterday and does not automatically replay old results.");
             shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed); CheckSummary();
             Require(shell.DisplayedDaySummary!.Day == 2, "Resumed Yesterday is the saved completed day.");
+            await CheckFinalTutorialDay();
             shell.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("DAY_SUMMARY_SMOKE_PASS: exact actual results, skip/timer order, modal and save purity, Yesterday snapshot, reset/resume, final debrief and one scroll.");
             GetTree().Quit();
+
+            async Task CheckFinalTutorialDay()
+            {
+                var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial"));
+                var input = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-21-12", "input-log-2.json"));
+                var expected = LinesOfSupport.Sim.Replay.Run(bundle, input, stopAfterDay: 15);
+                var path = shell.AutosavePath + ".final";
+                try
+                {
+                    File.WriteAllText(path, expected.ToSave().ToJson());
+                    shell.LoadSavedGame(path); shell.DeveloperToggle.ButtonPressed = false;
+                    Require(shell.Session.View!.Day == 16 && !shell.Session.View.Finished,
+                        "The twelfth play's second log resumes on its exact last morning.");
+                    expected.AdvanceDay(); EndDay(shell);
+                    Require(shell.PlayingDay && shell.DisplayedDebrief is null && DeskBehindResults(),
+                        "The final day's playback keeps the desk visible and does not build the debrief early.");
+                    shell.SkipPlaybackButton.EmitSignal(Button.SignalName.Pressed); CheckSummary();
+                    Require(shell.Session.StateHash == expected.StateHash() && shell.DisplayedDebrief is null && DeskBehindResults(),
+                        "The exact final results open over the desk with no verdict behind them.");
+                    var saved = File.ReadAllBytes(shell.AutosavePath);
+                    await Capture("tutorial-final-summary");
+                    shell.DaySummaryDialog.EmitSignal(AcceptDialog.SignalName.Confirmed);
+                    Require(!shell.ReadingDaySummary && shell.DisplayedDebrief is not null && end.Disabled,
+                        "On to the debrief builds the final report without enabling another day.");
+                    Require(shell.DebriefSummaryText.Text == expected.View.Debrief().Summary!.Text,
+                        "The final report keeps the exact Sim summary.");
+                    await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    Require(shell.DebriefPanel.IsVisibleInTree(), "The final report is visible after closing the results.");
+                    await Capture("tutorial-debrief");
+                    Require(shell.Session.StateHash == expected.StateHash() && saved.SequenceEqual(File.ReadAllBytes(shell.AutosavePath)),
+                        "Opening the final report changes neither the simulation nor its autosave.");
+                    shell.DebriefPanel.GetChildren().OfType<HBoxContainer>().First().GetChildren().OfType<Button>()
+                        .Single(b => b.Text == "Back to the map").EmitSignal(Button.SignalName.Pressed);
+                    await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed);
+                    await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    Require(shell.ReadingDaySummary && DeskBehindResults(), "Yesterday also reads over the desk after finishing.");
+                    shell.DaySummaryDialog.EmitSignal(AcceptDialog.SignalName.Canceled);
+                    await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    Require(shell.DebriefPanel.IsVisibleInTree(), "Canceling Yesterday returns to the finished debrief.");
+                    shell.LoadSavedGame(shell.AutosavePath);
+                    await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+                    Require(!shell.ReadingDaySummary && shell.DebriefPanel.IsVisibleInTree()
+                        && shell.Session.StateHash == expected.StateHash(), "A completed save still opens directly into its debrief.");
+                }
+                finally { File.Delete(path); }
+
+                bool DeskBehindResults() => shell.GetNode<TabContainer>("%DeskTabs").CurrentTab == GameShell.TodayTab
+                    && shell.GetNode<Control>("Margin/Layout/WorkArea/BoardPanel").IsVisibleInTree()
+                    && shell.GetNode<Control>("Margin/Layout/TopStrip").IsVisibleInTree()
+                    && !shell.DebriefPanel.IsVisibleInTree() && !shell.TodayBar.IsVisibleInTree();
+            }
 
             void CheckSummary(DaySummaryView? expected = null)
             {

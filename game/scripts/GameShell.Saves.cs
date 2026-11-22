@@ -54,6 +54,7 @@ public partial class GameShell
     private bool AdvanceAndAutosave()
     {
         if (!session.RequestNextDay()) return false;
+        pendingDaySummary = true;
         TryAutosave();
         return true;
     }
