@@ -21,7 +21,7 @@ Day 6
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 324 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 324 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -36,7 +36,7 @@ Day 11
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 12
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 12, 1,170 gal/day.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -88,7 +88,7 @@ Day 26
 Day 27
   DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
+  START     Fuel at Spoke B from Second Island Fuel began on day 27, 700 gal/day.
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   COR       Unit report from Spoke B: power fell short on day 24 and the unit blames Harbor Equipment Co, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 28
@@ -215,7 +215,7 @@ Day 66
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 66.
 Day 68
   EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
   FUNDING   Comptroller: the O&M line from day 76 ($900,000) will not be released on day 76 as planned; expect it on day 85.
@@ -235,7 +235,7 @@ Day 73
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 74
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 468 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 74, 468 kW/day.
 Day 75
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
@@ -269,7 +269,7 @@ Day 84
 Day 85
   DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
+  START     Power at Spoke B from Island Power Rentals began on day 85, 468 kW/day.
 Day 86
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 87
@@ -369,4 +369,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 4)
   [not met] Mission output at least 90% (mission.output = 0.669)
 
-State hash 6f762c67c4abd48c05688786a6e0491dfc940bbd626db0de1395445b0a0b9105
+State hash d8d797247fad42ba17067da7206453465adb8b7501d8b77fd92e88aa0a0a2e3b

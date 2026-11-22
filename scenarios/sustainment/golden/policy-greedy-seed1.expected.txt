@@ -111,8 +111,8 @@ Day 22
   EVENT     Spoke C grows by 60. Spoke C: an aviation detachment of 60 arrives day 30 to stay.
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       North Island Telecom comms backhaul at Spoke A ended.
-  START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
+  END       North Island Telecom comms backhaul at Spoke A ended: its last day was day 21.
+  START     Comms backhaul at Spoke A from North Island Telecom began on day 22, 3 links/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
 Day 23
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -121,8 +121,8 @@ Day 24
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 25
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Main Island Motor Pool Rentals ground transport at Hub ended.
-  START     Ground transport at Hub from Main Island Motor Pool Rentals began, 13 vehicles/day.
+  END       Main Island Motor Pool Rentals ground transport at Hub ended: its last day was day 24.
+  START     Ground transport at Hub from Main Island Motor Pool Rentals began on day 25, 13 vehicles/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 21, reported 4 days later; the stock on hand covered it.
 Day 26
@@ -137,8 +137,8 @@ Day 27
   INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 21 and 23 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 28
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Harbor Equipment Co material handling equipment at Spoke C ended.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
+  END       Harbor Equipment Co material handling equipment at Spoke C ended: its last day was day 27.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began on day 28, 2 forklifts/day.
   FAIL      North Island Power and Light power at Spoke A had equipment down.
   FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery. The stock on hand covered today's demand.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down (no maintenance).
@@ -173,7 +173,7 @@ Day 30
   SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.1.
 Day 31
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 30.
   FAIL      Third Island Camp Services lodging at Spoke C had equipment down.
   FAIL      Second Island Camp Services lodging at Spoke B had equipment down.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
@@ -184,7 +184,7 @@ Day 31
   COR       COR report (SGT Oyelaran): Harbor Equipment Co power at Spoke B had equipment down on day 29, reported 2 days later.
 Day 32
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Second Island Camp Services lodging at Spoke B ended.
+  END       Second Island Camp Services lodging at Spoke B ended: its last day was day 31.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B degraded to 69%: fuel on hand ran out.
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
@@ -206,7 +206,7 @@ Day 36
   WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Island Provisions food service at Spoke B ended.
+  END       Island Provisions food service at Spoke B ended: its last day was day 35.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 days later.
 Day 37
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -223,17 +223,17 @@ Day 38
   SHORT     Material handling equipment at Spoke C down to 0%: supply 2 forklifts against demand 2.1; fuel at 0%.
 Day 39
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       The partner force water at Spoke A ended.
+  END       The partner force water at Spoke A ended: its last day was day 38.
   OK        Comms backhaul at Spoke A restored to 100%.
   OK        Fuel at Spoke C restored to 100%.
   SHORT     Material handling equipment at Spoke C degraded to 95%: supply 2 forklifts against demand 2.1.
 Day 40
   DONE      CE small buys: 10 worked today (5 h of shop time).
-  START     Lodging at Spoke B from Second Island Camp Services began, 260 beds/day.
+  START     Lodging at Spoke B from Second Island Camp Services began on day 40, 260 beds/day.
 Day 41
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Port Fuel Haulers fuel at Spoke A ended.
-  END       Port Fuel Haulers fuel at Spoke C ended.
+  END       Port Fuel Haulers fuel at Spoke A ended: its last day was day 40.
+  END       Port Fuel Haulers fuel at Spoke C ended: its last day was day 40.
   COR       Unit report from Spoke A: comms backhaul fell short on day 38 and the unit blames North Island Telecom, reported 3 days later. That contract has no COR, so nobody was checking its deliveries for the government.
 Day 42
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
@@ -589,4 +589,4 @@ PASS CRITERIA
   [not met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 2703000)
   [not met] Mission output at least 88% (mission.output = 0.71)
 
-State hash f2b88467ddb253da857fea0d3cb5ee99384f1ed2284b855056b511fe04658d8a
+State hash 55c5dce25af0d1255171e5a3bd834e5e25e5291801ae234846317f0606590921

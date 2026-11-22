@@ -35,14 +35,14 @@ Day 5
   DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 7, ends day 18. Obligated $12,672.
   DONE      Written purchase order awarded to Third Island Water Works for food service at Spoke C; performance starts day 11, ends day 38. Obligated $177,408.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  START     Fuel at Spoke B from the partner force began, 1,300 gal/day.
+  START     Fuel at Spoke B from the partner force began on day 5, 1,300 gal/day.
 Day 6
   DONE      Undefinitized contract action awarded to Third Island Water Works for water at Spoke C; performance starts day 13, ends day 72. UCA issued with NTE $56,628; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
-  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
+  START     Water at Spoke C from Coastal Provisions began on day 7, 2,640 gal/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -51,13 +51,13 @@ Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
+  START     Food service at Spoke C from Third Island Water Works began on day 11, 480 meals/day.
 Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began on day 13, 2,640 gal/day.
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   EVENT     Weather closes the Third Island crossing. Harbor master: the ferry to Third Island is tied up until the weather clears.
@@ -75,7 +75,7 @@ Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  END       Coastal Provisions water at Spoke C ended.
+  END       Coastal Provisions water at Spoke C ended: its last day was day 18.
   FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: fuel at 0%.
@@ -169,4 +169,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.879)
 
-State hash f6ab5df065969c9dba7da29d42b814db0f6ddaf3c64c23c6fafc9da4719a7916
+State hash 850d62e851baf9d2701231d6a1827c87f2eb22057d01db9ebfad8afa8628302e

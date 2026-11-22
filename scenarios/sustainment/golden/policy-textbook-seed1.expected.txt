@@ -117,7 +117,7 @@ Day 14
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 15
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  START     Water at Spoke A from the other unit began, 3,300 gal/day.
+  START     Water at Spoke A from the other unit began on day 15, 3,300 gal/day.
   FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   COR       COR report (SGT Oyelaran): Island Provisions food service at Spoke B missed its delivery on day 13, reported 2 days later; the stock on hand covered it.
 Day 16
@@ -149,9 +149,9 @@ Day 22
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
   DONE      Written purchase order awarded to Island Provisions for food service at Spoke B; performance starts day 36, ends day 60. Obligated $275,000.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       North Island Telecom comms backhaul at Spoke A ended.
-  START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
-  START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
+  END       North Island Telecom comms backhaul at Spoke A ended: its last day was day 21.
+  START     Comms backhaul at Spoke A from North Island Telecom began on day 22, 3 links/day.
+  START     Comms backhaul at Spoke A from North Island Telecom began on day 22, 3 links/day.
 Day 23
   ACTION    SF 44 cash purchase to Harbor Equipment Co: Material handling equipment at Spoke C, 1 forklift/day for 37 days (Forklifts). Paid in cash at each delivery, $180 a day, about $6,660 in all. Each delivery is a trip for you and the paying agent: 6 shop hours.
   DONE      SF 44 cash purchase awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 64. Obligated as each delivery is paid.
@@ -160,8 +160,8 @@ Day 24
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
 Day 25
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       Main Island Motor Pool Rentals ground transport at Hub ended.
-  START     Ground transport at Hub from Main Island Motor Pool Rentals began, 14 vehicles/day.
+  END       Main Island Motor Pool Rentals ground transport at Hub ended: its last day was day 24.
+  START     Ground transport at Hub from Main Island Motor Pool Rentals began on day 25, 14 vehicles/day.
 Day 26
   ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke C, 630 gal/day for 20 days (Fuel delivery, On-site storage); quoted $56,700.
   DONE      CE small buys: 2 worked today (1 h of shop time, 6 on cards).
@@ -177,10 +177,10 @@ Day 27
   SHORT     Lodging at Spoke C degraded to 53%: supply 80 beds against demand 150.
 Day 28
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       Harbor Equipment Co material handling equipment at Spoke C ended.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 2 forklifts/day.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 1 forklift/day.
+  END       Harbor Equipment Co material handling equipment at Spoke C ended: its last day was day 27.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began on day 28, 2 forklifts/day.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began on day 28, 2 forklifts/day.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began on day 28, 1 forklift/day.
   FAIL      The BPA call from Harbor Equipment Co had equipment down on material handling equipment at Spoke C (no maintenance, no operators); the purchase order from Harbor Equipment Co and the SF 44 from Harbor Equipment Co covered the day, so nothing was short.
   COMPLY    Island Provisions cured the performance issue with Island Provisions on food service at Spoke B: the cure period ended with a corrective plan in place (0 failure days during the period). Performance is back to standard.
   OK        Waste removal at Hub restored to 100%.
@@ -203,9 +203,9 @@ Day 30
   SHORT     Lodging at Spoke C degraded to 76%: supply 160 beds against demand 210.
 Day 31
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       Harbor Equipment Co power at Spoke B ended.
-  START     Power at Spoke B from Harbor Equipment Co began, 400 kW/day.
-  END       Harbor Equipment Co material handling equipment at Spoke C ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 30.
+  START     Power at Spoke B from Harbor Equipment Co began on day 31, 400 kW/day.
+  END       Harbor Equipment Co material handling equipment at Spoke C ended: its last day was day 30.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   FAIL      Main Island Motor Pool Rentals ground transport at Hub had equipment down.
   SHORT     Ground transport at Hub degraded to 53%: supply 7 vehicles against demand 13.
@@ -216,8 +216,8 @@ Day 32
   ACTION    Cure notice on the performance issue with Main Island Motor Pool Rentals on ground transport at Hub started: 4 shop hours.
   DONE      Cure notice on the performance issue with Main Island Motor Pool Rentals on ground transport at Hub delivered to Main Island Motor Pool Rentals: 10 days to cure, ending day 42.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       Second Island Camp Services lodging at Spoke B ended.
-  START     Lodging at Spoke B from Second Island Camp Services began, 270 beds/day.
+  END       Second Island Camp Services lodging at Spoke B ended: its last day was day 31.
+  START     Lodging at Spoke B from Second Island Camp Services began on day 32, 270 beds/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery. The stock on hand covered today's demand.
   OK        Ground transport at Hub restored to 100%.
 Day 33
@@ -235,8 +235,8 @@ Day 36
   WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       Island Provisions food service at Spoke B ended.
-  START     Food service at Spoke B from Island Provisions began, 1,000 meals/day.
+  END       Island Provisions food service at Spoke B ended: its last day was day 35.
+  START     Food service at Spoke B from Island Provisions began on day 36, 1,000 meals/day.
   COR       COR report (SFC Duarte's relief): Second Island Fuel fuel at Spoke B missed its delivery on day 32, reported 4 days later; the stock on hand covered it.
   INBOX     Performance issue: Second Island Fuel under-delivered on fuel at Spoke B on days 31 and 32 (COR SFC Duarte's relief). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 37
@@ -254,7 +254,7 @@ Day 38
   COR       COR report (SSG Mensah): Island Provisions food service at Spoke B missed its delivery on day 38; the stock on hand covered it.
 Day 39
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       The partner force water at Spoke A ended.
+  END       The partner force water at Spoke A ended: its last day was day 38.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down.
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no operators).
@@ -272,16 +272,16 @@ Day 40
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
   DONE      Cure notice on the performance issue with Harbor Equipment Co on material handling equipment at Spoke C delivered to Harbor Equipment Co: 10 days to cure, ending day 50.
   DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
-  START     Fuel at Spoke B from the other unit began, 780 gal/day.
-  START     Food service at Spoke B from the other unit began, 780 meals/day.
+  START     Fuel at Spoke B from the other unit began on day 40, 780 gal/day.
+  START     Food service at Spoke B from the other unit began on day 40, 780 meals/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   OK        Material handling equipment at Spoke C restored to 100%.
 Day 41
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  END       Port Fuel Haulers fuel at Spoke A ended.
-  END       Port Fuel Haulers fuel at Spoke C ended.
-  START     Fuel at Spoke C from Port Fuel Haulers began, 630 gal/day.
+  END       Port Fuel Haulers fuel at Spoke A ended: its last day was day 40.
+  END       Port Fuel Haulers fuel at Spoke C ended: its last day was day 40.
+  START     Fuel at Spoke C from Port Fuel Haulers began on day 41, 630 gal/day.
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
@@ -322,7 +322,7 @@ Day 46
   OK        Material handling equipment at Spoke C restored to 100%.
 Day 47
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  START     Fuel at Spoke C from the other unit began, 630 gal/day.
+  START     Fuel at Spoke C from the other unit began on day 47, 630 gal/day.
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down.
   FAIL      The other unit's food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   COMPLY    Second Island Fuel cured the performance issue with Second Island Fuel on fuel at Spoke B: the cure period ended with a corrective plan in place (4 failure days during the period). Performance is back to standard.
@@ -351,13 +351,13 @@ Day 51
   OK        Food service at Spoke B restored to 100%.
 Day 52
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  START     Food service at Spoke B from the other unit began, 780 meals/day.
+  START     Food service at Spoke B from the other unit began on day 52, 780 meals/day.
   SHORT     Fuel at Spoke C down to 0%: fuel on hand ran out.
   SHORT     Material handling equipment at Spoke C down to 0%: fuel at 0%.
 Day 53
   ACTION    Coordinated with the Hub unit for 630 gal/day of Fuel to Spoke C. Not a contract; they can withdraw it.
   DONE      CE small buys: 2 worked today (1 h of shop time, 7 on cards).
-  START     Fuel at Spoke C from the other unit began, 630 gal/day.
+  START     Fuel at Spoke C from the other unit began on day 53, 630 gal/day.
   FAIL      The other unit's food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   OK        Fuel at Spoke C restored to 100%.
   OK        Material handling equipment at Spoke C restored to 100%.
@@ -382,7 +382,7 @@ Day 56
   ACTION    Coordinated with the Hub unit for 780 meals/day of Food service to Spoke B. Not a contract; they can withdraw it.
   DONE      Cure notice on the performance issue with Harbor Equipment Co on power at Spoke B delivered to Harbor Equipment Co: 10 days to cure, ending day 66.
   DONE      CE small buys: 2 worked today (1 h of shop time, 8 on cards).
-  START     Food service at Spoke B from the other unit began, 780 meals/day.
+  START     Food service at Spoke B from the other unit began on day 56, 780 meals/day.
   FAIL      Third Island Camp Services lodging at Spoke C had equipment down.
   FAIL      Second Island Camp Services lodging at Spoke B had equipment down.
   FAIL      The other unit's food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
@@ -666,4 +666,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.914)
 
-State hash 600d1eded623b9ab5b4867ac07f2137f4d3facc32df98f15094e978fdddcd33b
+State hash c9d2631836dad0e766ce880d852a01eea8aebc698879c4da6426542e573b708a

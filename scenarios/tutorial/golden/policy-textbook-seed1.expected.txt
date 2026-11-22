@@ -29,7 +29,7 @@ Day 2
   SURVEY    File review: lodging at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   SURVEY    File review: food service at Hub from Island Camp Services (BPA call), days -20 to 40, funded from the O&M line; delivery record 97% on time; nothing the handover did not mention.
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Island Mart began, 4,950 gal/day.
+  START     Water at Hub from Island Mart began on day 2, 4,950 gal/day.
 Day 3
   EVENT     The host nation takes its forklifts back. Main Island Utilities: our forklifts go back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
@@ -63,13 +63,13 @@ Day 8
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      Written purchase order awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated $1,267.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
-  END       Main Island Utilities (host nation) material handling equipment at Hub ended.
-  START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
+  END       Main Island Utilities (host nation) material handling equipment at Hub ended: its last day was day 7.
+  START     Material handling equipment at Hub from Coastal Rentals began on day 8, 3 forklifts/day.
 Day 9
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. The weather officer ran long on the storm track and the medics gave the heat numbers. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
-  START     Water at Hub from Main Island Utilities (host nation) began, 8,000 gal/day.
-  END       Island Mart water at Hub ended.
+  START     Water at Hub from Main Island Utilities (host nation) began on day 9, 8,000 gal/day.
+  END       Island Mart water at Hub ended: its last day was day 8.
 Day 10
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 2 on cards).
@@ -91,8 +91,8 @@ Day 13
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Security forces went through the new gate hours and the chaplain announced Sunday's service times. Nothing for contracting.
   DONE      Cure notice on the performance issue with Island Camp Services on food service at Hub delivered to Island Camp Services: 10 days to cure, ending day 23.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
-  END       Main Island Utilities (host nation) waste removal at Hub ended.
-  START     Waste removal at Hub from Main Island Sanitation began, 3,960 gal/day.
+  END       Main Island Utilities (host nation) waste removal at Hub ended: its last day was day 12.
+  START     Waste removal at Hub from Main Island Sanitation began on day 13, 3,960 gal/day.
 Day 14
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
@@ -131,4 +131,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash ce2e6c64cd5b724532120680d318add3bb969946874a78e7ca0e6fe948de6c88
+State hash 60c65b9d3635306b18dd2809a42a939d941ce23a3361f228e1655e4c7593bec7

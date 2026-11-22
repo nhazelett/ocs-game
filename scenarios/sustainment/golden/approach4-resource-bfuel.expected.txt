@@ -114,7 +114,7 @@ Day 16
   DONE      Written purchase order awarded to Harbor Equipment Co for material handling equipment at Spoke C; performance starts day 28, ends day 60. Obligated $17,820.
   END       Second Island Fuel fuel at Spoke B terminated with 15 days' notice; performance ends day 31.
   DONE      CE small buys: none worked today (no hours left); 18 waiting.
-  START     Fuel at Spoke B from Port Fuel Haulers began, 950 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 16, 950 gal/day.
 Day 17
   ACTION    IDIQ order started with Port Fuel Haulers: Fuel at Spoke A, 700 gal/day for 20 days (Fuel delivery, On-site storage); quoted $63,000.
   ACTION    Written purchase order started with Port Fuel Haulers: Fuel at Spoke C, 650 gal/day for 20 days (Fuel delivery, On-site storage); quoted $58,500.
@@ -141,16 +141,16 @@ Day 22
   EVENT     Spoke C grows by 60. Spoke C: an aviation detachment of 60 arrives day 30 to stay.
   EVENT     Spoke C: 60 more personnel arrive day 30 (150 to 210), 8 days' notice. Demand for every capability there rises with them.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       North Island Telecom comms backhaul at Spoke A ended.
-  START     Comms backhaul at Spoke A from North Island Telecom began, 3 links/day.
+  END       North Island Telecom comms backhaul at Spoke A ended: its last day was day 21.
+  START     Comms backhaul at Spoke A from North Island Telecom began on day 22, 3 links/day.
 Day 23
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 24
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
 Day 25
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Main Island Motor Pool Rentals ground transport at Hub ended.
-  START     Ground transport at Hub from Main Island Motor Pool Rentals began, 14 vehicles/day.
+  END       Main Island Motor Pool Rentals ground transport at Hub ended: its last day was day 24.
+  START     Ground transport at Hub from Main Island Motor Pool Rentals began on day 25, 14 vehicles/day.
 Day 26
   DONE      CE small buys: 8 worked today (4 h of shop time).
   FAIL      Port Fuel Haulers fuel at Spoke C missed today's delivery. The stock on hand covered today's demand.
@@ -167,8 +167,8 @@ Day 27
   SHORT     Food service at Spoke B degraded to 64%: power at 64%.
 Day 28
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Harbor Equipment Co material handling equipment at Spoke C ended.
-  START     Material handling equipment at Spoke C from Harbor Equipment Co began, 3 forklifts/day.
+  END       Harbor Equipment Co material handling equipment at Spoke C ended: its last day was day 27.
+  START     Material handling equipment at Spoke C from Harbor Equipment Co began on day 28, 3 forklifts/day.
   FAIL      Island Provisions food service at Spoke B missed today's delivery. The stock on hand covered today's demand.
   OK        Waste removal at Hub restored to 100%.
   OK        Ground transport at Hub restored to 100%.
@@ -192,17 +192,17 @@ Day 30
   COR       COR report (SSG Mensah): North Island Power and Light power at Spoke A had equipment down on day 30.
 Day 31
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
-  START     Power at Spoke B from Harbor Equipment Co began, 330 kW/day.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 30.
+  START     Power at Spoke B from Harbor Equipment Co began on day 31, 330 kW/day.
   OK        Waste removal at Hub restored to 100%.
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
   OK        Comms backhaul at Spoke A restored to 100%.
 Day 32
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Second Island Fuel fuel at Spoke B ended.
-  END       Second Island Camp Services lodging at Spoke B ended.
-  START     Lodging at Spoke B from Second Island Camp Services began, 270 beds/day.
+  END       Second Island Fuel fuel at Spoke B ended: its last day was day 31.
+  END       Second Island Camp Services lodging at Spoke B ended: its last day was day 31.
+  START     Lodging at Spoke B from Second Island Camp Services began on day 32, 270 beds/day.
   FAIL      Second Island Camp Services lodging at Spoke B had equipment down (no maintenance).
   SHORT     Lodging at Spoke B degraded to 51%: supply 135 beds against demand 260.
   COR       COR report (SSG Park): Main Island Sanitation waste removal at Hub had equipment down on day 30, reported 2 days later.
@@ -226,8 +226,8 @@ Day 36
   WITHDRAWN The partner force withdrew the ACSA order (Water at Spoke A); last day of support 38. An ACSA order is support the partner can spare, not a contract it must perform. $1,400 of reimbursement returns to the O&M line good through day 45.
   EVENT     Weather stops the Second Island barge. Harbor master: no barge movements to Second Island for the next three days.
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Island Provisions food service at Spoke B ended.
-  START     Food service at Spoke B from Island Provisions began, 900 meals/day.
+  END       Island Provisions food service at Spoke B ended: its last day was day 35.
+  START     Food service at Spoke B from Island Provisions began on day 36, 900 meals/day.
   OK        Power at Spoke A restored to 100%.
   OK        Water at Spoke A restored to 100%.
   OK        Comms backhaul at Spoke A restored to 100%.
@@ -241,7 +241,7 @@ Day 38
   SHORT     Material handling equipment at Spoke C down to 0%: fuel at 0%.
 Day 39
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       The partner force water at Spoke A ended.
+  END       The partner force water at Spoke A ended: its last day was day 38.
   FAIL      Harbor Equipment Co material handling equipment at Spoke C had equipment down (no maintenance, no operators).
   OK        Fuel at Spoke C restored to 100%.
   SHORT     Material handling equipment at Spoke C degraded to 71%: supply 1.5 forklifts against demand 2.1.
@@ -255,10 +255,10 @@ Day 40
   OK        Material handling equipment at Spoke C restored to 100%.
 Day 41
   DONE      CE small buys: 9 worked today (4.5 h of shop time).
-  END       Port Fuel Haulers fuel at Spoke A ended.
-  END       Port Fuel Haulers fuel at Spoke C ended.
-  START     Fuel at Spoke A from Port Fuel Haulers began, 700 gal/day.
-  START     Fuel at Spoke C from Port Fuel Haulers began, 650 gal/day.
+  END       Port Fuel Haulers fuel at Spoke A ended: its last day was day 40.
+  END       Port Fuel Haulers fuel at Spoke C ended: its last day was day 40.
+  START     Fuel at Spoke A from Port Fuel Haulers began on day 41, 700 gal/day.
+  START     Fuel at Spoke C from Port Fuel Haulers began on day 41, 650 gal/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
@@ -669,4 +669,4 @@ PASS CRITERIA
   [met] No unobligated incurred cost at the end (cost.unobligatedIncurredCents = 0)
   [met] Mission output at least 88% (mission.output = 0.895)
 
-State hash aedffb5799313f160254a5341224efcc9c0cede102d755f047dffbaa420a191f
+State hash aeef6ee05566aeb1ccd6f564531c2c22ca579fb441c0d148270b863073bcc4fc

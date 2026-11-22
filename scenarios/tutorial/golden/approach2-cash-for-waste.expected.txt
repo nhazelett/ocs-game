@@ -22,7 +22,7 @@ Day 1
 Day 2
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Island Mart began, 4,500 gal/day.
+  START     Water at Hub from Island Mart began on day 2, 4,500 gal/day.
 Day 3
   EVENT     The host nation takes its forklifts back. Main Island Utilities: our forklifts go back to the port after day 7.
   WITHDRAWN The host nation withdrew inherited host nation support for material handling equipment at Hub; last day of support 7. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
@@ -46,14 +46,14 @@ Day 8
   EVENT     The host nation pulls its honey trucks. Main Island Utilities: we need our honey trucks back after day 12.
   WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  END       Main Island Utilities (host nation) material handling equipment at Hub ended.
-  START     Material handling equipment at Hub from Coastal Rentals began, 3 forklifts/day.
+  END       Main Island Utilities (host nation) material handling equipment at Hub ended: its last day was day 7.
+  START     Material handling equipment at Hub from Coastal Rentals began on day 8, 3 forklifts/day.
 Day 9
   ACTION    SF 44 cash purchase to Main Island Sanitation: Waste removal at Hub, 3,600 gal/day for 8 days (Removal and disposal). Paid in cash at each delivery, $144 a day, about $1,152 in all. Each delivery is a trip for you and the paying agent: 2 shop hours.
   DONE      SF 44 cash purchase awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated as each delivery is paid.
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Main Island Utilities (host nation) began, 8,000 gal/day.
-  END       Island Mart water at Hub ended.
+  START     Water at Hub from Main Island Utilities (host nation) began on day 9, 8,000 gal/day.
+  END       Island Mart water at Hub ended: its last day was day 8.
 Day 10
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
@@ -69,8 +69,8 @@ Day 12
   INBOX     Performance issue: Island Camp Services under-delivered on food service at Hub on days 11 and 12 (COR SSgt Lane). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 13
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  END       Main Island Utilities (host nation) waste removal at Hub ended.
-  START     Waste removal at Hub from Main Island Sanitation began, 3,600 gal/day.
+  END       Main Island Utilities (host nation) waste removal at Hub ended: its last day was day 12.
+  START     Waste removal at Hub from Main Island Sanitation began on day 13, 3,600 gal/day.
 Day 14
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Main Island Utilities (host nation) power at Hub had equipment down.
@@ -106,4 +106,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash d93f67dd2035545f0ae8c115fc8aa3bdb343114ece8cf7da8bf69f6fecdb4482
+State hash 2ab2b4df4c78d561cf02970293201dcc9eb42d0c0695919416bb3f0c409b12db

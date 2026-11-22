@@ -41,7 +41,7 @@ public class BuyCutDebriefTests
     public void A_count_of_one_agrees_with_its_unit_in_records_and_the_debrief()
     {
         var s = SixthPlay();
-        Assert.Contains(s.Records, r => r.Text.EndsWith("began, 1 forklift/day.", StringComparison.Ordinal));
+        Assert.Contains(s.Records, r => r.Text.Contains(" began on day ") && r.Text.EndsWith(", 1 forklift/day.", StringComparison.Ordinal));
         Assert.Contains(s.Records, r => r.Text.Contains(", 1 forklift/day for 13 days", StringComparison.Ordinal));
         foreach (var scenario in new[] { "tutorial", "sustainment" })
             foreach (var policy in new[] { "greedy", "textbook" })

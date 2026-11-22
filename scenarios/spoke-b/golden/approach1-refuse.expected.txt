@@ -38,8 +38,8 @@ Day 6
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
-  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
+  START     Water at Spoke C from Coastal Provisions began on day 7, 2,640 gal/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -53,14 +53,14 @@ Day 11
   EVENT     Spoke B unit finds its own fuel. "We called a fuel hauler on the main island ourselves. It comes on the next barge. Who signs for it?"
   COMPLY    Unauthorized commitment: the Spoke B unit arranged fuel directly with Port Fuel Haulers. No contract, no terms, no obligation. The vendor is delivering in good faith and is not being paid. Decision: ratify, park or refuse.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
+  START     Food service at Spoke C from Third Island Water Works began on day 11, 480 meals/day.
 Day 12
   END       Port Fuel Haulers fuel at Spoke B refused: Port Fuel Haulers stops at once and fuel at Spoke B has no source from it. The site commander's confidence in contracting drops.
   COMPLY    The Spoke B unit's habit of going around contracting rises (the handshake was refused with nothing in its place).
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began on day 13, 2,640 gal/day.
   FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
@@ -80,7 +80,7 @@ Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 19
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  END       Coastal Provisions water at Spoke C ended.
+  END       Coastal Provisions water at Spoke C ended: its last day was day 18.
 Day 20
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
@@ -89,7 +89,7 @@ Day 20
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 21
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 21, 1,170 gal/day.
   FAIL      Harbor Equipment Co power at Spoke B had equipment down (no maintenance and repair, no operators).
 Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -205,4 +205,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.727)
 
-State hash dac2fa4d6a8ed27553f3578aaa6fe1223d31052bf52e6332525bd3ff9491b191
+State hash 1ac1e4710ec697661ec3e87cabb45d817107fc1a37beffae6a7494f477f070ff

@@ -42,7 +42,7 @@ Day 6
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
 Day 7
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Water at Spoke C from Coastal Provisions began, 2,640 gal/day.
+  START     Water at Spoke C from Coastal Provisions began on day 7, 2,640 gal/day.
   FAIL      Coastal Provisions water at Spoke C missed today's delivery.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
   SHORT     Lodging at Spoke B down to 0%: power at 0%.
@@ -57,7 +57,7 @@ Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Food service at Spoke C from Third Island Water Works began, 480 meals/day.
+  START     Food service at Spoke C from Third Island Water Works began on day 10, 480 meals/day.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out; no arrangement supplies fuel.
 Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -77,10 +77,10 @@ Day 16
   FAIL      Coastal Provisions water at Spoke C missed today's delivery. The stock on hand covered today's demand.
 Day 17
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Water at Spoke C from Third Island Water Works began, 2,640 gal/day.
+  START     Water at Spoke C from Third Island Water Works began on day 17, 2,640 gal/day.
 Day 18
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
+  START     Power at Spoke B from Meridian Site Services began on day 18, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
   OK        Lodging at Spoke B restored to 100%.
@@ -88,7 +88,7 @@ Day 19
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Meridian Site Services billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  END       Coastal Provisions water at Spoke C ended.
+  END       Coastal Provisions water at Spoke C ended: its last day was day 18.
 Day 20
   EVENT     Follow-on element ordered to Spoke C. "Higher has pushed a follow-on element to us, about 40% more people. Date and numbers in the next message."
   EVENT     Spoke C: 64 more personnel arrive day 24 (160 to 224), 4 days' notice. Demand for every capability there rises with them.
@@ -183,4 +183,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.791)
 
-State hash 17804773d51907b5303f03bd3dd4ef599b5c89160dfd9d85ed39df9b33dfcfba
+State hash aa422b22017579a9405a498fa5a792a8058e5adca2a2ad901bf1e18d0a81538a

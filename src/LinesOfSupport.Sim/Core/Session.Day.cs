@@ -240,12 +240,12 @@ public sealed partial class Session
             {
                 a.Status = ArrangementStatus.Active;
                 var who = SupplierName(a);
-                AddRecord(d, RecordKind.ArrangementStart, a.Id, $"{CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} from {who} began, {UnitCount(a.QuantityMilli / 1000, Cap(a.CapabilityId))}/day.", [a.CauseId]);
+                AddRecord(d, RecordKind.ArrangementStart, a.Id, $"{CapLabel(a.CapabilityId)} at {SiteName(a.SiteId)} from {who} began on day {d}, {UnitCount(a.QuantityMilli / 1000, Cap(a.CapabilityId))}/day.", [a.CauseId]);
             }
             if (a.Status is ArrangementStatus.Active or ArrangementStatus.Suspended && a.EndDay < d)
             {
                 a.Status = ArrangementStatus.Ended;
-                AddRecord(d, RecordKind.ArrangementEnd, a.Id, $"{Upper(NameOf(a.Id))} ended.", [a.CauseId]);
+                AddRecord(d, RecordKind.ArrangementEnd, a.Id, $"{Upper(NameOf(a.Id))} ended: its last day was day {a.EndDay}.", [a.CauseId]);   // DESK-221
             }
             if (a.Status == ArrangementStatus.Pending && a.EndDay < d) a.Status = ArrangementStatus.Ended;
         }

@@ -23,7 +23,7 @@ Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
-  START     Fuel at Spoke B from the other unit began, 900 gal/day.
+  START     Fuel at Spoke B from the other unit began on day 3, 900 gal/day.
 Day 4
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 5
@@ -32,7 +32,7 @@ Day 6
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -50,7 +50,7 @@ Day 13
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  END       The other unit's fuel at Spoke B ended.
+  END       The other unit's fuel at Spoke B ended: its last day was day 13.
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
@@ -73,7 +73,7 @@ Day 19
 Day 20
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 20, 1,170 gal/day.
   OK        Fuel at Spoke B restored to 100%.
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 21
@@ -233,7 +233,7 @@ Day 66
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 66.
   FAIL      Port Fuel Haulers fuel at Spoke B missed today's delivery (no on-site storage). The stock on hand covered today's demand.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 68
@@ -444,4 +444,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.766)
 
-State hash 9e58b58c01b304e8fcf30f936d60d2c3fcfe1bbfe2b9a06602d66c6c57dcbbbe
+State hash 3c0dc4f7863cd38af0f75219f286ef4c693590b9767beeaf0903b35482be63fc

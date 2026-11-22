@@ -34,7 +34,7 @@ Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 9, 1,170 gal/day.
 Day 10
   DONE      CE small buys: 6 worked today (3 h of shop time).
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -124,7 +124,7 @@ Day 46
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 47
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Theater base support contractor began, 470 kW/day.
+  START     Power at Spoke B from Theater base support contractor began on day 47, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 48
@@ -265,4 +265,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.789)
 
-State hash 34b1af61e965875467d85fb33114414f683a2a99b2d0c8fddc4562c586b4486e
+State hash f18b4976f6644f43d8c5d3006ec7c41c3eaf4c67e3e06a22140884b84049e65a
