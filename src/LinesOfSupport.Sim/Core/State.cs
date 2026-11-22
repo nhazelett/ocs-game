@@ -63,7 +63,16 @@ public sealed class Arrangement
     /// day it was to run before that (null and 0 otherwise). The debrief names the cut on a gap the buy would have covered.</summary>
     public int? CutDay { get; set; }
     public int PlannedEndDay { get; set; }
+    /// <summary>DESK-211 (D55 a): on a buy with no written terms over a service long enough to suffer for it, what the
+    /// fastest written route the shop could place that day would have cost; null otherwise.</summary>
+    public WrittenAlternative? Written { get; init; }
 }
+
+/// <summary>DESK-211 (D55 a): the written route the shop could have placed on <c>OrderDay</c> instead of a buy with no
+/// written terms, quoted as the award form would have: its name ("a purchase order with Harbor Bottling"), its start window,
+/// and the days the request would have been out by its worst start (<c>OutDays</c>, in all when a pass line counts them,
+/// then <c>Verdict</c> says it against the allowance). <c>Route</c> is null when the shop knew no written route that day.</summary>
+public sealed record WrittenAlternative(string? Route, int OrderDay, int StartMin, int StartMax, long OutDays, string? Verdict);
 
 /// <summary>A part added to a running contract by modification (DESK-97): the line, the first day the vendor brings it,
 /// and what it adds to the contract's daily cost from that day.</summary>

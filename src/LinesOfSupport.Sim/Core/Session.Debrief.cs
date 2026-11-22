@@ -275,7 +275,7 @@ public sealed partial class Session
                     }
                     case RecordKind.ExecutionConfusion:
                         yield return ($"conf|{a.Id}", new GapFactor(GapFactorKind.ExecutionConfusion, GapTag.Avoidable, d,
-                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.{DebriefWords.NoTermsSettle}", [r.Id, a.CauseId]));
+                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.{WrittenRouteSentence(a, d)}", [r.Id, a.CauseId]));   // DESK-211 (D55 a)
                         break;
                 }
             }
@@ -354,7 +354,8 @@ public sealed partial class Session
             var tag = factors.Count == 0 ? GapTag.Unforeseeable : factors.Max(f => f.Tag);
             var shortfalls = _records.Where(r => r.Kind == RecordKind.Shortfall && r.Subject == $"{siteId}.{capId}" && r.Day >= start && r.Day <= end).Select(r => r.Id).ToList();
             var gap = new GapView(gaps.Count, siteId, capId, Cap(capId).Label, start, end, lowest, down, tag, factors, shortfalls);
-            gaps.Add(gap with { TagLine = gap.PriceOfNoTerms ? DebriefWords.NoTermsTagLine : DebriefWords.TagMeaning(tag) });   // DESK-204 (D54)
+            gaps.Add(gap with { TagLine = gap.PriceOfNoTerms ? DebriefWords.NoTermsTagLine   // DESK-204 (D54)
+                                         : KnockOnOfTrade(gap, gaps) ?? DebriefWords.TagMeaning(tag) });   // DESK-211 (D55 c)
         }
 
         var annotate = new HashSet<RecordKind>

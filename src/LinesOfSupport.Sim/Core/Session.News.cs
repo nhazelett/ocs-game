@@ -175,12 +175,53 @@ public sealed partial class Session
     {
         var to = Math.Min(LastDay, card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1);
         if (Day > to) return null;
+        var routes = KnownRoutes(card);
+        if (routes.Count == 0) return null;
+        var want = card.RequestedStartDay;
+        var sure = routes.Where(r => Day + r.LeadMax <= want).OrderBy(r => r.LeadMax).ThenBy(r => r.Cost).ToList();
+        var b = sure.Where(r => !r.NoTerms).Concat(sure).Concat(
+            routes.OrderBy(r => r.LeadMax).ThenBy(r => r.NoTerms).ThenBy(r => r.Lead).ThenBy(r => r.Cost)).First();
+        // D55 (b), DESK-211 (Claude play 22 Nov, second play, note P1-11): on a service long enough to suffer from no written
+        // terms, a written order whose worst start keeps the commander's line is named over a faster buy with none. On day
+        // 5 the lead had pushed a card buy from Coastal the day after water's dispute, while a purchase order with Coastal,
+        // quoted day 8 or 9, put forklifts out one day in all: all the commander allows.
+        var keeps = b.NoTerms
+            ? routes.Where(r => r.Written && KeepsLine(card, Day + r.LeadMax)).OrderBy(r => r.LeadMax).ThenBy(r => r.Cost).FirstOrDefault()
+            : null;
+        if (keeps is not null) b = keeps;
+        var by = want - b.LeadMax;
+        var terms = b.NoTerms ? ", with no written terms" : "";
+        var takes = $"{b.Route} starts {LeadSaid(b.Lead, b.LeadMax)} after it goes in{terms}";
+        var (first, last) = (Day + b.Lead, Day + b.LeadMax);
+        var sentence = keeps is not null && by < Day
+            ? $"Order today: {b.Route} starts {StartSaid(first, last)}; it is wanted from day {want}.{(PassLineCost(card, last) is { } cost ? " " + cost : "")}"
+            : by > Day ? $"Order by day {by}: {takes}."
+            : by == Day ? $"Order today to start by day {want}: {takes}."
+            : first <= want ? $"Order today: {b.Route} starts {StartSaid(first, last)}{terms}; it is wanted from day {want}."
+            : $"Too late for day {want} by any route the shop knows: {b.Route} starts {StartSaid(first, last)}{terms}.";
+        if (by < Day && keeps is null && BeforeStartCover(card, last) is { } cover) sentence += " " + cover;
+        return new OrderByView(by, b.Route, b.Lead, SentenceCase(sentence), b.Inst, b.Vendor, b.LeadMax);
+    }
+
+    /// <summary>A route the shop could place today for a request (<see cref="OrderBy"/>): days from today to its best and
+    /// worst start, its cost, whether its terms are written, and whether it has none on a service long enough to suffer for it.</summary>
+    private sealed record KnownRoute(int Lead, int LeadMax, long Cost, string Route, string Inst, string Vendor, bool NoTerms, bool Written);
+
+    /// <summary>
+    /// Every route the shop could place today for the request's days still to come (D29, D35): a vendor whose terms it
+    /// knows or holds an agreement with, the award check passing, sized to the peak, each lift for an off-island vendor.
+    /// A letter contract is not a route. DESK-211 (D55 a) also reads it on the day of a buy, for the written routes.
+    /// </summary>
+    private List<KnownRoute> KnownRoutes(CardState card)
+    {
+        var routes = new List<KnownRoute>();
+        var to = Math.Min(LastDay, card.RequestedStartDay + Math.Max(1, card.DurationDays) - 1);
+        if (Day > to) return routes;
         var from = Math.Max(card.RequestedStartDay, Day);
         var need = Math.Max(1, (PeakDemandMilli(card.SiteId, card.CapabilityId, from, to) + 999) / 1000);
         // D39, DESK-111: a part someone the shop asked said is needed counts before the player adds it.
         var lines = card.Lines.Where(kv => kv.Value).Select(kv => kv.Key)
             .Union(_learnedLines.Keys.Where(k => k.Card == card.Id).Select(k => k.Line), StringComparer.Ordinal).ToList();
-        var routes = new List<(int Lead, int LeadMax, long Cost, string Route, string Inst, string Vendor, bool NoTerms)>();
         foreach (var v in Scenario.Vendors)
         {
             if (v.Offers.FirstOrDefault(o => o.Capability == card.CapabilityId) is not { } offer) continue;
@@ -197,7 +238,8 @@ public sealed partial class Session
                 if (PairReason(v, inst, card.SiteId, card.CapabilityId, lines) is not null) continue;
                 var written = Rules.Instruments[inst].RequiresSystemOrManual;
                 var line = written ? _funding.FirstOrDefault(f => f.UsableOn(Day) && f.Pays(card.CapabilityId) && f.RemainingCents > 0)?.Id : null;
-                var noTerms = !Rules.Instruments[inst].WrittenTerms && to - from + 1 >= Rules.Model.ExecutionConfusionMinDurationDays;
+                var hasTerms = Rules.Instruments[inst].WrittenTerms;
+                var noTerms = !hasTerms && to - from + 1 >= Rules.Model.ExecutionConfusionMinDurationDays;
                 foreach (var lift in v.OffIsland ? new string?[] { "airlift", "sealift" } : new string?[] { null })
                 {
                     var a = new AwardAction
@@ -209,25 +251,11 @@ public sealed partial class Session
                     var p = BuildPreview(a);
                     if (!p.Accepted) continue;
                     var lead = Math.Max(1, p.EarliestStartMin - Day);
-                    routes.Add((lead, Math.Max(lead, p.EarliestStartMax - Day), p.TotalCents, RouteName(inst, v.Name), inst, v.Id, noTerms));
+                    routes.Add(new KnownRoute(lead, Math.Max(lead, p.EarliestStartMax - Day), p.TotalCents, RouteName(inst, v.Name), inst, v.Id, noTerms, hasTerms));
                 }
             }
         }
-        if (routes.Count == 0) return null;
-        var want = card.RequestedStartDay;
-        var sure = routes.Where(r => Day + r.LeadMax <= want).OrderBy(r => r.LeadMax).ThenBy(r => r.Cost).ToList();
-        var b = sure.Where(r => !r.NoTerms).Concat(sure).Concat(
-            routes.OrderBy(r => r.LeadMax).ThenBy(r => r.NoTerms).ThenBy(r => r.Lead).ThenBy(r => r.Cost)).First();
-        var by = want - b.LeadMax;
-        var terms = b.NoTerms ? ", with no written terms" : "";
-        var takes = $"{b.Route} starts {LeadSaid(b.Lead, b.LeadMax)} after it goes in{terms}";
-        var (first, last) = (Day + b.Lead, Day + b.LeadMax);
-        var sentence = by > Day ? $"Order by day {by}: {takes}."
-            : by == Day ? $"Order today to start by day {want}: {takes}."
-            : first <= want ? $"Order today: {b.Route} starts {StartSaid(first, last)}{terms}; it is wanted from day {want}."
-            : $"Too late for day {want} by any route the shop knows: {b.Route} starts {StartSaid(first, last)}{terms}.";
-        if (by < Day && BeforeStartCover(card, last) is { } cover) sentence += " " + cover;
-        return new OrderByView(by, b.Route, b.Lead, SentenceCase(sentence), b.Inst, b.Vendor, b.LeadMax);
+        return routes;
     }
 
     /// <summary>"1 day", "1 or 2 days", "2 to 4 days".</summary>

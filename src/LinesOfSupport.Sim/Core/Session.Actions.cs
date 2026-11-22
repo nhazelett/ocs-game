@@ -8,7 +8,7 @@ public sealed partial class Session
 
     private sealed record AwardPayload(AwardAction Action, string SiteId, string CapabilityId, List<string> Lines,
         long DailyCostCents, long MobilizationCents, long TotalCents, int StartLag, int LeadTime, int ReliabilityPermille, string SupplierIsland,
-        int QuotedStartMin = 0, int QuotedStartMax = 0, int? ProposalDay = null);
+        int QuotedStartMin = 0, int QuotedStartMax = 0, int? ProposalDay = null, WrittenAlternative? Written = null);
 
     /// <summary>
     /// DESK-134 (design doc section 20): a vendor that must price a complex service first (its scenario sets
@@ -350,6 +350,10 @@ public sealed partial class Session
         // DESK-130 (D43): the start the player was quoted, kept so the debrief can say a gap came from a late end of it.
         // The preview draws nothing, so the streams below are unchanged.
         var quoted = BuildPreview(a);
+        // DESK-211 (D55 a): a buy with no written terms on a service long enough to suffer for it keeps what the written
+        // route would have cost that day, so the debrief can say it without replaying the day. Draws nothing.
+        var written = !inst.WrittenTerms && a.DurationDays >= Rules.Model.ExecutionConfusionMinDurationDays && chk.Card is { } altCard
+            ? WrittenAlternativeFor(altCard) : null;
 
         var startLag = _rngWork.NextInt(inst.StartLagDays);
         // Off-island goods add strategic lift to the vendor's lead time, drawn after the work stream so local awards are unchanged.
@@ -357,7 +361,7 @@ public sealed partial class Session
         var pick = PickFor(a, inst);   // DESK-06, DESK-65
         var payload = new AwardPayload(a, siteId, capId, lines, daily, mob, total, startLag, lead,
                                        FirstQuoteReliability(pick, Fixed.Permille(vendor.Reliability)), StockIsland(vendor, capId),
-                                       quoted.EarliestStartMin, quoted.EarliestStartMax);
+                                       quoted.EarliestStartMin, quoted.EarliestStartMax, Written: written);
         var where = $"{CapLabel(capId)} at {SiteName(siteId)}";
         var lineText = string.Join(", ", lines.Select(l => LineLabel(capId, l)));
 
@@ -459,7 +463,7 @@ public sealed partial class Session
             ReliabilityPermille = p.ReliabilityPermille, CreatedDay = day, CardId = a.Card, CauseId = causeId,
             StartDay = start, EndDay = start + a.DurationDays - 1, CorId = a.Cor, Pick = PickFor(a, Rules.Instruments[a.Instrument]),
             PaidPerDelivery = PerDelivery(a), TripAssignee = PerDelivery(a) ? Member(_assigneeNow).Id : null,
-            QuotedStartMin = p.QuotedStartMin, QuotedStartMax = p.QuotedStartMax,
+            QuotedStartMin = p.QuotedStartMin, QuotedStartMax = p.QuotedStartMax, Written = p.Written,
         };
         foreach (var lineId in p.Lines)
         {
