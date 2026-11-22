@@ -33,8 +33,19 @@ public partial class BuyFormSmokeTest : Node
             Pick(shell.InstrumentInput, "purchaseOrder"); Order();
             Require(shell.QuantityInput.Value == 4500 && shell.StartInput.Value == 2 && shell.DurationInput.Value == 7, "Arrangement changes keep the chosen amount and timing.");
             Require(shell.AwardBlockedReason.Text == "Pick two of fast, cheap and good", "The pick-two reason does not point below the pinned footer.");
-            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => b.Text.EndsWith("done day after you pick two")),
-                "Every writer explains its missing date from the Sim's pick-two refusal.");
+            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => b.Text.EndsWith("date: pick two of Fast/Cheap/Good")),
+                "Every writer names the choices needed for a date without promising the day after selection.");
+            // The ninth play had a capacity refusal ahead of the missing-priority reason. The writer still has to
+            // name the choices, and the full wording must be presented rather than clipped off every button.
+            shell.QuantityInput.Value = 10000; await Frames();
+            Require(shell.AwardBlockedReason.Text != "Pick two of fast, cheap and good" && shell.AwardButton.Disabled,
+                "Another authoritative refusal occupies the reason line while priorities are missing.");
+            var presented = new PlayScreen(shell).Read();
+            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => b.Text.EndsWith("date: pick two of Fast/Cheap/Good")
+                && presented.Any(e => e.Control == b && e.Text == b.Text)),
+                "Every complete writer row names the priority pair even when the reason line says something else.");
+            await Layout("writer-other-stop", shell.DurationInput);
+            shell.QuantityInput.Value = 4500;
             var beforeJump = shell.Session.StateHash;
             await Frames(); shell.AwardScroll.ScrollVertical = 100000; await Frames();
             var pickRow = shell.PriorityInputs["fast"].GetParent<Control>();
@@ -44,7 +55,7 @@ public partial class BuyFormSmokeTest : Node
                 "The blocking reason brings pick two into view without changing any terms or Sim state.");
             await Layout("pick-two-link", pickRow);
             PickPriorities(shell, "fast", "good");
-            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => !b.Text.Contains("after you pick two")), "Picking a pair restores authoritative done dates.");
+            Require(shell.AwardWriterPicker!.ChoiceButtons.Values.All(b => !b.Text.Contains("date: pick two")), "Picking a pair restores authoritative done dates.");
             Require(PlayScreen.Descendants(shell.CorInput!.GetParent()).OfType<Label>().Any(l => l.Text == "Contract monitor (COR)"), "The buy form uses the same COR name as Mills and Payments.");
             Require(shell.CorInput is not null && shell.DurationInput.GetParent().GetParent().GetIndex() < shell.CorInput.GetParent().GetIndex()
                 && shell.PriorityInputs.Values.All(p => shell.DurationInput.GetParent().GetParent().GetIndex() < p.GetParent().GetIndex()), "Amount and timing precede priorities and the COR.");

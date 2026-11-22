@@ -81,7 +81,7 @@ public partial class AwardContextSmokeTest : Node
                 shell.DeveloperToggle.ButtonPressed = false; shell.ShowMarket();
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var scroll = shell.AwardScroll;
-                if (suffix == "cor-reasons") scroll.ScrollVertical = Math.Max(0, (int)focus.Position.Y - 34);
+                if (suffix == "cor-reasons") scroll.ScrollVertical += Mathf.RoundToInt(focus.GlobalPosition.Y - scroll.GlobalPosition.Y);
                 else scroll.EnsureControlVisible(suffix == "other-cor" ? focus : shell.DurationInput);
                 for (var i = 0; i < 5; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var viewport = GetViewport().GetVisibleRect();
