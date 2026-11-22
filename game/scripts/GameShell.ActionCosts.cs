@@ -22,6 +22,7 @@ public partial class GameShell
     // Bind the engine's hours and result day; never forecast the shop's queue in Game.
     private static string ActionCostText(SessionView view, PlayerAction action, string effect, ActionPreview? preview = null)
     {
+        if (action is JoinStaffMeetingAction { Attend: true }) effect = view.StaffMeetingFor(action.Assignee).JoinSays;
         preview ??= view.PreviewAny(action);
         static string Range(int lo, int hi) => lo == hi ? lo.ToString() : $"{lo} to {hi}";
         var member = view.Team.FirstOrDefault(m => action.Assignee is null ? m.Role == "you" : m.Id == action.Assignee);

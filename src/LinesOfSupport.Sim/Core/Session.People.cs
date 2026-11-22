@@ -488,12 +488,25 @@ public sealed partial class Session
 
     // ------------------------------------------------------------------ views
 
-    internal StaffMeetingView BuildStaffMeeting()
-        => new(_attendingMeetings, VisitInWork("joinMeeting"), _nextMeetingDay, [.. _meetingDays], [.. _previewedCards])
+    internal StaffMeetingView BuildStaffMeeting(string? assignee = null)
+    {
+        var joining = VisitWork("joinMeeting");
+        var member = Member(_attendingMeetings ? _meetingAssignee : joining is not null ? joining.Assignee : assignee);
+        var whose = member.Role == "you" ? "your" : MemberName(member) + "'s";
+        var joinHours = PersonHours(Fixed.Milli(People.StaffMeeting.JoinShopHours), member.Id);
+        var dailyHours = PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), member.Id);
+        var cadence = People.StaffMeeting.EveryDays <= 1 ? "Each daily meeting" : $"Each meeting (every {People.StaffMeeting.EveryDays} days)";
+        return new(_attendingMeetings, joining is not null, _nextMeetingDay, [.. _meetingDays], [.. _previewedCards])
         {
-            JoinSays = $"Joins the staff meeting so requests reach you in the room; whoever goes then spends {Plural(People.StaffMeeting.WeeklyShopHours, "hour")} at each meeting, "
+            AttendeeId = _attendingMeetings || joining is not null ? member.Id : null,
+            StateSays = _attendingMeetings ? $"{Upper(WhoIs(member.Id))} attending the staff meeting. The next is on day {_nextMeetingDay}."
+                : joining is not null ? $"{Upper(WhoIs(member.Id))} getting into the staff meeting." : "You are not attending the staff meeting.",
+            CostSays = $"Joining takes {HoursSaid(joinHours)} of {whose} time once. {cadence} takes {HoursSaid(dailyHours)} of {whose} time.",
+            MeetingHours = HalfHours(dailyHours),
+            JoinSays = $"Joins the staff meeting so requests reach you in the room; {MemberName(member)} then {(member.Role == "you" ? "spend" : "spends")} {HoursSaid(dailyHours)} at each meeting, "
                      + (People.StaffMeeting.EveryDays <= 1 ? "every day." : $"every {People.StaffMeeting.EveryDays} days."),
         };
+    }
 
     internal IReadOnlyList<ScoQuestionView> BuildScoQuestions()
         => People.AskSco.Questions.Select(q => new ScoQuestionView(q.Id, q.Label,

@@ -155,15 +155,10 @@ public partial class GameShell
     private void RenderStaffMeeting(SessionView view)
     {
         var meeting = view.StaffMeeting;
-        var rules = view.Rules.GoingToPeople.StaffMeeting;
-        var status = DeskUi.Label(meeting.Joining ? "You are getting into the staff meeting."
-            : meeting.Attending ? $"You are attending the staff meeting. The next is on day {meeting.NextDay}."
-            : "You are not attending the staff meeting.");
+        var status = DeskUi.Label(meeting.StateSays);
         status.SetMeta("meeting_state", meeting.Joining ? "joining" : meeting.Attending ? "attending" : "not-attending");
         visitsForm.AddChild(status);
-        static string Hours(int hours) => $"{hours} shop {(hours == 1 ? "hour" : "hours")}";
-        var cadence = rules.EveryDays <= 1 ? "Each daily meeting" : $"Each meeting (every {rules.EveryDays} days)";
-        var cost = DeskUi.Label($"Joining takes {Hours(rules.JoinShopHours)} once. {cadence} takes {Hours(rules.WeeklyShopHours)}.");
+        var cost = DeskUi.Label(meeting.CostSays);
         cost.SetMeta("meeting_cost", true); visitsForm.AddChild(cost);
         // Joining is pending work, not attendance: there is nothing to join again or stop attending yet.
         if (meeting.Joining) return;
@@ -173,7 +168,10 @@ public partial class GameShell
         if (!meeting.Attending)
         {
             var assigned = AddAssignedAction(visitsForm, visitsFooter, view, action, "Join the staff meeting", effect,
-                stillCurrent: () => visitContact == "meeting", updated: (chosen, quote) => VisitOptions[key] = (chosen, quote));
+                stillCurrent: () => visitContact == "meeting", updated: (chosen, quote) =>
+                {
+                    VisitOptions[key] = (chosen, quote); cost.Text = view.StaffMeetingFor(chosen.Assignee).CostSays;
+                });
             VisitButtons[key] = assigned.Button; VisitAssignees[key] = assigned.Picker;
             assigned.Button.SetMeta("visit", key);
         }
