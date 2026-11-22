@@ -125,7 +125,8 @@ public partial class GameShell
             if (!openRequest && session.View is { } view && view.Arrangements.FirstOrDefault(a => a.CauseId == decision.RecordId
                 && !a.IsCoordination && view.StatusToday(a.Id) is ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended) is { } contract)
             {
-                var link = DeskUi.Button("Open its contract page →", () =>
+                var label = contract.VendorId is { } vendor ? $"Open {view.NameOf(vendor)}'s contract page →" : "Open its contract page →";
+                var link = DeskUi.Button(label, () =>
                 {
                     if (hash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
                         || !RequestWorkspace.Visible || SelectedCard != decision.CardId) return;
