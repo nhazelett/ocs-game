@@ -126,6 +126,7 @@ public partial class ContractSmokeTest : Node
             }
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await PaymentReportsSmokeChecks.Run(this);
+            await IncurredCostSmokeChecks.Run(this);
             GD.Print("CONTRACT_SMOKE_PASS: plain payment list, inherited support protected, own contract detail, cancel and exact confirmed termination.");
             GetTree().Quit();
         }
