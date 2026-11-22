@@ -37,6 +37,7 @@ public partial class GameShell
         }
     }
     private VBoxContainer requestList = null!, requestListFooter = null!;
+    private string? requestReturnIssue;
     private int requestReturnTab;
     private Control? requestReturnFocus;
     private readonly Dictionary<ScrollContainer, int> requestReturnScrolls = [];
@@ -87,7 +88,13 @@ public partial class GameShell
     internal void CloseRequestWorkspace(bool restore = true)
     {
         if (RequestWorkspace?.Visible != true) return;
+        var issue = requestReturnIssue; requestReturnIssue = null;
+        RequestBackButton.Text = "Back to the desk";
         RequestWorkspace.Hide();
+        if (restore && issue is not null)
+        {
+            requestReturnScrolls.Clear(); OpenPerformanceDecision(issue, session.StateHash); return;
+        }
         if (!restore) { requestReturnScrolls.Clear(); return; }
         GetNode<TabContainer>("%DeskTabs").CurrentTab = requestReturnTab;
         var positions = requestReturnScrolls.ToArray(); requestReturnScrolls.Clear();

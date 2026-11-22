@@ -10,7 +10,9 @@ public partial class GameShell
     private sealed record BpaOffer(string Capability, string Label, VendorOption Vendor);
     internal OptionButton VendorCardPicker { get; private set; } = null!;
     internal VBoxContainer VendorCardsBox { get; private set; } = null!;
-    private VBoxContainer bpaForm = null!, vendorSetupFooter = null!;
+    private VBoxContainer bpaForm = null!, vendorSetupFooter = null!, setupAssignees = null!;
+    private string? setupAssignee;
+    internal AssigneePicker? EstablishAssigneePicker { get; private set; }
     private Control vendorSetupPane = null!;
     private Label establishReason = null!;
     private ScrollContainer vendorCardsScroll = null!, vendorSetupScroll = null!;
@@ -70,6 +72,7 @@ public partial class GameShell
     {
         vendorSetupVersion++; vendorSetupPane.Hide(); vendorCardsScroll.Show();
         PendingEstablish = null; PendingIdiq = null; EstablishPreview = null; setupHash = null;
+        setupAssignee = null; EstablishAssigneePicker = null;
     }
 
     private void ResetBpaForm()
@@ -85,6 +88,7 @@ public partial class GameShell
             || !view.VendorCards().Any(c => c.Id == vendor)) return;
         bpaVendor = vendor; bpaCapability = null; bpaScope.Clear(); bpaCallLimit = idiqGuarantee = null;
         idiqFunding = null; idiqCeiling = 0; idiqPeriod = null; settingIdiq = idiq;
+        setupAssignee = view.Team.Single(m => m.Role == "you").Id;
         vendorCardsScroll.Hide(); vendorSetupPane.Show(); vendorSetupScroll.ScrollVertical = 0;
         RefreshBpaForm(view, DirectoryOffers(view)); VendorSetupBack.GrabFocus();
     }
@@ -233,6 +237,7 @@ public partial class GameShell
             CustomBpaLimit.Toggled += on => { BpaLimitInput.Editable = on; bpaCallLimit = on ? checked((long)((decimal)BpaLimitInput.Value * 100)) : null; UpdateEstablishPreview(); };
         }
         if (session.IsReplay) bpaForm.AddChild(DeskUi.Label("Setting this up takes control and stops future replay actions."));
+        setupAssignees = new VBoxContainer(); bpaForm.AddChild(setupAssignees); EstablishAssigneePicker = null;
         bpaPreviewText = DeskUi.Label(); bpaForm.AddChild(bpaPreviewText);
         EstablishButton = DeskUi.Button(settingIdiq ? "Establish IDIQ" : "Establish BPA", () => SubmitVendorSetup(version)); establishReason = DeskUi.ActionReason(vendorSetupFooter, EstablishButton);
         bpaCommitmentText = DeskUi.Label(); vendorSetupFooter.AddChild(bpaCommitmentText);
@@ -257,18 +262,34 @@ public partial class GameShell
         if (settingIdiq)
         {
             PendingIdiq = new EstablishIdiqAction { Day = view.Day, Id = prefix + bpaSequence, Vendor = bpaVendor, Capability = bpaCapability,
-                ScopeLines = scope, CeilingCents = idiqCeiling, MinimumGuaranteeCents = idiqGuarantee, OrderingPeriodDays = idiqPeriod, FundingLine = idiqFunding ?? "" };
+                ScopeLines = scope, Assignee = setupAssignee, CeilingCents = idiqCeiling, MinimumGuaranteeCents = idiqGuarantee, OrderingPeriodDays = idiqPeriod, FundingLine = idiqFunding ?? "" };
             EstablishPreview = view.PreviewEstablish(PendingIdiq); PendingEstablish = null;
         }
         else
         {
-            PendingEstablish = new EstablishBpaAction { Day = view.Day, Id = prefix + bpaSequence, Vendor = bpaVendor, Capability = bpaCapability, ScopeLines = scope, CallLimitCents = bpaCallLimit };
+            PendingEstablish = new EstablishBpaAction { Day = view.Day, Id = prefix + bpaSequence, Vendor = bpaVendor, Capability = bpaCapability, ScopeLines = scope, Assignee = setupAssignee, CallLimitCents = bpaCallLimit };
             EstablishPreview = view.PreviewEstablish(PendingEstablish); PendingIdiq = null;
         }
-        bpaCommitmentText.Text = ActionCostText(view, (PlayerAction?)PendingEstablish ?? PendingIdiq!,
+        var action = (PlayerAction?)PendingEstablish ?? PendingIdiq!;
+        var choices = view.AssigneeChoices(action);
+        if (EstablishAssigneePicker is not { } previous || previous.Selected != setupAssignee || !previous.Choices.SequenceEqual(choices))
+        {
+            DeskUi.Clear(setupAssignees);
+            var picker = new AssigneePicker(choices, setupAssignee!, view.Finished, "Who does it", compact: true, inlineCaption: false);
+            EstablishAssigneePicker = picker; setupAssignees.AddChild(picker);
+            var version = vendorSetupVersion; var hash = session.StateHash;
+            picker.SelectionChanged = () =>
+            {
+                if (picker != EstablishAssigneePicker || version != vendorSetupVersion || hash != session.StateHash
+                    || !vendorSetupPane.Visible || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
+                    || session.View is not { Finished: false }) return;
+                setupAssignee = picker.Selected; UpdateEstablishPreview();
+            };
+        }
+        bpaCommitmentText.Text = ActionCostText(view, action,
             settingIdiq ? "Establishes an IDIQ with this scope and ceiling." : "Establishes a BPA for calls within this scope.", EstablishPreview);
         setupHash = session.StateHash;
-        bpaPreviewText.Text = $"About {VendorRange(EstablishPreview.ShopHoursMin, EstablishPreview.ShopHoursMax)} shop hours; ready day {VendorRange(EstablishPreview.EarliestStartMin, EstablishPreview.EarliestStartMax)}{DeskUi.QueueClause(EstablishPreview.QueueAheadHours)}."
+        bpaPreviewText.Text = $"About {PreviewHours(EstablishPreview)}; ready day {VendorRange(EstablishPreview.EarliestStartMin, EstablishPreview.EarliestStartMax)}{DeskUi.QueueClause(EstablishPreview.QueueAheadHours)}."
             + (settingIdiq ? "\nMinimum guarantee to obligate: " + DeskUi.Money(EstablishPreview.TotalCents) : "")
             + (EstablishPreview.HardStops.Count == 0 ? "\nNo hard stops." : "\n" + string.Join("\n", EstablishPreview.HardStops))
             + (EstablishPreview.SoftGaps.Count == 0 ? "" : "\n" + string.Join("\n", EstablishPreview.SoftGaps));

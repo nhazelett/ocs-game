@@ -83,14 +83,17 @@ public partial class GameShell
         var cure = AddAssignedAction(row, row, view, cureAction, curing ? "Cure notice in work" : "Cure notice",
             "Issues a cure notice to put this vendor problem right.",
             blocked: () => terminating ? "Ending this contract is already in work." : null, inWork: cureWork?.Id).Button;
+        var resourceHash = session.StateHash;
         var resource = DeskUi.Button("Re-source…", () =>
         {
+            if (resourceHash != session.StateHash || AtFrontDoor || ReadingTurnover || PlayingDay || ReadingDaySummary
+                || session.View is not { Finished: false } current || !running || current.ResourceReason(issue.Id) is not null) return;
             CloseContractView(); SwitchAwardTarget(issue.SiteId + "." + issue.CapabilityId);
             RefreshActionDesk(session.View); ShowMarket();
+            requestReturnIssue = issue.Id; RequestBackButton.Text = "Back to vendor decision";
         });
-        resource.Disabled = view.Finished || !running;
         var resourceReason = DeskUi.ActionReason(row, resource);
-        DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : null);
+        DeskUi.Gate(resource, resourceReason, view.Finished ? DeskUi.FinishedReason : !running ? "This contract is no longer running." : view.ResourceReason(issue.Id));
         if (includeContractLink)
         {
             row.AddChild(DeskUi.Label("To end this contract, open its contract page."));

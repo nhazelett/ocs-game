@@ -39,7 +39,7 @@ public partial class GameShell
             var holder = view.Team.FirstOrDefault(m => m.Work.Any(w => w.WorkId == inWork));
             var work = holder?.Work.FirstOrDefault(w => w.WorkId == inWork);
             cost.Text = holder is not null && work is not null
-                ? $"{TeamName(holder)} has this task, about {DeskUi.Count(work.HoursLeft, "hour")} of work left. {effect}"
+                ? $"{(holder.Role == "you" ? "You have" : TeamName(holder) + " has")} this task, about {DeskUi.Count(work.HoursLeft, "hour")} of work left. {effect}"
                 : costText?.Invoke(action, preview) ?? ActionCostText(view, action, effect, preview);
             updated?.Invoke(action, preview);
         }

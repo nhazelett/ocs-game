@@ -7,7 +7,7 @@ namespace LinesOfSupport.Game.Tests;
 
 public partial class BpaSmokeTest : Node
 {
-    public override void _Ready()
+    public override async void _Ready()
     {
         try
         {
@@ -39,7 +39,13 @@ public partial class BpaSmokeTest : Node
             Require(shell.Session.View.ActionEditor("spokeBSite", "fuel")!.Vehicles.Any(v => v.Id == candidate.Id && v.OpenToday), "The normal award editor can use the completed BPA.");
             shell.EstablishVendorButtons["vendorD"].EmitSignal(Button.SignalName.Pressed);
             Require(shell.PendingEstablish!.Id != candidate.Id, "Next command cannot reuse an existing or in-work ID.");
-            GD.Print("BPA_SMOKE_PASS: offered scope, pure timing preview, limit gating, exact submit and completed vehicle."); GetTree().Quit();
+            await SmallScreenSmokeChecks.Run(this, shell);
+            shell.QueueFree();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GD.Print("BPA_SMOKE_PASS: offered scope, pure timing preview, limit gating, exact assigned submit and completed vehicle."); GetTree().Quit();
         }
         catch (Exception error) { GD.PushError($"BPA_SMOKE_FAIL: {error}"); GetTree().Quit(1); }
     }
