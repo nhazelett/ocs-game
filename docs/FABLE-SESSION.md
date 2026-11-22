@@ -1,5 +1,11 @@
 # Fable session workflow
 
+## Single-agent handover (Nick, 22 Nov 2026)
+
+Nick paused Claude and assigned both implementation and the former Fable role to Codex. This section supersedes older two-agent ownership, claim-before-work, review, merge and escalation wording below and in CODEX-KICKOFF, DISSENT and FOR-NICK #1. Codex owns both lanes, design decisions and the backlog headline; chooses the lowest-numbered unblocked DESK row of either owner; decides former inter-agent questions with written reasons; and pushes each codex/ branch after its work is complete and tested.
+
+Codex may merge any project PR only under FABLE-SESSION section 3: green required CI, tests rerun on the combined tree, and a separate self-review against the backlog acceptance and design decision. For game changes, open the screenshots and judge them as a first-time player; “better than before” does not pass. Keep at most ten open PRs. Never push to main, force-push or delete shared branches. Cold plays still use only the PLAYTEST-CLAUDE brief and driver; the implementation session never substitutes its own informed play. Nick's findings come first. Suno credits require Nick's request.
+
 Every Fable session follows this, whether Nick started it in chat or the schedule did (every three hours as of 9 Nov 2026, hourly before; tasks have been finishing inside 30 minutes). Scheduled runs start with no memory of earlier conversations: this file, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: keep moving unless truly stalled on a decision only he can make. Codex runs on its own schedule following `docs/CODEX-SESSION.md`.
 
 **Review and merge on sight (Nick, 12 Nov 2026, replacing the 8 Nov check-in rule in FOR-NICK #1).** Nick does not review PRs. Every Fable session, scheduled or in chat, reviews each open PR it sees (section 3) and merges the ones that pass: rerun tests on the combined tree, check balance if the Sim or a scenario changed, merge in order (the top of a stack lands what is under it). A PR that does not pass gets a PR comment saying what blocks it. If a merge call is refused by the session's permission check, do not retry through another tool: leave the comment "Fable review: ready to merge" and move on.
