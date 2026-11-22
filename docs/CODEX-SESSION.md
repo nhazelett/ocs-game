@@ -1,5 +1,11 @@
 # Codex session workflow
 
+## Single-agent handover (Nick, 22 Nov 2026)
+
+Nick paused Claude and assigned both implementation and the former Fable role to Codex. This section supersedes older two-agent ownership, claim-before-work, review, merge and escalation wording below and in CODEX-KICKOFF, DISSENT and FOR-NICK #1. Codex owns both lanes, design decisions and the backlog headline; chooses the lowest-numbered unblocked DESK row of either owner; decides former inter-agent questions with written reasons; and pushes each codex/ branch after its work is complete and tested.
+
+Codex may merge any project PR only under FABLE-SESSION section 3: green required CI, tests rerun on the combined tree, and a separate self-review against the backlog acceptance and design decision. For game changes, open the screenshots and judge them as a first-time player; “better than before” does not pass. Keep at most ten open PRs. Never push to main, force-push or delete shared branches. Cold plays still use only the PLAYTEST-CLAUDE brief and driver; the implementation session never substitutes its own informed play. Nick's findings come first. Suno credits require Nick's request.
+
 Every Codex session follows this, whether Nick started it by hand or the ChatGPT schedule did. Scheduled runs start with no memory of earlier sessions: this file, `docs/CODEX-KICKOFF.md`, the backlog, the handoff notes and the objection records are the memory. Set by Nick, 8 Nov 2026: both agents run on schedules (Fable hourly) and keep moving unless truly stalled on a decision only Nick can make.
 
 Fable's matching file is `docs/FABLE-SESSION.md`. Fable merges; Codex never merges.
