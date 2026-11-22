@@ -270,7 +270,21 @@ public sealed partial class Session
             card.RequestedStartDay, card.DurationDays, card.QuantityHint,
             (PeakDemandMilli(site.Id, cap.Id, from, to) + 999) / 1000, lines, deps, tied,
             CardTitle(card), person, card.Message, BuildWhoToAsk(card), HeardSentence(card), BuildWhoCanHelp(card),
-            PeakSaid(site, cap, Math.Max(from, Day), to));
+            PeakSaid(site, cap, Math.Max(from, Day), to), NeededBySentence(site, cap));
+    }
+
+    /// <summary>DESK-208: "Food service at Hub needs water: when water runs short, food service runs short with it." or, for
+    /// several, "Water, lodging and food service at Hub need power: when power runs short, they run short with it." The
+    /// site's own capabilities whose rules depend on this one, in the site's order; null when none does.</summary>
+    private string? NeededBySentence(SiteData site, CapabilityData cap)
+    {
+        var users = site.Capabilities.Where(sc => sc.Id != cap.Id && _capData.TryGetValue(sc.Id, out var c) && c.DependsOn.Contains(cap.Id))
+                                     .Select(sc => CapLabel(sc.Id)).ToList();
+        if (users.Count == 0) return null;
+        var mine = cap.Label.ToLowerInvariant();
+        return users.Count == 1
+            ? $"{users[0]} at {site.Name} needs {mine}: when {mine} runs short, {users[0].ToLowerInvariant()} runs short with it."
+            : $"{AndList([users[0], .. users.Skip(1).Select(u => u.ToLowerInvariant())])} at {site.Name} need {mine}: when {mine} runs short, they run short with it.";
     }
 
     // ------------------------------------------------------------------ action editor
