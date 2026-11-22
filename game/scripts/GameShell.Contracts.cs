@@ -108,7 +108,11 @@ public partial class GameShell
         navigation.AddChild(DeskUi.Button(back, ReturnFromContract));
         var bar = ContractDeskTabs = new TabBar { Name = "DeskNavigation", ClipTabs = false }; navigation.AddChild(bar);
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        for (var i = 0; i < tabs.GetTabCount(); i++) bar.AddTab(tabs.GetTabTitle(i));
+        for (var i = 0; i < tabs.GetTabCount(); i++)
+        {
+            bar.AddTab(tabs.GetTabTitle(i));
+            bar.SetTabHidden(i, tabs.IsTabHidden(i));
+        }
         bar.CurrentTab = PaymentsTab;
         bar.TabSelected += index =>
         {

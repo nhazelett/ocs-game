@@ -90,6 +90,9 @@ public partial class ContractSmokeTest : Node
                 "Only the visible contract navigation is offered, without covered desk controls.");
             using (var selected = shell.ContractDeskTabs.GetThemeStylebox("tab_selected") as StyleBoxFlat)
                 Require(selected is not null && selected.BgColor.IsEqualApprox(TabletopTheme.Paper), "Contract desk navigation uses the shared paper theme.");
+            Require(shell.ContractDeskTabs.IsTabHidden(GameShell.DebriefTab)
+                && !new PlayScreen(shell).Read().Any(e => e.Kind == "tab" && e.Text == "Debrief"),
+                "A mid-game contract offers no Debrief tab, matching the desk.");
             await Capture("desk-tabs");
             ClickTab(GameShell.TodayTab); await Capture("today-after-contract");
             Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.TodayTab && shell.Session.StateHash == contractHash,
@@ -98,6 +101,18 @@ public partial class ContractSmokeTest : Node
             ClickTab(GameShell.PaymentsTab); await Capture("payments-after-contract");
             Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.PaymentsTab && shell.Session.StateHash == contractHash,
                 "Clicking the already-selected Payments tab also closes the contract.");
+            shell.OpenContractView(cardBuy.Id); await Capture("inbox-tab");
+            ClickTab(GameShell.InboxTab); await Capture("inbox-after-contract");
+            Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.InboxTab && shell.Session.StateHash == contractHash,
+                "Hiding Debrief preserves the Inbox tab's destination.");
+            shell.DeveloperToggle.ButtonPressed = true; while (!shell.Session.View!.Finished) Step(shell);
+            shell.DeveloperToggle.ButtonPressed = false; shell.OpenContractView(cardBuy.Id);
+            await Capture("completed-contract");
+            Require(!shell.ContractDeskTabs.IsTabHidden(GameShell.DebriefTab), "The completed contract offers Debrief again.");
+            var finishedHash = shell.Session.StateHash;
+            ClickTab(GameShell.DebriefTab); await Capture("completed-debrief");
+            Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.DebriefTab && shell.Session.StateHash == finishedHash,
+                "The completed contract's Debrief tab opens the final debrief without acting.");
             shell.QueueFree();
             void ClickTab(int index)
             {
