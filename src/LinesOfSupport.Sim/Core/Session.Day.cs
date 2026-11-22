@@ -351,6 +351,7 @@ public sealed partial class Session
                 long supply = 0;
                 var contributors = 0;
                 var offIslandBlocked = false;
+                var halved = new List<string>();
                 foreach (var a in _arrangements)
                 {
                     if (a.SiteId != site.Id || !today.TryGetValue(a.Id, out var t)) continue;
@@ -362,7 +363,13 @@ public sealed partial class Session
                     q = Fixed.MulPermille(q, t.FactorPermille);
                     if (t.Suspended) { reasons.Add($"{Upper(NameOf(a.Id))} stopped work (unpaid UCA)"); causes.Add(a.CauseId); }
                     if (t.FailureRecord is not null) causes.Add(t.FailureRecord);
-                    if (t.ConfusionRecord is not null) causes.Add(t.ConfusionRecord);
+                    if (t.ConfusionRecord is not null)
+                    {
+                        causes.Add(t.ConfusionRecord);
+                        // DESK-213 (Claude play 22 Nov, second play, note P2-16): the day said the vendor delivered half;
+                        // the trace said the stock ran out. Say what the day said.
+                        halved.Add($"{VendorData(a.VendorId)?.Name ?? Upper(NameOf(a.Id))} delivered half of today's {cap.Label.ToLowerInvariant()}");
+                    }
                     if (t.CapacityRecord is not null) { causes.Add(t.CapacityRecord); reasons.Add($"{VendorData(a.VendorId)!.Name} over capacity"); }
                     if (t.NoDeliveryRecord is not null) { causes.Add(t.NoDeliveryRecord); reasons.Add(t.NoDeliveryReason!); }
                     if (cap.Delivery == "consumable" && a.SupplierIslandId != site.Island)
@@ -398,7 +405,8 @@ public sealed partial class Session
                     permille = Fixed.Ratio(take, demand);
                     if (permille < 1000)
                     {
-                        reasons.Add($"{cap.Label.ToLowerInvariant()} on hand ran out");
+                        if (halved.Count > 0) reasons.AddRange(halved);
+                        else reasons.Add($"{cap.Label.ToLowerInvariant()} on hand ran out");
                         if (offIslandBlocked) reasons.Add("surface link closed");
                     }
                 }
