@@ -118,6 +118,7 @@ public partial class CorSmokeTest : Node
             foreach (var item in knownEvents)
                 Require(debriefText.Any(t => t.Contains(item.Text)) && shell.DebriefPanel.FindChildren("*", "Label", true, false).OfType<Label>().Any(l => l.HasMeta("event_record") && l.GetMeta("event_record").AsString() == item.RecordId), "Every known event selected by Sim remains in the debrief timeline.");
             Require(shell.CorDesignations.Values.All(c => c.Submit.Disabled), "Finished games offer no enabled designation action.");
+            await CheckDesignationWords(shell, temporary);
             Scenario(shell, "spoke-b");
             Require(shell.CorInput is null && shell.PendingAward!.Cor is null && shell.CorDesignations.Count == 0, "Scenario switch clears the COR controls and field.");
             // M2R-39: release the shell's theme and portrait resources and let two frames pass before quitting, as the
