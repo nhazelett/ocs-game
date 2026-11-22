@@ -170,8 +170,10 @@ public sealed partial class Session
         w.HoursRemainingMilli = Rescale(w.HoursRemainingMilli);
         w.HoursTotalMilli = Rescale(w.HoursTotalMilli);
         w.Assignee = to.Id;
+        // DESK-225 (Claude play 22 Nov seventh, note P2-25): to the half hour, as the request and the picker said it
+        // (DESK-14); the record read "7 hours left" where the player had just read 6.5.
         AddRecord(Day, RecordKind.Action, w.SubjectId ?? w.Id,
-            $"{Upper(to.Role == "you" ? "you" : MemberName(to))} took over {LowerLabel(w.Label)} from {MemberName(from)}: {Plural(CeilHours(w.HoursRemainingMilli), "hour")} left.", [w.CauseId]);
+            $"{Upper(to.Role == "you" ? "you" : MemberName(to))} took over {LowerLabel(w.Label)} from {MemberName(from)}: {HoursSaid(w.HoursRemainingMilli)} left.", [w.CauseId]);
         return ActionResult.Ok("reassigned");
     }
 
