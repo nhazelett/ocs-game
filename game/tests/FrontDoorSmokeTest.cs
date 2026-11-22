@@ -116,6 +116,16 @@ public partial class FrontDoorSmokeTest : Node
                 && shell.MovementButton.TooltipText.Contains("Local deliveries"),"A local delivery is compatible with no island crossing; the control states its scope.");
             Require(shell.Session.StateHash==local.StateHash(),"Scoped movement wording changes no trip or simulation state.");
             await Capture("-local-delivery");
+            var newsDay=LinesOfSupport.Sim.Replay.Run(LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot,"tutorial")),localLog,stopAfterDay:11);
+            File.WriteAllText(localSave,newsDay.ToSave().ToJson());shell.LoadSavedGame(localSave);tabs.CurrentTab=GameShell.TodayTab;
+            for(var frame=0;frame<4;frame++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+            const string presentNews="Island Camp Services is short-staffed at the dining hall";
+            var notice=PlayScreen.Descendants(shell).OfType<Control>().FirstOrDefault(c=>c.IsVisibleInTree()&&
+                (c is Label l&&l.Text.Contains(presentNews)||c is Button b&&b.Text.Contains(presentNews)||c is RichTextLabel r&&r.Text.Contains(presentNews)));
+            Require(notice is not null,"Current staffing news is visible in the new morning.");
+            for(Node? p=notice!.GetParent();p is not null;p=p.GetParent())if(p is ScrollContainer scroll){scroll.EnsureControlVisible(notice);break;}
+            Require(shell.Session.StateHash==newsDay.StateHash(),"News wording leaves the actual daily events and simulation unchanged.");
+            await Capture("-news-now");
             shell.QueueFree(); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             GD.Print("FRONT_DOOR_SMOKE_PASS: title settings, tutorial-first choices, leave/cancel/save/Continue, solo work, tab and morning scroll, movement wording and failed-save recovery."); GetTree().Quit();
         }
