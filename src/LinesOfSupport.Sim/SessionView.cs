@@ -184,6 +184,10 @@ public sealed class SessionView
     /// Null when it was supplied in full or the site is not open. The morning tiles, the map's shortfall changes and
     /// WhereThingsStand carry the same sentence. Read only.</summary>
     public string? WhyShort(string siteId, string capabilityId) => _s.BuildWhyShort(siteId, capabilityId);
+    /// <summary>DESK-216 (Claude play 22 Nov, third play, note P2-17): why Re-source on a performance issue has nowhere to
+    /// go: "No other supplier the shop knows offers food service at Hub." when no vendor but the one at fault offers the
+    /// capability; null otherwise, or for an unknown issue.</summary>
+    public string? ResourceReason(string issueId) => _s.BuildResourceReason(issueId);
 
     /// <summary>The always-visible strip: day, shop-hours and cash gauges, usable funds, system status.</summary>
     public TopStripView TopStrip() => _s.BuildTopStrip();
