@@ -87,7 +87,13 @@ public sealed partial class Session
                 $"{WorkName(w)}: {HoursSaid(w.HoursRemainingMilli)} left with {MemberName(Member(w.Assignee))}{(done is { } dd ? $", done about day {dd}" : "")}."));
         }
 
-        var sentence = SummarySentence(d, finished.Count, started.Count, shortLines.Count, slipped.Count, turnedDown.Count);
+        // DESK-226 (Claude play 22 Nov seventh, note P2-26; second play P2-12): a miss the office heard of today that left
+        // nothing short. "Everything was supplied in full" sat over "COR report (SSgt Lane): ... missed its delivery on day
+        // 11; the stock on hand covered it." Only what the office was told: a COR or unit report that arrived today, or a
+        // host nation or ACSA miss the news names.
+        var misses = _records.Count(r => r.Day == d && r.Kind == RecordKind.CorReport)
+                     + _records.Count(r => r.Day == d && TheirsCovered(r) is not null);
+        var sentence = SummarySentence(d, finished.Count, started.Count, shortLines.Count, slipped.Count, turnedDown.Count, misses);
         var (said, news) = BuildDayNews();   // DESK-73 (D29): what people told you, and the day's news
         return new DaySummaryView(d, sentence,
             [.. finished.Select(Said)], [.. started.Select(SentenceCase)], [.. ended.Select(SentenceCase)],
@@ -112,7 +118,7 @@ public sealed partial class Session
         return $"Nothing is arranged for {cap} at {site} from day {from}; it needs another buy.";
     }
 
-    private static string SummarySentence(int d, int finished, int started, int shortCount, int slipped, int turnedDown = 0)
+    private static string SummarySentence(int d, int finished, int started, int shortCount, int slipped, int turnedDown = 0, int misses = 0)
     {
         var parts = new List<string>
         {
@@ -121,10 +127,12 @@ public sealed partial class Session
         if (started > 0) parts.Add(started == 1 ? "one support started" : $"{started} supports started");
         if (turnedDown > 0) parts.Add(turnedDown == 1 ? "a vendor turned down a call" : $"vendors turned down {turnedDown} calls");
         // "Everything was supplied in full" on a day a call was turned down read as all is well (the 16 Nov play, day 5).
-        parts.Add(shortCount switch { 0 when turnedDown > 0 => "no site was short", 0 => "everything was supplied in full", 1 => "one thing was short", _ => $"{shortCount} things were short" });
+        var missed = shortCount == 0 && misses > 0;
+        parts.Add(shortCount switch { 0 when turnedDown > 0 => "no site was short", 0 when missed => "nothing was short", 0 => "everything was supplied in full", 1 => "one thing was short", _ => $"{shortCount} things were short" });
         if (slipped > 0) parts.Add(slipped == 1 ? "one job slipped" : $"{slipped} jobs slipped");
         var list = parts.Count == 1 ? parts[0] : string.Join(", ", parts.Take(parts.Count - 1)) + " and " + parts[^1];
-        return $"Day {d}: {list}.";
+        var though = missed ? misses == 1 ? ", though one missed delivery was reported" : $", though {misses} missed deliveries were reported" : "";
+        return $"Day {d}: {list}{though}.";
     }
 
     /// <summary>A work item's name as a heading: a visit's label is a sentence with its hours ("Going to find the finance
