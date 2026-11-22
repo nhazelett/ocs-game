@@ -65,7 +65,10 @@ public partial class DebriefVerdictSmokeTest : Node
             Require(shell.Session.StateHash == trade.StateHash() && shell.Session.View!.Finished, "The 22 Nov first play's completed save loads.");
             var tradeButtons = tradeReport.Gaps.Select(g => (Gap: g, Button: shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == g.Index))).ToList();
             Require(tradeButtons.All(x => x.Button.Text.Split('\n').Last() == x.Gap.TagLine), "Each gap button shows the Sim's own line.");
-            Require(tradeButtons.Count(x => x.Button.Text.EndsWith(DebriefWords.NoTermsTagLine, StringComparison.Ordinal)) == 3, "The three confusion days read as a risk taken.");
+            // DESK-215 (D56): water's written route could not have started by day 3, so it reads as worth taking; the two
+            // forklift days, where a purchase order would have kept the line, keep D54's line.
+            Require(tradeButtons.Count(x => x.Button.Text.EndsWith(DebriefWords.NoTermsTagLine, StringComparison.Ordinal)) == 2, "The two forklift confusion days read as a risk taken.");
+            Require(tradeButtons.Single(x => x.Gap.CapabilityId == "water").Button.Text.EndsWith("A risk worth taking: no written order could have started by day 3.", StringComparison.Ordinal), "Water's confusion day reads as a risk worth taking.");
             if (at >= 0)
             {
                 var waterGap = tradeReport.Gaps.Single(g => g.CapabilityId == "water"); Detail(waterGap.Index).Show(); await Frames();
