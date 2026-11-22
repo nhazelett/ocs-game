@@ -124,11 +124,21 @@ public sealed partial class Session
     /// <summary>D43's count without its opening: "material handling equipment at Hub is out 1 day in all: all the commander
     /// allows". Null when the start is not past the day wanted, or no pass line counts the days.</summary>
     private string? DownDaysIf(CardState card, int latestStart)
+        => OutDaysIf(card, latestStart) is { Verdict: { } verdict } o
+            ? $"{Lower(CapLabel(card.CapabilityId))} at {SiteName(card.SiteId)} is out {Plural(o.Total, "day")} in all: {verdict}"
+            : null;
+
+    /// <summary>D43's count as numbers: the days nothing covers before <paramref name="latestStart"/>, added to the days
+    /// already out when a pass line counts them (then <c>Verdict</c> says it against the allowance: "all the commander
+    /// allows"); without a pass line, the days nothing covers and no verdict. Null when the start is not past the day wanted
+    /// or no day goes uncovered.</summary>
+    private (long Total, string? Verdict, bool Keeps)? OutDaysIf(CardState card, int latestStart)
     {
         if (latestStart <= card.RequestedStartDay) return null;
-        var metric = $"site.{card.SiteId}.{card.CapabilityId}.downDays";
-        if (Scenario.PassCriteria.FirstOrDefault(p => p.Metric == metric && p.Comparator == "<=") is not { } line) return null;
         if (CoverDays(card, latestStart) is not { None.Count: > 0 } days) return null;
+        var metric = $"site.{card.SiteId}.{card.CapabilityId}.downDays";
+        if (Scenario.PassCriteria.FirstOrDefault(p => p.Metric == metric && p.Comparator == "<=") is not { } line)
+            return (days.None.Count, null, false);
         var used = Metrics.TryGetValue(metric, out var v) ? (long)v : 0;
         var total = used + days.None.Count;
         var allowed = (long)line.Value;
@@ -136,7 +146,16 @@ public sealed partial class Session
             : total < allowed ? $"within the {Plural(allowed, "day")} the commander allows"
             : total - allowed == 1 ? "one more than the commander allows"
             : $"{total - allowed} more than the commander allows";
-        return $"{Lower(CapLabel(card.CapabilityId))} at {SiteName(card.SiteId)} is out {Plural(total, "day")} in all: {verdict}";
+        return (total, verdict, total <= allowed);
+    }
+
+    /// <summary>D55 (b), DESK-211: a start on <paramref name="latestStart"/> keeps the commander's line for this request: a
+    /// pass line counts its days out, and the days nothing covers until then, with those already out, stay within it.</summary>
+    private bool KeepsLine(CardState card, int latestStart)
+    {
+        var metric = $"site.{card.SiteId}.{card.CapabilityId}.downDays";
+        if (!Scenario.PassCriteria.Any(p => p.Metric == metric && p.Comparator == "<=")) return false;
+        return OutDaysIf(card, latestStart) is not { } o || o.Keeps;
     }
 
     /// <summary>D42 (DESK-123, Claude play 20 Nov, second play, note 1): an ask about this request still in work, the

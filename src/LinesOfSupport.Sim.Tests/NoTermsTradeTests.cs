@@ -27,12 +27,12 @@ public class NoTermsTradeTests
             Assert.Equal(GapTag.Avoidable, g.Tag);
             Assert.True(g.PriceOfNoTerms);
             Assert.Equal(DebriefWords.NoTermsTagLine, g.TagLine);
-            Assert.EndsWith("Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.",
-                            Assert.Single(g.Factors).Text);
+            // DESK-211 (D55 a): the closing sentence names the written route the shop knew that day (WrittenRouteTests).
+            Assert.DoesNotContain("a purchase order or a BPA call", Assert.Single(g.Factors).Text, StringComparison.Ordinal);
         }
-        // A knock-on keeps the general sentence: food service went down with water.
+        // A knock-on is not counted as a trade of its own; DESK-211 (D55 c) says it went down with water.
         Assert.False(food.PriceOfNoTerms);
-        Assert.Equal(DebriefWords.TagMeaning(food.Tag), food.TagLine);
+        Assert.Equal("Avoidable: it went down with water at Hub.", food.TagLine);
 
         var text = d.Summary!.Text;
         Assert.Contains("Food service at Hub went down with it. There were two more gaps, both the price of buys with no written terms.", text);
