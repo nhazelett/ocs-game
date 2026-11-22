@@ -18,7 +18,7 @@ public class AnswerDueTests
     public void The_water_buy_on_day_1_says_when_Ortiz_answers_and_stops_saying_it_once_he_has()
     {
         // D48 (DESK-172): the forklift buy this test used now names the operators it leaves out while Dunn is asked
-        // (NotYetConfirmedTests); Island Mart's water is goods (DESK-59), so the answer due is still its last sentence.
+        // (NotYetConfirmedTests); Island Mart's water is goods (DESK-59), so the answer due is said, in the notes since DESK-212.
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
         AwardAction water = new()
         {
@@ -32,7 +32,9 @@ public class AnswerDueTests
         var summary = s.View.AwardSummary(water)!;
         // DESK-190 (D51) adds what the same buy placed tomorrow would get (NightsWaitTests).
         Assert.StartsWith("MSgt Carla Ortiz's answer about this request comes in tonight, after you end the day; what they say may change what this buy needs. Ordered tomorrow, after the answer, it starts on day ", summary.AnswerDue);
-        Assert.EndsWith(summary.AnswerDue, summary.Sentence);
+        // DESK-212: the no-written-terms warning takes the third place; the answer is in the quote's notes.
+        Assert.Contains(summary.AnswerDue, s.View.Preview(water).SoftGaps);
+        Assert.DoesNotContain("answer about this request", summary.Sentence);
         Assert.False(summary.Attention);
         Assert.Null(summary.Why);
         Assert.True(s.View.Preview(water).Accepted);

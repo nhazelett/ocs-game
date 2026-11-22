@@ -28,7 +28,7 @@ public class NightsWaitTests
                                     Capability = "water", Quantity = 4500, StartDay = 2, DurationDays = 7, Day = 1 };
         var summary = s.View.AwardSummary(buy)!;
         Assert.Null(summary.PassLineCost);   // ordered today, nothing goes out
-        Assert.EndsWith("may change what this buy needs. Ordered tomorrow, after the answer, it starts on day 3 or 4: water at Hub is out 1 day in all: all the commander allows.", summary.Sentence);
+        Assert.EndsWith("may change what this buy needs. Ordered tomorrow, after the answer, it starts on day 3 or 4: water at Hub is out 1 day in all: all the commander allows.", summary.AnswerDue);
     }
 
     [Fact]

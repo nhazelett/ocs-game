@@ -45,8 +45,8 @@ public sealed partial class Session
     }
 
     /// <summary>D46 (DESK-156): the candidates for the summary's third sentence, in order: the attention reason (D33), already
-    /// covered, the allowance cost of the quote's latest start (D43), the answer due from someone asked (D42), no written
-    /// terms on a service (D52). <c>Said</c> is the first
+    /// covered, the allowance cost of the quote's latest start (D43), no written terms on a service (D52; DESK-212 puts it
+    /// ahead of the next), the answer due from someone asked (D42). <c>Said</c> is the first
     /// of them; <c>Notes</c> the ones that did not fit, for the quote's notes. Each field keeps its value whether or not it
     /// is said. A forecast from the plan; it ignores rolls.</summary>
     private (string? Why, string? PassCost, string? Answer, string? Said, List<string> Notes) SummaryThird(AwardAction a, int start, int latestStart)
@@ -81,8 +81,11 @@ public sealed partial class Session
         // and what waiting costs, D51, stay ahead: both are about whether to buy today). The eleventh play's second
         // player bought the forklifts on the card for thirteen days with the warning below the fold; on day 16 the forklifts
         // ran at half and the debrief called it avoidable.
+        // DESK-212 (Claude play 22 Nov, second play, note P2-8): ahead of the answer due. On day 1 the water card buy's
+        // third place went to Ortiz's answer tonight and the warning fell below the fold; the warning is about what is
+        // being committed to, and the answer sentence still reads in the notes just under it.
         var noTerms = chk.Instrument is { } inst ? NoWrittenTerms(a, inst) : null;
-        var all = new[] { why, covered, passCost, answer, noTerms }.OfType<string>().ToList();
+        var all = new[] { why, covered, passCost, noTerms, answer }.OfType<string>().ToList();
         return (why, passCost, answer, all.FirstOrDefault(), all.Skip(1).ToList());
     }
 
