@@ -641,3 +641,19 @@ Sim notes (Fable):
 - DESK-218: `NotYetConfirmed` takes the buy, its start and latest start; with the requester's ask in work it ends "whose answer comes in tonight" (or "on the night of day N") and D51/D53's clause from `AfterTheAnswer` for an order the day after the answer, joined with a semicolon. `SummaryThird` leaves the answer-due sentence out of the notes when that sentence is said; `AwardSummaryView.AnswerDue` keeps it for the game. Tests: the fourth play's second log on day 4 reads the new sentence with "still starts on day 8"; the sixth 21 Nov play's day-6 card buy keeps three sentences and no longer repeats the answer in the notes.
 - DESK-219: `OrderBy`'s "after it goes in" reads "after you place it", with ", the writing included" on a written route (`KnownRoute.Written`). No golden carries the sentence; NewsTests and the comment in ViewModels move with it.
 - DESK-220: the `ExecutionConfusion` gap factor names that arrangement's confusion days from the record: "on day 3 the vendor and the unit disagreed on what was owed", "on days 12 and 15 ..." (each gap of a buy disputed twice says both). The seven sustainment goldens move from "from day 2" to "on day 2" (Motor Pool Rentals, one disputed day).
+
+## 39. The 22 Nov fifth play: D58 (22 Nov 2026)
+
+D58. **The gap count says what its buttons say.** The fifth 22 Nov play (docs/reviews/2026-11-22-claude-play-5.md) verified D57 and DESK-220: both players waited a night for Dunn's answer on the quote's word and read the order-by line as counting from the order. Both then stopped at the debrief's scorecard, "2 gaps: 2 avoidable · 0 discoverable · 0 unforeseeable", above two buttons that read "A risk worth taking: no written order could have started by day 3." and "It went down with water at Hub, a risk worth taking.": "I can't tell whether I made a mistake." D56 changed the buttons and left the counts alone, so the count says the opposite of what it counts. So:
+
+- the gap count keeps its tag and its numbers and says how many of the avoidable gaps were risks worth taking: "2 gaps: 2 avoidable, both risks worth taking · 0 discoverable · 0 unforeseeable"; one of one reads "1 avoidable, a risk worth taking"; some of several read "3 avoidable, 2 of them risks worth taking" ("1 of them a risk worth taking"). None worth taking: as now.
+
+Left out, as in D54 to D56: changing the tag (SPEC 4: the information existed), the counts or the scoring; the odds of a dispute on the quote.
+
+Also from this play, no decision needed: a start or end record names its day ("Material handling equipment at Hub from Coastal Rentals began on day 8, 3 forklifts/day.", "Main Island Utilities (host nation) material handling equipment at Hub ended: its last day was day 7."), as DESK-160 (b) did for the day summary. Both players read the full record's mornings as a day late: the record sits under the morning the player read it, and the sentence did not say its day (DESK-221).
+
+Sim notes (Fable):
+
+- DESK-221: `Lifecycle`'s `ArrangementStart` record reads "... began on day {d}, ..." and its `ArrangementEnd` record "... ended: its last day was day {EndDay}." Goldens move wherever they print these lines (each start and end); no outcome moves.
+- DESK-222: `ScorecardView.WorthTakingGaps` counts the avoidable gaps whose button reads D56's line or its knock-on line; the debrief's count line (game, a FABLE-SESSION 2a fix of one line) reads it as above. Tests on the fifth play's first log: two avoidable, two worth taking.
+
