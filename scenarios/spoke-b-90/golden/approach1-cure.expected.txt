@@ -22,7 +22,7 @@ Day 6
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -38,7 +38,7 @@ Day 11
 Day 12
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 12, 1,170 gal/day.
 Day 13
   COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $63,180 obligated from the O&M line good through day 75. Port Fuel Haulers keeps delivering; deliveries after day 20 are owed and not obligated until a contract covers the need.
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -231,7 +231,7 @@ Day 66
   SHORT     Power at Spoke B degraded to 76%: supply 360 kW against demand 468.
 Day 67
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 66.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power.
 Day 68
   EVENT     The new fiscal year's funding is held up. "The new fiscal year's O&M release is held up at higher headquarters."
@@ -431,4 +431,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.75)
 
-State hash d846e1a709bd42d403e4701893f858c95257c5656e9aec18530daddfc7a609ed
+State hash 4cc99a8784ccf24351c49582094f5bb92dd90fc7b478e2738dbd9cc48e79e185

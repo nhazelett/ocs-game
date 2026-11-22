@@ -24,7 +24,7 @@ Day 3
   ACTION    Coordinated with the Hub unit for 900 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   DONE      CE small buys: 4 worked today (2 h of shop time).
-  START     Fuel at Spoke B from the other unit began, 900 gal/day.
+  START     Fuel at Spoke B from the other unit began on day 3, 900 gal/day.
 Day 4
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   EXTERNAL  The external support request for power at Spoke B went through the SCO to the external office. Approval usually takes 10 to 20 days; the contractor then mobilizes before anything arrives.
@@ -37,7 +37,7 @@ Day 6
 Day 7
   ACTION    Transition planned: Power at Spoke B from Harbor Equipment Co power at Spoke B (ends day 66) to Meridian Site Services power at Spoke B (starts day 18); cut-over after 2 days of full delivery by Meridian Site Services power at Spoke B; gap owner: CCO seat.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -55,7 +55,7 @@ Day 13
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  END       The other unit's fuel at Spoke B ended.
+  END       The other unit's fuel at Spoke B ended: its last day was day 13.
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
@@ -73,7 +73,7 @@ Day 17
 Day 18
   ACTION    Transition planned: Power at Spoke B from Meridian Site Services power at Spoke B (ends day 52) to the external contract's power at Spoke B (starts day 48); cut-over after 2 days of full delivery by the external contract's power at Spoke B; gap owner: CCO seat.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
+  START     Power at Spoke B from Meridian Site Services began on day 18, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 19
@@ -86,7 +86,7 @@ Day 20
   COR       COR report (SSG Reyes): Harbor Equipment Co power at Spoke B had equipment down on day 20; the undefinitized contract action from Meridian Site Services covered the day, so nothing was short.
 Day 21
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 20.
   TRANSIT   The hand-off of power at Spoke B complete: Harbor Equipment Co power at Spoke B ended day 20 with Meridian Site Services power at Spoke B delivering; 3 days of overlap.
 Day 22
   UCA       Meridian Site Services submitted a qualifying proposal for power at Spoke B. Obligation cap rises to 75% of NTE; definitization can start.
@@ -149,7 +149,7 @@ Day 47
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 48
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Theater base support contractor began, 470 kW/day.
+  START     Power at Spoke B from Theater base support contractor began on day 48, 470 kW/day.
 Day 49
   DONE      CE small buys: 6 worked today (3 h of shop time).
   TRANSIT   The hand-off of power at Spoke B: The external contract's power at Spoke B delivered at full for 2 days; cut-over started, termination of Meridian Site Services power at Spoke B in work so its last day is day 50 if the shop gets to it.
@@ -158,7 +158,7 @@ Day 50
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 51
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Meridian Site Services power at Spoke B ended.
+  END       Meridian Site Services power at Spoke B ended: its last day was day 50.
   TRANSIT   The hand-off of power at Spoke B complete: Meridian Site Services power at Spoke B ended day 50 with the external contract's power at Spoke B delivering; 3 days of overlap.
 Day 52
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -290,4 +290,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.93)
 
-State hash 6e23eec3ed0ab5e41c295071c877dfb20576c6003f78a18ade0c37142ac2b73f
+State hash 0d55c1787cdb645b83dd10df2dfc8816103d24888d8dd8fcc304c53a4e343a4a

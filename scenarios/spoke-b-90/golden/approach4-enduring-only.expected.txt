@@ -53,7 +53,7 @@ Day 17
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 18
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
+  START     Power at Spoke B from Meridian Site Services began on day 18, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 19
@@ -203,7 +203,7 @@ Day 77
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Meridian Site Services power at Spoke B ended.
+  END       Meridian Site Services power at Spoke B ended: its last day was day 77.
 Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 80
@@ -290,4 +290,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.796)
 
-State hash dd4e4ab62e5a0869d97ff47990a400cf55e821a61c2f429c65031223a61c86da
+State hash 41a5ac222ffd9106e7654c28b6cfd30b6e9b994baa2e3c6824eea5039bca116c

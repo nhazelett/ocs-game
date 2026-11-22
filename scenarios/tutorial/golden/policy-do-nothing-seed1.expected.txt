@@ -38,11 +38,11 @@ Day 8
   WITHDRAWN The host nation withdrew inherited host nation support for waste removal at Hub; last day of support 12. Host nation support rests on an agreement the host nation can withdraw, not a contract it must perform.
   DONE      Payment error on Island Camp Services food service at Hub corrected.
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  END       Main Island Utilities (host nation) material handling equipment at Hub ended.
+  END       Main Island Utilities (host nation) material handling equipment at Hub ended: its last day was day 7.
   SHORT     Material handling equipment at Hub down to 0%: no arrangement supplies material handling equipment.
 Day 9
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  START     Water at Hub from Main Island Utilities (host nation) began, 8,000 gal/day.
+  START     Water at Hub from Main Island Utilities (host nation) began on day 9, 8,000 gal/day.
   OK        Water at Hub restored to 100%.
   OK        Food service at Hub restored to 100%.
 Day 10
@@ -59,7 +59,7 @@ Day 12
   INBOX     Performance issue: Island Camp Services under-delivered on food service at Hub on days 11 and 12 (COR SSgt Lane). Decision: issue a cure notice (4 shop hours, then a 10-day cure period), re-source while it keeps running, or terminate.
 Day 13
   DONE      CE small buys: 2 worked today (1 h of shop time).
-  END       Main Island Utilities (host nation) waste removal at Hub ended.
+  END       Main Island Utilities (host nation) waste removal at Hub ended: its last day was day 12.
   SHORT     Waste removal at Hub down to 0%: no arrangement supplies waste removal.
 Day 14
   DONE      CE small buys: 2 worked today (1 h of shop time).
@@ -120,4 +120,4 @@ PASS CRITERIA
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash 4c396a77e6185f656cf098e7cb2d8b7a9a9778825489df83b835beb52b12e47f
+State hash 7cf8a7c70c6053735624aed954d57617aac16350c01e16858b7acc958f803d41

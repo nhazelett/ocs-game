@@ -36,7 +36,7 @@ Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 9, 1,170 gal/day.
 Day 10
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -78,7 +78,7 @@ Day 21
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 22
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
+  START     Fuel at Spoke B from Second Island Fuel began on day 22, 700 gal/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 23
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
@@ -98,7 +98,7 @@ Day 28
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
 Day 29
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 468 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 29, 468 kW/day.
   SHORT     Power at Spoke B degraded to 59%: fuel at 59%.
   SHORT     Lodging at Spoke B degraded to 59%: power at 59%.
 Day 30
@@ -183,4 +183,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 3)
   [not met] Mission output at least 90% (mission.output = 0.613)
 
-State hash f7d7011fba08032bfbc24aae835dc2f178025cb83c896f3764104deab4dc45bd
+State hash f7157e38cc9b5751b23a9af228c5c65320e6f04c4b4fb317c68d36f29e3aa93c

@@ -22,7 +22,7 @@ Day 6
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -38,7 +38,7 @@ Day 11
 Day 12
   ACTION    Ratification of Port Fuel Haulers fuel at Spoke B started: 2 shop days. Port Fuel Haulers is told it will be paid.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 12, 1,170 gal/day.
 Day 13
   COMPLY    Ratification of Port Fuel Haulers fuel at Spoke B completed: $63,180 obligated from the O&M line good through day 75. Port Fuel Haulers keeps delivering; deliveries after day 20 are owed and not obligated until a contract covers the need.
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -154,7 +154,7 @@ Day 44
   EVENT     SSG Reyes rotates home early. S1: SSG Reyes's replacement orders came through early; she leaves this week and her relief has not been to COR training.
   COR       SSG Reyes rotates home. An untrained relief takes over as COR on Harbor Equipment Co power at Spoke B (poor: reports 4 days late, about 50% of problems). Designate another COR to restore reporting.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 43.
   SHORT     Fuel at Spoke B down to 0%: fuel on hand ran out.
   SHORT     Power at Spoke B down to 0%: no arrangement supplies power; fuel at 0%.
 Day 45
@@ -391,4 +391,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 1)
   [not met] Mission output at least 90% (mission.output = 0.707)
 
-State hash 988c4f6ac402177869eaf3953512cc9c454d279f9584fdd2aa824833f4eaaf6e
+State hash af49d0b0e9e539d0e5c7e9040472b1e0b1a112a120c1e2ed2f07d0a653fde563

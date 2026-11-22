@@ -29,13 +29,13 @@ Day 4
 Day 5
   DONE      Undefinitized contract action awarded to Meridian Site Services for power at Spoke B; performance starts day 17, ends day 76. UCA issued with NTE $763,290; obligations capped at 50% of NTE until a qualifying proposal.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from the partner force began, 1,287 gal/day.
+  START     Fuel at Spoke B from the partner force began on day 5, 1,287 gal/day.
 Day 6
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
   DONE      Purchase card program running: cardholders in CE now handle about 80% of the small buys. The shop keeps the rest.
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 514 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 514 kW/day.
 Day 8
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 9
@@ -62,7 +62,7 @@ Day 16
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 17
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
+  START     Power at Spoke B from Meridian Site Services began on day 17, 514 kW/day.
 Day 18
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 4 on cards).
 Day 19
@@ -74,8 +74,8 @@ Day 19
 Day 20
   ACTION    Coordinated with the Hub unit for 1,170 gal/day of Fuel to Spoke B. Not a contract; they can withdraw it.
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  END       Harbor Equipment Co power at Spoke B ended.
-  START     Fuel at Spoke B from the other unit began, 1,170 gal/day.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 19.
+  START     Fuel at Spoke B from the other unit began on day 20, 1,170 gal/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 21
@@ -98,7 +98,7 @@ Day 26
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 27
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  END       The other unit's fuel at Spoke B ended.
+  END       The other unit's fuel at Spoke B ended: its last day was day 26.
 Day 28
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 29
@@ -213,8 +213,8 @@ Day 76
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 77
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
-  END       Meridian Site Services power at Spoke B ended.
-  START     Power at Spoke B from Meridian Site Services began, 514 kW/day.
+  END       Meridian Site Services power at Spoke B ended: its last day was day 76.
+  START     Power at Spoke B from Meridian Site Services began on day 77, 514 kW/day.
 Day 78
   DONE      CE small buys: 2 worked today (1 h of shop time, 4 on cards).
 Day 79
@@ -280,4 +280,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [met] Mission output at least 90% (mission.output = 0.928)
 
-State hash b39766d52ead01f5d3ff0dd6b4df7908e0a62d9bab5f4badae640ad5be3b448f
+State hash 0ab406d09d6423d6c7c71c1686fdc07e75842797d5af08ae58096d6e8cf0c915

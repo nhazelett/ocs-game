@@ -26,7 +26,7 @@ Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 9, 1,170 gal/day.
 Day 10
   DONE      CE small buys: 6 worked today (3 h of shop time).
   CONFUSED  Execution confusion on Port Fuel Haulers fuel at Spoke B: the vendor and the unit disagree on quantity and schedule, and there are no written terms to settle it. Half of today's supply delivered.
@@ -65,7 +65,7 @@ Day 21
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 22
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
+  START     Fuel at Spoke B from Second Island Fuel began on day 22, 700 gal/day.
   FAIL      Second Island Fuel fuel at Spoke B missed today's delivery.
 Day 23
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -85,7 +85,7 @@ Day 28
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 29
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 468 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 29, 468 kW/day.
   SHORT     Power at Spoke B degraded to 59%: fuel at 59%.
 Day 30
   DONE      CE small buys: 6 worked today (3 h of shop time).
@@ -120,7 +120,7 @@ Day 39
 Day 40
   DONE      Response to higher HQ on Harbor Equipment Co power at Spoke B sent.
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Island Power Rentals began, 468 kW/day.
+  START     Power at Spoke B from Island Power Rentals began on day 40, 468 kW/day.
 Day 41
   DONE      CE small buys: 6 worked today (3 h of shop time).
   FAIL      The partner force fuel at Hub missed today's delivery. The stock on hand covered today's demand.
@@ -147,7 +147,7 @@ Day 48
 Day 49
   COMPLY    Higher HQ asked why Island Power Rentals power at Spoke B has gone 10 days without ratification. A response is now shop work (24 hours).
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Power at Spoke B from Meridian Site Services began, 468 kW/day.
+  START     Power at Spoke B from Meridian Site Services began on day 49, 468 kW/day.
 Day 50
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 51
@@ -307,4 +307,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 5)
   [not met] Mission output at least 90% (mission.output = 0.652)
 
-State hash b229a9a0c1b4c1265f98b467b02f397262f9cf01bb6b8abcdb41e8db7e4e642a
+State hash 305b8c5f44073f8f42899bd12aca74574655f4bb2f112fccc8cfee6f5a45fb6a

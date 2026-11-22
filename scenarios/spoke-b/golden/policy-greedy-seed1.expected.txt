@@ -31,7 +31,7 @@ Day 6
 Day 7
   DONE      Written purchase order awarded to Coastal Provisions for water at Spoke C; performance starts day 9, ends day 68. Obligated $43,200.
   DONE      CE small buys: 7 worked today (3.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 324 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 324 kW/day.
   SHORT     Water at Spoke C down to 0%: water on hand ran out; no arrangement supplies water.
   SHORT     Food service at Spoke C down to 0%: water at 0%.
 Day 8
@@ -39,7 +39,7 @@ Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Water at Spoke C from Coastal Provisions began, 1,800 gal/day.
+  START     Water at Spoke C from Coastal Provisions began on day 9, 1,800 gal/day.
   OK        Water at Spoke C restored to 100%.
   OK        Food service at Spoke C restored to 100%.
 Day 10
@@ -53,8 +53,8 @@ Day 11
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 12
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  START     Food service at Spoke C from Coastal Provisions began, 360 meals/day.
-  START     Fuel at Spoke B from Port Fuel Haulers began, 1,170 gal/day.
+  START     Food service at Spoke C from Coastal Provisions began on day 12, 360 meals/day.
+  START     Fuel at Spoke B from Port Fuel Haulers began on day 12, 1,170 gal/day.
 Day 13
   DONE      CE small buys: 6 worked today (3 h of shop time).
   OK        Fuel at Spoke B restored to 100%.
@@ -123,7 +123,7 @@ Day 26
 Day 27
   DONE      Response to higher HQ on the extra work Harbor Equipment Co did on power at Spoke B sent.
   DONE      CE small buys: 8 worked today (4 h of shop time).
-  START     Fuel at Spoke B from Second Island Fuel began, 700 gal/day.
+  START     Fuel at Spoke B from Second Island Fuel began on day 27, 700 gal/day.
   SHORT     Fuel at Spoke B degraded to 59%: fuel on hand ran out.
   SHORT     Food service at Spoke C down to 3%: food service on hand ran out; water at 53%.
 Day 28
@@ -260,4 +260,4 @@ PASS CRITERIA
   [not met] No unauthorized commitments (compliance.unauthorizedCommitments = 2)
   [not met] Mission output at least 90% (mission.output = 0.706)
 
-State hash 2da1ff3483b0e6c22b44f8527f3f837617a7ce24554c87ea300bb3616201eccb
+State hash 76768b513cd7023ea99c7539ca3bfeb4fefe009ba79d63a2c5adfba804acea0b

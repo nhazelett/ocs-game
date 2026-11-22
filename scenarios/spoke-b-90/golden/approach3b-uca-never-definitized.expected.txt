@@ -24,7 +24,7 @@ Day 3
   SURVEY    Survey of Second Island returned: no grid power; no fuel point; water: none; barge to Main Island 2x weekly, weather-sensitive; aircraft to Main Island on demand, weather-sensitive; vendors on the island: Meridian Site Services, Second Island Fuel.
   DONE      BPA call awarded to Harbor Equipment Co for power at Spoke B; performance starts day 7, ends day 66. Obligated $49,680.
   DONE      CE small buys: 4 worked today (2 h of shop time).
-  START     Fuel at Spoke B from the other unit began, 900 gal/day.
+  START     Fuel at Spoke B from the other unit began on day 3, 900 gal/day.
 Day 4
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 5
@@ -34,7 +34,7 @@ Day 6
   DONE      CE small buys: 4 worked today (2 h of shop time).
 Day 7
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Harbor Equipment Co began, 360 kW/day.
+  START     Power at Spoke B from Harbor Equipment Co began on day 7, 360 kW/day.
 Day 8
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 9
@@ -52,7 +52,7 @@ Day 13
 Day 14
   EVENT     Second increment confirmed for Spoke B. "Second increment of 80 personnel lands day 20, as in the plan."
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  END       The other unit's fuel at Spoke B ended.
+  END       The other unit's fuel at Spoke B ended: its last day was day 13.
 Day 15
   EVENT     Spoke B unit asks the power vendor for extra work. Vendor invoice includes a second generator hookup for the new tent row, requested by a unit member on site. It is not in the contract.
   COMPLY    Out-of-scope work: Harbor Equipment Co billed $2,400 for work outside the scope of its power contract at Spoke B, done on a unit member's say-so. Decision: deny payment or ratify.
@@ -66,7 +66,7 @@ Day 17
   SHORT     Power at Spoke B degraded to 77%: fuel at 77%.
 Day 18
   DONE      CE small buys: 5 worked today (2.5 h of shop time).
-  START     Power at Spoke B from Meridian Site Services began, 470 kW/day.
+  START     Power at Spoke B from Meridian Site Services began on day 18, 470 kW/day.
   OK        Fuel at Spoke B restored to 100%.
   OK        Power at Spoke B restored to 100%.
 Day 19
@@ -75,7 +75,7 @@ Day 19
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 20
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Harbor Equipment Co power at Spoke B ended.
+  END       Harbor Equipment Co power at Spoke B ended: its last day was day 19.
 Day 21
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 22
@@ -217,7 +217,7 @@ Day 77
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 78
   DONE      CE small buys: 6 worked today (3 h of shop time).
-  END       Meridian Site Services power at Spoke B ended.
+  END       Meridian Site Services power at Spoke B ended: its last day was day 77.
 Day 79
   DONE      CE small buys: 6 worked today (3 h of shop time).
 Day 80
@@ -308,4 +308,4 @@ PASS CRITERIA
   [met] No unauthorized commitments (compliance.unauthorizedCommitments = 0)
   [not met] Mission output at least 90% (mission.output = 0.834)
 
-State hash ea9bd1c61b63d56dfabb8864b7b9216f690b5f0c6f920c8dc3fdaa34a88c877c
+State hash c69b428f76510085a305912ba6d6533e2fea4974837f8950eebdfcc912f082a9
