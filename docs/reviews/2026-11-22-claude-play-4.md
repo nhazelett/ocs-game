@@ -75,7 +75,7 @@ P1 is the first brief, P2 the second.
 | P2-24 | Day 13, plan | "Deliveries and support due today" with nothing under it | Model (the line, "Main Island Sanitation should start waste removal at Hub today.", sits half visible at the foot of the plan with its scroll bar) | none |
 | P1-34, P2-25 | Days 14 to 16 | The last days ask nothing | Known (D31) | none |
 | P2-26 | Debrief | "Includes Maintenance" was never explained | Watched | none |
-| P1-35 | Debrief | "From day 3 the vendor and the unit disagreed on what was owed" reads as a dispute that went on; it was one day | Defect (Sim words: say "on day 3" for one day and how many days for more) | DESK-220 |
+| P1-35 | Debrief | "From day 3 the vendor and the unit disagreed on what was owed" reads as a dispute that went on; it was one day | Defect (Sim words: name the days disputed) | DESK-220 |
 | P1-36 | Debrief | "The best screen in the game" | none (praise; DESK-215 verified) | none |
 
 ## D57
@@ -85,7 +85,7 @@ Both players asked Dunn and placed Harbor's BPA call in the same minute on day 4
 - (a) when D48's sentence names an answer due, it carries what waiting for it costs, in the same sentence: "It leaves out operators; you are asking SMSgt Ray Dunn, whose answer comes in tonight; ordered tomorrow, after the answer, it still starts on day 8." The answer sentence leaves the notes, since it has been said.
 - (b) the order-by line counts from the day the buy is placed and says so: "starts 3 to 5 days after you place it, the writing included" (a written route) or "after you place it" (a card or cash buy).
 
-Also from this play, no decision needed: the debrief's confusion factor says "on day 3" for one disputed day and how many days for more (DESK-220).
+Also from this play, no decision needed: the debrief's confusion factor names the days disputed, "on day 3" or "on days 12 and 15" (DESK-220).
 
 ## The four end answers
 

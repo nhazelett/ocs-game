@@ -577,7 +577,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #0 hubSite.waste days 27-27, lowest 51%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 27; no part was left out of its terms. The COR reported it on day 31.
   #1 hubSite.transport days 2-2, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed. Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; on day 2 the vendor and the unit disagreed on what was owed. Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.
   #2 hubSite.transport days 29-29, lowest 53%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Main Island Motor Pool Rentals ground transport at Hub failed on day 29 with full operator and maintenance coverage. The performance issue with Main Island Motor Pool Rentals on ground transport at Hub opened day 31; decision: cure notice day 32, cured.
   #3 hubSite.transport days 31-31, lowest 53%, 0 day(s) down: UNFORESEEABLE

@@ -519,7 +519,7 @@ GAP TAGS (avoidable: the information existed; discoverable: available for a cost
   #0 hubSite.waste days 59-59, lowest 51%, 0 day(s) down: UNFORESEEABLE
       [unforeseeable] Main Island Sanitation waste removal at Hub failed on day 59; no part was left out of its terms. Its report was still on the way (due day 63) when the game ended. The failure itself could not be foreseen. SFC Duarte's relief reports problems 4 days late; with SSG Mensah, who reports the same day, its report would have been due on day 59, but hearing sooner would not have changed that day.
   #1 hubSite.transport days 2-2, lowest 53%, 0 day(s) down: AVOIDABLE
-      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; from day 2 the vendor and the unit disagreed on what was owed. Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.
+      [avoidable] Main Island Motor Pool Rentals ground transport at Hub ran a recurring service with no written terms; on day 2 the vendor and the unit disagreed on what was owed. Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.
   #2 hubSite.transport days 28-28, lowest 53%, 0 day(s) down: AVOIDABLE
       [avoidable] Main Island Motor Pool Rentals ground transport at Hub failed (first on day 28) and was bought without maintenance; its failure odds were higher every day it ran.
   #3 hubSite.transport days 36-36, lowest 53%, 0 day(s) down: AVOIDABLE

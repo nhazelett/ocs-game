@@ -21,6 +21,16 @@ public sealed partial class Session
         return new WrittenAlternative(best.Route, Day, min, max, o?.Total ?? 0, o?.Verdict);
     }
 
+    /// <summary>DESK-220 (Claude play 22 Nov, fourth play, note P1-35): the days this buy was disputed, as they were: "on day
+    /// 3", "on days 12 and 15". "From day 3" read as a dispute that went on when water was in full every other day.</summary>
+    private string DisputedDaysSaid(string arrangementId, int first)
+    {
+        var days = _records.Where(r => r.Kind == RecordKind.ExecutionConfusion && r.Subject == arrangementId)
+                           .Select(r => r.Day).Append(first).Distinct().Order().ToList();
+        if (days.Count == 1) return $"on day {days[0]}";
+        return $"on days {string.Join(", ", days.Take(days.Count - 1))} and {days[^1]}";
+    }
+
     /// <summary>The confusion factor's closing sentence, with its leading space. A route that could have started by the
     /// gap's day: " Written terms settle a dispute, at a cost in days: a purchase order with Harbor Bottling placed on day 1
     /// would have started day 2 or 3." One that could not: " A purchase order with Harbor Bottling placed on day 1 would
