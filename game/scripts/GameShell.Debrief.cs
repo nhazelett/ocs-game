@@ -92,7 +92,7 @@ public partial class GameShell
     {
         var detail = new VBoxContainer { Visible = open };
         detail.AddThemeConstantOverride("separation", 12); detail.SetMeta("gap_detail", gap.Index);
-        var button = DeskUi.Button(GapName(view, gap) + "\n" + DebriefWords.TagMeaning(gap.Tag), () => detail.Visible = !detail.Visible);
+        var button = DeskUi.Button(GapName(view, gap) + "\n" + (gap.TagLine ?? DebriefWords.TagMeaning(gap.Tag)), () => detail.Visible = !detail.Visible);
         button.SetMeta("gap", gap.Index); parent.AddChild(button); parent.AddChild(detail);
         detail.AddChild(DeskUi.Label($"At its lowest, {gap.LowestPermille / 10m:0.#}% of the need was met. " +
             (gap.DownDays == 0 ? "It never went completely down." : $"It was completely down for {DebriefWords.Number(gap.DownDays)} {(gap.DownDays == 1 ? "day" : "days")}.")));
