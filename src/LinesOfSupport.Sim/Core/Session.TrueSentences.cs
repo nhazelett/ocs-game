@@ -64,7 +64,23 @@ public sealed partial class Session
     {
         if (c.Knows is null) return CorSummary(c);
         var q = CorQuality(c);
-        return $"{c.Quality}: reports {(q.LagDays == 0 ? "the same day" : $"{Plural(q.LagDays, "day")} late")}, about {CorReportPermille(c, a.CapabilityId, a.Id) / 10}% of problems on this contract";
+        // DESK-227 (Claude play 22 Nov seventh, note P2-22): the fit words lead, as on the order form (DESK-186), not the
+        // grade. Payments read Lane "good ... about 40%" beside Pratt "fair ... about 65%" on the same contract.
+        var work = Lower(CapLabel(a.CapabilityId));
+        var fit = c.Knows.Contains(a.CapabilityId) ? $"knows {work}" : $"does not work with {work}";
+        return $"{fit}: about {CorReportPermille(c, a.CapabilityId, a.Id) / 10}% of problems on this contract, reported {(q.LagDays == 0 ? "the same day" : $"{Plural(q.LagDays, "day")} late")}";
+    }
+
+    /// <summary>
+    /// DESK-227: naming this COR on a running contract, as the order form's monitor line says it (DESK-78, DESK-112): their
+    /// fit and load for this contract's work, the odds and the lag, and what it would lower on the contracts they already
+    /// watch. Null for the COR already on it, or a contract that is not the office's to watch.
+    /// </summary>
+    internal string? CorDesignationWhy(string corId, string arrangementId)
+    {
+        if (CorOf(corId) is not { } c || _arrangements.FirstOrDefault(x => x.Id == arrangementId) is not { } a) return null;
+        if (a.CorId == c.Id || !Curable(a) || a.Status is not (ArrangementStatus.Pending or ArrangementStatus.Active or ArrangementStatus.Suspended)) return null;
+        return CorWhy(c, a.CapabilityId, a.Id, naming: true);
     }
 
     /// <summary>DESK-78: a buy in work that starts after the day its request's need ends, said in the day's plan.</summary>
