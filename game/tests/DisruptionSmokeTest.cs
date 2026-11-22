@@ -85,7 +85,7 @@ public partial class DisruptionSmokeTest : Node
         GetTree().Quit(passed && clean ? 0 : 1);
     }
 
-    private static ulong[] StopAudio(GameShell shell)
+    internal static ulong[] StopAudio(GameShell shell)
     {
         // Keep real music/cues throughout the fixture. Prevent a new track during teardown, then stop every
         // player and release its stream. Observe native instance ids without holding new resource references.

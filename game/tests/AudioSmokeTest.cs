@@ -58,8 +58,16 @@ public partial class AudioSmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage();
                 Require(image.SavePng(args[shot + 1]) == Error.Ok, "Sound controls screenshot saved.");
             }
+            // DESK-210: retire every stream and playback before quit, as DESK-200 does for the disruption test; quitting
+            // with them still queued crashed Godot at exit on CI after the pass line.
+            var audio = DisruptionSmokeTest.StopAudio(shell);
             shell.Free(); shell = null;
+            var deadline = Time.GetTicksMsec() + 2000;
+            do { await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+            while (audio.Any(GodotObject.IsInstanceIdValid) && Time.GetTicksMsec() < deadline);
+            GC.Collect(); GC.WaitForPendingFinalizers();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(!audio.Any(GodotObject.IsInstanceIdValid), "Audio streams and playbacks retire before quit.");
             GD.Print("AUDIO_SMOKE_PASS: actual WAV playback, accepted-event cues, silent mute/zero, disk persistence, keyboard controls and unchanged Sim.");
             GetTree().Quit();
         }
