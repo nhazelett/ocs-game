@@ -12,7 +12,7 @@ The verification play due once the seventh 22 Nov play's rows landed: Fable's DE
 
 Completed the interrupted review against main 380cba2, whose only addition after the played build is the eighth-play report itself. No new play is claimed. The original notes remain unchanged. Each bullet has a stable P1/P2 number below, in its original order. Every bullet is assigned one of section 5's four categories; neutral observations and verified outcomes are Known rather than invented defects.
 
-Both logs replay to all four pass lines met. First brief: 99.4% mission output, one water/food half-day, no day out; second brief: 97%, that water/food half-day plus forklift half-days on days 12 and 15, no day out. The latter chose the card over a written order that could have held the line; its debrief follows D54-D58. No failure result, refund or stock quantity was invented by the players' prose.
+Both logs replay to all four pass lines met. First brief: 99.4% mission output, one water/food half-day, no day out; second brief: 97.9%, that water/food half-day plus forklift half-days on days 12 and 15, no day out. The latter chose the card over a written order that could have held the line; its debrief follows D54-D58. No failure result, refund or stock quantity was invented by the players' prose.
 
 ## What the merged rows did in play
 
@@ -153,7 +153,7 @@ The funding-picker allegation is not established: current code explicitly hides 
 
 First brief, verbatim in its notes: the contracting officer for a 300-person hub with Avery and Novak; keep Col Ward's four lines for sixteen days; yes, all four met; “state the four goals as goals, up front, on one screen before the first decision (and keep a live walk-in queue on the desk)”. Its own percentage rounded to 99%; the replay is 99.4%.
 
-The second notes do not preserve a separate four-answer response. Its screens and actions identify the same contracting-shop role and four goals; it finished with all four held and 97%. Its first-read candidate summary requests capacity visibility and replacing a buy without a gap, while its notes also ask to move the meeting seat. These are source-backed observations, not a fabricated end quotation. The original vehicle cancellation and day-fifteen COR swap are present in the replay.
+The second notes do not preserve a separate four-answer response. Its screens and actions identify the same contracting-shop role and four goals; it finished with all four held and 97.9%. Its first-read candidate summary requests capacity visibility and replacing a buy without a gap, while its notes also ask to move the meeting seat. These are source-backed observations, not a fabricated end quotation. The original vehicle cancellation and day-fifteen COR swap are present in the replay.
 
 ## Sim pass
 
@@ -172,3 +172,5 @@ Textbook meets each pass line in every seed; neither other policy beats its miss
 ## Validation and next
 
 Separate report review checks all 36 P1 and 73 P2 bullets are accounted for and preserves the raw notes, command logs and input logs. No new play pictures were added; the existing single picture remains below 400 KB. Solution build, 1,138 .NET tests and scenario/provenance checks pass. No game, Sim, scenario or golden was changed in this report PR. No cold play is due for report/docs alone; a verification play of the affected UI will be due after the new rows land. DESK-195, DESK-197 in the full record, DESK-199 and DESK-217(a,d,e) remain unverified on the player path; do not mark them played.
+
+Review correction (22 Nov): the initial handover used the second player’s rounded 97% note. The saved baseline Harness output is `mission.output = 0.979`, so the exact result is 97.9%. Its recorded hash remains `49b88c480d007a75d5e65cf7e1b7584982669d845ed0bed7ff93309309b2056a`. This corrects the review, not a simulation outcome. The original player notes and quotes remain unchanged.
