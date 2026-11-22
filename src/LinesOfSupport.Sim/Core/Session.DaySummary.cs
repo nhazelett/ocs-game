@@ -51,7 +51,8 @@ public sealed partial class Session
             if (r.Kind == RecordKind.ArrangementStart && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } s)
                 started.Add(ForShop(s.CapabilityId)
                     ? $"{SupplierName(s)} started {ShopSupport(s.CapabilityId)}."
-                    : $"{SupplierName(s)} started {Lower(CapLabel(s.CapabilityId))} at {SiteName(s.SiteId)}{Amount(s, Cap(s.CapabilityId))}.");
+                    // DESK-224 (Claude play 22 Nov sixth, note F-1): "at Hub: 3 forklifts.", not "at Hub 3 forklifts."
+                    : $"{SupplierName(s)} started {Lower(CapLabel(s.CapabilityId))} at {SiteName(s.SiteId)}{(Amount(s, Cap(s.CapabilityId)) is { Length: > 0 } n ? ":" + n : "")}.");
             if (r.Kind == RecordKind.ArrangementEnd && _arrangements.FirstOrDefault(a => a.Id == r.Subject) is { } e)
                 // DESK-160 (b), Claude play 21 Nov, fourth play, note 19: said the day after its last day, so it names that day.
                 ended.Add($"{Upper(ForShop(e.CapabilityId) ? ShopSupport(e.CapabilityId) : $"{Lower(CapLabel(e.CapabilityId))} at {SiteName(e.SiteId)}")} from {SupplierName(e)} ended{(e.EndDay < d ? $": its last day was day {e.EndDay}" : "")}.");

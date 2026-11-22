@@ -60,7 +60,19 @@ public class DaySummaryTests
         }).Accepted);
         s.AdvanceDay();
         s.AdvanceDay();
-        Assert.Contains("Island Mart started water at Hub 4,500 gal/day.", s.View.DaySummary()!.Started);
+        Assert.Contains("Island Mart started water at Hub: 4,500 gal/day.", s.View.DaySummary()!.Started);
+    }
+
+    // DESK-224 (Claude play 22 Nov sixth, note F-1): day 8 of the first log read "Coastal Rentals started material
+    // handling equipment at Hub 3 forklifts."; the amount is set off from the site.
+    [Fact]
+    public void A_start_sets_off_its_amount()
+    {
+        var log = InputLog.Load(Path.Combine(Repo.Root, "docs", "reviews", "plays", "2026-11-22-6", "input-log-1.json"));
+        var s = Replay.Run(Repo.Load("tutorial"), log, stopAfterDay: 8);
+        var started = s.View.DaySummary()!.Started;
+        Assert.Contains("Coastal Rentals started material handling equipment at Hub: 3 forklifts.", started);
+        Assert.DoesNotContain(started, l => l.Contains("Hub 3", StringComparison.Ordinal));
     }
 
     // DESK-57: the 16 Nov Claude play (docs/reviews/2026-11-16-claude-play.md, note 21). Harbor Equipment declined the
