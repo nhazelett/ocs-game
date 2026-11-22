@@ -182,7 +182,7 @@ public sealed record NewItem(NewKind Kind, string Text, PersonView? Person, stri
 /// <param name="Day">That day; before today when no route the shop knows can make the wanted day.</param>
 /// <param name="Route">"a BPA call with Harbor Equipment Co".</param>
 /// <param name="LeadDays">Days from the order going in to the first day of support by that route, on the fast roll.</param>
-/// <param name="Sentence">"Order by day 5: a BPA call with Harbor Equipment Co starts 2 days after it goes in."</param>
+/// <param name="Sentence">"Order by day 5: a BPA call with Harbor Equipment Co starts 2 days after you place it, the writing included."</param>
 /// <param name="InstrumentId">The route's instrument, for opening the buying form on it. Never shown.</param>
 /// <param name="VendorId">The route's vendor. Never shown.</param>
 /// <param name="LeadDaysMax">The same on the slow roll (D35); <paramref name="Day"/> is set by it.</param>

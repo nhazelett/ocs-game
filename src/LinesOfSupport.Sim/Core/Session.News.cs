@@ -191,7 +191,11 @@ public sealed partial class Session
         if (keeps is not null) b = keeps;
         var by = want - b.LeadMax;
         var terms = b.NoTerms ? ", with no written terms" : "";
-        var takes = $"{b.Route} starts {LeadSaid(b.Lead, b.LeadMax)} after it goes in{terms}";
+        // D57 (b), DESK-219 (Claude play 22 Nov, fourth play, notes P1-26, P2-18): counted from the day the buy is placed, and
+        // a written route says its writing is in the count. "After it goes in" read as after the writing was done: on day 8
+        // both fourth-play players added the waste order's 3 to 5 days to the day its writing finished and saw a gap the quote
+        // did not; four plays stumbled on it.
+        var takes = $"{b.Route} starts {LeadSaid(b.Lead, b.LeadMax)} after you place it{(b.Written ? ", the writing included" : "")}{terms}";
         var (first, last) = (Day + b.Lead, Day + b.LeadMax);
         var sentence = keeps is not null && by < Day
             ? $"Order today: {b.Route} starts {StartSaid(first, last)}; it is wanted from day {want}.{(PassLineCost(card, last) is { } cost ? " " + cost : "")}"
