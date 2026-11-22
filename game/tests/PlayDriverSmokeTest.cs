@@ -149,6 +149,8 @@ public partial class PlayDriverSmokeTest : Node
             var draftHash = shell.Session.StateHash;
             foreach (var (input, value) in new[] { (shell.QuantityInput, 4), (shell.StartInput, 6), (shell.DurationInput, 8) })
             {
+                shell.AwardScroll.EnsureControlVisible(input);
+                for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 var caption = input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
                 var field = screen.Read().Single(e => e.Control == input.GetLineEdit());
                 Require(field.Text == caption, "Each written-buy number field uses its own visible caption.");
