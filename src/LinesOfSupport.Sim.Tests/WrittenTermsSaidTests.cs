@@ -41,13 +41,18 @@ public class WrittenTermsSaidTests
     }
 
     [Fact]
-    public void Behind_the_answer_due_it_stays_in_the_notes()
+    public void Ahead_of_the_answer_due_it_takes_the_third_place()
     {
+        // DESK-212 (Claude play 22 Nov, second play, note P2-8): on day 1, with Ortiz asked, the water card buy's third
+        // sentence was his answer tonight and the warning fell below the fold. The warning is third; the answer is in the notes.
         var s = Session.Create(Repo.Load("tutorial"), 1);
         AwardAction water = new() { Id = "w", Instrument = "gpc", Vendor = "islandMart", Card = "tutWater", Quantity = 4500, StartDay = 2, DurationDays = 7 };
         Assert.True(s.Apply(new AskAboutAction { Card = "tutWater", Person = "ortiz" }).Accepted);
         var summary = s.View.AwardSummary(water)!;
-        Assert.DoesNotContain("No written terms", summary.Sentence);
-        Assert.Single(s.View.Preview(water).SoftGaps, g => g.StartsWith("No written terms on a 7-day service", StringComparison.Ordinal));
+        Assert.EndsWith("No written terms on a 7-day service: on a day the vendor and the unit disagree on how much or when, nothing on paper settles it and only half of that day's supply arrives.", summary.Sentence);
+        Assert.DoesNotContain("answer about this request", summary.Sentence);
+        var notes = s.View.Preview(water).SoftGaps;
+        Assert.Single(notes, g => g == summary.AnswerDue);
+        Assert.DoesNotContain(notes, g => g.StartsWith("No written terms", StringComparison.Ordinal));
     }
 }
