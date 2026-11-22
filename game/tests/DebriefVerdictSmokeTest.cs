@@ -26,7 +26,7 @@ public partial class DebriefVerdictSmokeTest : Node
             foreach (var gap in report.Gaps)
             {
                 var button = shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == gap.Index);
-                Require(button.Text.Split('\n').Last() == DebriefWords.TagMeaning(gap.Tag), "Each gap button retains its one Sim verdict.");
+                Require(button.Text.Split('\n').Last() == (gap.TagLine ?? DebriefWords.TagMeaning(gap.Tag)), "Each gap button retains its one Sim verdict.");
                 var detail = Detail(gap.Index);
                 var labels = detail.GetChildren().OfType<Label>().Where(l => l.HasMeta("factor_index")).ToArray();
                 Require(labels.Length == gap.Factors.Count, "Every factor remains present on every gap.");
@@ -57,6 +57,22 @@ public partial class DebriefVerdictSmokeTest : Node
                 using var image = GetViewport().GetTexture().GetImage(); Require(image.SavePng(args[at + 1] + "-forklift.png") == Error.Ok, "The third-play forklift screenshot is saved.");
             }
             Require(shell.Session.StateHash == hash, "Reading verdicts, evidence and the full record changes no Sim state.");
+
+            // DESK-204 (D54): the 22 Nov first play's confusion days on card buys read as a trade taken knowingly.
+            var trade = LinesOfSupport.Sim.Replay.Run(bundle, InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-22", "input-log-1.json")));
+            File.WriteAllText(path, trade.ToSave().ToJson()); shell.LoadSavedGame(path); await Frames();
+            var tradeReport = trade.View.Debrief();
+            Require(shell.Session.StateHash == trade.StateHash() && shell.Session.View!.Finished, "The 22 Nov first play's completed save loads.");
+            var tradeButtons = tradeReport.Gaps.Select(g => (Gap: g, Button: shell.DebriefPanel.GetChildren().OfType<Button>().Single(b => b.HasMeta("gap") && b.GetMeta("gap").AsInt32() == g.Index))).ToList();
+            Require(tradeButtons.All(x => x.Button.Text.Split('\n').Last() == x.Gap.TagLine), "Each gap button shows the Sim's own line.");
+            Require(tradeButtons.Count(x => x.Button.Text.EndsWith(DebriefWords.NoTermsTagLine, StringComparison.Ordinal)) == 3, "The three confusion days read as a risk taken.");
+            if (at >= 0)
+            {
+                var waterGap = tradeReport.Gaps.Single(g => g.CapabilityId == "water"); Detail(waterGap.Index).Show(); await Frames();
+                var tradeScroll = shell.DebriefPanel.GetParent<ScrollContainer>(); tradeScroll.EnsureControlVisible(Detail(waterGap.Index)); await Frames();
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var image = GetViewport().GetTexture().GetImage(); Require(image.SavePng(args[at + 1] + "-no-terms.png") == Error.Ok, "The 22 Nov no-terms screenshot is saved.");
+            }
             shell.QueueFree(); await Frames(); GD.Print("DEBRIEF_VERDICT_SMOKE_PASS: one verdict per gap, every factor and exact reason, quoted evidence, full-record counts, third-play late start and pure navigation."); GetTree().Quit();
             VBoxContainer Detail(int index) => shell.DebriefPanel.GetChildren().OfType<VBoxContainer>().Single(v => v.HasMeta("gap_detail") && v.GetMeta("gap_detail").AsInt32() == index);
             async Task Frames() { for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
