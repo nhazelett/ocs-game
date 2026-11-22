@@ -16,7 +16,8 @@ Before day 1
 Day 1
   ACTION    Government purchase card to Island Mart: Water at Hub, 4,500 gal/day for 7 days (Potable water supply); $9,734 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $9,734.
-  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
+  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+  EVENT     Capt Mills on the staff meeting. "Get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
@@ -105,4 +106,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 297165a19958197bfdec3a9c68fbeb44361d71c6d920f224e19856380a9bf09b
+State hash d93f67dd2035545f0ae8c115fc8aa3bdb343114ece8cf7da8bf69f6fecdb4482

@@ -47,13 +47,13 @@ public class TutorialTests
         var s = Session.Create(Repo.Load("tutorial"), 1);
         var mentor = s.Scenario.People.Single(p => p.Role == "outgoingCco").Id;
         var notes = s.Scenario.Events.Where(e => e.From == mentor).ToList();
-        Assert.Equal(2, notes.Count);
+        Assert.Equal(3, notes.Count);   // DESK-207: the staff meeting note is its own, sent only to a shop not joining
         Assert.All(notes, e => Assert.InRange(e.Window.LatestDay, 1, 2));
         var money = s.View.Turnover().Sections.Single(x => x.Kind == TurnoverSectionKind.Money).Text;
         Assert.Contains("Small buys go on the card if the vendor takes it, up to $20,000 for one buy; Island Mart does.", money);
         Assert.Contains("the paying agent can't buy what isn't in it.", money);
         while (!s.Finished) s.AdvanceDay();
-        Assert.Equal(2, s.Records.Count(r => r.Kind == RecordKind.Event && notes.Any(e => e.Id == r.Subject)));
+        Assert.Equal(3, s.Records.Count(r => r.Kind == RecordKind.Event && notes.Any(e => e.Id == r.Subject)));
     }
 
     [Fact]

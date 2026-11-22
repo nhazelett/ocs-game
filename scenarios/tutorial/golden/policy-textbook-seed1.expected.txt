@@ -20,7 +20,7 @@ Day 1
   ACTION    The request for water for Hub: Maintenance switched on.
   ACTION    Government purchase card to Island Mart: Water at Hub, 4,950 gal/day for 7 days (Potable water supply); $10,707 paid on the spot.
   DONE      Government purchase card awarded to Island Mart for water at Hub; performance starts day 2, ends day 8. Obligated $10,707.
-  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
+  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
   VISIT     MSgt Joan Avery got the shop into the commander's staff meeting. Col Helen Ward, Hub commander, ran it. If we run short, Hub comes first. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
@@ -131,4 +131,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 119e01035febc62f50c72157930e642e4a017398e735e53540c95a5742d78635
+State hash ce2e6c64cd5b724532120680d318add3bb969946874a78e7ca0e6fe948de6c88

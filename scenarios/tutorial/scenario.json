@@ -775,7 +775,28 @@
         }
       ],
       "from": "mills",
-      "playerVisibleAs": "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
+      "playerVisibleAs": "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+    },
+    {
+      "id": "mentorStaffMeeting",
+      "label": "Capt Mills on the staff meeting",
+      "window": {
+        "earliestDay": 1,
+        "latestDay": 1
+      },
+      "fixed": true,
+      "preconditions": [
+        {
+          "kind": "shop.notInStaffMeeting"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "inbox"
+        }
+      ],
+      "from": "mills",
+      "playerVisibleAs": "Get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
     },
     {
       "id": "mentorLastNote",
@@ -876,6 +897,7 @@
     "tutForklift",
     "tutWaste",
     "mentorAgreements",
+    "mentorStaffMeeting",
     "mentorLastNote",
     "forkliftBack",
     "forkliftsOut",

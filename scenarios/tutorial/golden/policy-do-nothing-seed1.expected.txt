@@ -11,7 +11,8 @@ Before day 1
   START     Inherited: Lodging at Hub from Island Camp Services (BPA call), days -20 to 40.
   START     Inherited: Food service at Hub from Island Camp Services (BPA call), days -20 to 40.
 Day 1
-  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no. And get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
+  EVENT     Capt Mills on agreements. "The forklift question is coming; the host nation has been grumbling about theirs. We have a BPA with Harbor Equipment for that, but a BPA is an agreement to take calls, not a promise to fill them. When you call off one, know who you'd go to if they say no."
+  EVENT     Capt Mills on the staff meeting. "Get the shop into Col Ward's staff meeting: requests come up there days before they reach your desk, and getting in takes a couple of hours."
   DONE      CE small buys: 2 worked today (1 h of shop time).
 Day 2
   EVENT     Capt Mills's last note. "I fly out today. Last thing: the honey trucks are the host nation's, and when a service like that comes to you it needs a written contract and a COR watching it, not a run of cash buys because they're faster. You'll be fine."
@@ -119,4 +120,4 @@ PASS CRITERIA
   [not met] Waste removal never out (site.hubSite.waste.downDays = 4)
   [not met] Mission output at least 95% (mission.output = 0.796)
 
-State hash b00bdc9ba19edd9245966ffc7a30d57c1569f003ee3f9b428f28565defc901ee
+State hash 4c396a77e6185f656cf098e7cb2d8b7a9a9778825489df83b835beb52b12e47f

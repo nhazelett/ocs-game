@@ -20,6 +20,7 @@ public static class Events
         "arrangement.active",        // target: arrangement id
         "arrangement.noCureNotice",  // target: arrangement id; true while no cure notice on it is delivered or in work (M3-18)
         "arrangement.notReplaced",   // target: arrangement id; true while nothing awarded this game for its site and capability is delivering (M3-18)
+        "shop.notInStaffMeeting",    // no target; true while the shop neither attends the commander's staff meeting nor has joining it in work (DESK-207)
     };
 
     public static readonly IReadOnlySet<string> KnownEffects = new HashSet<string>(StringComparer.Ordinal)
@@ -92,6 +93,8 @@ public static class Events
                 return !s.CureNoticeIssued(p.Target ?? "");
             case "arrangement.notReplaced":
                 return !s.ReplacementDelivering(p.Target ?? "");
+            case "shop.notInStaffMeeting":
+                return !s.InOrJoiningStaffMeeting();
             default:
                 throw new InvalidDataException($"predicate kind {p.Kind} is not implemented");
         }
