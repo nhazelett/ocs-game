@@ -36,10 +36,12 @@ public partial class GameShell
     private void RefreshDebrief(SessionView? view)
     {
         var tabs = GetNode<TabContainer>("%DeskTabs");
-        if (view?.Finished != true && tabs.CurrentTab == DebriefTab) tabs.CurrentTab = TodayTab;
-        tabs.SetTabHidden(DebriefTab, view?.Finished != true);
+        // Completing a day still owes playback and its results before the final verdict.
+        var ready = view?.Finished == true && !pendingDaySummary;
+        if (!ready && tabs.CurrentTab == DebriefTab) tabs.CurrentTab = TodayTab;
+        tabs.SetTabHidden(DebriefTab, !ready);
         RefreshDebriefLayout();
-        if (view?.Finished != true)
+        if (!ready)
         {
             debriefHash = null; DisplayedDebrief = null; DebriefBar = null;
             DeskUi.Clear(debriefPanel);
@@ -48,7 +50,7 @@ public partial class GameShell
         }
         if (debriefHash == session.StateHash) return;
         debriefHash = session.StateHash;
-        var report = DisplayedDebrief = view.Debrief();
+        var report = DisplayedDebrief = view!.Debrief();
         DeskUi.Clear(debriefPanel);
         var navigation = new HBoxContainer(); debriefPanel.AddChild(navigation);
         navigation.AddChild(DeskUi.Button("Back to the map", () => GetNode<TabContainer>("%DeskTabs").CurrentTab = TodayTab));
