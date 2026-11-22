@@ -37,9 +37,16 @@ public sealed record GapFactor(GapFactorKind Kind, GapTag Tag, int FirstDay, str
 /// <summary>One gap: consecutive days a capability at a site ran below 100%.</summary>
 /// <param name="Tag">The most controllable factor's tag: avoidable beats discoverable beats unforeseeable.</param>
 /// <param name="ShortfallRecordIds">Shortfall records in the window (their CausedBy chains are the raw trace).</param>
+/// <param name="TagLine">DESK-204 (D54): the line under the gap's name. <see cref="DebriefWords.TagMeaning"/> for its tag,
+/// except a gap whose every cause is a confusion day on a buy with no written terms, the risk the quote named when the
+/// player chose it: that one reads as a trade taken knowingly. Null on a view built before it was set.</param>
 public sealed record GapView(
     int Index, string SiteId, string CapabilityId, string Label, int StartDay, int EndDay, int LowestPermille, int DownDays,
-    GapTag Tag, IReadOnlyList<GapFactor> Factors, IReadOnlyList<string> ShortfallRecordIds);
+    GapTag Tag, IReadOnlyList<GapFactor> Factors, IReadOnlyList<string> ShortfallRecordIds, string? TagLine = null)
+{
+    /// <summary>DESK-204 (D54): every cause is a confusion day on a buy with no written terms.</summary>
+    public bool PriceOfNoTerms => Factors.Count > 0 && Factors.All(f => f.Kind == GapFactorKind.ExecutionConfusion && f.DependsOnGap is null);
+}
 
 /// <summary>A capability's level by day. PermilleByDay[0] is day 1; -1 means the site was not open that day.</summary>
 public sealed record CapabilityBand(string SiteId, string CapabilityId, string Label, IReadOnlyList<int> PermilleByDay);
@@ -138,6 +145,12 @@ public static class DebriefWords
         GapFactorKind.BuyCut => "You ended a buy that would have covered it",
         _ => "Another cause",
     };
+
+    /// <summary>DESK-204 (D54): the line under a gap that was the known price of a buy with no written terms.</summary>
+    public const string NoTermsTagLine = "Avoidable: a risk you took; the quote said there were no written terms.";
+
+    /// <summary>DESK-204 (D54): what would have settled a confusion day, added to its factor.</summary>
+    public const string NoTermsSettle = " Written terms settle a dispute: a purchase order or a BPA call, at the cost of the days it takes to write one.";
 
     /// <summary>What a tag means, in one sentence (SPEC 4).</summary>
     public static string TagMeaning(GapTag tag) => tag switch

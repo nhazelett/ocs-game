@@ -275,7 +275,7 @@ public sealed partial class Session
                     }
                     case RecordKind.ExecutionConfusion:
                         yield return ($"conf|{a.Id}", new GapFactor(GapFactorKind.ExecutionConfusion, GapTag.Avoidable, d,
-                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.", [r.Id, a.CauseId]));
+                            $"{Upper(NameOf(a.Id))} ran a recurring service with no written terms; from day {d} the vendor and the unit disagreed on what was owed.{DebriefWords.NoTermsSettle}", [r.Id, a.CauseId]));
                         break;
                 }
             }
@@ -353,7 +353,8 @@ public sealed partial class Session
             var down = Enumerable.Range(start, end - start + 1).Count(d => band[d - 1] < Rules.Model.DownThresholdPermille);
             var tag = factors.Count == 0 ? GapTag.Unforeseeable : factors.Max(f => f.Tag);
             var shortfalls = _records.Where(r => r.Kind == RecordKind.Shortfall && r.Subject == $"{siteId}.{capId}" && r.Day >= start && r.Day <= end).Select(r => r.Id).ToList();
-            gaps.Add(new GapView(gaps.Count, siteId, capId, Cap(capId).Label, start, end, lowest, down, tag, factors, shortfalls));
+            var gap = new GapView(gaps.Count, siteId, capId, Cap(capId).Label, start, end, lowest, down, tag, factors, shortfalls);
+            gaps.Add(gap with { TagLine = gap.PriceOfNoTerms ? DebriefWords.NoTermsTagLine : DebriefWords.TagMeaning(tag) });   // DESK-204 (D54)
         }
 
         var annotate = new HashSet<RecordKind>
@@ -488,12 +489,19 @@ public sealed partial class Session
         var rest = gaps.Where(g => g.Index != lead.Index && !with.Contains(g.Index)).ToList();
         if (rest.Count > 0)
         {
-            var tags = rest.Select(g => g.Tag).Distinct().ToList();
-            if (tags.Count == 1)
+            // DESK-204 (D54): a gap that was the known price of a buy with no written terms is counted apart, not as one
+            // the player could have avoided.
+            var trades = rest.Count(g => g.PriceOfNoTerms);
+            var others = rest.Where(g => !g.PriceOfNoTerms).ToList();
+            var tags = others.Select(g => g.Tag).Distinct().ToList();
+            var one = rest.Count == 1;
+            var lead2 = one ? "There was one more gap" : $"There were {DebriefWords.Number(rest.Count)} more gaps";
+            if (trades == rest.Count)
+                parts.Add(one ? $"{lead2}, the price of a buy with no written terms."
+                              : $"{lead2}, {(rest.Count == 2 ? "both" : "all")} the price of buys with no written terms.");
+            else if (trades == 0 && tags.Count == 1)
             {
-                var one = rest.Count == 1;
                 var them = one ? "it" : "all of them";
-                var lead2 = one ? "There was one more gap" : $"There were {DebriefWords.Number(rest.Count)} more gaps";
                 parts.Add(tags[0] switch
                 {
                     GapTag.Avoidable => $"{lead2}, and you could have avoided {them}.",
@@ -506,10 +514,13 @@ public sealed partial class Session
                 var kinds = new List<string>();
                 void Add(GapTag t, string words)
                 {
-                    var n = rest.Count(g => g.Tag == t);
+                    var n = others.Count(g => g.Tag == t);
                     if (n > 0) kinds.Add($"{DebriefWords.Number(n)} {words}");
                 }
                 Add(GapTag.Avoidable, "you could have avoided");
+                if (trades > 0)
+                    kinds.Add(trades == 1 ? "one the price of a buy with no written terms"
+                                          : $"{DebriefWords.Number(trades)} the price of buys with no written terms");
                 Add(GapTag.Discoverable, "you could have found out about in time");
                 Add(GapTag.Unforeseeable, "nobody could have seen coming");
                 parts.Add($"There were {DebriefWords.Number(rest.Count)} more gaps: {JoinAnd(kinds)}.");
