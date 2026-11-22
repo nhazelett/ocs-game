@@ -131,6 +131,8 @@ public sealed class SessionView
     /// <summary>Day the shop found the finance office, or null.</summary>
     public int? FinanceFoundDay => _s.FinanceFoundDay;
     public StaffMeetingView StaffMeeting => _s.BuildStaffMeeting();
+    /// <summary>Read-only joining quote for a selected teammate; committed attendance keeps its actual holder.</summary>
+    public StaffMeetingView StaffMeetingFor(string? assignee) => _s.BuildStaffMeeting(assignee);
 
     /// <summary>DESK-10 (D5): what the shop can buy on its own initiative (the vehicle), for the "Buy on your own initiative" entry.</summary>
     public IReadOnlyList<OwnInitiativeView> OwnInitiative => _s.BuildOwnInitiative();

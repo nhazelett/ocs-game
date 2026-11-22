@@ -639,9 +639,14 @@ public sealed record OwnInitiativeView(string SiteId, string CapabilityId, strin
 /// linking; show the card's title).</param>
 public sealed record StaffMeetingView(bool Attending, bool Joining, int? NextDay, IReadOnlyList<int> MeetingDays, IReadOnlyList<string> PreviewedCards)
 {
+    /// <summary>Actual committed attendee, or null before joining. Selected join quotes never change this.</summary>
+    public string? AttendeeId { get; init; }
+    public string StateSays { get; init; } = "";
+    public string CostSays { get; init; } = "";
+    public double MeetingHours { get; init; }
     /// <summary>DESK-155 (b): the effect line under Join the staff meeting, with its standing cost: "Joins the staff meeting
-    /// so requests reach you in the room; whoever goes then spends 1 hour at each meeting, every day." The line under the
-    /// button gives the hours to get in.</summary>
+    /// so requests reach you in the room; [chosen person] then spends [their hours] at each meeting, every day."
+    /// DESK-229 uses the same personal hours as the day's work. The line under the button gives the hours to get in.</summary>
     public string JoinSays { get; init; } = "";
 }
 

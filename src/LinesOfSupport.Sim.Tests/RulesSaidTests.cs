@@ -12,7 +12,7 @@ public class RulesSaidTests
     public void B_joining_the_staff_meeting_says_its_hour_every_day()
     {
         var s = Session.Create(Repo.Load("tutorial"), 1, Prep);
-        Assert.Equal("Joins the staff meeting so requests reach you in the room; whoever goes then spends 1 hour at each meeting, every day.",
+        Assert.Equal("Joins the staff meeting so requests reach you in the room; you then spend 1 hour at each meeting, every day.",
                      s.View.StaffMeeting.JoinSays);
     }
 
