@@ -134,8 +134,15 @@ public sealed partial class Session
         items.AddRange(LeavesOutAlerts());   // DESK-103
         var ordered = items.Select((it, i) => (it, i)).OrderByDescending(x => x.it.Severity).ThenBy(x => x.i).Select(x => x.it).ToList();
         return new MorningBoardView(Day, BuildTopStrip(), ordered, BuildTiles(), BuildLead(ordered), BuildNewThisMorning(),
-            _cards.Count(c => c.SubmittedDay <= Day && Day <= Math.Min(LastDay, c.RequestedStartDay + Math.Max(1, c.DurationDays) - 1)));
+            _cards.Count(c => c.SubmittedDay <= Day && (Day <= Math.Min(LastDay, c.RequestedStartDay + Math.Max(1, c.DurationDays) - 1)
+                                                         || StillSupplying(c.Id))));
     }
+
+    /// <summary>DESK-206 (22 Nov play, note P2-16): a buy for this request is still supplying today or will start, so the
+    /// request stays open in the morning heading after its own days are over.</summary>
+    private bool StillSupplying(string cardId)
+        => _arrangements.Any(a => a.CardId == cardId && a.EndDay >= Day
+                                  && a.Status is ArrangementStatus.Active or ArrangementStatus.Pending or ArrangementStatus.Suspended);
 
     private List<CapabilityTile> BuildTiles()
     {
