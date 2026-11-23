@@ -28,7 +28,7 @@ public class DaySummaryTests
         Assert.StartsWith("Sitting down with ", met.Sentence);
         Assert.EndsWith(": done by MSgt Joan Avery.", met.Sentence);
         Assert.Contains(summary.Short, x => x.StartsWith("Water at Hub was at 0%. Nothing supplies water at Hub until", StringComparison.Ordinal));
-        Assert.Equal("Day 3: one job finished and 2 things were short.", summary.Sentence);
+        Assert.Equal("Day 3: one job finished and 2 things were not supplied in full.", summary.Sentence);
         Assert.Empty(summary.Slipped);
     }
 
