@@ -127,6 +127,28 @@ public partial class StaffMeetingSmokeTest : Node
             Require(actualLabels.Single(l=>l.HasMeta("meeting_cost")).Text==shell.Session.View!.StaffMeetingFor("novak").CostSays,"Changing the joiner refreshes the explanatory personal hours.");
             Require(Labels(shell.VisitButtons["meeting"].GetParent()).Any(l=>l.HasMeta("action_cost") && l.Text.Contains("Novak then spends 1.5 hours")),"The action's standing cost updates with its joining-hours quote.");
             Require(shell.Session.StateHash==selectionHash,"Changing the selected joiner is read-only.");
+            // DESK-238: the ninth play's day-two handover is preserved verbatim in the final full record.
+            var ninth = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-22-9", "input-log-2.json"));
+            expected = LinesOfSupport.Sim.Replay.Run(bundle, ninth);
+            File.WriteAllText(saved, expected.ToSave().ToJson()); shell.LoadSavedGame(saved);
+            for (var frame = 0; frame < 8; frame++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            shell.DebriefRecordButton.EmitSignal(Button.SignalName.Pressed);
+            var handover = expected.Records.Single(r => r.Day == 2 && r.Text.StartsWith("SrA Eli Novak took over getting the shop"));
+            var history = Labels(shell.DebriefFullRecord).Single(l => l.HasMeta("decision_record") && l.GetMeta("decision_record").AsString() == handover.Id);
+            Require(history.Text == handover.Text && history.Text.Contains("about 3 shop hours, then 1.5 at each meeting")
+                && history.Text.EndsWith("From you: 3 hours left."), "The complete real handover record names Novak's personal costs and exact remaining work.");
+            var recordScroll = shell.DebriefPanel.GetParent<ScrollContainer>();
+            for (var frame = 0; frame < 8; frame++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            recordScroll.EnsureControlVisible(history);
+            for (var frame = 0; frame < 8; frame++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            Require(history.IsVisibleInTree() && recordScroll.GetGlobalRect().Encloses(history.GetGlobalRect()), "The entire handover record fits in the actual full-record viewport at normal type.");
+            Require(shell.Session.StateHash == expected.StateHash() && shell.Session.CreateSave().ToJson() == expected.ToSave().ToJson(), "Opening and scrolling the full meeting record preserve state and the complete save.");
+            if (shot >= 0)
+            {
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                using var recordImage = GetViewport().GetTexture().GetImage();
+                Require(recordImage.SavePng(args[shot + 1] + "-handover-record.png") == Error.Ok, "Native full meeting handover record saved.");
+            }
             shell.QueueFree(); shell = null;
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);

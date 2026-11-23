@@ -244,12 +244,21 @@ public sealed partial class Session
     internal bool InOrJoiningStaffMeeting()
         => _attendingMeetings || _work.Any(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "joinMeeting" });
 
+    // DESK-238 / D59: records and pending work describe the holder's personal hours, as the meeting pane does.
+    private string StaffMeetingJoinLabel(string? assignee)
+        => $"Getting the shop into the commander's staff meeting: about {HoursText(HalfHours(PersonHours(Fixed.Milli(People.StaffMeeting.JoinShopHours), assignee)))} shop hours, "
+         + $"then {HoursText(HalfHours(PersonHours(Fixed.Milli(People.StaffMeeting.WeeklyShopHours), assignee)))} at each meeting, "
+         + (People.StaffMeeting.EveryDays <= 1 ? "every day." : $"every {People.StaffMeeting.EveryDays} days.");
+
+    private string PersonalWorkLabel(WorkItem work)
+        => work.Payload is VisitPayload { Kind: "joinMeeting" } ? StaffMeetingJoinLabel(work.Assignee) : work.Label;
+
     private ActionResult ApplyJoinStaffMeeting(JoinStaffMeetingAction j)
     {
         var cmd = Scenario.Actors.Commander.Person;
         if (j.Attend)
             return StartVisit(j, "joinMeeting", null, PersonSubject(cmd, "staffMeeting"),
-                $"Getting the shop into the commander's staff meeting: about {People.StaffMeeting.JoinShopHours} shop hours, then {People.StaffMeeting.WeeklyShopHours} at each meeting, {(People.StaffMeeting.EveryDays <= 1 ? "every day" : $"every {People.StaffMeeting.EveryDays} days")}.");
+                StaffMeetingJoinLabel(_assigneeNow));
         var (stops, _) = CheckVisit(j);
         if (stops.Count > 0) return ActionResult.Stop([.. stops]);
         _work.RemoveAll(w => w.CompletedDay is null && w.Payload is VisitPayload { Kind: "joinMeeting" or "meeting" });

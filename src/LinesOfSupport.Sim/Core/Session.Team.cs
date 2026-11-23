@@ -173,7 +173,7 @@ public sealed partial class Session
         // DESK-225 (Claude play 22 Nov seventh, note P2-25): to the half hour, as the request and the picker said it
         // (DESK-14); the record read "7 hours left" where the player had just read 6.5.
         AddRecord(Day, RecordKind.Action, w.SubjectId ?? w.Id,
-            $"{Upper(to.Role == "you" ? "you" : MemberName(to))} took over {LowerLabel(w.Label)} from {MemberName(from)}: {HoursSaid(w.HoursRemainingMilli)} left.", [w.CauseId]);
+            $"{Upper(to.Role == "you" ? "you" : MemberName(to))} took over {LowerLabel(PersonalWorkLabel(w))} from {MemberName(from)}: {HoursSaid(w.HoursRemainingMilli)} left.", [w.CauseId]);
         return ActionResult.Ok("reassigned");
     }
 
@@ -213,7 +213,7 @@ public sealed partial class Session
             var readyMilli = open.Where(w => w.WaitUntilDay <= Day).Sum(w => w.HoursRemainingMilli);
             var perDay = HalfHours(m.HoursPerDayMilli);
             var today = planned.TryGetValue(m.Id, out var h) ? h : HalfHours(Math.Min(m.HoursPerDayMilli, readyMilli));   // DESK-78: as the plan counts
-            var work = open.Select(w => new TeamWorkView(w.Id, w.Label, TaskHours(w.HoursRemainingMilli),   // DESK-179: as the decisions say it
+            var work = open.Select(w => new TeamWorkView(w.Id, PersonalWorkLabel(w), TaskHours(w.HoursRemainingMilli),   // DESK-179: as the decisions say it
                 w.WaitUntilDay <= Day,
                 w.WaitUntilDay > Day ? w.WaitUntilDay : null, StopSentence(w))).ToList();
             result.Add(new TeamMemberView(m.Id, m.Role, m.Role == "you" ? "You" : m.Name, m.Rank, m.Portrait,
