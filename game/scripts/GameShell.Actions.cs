@@ -332,7 +332,7 @@ public partial class GameShell
             for (var i = 0; i < cors.Count; i++)
             {
                 CorInput.SetItemTooltip(i + 1, cors[i].Why);
-                var reason = DeskUi.Label(cors[i].Why);
+                var reason = DeskUi.Label("Possible COR: " + cors[i].Why);
                 CorReasonLabels.Add(reason);
             }
         }
