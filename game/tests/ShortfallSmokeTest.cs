@@ -11,7 +11,10 @@ public partial class ShortfallSmokeTest : Node
         GameShell? shell = null;
         try
         {
-            shell = Shell(this); Scenario(shell, "tutorial"); Step(shell, 3);
+            shell = Shell(this); Scenario(shell, "tutorial");
+            Require(shell.MapSupplyHeading.Text == "Supply · opening position"
+                && shell.MorningSupplyHeading.Text == "Supply · opening position", "The first morning does not call its initial supply a completed day.");
+            Step(shell, 3);
             shell.SetProcess(false); shell.DeveloperToggle.ButtonPressed = false;
             var viewport = shell.GetNode<SubViewport>("%BoardViewport");
             var map = viewport.GetNode<SchematicMap>("SchematicMap"); map.SetProcess(false); map.SetMovementProgress(1);
@@ -112,6 +115,43 @@ public partial class ShortfallSmokeTest : Node
             Require(shell.SelectedCapability == "hubSite.fuel" && shell.BoardFocus.Text.StartsWith("Selected: Fuel at Hub")
                 && shell.Session.StateHash == day16.StateHash(), "Clicking the named fuel report selects fuel, not the site's first capability, without acting.");
             await Capture("day16-fuel-label");
+            // D63: the ninth cold player's cancellation/replacement has no water on day 3, then half on day 4.
+            var ninthLog = LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-22-9", "input-log-2.json"));
+            var snapshotSave = Path.Combine(Path.GetTempPath(), "ocs-supply-date-" + Guid.NewGuid() + ".json");
+            try
+            {
+                foreach (var completedDay in new[] { 3, 4 })
+                {
+                    var reference = LinesOfSupport.Sim.Replay.Run(bundle, ninthLog, stopAfterDay: completedDay);
+                    File.WriteAllText(snapshotSave, reference.ToSave().ToJson()); shell.LoadSavedGame(snapshotSave);
+                    shell.DeveloperToggle.ButtonPressed = false; tabs.CurrentTab = GameShell.TodayTab;
+                    todayScroll.ScrollVertical = 0; map.FitMap(); map.SetMovementProgress(1); await Frames();
+                    var water = map.Tiles.Single(t => t.SiteId == "hubSite" && t.CapabilityId == "water");
+                    Require(shell.Session.View!.Day == completedDay + 1 && map.Day!.Day == completedDay
+                        && water.TodayPermille == (completedDay == 3 ? 0 : 500), "The actual completed-day supply is retained beside the next morning.");
+                    Require(shell.MorningHeading.Text.StartsWith($"Morning of day {completedDay + 1}")
+                        && shell.MapSupplyHeading.Text == $"Supply on day {completedDay} · last completed"
+                        && shell.MorningSupplyHeading.Text == shell.MapSupplyHeading.Text
+                        && shell.MorningTiles.GetChildren().OfType<Label>().Any(l => l.Text == shell.MapSupplyHeading.Text),
+                        "Map, Today alerts and expanded site rows date supply separately from this morning.");
+                    Require(completedDay != 3 || water.WhyShort!.Contains("day 4"), "The real planned start stays visible alongside day-three zero supply.");
+                    Require(shell.MorningSupplyHeading.IsVisibleInTree()
+                        && todayScroll.GetGlobalRect().Encloses(shell.MorningSupplyHeading.GetGlobalRect())
+                        && shell.MapSupplyHeading.IsVisibleInTree()
+                        && shell.MapSupplyHeading.GetThemeFont("font").GetStringSize(shell.MapSupplyHeading.Text,
+                            fontSize: shell.MapSupplyHeading.GetThemeFontSize("font_size")).X <= shell.MapSupplyHeading.Size.X,
+                        "Both complete date captions are presented at normal type size.");
+                    Require(shell.MorningAlerts.GetChildCount() == reference.View.MorningBoard().Tiles.Count(t => t.Status is "down" or "degraded")
+                        + reference.View.MorningBoard().Items.Count(i => i.Severity == BoardSeverity.Alert
+                            && !reference.View.MorningBoard().Tiles.Any(t => t.SiteId + "." + t.CapabilityId == i.LinkId && t.Status is "down" or "degraded")),
+                        "A date caption adds no alert or decision.");
+                    await Capture($"supply-day{completedDay}");
+                    shell.BoardDetailsToggle.ButtonPressed = true; map.PanBy(new Vector2(5, 0));
+                    Require(shell.Session.StateHash == reference.StateHash()
+                        && shell.Session.CreateSave().ToJson() == reference.ToSave().ToJson(), "Supply dating and inspection preserve the complete replayed state and save.");
+                }
+            }
+            finally { File.Delete(snapshotSave); }
             shell.QueueFree(); shell = null; await Frames();
             GD.Print("SHORTFALL_SMOKE_PASS: verbatim reasons on Today/request/map, unchanged resting placement, opaque in-view cards in all looks, real clicks/drag/close/playback and pure inspection."); GetTree().Quit();
 

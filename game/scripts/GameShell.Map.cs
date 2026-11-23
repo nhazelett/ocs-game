@@ -5,6 +5,10 @@ namespace LinesOfSupport.Game;
 public partial class GameShell
 {
     internal Label MapHint { get; private set; } = null!;
+    internal Label MapSupplyHeading => GetNode<Label>("Margin/Layout/WorkArea/BoardPanel/BoardLayout/Heading");
+    // MapDay dates the same completed-day supply shown by the capability tiles; zero is the opening position.
+    private string SupplySnapshot => Map.Day is { Day: > 0 } day
+        ? $"Supply on day {day.Day} · last completed" : "Supply · opening position";
 
     internal Button MovementButton { get; private set; } = null!;
 

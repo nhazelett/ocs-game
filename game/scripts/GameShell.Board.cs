@@ -102,6 +102,7 @@ public partial class GameShell
             var reason = DeskUi.ActionReason(morningItems, button);
             DeskUi.Gate(button, reason, item.LinkKind == BoardLinkKind.None ? "This update has no further detail to open." : null);
         }
+        if (board is not null) morningTiles.AddChild(DeskUi.Heading(SupplySnapshot));
         foreach (var tile in board?.Tiles ?? [])
         {
             var key = tile.SiteId + "." + tile.CapabilityId;
