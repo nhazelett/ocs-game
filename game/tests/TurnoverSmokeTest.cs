@@ -15,12 +15,15 @@ public partial class TurnoverSmokeTest : Node
         {
             using var scene = GD.Load<PackedScene>("res://scenes/Main.tscn");
             var shell = scene.Instantiate<GameShell>(); shell.AutosavePathOverride = Path.Combine(temporary, "autosave.json"); AddChild(shell);
-            shell.NewGameButton.EmitSignal(Button.SignalName.Pressed); shell.SpokeBGameButton.EmitSignal(Button.SignalName.Pressed);
-            var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "spoke-b"));
+            var args = OS.GetCmdlineUserArgs();
+            var tutorial = args.Contains("--tutorial");
+            shell.NewGameButton.EmitSignal(Button.SignalName.Pressed);
+            (tutorial ? shell.TutorialGameButton : shell.SpokeBGameButton).EmitSignal(Button.SignalName.Pressed);
+            var bundle = ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, tutorial ? "tutorial" : "spoke-b"));
             var prep = PrepScreen.View(bundle);
             Require(shell.Session.View is null && prep.Offered.All(o => shell.PrepChoices[o.Id].ButtonPressed == o.Default), "Authored defaults are shown before any Session exists.");
             Require(prep.Offered.All(o => o.Says is null || shell.PrepChoices[o.Id].Text.Contains(o.Says)), "Prep uses the exact person's authored words.");
-            var args = OS.GetCmdlineUserArgs(); var shot = Array.IndexOf(args, "--screenshots");
+            var shot = Array.IndexOf(args, "--screenshots");
             async Task Capture(string name)
             {
                 if (shot < 0) return;
@@ -56,6 +59,9 @@ public partial class TurnoverSmokeTest : Node
                     Require(shell.CurrentTurnoverSection == TurnoverSectionKind.Shop, "Player can reread an earlier paragraph.");
                     shell.TurnoverNext.EmitSignal(Button.SignalName.Pressed);
                 }
+                if (tutorial && section.Kind is TurnoverSectionKind.Vendors or TurnoverSectionKind.Money)
+                    Require(shell.TurnoverWords.Text.Contains("written purchase order") && !shell.TurnoverWords.Text.Contains("cash only")
+                        && !shell.TurnoverWords.Text.Contains("only takes cash"), "Both tutorial payment passages permit the existing written order.");
                 await Capture(section.Kind.ToString().ToLowerInvariant());
                 shell.TurnoverNext.EmitSignal(Button.SignalName.Pressed);
                 Require(shell.Session.StateHash == hash, "Reading and moving between paragraphs is read-only.");

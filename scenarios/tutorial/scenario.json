@@ -698,14 +698,14 @@
     "shop": "Here's the shop.",
     "contracts": "Most of what keeps the hub running is the host nation's. Billeting and dining are calls on our camp BPA.",
     "vendorList": "These are the vendors I've used, and a couple I know by name.",
-    "money": "Last, the money. There's enough. Small buys go on the card if the vendor takes it, up to $20,000 for one buy; Island Mart does. Harbor Bottling only takes cash, on an SF 44, and cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it.",
+    "money": "Last, the money. There's enough. Small buys go on the card if the vendor takes it, up to $20,000 for one buy; Island Mart does. Harbor Bottling does not take the card. A small buy there uses cash on an SF 44; a written purchase order is also possible and takes shop time. Cash comes out of the cash box, which only gets refilled every few days: the paying agent can't buy what isn't in it.",
     "remarks": {
       "arrangements": {
         "hubWaterPoint": "The water point's been down since last week; the host nation says day 9."
       },
       "vendors": {
         "harborEquipment": "We have a BPA with Harbor Equipment for forklifts and the like. They've always answered.",
-        "islandMart": "Island Mart takes the card. Harbor Bottling is cash only."
+        "islandMart": "Island Mart takes the card. Harbor Bottling takes cash on an SF 44 and also accepts a written purchase order."
       },
       "fundingLines": {}
     }
