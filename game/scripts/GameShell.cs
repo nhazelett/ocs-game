@@ -180,6 +180,7 @@ public partial class GameShell : Control
             .Select(c => new MapRequestLink(c.CardId, c.SiteId, c.CapabilityId, c.Title)).ToArray() ?? []);
         Map.ShowCapabilities(board?.Tiles ?? []);
         Map.ShowMapDay(view?.MapDay());
+        MapSupplyHeading.Text = view is null ? "Operating area" : SupplySnapshot;
         var moves = Map.Day is { } mapDay && (mapDay.Runs.Count > 0 || mapDay.Shipments.Any(s => !s.CustomsHeld));
         MovementButton.Text = moves ? "Replay island crossings" : "No crossings today";
         MovementButton.TooltipText = "This replay shows supplies crossing between islands. Local deliveries are listed in the day's results.";

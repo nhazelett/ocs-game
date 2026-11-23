@@ -8,12 +8,14 @@ public partial class GameShell
 {
     internal VBoxContainer MorningBrief { get; private set; } = null!;
     internal Label MorningHeading => morningHeading;
+    internal Label MorningSupplyHeading { get; private set; } = null!;
     internal VBoxContainer MorningAlerts { get; private set; } = null!;
 
     private void BuildMorningBrief(VBoxContainer board)
     {
         morningHeading = DeskUi.Label();
         board.AddChild(morningHeading);
+        MorningSupplyHeading = DeskUi.Label(); board.AddChild(MorningSupplyHeading);
         MorningAlerts = new VBoxContainer { Name = "MorningAlerts" };
         MorningAlerts.AddThemeConstantOverride("separation", 10); board.AddChild(MorningAlerts);
         MorningBrief = new VBoxContainer { Name = "NewSinceYesterday" };
@@ -24,6 +26,8 @@ public partial class GameShell
     {
         DeskUi.Clear(MorningBrief); DeskUi.Clear(MorningAlerts);
         var view = session.View;
+        MorningSupplyHeading.Text = SupplySnapshot;
+        MorningSupplyHeading.Visible = board?.Tiles.Any(t => t.Status is "down" or "degraded") == true;
         var alertRecords = new HashSet<string>();
         if (board is not null && view is not null)
         {
