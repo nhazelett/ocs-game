@@ -1,0 +1,1377 @@
+{
+  "scenario": "tutorial",
+  "rulesVersion": "2025-10",
+  "simulationStatus": "simulated",
+  "firstSeed": 0,
+  "lastSeed": 199,
+  "results": [
+    {
+      "policy": "do-nothing",
+      "metric": "actions.rejected",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.commanderConfidenceHits",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.commitmentsUnresolved",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.habitHandshakes",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.handshakeWalkOffs",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.hhqInquiries",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.outOfScopeDenied",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.outOfScopeWork",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.ratifications",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.ucaOverdue",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "compliance.unauthorizedCommitments",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "cost.incurredCents",
+      "runs": 200,
+      "min": 24960000,
+      "median": 24960000,
+      "max": 24960000
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "cost.obligatedCents",
+      "runs": 200,
+      "min": 62400000,
+      "median": 62400000,
+      "max": 62400000
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "cost.unobligatedIncurredCents",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "day",
+      "runs": 200,
+      "min": 16,
+      "median": 16,
+      "max": 16
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "events.fired",
+      "runs": 200,
+      "min": 7,
+      "median": 7,
+      "max": 7
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "info.surveys",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "mission.endurance",
+      "runs": 200,
+      "min": 0.697,
+      "median": 0.749,
+      "max": 0.749
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "mission.output",
+      "runs": 200,
+      "min": 0.778,
+      "median": 0.796,
+      "max": 0.796
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "mission.resilience",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "mission.sortieGeneration",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "mission.throughput",
+      "runs": 200,
+      "min": 0.375,
+      "median": 0.437,
+      "max": 0.437
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "performance.cureNotices",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "performance.cured",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "performance.defaults",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "performance.issues",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 2
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "shop.gpcProgramDay",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "shop.hoursWorked",
+      "runs": 200,
+      "min": 16,
+      "median": 16,
+      "max": 32
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "shop.smallBuyHours",
+      "runs": 200,
+      "min": 16.5,
+      "median": 16.5,
+      "max": 16.5
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "shop.smallBuys",
+      "runs": 200,
+      "min": 33,
+      "median": 33,
+      "max": 33
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "shop.smallBuysHeldDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.food.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 1
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.food.downDays",
+      "runs": 200,
+      "min": 6,
+      "median": 6,
+      "max": 8
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.food.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.fuel.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.fuel.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.fuel.minPercent",
+      "runs": 200,
+      "min": 100,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.lodging.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.lodging.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.lodging.minPercent",
+      "runs": 200,
+      "min": 50,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.mhe.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.mhe.downDays",
+      "runs": 200,
+      "min": 9,
+      "median": 9,
+      "max": 9
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.mhe.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.power.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.power.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.power.minPercent",
+      "runs": 200,
+      "min": 100,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.unitHabitPermille",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.waste.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.waste.downDays",
+      "runs": 200,
+      "min": 4,
+      "median": 4,
+      "max": 4
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.waste.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.water.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 1
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.water.downDays",
+      "runs": 200,
+      "min": 6,
+      "median": 6,
+      "max": 7
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "site.hubSite.water.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "work.bpaDeclines",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "work.executionConfusionDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "work.paymentErrors",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "do-nothing",
+      "metric": "work.vendorFailures",
+      "runs": 200,
+      "min": 2,
+      "median": 3,
+      "max": 10
+    },
+    {
+      "policy": "greedy",
+      "metric": "actions.rejected",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.commanderConfidenceHits",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.commitmentsUnresolved",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.habitHandshakes",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.handshakeWalkOffs",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.hhqInquiries",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.outOfScopeDenied",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.outOfScopeWork",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.ratifications",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.ucaOverdue",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "compliance.unauthorizedCommitments",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "cost.incurredCents",
+      "runs": 200,
+      "min": 26518950,
+      "median": 26518950,
+      "max": 26584950
+    },
+    {
+      "policy": "greedy",
+      "metric": "cost.obligatedCents",
+      "runs": 200,
+      "min": 64288950,
+      "median": 64288950,
+      "max": 64288950
+    },
+    {
+      "policy": "greedy",
+      "metric": "cost.unobligatedIncurredCents",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "day",
+      "runs": 200,
+      "min": 16,
+      "median": 16,
+      "max": 16
+    },
+    {
+      "policy": "greedy",
+      "metric": "events.fired",
+      "runs": 200,
+      "min": 7,
+      "median": 7,
+      "max": 7
+    },
+    {
+      "policy": "greedy",
+      "metric": "info.surveys",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "mission.endurance",
+      "runs": 200,
+      "min": 0.916,
+      "median": 0.989,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "mission.output",
+      "runs": 200,
+      "min": 0.943,
+      "median": 0.9744999999999999,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "mission.resilience",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "mission.sortieGeneration",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "mission.throughput",
+      "runs": 200,
+      "min": 0.796,
+      "median": 0.906,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "performance.cureNotices",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "performance.cured",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "performance.defaults",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "performance.issues",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 2
+    },
+    {
+      "policy": "greedy",
+      "metric": "shop.gpcProgramDay",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "shop.hoursWorked",
+      "runs": 200,
+      "min": 38,
+      "median": 38,
+      "max": 54
+    },
+    {
+      "policy": "greedy",
+      "metric": "shop.smallBuyHours",
+      "runs": 200,
+      "min": 16.5,
+      "median": 16.5,
+      "max": 16.5
+    },
+    {
+      "policy": "greedy",
+      "metric": "shop.smallBuys",
+      "runs": 200,
+      "min": 33,
+      "median": 33,
+      "max": 33
+    },
+    {
+      "policy": "greedy",
+      "metric": "shop.smallBuysHeldDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.food.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.food.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.food.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.fuel.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.fuel.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.fuel.minPercent",
+      "runs": 200,
+      "min": 100,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.lodging.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.lodging.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.lodging.minPercent",
+      "runs": 200,
+      "min": 50,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.mhe.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 1,
+      "max": 5
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.mhe.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 1,
+      "max": 2
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.mhe.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.power.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.power.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.power.minPercent",
+      "runs": 200,
+      "min": 100,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.unitHabitPermille",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.waste.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.waste.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.waste.minPercent",
+      "runs": 200,
+      "min": 25,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.water.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.water.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "site.hubSite.water.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "greedy",
+      "metric": "work.bpaDeclines",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "greedy",
+      "metric": "work.executionConfusionDays",
+      "runs": 200,
+      "min": 0,
+      "median": 1,
+      "max": 6
+    },
+    {
+      "policy": "greedy",
+      "metric": "work.paymentErrors",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "greedy",
+      "metric": "work.vendorFailures",
+      "runs": 200,
+      "min": 2,
+      "median": 5,
+      "max": 11
+    },
+    {
+      "policy": "textbook",
+      "metric": "actions.rejected",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.commanderConfidenceHits",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.commitmentsUnresolved",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.habitHandshakes",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.handshakeWalkOffs",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.hhqInquiries",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.outOfScopeDenied",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.outOfScopeWork",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.ratifications",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.ucaOverdue",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "compliance.unauthorizedCommitments",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "cost.incurredCents",
+      "runs": 200,
+      "min": 26688045,
+      "median": 26688045,
+      "max": 26688045
+    },
+    {
+      "policy": "textbook",
+      "metric": "cost.obligatedCents",
+      "runs": 200,
+      "min": 64455405,
+      "median": 64455405,
+      "max": 64455405
+    },
+    {
+      "policy": "textbook",
+      "metric": "cost.unobligatedIncurredCents",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "day",
+      "runs": 200,
+      "min": 16,
+      "median": 16,
+      "max": 16
+    },
+    {
+      "policy": "textbook",
+      "metric": "events.fired",
+      "runs": 200,
+      "min": 6,
+      "median": 6,
+      "max": 6
+    },
+    {
+      "policy": "textbook",
+      "metric": "info.surveys",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "mission.endurance",
+      "runs": 200,
+      "min": 0.943,
+      "median": 0.989,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "mission.output",
+      "runs": 200,
+      "min": 0.973,
+      "median": 0.997,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "mission.resilience",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "mission.sortieGeneration",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "mission.throughput",
+      "runs": 200,
+      "min": 0.937,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "performance.cureNotices",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 2
+    },
+    {
+      "policy": "textbook",
+      "metric": "performance.cured",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "performance.defaults",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "performance.issues",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 2
+    },
+    {
+      "policy": "textbook",
+      "metric": "shop.gpcProgramDay",
+      "runs": 200,
+      "min": 5,
+      "median": 5,
+      "max": 5
+    },
+    {
+      "policy": "textbook",
+      "metric": "shop.hoursWorked",
+      "runs": 200,
+      "min": 103,
+      "median": 111,
+      "max": 118
+    },
+    {
+      "policy": "textbook",
+      "metric": "shop.smallBuyHours",
+      "runs": 200,
+      "min": 10.5,
+      "median": 10.5,
+      "max": 10.5
+    },
+    {
+      "policy": "textbook",
+      "metric": "shop.smallBuys",
+      "runs": 200,
+      "min": 21,
+      "median": 21,
+      "max": 21
+    },
+    {
+      "policy": "textbook",
+      "metric": "shop.smallBuysHeldDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.food.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.food.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.food.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.fuel.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.fuel.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.fuel.minPercent",
+      "runs": 200,
+      "min": 100,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.lodging.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.lodging.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.lodging.minPercent",
+      "runs": 200,
+      "min": 50,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.mhe.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.mhe.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.mhe.minPercent",
+      "runs": 200,
+      "min": 50,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.power.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.power.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.power.minPercent",
+      "runs": 200,
+      "min": 100,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.unitHabitPermille",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.waste.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 2
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.waste.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.waste.minPercent",
+      "runs": 200,
+      "min": 55,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.water.degradedDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 3
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.water.downDays",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "site.hubSite.water.minPercent",
+      "runs": 200,
+      "min": 0,
+      "median": 100,
+      "max": 100
+    },
+    {
+      "policy": "textbook",
+      "metric": "work.bpaDeclines",
+      "runs": 200,
+      "min": 1,
+      "median": 1,
+      "max": 1
+    },
+    {
+      "policy": "textbook",
+      "metric": "work.executionConfusionDays",
+      "runs": 200,
+      "min": 0,
+      "median": 1,
+      "max": 4
+    },
+    {
+      "policy": "textbook",
+      "metric": "work.paymentErrors",
+      "runs": 200,
+      "min": 0,
+      "median": 0,
+      "max": 0
+    },
+    {
+      "policy": "textbook",
+      "metric": "work.vendorFailures",
+      "runs": 200,
+      "min": 2,
+      "median": 4,
+      "max": 9
+    }
+  ]
+}

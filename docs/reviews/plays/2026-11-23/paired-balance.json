@@ -1,0 +1,11 @@
+{
+  "firstSeed": 0,
+  "lastSeed": 199,
+  "passes": {
+    "do-nothing": 0,
+    "greedy": 189,
+    "textbook": 200
+  },
+  "greedyTiesTextbook": 11,
+  "betterThanTextbook": []
+}
