@@ -85,7 +85,11 @@ public partial class GameShell
             OpenRequestWorkspace();
             return;
         }
-        if (vendor is null) return;
+        if (vendor is null)
+        {
+            if (SelectedArrangement is { } id) FocusPaymentArrangement(id, session.StateHash);
+            return;
+        }
         var changedVendor = selectedVendor != vendor; selectedVendor = vendor;
         GetNode<TabContainer>("%DeskTabs").CurrentTab = VendorsTab;
         if (changedVendor) RefreshBpaDesk(session.View);
