@@ -7,7 +7,7 @@
     "cashAndPayingAgent",
     "systemAccess"
   ],
-  "note": "The taught path: water on the card from Island Mart (Harbor Bottling takes only cash, and the cash box is small); the forklift as a call on the Harbor Equipment BPA, which Harbor turns down, then a card buy from Coastal Rentals; waste as a written purchase order with a COR, in time for the host nation pulling its trucks.",
+  "note": "The taught path: water on the card from Island Mart (Harbor Bottling does not take the card, and the cash box is small); the forklift as a call on the Harbor Equipment BPA, which Harbor turns down, then a card buy from Coastal Rentals; waste as a written purchase order with a COR, in time for the host nation pulling its trucks.",
   "actions": [
     {
       "kind": "award",
