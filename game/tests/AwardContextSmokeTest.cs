@@ -23,12 +23,12 @@ public partial class AwardContextSmokeTest : Node
             var cors = view.CorChoices("mhe");
             Require(cors[0].Fits == true && cors[0].Name.Contains("Pratt"), "Independent Sim puts the unit that knows forklifts first.");
             Require(Enumerable.Range(1, shell.CorInput!.ItemCount - 1).Select(i => shell.CorInput.GetItemMetadata(i).AsString()).SequenceEqual(cors.Select(c => c.Id)), "The actual roster keeps Sim's best-first order.");
-            Require(shell.CorReasonLabels.Select(l => l.Text).SequenceEqual(cors.Select(c => c.Why)), "Every COR's exact fit, load, odds and lag sentence is visible.");
+            Require(shell.CorReasonLabels.Select(l => l.Text).SequenceEqual(cors.Select(c => "Possible COR: " + c.Why)), "Every COR's exact fit, load, odds and lag sentence is visible.");
             Require(shell.PendingAward!.Cor is null, "The player chooses; no COR is silently appointed.");
             foreach (var cor in cors)
             {
                 Pick(shell.CorInput!, cor.Id);
-                Require(shell.PendingAward!.Cor == cor.Id && shell.CorReasonLabels.Select(l => l.Text).SequenceEqual(cors.Select(c => c.Why)), "Choosing a named COR binds its id and preserves every reason.");
+                Require(shell.PendingAward!.Cor == cor.Id && shell.CorReasonLabels.Select(l => l.Text).SequenceEqual(cors.Select(c => "Possible COR: " + c.Why)), "Choosing a named COR binds its id and preserves every reason.");
                 Require(shell.AwardPreview!.SoftGaps.SequenceEqual(view.Preview(shell.PendingAward).SoftGaps), "Fit warnings are exactly Sim's preview.");
             }
             string Caption(SpinBox input) => input.GetParent().GetChild<Label>(input.GetIndex() - 1).Text;
@@ -51,7 +51,7 @@ public partial class AwardContextSmokeTest : Node
             Pick(shell.VendorInput, "campServices"); Pick(shell.InstrumentInput, "purchaseOrder");
             PickPriorities(shell, "fast", "good");
             Require(shell.CorInput!.GetItemMetadata(1).AsString() == shell.Session.View!.CorChoices("food")[0].Id
-                && shell.CorReasonLabels[0].Text == shell.Session.View.CorChoices("food")[0].Why, "A different capability reorders the roster from the current Sim view.");
+                && shell.CorReasonLabels[0].Text == "Possible COR: " + shell.Session.View.CorChoices("food")[0].Why, "A different capability reorders the roster from the current Sim view.");
             Require(!Caption(shell.QuantityInput).Contains("Asked:") && !Caption(shell.DurationInput).Contains("Asked:"), "An own-initiative buy inherits no customer ask.");
             old.EmitSignal(OptionButton.SignalName.ItemSelected, 1);
             Require(shell.PendingAward!.Cor is null, "An obsolete COR control cannot change the new award.");
@@ -120,7 +120,7 @@ public partial class AwardContextSmokeTest : Node
             Require(picker.GetItemText(index).StartsWith(c.Why.Split(" and ", 2, StringSplitOptions.None)[0] + " · ")
                 && picker.GetItemText(index).Contains(c.Fits == true ? "knows waste removal" : "does not work with waste removal")
                 && picker.GetItemText(index).EndsWith(odds) && picker.GetItemTooltip(index) == c.Why
-                && shell.CorReasonLabels.Any(l => l.Text == c.Why), "Every monitor choice carries the Sim's fit words before its effective odds and lag; the complete sentence remains below.");
+                && shell.CorReasonLabels.Any(l => l.Text == "Possible COR: " + c.Why), "Every monitor choice carries the Sim's fit words before its effective odds and lag; the complete sentence remains below.");
         }
         Require(shell.Session.StateHash == expected.StateHash() && shell.PendingAward!.Cor is null, "Reading monitor choices is pure and retains None until chosen.");
         for (var i = 0; i < 8; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
