@@ -186,7 +186,8 @@ public sealed partial class Session
     /// placed the day after the answer comes, behind the same queue: " Ordered tomorrow, after the answer, it starts on day
     /// 9: material handling equipment at Hub is out 1 day in all: all the commander allows." The count against the line only
     /// when that start is past the day wanted and a pass line counts the days (D43). D53 (DESK-201): when it would start the
-    /// same, " Ordered tomorrow, after the answer, it still starts on day 8."
+    /// same, " Ordered tomorrow, after the answer, it still starts on day 8." For a BPA call, D69 (DESK-243)
+    /// names the BPA call and qualifies either forecast with "if the supplier accepts"; no future refusal is revealed.
     /// Three times a game both tenth-play players chose between ordering blind on the order-by day and waiting a night, with
     /// nothing to weigh. Left out: forecasting what the answer will be. A forecast from the plan; it ignores rolls.
     /// </summary>
@@ -195,12 +196,15 @@ public sealed partial class Session
         if (chk.Instrument is not { } inst || chk.Offer is not { } offer || orderDay > LastDay) return "";
         var (min, max, _, _) = StartWindow(a, inst, offer, chk, orderDay);
         var when = orderDay == Day + 1 ? "tomorrow" : $"on day {orderDay}";
+        // D69 (DESK-243): this later BPA route still depends on the supplier accepting the call.
+        var subject = a.Instrument == "bpaCall" ? $"A BPA call {when}" : $"Ordered {when}, after the answer, it";
+        var condition = a.Instrument == "bpaCall" ? " if the supplier accepts" : "";
         var starts = max == min ? $"on day {min}" : max == min + 1 ? $"on day {min} or {max}" : $"between day {min} and day {max}";
         // D53 (DESK-201; Claude play 21 Nov, twelfth play, notes P1-11, P2-8): a wait that costs nothing is said too, or the
         // silence reads as "order now". Nothing is lost, so no count against the line.
-        if (min == start && max == latestStart) return $" Ordered {when}, after the answer, it still starts {starts}.";
+        if (min == start && max == latestStart) return $" {subject} still starts {starts}{condition}.";
         var cost = DownDaysIf(card, max) is { } c ? $": {c}" : "";
-        return $" Ordered {when}, after the answer, it starts {starts}{cost}.";
+        return $" {subject} starts {starts}{condition}{cost}.";
     }
 
     /// <summary>D40, DESK-119: the parts someone the shop asked said the request needs and the request does not include
@@ -241,7 +245,8 @@ public sealed partial class Session
     /// out whatever the vendor offers.</summary>
     /// <remarks>D57 (a), DESK-218 (Claude play 22 Nov, fourth play, notes P1-18, P2-13): with that ask in work, the sentence
     /// says when the answer comes and what waiting for it costs, as D51 and D53 say it: "It leaves out operators; you are
-    /// asking SMSgt Ray Dunn, whose answer comes in tonight; ordered tomorrow, after the answer, it still starts on day 8."
+    /// asking SMSgt Ray Dunn, whose answer comes in tonight; a BPA call tomorrow still starts on day 8
+    /// if the supplier accepts." (D69, DESK-243.)
     /// On day 4 both fourth-play players read "answer due day 4" here, with D53's sentence below the fold, ordered blind,
     /// and tore the order up the next morning. <c>SaysWait</c> is true when the wait is said, so the answer-due sentence
     /// leaves the quote's notes.</remarks>

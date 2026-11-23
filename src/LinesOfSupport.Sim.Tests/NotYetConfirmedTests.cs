@@ -85,9 +85,9 @@ public class NotYetConfirmedTests
         Assert.True(s.Apply(log.Actions.OfType<AskAboutAction>().First(x => x.Day == 4)).Accepted);
         var buy = log.Actions.OfType<AwardAction>().First(x => x.Day == 4);
         var summary = s.View.AwardSummary(buy)!;
-        Assert.Equal("It leaves out operators; you are asking SMSgt Ray Dunn, whose answer comes in tonight; ordered tomorrow, after the answer, it still starts on day 8.", summary.Why);
+        Assert.Equal("It leaves out operators; you are asking SMSgt Ray Dunn, whose answer comes in tonight; a BPA call tomorrow still starts on day 8 if the supplier accepts.", summary.Why);
         Assert.EndsWith(summary.Why, summary.Sentence);
         Assert.Equal(3, SentenceCount(summary.Sentence));
-        Assert.DoesNotContain(s.View.Preview(buy).SoftGaps, g => g.Contains("Ordered tomorrow"));
+        Assert.DoesNotContain(s.View.Preview(buy).SoftGaps, g => g.Contains("Ordered tomorrow") || g.Contains("A BPA call tomorrow"));
     }
 }

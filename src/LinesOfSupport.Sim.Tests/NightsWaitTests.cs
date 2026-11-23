@@ -70,6 +70,6 @@ public class NightsWaitTests
         var buy = log.Actions.OfType<AwardAction>().First(x => x.Day == 4);
         var summary = s.View.AwardSummary(buy)!;
         Assert.Contains("starts on day 8", summary.Sentence);
-        Assert.EndsWith(" Ordered tomorrow, after the answer, it still starts on day 8.", summary.AnswerDue);
+        Assert.EndsWith(" A BPA call tomorrow still starts on day 8 if the supplier accepts.", summary.AnswerDue);
     }
 }
