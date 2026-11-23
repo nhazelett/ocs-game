@@ -113,6 +113,7 @@ public partial class ContractSmokeTest : Node
             ClickTab(GameShell.DebriefTab); await Capture("completed-debrief");
             Require(!shell.ContractView.Visible && tabs.CurrentTab == GameShell.DebriefTab && shell.Session.StateHash == finishedHash,
                 "The completed contract's Debrief tab opens the final debrief without acting.");
+            await CheckColdPaymentsReturn(shell);
             shell.QueueFree();
             void ClickTab(int index)
             {
