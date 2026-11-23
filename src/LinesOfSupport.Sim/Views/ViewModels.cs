@@ -136,7 +136,7 @@ public sealed record DayPlanItem(string? WorkId, string Label, double HoursToday
 /// What happened on the day just played (DESK-40, D20): the page after the map playback, and behind Today's Yesterday link.
 /// From the day's records and work, never from the forecast.
 /// </summary>
-/// <param name="Sentence">"Day 4: one job finished, one thing was short and one job slipped."</param>
+/// <param name="Sentence">"Day 4: one job finished, one thing was not supplied in full and one job slipped."</param>
 /// <param name="Finished">What the team finished, with who.</param>
 /// <param name="Started">Support that started.</param>
 /// <param name="Ended">Support that ended.</param>

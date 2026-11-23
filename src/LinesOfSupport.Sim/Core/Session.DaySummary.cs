@@ -128,7 +128,7 @@ public sealed partial class Session
         if (turnedDown > 0) parts.Add(turnedDown == 1 ? "a vendor turned down a call" : $"vendors turned down {turnedDown} calls");
         // "Everything was supplied in full" on a day a call was turned down read as all is well (the 16 Nov play, day 5).
         var missed = shortCount == 0 && misses > 0;
-        parts.Add(shortCount switch { 0 when turnedDown > 0 => "no site was short", 0 when missed => "nothing was short", 0 => "everything was supplied in full", 1 => "one thing was short", _ => $"{shortCount} things were short" });
+        parts.Add(shortCount switch { 0 when turnedDown > 0 => "no site was short", 0 when missed => "nothing was short", 0 => "everything was supplied in full", 1 => "one thing was not supplied in full", _ => $"{shortCount} things were not supplied in full" });
         if (slipped > 0) parts.Add(slipped == 1 ? "one job slipped" : $"{slipped} jobs slipped");
         var list = parts.Count == 1 ? parts[0] : string.Join(", ", parts.Take(parts.Count - 1)) + " and " + parts[^1];
         var though = missed ? misses == 1 ? ", though one missed delivery was reported" : $", though {misses} missed deliveries were reported" : "";

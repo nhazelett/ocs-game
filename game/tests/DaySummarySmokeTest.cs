@@ -137,6 +137,21 @@ public partial class DaySummarySmokeTest : Node
             shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed); CheckSummary();
             Require(shell.DisplayedDaySummary!.Day == 2, "Resumed Yesterday is the saved completed day.");
             await CheckFinalTutorialDay();
+            shell.CloseDaySummary();
+            var coldInput = InputLog.Load(Path.Combine(GamePaths.ScenarioRoot, "..", "docs", "reviews", "plays", "2026-11-23", "input-log-1.json"));
+            var coldDay = LinesOfSupport.Sim.Replay.Run(ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot, "tutorial")), coldInput, stopAfterDay: 8);
+            var coldSave = shell.AutosavePathOverride + ".cold-zero";
+            try
+            {
+                File.WriteAllText(coldSave, coldDay.ToSave().ToJson()); shell.LoadSavedGame(coldSave); shell.DeveloperToggle.ButtonPressed = false;
+                var coldHash = shell.Session.StateHash; var coldLog = shell.Session.CreateSave().ToJson();
+                shell.YesterdayButton.EmitSignal(Button.SignalName.Pressed); CheckSummary(coldDay.View.DaySummary());
+                Require(shell.DisplayedDaySummary!.Sentence == "Day 8: nothing finished and one thing was not supplied in full."
+                    && shell.DisplayedDaySummary.Short.Single().Contains("was at 0%"), "The actual cold zero-supply day keeps its facts and uses the umbrella wording.");
+                await Capture("cold-zero");
+                Require(shell.Session.StateHash == coldHash && shell.Session.CreateSave().ToJson() == coldLog, "Reading the corrected cold summary preserves Sim and save.");
+            }
+            finally { File.Delete(coldSave); }
             shell.QueueFree();
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
