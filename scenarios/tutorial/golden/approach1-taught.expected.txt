@@ -57,7 +57,7 @@ Day 10
   DONE      Written purchase order awarded to Main Island Sanitation for waste removal at Hub; performance starts day 13, ends day 20. Obligated $1,152.
   DONE      CE small buys: 3 worked today (1.5 h of shop time).
 Day 11
-  EVENT     Island Camp Services is short-staffed at the dining hall. Once the misses are reported to the office, they come to your desk as a decision on what to do with the vendor.
+  EVENT     Island Camp Services is short-staffed at the dining hall. One reported miss is information. Repeated reported misses can bring a decision on what to do with the vendor to your desk.
   DONE      CE small buys: 2 worked today (1 h of shop time).
   FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery. The stock on hand covered today's demand.
   FAIL      Island Camp Services food service at Hub missed today's delivery. The stock on hand covered today's demand.
@@ -106,4 +106,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 2a191b9061d5897f58c7f12fb0d048c531d60ccf7d6f4ed11343d6b7b4eb7508
+State hash 93e7353a746edeca91a74818907786e72ab36c192be07abd8d49b38f4b4c5994

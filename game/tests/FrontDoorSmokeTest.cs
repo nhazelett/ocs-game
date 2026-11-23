@@ -116,13 +116,17 @@ public partial class FrontDoorSmokeTest : Node
                 && shell.MovementButton.TooltipText.Contains("Local deliveries"),"A local delivery is compatible with no island crossing; the control states its scope.");
             Require(shell.Session.StateHash==local.StateHash(),"Scoped movement wording changes no trip or simulation state.");
             await Capture("-local-delivery");
-            var newsDay=LinesOfSupport.Sim.Replay.Run(LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot,"tutorial")),localLog,stopAfterDay:11);
+            var ninthLog=LinesOfSupport.Sim.InputLog.Load(Path.Combine(GamePaths.ScenarioRoot,"..","docs","reviews","plays","2026-11-22-9","input-log-1.json"));
+            var newsDay=LinesOfSupport.Sim.Replay.Run(LinesOfSupport.Sim.Data.ScenarioBundle.Load(Path.Combine(GamePaths.ScenarioRoot,"tutorial")),ninthLog,stopAfterDay:11);
             File.WriteAllText(localSave,newsDay.ToSave().ToJson());shell.LoadSavedGame(localSave);tabs.CurrentTab=GameShell.TodayTab;
             for(var frame=0;frame<4;frame++)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
             const string presentNews="Island Camp Services is short-staffed at the dining hall";
             var notice=PlayScreen.Descendants(shell).OfType<Control>().FirstOrDefault(c=>c.IsVisibleInTree()&&
                 (c is Label l&&l.Text.Contains(presentNews)||c is Button b&&b.Text.Contains(presentNews)||c is RichTextLabel r&&r.Text.Contains(presentNews)));
-            Require(notice is not null,"Current staffing news is visible in the new morning.");
+            Require(notice is Label noticeWords && noticeWords.Text.Contains("One reported miss is information. Repeated reported misses can bring a decision"),
+                "The actual first-report notice distinguishes information from a repeated-miss decision.");
+            Require(shell.Session.View!.Day==12 && !shell.Session.View.PerformanceIssues.Any(i=>i.ArrangementId=="hubDining"),
+                "The real ninth-play first report still opens no vendor decision.");
             for(Node? p=notice!.GetParent();p is not null;p=p.GetParent())if(p is ScrollContainer scroll){scroll.EnsureControlVisible(notice);break;}
             Require(shell.Session.StateHash==newsDay.StateHash(),"News wording leaves the actual daily events and simulation unchanged.");
             await Capture("-news-now");

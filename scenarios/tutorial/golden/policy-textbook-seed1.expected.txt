@@ -74,7 +74,7 @@ Day 10
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Personnel covered rotation dates and who is flying home on the next rotator. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 2 on cards).
 Day 11
-  EVENT     Island Camp Services is short-staffed at the dining hall. Once the misses are reported to the office, they come to your desk as a decision on what to do with the vendor.
+  EVENT     Island Camp Services is short-staffed at the dining hall. One reported miss is information. Repeated reported misses can bring a decision on what to do with the vendor to your desk.
   VISIT     Staff meeting, with MSgt Joan Avery there for the shop. Col Helen Ward, Hub commander, ran it. Maintenance walked through the jets down for parts; supply is chasing those through its own channels. Nothing for contracting.
   DONE      CE small buys: 1 worked today (0.5 h of shop time, 1 on cards).
   FAIL      Main Island Utilities (host nation) fuel at Hub missed today's delivery. The stock on hand covered today's demand.
@@ -131,4 +131,4 @@ PASS CRITERIA
   [met] Waste removal never out (site.hubSite.waste.downDays = 0)
   [met] Mission output at least 95% (mission.output = 1)
 
-State hash 8a0a00d0121a5c09daee294bd566e2b8b7870b07c5ad81196c7a837dfc2cbf28
+State hash 1405f0904c047d97e24084ccb94a671544c0ceecc9c2f4ffe67851bd2ffff0b8
