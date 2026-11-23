@@ -871,7 +871,7 @@
     {
       "id": "diningSlips",
       "label": "Island Camp Services is short-staffed at the dining hall",
-      "playerVisibleAs": "Once the misses are reported to the office, they come to your desk as a decision on what to do with the vendor.",
+      "playerVisibleAs": "One reported miss is information. Repeated reported misses can bring a decision on what to do with the vendor to your desk.",
       "window": {
         "earliestDay": 11,
         "latestDay": 11

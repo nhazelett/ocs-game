@@ -60,6 +60,6 @@ public class ShortDayAndReportTests
     {
         var s = Play();
         var news = s.Records.Single(r => r.Kind == RecordKind.Event && r.Subject == "diningSlips");
-        Assert.EndsWith("they come to your desk as a decision on what to do with the vendor.", news.Text);
+        Assert.EndsWith("One reported miss is information. Repeated reported misses can bring a decision on what to do with the vendor to your desk.", news.Text);
     }
 }
