@@ -22,8 +22,12 @@ internal static class MorningScreenFixChecks
                 await Frames();
                 var view = shell.Session.View!; var board = view.MorningBoard(); var hash = shell.Session.StateHash;
                 var scroll = shell.GetNode<ScrollContainer>("%DeskTabs/Today/TodayPane/Body/Body"); scroll.ScrollVertical = 0;
-                Require(shell.MorningAlerts.GetIndex() == shell.MorningHeading.GetIndex() + 1
-                    && shell.MorningAlerts.GetIndex() < shell.MorningBrief.GetIndex(), "Current alerts are the first entries under the morning heading.");
+                Require(shell.MorningSupplyHeading.GetIndex() == shell.MorningHeading.GetIndex() + 1
+                    && shell.MorningAlerts.GetIndex() == shell.MorningSupplyHeading.GetIndex() + 1
+                    && shell.MorningAlerts.GetIndex() < shell.MorningBrief.GetIndex(), "The supply date labels the first alerts under the morning heading, before other news.");
+                Require(shell.MorningSupplyHeading.Text == $"Supply on day {view.MapDay().Day} · last completed"
+                    && shell.MorningSupplyHeading.Visible == board.Tiles.Any(t => t.Status is "down" or "degraded"),
+                    "Only the actual supply alerts show their completed-day caption.");
                 foreach (var tile in board.Tiles.Where(t => t.Status is "down" or "degraded"))
                 {
                     var row = shell.MorningAlerts.GetChildren().OfType<PanelContainer>().Single(p => p.GetMeta("morning_shortfall").AsString() == tile.SiteId + "." + tile.CapabilityId);
