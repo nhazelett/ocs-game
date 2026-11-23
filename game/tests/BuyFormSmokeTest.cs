@@ -87,6 +87,7 @@ public partial class BuyFormSmokeTest : Node
             await Layout("day6-pick-two", shell.PriorityInputs["fast"]);
             await CheckRecordedNavigation(shell);
             await CheckCorCandidates(shell);
+            await CheckBpaAcceptanceWait(shell);
             shell.QueueFree(); await Frames(); shell = null;
             GD.Print("BUY_FORM_SMOKE_PASS: early amount and timing, correct labels, supplier refusal refresh, pure exact previews, preserved terms and half-pane space with pinned summaries.");
             GetTree().Quit();
